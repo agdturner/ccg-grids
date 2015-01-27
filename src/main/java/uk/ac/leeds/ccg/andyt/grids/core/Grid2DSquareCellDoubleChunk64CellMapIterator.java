@@ -90,7 +90,7 @@ public class Grid2DSquareCellDoubleChunk64CellMapIterator
      */
     @Override
     public Object next() {
-        Double next = new Double( this.value );
+        Double next = this.value;
         this.iteratorIndex ++;
         try {
             if ( this.value != noDataValue ) {

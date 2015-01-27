@@ -45,11 +45,10 @@ public class Grids_Environment
      */
     protected transient Grid2DSquareCellProcessor _Grid2DSquareCellProcessor;
 
-    
     public Grids_Environment() {
         init_AbstractGrid2DSquareCell_HashSet();
     }
-    
+
     /**
      * @return the _Grid2DSquareCellProcessor
      */
@@ -2092,18 +2091,18 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all chunks in _Grids_Environment.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
-     * @return
+     * @return A count of the number of chunks swapped.
      */
     public long swapToFile_Grid2DSquareCellChunks_Account(
             boolean handleOutOfMemoryError) {
         try {
-            long result = swapToFile_Grid2DSquareCellChunks_Account();
+            long result;
+            result = swapToFile_Grid2DSquareCellChunks_Account(); // Should this really be here and not in the try loop?
             try {
                 if (result < 1) {
                     Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
@@ -2140,16 +2139,22 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all chunks in _Grids_Environment.
      *
      * @return
      */
     protected long swapToFile_Grid2DSquareCellChunks_Account() {
         long result = 0L;
-        Iterator<AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Iterator<AbstractGrid2DSquareCell> a_Iterator;
+        a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
-            result += a_Iterator.next()._Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(HandleOutOfMemoryErrorFalse);
+            long partResult;
+            AbstractGrid2DSquareCell g;
+            g = a_Iterator.next();
+            partResult = g.swapToFile_Grid2DSquareCellChunks_Account();
+//            partResult = g._Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(
+//                    HandleOutOfMemoryErrorFalse);
+            result += partResult;
         }
         dataToSwap = false;
         return result;
@@ -2337,7 +2342,7 @@ public class Grids_Environment
             return true;
         }
     }
-    
+
 //    /**
 //     * Attempts to swap any AbstractGrid2DSquareCellChunk in grid
 //     *
@@ -2349,7 +2354,6 @@ public class Grids_Environment
 //            ChunkID chunkID) {
 //        grid.swapToFile_Grid2DSquareCellChunk(chunkID);
 //    }
-
     public long swapToFile_Grid2DSquareCellChunk_Account(
             boolean handleOutOfMemoryError) {
         try {
@@ -2540,7 +2544,7 @@ public class Grids_Environment
         try {
             HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>> result;
             result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-                            a_ChunkID);
+                    a_ChunkID);
             try {
                 if (result.isEmpty()) {
                     Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(

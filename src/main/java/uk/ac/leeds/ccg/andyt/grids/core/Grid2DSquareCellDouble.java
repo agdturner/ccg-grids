@@ -4060,13 +4060,14 @@ public class Grid2DSquareCellDouble
     }
 
     /**
-     * @return an iterator over the cell value in this.
+     * @return A Grid2DSquareCellDoubleIterator for iterating over the cell 
+     * values in this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public Iterator iterator(
+    public Iterator<Double> iterator(
             boolean handleOutOfMemoryError) {
         try {
             Iterator result = new Grid2DSquareCellDoubleIterator(this);

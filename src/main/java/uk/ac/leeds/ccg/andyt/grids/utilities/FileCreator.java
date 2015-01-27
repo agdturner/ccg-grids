@@ -30,34 +30,7 @@ public class FileCreator {
     public FileCreator() {
     }
     
-    /**
-     * Attempts to makes a copy of file in copy.
-     * @param file the File that is to be copied
-     * @param copy the File that is to become a copy
-     */
-    public static void copyFile(
-            File file,
-            File copy ) {
-        //String osName = System.getProperty( "os.name" );
-        //if ( osName.equalsIgnoreCase( "UNIX" ) ) {
-        //    Runtime.getRuntime().exec( "cp " + file.toString() + " " + copy.toString() );
-        //} else {
-        //}
-        try {
-            BufferedInputStream bis = new BufferedInputStream(
-                    new FileInputStream( file ) );
-            BufferedOutputStream bos = new BufferedOutputStream(
-                    new FileOutputStream( copy ) );
-            for ( int i = 0; i < file.length(); i ++ ) {
-                bos.write( bis.read() );
-            }
-            bos.flush();
-            bos.close();
-            bis.close();
-        } catch ( IOException ioe0 ) {
-            ioe0.printStackTrace();
-        }
-    }
+    
     
     /**
      * Returns a newly created temporary file.
@@ -67,8 +40,8 @@ public class FileCreator {
      * @return 
      */
     public static File createTempFile() {
-        //return createTempFile( new File( System.getProperty( "java.io.tmpdir" ) ) );
-        return createTempFile( null );
+        return createTempFile( new File( System.getProperty( "java.io.tmpdir" ) ) );
+        //return createTempFile( null );
     }
     
     /**
