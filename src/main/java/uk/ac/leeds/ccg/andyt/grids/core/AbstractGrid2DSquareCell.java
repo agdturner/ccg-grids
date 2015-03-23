@@ -1477,8 +1477,7 @@ public abstract class AbstractGrid2DSquareCell
             BigDecimal[] a_Dimensions) {
         this._Dimensions = a_Dimensions;
         this._DimensionsScale = Integer.MIN_VALUE;
-        for (int i = 0; i
-                < a_Dimensions.length; i++) {
+        for (int i = 0; i < a_Dimensions.length; i++) {
             this._DimensionsScale = Math.max(
                     this._DimensionsScale,
                     a_Dimensions[i].scale());
@@ -1605,7 +1604,6 @@ public abstract class AbstractGrid2DSquareCell
      * @param a_CellColIndex
      * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
-     * @param cellRowIndex The cell row index of the .
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1763,7 +1761,6 @@ public abstract class AbstractGrid2DSquareCell
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
      * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
      *   the cell.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -1823,7 +1820,6 @@ public abstract class AbstractGrid2DSquareCell
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
      * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
      *   the cell.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -2001,7 +1997,6 @@ public abstract class AbstractGrid2DSquareCell
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
      * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -2055,7 +2050,6 @@ public abstract class AbstractGrid2DSquareCell
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
      * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -2083,7 +2077,6 @@ public abstract class AbstractGrid2DSquareCell
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
      * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
      *   the cell.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -2142,7 +2135,6 @@ public abstract class AbstractGrid2DSquareCell
      * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
      * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
      *   the cell.
-     * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -3242,7 +3234,6 @@ public abstract class AbstractGrid2DSquareCell
      * @return CellID of the cell given by cell row index _CellRowIndex, cell
      * column index _CellColIndex. A CellID is returned even if that cell would not
      * be in the grid.
-     * @param cellRowIndex The cell row index.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -3517,7 +3508,8 @@ public abstract class AbstractGrid2DSquareCell
                     oos.flush();
                     oos.close();
                 } catch (IOException ioe0) {
-                    ioe0.printStackTrace();
+                    //ioe0.printStackTrace();
+                    System.err.println(ioe0.getMessage());
                 }
                 System.gc();
                 grid2DSquareCellChunk.setIsSwapUpToDate(true);
@@ -4435,15 +4427,14 @@ public abstract class AbstractGrid2DSquareCell
      * Attempts to write to file and clear from the cache a AbstractGrid2DSquareCellChunk
      * in this._AbstractGrid2DSquareCell_HashSet.
      *
-     *
-     *
      * @param a_ChunkID_HashSet
      * @return The ChunkID of the AbstractGrid2DSquareCellChunk swapped or null.
      */
     protected final HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             HashSet<ChunkID> a_ChunkID_HashSet) {
-        HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>> result = new HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>>(1);
-        HashSet<ChunkID> result_ChunkID_HashSet = new HashSet<ChunkID>(1);
+        HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>> result;
+        result = new HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>>(1);
+        //HashSet<ChunkID> result_ChunkID_HashSet = new HashSet<ChunkID>(1);
         int cri;
         int cci;
         ChunkID a_ChunkID = null;
@@ -4460,7 +4451,7 @@ public abstract class AbstractGrid2DSquareCell
                         writeToFileGrid2DSquareCellChunk(a_ChunkID);
                         clearFromCacheGrid2DSquareCellChunk(
                                 a_ChunkID);
-                        result_ChunkID_HashSet.add(a_ChunkID);
+                        //result_ChunkID_HashSet.add(a_ChunkID);
                         result.put(this, a_ChunkID_HashSet);
                         return result;
                     }
@@ -5696,8 +5687,7 @@ public abstract class AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @return true iff position given by chunk row index _ChunkRowIndex, chunk
      * column index _ChunkColIndex is in the Grid.
-     * @param a_ChunkRowIndex The chunk row index to test.
-     * @param handleOutOfMemoryError
+    * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
@@ -5734,10 +5724,7 @@ public abstract class AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @return true iff position given by chunk row index _ChunkRowIndex, chunk
      * column index _ChunkColIndex is in the Grid.
-     *
-     *
-     * @param a_ChunkRowIndex The chunk row index to test.
-     */
+    */
     protected final boolean isInGrid(
             int chunkRowIndex,
             int chunkColIndex) {
@@ -5839,7 +5826,6 @@ public abstract class AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @return true iff cell given by _ChunkRowIndex, _ChunkColIndex,
      * chunkCellRowIndex, chunkCellColIndex is in the Grid.
-     * @param a_ChunkRowIndex
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
      * @param handleOutOfMemoryError
@@ -5885,7 +5871,6 @@ public abstract class AbstractGrid2DSquareCell
      * @param _ChunkColIndex
      * @return true iff cell given by _ChunkRowIndex, _ChunkColIndex,
      * chunkCellRowIndex, chunkCellColIndex is in the Grid.
-     * @param a_ChunkRowIndex
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
      */
@@ -5939,9 +5924,6 @@ public abstract class AbstractGrid2DSquareCell
      * _CellColIndex as a BigDecimal.
      * @param cellColIndex The cell column index thats centroid x-coordinate is
      * returned.
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -6074,9 +6056,6 @@ public abstract class AbstractGrid2DSquareCell
      * _CellColIndex as a double.
      * @param chunkCellColIndex The cell column index thats centroid x-coordinate is
      * returned.
-     * @param a_ChunkRowIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -6257,12 +6236,6 @@ public abstract class AbstractGrid2DSquareCell
      * @return x-coordinate of the centroid of cell with CellID _CellID as a
      * double.
      * @param a_CellID The CellID of the cell thats centroid is returned.
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
-     * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      */
     public final double getCellXDouble(
             CellID a_CellID,
@@ -6342,13 +6315,7 @@ public abstract class AbstractGrid2DSquareCell
      * _CellRowIndex as a BigDecimal.
      * @param cellRowIndex the cell column index thats centroid y-coordinate is
      *   returned.
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
-     * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
-     */
+    */
     public final BigDecimal getCellYBigDecimal(
             long cellRowIndex,
             int chunkRowIndex,
@@ -6466,9 +6433,6 @@ public abstract class AbstractGrid2DSquareCell
      * _CellRowIndex as a double.
      * @param chunkCellRowIndex the chunk cell column index thats centroid
      *   y-coordinate is returned.
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -6559,13 +6523,7 @@ public abstract class AbstractGrid2DSquareCell
     /**
      * @param a_CellID The CellID of the cell thats centroid is returned.
      * @param chunkRowIndex
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      * @param chunkColIndex
-     * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      * @param handleOutOfMemoryError
      * @return y-coordinate of the centroid of cell with CellID _CellID as a
      * BigDecimal.
@@ -6646,12 +6604,6 @@ public abstract class AbstractGrid2DSquareCell
      * @return y-coordinate of the centroid of cell with CellID _CellID as a
      * double.
      * @param a_CellID The CellID of the cell thats centroid is returned.
-     * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
-     * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
      */
     public final double getCellYDouble(
             CellID a_CellID,
@@ -6943,10 +6895,6 @@ public abstract class AbstractGrid2DSquareCell
      * cellBounds_BigDecimalArray[1] ymin, lowest y-coordinate of cell that intersects point at (x,y)
      * cellBounds_BigDecimalArray[2] xmax, right most x-coordinate of cell that intersects point at (x,y)
      * cellBounds_BigDecimalArray[3] ymax, highest y-coordinate of cell that intersects point at (x,y)
-     * @param cellRowIndex the row index of the cell for which the bounds are
-     *   returned
-     * @param cellColIndex the column index of the cell for which the bounds are
-     *   returned
      */
     public final BigDecimal[] getCellBounds_BigDecimalArray(
             long _CellRowIndex,
@@ -6983,8 +6931,6 @@ public abstract class AbstractGrid2DSquareCell
      * cellBounds_BigDecimalArray[1] ymin, lowest y-coordinate of cell that intersects point at (x,y)
      * cellBounds_BigDecimalArray[2] xmax, right most x-coordinate of cell that intersects point at (x,y)
      * cellBounds_BigDecimalArray[3] ymax, highest y-coordinate of cell that intersects point at (x,y)
-     * @param cellRowIndex the row index of the cell for which the bounds are
-     *   returned
      */
     protected final BigDecimal[] getCellBounds_BigDecimalArray(
             long _CellRowIndex,
@@ -7373,28 +7319,25 @@ public abstract class AbstractGrid2DSquareCell
 
         /**
          * Constructs a new ChunkID that is a clone of _ChunkID
-         * @param _ChunkID
+         * @param chunkID
          */
-        public ChunkID(ChunkID _ChunkID) {
-            this._ChunkColIndex = _ChunkID._ChunkColIndex;
-            this._ChunkRowIndex = _ChunkID._ChunkRowIndex;
+        public ChunkID(ChunkID chunkID) {
+            this._ChunkColIndex = chunkID._ChunkColIndex;
+            this._ChunkRowIndex = chunkID._ChunkRowIndex;
         }
 
         /**
          * Constructs a new ChunkID
-         * @param _NChunkCols
-         * @param a_ChunkRowIndex the row of the
-         * @param _ChunkRowIndex
-         * @param a_ChunkColIndex the column of the
-         * @param _ChunkColIndex
-         * @param nChunkCols The number of chunk columns (of the grid2DSquareCellAbstract).
+         * @param chunkRowIndex the row of the
+         * @param chunkColIndex the column of the
+         * @param nChunkCols The number of chunk columns.
          */
         public ChunkID(
-                int _NChunkCols,
-                int _ChunkRowIndex,
-                int _ChunkColIndex) {
-            this._ChunkRowIndex = _ChunkRowIndex;
-            this._ChunkColIndex = _ChunkColIndex;
+                int nChunkCols,
+                int chunkRowIndex,
+                int chunkColIndex) {
+            this._ChunkRowIndex = chunkRowIndex;
+            this._ChunkColIndex = chunkColIndex;
         }
 
         /**
@@ -7442,7 +7385,8 @@ public abstract class AbstractGrid2DSquareCell
                 return false;
             }
             ChunkID _ChunkID = (ChunkID) object;
-            return ((this._ChunkColIndex == _ChunkID._ChunkColIndex) && (this._ChunkRowIndex == _ChunkID._ChunkRowIndex));
+            return ((this._ChunkColIndex == _ChunkID._ChunkColIndex) && 
+                    (this._ChunkRowIndex == _ChunkID._ChunkRowIndex));
         }
 
         /**
