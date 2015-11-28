@@ -1381,7 +1381,9 @@ public abstract class AbstractGrid2DSquareCell
     }
 
     /**
-     * @return A copy of this._Dimensions.
+     * @return A copy of this._Dimensions (which stores cellsize, minx, miny, 
+     * maxx, maxy).
+     * 
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -3326,6 +3328,58 @@ public abstract class AbstractGrid2DSquareCell
     protected final CellID getCellID(
             double x,
             double y) {
+        return new CellID(
+                this._NCols,
+                getCellRowIndex(y),
+                getCellColIndex(x));
+    }
+    
+    /**
+     * @return CellID of the cell given by x-coordinate x, y-coordinate y even
+     * if that cell would not be in the grid.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @param handleOutOfMemoryError
+     *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
+     *     then the method is re-called.
+     *   If false then OutOfMemoryErrors are caught and thrown.
+     */
+    public final CellID getCellID(
+            BigDecimal x,
+            BigDecimal y,
+            boolean handleOutOfMemoryError) {
+        try {
+            CellID result = getCellID(
+                    x,
+                    y);
+            _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError a_OutOfMemoryError) {
+            if (handleOutOfMemoryError) {
+                _Grids_Environment.clear_MemoryReserve();
+                if (_Grids_Environment.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
+                    throw a_OutOfMemoryError;
+                }
+                _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                return getCellID(
+                        x,
+                        y,
+                        handleOutOfMemoryError);
+            } else {
+                throw a_OutOfMemoryError;
+            }
+        }
+    }
+    
+    /**
+     * @return a CellID of the cell given by x-coordinate x, y-coordinate y even
+     * if that cell would not be in the grid.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     */
+    protected final CellID getCellID(
+            BigDecimal x,
+            BigDecimal y) {
         return new CellID(
                 this._NCols,
                 getCellRowIndex(y),

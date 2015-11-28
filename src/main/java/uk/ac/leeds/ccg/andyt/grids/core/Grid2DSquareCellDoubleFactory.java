@@ -240,7 +240,7 @@ public class Grid2DSquareCellDoubleFactory
      *   Grid2DSquareCellDouble information.
      * @param _NRows The Grid2DSquareCellDouble _NRows.
      * @param _NCols The Grid2DSquareCellDouble _NCols.
-     * @param _Dimensions
+     * @param _Dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param a_Grids_Environment
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
@@ -280,7 +280,7 @@ public class Grid2DSquareCellDoubleFactory
      *   the constructed Grid2DSquareCellDouble is to be made of.
      * @param _NRows The Grid2DSquareCellDouble _NRows.
      * @param _NCols The Grid2DSquareCellDouble _NCols.
-     * @param _Dimensions
+     * @param _Dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param a_Grids_Environment
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      *   in this method then swap operations are initiated prior to retrying.
