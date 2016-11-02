@@ -622,15 +622,15 @@ public class Grid2DSquareCellDouble
             init_NChunkCols();
             long nChunks = getNChunks();
             this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap = new HashMap((int) nChunks);
-            this._Dimensions[ 0] = new BigDecimal(dimensions[ 0].toString());
+            this._Dimensions[0] = new BigDecimal(dimensions[0].toString());
             BigDecimal startColIndexBigDecimal = new BigDecimal((long) startColIndex);
             BigDecimal startRowIndexBigDecimal = new BigDecimal((long) startRowIndex);
             BigDecimal _NRowsBigDecimal = new BigDecimal(Long.toString(_NRows));
             BigDecimal _NColsBigDecimal = new BigDecimal(Long.toString(_NCols));
-            this._Dimensions[ 1] = dimensions[ 1].add(startColIndexBigDecimal.multiply(this._Dimensions[ 0]));
-            this._Dimensions[ 2] = dimensions[ 2].add(startRowIndexBigDecimal.multiply(this._Dimensions[ 0]));
-            this._Dimensions[ 3] = this._Dimensions[ 1].add(_NColsBigDecimal.multiply(this._Dimensions[ 0]));
-            this._Dimensions[ 4] = this._Dimensions[ 2].add(_NRowsBigDecimal.multiply(this._Dimensions[ 0]));
+            this._Dimensions[1] = dimensions[1].add(startColIndexBigDecimal.multiply(this._Dimensions[0]));
+            this._Dimensions[2] = dimensions[2].add(startRowIndexBigDecimal.multiply(this._Dimensions[0]));
+            this._Dimensions[3] = this._Dimensions[1].add(_NColsBigDecimal.multiply(this._Dimensions[0]));
+            this._Dimensions[4] = this._Dimensions[2].add(_NRowsBigDecimal.multiply(this._Dimensions[0]));
             this._GridStatistics = gridStatistics;
             // Set the reference to this in the Grid Statistics
             this._GridStatistics.init(this);
@@ -739,23 +739,23 @@ public class Grid2DSquareCellDouble
                                         a_ChunkID, handleOutOfMemoryError);
                                 chunkNCols = grid.getChunkNCols(
                                         a_ChunkID, handleOutOfMemoryError);
-                                for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex ++) {
-                                    for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex ++) {
+                                for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
+                                    for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
                                         try {
-                                          cellDouble = grid.getCellDouble(
-                                                gridChunk,
-                                                chunkRowIndex,
-                                                chunkColIndex,
+                                            cellDouble = grid.getCellDouble(
+                                                    gridChunk,
+                                                    chunkRowIndex,
+                                                    chunkColIndex,
+                                                    chunkCellRowIndex,
+                                                    chunkCellColIndex,
+                                                    handleOutOfMemoryError);
+                                        } catch (NullPointerException e) {
+                                            int debug = 1;
+                                            //e.getLocalizedMessage();
+                                        }
+                                        grid2DSquareCellDoubleChunk.setCell(
                                                 chunkCellRowIndex,
                                                 chunkCellColIndex,
-                                                handleOutOfMemoryError);
-                                        } catch (NullPointerException e) {
-                                               int debug = 1;
-                                               //e.getLocalizedMessage();
-                                                }
-                                        grid2DSquareCellDoubleChunk.setCell(
-                                                chunkCellRowIndex, 
-                                                chunkCellColIndex, 
                                                 cellDouble,
                                                 noDataValue,
                                                 handleOutOfMemoryError);
@@ -962,13 +962,13 @@ public class Grid2DSquareCellDouble
                     Object[] header = _ESRIAsciigridImporter.readHeaderObject();
                     //long inputNcols = ( Long ) header[ 0 ];
                     //long inputNrows = ( Long ) header[ 1 ];
-                    this._Dimensions[ 0] = (BigDecimal) header[ 4];
-                    this._Dimensions[ 1] = ((BigDecimal) header[ 2]).add(_Dimensions[ 0].multiply(new BigDecimal(startColIndex)));
-                    this._Dimensions[ 2] = ((BigDecimal) header[ 3]).add(_Dimensions[ 0].multiply(new BigDecimal(startRowIndex)));
-                    this._Dimensions[ 3] = this._Dimensions[ 1].add(new BigDecimal(Long.toString(this._NCols)).multiply(this._Dimensions[ 0]));
-                    this._Dimensions[ 4] = this._Dimensions[ 2].add(new BigDecimal(Long.toString(this._NRows)).multiply(this._Dimensions[ 0]));
+                    this._Dimensions[0] = (BigDecimal) header[4];
+                    this._Dimensions[1] = ((BigDecimal) header[2]).add(_Dimensions[0].multiply(new BigDecimal(startColIndex)));
+                    this._Dimensions[2] = ((BigDecimal) header[3]).add(_Dimensions[0].multiply(new BigDecimal(startRowIndex)));
+                    this._Dimensions[3] = this._Dimensions[1].add(new BigDecimal(Long.toString(this._NCols)).multiply(this._Dimensions[0]));
+                    this._Dimensions[4] = this._Dimensions[2].add(new BigDecimal(Long.toString(this._NRows)).multiply(this._Dimensions[0]));
                     init_Dimensions(_Dimensions);
-                    double gridFileNoDataValue = (Double) header[ 5];
+                    double gridFileNoDataValue = (Double) header[5];
                     int _ChunkRowIndex = Integer.MIN_VALUE;
                     int _ChunkColIndex = Integer.MIN_VALUE;
                     int cachedAndClearedChunkCount = 0;
@@ -1049,6 +1049,11 @@ public class Grid2DSquareCellDouble
                                                     col,
                                                     value,
                                                     handleOutOfMemoryError);
+
+//                                            if (value != 0.0d) {
+//                                                int debug = 1;
+//                                            }
+
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                                             if (handleOutOfMemoryError) {
@@ -1077,6 +1082,11 @@ public class Grid2DSquareCellDouble
                             for (row = (this._NRows - 1); row > -1; row--) {
                                 for (col = 0; col < this._NCols; col++) {
                                     value = _ESRIAsciigridImporter.readDouble();
+
+//                                    if (value != 0.0d) {
+//                                        int debug = 1;
+//                                    }
+
                                     do {
                                         try {
                                             initCellFast(
@@ -1115,6 +1125,10 @@ public class Grid2DSquareCellDouble
                             for (row = (this._NRows - 1); row > -1; row--) {
                                 for (col = 0; col < this._NCols; col++) {
                                     value = _ESRIAsciigridImporter.readDouble();
+
+//                                    if (value != 0.0d) {
+//                                        int debug = 1;
+//                                    }
                                     do {
                                         try {
                                             if (value != gridFileNoDataValue) {
@@ -1159,6 +1173,11 @@ public class Grid2DSquareCellDouble
                             for (row = (this._NRows - 1); row > -1; row--) {
                                 for (col = 0; col < this._NCols; col++) {
                                     value = _ESRIAsciigridImporter.readDouble();
+
+                                    if (value != 0.0d) {
+                                        int debug = 1;
+                                    }
+
                                     do {
                                         try {
                                             if (value != gridFileNoDataValue) {
@@ -2269,6 +2288,7 @@ public class Grid2DSquareCellDouble
 
     /**
      * Initialises the value at cellRowIndex, cellColIndex.
+     *
      * @param cellRowIndex
      * @param cellColIndex
      * @param valueToInitialise
@@ -2486,8 +2506,7 @@ public class Grid2DSquareCellDouble
     /**
      * @return double[] of all cell values for cells thats centroids are
      * intersected by circle with centre at centroid of cell given by cell row
-     * index cellRowIndex, cell column index cellColIndex, and radius
-     * distance.
+     * index cellRowIndex, cell column index cellColIndex, and radius distance.
      * @param cellRowIndex the row index for the cell that's centroid is the
      * circle centre from which cell values are returned.
      * @param cellColIndex the column index for the cell that's centroid is the
@@ -2544,8 +2563,7 @@ public class Grid2DSquareCellDouble
     /**
      * @return double[] of all cell values for cells thats centroids are
      * intersected by circle with centre at centroid of cell given by cell row
-     * index cellRowIndex, cell column index cellColIndex, and radius
-     * distance.
+     * index cellRowIndex, cell column index cellColIndex, and radius distance.
      * @param cellRowIndex the row index for the cell that's centroid is the
      * circle centre from which cell values are returned.
      * @param cellColIndex the column index for the cell that's centroid is the
@@ -2648,7 +2666,7 @@ public class Grid2DSquareCellDouble
             long cellColIndex,
             double distance) {
         double[] cells;
-        int cellDistance = (int) Math.ceil(distance / _Dimensions[ 0].doubleValue());
+        int cellDistance = (int) Math.ceil(distance / _Dimensions[0].doubleValue());
         cells = new double[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
         long row = Long.MIN_VALUE;
         long col = Long.MIN_VALUE;
@@ -2748,8 +2766,8 @@ public class Grid2DSquareCellDouble
     /**
      * @return the average of the nearest data values to position given by row
      * index rowIndex, column index colIndex.
-     * @param cellRowIndex The row index from which average of the nearest
-     * data values is returned.
+     * @param cellRowIndex The row index from which average of the nearest data
+     * values is returned.
      * @param cellColIndex The column index from which average of the nearest
      * data values is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -2793,8 +2811,8 @@ public class Grid2DSquareCellDouble
     }
 
     /**
-     * @param cellRowIndex The row index from which average of the nearest
-     * data values is returned.
+     * @param cellRowIndex The row index from which average of the nearest data
+     * values is returned.
      * @param cellColIndex The column index from which average of the nearest
      * data values is returned.
      * @return the average of the nearest data values to position given by row
@@ -2824,8 +2842,8 @@ public class Grid2DSquareCellDouble
      * column index colIndex
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param cellRowIndex the row index from which average of the nearest
-     * data values is returned
+     * @param cellRowIndex the row index from which average of the nearest data
+     * values is returned
      * @param cellColIndex the column index from which average of the nearest
      * data values is returned
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -2882,8 +2900,8 @@ public class Grid2DSquareCellDouble
      * column index colIndex
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param cellRowIndex the row index from which average of the nearest
-     * data values is returned
+     * @param cellRowIndex the row index from which average of the nearest data
+     * values is returned
      * @param cellColIndex the column index from which average of the nearest
      * data values is returned
      */
@@ -3100,7 +3118,7 @@ public class Grid2DSquareCellDouble
                     _NoDataValue);
         }
         CellID[] cellIDs = new CellID[1];
-        cellIDs[ 0] = getCellID(
+        cellIDs[0] = getCellID(
                 x,
                 y);
         return cellIDs;
@@ -3109,8 +3127,8 @@ public class Grid2DSquareCellDouble
     /**
      * @return a CellID[] - The CellIDs of the nearest cells with data values to
      * position given by row index rowIndex, column index colIndex.
-     * @param cellRowIndex The row index from which the cell IDs of the
-     * nearest cells with data values are returned.
+     * @param cellRowIndex The row index from which the cell IDs of the nearest
+     * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
      * nearest cells with data values are returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -3156,8 +3174,8 @@ public class Grid2DSquareCellDouble
     /**
      * @return a CellID[] - The CellIDs of the nearest cells with data values to
      * position given by row index rowIndex, column index colIndex.
-     * @param cellRowIndex The row index from which the cell IDs of the
-     * nearest cells with data values are returned.
+     * @param cellRowIndex The row index from which the cell IDs of the nearest
+     * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
      * nearest cells with data values are returned.
      */
@@ -3176,7 +3194,7 @@ public class Grid2DSquareCellDouble
                     _NoDataValue);
         }
         CellID[] cellIDs = new CellID[1];
-        cellIDs[ 0] = getCellID(
+        cellIDs[0] = getCellID(
                 cellRowIndex,
                 cellColIndex);
         return cellIDs;
@@ -3188,8 +3206,8 @@ public class Grid2DSquareCellDouble
      * and, cell row index _CellRowIndex, cell column index _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param cellRowIndex The row index from which the cell IDs of the
-     * nearest cells with data values are returned.
+     * @param cellRowIndex The row index from which the cell IDs of the nearest
+     * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
      * nearest cells with data values are returned.
      * @param _NoDataValue the no data value of the grid
@@ -3248,8 +3266,8 @@ public class Grid2DSquareCellDouble
      * and, cell row index _CellRowIndex, cell column index _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param cellRowIndex The row index from which the cell IDs of the
-     * nearest cells with data values are returned.
+     * @param cellRowIndex The row index from which the cell IDs of the nearest
+     * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
      * nearest cells with data values are returned.
      * @param _NoDataValue the no data value of the grid
@@ -3995,9 +4013,9 @@ public class Grid2DSquareCellDouble
     }
 
     /**
-     * 
+     *
      * @param value
-     * @param handleOutOfMemoryError 
+     * @param handleOutOfMemoryError
      */
     public void init_Cells(
             double value,
@@ -4022,8 +4040,8 @@ public class Grid2DSquareCellDouble
     }
 
     /**
-     * 
-     * @param value 
+     *
+     * @param value
      */
     protected void init_Cells(double value) {
         Iterator<ChunkID> a_Iterator = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.keySet().iterator();
@@ -4060,7 +4078,7 @@ public class Grid2DSquareCellDouble
     }
 
     /**
-     * @return A Grid2DSquareCellDoubleIterator for iterating over the cell 
+     * @return A Grid2DSquareCellDoubleIterator for iterating over the cell
      * values in this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
