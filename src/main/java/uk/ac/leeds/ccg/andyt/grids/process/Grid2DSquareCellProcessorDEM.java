@@ -2612,6 +2612,7 @@ public class Grid2DSquareCellProcessorDEM
                                     _Grids_Environment,
                                     handleOutOfMemoryError);
                         }
+                        metrics1[i].set_Name(_Metrics1Names[i], handleOutOfMemoryError);
                         _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(metrics1[i]);
                         isInitialised = true;
                     } catch (OutOfMemoryError _OutOfMemoryError0) {
@@ -3181,7 +3182,9 @@ public class Grid2DSquareCellProcessorDEM
 //                                        metrics1[i].getChunkRowIndex(cellRowIndex, handleOutOfMemoryError),
 //                                        metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
 //                                metrics1[i].swapToFile_Grid2DSquareCellChunk(aChunkID, handleOutOfMemoryError);
-                                metrics1[i].swapToFile_Grid2DSquareCellChunk(chunkID, handleOutOfMemoryError);
+                                for (i = _int_0; i < metrics1.length; i++) {
+                                     metrics1[i].swapToFile_Grid2DSquareCellChunk(chunkID, handleOutOfMemoryError);
+                                }
                             }
                         } catch (OutOfMemoryError _OutOfMemoryError) {
                             throw _OutOfMemoryError;
@@ -6800,12 +6803,8 @@ public class Grid2DSquareCellProcessorDEM
             //double noDataValue = Double.NaN;
             Grid2DSquareCellDouble[] _SlopeAndAspect = null;
             //Grid2DSquareCellDouble[] _SlopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
-            result[
-
-0] = _SlopeAndAspect[ 0];
-            result[
-
-1] = _SlopeAndAspect[ 1];
+            result[0] = _SlopeAndAspect[ 0];
+            result[1] = _SlopeAndAspect[ 1];
 
             for (int i = 0; i
                     < result.length; i++) {
@@ -6848,18 +6847,10 @@ public class Grid2DSquareCellProcessorDEM
 
             }
             result[ 2].set_Name("", handleOutOfMemoryError);
-            result[
-
-3].set_Name("", handleOutOfMemoryError);
-            result[
-
-4].set_Name("", handleOutOfMemoryError);
-            result[
-
-5].set_Name("", handleOutOfMemoryError);
-            result[
-
-6].set_Name("", handleOutOfMemoryError);
+            result[3].set_Name("", handleOutOfMemoryError);
+            result[4].set_Name("", handleOutOfMemoryError);
+            result[5].set_Name("", handleOutOfMemoryError);
+            result[6].set_Name("", handleOutOfMemoryError);
 
             return result;
 

@@ -602,7 +602,7 @@ public class GenerateRoofData
         _Grid2DSquareCellDouble.set_Name("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge + "_" + _ColStartRidge + "_" + _ColEndRidge, _HandleOutOfMemoryError);
         output(
                 _Grid2DSquareCellDouble,
-                this,
+                //this,
                 _Directory,
                 _ImageExporter,
                 _ImageTypes,
@@ -641,7 +641,7 @@ public class GenerateRoofData
         _Grid2DSquareCellDouble.set_Name("HippedColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge + "_" + _RowStartRidge + "_" + _RowEndRidge, _HandleOutOfMemoryError);
         output(
                 _Grid2DSquareCellDouble,
-                this,
+                //this,
                 _Directory,
                 _ImageExporter,
                 _ImageTypes,
@@ -783,7 +783,6 @@ public class GenerateRoofData
             _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(_AggregatedGrid2DSquareCellDouble);
             _AggregatedGrid2DSquareCellDouble.set_Name(_Grid2DSquareCellDouble.get_Name(_HandleOutOfMemoryError) + "ResizedRescaled", _HandleOutOfMemoryError);
             output(_AggregatedGrid2DSquareCellDouble,
-                    this,
                     _Directory,
                     _ImageExporter,
                     _ImageTypes,
@@ -857,7 +856,6 @@ public class GenerateRoofData
         _Grid2DSquareCellDouble.set_Name("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge, _HandleOutOfMemoryError);
         output(
                 _Grid2DSquareCellDouble,
-                this,
                 _Directory,
                 _ImageExporter,
                 _ImageTypes,
@@ -882,7 +880,6 @@ public class GenerateRoofData
         _Grid2DSquareCellDouble.set_Name("GableColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge, _HandleOutOfMemoryError);
         output(
                 _Grid2DSquareCellDouble,
-                this,
                 _Directory,
                 _ImageExporter,
                 _ImageTypes,

@@ -80,7 +80,7 @@ public class GenerateTestData extends Grid2DSquareCellProcessor implements Runna
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".asc" );
             new ESRIAsciiGridExporter().toAsciiFile( testData[i], file, _HandleOutOfMemoryError );
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".png" );
-            new ImageExporter().toGreyScaleImage( testData[i], this, file, "png", _HandleOutOfMemoryError );
+            new ImageExporter(_Grids_Environment).toGreyScaleImage( testData[i], this, file, "png", _HandleOutOfMemoryError );
         }
         System.out.println( "Processing complete in " + Utilities._ReportTime( System.currentTimeMillis() - time0 ) );
     }

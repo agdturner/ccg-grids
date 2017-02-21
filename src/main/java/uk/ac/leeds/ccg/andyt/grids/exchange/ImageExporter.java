@@ -18,6 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.exchange;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -30,6 +31,9 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellDoubleChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellIntChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellInt;
@@ -48,9 +52,9 @@ public class ImageExporter implements Serializable {
     /**
      * Creates a new instance of ImageExporter
      */
-    public ImageExporter() {
-        this._Grids_Environment = new Grids_Environment();
-    }
+    //public ImageExporter() {
+    //    this._Grids_Environment = new Grids_Environment();
+    //}
 
     /**
      * Creates a new instance of ImageExporter
@@ -182,397 +186,115 @@ public class ImageExporter implements Serializable {
             gridImageArray = new int[size];
             Arrays.fill(gridImageArray, 0);
         }
-        grid._Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+        _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
                 handleOutOfMemoryError);
         // If not already in the range 0 to 255, rescale grid into this range.
         Grid2DSquareCellDouble rescaledGrid = processor.rescale(
                 grid, null, 0.0d, 255.0d, handleOutOfMemoryError);
         int nChunkCols = rescaledGrid.get_NChunkCols(handleOutOfMemoryError);
+        double noDataValue = rescaledGrid.get_NoDataValue(handleOutOfMemoryError);
         int countNoDataValues = 0;
         int rescaledValue;
-
-        if (grid instanceof Grid2DSquareCellDouble) {
-            Grid2DSquareCellDouble gridDouble;
-            gridDouble = (Grid2DSquareCellDouble) grid;
-            double noDataValue = gridDouble.get_NoDataValue(handleOutOfMemoryError);
-            double value = noDataValue;
-            for (row = long_0; row < nrows; row++) {
-                //for ( row = nrows - 1; row > -1; row -- ) {
-                for (col = long_0; col < ncols; col++) {
-                    try {
-                        rescaledValue = (int) rescaledGrid.getCell(
-                                row,
-                                col,
-                                handleOutOfMemoryError);
-                        value = gridDouble.getCell(
-                                row,
-                                col,
-                                handleOutOfMemoryError);
-                    } catch (OutOfMemoryError e) {
-                        _Grids_Environment.clear_MemoryReserve();
-                        int chunkRowIndex = rescaledGrid.getChunkRowIndex(row, handleOutOfMemoryError);
-                        int chunkRColIndex = rescaledGrid.getChunkColIndex(row, handleOutOfMemoryError);
-                        ChunkID chunkID = new ChunkID(nChunkCols, chunkRowIndex, chunkRColIndex);
-                        _Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(grid, chunkID, handleOutOfMemoryError);
-                        rescaledValue = (int) rescaledGrid.getCell(
-                                row,
-                                col,
-                                handleOutOfMemoryError);
-                        _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
-                    }
-                    _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-                    //pos = ( int ) ( ( row * ncols ) + col );
-                    pos = (int) ((((nrows - 1) - row) * ncols) + col);
-                    // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-                    // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-                    // class.
-                    // Set noDataValue as blue
-                    if (rescaledValue == noDataValue) {
-                        //gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | iValue;
-                        //gridImageValue = (255 << 24) | iValue;
-                        gridImageValue = (255 << 24) | 255;
-                        //gridImageArray[pos] = gridImageValue;
-                        gridImageArray[pos] = gridImageValue;
-                        countNoDataValues++;
-                    } else {
-                        if (rescaledValue > 255) {
-                            rescaledValue = 255;
-                        } else {
-                            if (rescaledValue < 0) {
-                                rescaledValue = 0;
-                            }
-                        }
-
-                        // debug
-                        if (value != 0.0d) {
-                            int debug = 1;
-                        }
-
-                        gridImageValue = (255 << 24) | (rescaledValue << 16) | (rescaledValue << 8) | rescaledValue;
-//                        gridImageValue = rescaledValue
-//                        gridImageValue = (rescaledValue << 24) | (rescaledValue << 16) | (rescaledValue << 8) | rescaledValue;
-                        gridImageArray[pos] = gridImageValue;
-                    }
-                }
-            }
-            System.out.println("Number of NoDataValues " + countNoDataValues);
-        } else {
-            if (grid instanceof Grid2DSquareCellInt) {
-                Grid2DSquareCellInt gridInt;
-                gridInt = (Grid2DSquareCellInt) grid;
-                int noDataValue = gridInt.getNoDataValue(handleOutOfMemoryError);
-                int value = noDataValue;
-                for (row = long_0; row < nrows; row++) {
-                    //for ( row = nrows - 1; row > -1; row -- ) {
-                    for (col = long_0; col < ncols; col++) {
-                        try {
-                            rescaledValue = (int) rescaledGrid.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                            value = gridInt.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                        } catch (OutOfMemoryError e) {
-                            _Grids_Environment.clear_MemoryReserve();
-                            int chunkRowIndex = rescaledGrid.getChunkRowIndex(row, handleOutOfMemoryError);
-                            int chunkRColIndex = rescaledGrid.getChunkColIndex(row, handleOutOfMemoryError);
-                            ChunkID chunkID = new ChunkID(nChunkCols, chunkRowIndex, chunkRColIndex);
-                            _Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(grid, chunkID, handleOutOfMemoryError);
-                            rescaledValue = (int) rescaledGrid.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                            _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
-                        }
-                        _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-                        //pos = ( int ) ( ( row * ncols ) + col );
-                        pos = (int) ((((nrows - 1) - row) * ncols) + col);
-                        // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-                        // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-                        // class.
-                        // Set noDataValue as blue
-                        if (rescaledValue == noDataValue) {
-                            //gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | iValue;
-                            //gridImageValue = (255 << 24) | iValue;
-                            gridImageValue = (255 << 24) | 255;
-                            //gridImageArray[pos] = gridImageValue;
-                            gridImageArray[pos] = gridImageValue;
-                            countNoDataValues++;
-                        } else {
-                            if (rescaledValue > 255) {
-                                rescaledValue = 255;
-                            } else {
-                                if (rescaledValue < 0) {
-                                    rescaledValue = 0;
-                                }
-                            }
-                            gridImageValue = (255 << 24) | (rescaledValue << 16) | (rescaledValue << 8) | rescaledValue;
-//                        gridImageValue = rescaledValue
-//                            gridImageValue = (255 << 24) | (255 << 16) | (255 << 8) | 255; //white
-//                          gridImageValue = (rescaledValue << 24) | (rescaledValue << 16) | (rescaledValue << 8) | rescaledValue;
-//                          //gridImageValue = (255 << 24) | (rescaledValue << 16) | (rescaledValue << 8) | rescaledValue;
-                            gridImageArray[pos] = gridImageValue;
-                        }
-                    }
-                }
-
-            }
-        }
-//            
-//            Grid2DSquareCellInt gridInt = (Grid2DSquareCellInt) grid;
-//            int noDataValue = gridInt.getNoDataValue(handleOutOfMemoryError);
-//            BigDecimal maxBigDecimal = gridInt.getGridStatistics(
-//                    handleOutOfMemoryError).getMaxBigDecimal(handleOutOfMemoryError);
-//            BigDecimal minBigDecimal = gridInt.getGridStatistics(
-//                    handleOutOfMemoryError).getMinBigDecimal(handleOutOfMemoryError);
-//            BigDecimal rangeBigDecimal = maxBigDecimal.subtract(minBigDecimal);
-//            //int max = _Grid2DSquareCellInt.getGridStatistics().getMaxInt( handleOutOfMemoryError );
-//            //int min = _Grid2DSquareCellInt.getGridStatistics().getMinInt( handleOutOfMemoryError );
-//            int value = Integer.MIN_VALUE;
-//            for (row = long_0; row < nrows; row++) {
-//                //for ( row = nrows - 1; row > -1; row -- ) {
-//                for (col = long_0; col < ncols; col++) {
-//                    try {
-//                        value = gridInt.getCell(
-//                                row,
-//                                col,
+        ChunkID chunkID;
+        Color pixel;
+        int chunkRowIndex;
+        int chunkColIndex;
+//        boolean inGrid;
+//        int chunkCellRowIndex;
+//        int chunkCellColIndex;
+//        AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellChunk;
+//        int chunkNrows = gridDouble.get_ChunkNRows(handleOutOfMemoryError);
+//        int chunkNcols = gridDouble.get_ChunkNCols(handleOutOfMemoryError);
+//        for (chunkRowIndex = 0; chunkRowIndex < chunkNrows; chunkRowIndex++) {
+//            for (chunkColIndex = 0; chunkColIndex < chunkNcols; chunkColIndex++) {
+//                chunkID = new ChunkID(
+//                        nChunkCols, chunkRowIndex, chunkColIndex);
+////                int chunkNCols = grid.get_ChunkNCols(
+////                        chunkColIndex, handleOutOfMemoryError, chunkID);
+////                int chunkNRows = grid.get_ChunkNRows(
+////                        chunkRowIndex, handleOutOfMemoryError);
+//                grid2DSquareCellChunk = rescaledGrid.getGrid2DSquareCellDoubleChunk(
+//                        chunkID, handleOutOfMemoryError);
+//                for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
+//                    row = chunkRowIndex * chunkNrows + chunkCellRowIndex;
+//                    for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
+//                        col = chunkColIndex * chunkNcols + chunkCellColIndex;
+//                        inGrid = gridDouble.isInGrid(
+//                                chunkRowIndex,
+//                                chunkColIndex,
+//                                chunkCellRowIndex,
+//                                chunkCellColIndex,
 //                                handleOutOfMemoryError);
-//                        //pos = ( int ) ( ( row * ncols ) + col );
-//                        pos = (int) ((((nrows - 1) - row) * ncols) + col);
-//                        // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-//                        // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-//                        // class.
-//                        iValue = 255;
-//                        // Set noDataValue as blue
-//                        if (value == noDataValue) {
-//                            //gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | iValue;
-//                            gridImageValue = (255 << 24) | iValue;
-//                            gridImageArray[pos] = gridImageValue;
-//                            countNoDataValues++;
-//                        } else {
-//                            valueBigDecimal = new BigDecimal(String.valueOf(value));
-//                            if (maxBigDecimal.compareTo(minBigDecimal) != 0) {
-//                                //if ( max != min ) {
-//                                // The imprecision in the following calculation may cause problems, if more presision is need then a greater scale can be set.
-//                                //iValueBigDecimal = aBigDecimal255.multiply( ( valueBigDecimal.subtract( minBigDecimal ) ) ).divide( rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP );
-//                                iValueBigDecimal = bigDecimal_255.multiply((valueBigDecimal.subtract(minBigDecimal))).divide(rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP);
-//                                //iValueDouble = 255.0d * ( ( ( double ) value - min ) / ( double ) ( max - min ) );
-//                                // The imprecision in the following integerisation may cause problems
-//                                iValue = iValueBigDecimal.intValue();
-//
-//                                //DEBUG if this does happen, iValue should be very close to 255 or 0
-//                                if (iValue > 255) {
-//                                    iValue = 255;
+//                        if (inGrid) {
+//                            rescaledValue = (int) rescaledGrid.getCell(
+//                                    grid2DSquareCellChunk,
+//                                    chunkRowIndex,
+//                                    chunkColIndex,
+//                                    chunkCellRowIndex,
+//                                    chunkCellColIndex,
+//                                    handleOutOfMemoryError);
+//                            pos = (int) ((((nrows - 1) - row) * ncols) + col);
+//                            if (rescaledValue == noDataValue) {
+//                                // Set noDataValue as blue
+//                                pixel = new Color(0, 0, 255);
+//                                countNoDataValues++;
+//                            } else {
+//                                if (rescaledValue > 255) {
+//                                    rescaledValue = 255;
 //                                } else {
-//                                    if (iValue < 0) {
-//                                        iValue = 0;
+//                                    if (rescaledValue < 0) {
+//                                        rescaledValue = 0;
 //                                    }
 //                                }
-//
-//                                //gridImageValue = ( iValue << 24 ) | ( iValue << 16 ) | ( iValue << 8 ) | iValue;
-//                                gridImageValue = (255 << 24) | (iValue << 16) | (iValue << 8) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( iValue << 8 ) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( 255 << 8 ) | iValue;
-//                                gridImageArray[pos] = gridImageValue;
-//                            } else {
-//                                // Set white
-//                                gridImageValue = (255 << 24) | (255 << 16) | (255 << 8) | 255;
-//                                gridImageArray[pos] = gridImageValue;
+//                                pixel = new Color(rescaledValue, rescaledValue, rescaledValue);
 //                            }
-//                        }
-//                    } catch (OutOfMemoryError a_OutOfMemoryError) {
-//                        _Grids_Environment.clear_MemoryReserve();
-//                        if (_Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(handleOutOfMemoryError) < 1L) {
-//                            throw a_OutOfMemoryError;
-//                        }
-//
-//                        System.out.println("countNoDataValues is unreliable");
-//
-//                        _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
-//                        value = gridInt.getCell(
-//                                row,
-//                                col,
-//                                handleOutOfMemoryError);
-//                        //pos = ( int ) ( ( row * ncols ) + col );
-//                        pos = (int) ((((nrows - 1) - row) * ncols) + col);
-//                        // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-//                        // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-//                        // class.
-//                        iValue = 255;
-//                        // Set noDataValue as blue
-//                        if (value == noDataValue) {
-//                            //gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | iValue;
-//                            gridImageValue = (255 << 24) | iValue;
-//                            gridImageArray[pos] = gridImageValue;
-//                            countNoDataValues++;
-//                        } else {
-//                            valueBigDecimal = new BigDecimal(String.valueOf(value));
-//                            if (maxBigDecimal.compareTo(minBigDecimal) != 0) {
-//                                //if ( max != min ) {
-//                                // The imprecision in the following calculation may cause problems, if more presision is need then a greater scale can be set.
-//                                //iValueBigDecimal = aBigDecimal255.multiply( ( valueBigDecimal.subtract( minBigDecimal ) ) ).divide( rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP );
-//                                iValueBigDecimal = bigDecimal_255.multiply((valueBigDecimal.subtract(minBigDecimal))).divide(rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP);
-//                                //iValueDouble = 255.0d * ( ( ( double ) value - min ) / ( double ) ( max - min ) );
-//                                // The imprecision in the following integerisation may cause problems
-//                                iValue = iValueBigDecimal.intValue();
-//
-//                                //DEBUG if this does happen, iValue should be very close to 255 or 0
-//                                if (iValue > 255) {
-//                                    iValue = 255;
-//                                } else {
-//                                    if (iValue < 0) {
-//                                        iValue = 0;
-//                                    }
-//                                }
-//
-//                                //gridImageValue = ( iValue << 24 ) | ( iValue << 16 ) | ( iValue << 8 ) | iValue;
-//                                gridImageValue = (255 << 24) | (iValue << 16) | (iValue << 8) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( iValue << 8 ) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( 255 << 8 ) | iValue;
-//                                gridImageArray[pos] = gridImageValue;
-//                            } else {
-//                                // Set white
-//                                gridImageValue = (255 << 24) | (255 << 16) | (255 << 8) | 255;
-//                                gridImageArray[pos] = gridImageValue;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//
-//            System.out.println("Output Grid2DSquareCellDouble");
-//
-//            //_Grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class
-//            Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grid2DSquareCellDouble) grid;
-//            double noDataValue = _Grid2DSquareCellDouble.get_NoDataValue(
-//                    handleOutOfMemoryError);
-////                  if (  Double.isInfinite( noDataValue ) ) {
-////                    System.out.println(
-////                            "Warning!!! noDataValue = " + noDataValue +
-////                            " in ESRIAsciigridExporter.toGreyScaleImage( AbstractGrid2DSquareCell( " +
-////                            _Grid2DSquareCellDouble.toString( handleOutOfMemoryError ) + " ), File( " +
-////                            file.toString() + " ) )" );
-////                }
-//            BigDecimal maxBigDecimal = _Grid2DSquareCellDouble.getGridStatistics(
-//                    handleOutOfMemoryError).getMaxBigDecimal(handleOutOfMemoryError);
-//            BigDecimal minBigDecimal = _Grid2DSquareCellDouble.getGridStatistics(
-//                    handleOutOfMemoryError).getMinBigDecimal(handleOutOfMemoryError);
-//            BigDecimal rangeBigDecimal = maxBigDecimal.subtract(minBigDecimal);
-//            // Read all data into an array and scale all values into the range [ 0, 255 ]
-//            double value = Double.MIN_VALUE;
-//            for (row = long_0; row < nrows; row++) {
-//                //for ( row = nrows - 1; row > -1; row -- ) {
-//                for (col = long_0; col < ncols; col++) {
-//                    try {
-//                        value = _Grid2DSquareCellDouble.getCell(
-//                                row,
-//                                col,
-//                                handleOutOfMemoryError);
-//                        //pos = ( int ) ( ( row * ncols ) + col );
-//                        pos = (int) ((((nrows - 1) - row) * ncols) + col);
-//                        // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-//                        // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-//                        // class.
-//                        iValue = 255;
-//                        // Set noDataValue as blue
-//                        if (value == noDataValue) {
-////                            gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | 255;
-//                            gridImageValue = (255 << 24) | 255;
-//                            gridImageArray[pos] = gridImageValue;
-//                            countNoDataValues++;
-//                        } else {
-//                            valueBigDecimal = new BigDecimal(String.valueOf(value));
-//                            if (maxBigDecimal.compareTo(minBigDecimal) != 0) {
-//                                //if ( max != min ) {
-//                                // The imprecision in the following calculation may cause problems, if more presision is need then a greater scale can be set.
-//                                //iValueBigDecimal = aBigDecimal255.multiply( ( valueBigDecimal.subtract( minBigDecimal ) ) ).divide( rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP );
-//                                iValueBigDecimal = bigDecimal_255.multiply((valueBigDecimal.subtract(minBigDecimal)).divide(rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP));
-//                                //iValueDouble = 255.0d * ( ( ( double ) value - min ) / ( double ) ( max - min ) );
-//                                iValue = iValueBigDecimal.intValue();
-//
-//                                //DEBUG if this does happen, iValue should be very close to 255 or 0
-//                                if (iValue > 255) {
-//                                    iValue = 255;
-//                                } else {
-//                                    if (iValue < 0) {
-//                                        iValue = 0;
-//                                    }
-//                                }
-//
-//                                //gridImageValue = ( iValue << 24 ) | ( iValue << 16 ) | ( iValue << 8 ) | iValue;
-//                                gridImageValue = (255 << 24) | (iValue << 16) | (iValue << 8) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( iValue << 8 ) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( 255 << 8 ) | iValue;
-//                                gridImageArray[pos] = gridImageValue;
-//                            } else {
-//                                // Set white
-//                                gridImageValue = (255 << 24) | (255 << 16) | (255 << 8) | 255;
-//                                gridImageArray[pos] = gridImageValue;
-//                            }
-//                        }
-//                    } catch (OutOfMemoryError a_OutOfMemoryError) {
-//                        _Grids_Environment.clear_MemoryReserve();
-//                        if (_Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(handleOutOfMemoryError) < 1L) {
-//                            throw a_OutOfMemoryError;
-//                        }
-//
-//                        System.out.println("countNoDataValues is unreliable");
-//
-//                        _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
-//                        //_Grid2DSquareCell.init_MemoryReserve( _Grid2DSquareCell.handleOutOfMemoryErrorTrue ); Moved to after retry
-//                        value = _Grid2DSquareCellDouble.getCell(
-//                                row,
-//                                col,
-//                                handleOutOfMemoryError);
-//                        //pos = ( int ) ( ( row * ncols ) + col );
-//                        pos = (int) ((((nrows - 1) - row) * ncols) + col);
-//                        // Construct an RGB integer by byte operation : 32 bytes, first 8 bytes is transparency value
-//                        // second, third, forth 8 byte is Red, green, blue value, which will be used by MemoryImageSource
-//                        // class.
-//                        iValue = 255;
-//                        // Set noDataValue as blue
-//                        if (value == noDataValue) {
-////                            gridImageValue = (255 << 24) | (0 << 16) | (0 << 8) | 255;
-//                            gridImageValue = (255 << 24) | 255;
-//                            gridImageArray[pos] = gridImageValue;
-//                            countNoDataValues++;
-//                        } else {
-//                            valueBigDecimal = new BigDecimal(String.valueOf(value));
-//                            if (maxBigDecimal.compareTo(minBigDecimal) != 0) {
-//                                //if ( max != min ) {
-//                                // The imprecision in the following calculation may cause problems, if more presision is need then a greater scale can be set.
-//                                //iValueBigDecimal = aBigDecimal255.multiply( ( valueBigDecimal.subtract( minBigDecimal ) ) ).divide( rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP );
-//                                iValueBigDecimal = bigDecimal_255.multiply((valueBigDecimal.subtract(minBigDecimal)).divide(rangeBigDecimal, scale, BigDecimal.ROUND_HALF_UP));
-//                                //iValueDouble = 255.0d * ( ( ( double ) value - min ) / ( double ) ( max - min ) );
-//                                iValue = iValueBigDecimal.intValue();
-//
-//                                //DEBUG if this does happen, iValue should be very close to 255 or 0
-//                                if (iValue > 255) {
-//                                    iValue = 255;
-//                                } else {
-//                                    if (iValue < 0) {
-//                                        iValue = 0;
-//                                    }
-//                                }
-//
-//                                //gridImageValue = ( iValue << 24 ) | ( iValue << 16 ) | ( iValue << 8 ) | iValue;
-//                                gridImageValue = (255 << 24) | (iValue << 16) | (iValue << 8) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( iValue << 8 ) | iValue;
-//                                //gridImageValue = ( 255 << 24 ) | ( 255 << 16 ) | ( 255 << 8 ) | iValue;
-//                                gridImageArray[pos] = gridImageValue;
-//                            } else {
-//                                // Set white
-//                                gridImageValue = (255 << 24) | (255 << 16) | (255 << 8) | 255;
-//                                gridImageArray[pos] = gridImageValue;
-//                            }
+//                            gridImageArray[pos] = pixel.getRGB();
 //                        }
 //                    }
 //                }
 //            }
 //        }
+        for (row = long_0; row < nrows; row++) {
+            //for ( row = nrows - 1; row > -1; row -- ) {
+            for (col = long_0; col < ncols; col++) {
+                try {
+                    rescaledValue = (int) rescaledGrid.getCell(
+                            row,
+                            col,
+                            handleOutOfMemoryError);
+                } catch (OutOfMemoryError e) {
+                    _Grids_Environment.clear_MemoryReserve();
+                    chunkRowIndex = rescaledGrid.getChunkRowIndex(row, handleOutOfMemoryError);
+                    chunkColIndex = rescaledGrid.getChunkColIndex(col, handleOutOfMemoryError);
+                    chunkID = new ChunkID(nChunkCols, chunkRowIndex, chunkColIndex);
+                    _Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                            grid, chunkID, handleOutOfMemoryError);
+                    rescaledValue = (int) rescaledGrid.getCell(
+                            row,
+                            col,
+                            handleOutOfMemoryError);
+                    _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                }
+                _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                pos = (int) ((((nrows - 1) - row) * ncols) + col);
+                if (rescaledValue == noDataValue) {
+                    // Set noDataValue as blue
+                    pixel = new Color(0, 0, 255);
+                    countNoDataValues++;
+                } else {
+                    if (rescaledValue > 255) {
+                        rescaledValue = 255;
+                    } else {
+                        if (rescaledValue < 0) {
+                            rescaledValue = 0;
+                        }
+                    }
+                    pixel = new Color(rescaledValue, rescaledValue, rescaledValue);
+                }
+                gridImageArray[pos] = pixel.getRGB();
+            }
+        }
+        System.out.println("Number of NoDataValues " + countNoDataValues);
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
         }
@@ -605,6 +327,7 @@ public class ImageExporter implements Serializable {
             g.dispose();
             gridImage.flush();
             tempImage.flush();
+            rescaledGrid = null;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             try {
                 _Grids_Environment.clear_MemoryReserve();
@@ -618,13 +341,21 @@ public class ImageExporter implements Serializable {
                         gridImageArray,
                         0,
                         (int) ncols);
+                _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+                handleOutOfMemoryError);
                 Image tempImage = Toolkit.getDefaultToolkit().createImage(gridImageSource);
+                 _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+                handleOutOfMemoryError);
                 BufferedImage gridImage = new BufferedImage(
                         (int) ncols,
                         (int) nrows,
                         BufferedImage.TYPE_INT_RGB);
-                Graphics2D g = (Graphics2D) gridImage.getGraphics();
-                g.drawImage(tempImage, 0, 0, new java.awt.Panel());
+                 _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+                handleOutOfMemoryError);
+                 Graphics2D g = (Graphics2D) gridImage.getGraphics();
+                 _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+                handleOutOfMemoryError);
+                 g.drawImage(tempImage, 0, 0, new java.awt.Panel());
                 try {
                     javax.imageio.ImageIO.write(gridImage, type, file);
                 } catch (java.io.IOException e1) {

@@ -532,7 +532,7 @@ public class Grid2DSquareCellDouble
                     isLoadedChunk = false;
                     //loadedChunkCount++;
                 }
-                println = "Done chunkRow " + chunkRowIndex;
+                println = "Done chunkRow " + chunkRowIndex + " out of " + this._NChunkRows;
                 println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
             }
             this._Grids_Environment._AbstractGrid2DSquareCell_HashSet.add(this);
@@ -712,7 +712,7 @@ public class Grid2DSquareCellDouble
                         //loadedChunkCount++;
                         //cci1 = _ChunkColIndex;
                     }
-                    println = "Done chunkRow " + chunkRowIndex;
+                    println = "Done chunkRow " + chunkRowIndex + " out of " + this._NChunkRows;
                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
                 }
             } else {
@@ -806,7 +806,7 @@ public class Grid2DSquareCellDouble
                         //loadedChunkCount++;
                         //cci1 = _ChunkColIndex;
                     }
-                    println = "Done chunkRow " + chunkRowIndex;
+                    println = "Done chunkRow " + chunkRowIndex + " out of " + this._NChunkRows;
                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
                 }
             }
@@ -887,6 +887,9 @@ public class Grid2DSquareCellDouble
             this._Directory = directory;
             String println0 = _Grids_Environment.initString(1000, Grids_Environment.HandleOutOfMemoryErrorFalse);
             String println = _Grids_Environment.initString(1000, Grids_Environment.HandleOutOfMemoryErrorFalse);
+            // Set to report every 10%
+            int reportN;
+            reportN = (int) (endRowIndex - startRowIndex) / 10;
             if (gridFile.isDirectory()) {
                 /* Initialise from
                  * new File(
@@ -1032,7 +1035,7 @@ public class Grid2DSquareCellDouble
                             loadedChunkCount++;
                             cci1 = _ChunkColIndex;
                         }
-                        System.out.println("Done chunkRow " + _ChunkRowIndex);
+                        System.out.println("Done chunkRow " + _ChunkRowIndex + " out of " + this._NChunkRows);
                     }
                     System.out.println("First stage of initialisation complete. Reading data into initialised Chunks");
 
@@ -1073,7 +1076,7 @@ public class Grid2DSquareCellDouble
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     System.out.println("Done row " + row);
                                 }
                             }
@@ -1115,7 +1118,7 @@ public class Grid2DSquareCellDouble
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     System.out.println("Done row " + row);
                                 }
                             }
@@ -1164,7 +1167,7 @@ public class Grid2DSquareCellDouble
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     System.out.println("Done row " + row);
                                 }
                             }
@@ -1213,7 +1216,7 @@ public class Grid2DSquareCellDouble
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     println = "Done row " + row;
                                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
                                 }

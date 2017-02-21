@@ -1126,6 +1126,8 @@ public class Grid2DSquareCellInt
                     long row = Long.MIN_VALUE;
                     long col = Long.MIN_VALUE;
                     boolean isInitCellDone = false;
+                    int reportN;
+            reportN = (int) (endRowIndex - startRowIndex) / 10;
                     //ChunkID nextChunkToSwap = new ChunkID(
                     //        this._NChunkCols,
                     //        0,
@@ -1213,7 +1215,7 @@ public class Grid2DSquareCellInt
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     println = null;
                                     println = "Done row " + row;
                                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
@@ -1249,7 +1251,7 @@ public class Grid2DSquareCellInt
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     println = null;
                                     println = "Done row " + row;
                                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
@@ -1294,7 +1296,7 @@ public class Grid2DSquareCellInt
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     println = null;
                                     println = "Done row " + row;
                                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);
@@ -1337,7 +1339,7 @@ public class Grid2DSquareCellInt
                                     } while (!isInitCellDone);
                                     isInitCellDone = false;
                                 }
-                                if (row % 64 == 0) {
+                                if (row % reportN == 0) {
                                     println = null;
                                     println = "Done row " + row;
                                     println = _Grids_Environment.println(println, println0, handleOutOfMemoryError);

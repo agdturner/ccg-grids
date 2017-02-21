@@ -696,7 +696,7 @@ public abstract class AbstractGrid2DSquareCell
             String _Name,
             boolean handleOutOfMemoryError) {
         try {
-            setName(_Name);
+            set_Name(_Name);
             _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
@@ -705,7 +705,7 @@ public abstract class AbstractGrid2DSquareCell
                     throw a_OutOfMemoryError;
                 }
                 _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
-                set_Name(
+                AbstractGrid2DSquareCell.this.set_Name(
                         _Name,
                         handleOutOfMemoryError);
             } else {
@@ -719,7 +719,7 @@ public abstract class AbstractGrid2DSquareCell
      *
      * @param _Name The String this._Name is set to.
      */
-    protected void setName(String _Name) {
+    protected void set_Name(String _Name) {
         this._Name = _Name;
     }
 
@@ -5934,8 +5934,8 @@ public abstract class AbstractGrid2DSquareCell
             int chunkCellRowIndex,
             int chunkCellColIndex) {
         return isInGrid(
-                ((long) _ChunkRowIndex * (long) this._ChunkNCols) + (long) chunkCellRowIndex,
-                ((long) _ChunkColIndex * (long) this._ChunkNRows) + (long) chunkCellColIndex);
+                ((long) _ChunkRowIndex * (long) this._ChunkNRows) + (long) chunkCellRowIndex,
+                ((long) _ChunkColIndex * (long) this._ChunkNCols) + (long) chunkCellColIndex);
     }
 
     /**
