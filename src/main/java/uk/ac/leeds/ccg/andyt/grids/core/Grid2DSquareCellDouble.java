@@ -617,6 +617,12 @@ public class Grid2DSquareCellDouble
             //this._AbstractGrid2DSquareCell_HashSet = _AbstractGrid2DSquareCell_HashSet;
             this._Name = directory.getName();
             BigDecimal[] dimensions = grid.get_Dimensions(handleOutOfMemoryError);
+            double gridNoDataValue = noDataValue;
+            if (grid instanceof Grid2DSquareCellDouble) {
+                gridNoDataValue = ((Grid2DSquareCellDouble) grid).get_NoDataValue(handleOutOfMemoryError);
+            } else if (grid instanceof Grid2DSquareCellInt) {
+                gridNoDataValue = ((Grid2DSquareCellInt) grid)._NoDataValue;
+            }
             this._Dimensions = new BigDecimal[dimensions.length];
             init_NChunkRows();
             init_NChunkCols();
@@ -680,10 +686,17 @@ public class Grid2DSquareCellDouble
                                         cellDouble = grid.getCellDouble(
                                                 row + startRowIndex,
                                                 col + startColIndex);
-                                        initCell(
-                                                row,
-                                                col,
-                                                cellDouble);
+                                        if (cellDouble == gridNoDataValue) {
+                                            initCell(
+                                                    row,
+                                                    col,
+                                                    noDataValue);
+                                        } else {
+                                            initCell(
+                                                    row,
+                                                    col,
+                                                    cellDouble);
+                                        }
                                         col++;
                                     }
                                     row++;
@@ -749,16 +762,16 @@ public class Grid2DSquareCellDouble
                                                     chunkCellRowIndex,
                                                     chunkCellColIndex,
                                                     handleOutOfMemoryError);
+                                            grid2DSquareCellDoubleChunk.setCell(
+                                                    chunkCellRowIndex,
+                                                    chunkCellColIndex,
+                                                    cellDouble,
+                                                    noDataValue,
+                                                    handleOutOfMemoryError);
                                         } catch (NullPointerException e) {
                                             int debug = 1;
                                             //e.getLocalizedMessage();
                                         }
-                                        grid2DSquareCellDoubleChunk.setCell(
-                                                chunkCellRowIndex,
-                                                chunkCellColIndex,
-                                                cellDouble,
-                                                noDataValue,
-                                                handleOutOfMemoryError);
                                     }
                                 }
 //                                row = ((long) chunkRowIndex * (long) this._ChunkNRows);
@@ -1056,7 +1069,6 @@ public class Grid2DSquareCellDouble
 //                                            if (value != 0.0d) {
 //                                                int debug = 1;
 //                                            }
-
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                                             if (handleOutOfMemoryError) {
@@ -1089,7 +1101,6 @@ public class Grid2DSquareCellDouble
 //                                    if (value != 0.0d) {
 //                                        int debug = 1;
 //                                    }
-
                                     do {
                                         try {
                                             initCellFast(
