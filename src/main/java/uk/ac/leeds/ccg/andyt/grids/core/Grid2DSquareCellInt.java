@@ -42,6 +42,8 @@ public class Grid2DSquareCellInt
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    protected int _NoDataValue = Integer.MIN_VALUE;
 
     /**
      * Creates a new Grid2DSquareCellInt
@@ -729,6 +731,9 @@ public class Grid2DSquareCellInt
                     //( _Grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class )
                     Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grid2DSquareCellDouble) _Grid2DSquareCell;
                     double _Grid2DSquareCellNoDataValue = _Grid2DSquareCellDouble._NoDataValue; //getNoDataValue( handleOutOfMemoryError );
+                    if (_Grid2DSquareCellNoDataValue == (int) _Grid2DSquareCellNoDataValue) {
+                        this._NoDataValue = (int) _Grid2DSquareCellNoDataValue;
+                    }
                     double _Grid2DSquareCellValue;
                     for (_ChunkRowIndex = _intZero; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex++) {
                         for (_ChunkColIndex = _intZero; _ChunkColIndex < _NChunkCols; _ChunkColIndex++) {
@@ -771,7 +776,7 @@ public class Grid2DSquareCellInt
                                                 initCell(
                                                         row,
                                                         col,
-                                                        Integer.MIN_VALUE);
+                                                        _NoDataValue);
                                             }
                                             col++;
                                         }
@@ -809,6 +814,7 @@ public class Grid2DSquareCellInt
                 // initCell(long,long,int).
                 if ((_Grid2DSquareCell.getClass() == Grid2DSquareCellInt.class)
                         || (((int) _Grid2DSquareCell.getNoDataValueBigDecimal(handleOutOfMemoryError).intValue()) == Integer.MIN_VALUE)) {
+                    this._NoDataValue = ((Grid2DSquareCellInt) _Grid2DSquareCell)._NoDataValue;
                     for (_ChunkRowIndex = _intZero; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex++) {
                         for (_ChunkColIndex = _intZero; _ChunkColIndex < _NChunkCols; _ChunkColIndex++) {
                             do {
@@ -872,6 +878,9 @@ public class Grid2DSquareCellInt
                     //( _Grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class )
                     Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grid2DSquareCellDouble) _Grid2DSquareCell;
                     double _Grid2DSquareCellNoDataValue = _Grid2DSquareCellDouble._NoDataValue; //getNoDataValue( handleOutOfMemoryError );
+                    if (_Grid2DSquareCellNoDataValue == (int) _Grid2DSquareCellNoDataValue) {
+                        this._NoDataValue = (int) _Grid2DSquareCellNoDataValue;
+                    }
                     double _Grid2DSquareCellValue;
                     for (_ChunkRowIndex = _intZero; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex++) {
                         for (_ChunkColIndex = _intZero; _ChunkColIndex < _NChunkCols; _ChunkColIndex++) {
@@ -914,7 +923,7 @@ public class Grid2DSquareCellInt
                                                 initCellFast(
                                                         row,
                                                         col,
-                                                        Integer.MIN_VALUE);
+                                                        this._NoDataValue);
                                             }
                                             col++;
                                         }
