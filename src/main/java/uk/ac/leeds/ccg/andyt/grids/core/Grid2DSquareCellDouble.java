@@ -2319,6 +2319,7 @@ public class Grid2DSquareCellDouble
                     valueToInitialise);
             // Update Statistics
             if (valueToInitialise != _NoDataValue) {
+                try {
                 BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);
                 this._GridStatistics.nonNoDataValueCountBigInteger
                         = this._GridStatistics.nonNoDataValueCountBigInteger.add(BigInteger.ONE);
@@ -2340,6 +2341,12 @@ public class Grid2DSquareCellDouble
                         this._GridStatistics.maxCountBigInteger
                                 = this._GridStatistics.maxCountBigInteger.add(BigInteger.ONE);
                     }
+                }
+                } catch (NumberFormatException e) {
+                    chunk.initCell(
+                    (int) (cellRowIndex - ((long) chunkRowIndex * (long) _ChunkNRows)),
+                    (int) (cellColIndex - ((long) chunkColIndex * (long) _ChunkNCols)),
+                    _NoDataValue);
                 }
             }
         }
