@@ -222,35 +222,38 @@ public abstract class AbstractGridStatistics
 //                            col,
 //                            handleOutOfMemoryError );
                     if (cellDouble != noDataValueDouble) {
-
-                        // Debug
-                        if (cellDouble == Double.NEGATIVE_INFINITY
-                                || cellDouble == Double.NaN
-                                || cellDouble == Double.POSITIVE_INFINITY) {
-                            System.out.println("debug row " + row + " col " + col);
-                        }
-
-                        cellBigDecimal = new BigDecimal(cellDouble);
-                        this.nonNoDataValueCountBigInteger
-                                = this.nonNoDataValueCountBigInteger.add(BigInteger.ONE);
-                        this.sumBigDecimal = this.sumBigDecimal.add(cellBigDecimal);
-                        if (cellBigDecimal.compareTo(this.minBigDecimal) == -1) {
-                            this.minCountBigInteger = BigInteger.ONE;
-                            this.minBigDecimal = cellBigDecimal;
-                        } else {
-                            if (cellBigDecimal.compareTo(this.minBigDecimal) == 0) {
-                                this.minCountBigInteger
-                                        = this.minCountBigInteger.add(BigInteger.ONE);
+                        try {
+                            // Debug
+                            if (cellDouble == Double.NEGATIVE_INFINITY
+                                    || cellDouble == Double.NaN
+                                    || cellDouble == Double.POSITIVE_INFINITY) {
+                                System.out.println("debug row " + row + " col " + col);
                             }
-                        }
-                        if (cellBigDecimal.compareTo(this.maxBigDecimal) == 1) {
-                            this.maxCountBigInteger = BigInteger.ONE;
-                            this.maxBigDecimal = cellBigDecimal;
-                        } else {
-                            if (cellBigDecimal.compareTo(this.maxBigDecimal) == 0) {
-                                this.maxCountBigInteger
-                                        = this.maxCountBigInteger.add(BigInteger.ONE);
+
+                            cellBigDecimal = new BigDecimal(cellDouble);
+                            this.nonNoDataValueCountBigInteger
+                                    = this.nonNoDataValueCountBigInteger.add(BigInteger.ONE);
+                            this.sumBigDecimal = this.sumBigDecimal.add(cellBigDecimal);
+                            if (cellBigDecimal.compareTo(this.minBigDecimal) == -1) {
+                                this.minCountBigInteger = BigInteger.ONE;
+                                this.minBigDecimal = cellBigDecimal;
+                            } else {
+                                if (cellBigDecimal.compareTo(this.minBigDecimal) == 0) {
+                                    this.minCountBigInteger
+                                            = this.minCountBigInteger.add(BigInteger.ONE);
+                                }
                             }
+                            if (cellBigDecimal.compareTo(this.maxBigDecimal) == 1) {
+                                this.maxCountBigInteger = BigInteger.ONE;
+                                this.maxBigDecimal = cellBigDecimal;
+                            } else {
+                                if (cellBigDecimal.compareTo(this.maxBigDecimal) == 0) {
+                                    this.maxCountBigInteger
+                                            = this.maxCountBigInteger.add(BigInteger.ONE);
+                                }
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println(e.getMessage() + " in AbstractGridStatistics.update(" + _NRows + ", " + _NCols + ") value at row " + row + ", col " + col + " = " + cellDouble + ");");
                         }
                     }
                 }
@@ -1976,17 +1979,16 @@ public abstract class AbstractGridStatistics
             while (ite.hasNext()) {
                 double value;
                 value = ite.next();
-                
+
 //                if (valueID == 27782) {
 //                    //0.0087890625
 //                    int debug = 1;
 //                }
-                
                 if (!(value == 0.0d || value == noDataValue)) {
                     if (count % numberOfValuesInEachClass == 0) {
                         System.out.println(count + " out of " + nonZeroAndNonNoDataValueCount);
                     }
-                    count ++;
+                    count++;
                     if (firstValue) {
                         minDouble.put(0, value);
                         maxDouble.put(0, value);
@@ -2141,16 +2143,16 @@ public abstract class AbstractGridStatistics
             addToCount(classToFill, classCounts);
             result[0] = classToFill;
             //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-                result[1] = checkClassToFillAndPropagation(
-                result,
-                classToFill,
-                classToFillCount,
-                classMap,
-                minDouble,
-                maxDouble,
-                classCounts,
-                desiredNumberOfValuesInEachClass,
-                classToFill);
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    classToFill,
+                    classToFillCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
 //            } else {
 //                result[1] = classToFill;
 //            }
@@ -2163,16 +2165,16 @@ public abstract class AbstractGridStatistics
             addToCount(classToFill, classCounts);
             result[0] = classToFill;
             //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-                result[1] = checkClassToFillAndPropagation(
-                result,
-                classToFill,
-                classToFillCount,
-                classMap,
-                minDouble,
-                maxDouble,
-                classCounts,
-                desiredNumberOfValuesInEachClass,
-                classToFill);
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    classToFill,
+                    classToFillCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
 //            } else {
 //                result[1] = classToFill;
 //            }
@@ -2260,13 +2262,13 @@ public abstract class AbstractGridStatistics
         // and counts and ensure maxDouble and minDouble are correct (which has 
         // to be done first)
         maxToCheck = maxDouble.get(classToCheck);
-        if (value > maxToCheck ) {
+        if (value > maxToCheck) {
             maxDouble.put(classToCheck, value);
         }
         minToCheck = minDouble.get(classToCheck);
         if (value < minToCheck) {
             minDouble.put(classToCheck, value);
-        }        
+        }
         addToMapCounts(value, classToCheck, classMap);
         addToCount(classToCheck, classCounts);
         classToCheckCount = classCounts.get(classToCheck);

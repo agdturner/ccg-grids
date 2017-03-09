@@ -2330,27 +2330,31 @@ public class Grid2DSquareCellDouble
                     valueToInitialise);
             // Update Statistics
             if (valueToInitialise != _NoDataValue) {
-                BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);
-                this._GridStatistics.nonNoDataValueCountBigInteger
-                        = this._GridStatistics.nonNoDataValueCountBigInteger.add(BigInteger.ONE);
-                this._GridStatistics.sumBigDecimal = this._GridStatistics.sumBigDecimal.add(cellBigDecimal);
-                if (cellBigDecimal.compareTo(this._GridStatistics.minBigDecimal) == -1) {
-                    this._GridStatistics.minCountBigInteger = BigInteger.ONE;
-                    this._GridStatistics.minBigDecimal = cellBigDecimal;
-                } else {
-                    if (cellBigDecimal.compareTo(this._GridStatistics.minBigDecimal) == 0) {
-                        this._GridStatistics.minCountBigInteger
-                                = this._GridStatistics.minCountBigInteger.add(BigInteger.ONE);
+                try {
+                    BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);
+                    this._GridStatistics.nonNoDataValueCountBigInteger
+                            = this._GridStatistics.nonNoDataValueCountBigInteger.add(BigInteger.ONE);
+                    this._GridStatistics.sumBigDecimal = this._GridStatistics.sumBigDecimal.add(cellBigDecimal);
+                    if (cellBigDecimal.compareTo(this._GridStatistics.minBigDecimal) == -1) {
+                        this._GridStatistics.minCountBigInteger = BigInteger.ONE;
+                        this._GridStatistics.minBigDecimal = cellBigDecimal;
+                    } else {
+                        if (cellBigDecimal.compareTo(this._GridStatistics.minBigDecimal) == 0) {
+                            this._GridStatistics.minCountBigInteger
+                                    = this._GridStatistics.minCountBigInteger.add(BigInteger.ONE);
+                        }
                     }
-                }
-                if (cellBigDecimal.compareTo(this._GridStatistics.maxBigDecimal) == 1) {
-                    this._GridStatistics.maxCountBigInteger = BigInteger.ONE;
-                    this._GridStatistics.maxBigDecimal = cellBigDecimal;
-                } else {
-                    if (cellBigDecimal.compareTo(this._GridStatistics.maxBigDecimal) == 0) {
-                        this._GridStatistics.maxCountBigInteger
-                                = this._GridStatistics.maxCountBigInteger.add(BigInteger.ONE);
+                    if (cellBigDecimal.compareTo(this._GridStatistics.maxBigDecimal) == 1) {
+                        this._GridStatistics.maxCountBigInteger = BigInteger.ONE;
+                        this._GridStatistics.maxBigDecimal = cellBigDecimal;
+                    } else {
+                        if (cellBigDecimal.compareTo(this._GridStatistics.maxBigDecimal) == 0) {
+                            this._GridStatistics.maxCountBigInteger
+                                    = this._GridStatistics.maxCountBigInteger.add(BigInteger.ONE);
+                        }
                     }
+                } catch (NumberFormatException e) {
+                    System.err.println(e.getMessage() + " in Grid2DSquareCellDouble.initCell(" + cellRowIndex + ", " + cellColIndex + ", " + valueToInitialise + ");");
                 }
             }
         }
