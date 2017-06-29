@@ -2996,6 +2996,7 @@ public class Grid2DSquareCellProcessorDEM
             String[] names = getMetrics1Names();
             int _int_0 = 0;
             if (grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class) {
+                System.out.println("Grid2DSquareCellDouble");
                 Grid2DSquareCellDouble grid2DSquareCellDouble;
                 grid2DSquareCellDouble = (Grid2DSquareCellDouble) grid2DSquareCell;
                 double noDataValue = grid2DSquareCellDouble.get_NoDataValue(handleOutOfMemoryError);
@@ -3009,6 +3010,7 @@ public class Grid2DSquareCellProcessorDEM
                             chunkRowIndex,
                             handleOutOfMemoryError);
                     for (chunkColIndex = _int_0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                        System.out.println("chunkRowIndex, chunkColIndex " + chunkRowIndex + ", " + chunkColIndex);
                         chunkID = new ChunkID(
                                 nChunkCols, chunkRowIndex, chunkColIndex);
                         try {
