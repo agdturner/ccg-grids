@@ -29,7 +29,7 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.TiledImage;
 import javax.media.jai.remote.SerializableRenderedImage;
 import javax.media.jai.RasterFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.AbstractIterator;
 /**
  * AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a
@@ -127,10 +127,10 @@ public class Grid2DSquareCellDoubleChunkJAI
         initGrid2DSquareCell( grid2DSquareCellDouble );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         double _NoDataValue = grid2DSquareCellDouble._NoDataValue;
         initData();
         for ( int row = 0; row < chunkNrows; row ++ ) {
@@ -164,10 +164,10 @@ public class Grid2DSquareCellDoubleChunkJAI
         initGrid2DSquareCell( grid2DSquareCellDouble );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         double _NoDataValue = grid2DSquareCellDouble._NoDataValue;
         initData( chunkNrows, chunkNcols );
         boolean handleOutOfMemoryError = true;
@@ -195,10 +195,10 @@ public class Grid2DSquareCellDoubleChunkJAI
         Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         initData(
                 chunkNrows,
                 chunkNcols );

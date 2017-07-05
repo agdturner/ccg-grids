@@ -27,8 +27,8 @@ import uk.ac.leeds.ccg.andyt.grids.exchange.ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.FileCreator;
 
 /**
- * Abstract class to be extended by all AbstractGrid2DSquareCell 
- * factories.
+ * Abstract class to be extended by all Grids_AbstractGrid2DSquareCell 
+ factories.
  */
 public abstract class AbstractGrid2DSquareCellFactory {
 
@@ -50,7 +50,7 @@ public abstract class AbstractGrid2DSquareCellFactory {
      */
     protected BigDecimal[] _Dimensions;
 //    /**
-//     * A container of other AbstractGrid2DSquareCell references.
+//     * A container of other Grids_AbstractGrid2DSquareCell references.
 //     */
 //    protected HashSet _AbstractGrid2DSquareCell_HashSet;
     /**
@@ -211,9 +211,9 @@ public abstract class AbstractGrid2DSquareCellFactory {
     // Default Creation //
     //////////////////////
     /**
-     * @return AbstractGrid2DSquareCell loaded from this._Directory.
+     * @return Grids_AbstractGrid2DSquareCell loaded from this._Directory.
      */
-    public AbstractGrid2DSquareCell create() {
+    public Grids_AbstractGrid2DSquareCell create() {
         return create(this._Directory);
     }
 
@@ -221,12 +221,12 @@ public abstract class AbstractGrid2DSquareCellFactory {
     // Create from scratch //
     /////////////////////////
     /**
-     * @return AbstractGrid2DSquareCell with all values as
-     * _NoDataValues.
+     * @return Grids_AbstractGrid2DSquareCell with all values as
+ _NoDataValues.
      * @param _NRows The _NRows for the construct.
      * @param _NCols The _NCols for the construct.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             long _NRows,
             long _NCols) {
         // Correct the ymax and xmax of the grid just in case...
@@ -242,12 +242,12 @@ public abstract class AbstractGrid2DSquareCellFactory {
 
     /**
      * @param directory
-     * @return AbstractGrid2DSquareCell with all values as
-     * _NoDataValues.
+     * @return Grids_AbstractGrid2DSquareCell with all values as
+ _NoDataValues.
      * @param _NRows The _NRows for the construct.
      * @param _NCols The _NCols for the construct.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File directory,
             long _NRows,
             long _NCols) {
@@ -265,13 +265,13 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell with all values as
-     * _NoDataValues.
+     * @return Grids_AbstractGrid2DSquareCell with all values as
+ _NoDataValues.
      * @param _NRows The _NRows for the construct.
      * @param _NCols The _NCols for the construct.
      * @param _Dimensions The cellsize and bounding box details for the construct.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             long _NRows,
             long _NCols,
             BigDecimal[] _Dimensions) {
@@ -283,14 +283,14 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell with all values as
-     * _NoDataValues.
+     * @return Grids_AbstractGrid2DSquareCell with all values as
+ _NoDataValues.
      * @param _Directory The _Directory for swapping to file.
      * @param _NRows The _NRows for the construct.
      * @param _NCols The _NCols for the construct.
      * @param _Dimensions The cellsize and bounding box details for the construct.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             long _NRows,
             long _NCols,
@@ -305,8 +305,8 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell grid with all values as
-     * _NoDataValues.
+     * @return Grids_AbstractGrid2DSquareCell grid with all values as
+ _NoDataValues.
      * @param _Directory The _Directory for swapping to file.
      * @param _NRows The _NRows for the construct.
      * @param _NCols The _NCols for the construct.
@@ -316,7 +316,7 @@ public abstract class AbstractGrid2DSquareCellFactory {
      *   in this method then swap operations are initiated prior to retrying.
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
-    public abstract AbstractGrid2DSquareCell create(
+    public abstract Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             long _NRows,
             long _NCols,
@@ -325,16 +325,16 @@ public abstract class AbstractGrid2DSquareCellFactory {
             boolean handleOutOfMemoryError);
 
     //////////////////////////////////////////////////////
-    // Create from an existing AbstractGrid2DSquareCell //
+    // Create from an existing Grids_AbstractGrid2DSquareCell //
     //////////////////////////////////////////////////////
     /**
-     * @return AbstractGrid2DSquareCell with all values as int values from
-     * _Grid2DSquareCell.
-     * @param _Grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     *   are obtained.
+     * @return Grids_AbstractGrid2DSquareCell with all values as int values from
+ _Grid2DSquareCell.
+     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+   are obtained.
      */
-    public AbstractGrid2DSquareCell create(
-            AbstractGrid2DSquareCell _Grid2DSquareCell) {
+    public Grids_AbstractGrid2DSquareCell create(
+            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell) {
         return create(
                 this._Directory,
                 _Grid2DSquareCell,
@@ -345,10 +345,10 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * grid2DSquareCell.
-     * @param grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     *   are obtained.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ grid2DSquareCell.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+   are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
      *   values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
@@ -358,8 +358,8 @@ public abstract class AbstractGrid2DSquareCellFactory {
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
      *   values are used.
      */
-    public AbstractGrid2DSquareCell create(
-            AbstractGrid2DSquareCell grid2DSquareCell,
+    public Grids_AbstractGrid2DSquareCell create(
+            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -377,12 +377,12 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * grid2DSquareCell.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ grid2DSquareCell.
      * @param _Directory The _Directory to be used for storing data in files.
      *   Grid2DSquareCellInt information.
-     * @param grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     *   are obtained.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+   are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
      *   values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
@@ -392,9 +392,9 @@ public abstract class AbstractGrid2DSquareCellFactory {
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
      *   values are used.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File _Directory,
-            AbstractGrid2DSquareCell grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -412,11 +412,11 @@ public abstract class AbstractGrid2DSquareCellFactory {
 
     /**
      * @param handleOutOfMemoryError
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * grid2DSquareCell.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ grid2DSquareCell.
      * @param _Directory The _Directory to be used for storing data in files.
-     * @param grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     *   are obtained.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+   are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
      *   values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
@@ -425,12 +425,12 @@ public abstract class AbstractGrid2DSquareCellFactory {
      *   values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
      *   values are used.
-     * @param _Grids_Environment A HashSet of swappable AbstractGrid2DSquareCell
-     *   instances.
+     * @param _Grids_Environment A HashSet of swappable Grids_AbstractGrid2DSquareCell
+   instances.
      */
-    public abstract AbstractGrid2DSquareCell create(
+    public abstract Grids_AbstractGrid2DSquareCell create(
             File _Directory,
-            AbstractGrid2DSquareCell grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -442,15 +442,15 @@ public abstract class AbstractGrid2DSquareCellFactory {
     // Create from a File //
     ////////////////////////
     /**
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * gridFile. If gridFile is a _Directory then it is assumed to contain a
-     * file called cache which can be opened into an object input stream and
-     * initailised as an instance of a class extending AbstractGrid2DSquareCell.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ gridFile. If gridFile is a _Directory then it is assumed to contain a
+ file called cache which can be opened into an object input stream and
+ initailised as an instance of a class extending Grids_AbstractGrid2DSquareCell.
      * @param gridFile either a _Directory, or a formatted File with a specific
-     *   extension containing the data and information about the
-     *   AbstractGrid2DSquareCell to be returned.
+   extension containing the data and information about the
+   Grids_AbstractGrid2DSquareCell to be returned.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File gridFile) {
         if (gridFile.isDirectory()) {
             // Initialise from File(gridFile,"this")
@@ -498,13 +498,13 @@ public abstract class AbstractGrid2DSquareCellFactory {
     }
 
     /**
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * gridFile.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ gridFile.
      * @param _Directory The _Directory to be used for storing cached
      *   Grid2DSquareCellInt information.
      * @param gridFile either a _Directory, or a formatted File with a specific
-     *   extension containing the data and information about the
-     *   AbstractGrid2DSquareCell to be returned.
+   extension containing the data and information about the
+   Grids_AbstractGrid2DSquareCell to be returned.
      * @param startRowIndex The topmost row index of the grid represented in
      *   gridFile thats values are used.
      * @param startColIndex The leftmost column index of the grid represented in
@@ -517,7 +517,7 @@ public abstract class AbstractGrid2DSquareCellFactory {
      * _AbstractGrid2DSquareCell_HashSet to null;
      * _HandleOutOfMemoryError to true.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             File gridFile,
             long startRowIndex,
@@ -538,13 +538,13 @@ public abstract class AbstractGrid2DSquareCellFactory {
     /**
      * @param handleOutOfMemoryError
      * @param _Grids_Environment
-     * @return AbstractGrid2DSquareCell with values obtained from
-     * gridFile.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+ gridFile.
      * @param _Directory The _Directory to be used for storing cached
      *   Grid2DSquareCellInt information.
      * @param gridFile either a _Directory, or a formatted File with a specific
-     *   extension containing the data and information about the
-     *   AbstractGrid2DSquareCell to be returned.
+   extension containing the data and information about the
+   Grids_AbstractGrid2DSquareCell to be returned.
      * @param startRowIndex The topmost row index of the grid represented in
      *   gridFile thats values are used.
      * @param startColIndex The leftmost column index of the grid represented in
@@ -553,10 +553,10 @@ public abstract class AbstractGrid2DSquareCellFactory {
      *   gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
      *   gridFile thats values are used.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable AbstractGrid2DSquareCell
-     *   instances.
+     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable Grids_AbstractGrid2DSquareCell
+   instances.
      */
-    public abstract AbstractGrid2DSquareCell create(
+    public abstract Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             File gridFile,
             long startRowIndex,
@@ -570,13 +570,13 @@ public abstract class AbstractGrid2DSquareCellFactory {
     // Create from a cache //
     /////////////////////////
     /**
-     * @return AbstractGrid2DSquareCell with values obtained from 
-     * gridFile.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from 
+ gridFile.
      * @param _Directory The _Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
      */
-    public AbstractGrid2DSquareCell create(
+    public Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             File gridFile,
             ObjectInputStream ois) {
@@ -591,14 +591,14 @@ public abstract class AbstractGrid2DSquareCellFactory {
     /**
      * @param handleOutOfMemoryError
      * @param _Grids_Environment
-     * @return AbstractGrid2DSquareCell with values obtained from gridFile.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from gridFile.
      * @param _Directory The _Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable AbstractGrid2DSquareCell
-     *   instances.
+     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable Grids_AbstractGrid2DSquareCell
+   instances.
      */
-    public abstract AbstractGrid2DSquareCell create(
+    public abstract Grids_AbstractGrid2DSquareCell create(
             File _Directory,
             File gridFile,
             ObjectInputStream ois,

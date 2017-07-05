@@ -18,7 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 import java.io.File;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.FileCreator;
 /**
  * A factory for constructing Grid2DSquareCellIntChunkRAF instances.

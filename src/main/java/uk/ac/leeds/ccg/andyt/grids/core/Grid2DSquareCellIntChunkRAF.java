@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.FileCreator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.AbstractIterator;
 /**
@@ -82,7 +82,7 @@ public class Grid2DSquareCellIntChunkRAF
         try {
             this.randomAccessFile = new RandomAccessFile( file, "rw" );
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                    _Grid2DSquareCell._Grids_Environment.HandleOutOfMemoryErrorFalse );
+                    _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
             int chunkNrows = grid2DSquareCellInt._ChunkNRows;
             int chunkNcols = grid2DSquareCellInt._ChunkNCols;
             // Calculate noDataValueAsByteArray
@@ -169,7 +169,7 @@ public class Grid2DSquareCellIntChunkRAF
                 int chunkNrows = grid2DSquareCellInt._ChunkNRows;
                 int chunkNcols = grid2DSquareCellInt._ChunkNCols;
                 int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                        _Grid2DSquareCell._Grids_Environment.HandleOutOfMemoryErrorFalse );
+                        _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
                 int row;
                 int col;
                 boolean handleOutOfMemoryError = true;

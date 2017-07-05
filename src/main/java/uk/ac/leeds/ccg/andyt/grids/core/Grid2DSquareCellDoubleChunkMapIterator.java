@@ -59,10 +59,10 @@ public class Grid2DSquareCellDoubleChunkMapIterator extends AbstractIterator {
         this.numberOfCells = ( 
                 ( long ) grid2DSquareCellDouble.getChunkNRows(
                 grid2DSquareCellDoubleChunkMap._ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse ) *
+                env.HandleOutOfMemoryErrorFalse ) *
                 ( long ) grid2DSquareCellDouble.getChunkNCols(
                 grid2DSquareCellDoubleChunkMap._ChunkID,
-                Grids_Environment.HandleOutOfMemoryErrorFalse ) );
+                env.HandleOutOfMemoryErrorFalse ) );
         try { // In case empty!
             this.dataIterator.advance();
             this.value = dataIterator.key();

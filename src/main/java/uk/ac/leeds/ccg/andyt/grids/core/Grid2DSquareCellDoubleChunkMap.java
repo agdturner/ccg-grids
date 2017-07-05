@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.AbstractIterator;
 /**
  * AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a 
@@ -551,20 +551,20 @@ public class Grid2DSquareCellDoubleChunkMap
                     try {
                         long chunkNrows = ( long ) this._Grid2DSquareCell.getChunkNRows( 
                                 this._ChunkID, 
-                                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
                         long chunkNcols = ( long ) this._Grid2DSquareCell.getChunkNCols( 
                                 this._ChunkID, 
-                                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
                         return new BigInteger( Long.toString( 
                                 ( chunkNrows * chunkNcols ) - 
                                 ( ( HashSet ) iterator.value() ).size() ) );
                     } catch ( java.lang.ClassCastException e ) {
                         long chunkNrows = ( long ) this._Grid2DSquareCell.getChunkNRows( 
                                 this._ChunkID, 
-                                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
                         long chunkNcols = ( long ) this._Grid2DSquareCell.getChunkNCols( 
                                 this._ChunkID, 
-                                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
                         return new BigInteger( Long.toString( 
                                 ( chunkNrows * chunkNcols ) - 1L ) );
                     }

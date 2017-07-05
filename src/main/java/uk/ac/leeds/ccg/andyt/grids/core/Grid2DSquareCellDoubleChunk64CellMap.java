@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.AbstractIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.UnsignedLong;
 import uk.ac.leeds.ccg.andyt.grids.utilities.UnsignedLongPowersOf2;
@@ -388,16 +388,16 @@ public class Grid2DSquareCellDoubleChunk64CellMap
             boolean handleOutOfMemoryError ) {
         try {
             long result = powerOf2( value );
-                        getGrid2DSquareCell(handleOutOfMemoryError)._Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue();
+                        getGrid2DSquareCell(handleOutOfMemoryError).env.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
         } catch ( OutOfMemoryError _OutOfMemoryError ) {
-            this._Grid2DSquareCell._Grids_Environment.clear_MemoryReserve();
-                if (this._Grid2DSquareCell._Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(
+            this._Grid2DSquareCell.env.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L){
                         throw _OutOfMemoryError;
                 }
-            this._Grid2DSquareCell._Grids_Environment.init_MemoryReserve(
+            this._Grid2DSquareCell.env.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError );
@@ -417,11 +417,11 @@ public class Grid2DSquareCellDoubleChunk64CellMap
         Grid2DSquareCellDouble grid2DSquareCellDouble = this.getGrid2DSquareCellDouble();
         try {
             //return this._UnsignedLongPowersOf2.powersOf2[ 63 - value ];
-            return AbstractGrid2DSquareCell._UnsignedLongPowersOf2.powersOf2[ value ];
+            return Grids_AbstractGrid2DSquareCell._UnsignedLongPowersOf2.powersOf2[ value ];
         } catch ( java.lang.NullPointerException e ) {
-            AbstractGrid2DSquareCell._UnsignedLongPowersOf2 = new UnsignedLongPowersOf2( false );
+            Grids_AbstractGrid2DSquareCell._UnsignedLongPowersOf2 = new UnsignedLongPowersOf2( false );
             //return this._UnsignedLongPowersOf2.powersOf2[ 63 - value ];
-            return AbstractGrid2DSquareCell._UnsignedLongPowersOf2.powersOf2[ value ];
+            return Grids_AbstractGrid2DSquareCell._UnsignedLongPowersOf2.powersOf2[ value ];
         }
     }
     

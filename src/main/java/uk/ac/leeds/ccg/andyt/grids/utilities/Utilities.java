@@ -19,7 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.utilities;
 
 import java.awt.geom.Point2D;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDoubleFactory;
 
 /**
@@ -247,7 +247,7 @@ public class Utilities {
      * @param divisions
      * @return 
      */
-    public static Object[] densityPlot(AbstractGrid2DSquareCell xGrid, AbstractGrid2DSquareCell yGrid, int divisions, Grid2DSquareCellDoubleFactory gridFactory) {
+    public static Object[] densityPlot(Grids_AbstractGrid2DSquareCell xGrid, Grids_AbstractGrid2DSquareCell yGrid, int divisions, Grid2DSquareCellDoubleFactory gridFactory) {
         //        Object[] result = new Object[ 4 ];
         //        long nrows = xGrid.getNrows();
         //        long ncols = xGrid.getNcols();

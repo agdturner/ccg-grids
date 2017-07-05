@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.AbstractIterator;
 /**
  * AbstractGrid2DSquareCellIntChunk extension that stores cell values in a
@@ -79,7 +79,7 @@ public  class Grid2DSquareCellIntChunkMap
         this(   grid2DSquareCellInt,
                 _ChunkID,
                 grid2DSquareCellInt.getNoDataValue(
-                Grids_Environment.HandleOutOfMemoryErrorFalse ) );
+                grid2DSquareCellInt.env.HandleOutOfMemoryErrorFalse ) );
     }
     
     /**
@@ -116,7 +116,7 @@ public  class Grid2DSquareCellIntChunkMap
         this(   grid2DSquareCellIntChunk,
                 _ChunkID,
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt().getNoDataValue(
-                Grids_Environment.HandleOutOfMemoryErrorFalse ) );
+                grid2DSquareCellIntChunk._Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) );
     }
     
     /**
@@ -262,7 +262,7 @@ public  class Grid2DSquareCellIntChunkMap
     @Override
     public int[] toArrayNotIncludingNoDataValues() {
         int noDataValue = getGrid2DSquareCellInt().getNoDataValue(
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         BigInteger nonNoDataValueCountBigInteger =
                 getNonNoDataValueCountBigInteger();
         int[] array;
@@ -574,7 +574,7 @@ public  class Grid2DSquareCellIntChunkMap
      */
     public @Override BigInteger getNonNoDataValueCountBigInteger() {
         int noDataValue = getGrid2DSquareCellInt().getNoDataValue(
-                Grids_Environment.HandleOutOfMemoryErrorFalse);
+                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse);
         TIntObjectIterator iterator = this.data.iterator();
         BigInteger nonNoDataCountBigInteger = BigInteger.ZERO;
         if ( this.defaultValue == noDataValue ) {
@@ -595,18 +595,18 @@ public  class Grid2DSquareCellIntChunkMap
                         return new BigInteger( Long.toString( ( 
                                 ( long ) this._Grid2DSquareCell.getChunkNRows(
                                 this._ChunkID,
-                                Grids_Environment.HandleOutOfMemoryErrorFalse ) *
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) *
                                 ( long ) this._Grid2DSquareCell.getChunkNCols(
                                 this._ChunkID,
-                                Grids_Environment.HandleOutOfMemoryErrorFalse ) ) - ( ( HashSet ) iterator.value() ).size() ) );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) ) - ( ( HashSet ) iterator.value() ).size() ) );
                     } catch ( java.lang.ClassCastException e ) {
                         return new BigInteger( Long.toString( ( 
                                 ( long ) this._Grid2DSquareCell.getChunkNRows(
                                 this._ChunkID,
-                                Grids_Environment.HandleOutOfMemoryErrorFalse ) *
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) *
                                 ( long ) this._Grid2DSquareCell.getChunkNCols(
                                 this._ChunkID,
-                                Grids_Environment.HandleOutOfMemoryErrorFalse ) ) - 1L ) );
+                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) ) - 1L ) );
                     }
                 }
             }

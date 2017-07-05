@@ -29,8 +29,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.ChunkID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCellIntChunk;
@@ -53,7 +53,7 @@ public class ImageExporter implements Serializable {
      * Creates a new instance of ImageExporter
      */
     //public ImageExporter() {
-    //    this._Grids_Environment = new Grids_Environment();
+    //    this.env = new env();
     //}
 
     /**
@@ -77,7 +77,7 @@ public class ImageExporter implements Serializable {
      * @param handleOutOfMemoryError
      */
     public void toGreyScaleImage(
-            AbstractGrid2DSquareCell grid,
+            Grids_AbstractGrid2DSquareCell grid,
             Grid2DSquareCellProcessor processor,
             File file,
             String type,
@@ -88,7 +88,7 @@ public class ImageExporter implements Serializable {
                     processor,
                     file,
                     type);
-            grid._Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
+            grid.env.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
@@ -121,7 +121,7 @@ public class ImageExporter implements Serializable {
      * "jpeg"
      */
     protected void toGreyScaleImage(
-            AbstractGrid2DSquareCell grid,
+            Grids_AbstractGrid2DSquareCell grid,
             Grid2DSquareCellProcessor processor,
             File file,
             String type) {

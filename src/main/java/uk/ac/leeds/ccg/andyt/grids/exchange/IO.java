@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import javax.imageio.ImageIO;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
@@ -91,7 +91,7 @@ public class IO {
      * @param parGrid
      * @param countGrid
      */
-    public static void generateGamInput(File gamInputFile, AbstractGrid2DSquareCell countGrid, AbstractGrid2DSquareCell parGrid) {
+    public static void generateGamInput(File gamInputFile, Grids_AbstractGrid2DSquareCell countGrid, Grids_AbstractGrid2DSquareCell parGrid) {
         //        //System.out.println( "Utilities.generateGamInput( gamInputFile( " + gamInputFile + " ), countGrid( " + countGrid.toString() + " ), parGrid( " + parGrid.toString() + " ) )" );
         //        int nrows = countGrid.getNrows();
         //        int ncols = countGrid.getNcols();
@@ -339,7 +339,7 @@ public class IO {
         }
     }
 
-    public static void gamOutputToGrid(File gamOutputFile, AbstractGrid2DSquareCell grid, double weight) {
+    public static void gamOutputToGrid(File gamOutputFile, Grids_AbstractGrid2DSquareCell grid, double weight) {
         //        try {
         //            StreamTokenizer st = new StreamTokenizer( new BufferedReader( new InputStreamReader( new FileInputStream( gamOutputFile ) ) ) );
         //            st.eolIsSignificant( false );
@@ -391,7 +391,7 @@ public class IO {
     }
 
     //    // Should have moved to process
-    //    private static void addToGrid( AbstractGrid2DSquareCell grid, double x, double y, double radius, double centralWeight ) {
+    //    private static void addToGrid( Grids_AbstractGrid2DSquareCell grid, double x, double y, double radius, double centralWeight ) {
     //        //        double weightFactor = 1.0d;
     //        //        int nrows = grid.getNrows();
     //        //        int ncols = grid.getNcols();
@@ -474,7 +474,7 @@ public class IO {
      * @param csvFile
      * @param header
      */
-    public static void gridArray2CSV(AbstractGrid2DSquareCell[] gridArray, String header, File csvFile) {
+    public static void gridArray2CSV(Grids_AbstractGrid2DSquareCell[] gridArray, String header, File csvFile) {
         //        PrintWriter pw = null;
         //        try {
         //            pw = new PrintWriter( new FileOutputStream( csvFile ) );

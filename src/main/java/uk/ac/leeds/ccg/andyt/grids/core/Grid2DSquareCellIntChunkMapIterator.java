@@ -58,13 +58,13 @@ public class Grid2DSquareCellIntChunkMapIterator
         Grid2DSquareCellInt grid2DSquareCellInt = 
                 grid2DSquareCellIntChunkMap.getGrid2DSquareCellInt();
         this.noDataValue = grid2DSquareCellInt.getNoDataValue( 
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                env.HandleOutOfMemoryErrorFalse );
         long chunkNrows = ( long ) grid2DSquareCellInt.getChunkNRows( 
                 grid2DSquareCellIntChunkMap._ChunkID, 
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                env.HandleOutOfMemoryErrorFalse );
         long chunkNcols = ( long ) grid2DSquareCellInt.getChunkNCols( 
                 grid2DSquareCellIntChunkMap._ChunkID, 
-                Grids_Environment.HandleOutOfMemoryErrorFalse );
+                env.HandleOutOfMemoryErrorFalse );
         this.numberOfCells = chunkNrows * chunkNcols;
         try { // In case empty!
             this.dataIterator.advance();

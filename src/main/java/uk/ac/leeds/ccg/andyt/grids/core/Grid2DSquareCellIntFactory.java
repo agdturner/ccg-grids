@@ -212,15 +212,15 @@ public class Grid2DSquareCellIntFactory
     }
 
     //////////////////////////////////////////////////////
-    // Create from an existing AbstractGrid2DSquareCell //
+    // Create from an existing Grids_AbstractGrid2DSquareCell //
     //////////////////////////////////////////////////////
     /**
      * Returns a new Grid2DSquareCellInt with values obtained from
      * grid2DSquareCell.
      * @param _Directory The _Directory to be used for storing cached
      *   Grid2DSquareCellInt information.
-     * @param grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     *   are obtained.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+   are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
      *   values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
@@ -237,7 +237,7 @@ public class Grid2DSquareCellIntFactory
      */
     public Grid2DSquareCellInt create(
             File _Directory,
-            AbstractGrid2DSquareCell grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -264,8 +264,8 @@ public class Grid2DSquareCellIntFactory
      * Grid2DSquareCellInt.
      * @param _Directory The _Directory to be used for storing cached
      * Grid2DSquareCellInt information.
-     * @param grid2DSquareCell The AbstractGrid2DSquareCell from which values
-     * are obtained.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
+ are obtained.
      * @param grid2DSquareCellIntChunkAbstractFactory The
      * AbstractGrid2DSquareCellIntChunkFactory used to construct the chunks.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
@@ -285,7 +285,7 @@ public class Grid2DSquareCellIntFactory
     public Grid2DSquareCellInt create(
             AbstractGridStatistics gridStatistics,
             File _Directory,
-            AbstractGrid2DSquareCell grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
             AbstractGrid2DSquareCellIntChunkFactory grid2DSquareCellIntChunkAbstractFactory,
             long startRowIndex,
             long startColIndex,
@@ -356,15 +356,15 @@ public class Grid2DSquareCellIntFactory
     }
 
     /**
-     * Returns a new AbstractGrid2DSquareCell with values obtained from
-     * gridFile.
+     * Returns a new Grids_AbstractGrid2DSquareCell with values obtained from
+ gridFile.
      * 
      * @param gridStatistics
      * @param _Directory The _Directory to be used for storing cached
      *   Grid2DSquareCellInt information.
      * @param gridFile either a _Directory, or a formatted File with a specific
-     *   extension containing the data and information about the
-     *   AbstractGrid2DSquareCell to be returned.
+   extension containing the data and information about the
+   Grids_AbstractGrid2DSquareCell to be returned.
      * @param grid2DSquareCellIntChunkFactory The
      *   AbstractGrid2DSquareCellIntChunkFactory used to construct the chunks.
      * @param startRowIndex The topmost row index of the grid represented in
@@ -375,8 +375,8 @@ public class Grid2DSquareCellIntFactory
      *   gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
      *   gridFile thats values are used.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable AbstractGrid2DSquareCell
-     *   instances.
+     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable Grids_AbstractGrid2DSquareCell
+   instances.
      * @param a_Grids_Environment
      * @param _HandleOutOfMemoryError If true then OutOfMemoryErrors are caught
      *   in this method then swap operations are initiated prior to retrying.

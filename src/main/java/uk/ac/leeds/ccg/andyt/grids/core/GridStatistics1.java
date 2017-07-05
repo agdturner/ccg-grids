@@ -23,11 +23,11 @@ import java.math.BigInteger;
 import java.io.Serializable;
 
 /**
- * Used by AbstractGrid2DSquareCell instances to access statistics. This class
- * to be instantiated for AbstractGrid2DSquareCell that do not keep all
- * statistic fields up to date as the underlying data is changed. (Keeping
- * statistic fields up to date as the underlying data is changed can be
- * expensive.)
+ * Used by Grids_AbstractGrid2DSquareCell instances to access statistics. This class
+ to be instantiated for Grids_AbstractGrid2DSquareCell that do not keep all
+ statistic fields up to date as the underlying data is changed. (Keeping
+ statistic fields up to date as the underlying data is changed can be
+ expensive.)
  */
 public class GridStatistics1
         extends AbstractGridStatistics
@@ -47,7 +47,7 @@ public class GridStatistics1
      * @param _Grid2DSquareCell
      */
     public GridStatistics1(
-            AbstractGrid2DSquareCell _Grid2DSquareCell) {
+            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell) {
         init(_Grid2DSquareCell);
     }
 
@@ -85,8 +85,8 @@ public class GridStatistics1
         if (!getIsUpToDate()) {
             init();
             super.update(
-                    this._Grid2DSquareCell._NRows,
-                    this._Grid2DSquareCell._NCols);
+                    this.Grid2DSquareCell._NRows,
+                    this.Grid2DSquareCell._NCols);
             setIsUpToDate(true);
         }
     }

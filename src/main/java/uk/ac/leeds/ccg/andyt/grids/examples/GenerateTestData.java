@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.AbstractGrid2DSquareCell.CellID;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.CellID;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.exchange.ESRIAsciiGridExporter;
@@ -78,7 +78,7 @@ public class GenerateTestData extends Grid2DSquareCellProcessor implements Runna
         for ( int i = 0 ; i < testData.length ; i ++ ) {
             System.out.println( testData[i].toString() );
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".asc" );
-            new ESRIAsciiGridExporter().toAsciiFile( testData[i], file, _HandleOutOfMemoryError );
+            new ESRIAsciiGridExporter(env).toAsciiFile( testData[i], file, _HandleOutOfMemoryError );
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".png" );
             new ImageExporter(_Grids_Environment).toGreyScaleImage( testData[i], this, file, "png", _HandleOutOfMemoryError );
         }

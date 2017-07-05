@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.exchange.ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Utilities;
@@ -34,8 +33,6 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Kernel;
  * docs
  */
 public class UtilitiesRuns extends Grid2DSquareCellProcessor implements Runnable {
-
-        Grids_Environment _Grids_Environment;
 
     public UtilitiesRuns() throws IOException {
     }
@@ -137,7 +134,7 @@ public class UtilitiesRuns extends Grid2DSquareCellProcessor implements Runnable
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
-        Grid2DSquareCellDoubleFactory grid2DSquareCellDoubleFactory = new Grid2DSquareCellDoubleFactory(_Grids_Environment, _HandleOutOfMemoryError);
+        Grid2DSquareCellDoubleFactory grid2DSquareCellDoubleFactory = new Grid2DSquareCellDoubleFactory(env, _HandleOutOfMemoryError);
         Grid2DSquareCellDouble xGrid = ( Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + xFilename + ".asc" ) );
         Grid2DSquareCellDouble yGrid = ( Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + yFilename + ".asc" ) );
         int divisions = 100;
@@ -154,7 +151,7 @@ public class UtilitiesRuns extends Grid2DSquareCellProcessor implements Runnable
                 ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble( _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble( _HandleOutOfMemoryError ) ) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new ESRIAsciiGridExporter().toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );
+        new ESRIAsciiGridExporter(env).toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );
         PrintWriter pw = null;
         try {
             pw = new PrintWriter( new FileOutputStream( new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv" ) ) );

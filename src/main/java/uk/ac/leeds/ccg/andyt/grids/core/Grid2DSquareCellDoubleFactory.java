@@ -311,7 +311,7 @@ public class Grid2DSquareCellDoubleFactory
     }
 
     //////////////////////////////////////////////////////
-    // Create from an existing AbstractGrid2DSquareCell //
+    // Create from an existing Grids_AbstractGrid2DSquareCell //
     //////////////////////////////////////////////////////
     /**
      * Returns a new Grid2DSquareCellDouble with all values taken from
@@ -330,7 +330,7 @@ public class Grid2DSquareCellDoubleFactory
     @Override
     public Grid2DSquareCellDouble create(
             File _Directory,
-            AbstractGrid2DSquareCell _Grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -377,7 +377,7 @@ public class Grid2DSquareCellDoubleFactory
     public Grid2DSquareCellDouble create(
             AbstractGridStatistics gridStatistics,
             File directory,
-            AbstractGrid2DSquareCell grid,
+            Grids_AbstractGrid2DSquareCell grid,
             AbstractGrid2DSquareCellDoubleChunkFactory chunkFactory,
             long startRowIndex,
             long startColIndex,

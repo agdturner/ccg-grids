@@ -18,11 +18,13 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.utilities;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 
 /**
  * A basic wrapper for the interface.
  */
 public abstract class AbstractIterator
+        extends Grids_Object
         implements Iterator {
 
     /**
