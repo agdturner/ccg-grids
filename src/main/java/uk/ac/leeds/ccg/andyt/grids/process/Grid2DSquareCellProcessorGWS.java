@@ -26,15 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grid2DSquareCellDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Kernel;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Utilities;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
  * Class of methods for processing and generating geographically weighted
- * Grid2DSquareCellDouble statistics.
+ Grids_Grid2DSquareCellDouble statistics.
  */
 public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
 
@@ -79,10 +79,10 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     }
 
     //    /**
-    //     * Returns an Grid2DSquareCellDouble[] result with elements based on
+    //     * Returns an Grids_Grid2DSquareCellDouble[] result with elements based on
     //     * statistics, and values based on grid, distance, weightIntersect and
     //     * weightFactor.
-    //     * @param grid the Grid2DSquareCellDouble to be processed
+    //     * @param grid the Grids_Grid2DSquareCellDouble to be processed
     //     * @param distance the distance defining the region within which values will
     //     *   be used
     //     * @param weightIntersect typically a number between 0 and 1 which controls
@@ -93,9 +93,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //     *   < 0.0d means that the edage of the kernel has a weight of 1
     //     *   > -1.0d && < 1.0d provides an inverse decay
     //     */
-    //    public Vector regionUnivariateStatistics( Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersect, double weightFactor ) {
+    //    public Vector regionUnivariateStatistics( Grids_Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersect, double weightFactor ) {
     //        try {
-    //            return regionUnivariateStatistics( grid, statistics, distance, weightIntersect, weightFactor, new Grid2DSquareCellDoubleFactory() );
+    //            return regionUnivariateStatistics( grid, statistics, distance, weightIntersect, weightFactor, new Grids_Grid2DSquareCellDoubleFactory() );
     //        } catch ( java.lang.OutOfMemoryError e ) {
     //            return regionUnivariateStatistics( grid, statistics, distance, weightIntersect, weightFactor, new Grid2DSquareCellDoubleFileFactory() );
     //        }
@@ -104,7 +104,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * Returns a Vector containing Grid2DSquareCellDoubles. Implements row
      * processing (see Grid2DSquareCellDoubleProcessor.getRowProcessData()).
      *
-     * @param grid the Grid2DSquareCellDouble to be processed
+     * @param grid the Grids_Grid2DSquareCellDouble to be processed
      * @param statistics
      * @param distance the distance defining the region within which values will
      * be used. At distances weights if applied are zero
@@ -119,13 +119,13 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @return 
      */
     public List<Grids_AbstractGrid2DSquareCell> regionUnivariateStatistics(
-            Grid2DSquareCellDouble grid,
+            Grids_Grid2DSquareCellDouble grid,
             //Vector statistics,
             List<String> statistics,
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grid2DSquareCellDoubleFactory gridFactory) {
+            Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
 
         List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<Grids_AbstractGrid2DSquareCell>();
@@ -264,30 +264,30 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         }
 
 
-        Grid2DSquareCellDouble sumWeightGrid = null;
+        Grids_Grid2DSquareCellDouble sumWeightGrid = null;
 
 
-        Grid2DSquareCellDouble sumGrid = null;
-        Grid2DSquareCellDouble wSumGrid = null;
-        Grid2DSquareCellDouble nWSumGrid = null;
-        Grid2DSquareCellDouble wSumNGrid = null;
+        Grids_Grid2DSquareCellDouble sumGrid = null;
+        Grids_Grid2DSquareCellDouble wSumGrid = null;
+        Grids_Grid2DSquareCellDouble nWSumGrid = null;
+        Grids_Grid2DSquareCellDouble wSumNGrid = null;
 
-        Grid2DSquareCellDouble meanGrid = null;
-        Grid2DSquareCellDouble wMean1Grid = null;
-        Grid2DSquareCellDouble wMean2Grid = null;
-        Grid2DSquareCellDouble nWMeanGrid = null;
-        Grid2DSquareCellDouble wMeanNGrid = null;
+        Grids_Grid2DSquareCellDouble meanGrid = null;
+        Grids_Grid2DSquareCellDouble wMean1Grid = null;
+        Grids_Grid2DSquareCellDouble wMean2Grid = null;
+        Grids_Grid2DSquareCellDouble nWMeanGrid = null;
+        Grids_Grid2DSquareCellDouble wMeanNGrid = null;
 
-        Grid2DSquareCellDouble propGrid = null;
-        Grid2DSquareCellDouble wPropGrid = null;
-        Grid2DSquareCellDouble varGrid = null;
-        Grid2DSquareCellDouble wVarGrid = null;
-        Grid2DSquareCellDouble skewGrid = null;
-        Grid2DSquareCellDouble wSkewGrid = null;
-        Grid2DSquareCellDouble cVarGrid = null;
-        Grid2DSquareCellDouble wCVarGrid = null;
-        Grid2DSquareCellDouble cSkewGrid = null;
-        Grid2DSquareCellDouble wCSkewGrid = null;
+        Grids_Grid2DSquareCellDouble propGrid = null;
+        Grids_Grid2DSquareCellDouble wPropGrid = null;
+        Grids_Grid2DSquareCellDouble varGrid = null;
+        Grids_Grid2DSquareCellDouble wVarGrid = null;
+        Grids_Grid2DSquareCellDouble skewGrid = null;
+        Grids_Grid2DSquareCellDouble wSkewGrid = null;
+        Grids_Grid2DSquareCellDouble cVarGrid = null;
+        Grids_Grid2DSquareCellDouble wCVarGrid = null;
+        Grids_Grid2DSquareCellDouble cSkewGrid = null;
+        Grids_Grid2DSquareCellDouble wCSkewGrid = null;
 
         //Grid2DSquareCellDouble zscoreGrid = null;
         //Grid2DSquareCellDouble weightedZscoreGrid = null;
@@ -304,38 +304,38 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doSum || doWSum || doNWSum || doWSumN || doMean || doWMean1 || doWMean2 || doNWMean || doWMeanN) {
 
-            sumWeightGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+            sumWeightGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
 
             if (doSum) {
-                sumGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                sumGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWSum) {
-                wSumGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSumGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doNWSum) {
-                nWSumGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                nWSumGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWSumN) {
-                wSumNGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSumNGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
 
             if (doMean) {
-                meanGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                meanGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWMean1) {
-                wMean1Grid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wMean1Grid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWMean2) {
-                wMean2Grid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wMean2Grid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doNWMean) {
-                nWMeanGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                nWMeanGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWMeanN) {
-                wMeanNGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wMeanNGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
 
-            double[] kernelParameters = Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
+            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
             double totalSumWeight = kernelParameters[ 0];
             double totalCells = kernelParameters[ 1];
             double weight;
@@ -354,7 +354,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
             long col;
             int p;
             int q;
-            double[][] kernel = Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
+            double[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             for (row = 0; row < nrows; row++) {
 
@@ -503,37 +503,37 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
 
             if (doProp) {
-                propGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                propGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWProp) {
-                wPropGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wPropGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doVar) {
-                varGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                varGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWVar) {
-                wVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doSkew) {
-                skewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                skewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                wSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doCVar) {
-                cVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                cVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                wCVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                cSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                cSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                wCSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
 
-            double[] kernelParameters = Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
+            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
             double totalSumWeight = kernelParameters[ 0];
             double totalCells = kernelParameters[ 1];
             double weight;
@@ -555,7 +555,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
             long col;
             int p;
             int q;
-            double[][] kernel = Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
+            double[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             //double[][] meanData = getRowProcessInitialData( meanGrid, cellDistance, 0 );
             double[][] wMeanData = getRowProcessInitialData(wMean1Grid, cellDistance, 0);
@@ -753,10 +753,10 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
          * j, ( value - weightedMeanGrid.getCell( i, j ) ) /
          * weightedStandardDeviation ); } } } } Vector secondOrderStatistics =
          * new Vector( 1 ); secondOrderStatistics.add( new String( "Mean" ) );
-         * Grid2DSquareCellDouble[] meanWeightedZscoreGrid =
+         * Grids_Grid2DSquareCellDouble[] meanWeightedZscoreGrid =
          * regionUnivariateStatistics( weightedZscoreGrid,
          * secondOrderStatistics, distance, weightIntersect, weightFactor,
-         * gridFactory ); Grid2DSquareCellDouble[] meanZscoreGrid =
+         * gridFactory ); Grids_Grid2DSquareCellDouble[] meanZscoreGrid =
          * regionUnivariateStatistics( zscoreGrid, secondOrderStatistics,
          * distance, weightIntersect, weightFactor, gridFactory );
          * weightedZscoreGrid = meanWeightedZscoreGrid[ 0 ]; zscoreGrid =
@@ -891,7 +891,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     /**
      * Returns a Vector containing Grid2DSquareCellDoubles
      *
-     * @param grid the Grid2DSquareCellDouble to be processed
+     * @param grid the Grids_Grid2DSquareCellDouble to be processed
      * @param statistics
      * @param distance the distance defining the region within which values will
      * be used. At distances weights if applied are zero
@@ -911,13 +911,13 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      */
     // public Vector regionUnivariateStatisticsSlow(
     public List<Grids_AbstractGrid2DSquareCell> regionUnivariateStatisticsSlow(
-            Grid2DSquareCellDouble grid,
+            Grids_Grid2DSquareCellDouble grid,
             //Vector statistics,
             List<String> statistics,
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grid2DSquareCellDoubleFactory gridFactory) {
+            Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
         List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<Grids_AbstractGrid2DSquareCell>();
         //        Vector result = new Vector();
@@ -1037,20 +1037,20 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                 doWMean = true;
             }
         }
-        Grid2DSquareCellDouble meanGrid = null;
-        Grid2DSquareCellDouble wMeanGrid = null;
-        Grid2DSquareCellDouble sumGrid = null;
-        Grid2DSquareCellDouble wSumGrid = null;
-        Grid2DSquareCellDouble propGrid = null;
-        Grid2DSquareCellDouble wPropGrid = null;
-        Grid2DSquareCellDouble varGrid = null;
-        Grid2DSquareCellDouble wVarGrid = null;
-        Grid2DSquareCellDouble skewGrid = null;
-        Grid2DSquareCellDouble wSkewGrid = null;
-        Grid2DSquareCellDouble cVarGrid = null;
-        Grid2DSquareCellDouble wCVarGrid = null;
-        Grid2DSquareCellDouble cSkewGrid = null;
-        Grid2DSquareCellDouble wCSkewGrid = null;
+        Grids_Grid2DSquareCellDouble meanGrid = null;
+        Grids_Grid2DSquareCellDouble wMeanGrid = null;
+        Grids_Grid2DSquareCellDouble sumGrid = null;
+        Grids_Grid2DSquareCellDouble wSumGrid = null;
+        Grids_Grid2DSquareCellDouble propGrid = null;
+        Grids_Grid2DSquareCellDouble wPropGrid = null;
+        Grids_Grid2DSquareCellDouble varGrid = null;
+        Grids_Grid2DSquareCellDouble wVarGrid = null;
+        Grids_Grid2DSquareCellDouble skewGrid = null;
+        Grids_Grid2DSquareCellDouble wSkewGrid = null;
+        Grids_Grid2DSquareCellDouble cVarGrid = null;
+        Grids_Grid2DSquareCellDouble wCVarGrid = null;
+        Grids_Grid2DSquareCellDouble cSkewGrid = null;
+        Grids_Grid2DSquareCellDouble wCSkewGrid = null;
         double cellX;
         double cellY;
         double thisDistance;
@@ -1061,18 +1061,18 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
             if (doMean) {
-                meanGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                meanGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWMean) {
-                wMeanGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wMeanGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doSum) {
-                sumGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                sumGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWSum) {
-                wSumGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSumGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
-            double[] kernelParameters = Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
+            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
             double totalSumWeight = kernelParameters[ 0];
             double totalCells = kernelParameters[ 1];
             double weight;
@@ -1103,9 +1103,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                             if (value != noDataValue) {
                                 thisCellX = grid.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                 thisCellY = grid.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                thisDistance = Utilities.distance(cellX, cellY, thisCellX, thisCellY);
+                                thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                 if (thisDistance < distance) {
-                                    sumWeight += Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                    sumWeight += Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                     sumCells += 1.0d;
                                     sum += value;
                                 }
@@ -1122,9 +1122,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                 if (value != noDataValue) {
                                     thisCellX = grid.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                     thisCellY = grid.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                    thisDistance = Utilities.distance(cellX, cellY, thisCellX, thisCellY);
+                                    thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                     if (thisDistance < distance) {
-                                        weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                         //wMean += ( value / sumWeight ) * weight;
                                         //wMean += ( value / sumCells ) * weight;
                                         wSum += value * weight;
@@ -1155,37 +1155,37 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
 
             if (doProp) {
-                propGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                propGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWProp) {
-                wPropGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wPropGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doVar) {
-                varGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                varGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWVar) {
-                wVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doSkew) {
-                skewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                skewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                wSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doCVar) {
-                cVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                cVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                wCVarGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCVarGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                cSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                cSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                wCSkewGrid = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCSkewGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             }
 
-            double[] kernelParameters = Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
+            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
             double totalSumWeight = kernelParameters[ 0];
             double totalCells = kernelParameters[ 1];
             double weight;
@@ -1231,10 +1231,10 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                             if (value != noDataValue) {
                                 thisCellX = grid.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                 thisCellY = grid.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                thisDistance = Utilities.distance(cellX, cellY, thisCellX, thisCellY);
+                                thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                 if (thisDistance < distance) {
                                     wMean = wMeanGrid.getCell(row + p, col + q, env.HandleOutOfMemoryErrorFalse);
-                                    weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                    weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                     sumWeight += weight;
                                     sDWMean += (value - wMean) * weight;
                                     sDWMeanPow2 += Math.pow((value - wMean), 2.0d) * weight;
@@ -1364,10 +1364,10 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
          * j, ( value - weightedMeanGrid.getCell( i, j ) ) /
          * weightedStandardDeviation ); } } } } Vector secondOrderStatistics =
          * new Vector( 1 ); secondOrderStatistics.add( new String( "Mean" ) );
-         * Grid2DSquareCellDouble[] meanWeightedZscoreGrid =
+         * Grids_Grid2DSquareCellDouble[] meanWeightedZscoreGrid =
          * regionUnivariateStatistics( weightedZscoreGrid,
          * secondOrderStatistics, distance, weightIntersect, weightFactor,
-         * gridFactory ); Grid2DSquareCellDouble[] meanZscoreGrid =
+         * gridFactory ); Grids_Grid2DSquareCellDouble[] meanZscoreGrid =
          * regionUnivariateStatistics( zscoreGrid, secondOrderStatistics,
          * distance, weightIntersect, weightFactor, gridFactory );
          * weightedZscoreGrid = meanWeightedZscoreGrid[ 0 ]; zscoreGrid =
@@ -1446,7 +1446,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @param weightIntersect
      * @return 
      */
-    public double[] regionUnivariateStatistics(Grid2DSquareCellDouble grid, int rowIndex, int colIndex, String statistic, double distance, double weightIntersect, double weightFactor) {
+    public double[] regionUnivariateStatistics(Grids_Grid2DSquareCellDouble grid, int rowIndex, int colIndex, String statistic, double distance, double weightIntersect, double weightFactor) {
         return null;
     }
 
@@ -1459,9 +1459,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //     *                    < 0.0d means that the final scale has a weight of 1
     //     *                    > -1.0d && < 1.0d provides an inverse decay on scale weighting
     //     */
-    //    public Vector regionUnivariateStatisticsCrossScale( Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersect, double scaleFactor ) {
+    //    public Vector regionUnivariateStatisticsCrossScale( Grids_Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersect, double scaleFactor ) {
     //        try {
-    //            return regionUnivariateStatisticsCrossScale( grid, statistics, distance, weightIntersept, weightFactor, scaleIntersect, scaleFactor, new Grid2DSquareCellDoubleFactory() );
+    //            return regionUnivariateStatisticsCrossScale( grid, statistics, distance, weightIntersept, weightFactor, scaleIntersect, scaleFactor, new Grids_Grid2DSquareCellDoubleFactory() );
     //        } catch ( java.lang.OutOfMemoryError e ) {
     //            return regionUnivariateStatisticsCrossScale( grid, statistics, distance, weightIntersept, weightFactor, scaleIntersect, scaleFactor, new Grid2DSquareCellDoubleFileFactory() );
     //        }
@@ -1481,7 +1481,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @param weightFactor
      * @return 
      */
-    public Vector regionUnivariateStatisticsCrossScale(Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersept, double scaleFactor, Grid2DSquareCellDoubleFactory gridFactory) {
+    public Vector regionUnivariateStatisticsCrossScale(Grids_Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersept, double scaleFactor, Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         Vector result = new Vector();
         return result;
     }
@@ -1497,11 +1497,11 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @param distance - the distance limiting the maximum scale density surface
      */
     /*
-     * public Grid2DSquareCellDouble[] geometricDensity( Grid2DSquareCellDouble
+     * public Grids_Grid2DSquareCellDouble[] geometricDensity( Grids_Grid2DSquareCellDouble
      * grid, double distance ) { int nrows = grid.get_NRows(); int ncols =
      * grid.get_NCols(); double cellsize = grid.getCellsize(); double
-     * noDataValue = grid.get_NoDataValue(); Grid2DSquareCellDouble[] result =
-     * null; try { result = ( new Grid2DSquareCellDoubleFactory()
+     * noDataValue = grid.get_NoDataValue(); Grids_Grid2DSquareCellDouble[] result =
+     * null; try { result = ( new Grids_Grid2DSquareCellDoubleFactory()
      * ).createGrid2DSquareCellDouble( nrows, ncols, grid.getXllcorner(),
      * grid.getYllcorner(), cellsize, noDataValue ); } catch (
      * java.lang.OutOfMemoryError e0 ) { try { if ( grid instanceof
@@ -1516,13 +1516,13 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * System.out.println( e1 ); boolean set = false; while ( ! set ) { try {
      * System.out.println( "Please try setting a different directory for storing
      * the data." ); result = ( new Grid2DSquareCellDoubleFileFactory(
-     * Utilities.setDirectory() ) ).createGrid2DSquareCellDouble( nrows, ncols,
+     * Grids_Utilities.setDirectory() ) ).createGrid2DSquareCellDouble( nrows, ncols,
      * grid.getXllcorner(), cellsize, grid.getYllcorner(), noDataValue ); set =
      * true; //} catch ( java.io.IOException e2 ) { } catch (
      * java.lang.Exception e2 ) { System.out.println( e1 ); } } } } int
      * cellDistance = ( int ) Math.ceil( distance / cellsize ); double weight =
      * 1.0d; double d1; boolean chunkProcess = false; try { densityArray =
-     * geometricDensity( grid, distance, new Grid2DSquareCellDoubleFactory() ) ;
+     * geometricDensity( grid, distance, new Grids_Grid2DSquareCellDoubleFactory() ) ;
      * } catch ( java.lang.OutOfMemoryError e ) { if ( cellDistance < (
      * Math.max( nrows, ncols ) / 2 ) ) { System.out.println( e.toString() +
      * "... Attempting to process in chunks..." ); int chunkSize = cellDistance;
@@ -1539,7 +1539,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * System.out.println( e1 ); boolean set = false; while ( ! set ) { try {
      * System.out.println( "Please try setting a different directory for storing
      * the data." ); densityArray = geometricDensity( grid, distance, new
-     * Grid2DSquareCellDoubleFileFactory( Utilities.setDirectory() ) ); set =
+     * Grid2DSquareCellDoubleFileFactory( Grids_Utilities.setDirectory() ) ); set =
      * true; //} catch ( java.io.IOException e2 ) { } catch (
      * java.lang.Exception e2 ) { System.out.println( e1 ); } } } } } if ( !
      * chunkProcess ) { double thisDistance = cellsize; for ( int i = 0; i <
@@ -1549,27 +1549,27 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * weight ); } } thisDistance *= 2.0d; } } return result; }
      */
     /**
-     * Returns an Grid2DSquareCellDouble[] containing geometric density surfaces
-     * at a range of scales: result[ 0 ] - is the result at the first scale (
-     * double the cellsize of grid ) result[ 1 ] - if it exists is the result at
-     * the second scale ( double the cellsize of result[ 0 ] ) result[ n ] - if
-     * it exists is the result at the ( n + 1 )th scale ( double the cellsize of
-     * result[ n - 1 ] ) The algorithm used for generating a geometric density
-     * surface is described in: Turner A (2000) Density Data Generation for
-     * Spatial Data Mining Applications.
+     * Returns an Grids_Grid2DSquareCellDouble[] containing geometric density surfaces
+ at a range of scales: result[ 0 ] - is the result at the first scale (
+ double the cellsize of grid ) result[ 1 ] - if it exists is the result at
+ the second scale ( double the cellsize of result[ 0 ] ) result[ n ] - if
+ it exists is the result at the ( n + 1 )th scale ( double the cellsize of
+ result[ n - 1 ] ) The algorithm used for generating a geometric density
+ surface is described in: Turner A (2000) Density Data Generation for
+ Spatial Data Mining Applications.
      * http://www.geog.leeds.ac.uk/people/a.turner/papers/geocomp00/gc_017.htm
      *
-     * @param grid - the input Grid2DSquareCellDouble
+     * @param grid - the input Grids_Grid2DSquareCellDouble
      * @param distance - the distance limiting the maximum scale of geometric
      * density surface produced
-     * @param gridFactory - the Grid2DSquareCellDoubleFactory to be used in
-     * processing
+     * @param gridFactory - the Grids_Grid2DSquareCellDoubleFactory to be used in
+ processing
      * @return 
      */
-    public Grid2DSquareCellDouble[] geometricDensity(
-            Grid2DSquareCellDouble grid,
+    public Grids_Grid2DSquareCellDouble[] geometricDensity(
+            Grids_Grid2DSquareCellDouble grid,
             double distance,
-            Grid2DSquareCellDoubleFactory gridFactory) {
+            Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
         BigInteger nonNoDataValueCount =
                 grid.getGridStatistics(handleOutOfMemoryError).getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
@@ -1604,17 +1604,17 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                 break;
             }
         }
-        Grid2DSquareCellDouble[] result = new Grid2DSquareCellDouble[numberOfIterations];
+        Grids_Grid2DSquareCellDouble[] result = new Grids_Grid2DSquareCellDouble[numberOfIterations];
         // If all values are noDataValues return noDataValue density results
         if (nonNoDataValueCount.compareTo(BigInteger.ONE) > -1) {
             for (int i = 0; i < numberOfIterations; i++) {
-                result[ i] = (Grid2DSquareCellDouble) gridFactory.create(grid);
+                result[ i] = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid);
             }
             return result;
         }
         // Initialise temporary numerator and normaliser grids
-        Grid2DSquareCellDouble g2 = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
-        Grid2DSquareCellDouble g3 = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble g2 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble g3 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
                 d1 = grid.getCell(row, col, env.HandleOutOfMemoryErrorFalse);
@@ -1627,20 +1627,20 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
             }
         }
         // Densification
-        Grid2DSquareCellDouble g4;
-        Grid2DSquareCellDouble g5;
-        Grid2DSquareCellDouble g6;
-        Grid2DSquareCellDouble g7;
-        Grid2DSquareCellDouble density;
+        Grids_Grid2DSquareCellDouble g4;
+        Grids_Grid2DSquareCellDouble g5;
+        Grids_Grid2DSquareCellDouble g6;
+        Grids_Grid2DSquareCellDouble g7;
+        Grids_Grid2DSquareCellDouble density;
         for (int iteration = 0; iteration < numberOfIterations; iteration++) {
             //System.out.println( "Iteration " + ( iteration + 1 ) + " out of " + numberOfIterations );
             height += doubler;
             width += doubler;
             growth *= 2;
             // Step 1: Aggregate
-            g4 = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
-            g5 = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
-            g6 = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
+            g4 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
+            g5 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
+            g6 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols);
             for (int p = 0; p < doubler; p++) {
                 for (int q = 0; q < doubler; q++) {
                     for (row = 0; row < height; row += doubler) {
@@ -1705,7 +1705,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
             //    processing strategies this step can probably be speeded up a lot.
             //density = gridFactory.createGrid2DSquareCellDouble( nrows, ncols, 0.0d, 0.0d, cellsize, 0.0d );
             gridFactory.set_NoDataValue(noDataValue);
-            density = (Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
+            density = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, dimensions);
             for (row = 0; row < nrows; row += doubler) {
                 for (int p = 0; p < doubler; p++) {
                     for (col = 0; col < ncols; col += doubler) {
@@ -1753,7 +1753,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     }
 
     //    /**
-    //     * Returns an Grid2DSquareCellDouble[] containing geometric density surfaces at a range of
+    //     * Returns an Grids_Grid2DSquareCellDouble[] containing geometric density surfaces at a range of
     //     * scales:
     //     * result[ 0 ] - is the result at the first scale ( double the cellsize of grid )
     //     * result[ 1 ] - if it exists is the result at the second scale ( double the cellsize of result[ 0 ] )
@@ -1761,16 +1761,16 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //     * The algorithm used for generating a geometric density surface is described in:
     //     * Turner A (2000) Density Data Generation for Spatial Data Mining Applications.
     //     * http://www.geog.leeds.ac.uk/people/a.turner/papers/geocomp00/gc_017.htm
-    //     * @param grid - the input Grid2DSquareCellDouble
+    //     * @param grid - the input Grids_Grid2DSquareCellDouble
     //     * @param distance - the distance limiting the maximum scale of geometric density surface produced
     //     * @param ff - an Grid2DSquareCellDoubleFileFactory to be used in the event of running out of memory
     //     * @param chunksize - the number of rows/columns in largest chunks processed
     //     */
-    //    public Grid2DSquareCellDouble[] geometricDensity( Grid2DSquareCellDouble grid, double distance, Grid2DSquareCellDoubleFileFactory ff, int chunkSize ) {
+    //    public Grids_Grid2DSquareCellDouble[] geometricDensity( Grids_Grid2DSquareCellDouble grid, double distance, Grid2DSquareCellDoubleFileFactory ff, int chunkSize ) {
     //        // Allocate some memory for management
-    //        int[] memoryGrab = Utilities.memoryAllocation( 10000 );
+    //        int[] memoryGrab = Grids_Utilities.memoryAllocation( 10000 );
     //        boolean outOfMemoryTrigger0 = false;
-    //        Grid2DSquareCellDouble[] result = null;
+    //        Grids_Grid2DSquareCellDouble[] result = null;
     //        Grid2DSquareCellDoubleJAIFactory jf = new Grid2DSquareCellDoubleJAIFactory();
     //        int nrows = grid.get_NRows();
     //        int ncols = grid.get_NCols();
@@ -1794,7 +1794,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //                break;
     //            }
     //        }
-    //        result = new Grid2DSquareCellDouble[ numberOfIterations ];
+    //        result = new Grids_Grid2DSquareCellDouble[ numberOfIterations ];
     //        for ( int i = 0; i < numberOfIterations; i ++ ) {
     //            result[ i ] = ff.createGrid2DSquareCellDouble( nrows, ncols, xllcorner, yllcorner, cellsize, noDataValue, 1 );
     //            //System.out.println( result[ i ].toString() );
@@ -1805,8 +1805,8 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //        int endRowIndex = chunkSize - 1 + cellDistance;
     //        int startColIndex = 0 - cellDistance;
     //        int endColIndex = chunkSize - 1 + cellDistance;
-    //        Grid2DSquareCellDouble chunk;
-    //        Grid2DSquareCellDouble chunkDensity[];
+    //        Grids_Grid2DSquareCellDouble chunk;
+    //        Grids_Grid2DSquareCellDouble chunkDensity[];
     //        boolean outOfMemoryTrigger1 = false;
     //        for ( int rowChunk = 0; rowChunk < rowChunks; rowChunk ++ ) {
     //            if ( endRowIndex > nrows - 1 + cellDistance ) {
@@ -1865,11 +1865,11 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //        return result;
     //    }
     //    /**
-    //     * Returns an Grid2DSquareCellDouble[] result with elements based on
+    //     * Returns an Grids_Grid2DSquareCellDouble[] result with elements based on
     //     * statistics and values based on bivariate comparison of grid0 and grid1,
     //     * distance, weightIntersect and weightFactor.
-    //     * @param grid0 the Grid2DSquareCellDouble to be regionBivariateStatisticsd with grid1
-    //     * @param grid1 the Grid2DSquareCellDouble to be regionBivariateStatisticsd with grid0
+    //     * @param grid0 the Grids_Grid2DSquareCellDouble to be regionBivariateStatisticsd with grid1
+    //     * @param grid1 the Grids_Grid2DSquareCellDouble to be regionBivariateStatisticsd with grid0
     //     * @param statistics a String[] whose elements may be "diff", "correlation",
     //     *                   "zdiff", "density". If they are then the respective
     //     *                   Geographically Weighted Statistics (GWS) are returned
@@ -1885,12 +1885,12 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //     * TODO:
     //     * 1. Check and ensure that reasonable answers are returned for grids with different spatial frames.
     //     */
-    //    public Grid2DSquareCellDouble[] regionBivariateStatistics( Grid2DSquareCellDouble grid0, Grid2DSquareCellDouble grid1, Vector statistics ) {
+    //    public Grids_Grid2DSquareCellDouble[] regionBivariateStatistics( Grids_Grid2DSquareCellDouble grid0, Grids_Grid2DSquareCellDouble grid1, Vector statistics ) {
     //        double distance = grid0.getCellsize() * 5.0d;
     //        double weightIntercept = 1.0d;
     //        double weightFactor = 2.0d;
     //        try {
-    //            return regionBivariateStatistics( grid0, grid1, statistics, distance, weightIntercept, weightFactor, new Grid2DSquareCellDoubleFactory() );
+    //            return regionBivariateStatistics( grid0, grid1, statistics, distance, weightIntercept, weightFactor, new Grids_Grid2DSquareCellDoubleFactory() );
     //        } catch ( OutOfMemoryError _OutOfMemoryError1 ) {
     //            String dataDirectory = System.getProperty( "java.io.tmpdir" );
     //            if ( grid1 instanceof Grid2DSquareCellDoubleFile ) {
@@ -1901,14 +1901,14 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
     //        }
     //    }
     /**
-     * Returns an Grid2DSquareCellDouble[] result with elements based on
-     * statistics and values based on bivariate comparison of grid0 and grid1,
-     * distance, weightIntersect and weightFactor.
+     * Returns an Grids_Grid2DSquareCellDouble[] result with elements based on
+ statistics and values based on bivariate comparison of grid0 and grid1,
+ distance, weightIntersect and weightFactor.
      *
-     * @param grid0 the Grid2DSquareCellDouble to be regionBivariateStatisticsd
-     * with grid1
-     * @param grid1 the Grid2DSquareCellDouble to be regionBivariateStatisticsd
-     * with grid0
+     * @param grid0 the Grids_Grid2DSquareCellDouble to be regionBivariateStatisticsd
+ with grid1
+     * @param grid1 the Grids_Grid2DSquareCellDouble to be regionBivariateStatisticsd
+ with grid0
      * @param statistics a String[] whose elements may be "diff", "abs", "corr1"
      * , "corr2", "zscore". If they are then the respective Geographically
      * Weighted Statistics (GWS) are returned in the result array
@@ -1926,14 +1926,14 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * correlated should have the same no data space.)
      * @return 
      */
-    public Grid2DSquareCellDouble[] regionBivariateStatistics(
-            Grid2DSquareCellDouble grid0,
-            Grid2DSquareCellDouble grid1,
+    public Grids_Grid2DSquareCellDouble[] regionBivariateStatistics(
+            Grids_Grid2DSquareCellDouble grid0,
+            Grids_Grid2DSquareCellDouble grid1,
             Vector statistics,
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grid2DSquareCellDoubleFactory gridFactory) {
+            Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
         // Initialisation
         boolean dodiff = false;
@@ -1961,15 +1961,15 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                 }
             }
         }
-        Grid2DSquareCellDouble[] result = new Grid2DSquareCellDouble[allStatistics];
-        Grid2DSquareCellDouble diffGrid = null;
-        Grid2DSquareCellDouble weightedDiffGrid = null;
-        Grid2DSquareCellDouble normalisedDiffGrid = null;
-        Grid2DSquareCellDouble weightedNormalisedDiffGrid = null;
-        Grid2DSquareCellDouble weightedCorrelationGrid = null;
-        Grid2DSquareCellDouble correlationGrid = null;
-        Grid2DSquareCellDouble weightedZdiffGrid = null;
-        Grid2DSquareCellDouble zdiffGrid = null;
+        Grids_Grid2DSquareCellDouble[] result = new Grids_Grid2DSquareCellDouble[allStatistics];
+        Grids_Grid2DSquareCellDouble diffGrid = null;
+        Grids_Grid2DSquareCellDouble weightedDiffGrid = null;
+        Grids_Grid2DSquareCellDouble normalisedDiffGrid = null;
+        Grids_Grid2DSquareCellDouble weightedNormalisedDiffGrid = null;
+        Grids_Grid2DSquareCellDouble weightedCorrelationGrid = null;
+        Grids_Grid2DSquareCellDouble correlationGrid = null;
+        Grids_Grid2DSquareCellDouble weightedZdiffGrid = null;
+        Grids_Grid2DSquareCellDouble zdiffGrid = null;
         long grid0Nrows = grid0.get_NRows(handleOutOfMemoryError);
         long grid0Ncols = grid0.get_NCols(handleOutOfMemoryError);
         BigDecimal[] grid0Dimensions = grid0.get_Dimensions(handleOutOfMemoryError);
@@ -2015,17 +2015,17 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
 
         // Set the total sum of all the weights (totalSumWeights) in a
         // region that would have no noDataValues
-        double[] kernelParameters = Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor);
+        double[] kernelParameters = Grids_Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor);
         double totalSumWeight = kernelParameters[ 0];
 
         // Difference
         if (dodiff) {
             gridFactory.set_NoDataValue(grid0NoDataValue);
 
-            diffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedDiffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            normalisedDiffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedNormalisedDiffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            diffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedDiffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            normalisedDiffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedNormalisedDiffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
 
             double max0;
             double max1;
@@ -2059,7 +2059,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                             x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                             y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                            thisDistance = Utilities.distance(x0, y0, x1, y1);
+                            thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                             if (thisDistance < distance) {
                                 value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                 value1 = grid1.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
@@ -2073,7 +2073,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                 }
                                 if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                     n++;
-                                    weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                    weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                     sumWeight += weight;
                                     weightedDiff += (value0 - value1) * weight;
                                     diff += value0 - value1;
@@ -2089,12 +2089,12 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                                     x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                     y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                    thisDistance = Utilities.distance(x0, y0, x1, y1);
+                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
                                         value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                         value1 = grid1.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                         if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
-                                            weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
                                             } else {
@@ -2125,10 +2125,10 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
         // temporarily fix range
         if (docorr || dozdiff) {
             gridFactory.set_NoDataValue(grid0NoDataValue);
-            weightedCorrelationGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            correlationGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedZdiffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            zdiffGrid = (Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedCorrelationGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            correlationGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedZdiffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            zdiffGrid = (Grids_Grid2DSquareCellDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             // setNumberOfPairs defines how many cells are needed to calculate correlation
             double max0;
             double max1;
@@ -2195,9 +2195,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                             x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                             y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                            thisDistance = Utilities.distance(x0, y0, x1, y1);
+                            thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                             if (thisDistance < distance) {
-                                weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                 value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                 value1 = grid1.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                 if (value0 != grid0NoDataValue) {
@@ -2226,9 +2226,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                                     x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                     y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                    thisDistance = Utilities.distance(x0, y0, x1, y1);
+                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
-                                        weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                         value0 = grid0.getCell(row + p, col + q, env.HandleOutOfMemoryErrorFalse);
                                         value1 = grid1.getCell(row + p, col + q, env.HandleOutOfMemoryErrorFalse);
                                         if (value0 != grid0NoDataValue) {
@@ -2256,9 +2256,9 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                                     x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                     y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                    thisDistance = Utilities.distance(x0, y0, x1, y1);
+                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
-                                        weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                         value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                         if (value0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
@@ -2311,7 +2311,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                                         x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                         y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                        thisDistance = Utilities.distance(x0, y0, x1, y1);
+                                        thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                         if (thisDistance < distance) {
                                             value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                             value1 = grid1.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
@@ -2326,7 +2326,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                                weight = Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                                 //weightedZdiff += ( ( ( ( value0 * weight ) - weightedMean0 ) / weightedStandardDeviation0 ) - ( ( ( value1 * weight ) - weightedMean1 ) / weightedStandardDeviation1 ) );
                                                 weightedZdiff += (((dummy0 - weightedMean0) / weightedStandardDeviation0) - ((dummy1 - weightedMean1) / weightedStandardDeviation1)) * weight;
                                             }
@@ -2340,7 +2340,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
                                         x1 = grid0.getCellXDouble(col + q, env.HandleOutOfMemoryErrorFalse);
                                         y1 = grid0.getCellYDouble(row + p, env.HandleOutOfMemoryErrorFalse);
-                                        thisDistance = Utilities.distance(x0, y0, x1, y1);
+                                        thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                         if (thisDistance < distance) {
                                             value0 = grid0.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);
                                             value1 = grid1.getCell(x1, y1, env.HandleOutOfMemoryErrorFalse);

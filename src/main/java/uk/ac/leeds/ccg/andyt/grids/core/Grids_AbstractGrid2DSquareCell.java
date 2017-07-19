@@ -35,9 +35,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
-import uk.ac.leeds.ccg.andyt.grids.utilities.FileCreator;
-import uk.ac.leeds.ccg.andyt.grids.utilities.UnsignedLongPowersOf2;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Utilities;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
  * Contains CellID and ChunkID classes, referencing and general geometry
@@ -69,16 +69,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
      */
     protected transient File _Directory;
     /**
-     * The AbstractGrid2DSquareCellChunk data cache. A collection is used
+     * The Grids_AbstractGrid2DSquareCellChunk data cache. A collection is used
      * rather than an array because an element of a collection set to null is
      * available for garbage collection whereas an element of an array set to
      * null seems not to be.
      */
-    protected transient HashMap<ChunkID, AbstractGrid2DSquareCellChunk> _ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
+    protected transient HashMap<ChunkID, Grids_AbstractGrid2DSquareCellChunk> _ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
     /**
      * A reference to the grid Statistics Object.
      */
-    protected AbstractGridStatistics _GridStatistics;
+    protected Grids_AbstractGridStatistics _GridStatistics;
     /**
      * For storing the number of chunk rows.
      */
@@ -123,11 +123,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
     protected int _DimensionsScale = 10;
     /**
      * For storing individual locations mapped to a binary encoded long. This
-     * is only used in Grid2DSquareCellDoubleChunk64CellMap and
-     * Grid2DSquareCellIntChunk64CellMap. It is stored in this to save it
-     * being stored in every chunk or calculated on the fly.
+ is only used in Grids_Grid2DSquareCellDoubleChunk64CellMap and
+ Grids_Grid2DSquareCellIntChunk64CellMap. It is stored in this to save it
+ being stored in every chunk or calculated on the fly.
      */
-    protected static UnsignedLongPowersOf2 _UnsignedLongPowersOf2;
+    protected static Grids_UnsignedLongPowersOf2 _UnsignedLongPowersOf2;
 
     /**
      * Initialises this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap by first
@@ -234,14 +234,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
         this._Dimensions[3] = new BigDecimal(_ChunkNCols);
         this._Dimensions[4] = new BigDecimal(_ChunkNRows);
         init_Dimensions(_Dimensions);
-        //this._Directory = FileCreator.createNewFile();
+        //this._Directory = Grids_FileCreator.createNewFile();
         this._Name = "DefaultName_" + getBasicDescription();
-        this._Directory = FileCreator.createNewFile(
+        this._Directory = Grids_FileCreator.createNewFile(
                 a_Grids_Environment._Directory,
                 _Name);
         this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap = new HashMap();
         //this._AbstractGrid2DSquareCell_HashSet = new HashSet();
-        this._GridStatistics = new GridStatistics0();
+        this._GridStatistics = new Grids_GridStatistics0();
         // Set the reference to this in the Grid Statistics
         this._GridStatistics.init(this);
         //this._GridStatistics.grid2DSquareCell = this;
@@ -316,10 +316,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * the _GridStatistics need to be made safe in that only copies of fields are
      * passed.
      */
-    public AbstractGridStatistics getGridStatistics(
+    public Grids_AbstractGridStatistics getGridStatistics(
             boolean handleOutOfMemoryError) {
         try {
-            AbstractGridStatistics result = getGridStatistics();
+            Grids_AbstractGridStatistics result = getGridStatistics();
             env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
@@ -346,7 +346,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * the _GridStatistics need to be made safe in that only copies of fields are
      * passed.
      */
-    protected AbstractGridStatistics getGridStatistics() {
+    protected Grids_AbstractGridStatistics getGridStatistics() {
 //        if ( this._GridStatistics.grid2DSquareCell != this ) {
 //            boolean DEBUG = true;
 //        }
@@ -354,18 +354,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the AbstractGrid2DSquareCellChunk with ChunkID._ChunkRowIndex equal
-     * to _ChunkRowIndex and ChunkID._ChunkColIndex equal to _ChunkColIndex.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ChunkID._ChunkRowIndex equal
+ to _ChunkRowIndex and ChunkID._ChunkColIndex equal to _ChunkColIndex.
      * @param a_ChunkRowIndex The ChunkID._ChunkRowIndex of the returned
-     *   AbstractGrid2DSquareCellChunk.
+   Grids_AbstractGrid2DSquareCellChunk.
      * @param a_ChunkColIndex The ChunkID._ChunkColIndex of the returned
-     *   AbstractGrid2DSquareCellChunk.
+   Grids_AbstractGrid2DSquareCellChunk.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
-    protected AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
+    protected Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             int a_ChunkRowIndex,
             int a_ChunkColIndex,
             boolean handleOutOfMemoryError) {
@@ -400,14 +400,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the AbstractGrid2DSquareCellChunk with ChunkID._ChunkRowIndex equal
-     * to _ChunkRowIndex and ChunkID._ChunkColIndex equal to _ChunkColIndex.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ChunkID._ChunkRowIndex equal
+ to _ChunkRowIndex and ChunkID._ChunkColIndex equal to _ChunkColIndex.
      * @param a_ChunkRowIndex The ChunkID._ChunkRowIndex of the returned
-     *   AbstractGrid2DSquareCellChunk.
+   Grids_AbstractGrid2DSquareCellChunk.
      * @param a_ChunkColIndex The ChunkID._ChunkColIndex of the returned
-     *   AbstractGrid2DSquareCellChunk.
+   Grids_AbstractGrid2DSquareCellChunk.
      */
-    protected AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
+    protected Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             int a_ChunkRowIndex,
             int a_ChunkColIndex) {
         ChunkID a_ChunkID = new ChunkID(
@@ -418,18 +418,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID.
-     * @param a_ChunkID The ChunkID of the returned AbstractGrid2DSquareCellChunk.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID.
+     * @param a_ChunkID The ChunkID of the returned Grids_AbstractGrid2DSquareCellChunk.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
-    public AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
+    public Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             ChunkID a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
-            AbstractGrid2DSquareCellChunk result =
+            Grids_AbstractGrid2DSquareCellChunk result =
                     getGrid2DSquareCellChunk(a_ChunkID);
             env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -455,12 +455,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID.
      *
      *
-     * @param a_ChunkID The ChunkID of the returned AbstractGrid2DSquareCellChunk.
+     * @param a_ChunkID The ChunkID of the returned Grids_AbstractGrid2DSquareCellChunk.
      */
-    protected AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
+    protected Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             ChunkID a_ChunkID) {
         boolean isInGrid = isInGrid(a_ChunkID);
         if (isInGrid) {
@@ -470,7 +470,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                 loadIntoCacheChunk(
                         a_ChunkID);
             }
-            return (AbstractGrid2DSquareCellChunk) this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.get(
+            return (Grids_AbstractGrid2DSquareCellChunk) this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.get(
                     a_ChunkID);
         }
         return null;
@@ -754,17 +754,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Sets the AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID to
-     * _Grid2DSquareCellChunk.
+     * Sets the Grids_AbstractGrid2DSquareCellChunk with ChunkID equal to _ChunkID to
+ _Grid2DSquareCellChunk.
      * @param a_Grid2DSquareCellChunk
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk that is set.
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk that is set.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
     public void setChunk(
-            AbstractGrid2DSquareCellChunk a_Grid2DSquareCellChunk,
+            Grids_AbstractGrid2DSquareCellChunk a_Grid2DSquareCellChunk,
             ChunkID a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -1034,8 +1034,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkRowIndex
-     * @return _ChunkNRows, the number of rows in AbstractGrid2DSquareCellChunk
-     * with ChunkID._ChunkRowIndex equal to _ChunkRowIndex.
+     * @return _ChunkNRows, the number of rows in Grids_AbstractGrid2DSquareCellChunk
+ with ChunkID._ChunkRowIndex equal to _ChunkRowIndex.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1066,8 +1066,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkRowIndex
-     * @return _ChunkNRows, the number of rows in AbstractGrid2DSquareCellChunk
-     * with ChunkID._ChunkRowIndex equal to _ChunkRowIndex.
+     * @return _ChunkNRows, the number of rows in Grids_AbstractGrid2DSquareCellChunk
+ with ChunkID._ChunkRowIndex equal to _ChunkRowIndex.
      */
     protected final int get_ChunkNRows(
             int chunkRowIndex) {
@@ -1119,8 +1119,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in AbstractGrid2DSquareCellChunk
-     * with ChunkID._ChunkColIndex equal to _ChunkColIndex.
+     * @return _ChunkNCols, the number of columns in Grids_AbstractGrid2DSquareCellChunk
+ with ChunkID._ChunkColIndex equal to _ChunkColIndex.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1151,8 +1151,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in AbstractGrid2DSquareCellChunk
-     * with ChunkID._ChunkColIndex equal to _ChunkColIndex.
+     * @return _ChunkNCols, the number of columns in Grids_AbstractGrid2DSquareCellChunk
+ with ChunkID._ChunkColIndex equal to _ChunkColIndex.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1187,8 +1187,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in AbstractGrid2DSquareCellChunk
-     * with ChunkID._ChunkColIndex equal to _ChunkColIndex.
+     * @return _ChunkNCols, the number of columns in Grids_AbstractGrid2DSquareCellChunk
+ with ChunkID._ChunkColIndex equal to _ChunkColIndex.
      */
     protected final int get_ChunkNCols(
             int chunkColIndex) {
@@ -1274,10 +1274,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return _ChunkNRows, the number of rows in AbstractGrid2DSquareCellChunk with
-     * ChunkID equal to _ChunkID
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk thats number
-     *   of rows is returned.
+     * @return _ChunkNRows, the number of rows in Grids_AbstractGrid2DSquareCellChunk with
+ ChunkID equal to _ChunkID
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk thats number
+   of rows is returned.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1307,10 +1307,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return _ChunkNRows, the number of rows in AbstractGrid2DSquareCellChunk with
-     * ChunkID equal to _ChunkID
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk thats number
-     *   of rows is returned.
+     * @return _ChunkNRows, the number of rows in Grids_AbstractGrid2DSquareCellChunk with
+ ChunkID equal to _ChunkID
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk thats number
+   of rows is returned.
      */
     protected final int getChunkNRows(
             ChunkID a_ChunkID) {
@@ -1322,10 +1322,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return _ChunkNCols, the number of columns in AbstractGrid2DSquareCellChunk with
-     * ChunkID equal to _ChunkID
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk thats number
-     *   of columns is returned.
+     * @return _ChunkNCols, the number of columns in Grids_AbstractGrid2DSquareCellChunk with
+ ChunkID equal to _ChunkID
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk thats number
+   of columns is returned.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1355,10 +1355,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return _ChunkNCols, the number of columns in AbstractGrid2DSquareCellChunk with
-     * ChunkID equal to _ChunkID
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk thats number
-     *   of columns is returned.
+     * @return _ChunkNCols, the number of columns in Grids_AbstractGrid2DSquareCellChunk with
+ ChunkID equal to _ChunkID
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk thats number
+   of columns is returned.
      */
     protected final int getChunkNCols(
             ChunkID a_ChunkID) {
@@ -1476,8 +1476,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return AbstractGrid2DSquareCellChunk cell value at at Point2D.Double point
-     * as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at at Point2D.Double point
+ as a double.
      * @param point The Point2D.Double for which the cell value is returned.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
@@ -1515,8 +1515,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return AbstractGrid2DSquareCellChunk cell value at at Point2D.Double point
-     * as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at at Point2D.Double point
+ as a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
     protected double getCellDouble(
@@ -1529,8 +1529,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return AbstractGrid2DSquareCellChunk cell value at at point given by
-     * x-coordinate x and y-coordinate y as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at at point given by
+ x-coordinate x and y-coordinate y as a double.
      * @param x The x coordinate of the point at which the cell value is returned.
      * @param y The y coordinate of the point at which the cell value is returned.
      * @param handleOutOfMemoryError
@@ -1575,8 +1575,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return AbstractGrid2DSquareCellChunk cell value at at point given by
-     * x-coordinate x and y-coordinate y as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at at point given by
+ x-coordinate x and y-coordinate y as a double.
      * @param x The x coordinate of the point at which the cell value is returned.
      * @param y The y coordinate of the point at which the cell value is returned.
      */
@@ -1593,8 +1593,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param a_CellRowIndex
      * @param a_CellColIndex
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
-     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal to
+ _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1639,8 +1639,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param a_CellRowIndex
      * @param a_CellColIndex
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
-     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal to
+ _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param cellRowIndex The cell row index of the .
      */
     protected double getCellDouble(
@@ -1656,8 +1656,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
-     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal to
+ _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
@@ -1710,8 +1710,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * TODO
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
-     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal to
+ _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param a_ChunkRowIndex The cell chunk row index.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
@@ -1722,14 +1722,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int chunkCellRowIndex,
             int chunkCellColIndex) {
         if (!isInGrid(chunkRowIndex, chunkColIndex)) {
-            if (this instanceof Grid2DSquareCellDouble) {
-                return ((Grid2DSquareCellDouble) this)._NoDataValue;
+            if (this instanceof Grids_Grid2DSquareCellDouble) {
+                return ((Grids_Grid2DSquareCellDouble) this)._NoDataValue;
             } else {
-                //this instanceof Grid2DSquareCellInt
-                return ((Grid2DSquareCellInt) this).getNoDataValue();
+                //this instanceof Grids_Grid2DSquareCellInt
+                return ((Grids_Grid2DSquareCellInt) this).getNoDataValue();
             }
         }
-        AbstractGrid2DSquareCellChunk grid2DSquareCellChunk =
+        Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk =
                 getGrid2DSquareCellChunk(
                 chunkRowIndex,
                 chunkColIndex);
@@ -1748,10 +1748,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
-     * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
-     *   the cell.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
+     * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk containing
+   the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -1760,7 +1760,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
     public double getCellDouble(
-            AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
+            Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
             int chunkRowIndex,
             int chunkColIndex,
             int chunkCellRowIndex,
@@ -1807,61 +1807,61 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
-     * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
-     *   the cell.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a double.
+     * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk containing
+   the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
     protected double getCellDouble(
-            AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
+            Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
             int chunkRowIndex,
             int chunkColIndex,
             int chunkCellRowIndex,
             int chunkCellColIndex) {
-        if (grid2DSquareCellChunk instanceof AbstractGrid2DSquareCellDoubleChunk) {
-            AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk =
-                    (AbstractGrid2DSquareCellDoubleChunk) grid2DSquareCellChunk;
-            Grid2DSquareCellDouble grid2DSquareCellDouble =
+        if (grid2DSquareCellChunk instanceof Grids_AbstractGrid2DSquareCellDoubleChunk) {
+            Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk =
+                    (Grids_AbstractGrid2DSquareCellDoubleChunk) grid2DSquareCellChunk;
+            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble =
                     grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
             double noDataValue = grid2DSquareCellDouble._NoDataValue;
             if (grid2DSquareCellChunk.getClass()
-                    == Grid2DSquareCellDoubleChunk64CellMap.class) {
-                Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
-                        (Grid2DSquareCellDoubleChunk64CellMap) grid2DSquareCellDoubleChunk;
+                    == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
+                Grids_Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
+                        (Grids_Grid2DSquareCellDoubleChunk64CellMap) grid2DSquareCellDoubleChunk;
                 return grid2DSquareCellDoubleChunk.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkArray.class) {
-                Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
-                        (Grid2DSquareCellDoubleChunkArray) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+                Grids_Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
+                        (Grids_Grid2DSquareCellDoubleChunkArray) grid2DSquareCellDoubleChunk;
                 return grid2DSquareCellDoubleChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkJAI.class) {
-                Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
-                        (Grid2DSquareCellDoubleChunkJAI) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
+                Grids_Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
+                        (Grids_Grid2DSquareCellDoubleChunkJAI) grid2DSquareCellDoubleChunk;
                 return grid2DSquareCellDoubleChunkJAI.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkMap.class) {
-                Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
-                        (Grid2DSquareCellDoubleChunkMap) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+                Grids_Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
+                        (Grids_Grid2DSquareCellDoubleChunkMap) grid2DSquareCellDoubleChunk;
                 return grid2DSquareCellDoubleChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkRAF.class) {
-                Grid2DSquareCellDoubleChunkRAF grid2DSquareCellDoubleChunkRAF =
-                        (Grid2DSquareCellDoubleChunkRAF) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkRAF.class) {
+                Grids_Grid2DSquareCellDoubleChunkRAF grid2DSquareCellDoubleChunkRAF =
+                        (Grids_Grid2DSquareCellDoubleChunkRAF) grid2DSquareCellDoubleChunk;
                 return grid2DSquareCellDoubleChunkRAF.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
@@ -1869,48 +1869,48 @@ public abstract class Grids_AbstractGrid2DSquareCell
             }
             return noDataValue;
         } else {
-            //( grid2DSquareCellChunk instanceof AbstractGrid2DSquareCellIntChunk )
-            AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk =
-                    (AbstractGrid2DSquareCellIntChunk) grid2DSquareCellChunk;
-            Grid2DSquareCellInt grid2DSquareCellInt =
+            //( grid2DSquareCellChunk instanceof Grids_AbstractGrid2DSquareCellIntChunk )
+            Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk =
+                    (Grids_AbstractGrid2DSquareCellIntChunk) grid2DSquareCellChunk;
+            Grids_Grid2DSquareCellInt grid2DSquareCellInt =
                     grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
             int noDataValue = grid2DSquareCellInt.getNoDataValue(true);
             if (grid2DSquareCellChunk.getClass()
-                    == Grid2DSquareCellIntChunk64CellMap.class) {
-                Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
-                        (Grid2DSquareCellIntChunk64CellMap) grid2DSquareCellIntChunk;
+                    == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
+                Grids_Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
+                        (Grids_Grid2DSquareCellIntChunk64CellMap) grid2DSquareCellIntChunk;
                 return (double) grid2DSquareCellIntChunk.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkArray.class) {
-                Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
-                        (Grid2DSquareCellIntChunkArray) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
+                Grids_Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
+                        (Grids_Grid2DSquareCellIntChunkArray) grid2DSquareCellIntChunk;
                 return (double) grid2DSquareCellIntChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkJAI.class) {
-                Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
-                        (Grid2DSquareCellIntChunkJAI) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkJAI.class) {
+                Grids_Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
+                        (Grids_Grid2DSquareCellIntChunkJAI) grid2DSquareCellIntChunk;
                 return (double) grid2DSquareCellIntChunkJAI.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkMap.class) {
-                Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
-                        (Grid2DSquareCellIntChunkMap) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
+                Grids_Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
+                        (Grids_Grid2DSquareCellIntChunkMap) grid2DSquareCellIntChunk;
                 return (double) grid2DSquareCellIntChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkRAF.class) {
-                Grid2DSquareCellIntChunkRAF grid2DSquareCellIntChunkRAF =
-                        (Grid2DSquareCellIntChunkRAF) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkRAF.class) {
+                Grids_Grid2DSquareCellIntChunkRAF grid2DSquareCellIntChunkRAF =
+                        (Grids_Grid2DSquareCellIntChunkRAF) grid2DSquareCellIntChunk;
                 return (double) grid2DSquareCellIntChunkRAF.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
@@ -1923,8 +1923,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param a_CellRowIndex
      * @param a_CellColIndex
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal 
-     * to a_CellRowIndex, cell col index equal to a_CellColIndex as a int.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal 
+ to a_CellRowIndex, cell col index equal to a_CellColIndex as a int.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -1965,8 +1965,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return AbstractGrid2DSquareCellChunk cell value at cell row index equal to
-     * _CellRowIndex, cell col index equal to _CellColIndex as a int.
+     * @return Grids_AbstractGrid2DSquareCellChunk cell value at cell row index equal to
+ _CellRowIndex, cell col index equal to _CellColIndex as a int.
      * @param cellRowIndex The cell row index.
      * @param cellColIndex The cell column index.
      */
@@ -1984,8 +1984,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkRowIndex
      * @param chunkColIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -2037,8 +2037,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkRowIndex
      * @param chunkColIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -2047,7 +2047,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int chunkColIndex,
             int chunkCellRowIndex,
             int chunkCellColIndex) {
-        AbstractGrid2DSquareCellChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
+        Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return getCellInt(
@@ -2062,10 +2062,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
-     * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
-     *   the cell.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
+     * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk containing
+   the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError
@@ -2074,7 +2074,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   If false then OutOfMemoryErrors are caught and thrown.
      */
     public int getCellInt(
-            AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
+            Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
             int chunkRowIndex,
             int chunkColIndex,
             int chunkCellRowIndex,
@@ -2120,60 +2120,60 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of AbstractGrid2DSquareCellChunk given by chunk
-     * row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
-     * @param grid2DSquareCellChunk The AbstractGrid2DSquareCellChunk containing
-     *   the cell.
+ col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given by chunk
+ row index _ChunkRowIndex, chunk col index _ChunkColIndex as a int.
+     * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk containing
+   the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
     protected int getCellInt(
-            AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
+            Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk,
             int chunkRowIndex,
             int chunkColIndex,
             int chunkCellRowIndex,
             int chunkCellColIndex) {
-        if (grid2DSquareCellChunk instanceof AbstractGrid2DSquareCellDoubleChunk) {
-            AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk =
-                    (AbstractGrid2DSquareCellDoubleChunk) grid2DSquareCellChunk;
-            Grid2DSquareCellDouble grid2DSquareCellDouble =
+        if (grid2DSquareCellChunk instanceof Grids_AbstractGrid2DSquareCellDoubleChunk) {
+            Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk =
+                    (Grids_AbstractGrid2DSquareCellDoubleChunk) grid2DSquareCellChunk;
+            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble =
                     grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
             double noDataValue = grid2DSquareCellDouble._NoDataValue;
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunk64CellMap.class) {
-                Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
-                        (Grid2DSquareCellDoubleChunk64CellMap) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
+                Grids_Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
+                        (Grids_Grid2DSquareCellDoubleChunk64CellMap) grid2DSquareCellDoubleChunk;
                 return (int) grid2DSquareCellDoubleChunk64CellMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkArray.class) {
-                Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
-                        (Grid2DSquareCellDoubleChunkArray) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+                Grids_Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
+                        (Grids_Grid2DSquareCellDoubleChunkArray) grid2DSquareCellDoubleChunk;
                 return (int) grid2DSquareCellDoubleChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkJAI.class) {
-                Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
-                        (Grid2DSquareCellDoubleChunkJAI) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
+                Grids_Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
+                        (Grids_Grid2DSquareCellDoubleChunkJAI) grid2DSquareCellDoubleChunk;
                 return (int) grid2DSquareCellDoubleChunkJAI.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkMap.class) {
-                Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
-                        (Grid2DSquareCellDoubleChunkMap) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+                Grids_Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
+                        (Grids_Grid2DSquareCellDoubleChunkMap) grid2DSquareCellDoubleChunk;
                 return (int) grid2DSquareCellDoubleChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellDoubleChunkRAF.class) {
-                Grid2DSquareCellDoubleChunkRAF grid2DSquareCellDoubleChunkRAF =
-                        (Grid2DSquareCellDoubleChunkRAF) grid2DSquareCellDoubleChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkRAF.class) {
+                Grids_Grid2DSquareCellDoubleChunkRAF grid2DSquareCellDoubleChunkRAF =
+                        (Grids_Grid2DSquareCellDoubleChunkRAF) grid2DSquareCellDoubleChunk;
                 return (int) grid2DSquareCellDoubleChunkRAF.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
@@ -2181,47 +2181,47 @@ public abstract class Grids_AbstractGrid2DSquareCell
             }
             return (int) noDataValue;
         } else {
-            //if ( grid2DSquareCellChunk instanceof AbstractGrid2DSquareCellIntChunk ) {
-            AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk =
-                    (AbstractGrid2DSquareCellIntChunk) grid2DSquareCellChunk;
-            Grid2DSquareCellInt grid2DSquareCellInt =
+            //if ( grid2DSquareCellChunk instanceof Grids_AbstractGrid2DSquareCellIntChunk ) {
+            Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk =
+                    (Grids_AbstractGrid2DSquareCellIntChunk) grid2DSquareCellChunk;
+            Grids_Grid2DSquareCellInt grid2DSquareCellInt =
                     grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
             int noDataValue = grid2DSquareCellInt.getNoDataValue();
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunk64CellMap.class) {
-                Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
-                        (Grid2DSquareCellIntChunk64CellMap) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
+                Grids_Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
+                        (Grids_Grid2DSquareCellIntChunk64CellMap) grid2DSquareCellIntChunk;
                 return grid2DSquareCellIntChunk64CellMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkArray.class) {
-                Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
-                        (Grid2DSquareCellIntChunkArray) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
+                Grids_Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
+                        (Grids_Grid2DSquareCellIntChunkArray) grid2DSquareCellIntChunk;
                 return grid2DSquareCellIntChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkJAI.class) {
-                Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
-                        (Grid2DSquareCellIntChunkJAI) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkJAI.class) {
+                Grids_Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
+                        (Grids_Grid2DSquareCellIntChunkJAI) grid2DSquareCellIntChunk;
                 return grid2DSquareCellIntChunkJAI.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkMap.class) {
-                Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
-                        (Grid2DSquareCellIntChunkMap) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
+                Grids_Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
+                        (Grids_Grid2DSquareCellIntChunkMap) grid2DSquareCellIntChunk;
                 return grid2DSquareCellIntChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         noDataValue);
             }
-            if (grid2DSquareCellChunk.getClass() == Grid2DSquareCellIntChunkRAF.class) {
-                Grid2DSquareCellIntChunkRAF grid2DSquareCellIntChunkRAF =
-                        (Grid2DSquareCellIntChunkRAF) grid2DSquareCellIntChunk;
+            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunkRAF.class) {
+                Grids_Grid2DSquareCellIntChunkRAF grid2DSquareCellIntChunkRAF =
+                        (Grids_Grid2DSquareCellIntChunkRAF) grid2DSquareCellIntChunk;
                 return grid2DSquareCellIntChunkRAF.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
@@ -2329,7 +2329,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             for (q = -cellDistance; q
                     <= cellDistance; q++) {
                 thisCellX = getCellXDouble(cellColIndex + q);
-                thisDistance = Utilities.distance(thisCellX, thisCellY, x, y);
+                thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, x, y);
                 if (thisDistance < distance) {
                     ChunkID a_ChunkID = new ChunkID(
                             get_ChunkNRows(),
@@ -2343,8 +2343,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Chunk column index for the AbstractGrid2DSquareCellChunk
-     * intersecting the x-coordinate x.
+     * @return Chunk column index for the Grids_AbstractGrid2DSquareCellChunk
+ intersecting the x-coordinate x.
      *
      * @param x The x-coordinate of the line intersecting the chunk column
      *   index returned.
@@ -2377,8 +2377,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Chunk column index for the AbstractGrid2DSquareCellChunk
-     * intersecting the x-coordinate x.
+     * @return Chunk column index for the Grids_AbstractGrid2DSquareCellChunk
+ intersecting the x-coordinate x.
      * @param x The x-coordinate of the line intersecting the chunk column
      *   index returned.
      */
@@ -2388,8 +2388,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Chunk column index for the AbstractGrid2DSquareCellChunk
-     * intersecting the cell column index _CellColIndex.
+     * @return Chunk column index for the Grids_AbstractGrid2DSquareCellChunk
+ intersecting the cell column index _CellColIndex.
      * @param cellColIndex
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
@@ -2419,8 +2419,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Chunk column index for the AbstractGrid2DSquareCellChunk
-     * intersecting the cell column index _CellColIndex.
+     * @return Chunk column index for the Grids_AbstractGrid2DSquareCellChunk
+ intersecting the cell column index _CellColIndex.
      *
      * @param cellColIndex
      */
@@ -3018,9 +3018,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * If OutOfMemoryError is caught then an attempt is made to swap an
-     * AbstractGrid2DSquareCellChunk not in _Grid2DSquareCell_ChunkIDHashSet.
-     * If this is not done then any AbstractGrid2DSquareCellChunk is swapped and
-     * a warning is printed to sout
+ Grids_AbstractGrid2DSquareCellChunk not in _Grid2DSquareCell_ChunkIDHashSet.
+     * If this is not done then any Grids_AbstractGrid2DSquareCellChunk is swapped and
+ a warning is printed to sout
      * @param chunkRowIndex
      * @param chunkCellRowIndex
      * @param a_Grid2DSquareCell_ChunkID_HashSet_HashMap
@@ -3490,10 +3490,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File a seriailized version of a
-     * AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap. The first
-     * AbstractGrid2DSquareCellChunk attempted to be written is that with a
-     * chunk row index of 0, and a chunk column index of 0.
-     * @return ChunkID of the AbstractGrid2DSquareCellChunk which was swapped or null.
+ Grids_AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap. The first
+ Grids_AbstractGrid2DSquareCellChunk attempted to be written is that with a
+ chunk row index of 0, and a chunk column index of 0.
+     * @return ChunkID of the Grids_AbstractGrid2DSquareCellChunk which was swapped or null.
      */
     protected final ChunkID writeToFileGrid2DSquareCellChunk() {
         if (this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.isEmpty()) {
@@ -3506,13 +3506,13 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File a seriailized version of the
-     * AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by;
-     * chunk row index _ChunkRowIndex, chunk column index _ChunkColIndex.
+ Grids_AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by;
+ chunk row index _ChunkRowIndex, chunk column index _ChunkColIndex.
      * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk to be written.
+   Grids_AbstractGrid2DSquareCellChunk to be written.
      * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk to be written.
-     * @return True if AbstractGrid2DSquareCellChunk on file is up to date.
+   Grids_AbstractGrid2DSquareCellChunk to be written.
+     * @return True if Grids_AbstractGrid2DSquareCellChunk on file is up to date.
      */
     protected final boolean writeToFileGrid2DSquareCellChunk(
             int a_ChunkRowIndex,
@@ -3526,14 +3526,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File a seriailized version of the
-     * AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by _ChunkID.
-     * @param a_ChunkID The _ChunkID of the AbstractGrid2DSquareCellChunk to be written.
-     * @return True if AbstractGrid2DSquareCellChunk on file is up to date.
+ Grids_AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by _ChunkID.
+     * @param a_ChunkID The _ChunkID of the Grids_AbstractGrid2DSquareCellChunk to be written.
+     * @return True if Grids_AbstractGrid2DSquareCellChunk on file is up to date.
      */
     protected final boolean writeToFileGrid2DSquareCellChunk(
             ChunkID a_ChunkID) {
         boolean result = true;
-        AbstractGrid2DSquareCellChunk grid2DSquareCellChunk = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.get(a_ChunkID);
+        Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.get(a_ChunkID);
         if (grid2DSquareCellChunk != null) {
             if (!grid2DSquareCellChunk.getIsSwapUpToDate()) {
                 File file = new File(
@@ -3563,7 +3563,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File seriailized versions of all
-     * AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
+ Grids_AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
      */
     protected final void writeToFileGrid2DSquareCellChunks() {
         Iterator iterator = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.keySet().iterator();
@@ -3578,10 +3578,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File seriailized versions of those
-     * AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that
-     * have ChunkID equal to those in _ChunkIDs.
+ Grids_AbstractGrid2DSquareCellChunk in this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that
+ have ChunkID equal to those in _ChunkIDs.
      * @param a_ChunkID_HashSet A HashSet containing the ChunkID of the
-     *   AbstractGrid2DSquareCellChunk to be written to file.
+   Grids_AbstractGrid2DSquareCellChunk to be written to file.
      */
     protected final void writeToFileGrid2DSquareCellChunks(
             HashSet<ChunkID> a_ChunkID_HashSet) {
@@ -3597,7 +3597,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to file and clear from the cache a
-     * AbstractGrid2DSquareCellChunk in this.
+ Grids_AbstractGrid2DSquareCellChunk in this.
      * This is one of the lowest level memory handling operation of this class.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are
@@ -3839,7 +3839,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to file and clear from the cache a
-     * AbstractGrid2DSquareCellChunk in this.
+ Grids_AbstractGrid2DSquareCellChunk in this.
      * This is one of the lowest level memory handling operation of this class.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are
@@ -3946,14 +3946,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to write to file and clear from the cache a AbstractGrid2DSquareCellChunk
-     * in this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to write to file and clear from the cache a Grids_AbstractGrid2DSquareCellChunk
+ in this._AbstractGrid2DSquareCell_HashSet.
      * @param a_ChunkID A ChunkID not to be swapped
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return The ChunkID of AbstractGrid2DSquareCellChunk swapped or null.
+     * @return The ChunkID of Grids_AbstractGrid2DSquareCellChunk swapped or null.
      */
     public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             ChunkID a_ChunkID,
@@ -4005,10 +4005,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to write to file and clear from the cache a AbstractGrid2DSquareCellChunk
-     * in this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to write to file and clear from the cache a Grids_AbstractGrid2DSquareCellChunk
+ in this._AbstractGrid2DSquareCell_HashSet.
      * @param a_ChunkID
-     * @return The ChunkID of AbstractGrid2DSquareCellChunk swapped or null.
+     * @return The ChunkID of Grids_AbstractGrid2DSquareCellChunk swapped or null.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             ChunkID a_ChunkID) {
@@ -4148,7 +4148,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             ChunkID a_ChunkID,
@@ -4211,7 +4211,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * ChunkID _ChunkID.
      * @param _ChunkID
      * @return A HashSet with the ChunkIDs of those
-     * AbstractGrid2DSquareCellChunk swapped.
+ Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             ChunkID _ChunkID) {
@@ -4309,7 +4309,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public long swapToFile_Grid2DSquareCellChunksExcept_Account(
             HashSet<ChunkID> a_ChunkID_HashSet,
@@ -4348,10 +4348,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * Attempts to write to file and clear from the cache all
      * Grid2DSquareCellChunkAbstracts in this except that with
      * ChunkID _ChunkID.
-     * @param a_ChunkID_HashSet HashSet of AbstractGrid2DSquareCellChunk.ChunkIDs
-     * not to be swapped.
+     * @param a_ChunkID_HashSet HashSet of Grids_AbstractGrid2DSquareCellChunk.ChunkIDs
+ not to be swapped.
      * @return A HashSet with the ChunkIDs of those
-     * AbstractGrid2DSquareCellChunk swapped.
+ Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             HashSet<ChunkID> a_ChunkID_HashSet) {
@@ -4465,11 +4465,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to write to file and clear from the cache a AbstractGrid2DSquareCellChunk
-     * in this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to write to file and clear from the cache a Grids_AbstractGrid2DSquareCellChunk
+ in this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param a_ChunkID_HashSet
-     * @return The ChunkID of the AbstractGrid2DSquareCellChunk swapped or null.
+     * @return The ChunkID of the Grids_AbstractGrid2DSquareCellChunk swapped or null.
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             HashSet<ChunkID> a_ChunkID_HashSet) {
@@ -4511,7 +4511,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunks_AccountDetail(
             boolean handleOutOfMemoryError) {
@@ -4548,7 +4548,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * Attempts to swap seriailsed version of all _ChunkID_AbstractGrid2DSquareCellChunk_HashMap. This involves
      * writing them to files and then clearing them from the cache.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunks_AccountDetail() {
         HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>(1);
@@ -4582,22 +4582,22 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to swap seriailsed version of all AbstractGrid2DSquareCellChunk from
-     * (cri0, cci0) to (cri1, cci1) in row major order. This involves writing
+     * Attempts to swap seriailsed version of all Grids_AbstractGrid2DSquareCellChunk from
+ (cri0, cci0) to (cri1, cci1) in row major order. This involves writing
      * them to files and then clearing them from the cache.
-     * @param cri0 The chunk row index of the first AbstractGrid2DSquareCellChunk to be
-     *   swapped.
-     * @param cci0 The chunk column index of the first AbstractGrid2DSquareCellChunk to
-     *   be swapped.
-     * @param cri1 The chunk row index of the last AbstractGrid2DSquareCellChunk to be
-     *   swapped.
-     * @param cci1 The chunk column index of the last AbstractGrid2DSquareCellChunk to be
-     *   swapped.
+     * @param cri0 The chunk row index of the first Grids_AbstractGrid2DSquareCellChunk to be
+   swapped.
+     * @param cci0 The chunk column index of the first Grids_AbstractGrid2DSquareCellChunk to
+   be swapped.
+     * @param cri1 The chunk row index of the last Grids_AbstractGrid2DSquareCellChunk to be
+   swapped.
+     * @param cci1 The chunk column index of the last Grids_AbstractGrid2DSquareCellChunk to be
+   swapped.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
      *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public final long swapToFile_Grid2DSquareCellChunks_Account(
             int cri0,
@@ -4635,8 +4635,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to swap seriailsed version of all AbstractGrid2DSquareCellChunk from
-     * (cri0, cci0) to (cri1, cci1) in row major order. This involves writing
+     * Attempts to swap seriailsed version of all Grids_AbstractGrid2DSquareCellChunk from
+ (cri0, cci0) to (cri1, cci1) in row major order. This involves writing
      * them to files and then clearing them from the cache.
      * @param cri0 The chunk row index of the first Grid2DSquareCellChunks to be
      *   swapped.
@@ -4646,7 +4646,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *   swapped.
      * @param cci1 The chunk column index of the last Grid2DSquareCellChunks to
      *   be swapped.
-     * @return The number of AbstractGrid2DSquareCellChunk swapped.
+     * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     protected final long swapToFile_Grid2DSquareCellChunks_Account(
             int cri0,
@@ -4771,8 +4771,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * For releasing all AbstractGrid2DSquareCellChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
+     * For releasing all Grids_AbstractGrid2DSquareCellChunk in
+ this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
      *     then the method is re-called.
@@ -4798,16 +4798,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * For releasing all AbstractGrid2DSquareCellChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
+     * For releasing all Grids_AbstractGrid2DSquareCellChunk in
+ this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
      */
     protected final void clearFromCacheGrid2DSquareCellChunks() {
-        _ChunkID_AbstractGrid2DSquareCellChunk_HashMap = new HashMap<ChunkID, AbstractGrid2DSquareCellChunk>();
+        _ChunkID_AbstractGrid2DSquareCellChunk_HashMap = new HashMap<ChunkID, Grids_AbstractGrid2DSquareCellChunk>();
         System.gc();
     }
 
     /**
-     * Attempts to load into the memory cache a AbstractGrid2DSquareCellChunk with ChunkID
+     * Attempts to load into the memory cache a Grids_AbstractGrid2DSquareCellChunk with ChunkID
      * @param a_ChunkID The ChunkID of the grid2DSquareCellChunk to be restored.
      * @param handleOutOfMemoryError
      *   If true then OutOfMemoryErrors are caught, swap operations are initiated,
@@ -4837,11 +4837,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Attempts to load into the memory cache AbstractGrid2DSquareCellChunk with
-     * ChunkID equal to _ChunkID.
+     * Attempts to load into the memory cache Grids_AbstractGrid2DSquareCellChunk with
+ ChunkID equal to _ChunkID.
      *
      *
-     * @param a_ChunkID The ChunkID of the AbstractGrid2DSquareCellChunk to be restored.
+     * @param a_ChunkID The ChunkID of the Grids_AbstractGrid2DSquareCellChunk to be restored.
      */
     protected final void loadIntoCacheChunk(
             ChunkID a_ChunkID) {
@@ -4854,10 +4854,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     + "_" + a_ChunkID.getChunkColIndex());
 
             Object a_Object = Generic_StaticIO.readObject(file);
-            if (this.getClass() == Grid2DSquareCellInt.class) {
-                if (a_Object.getClass() == Grid2DSquareCellIntChunk64CellMap.class) {
-                    Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
-                            (Grid2DSquareCellIntChunk64CellMap) a_Object;
+            if (this.getClass() == Grids_Grid2DSquareCellInt.class) {
+                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
+                    Grids_Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap =
+                            (Grids_Grid2DSquareCellIntChunk64CellMap) a_Object;
                     grid2DSquareCellIntChunk64CellMap.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellIntChunk64CellMap.initChunkID(a_ChunkID);
@@ -4867,9 +4867,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellIntChunkArray.class) {
-                    Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
-                            (Grid2DSquareCellIntChunkArray) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
+                    Grids_Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray =
+                            (Grids_Grid2DSquareCellIntChunkArray) a_Object;
                     grid2DSquareCellIntChunkArray.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellIntChunkArray.initChunkID(a_ChunkID);
@@ -4879,9 +4879,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellIntChunkMap.class) {
-                    Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
-                            (Grid2DSquareCellIntChunkMap) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
+                    Grids_Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap =
+                            (Grids_Grid2DSquareCellIntChunkMap) a_Object;
                     grid2DSquareCellIntChunkMap.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellIntChunkMap.initChunkID(a_ChunkID);
@@ -4891,9 +4891,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellIntChunkJAI.class) {
-                    Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
-                            (Grid2DSquareCellIntChunkJAI) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkJAI.class) {
+                    Grids_Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI =
+                            (Grids_Grid2DSquareCellIntChunkJAI) a_Object;
                     grid2DSquareCellIntChunkJAI.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellIntChunkJAI.initChunkID(a_ChunkID);
@@ -4908,9 +4908,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         + this.getClass().getName()
                         + ".loadIntoCacheChunk( ChunkID( " + a_ChunkID.toString() + " ) )");
             } else {
-                if (a_Object.getClass() == Grid2DSquareCellDoubleChunk64CellMap.class) {
-                    Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
-                            (Grid2DSquareCellDoubleChunk64CellMap) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
+                    Grids_Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap =
+                            (Grids_Grid2DSquareCellDoubleChunk64CellMap) a_Object;
                     grid2DSquareCellDoubleChunk64CellMap.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellDoubleChunk64CellMap.initChunkID(a_ChunkID);
@@ -4920,9 +4920,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellDoubleChunkArray.class) {
-                    Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
-                            (Grid2DSquareCellDoubleChunkArray) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+                    Grids_Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray =
+                            (Grids_Grid2DSquareCellDoubleChunkArray) a_Object;
                     grid2DSquareCellDoubleChunkArray.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellDoubleChunkArray.initChunkID(a_ChunkID);
@@ -4932,9 +4932,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellDoubleChunkMap.class) {
-                    Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
-                            (Grid2DSquareCellDoubleChunkMap) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+                    Grids_Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap =
+                            (Grids_Grid2DSquareCellDoubleChunkMap) a_Object;
                     grid2DSquareCellDoubleChunkMap.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellDoubleChunkMap.initChunkID(a_ChunkID);
@@ -4944,9 +4944,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     this.env.dataToSwap = true;
                     return;
                 }
-                if (a_Object.getClass() == Grid2DSquareCellDoubleChunkJAI.class) {
-                    Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
-                            (Grid2DSquareCellDoubleChunkJAI) a_Object;
+                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
+                    Grids_Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI =
+                            (Grids_Grid2DSquareCellDoubleChunkJAI) a_Object;
                     grid2DSquareCellDoubleChunkJAI.initGrid2DSquareCell(
                             this);
                     grid2DSquareCellDoubleChunkJAI.initChunkID(a_ChunkID);
@@ -5190,7 +5190,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             for (col = cellColIndex - cellDistance; col
                     <= cellColIndex + cellDistance; col++) {
                 thisX = getCellXDouble(col);
-                if (Utilities.distance(x, y, thisX, thisY) <= distance) {
+                if (Grids_Utilities.distance(x, y, thisX, thisY) <= distance) {
                     a_CellIDs0[count] = new CellID(
                             this._NCols,
                             row,
@@ -6191,12 +6191,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param a_CellID The CellID of the cell thats centroid is returned.
      * @param chunkRowIndex
      * @param a_ChunkRowIndex The chunk row index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
+   Grids_AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
+   is thrown.
      * @param chunkColIndex
      * @param a_ChunkColIndex The chunk column index of the
-     *   AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
-     *   is thrown.
+   Grids_AbstractGrid2DSquareCellChunk not to be swapped if an OutOfMemoryError
+   is thrown.
      * @param handleOutOfMemoryError
      * @return x-coordinate of the centroid of cell with CellID _CellID as a
      * getCellXBigDecimal.

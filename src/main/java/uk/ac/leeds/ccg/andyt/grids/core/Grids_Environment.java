@@ -2017,8 +2017,8 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
@@ -2073,8 +2073,8 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
@@ -2161,8 +2161,8 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
@@ -2198,8 +2198,8 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
@@ -2213,13 +2213,13 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet. This is the lowest level of
+     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet. This is the lowest level of
      * OutOfMemoryError handling in this class.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
@@ -2310,8 +2310,8 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
@@ -2329,7 +2329,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any AbstractGrid2DSquareCellChunk in grid
+     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in grid
      *
      * @param grid
      * @return
@@ -2344,7 +2344,7 @@ public class Grids_Environment
     }
 
 //    /**
-//     * Attempts to swap any AbstractGrid2DSquareCellChunk in grid
+//     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in grid
 //     *
 //     * @param grid
 //     * @return
@@ -2507,12 +2507,12 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any AbstractGrid2DSquareCellChunk in
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunk_AccountDetail() {
         HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> result;
@@ -2532,9 +2532,9 @@ public class Grids_Environment
     /**
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in with Grids_AbstractGrid2DSquareCell.ChunkID = _ChunkID.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
      */
@@ -2595,9 +2595,9 @@ public class Grids_Environment
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in with Grids_AbstractGrid2DSquareCell.ChunkID = _ChunkID.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
      */
@@ -2672,9 +2672,9 @@ public class Grids_Environment
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in with Grids_AbstractGrid2DSquareCell.ChunkID = _ChunkID.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
      */
@@ -2712,9 +2712,9 @@ public class Grids_Environment
     /**
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell_ChunkIDHashSet.
      * @param a_Grid2DSquareCell_ChunkIDHashSet HashMap with
  Grids_AbstractGrid2DSquareCell as keys and a respective HashSet of
@@ -2776,9 +2776,9 @@ public class Grids_Environment
     /**
      * @param a_Grid2DSquareCell_ChunkID_HashSet_HashMap
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell_ChunkIDHashSet.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
@@ -2965,9 +2965,9 @@ public class Grids_Environment
      * @param handleOutOfMemoryError
      * @param a_ChunkID_HashSet
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell with
  Grids_AbstractGrid2DSquareCell._ChunkID in a_ChunkID_HashSet.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
@@ -3028,9 +3028,9 @@ public class Grids_Environment
     /**
      * @param a_ChunkID_HashSet
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell with
  Grids_AbstractGrid2DSquareCell._ChunkID in a_ChunkID_HashSet.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
@@ -3041,11 +3041,11 @@ public class Grids_Environment
             HashSet<ChunkID> a_ChunkID_HashSet) {
         Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<ChunkID, AbstractGrid2DSquareCellChunk> b_ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
+        HashMap<ChunkID, Grids_AbstractGrid2DSquareCellChunk> b_ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
         Set<ChunkID> b_ChunkID_Set;
         Iterator<ChunkID> b_Iterator;
         ChunkID b_ChunkID;
-        AbstractGrid2DSquareCellChunk b_AbstractGrid2DSquareCellChunk;
+        Grids_AbstractGrid2DSquareCellChunk b_AbstractGrid2DSquareCellChunk;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3071,9 +3071,9 @@ public class Grids_Environment
     /**
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for that in _Grid2DSquareCell with
  Grids_AbstractGrid2DSquareCell._ChunkID _ChunkID.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
@@ -3134,9 +3134,9 @@ public class Grids_Environment
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for that in _Grid2DSquareCell with
  Grids_AbstractGrid2DSquareCell._ChunkID _ChunkID.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
@@ -3157,9 +3157,9 @@ public class Grids_Environment
     /**
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
@@ -3212,9 +3212,9 @@ public class Grids_Environment
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
- AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to swap any
+ Grids_AbstractGrid2DSquareCellChunk in this._AbstractGrid2DSquareCell_HashSet
  except for those in _Grid2DSquareCell.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
@@ -3242,8 +3242,8 @@ public class Grids_Environment
      *
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
      */
     public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
@@ -3308,8 +3308,8 @@ public class Grids_Environment
  Grids_AbstractGrid2DSquareCell.ChunkID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
@@ -3334,8 +3334,8 @@ public class Grids_Environment
      *
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped. swapped.
      */
@@ -3401,8 +3401,8 @@ public class Grids_Environment
  Grids_AbstractGrid2DSquareCell.ChunkID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
      */
@@ -3493,8 +3493,8 @@ public class Grids_Environment
      *
      * @param handleOutOfMemoryError
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
@@ -3641,8 +3641,8 @@ public class Grids_Environment
  Grids_AbstractGrid2DSquareCell.ChunkID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
      * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ChunkID not to be swapped.
@@ -3699,8 +3699,8 @@ public class Grids_Environment
  Grids_AbstractGrid2DSquareCell.ChunkIDs in a_ChunkID_HashSet.
      *
      * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from which the
- AbstractGrid2DSquareCellChunk was swapped; and, value as the
- AbstractGrid2DSquareCellChunk._ChunkID swapped.
+ Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as the
+ Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
      * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks are not
  to be swapped.
      * @param a_ChunkID_HashSet The Grids_AbstractGrid2DSquareCell.ChunkID not to be
