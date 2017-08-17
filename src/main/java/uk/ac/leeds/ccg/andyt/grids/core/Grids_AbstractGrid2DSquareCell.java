@@ -29,12 +29,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -2515,8 +2518,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal x_BigDecimal) {
         BigDecimal xMinusMinX_BigDecimal = x_BigDecimal.subtract(
                 this._Dimensions[1]);
-        return xMinusMinX_BigDecimal.divide(
-                this._Dimensions[0]).toBigInteger().longValue();
+        BigDecimal tmp;
+        tmp = Generic_BigDecimal.divideRoundIfNecessary(xMinusMinX_BigDecimal, this._Dimensions[0], 0, RoundingMode.DOWN);
+        return tmp.toBigInteger().longValue();
+//        return xMinusMinX_BigDecimal.divide(
+//                this._Dimensions[0]).toBigInteger().longValue();
     }
 
     /**
@@ -2929,8 +2935,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal y_BigDecimal) {
         BigDecimal yMinusMinY_BigDecimal = y_BigDecimal.subtract(
                 this._Dimensions[2]);
-        return yMinusMinY_BigDecimal.divide(
-                this._Dimensions[0]).toBigInteger().longValue();
+        BigDecimal tmp;
+        tmp = Generic_BigDecimal.divideRoundIfNecessary(yMinusMinY_BigDecimal, this._Dimensions[0], 0, RoundingMode.DOWN);
+        return tmp.toBigInteger().longValue();
+//        return yMinusMinY_BigDecimal.divide(
+//                this._Dimensions[0]).toBigInteger().longValue();
     }
 
     /**
