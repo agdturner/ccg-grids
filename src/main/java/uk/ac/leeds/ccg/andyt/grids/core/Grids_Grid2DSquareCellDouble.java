@@ -760,7 +760,7 @@ public class Grids_Grid2DSquareCellDouble
                                                 cellDouble = grid.getCellDouble(
                                                         rowIndex,
                                                         colIndex);
-                                                setCell(
+                                                initCell(
                                                     row,
                                                     col,
                                                     cellDouble,
