@@ -42,9 +42,9 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
- * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and general geometry
- methods. It also controls what methods extended classes must implement acting
- * like an interface.
+ * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and
+ * general geometry methods. It also controls what methods extended classes must
+ * implement acting like an interface.
  *
  * The basic geometries are ordered in set numbers of rows and columns and are
  * arranged sequentially as their base two-dimensional orthogonal coordinate
@@ -337,13 +337,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the Grids_AbstractGrid2DSquareCellChunk with
- ID._Row equal to chunkRowIndex and ID._Col
- equal to chunkColIndex.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ID._Row equal to
+     * chunkRowIndex and ID._Col equal to chunkColIndex.
      * @param chunkRowIndex The ID._Row of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * Grids_AbstractGrid2DSquareCellChunk.
      * @param chunkColIndex The ID._Col of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * Grids_AbstractGrid2DSquareCellChunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -356,28 +355,27 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return getGrid2DSquareCellChunk(
                     chunkRowIndex,
                     chunkColIndex);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkRowIndex, chunkColIndex, a_OutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkRowIndex, chunkColIndex, e);
                 return getGrid2DSquareCellChunk(
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return the Grids_AbstractGrid2DSquareCellChunk with
- ID.chunkRowIndex equal to chunkRowIndex and ID.chunkColIndex
- equal to chunkColIndex.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with ID.chunkRowIndex
+     * equal to chunkRowIndex and ID.chunkColIndex equal to chunkColIndex.
      * @param chunkRowIndex The ID.chunkRowIndex of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * Grids_AbstractGrid2DSquareCellChunk.
      * @param chunkColIndex The ID.chunkColIndex of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * Grids_AbstractGrid2DSquareCellChunk.
      */
     protected Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             int chunkRowIndex,
@@ -389,50 +387,42 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
- _ChunkID.
-     * @param a_ChunkID The Grids_2D_ID_int of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int
+     * equal to _ChunkID.
+     * @param chunkID The Grids_2D_ID_int of the returned
+     * Grids_AbstractGrid2DSquareCellChunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid2DSquareCellChunk result
-                    = getGrid2DSquareCellChunk(a_ChunkID);
+                    = getGrid2DSquareCellChunk(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
-                        this,
-                        a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(
-                        this,
-                        a_ChunkID,
-                        handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getGrid2DSquareCellChunk(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
- _ChunkID.
+     * @return the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int
+     * equal to _ChunkID.
      *
      *
      * @param chunkID The Grids_2D_ID_int of the returned
- Grids_AbstractGrid2DSquareCellChunk.
+     * Grids_AbstractGrid2DSquareCellChunk.
      */
     protected Grids_AbstractGrid2DSquareCellChunk getGrid2DSquareCellChunk(
             Grids_2D_ID_int chunkID) {
@@ -452,7 +442,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @return HashSet containing all
- _ChunkID_AbstractGrid2DSquareCellChunk_HashMap.ID's.
+     * _ChunkID_AbstractGrid2DSquareCellChunk_HashMap.ID's.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -463,24 +453,21 @@ public abstract class Grids_AbstractGrid2DSquareCell
             HashSet<Grids_2D_ID_int> result = getGrid2DSquareCellChunkIDHashSet();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getGrid2DSquareCellChunkIDHashSet(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @return HashSet containing all
- _ChunkID_AbstractGrid2DSquareCellChunk_HashMap.ID's.
+     * _ChunkID_AbstractGrid2DSquareCellChunk_HashMap.ID's.
      */
     protected HashSet<Grids_2D_ID_int> getGrid2DSquareCellChunkIDHashSet() {
         HashSet<Grids_2D_ID_int> result = new HashSet<Grids_2D_ID_int>();
@@ -517,18 +504,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             String result = toString(flag);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return toString(
                         flag,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -587,17 +571,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             File result = get_Directory();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_Directory(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -622,17 +603,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             String result = get_Name();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_Name(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -658,18 +636,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
         try {
             set_Name(_Name);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 Grids_AbstractGrid2DSquareCell.this.set_Name(
                         _Name,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -696,17 +671,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             String result = getBasicDescription();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getBasicDescription(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -724,41 +696,34 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * Sets the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
- _ChunkID to _Grid2DSquareCellChunk.
+     * Sets the Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal
+     * to _ChunkID to _Grid2DSquareCellChunk.
      *
-     * @param a_Grid2DSquareCellChunk
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- that is set.
+     * @param chunk
+     * @param chunkID The Grids_2D_ID_int of the chunk. that is set.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public void setChunk(
-            Grids_AbstractGrid2DSquareCellChunk a_Grid2DSquareCellChunk,
-            Grids_2D_ID_int a_ChunkID,
+            Grids_AbstractGrid2DSquareCellChunk chunk,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
             this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                    a_ChunkID,
-                    a_Grid2DSquareCellChunk);
+                    chunkID,
+                    chunk);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(
-                        this,
-                        a_ChunkID,
-                        handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 setChunk(
-                        a_Grid2DSquareCellChunk,
-                        a_ChunkID,
+                        chunk,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -776,17 +741,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             long result = this._NCols;
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_NCols(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -803,17 +765,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             long result = this._NRows;
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_NRows(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -831,17 +790,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_NChunkRows();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_NChunkRows(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -877,17 +833,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_NChunkCols();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_NChunkCols(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -913,17 +866,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             long result = getNChunks();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getNChunks(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -976,17 +926,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_ChunkNRows();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_ChunkNRows(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1001,8 +948,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @return _ChunkNRows, the number of rows in
- Grids_AbstractGrid2DSquareCellChunk with ID._Row equal to
- _Row.
+     * Grids_AbstractGrid2DSquareCellChunk with ID._Row equal to _Row.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1014,18 +960,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_ChunkNRows(chunkRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_ChunkNRows(
                         chunkRowIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1033,8 +976,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @return _ChunkNRows, the number of rows in
- Grids_AbstractGrid2DSquareCellChunk with ID._Row equal to
- _Row.
+     * Grids_AbstractGrid2DSquareCellChunk with ID._Row equal to _Row.
      */
     protected final int get_ChunkNRows(
             int chunkRowIndex) {
@@ -1061,17 +1003,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_ChunkNCols();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_ChunkNCols(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1086,8 +1025,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkColIndex
      * @return _ChunkNCols, the number of columns in
- Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to
- _Col.
+     * Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to _Col.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1099,18 +1037,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = get_ChunkNCols(chunkColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_ChunkNCols(
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1118,35 +1053,32 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkColIndex
      * @return _ChunkNCols, the number of columns in
- Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to
- _Col.
+     * Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to _Col.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param a_ChunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells
- not to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those
+     * AbstractGrid2DSquareCells not to be swapped if possible when an
+     * OutOfMemoryError is encountered.
      */
     public final int get_ChunkNCols(
             int chunkColIndex,
             boolean handleOutOfMemoryError,
-            Grids_2D_ID_int a_ChunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             int result = get_ChunkNCols(chunkColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return get_ChunkNCols(
                         chunkColIndex,
                         handleOutOfMemoryError,
-                        a_ChunkID);
+                        chunkID);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1154,8 +1086,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkColIndex
      * @return _ChunkNCols, the number of columns in
- Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to
- _Col.
+     * Grids_AbstractGrid2DSquareCellChunk with ID._Col equal to _Col.
      */
     protected final int get_ChunkNCols(
             int chunkColIndex) {
@@ -1180,17 +1111,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean handleOutOfMemoryError) {
         try {
             return getChunkNrowsFinalRowChunks();
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getChunkNrowsFinalRowChunks(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1214,17 +1142,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean handleOutOfMemoryError) {
         try {
             return getChunkNcolsFinalColChunks();
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getChunkNcolsFinalColChunks(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1240,41 +1165,40 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @return _ChunkNRows, the number of rows in
- Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to _ChunkID
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- thats number of rows is returned.
+     * Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
+     * _ChunkID
+     * @param chunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGrid2DSquareCellChunk thats number of rows is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final int getChunkNRows(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            int result = getChunkNRows(a_ChunkID);
+            int result = getChunkNRows(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getChunkNRows(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @return _ChunkNRows, the number of rows in
- Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to _ChunkID
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- thats number of rows is returned.
+     * Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
+     * _ChunkID
+     * @param a_ChunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGrid2DSquareCellChunk thats number of rows is returned.
      */
     protected final int getChunkNRows(
             Grids_2D_ID_int a_ChunkID) {
@@ -1287,41 +1211,40 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @return _ChunkNCols, the number of columns in
- Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to _ChunkID
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- thats number of columns is returned.
+     * Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
+     * _ChunkID
+     * @param chunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGrid2DSquareCellChunk thats number of columns is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final int getChunkNCols(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            int result = getChunkNCols(a_ChunkID);
+            int result = getChunkNCols(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getChunkNCols(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @return _ChunkNCols, the number of columns in
- Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to _ChunkID
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- thats number of columns is returned.
+     * Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
+     * _ChunkID
+     * @param a_ChunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGrid2DSquareCellChunk thats number of columns is returned.
      */
     protected final int getChunkNCols(
             Grids_2D_ID_int a_ChunkID) {
@@ -1353,17 +1276,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             System.arraycopy(_Dimensions, 0, result, 0, length);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_Dimensions(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1380,17 +1300,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = this._Dimensions[0].doubleValue();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellsizeDouble(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1405,17 +1322,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean handleOutOfMemoryError) {
         try {
             return this._DimensionsScale;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return get_DimensionsScale(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1557,19 +1471,19 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, a_OutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(
                         cellRowIndex,
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
 
             }
         }
@@ -1619,13 +1533,13 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     chunkCellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
-                freeSomeMemoryAndResetReserve(chunkID, a_OutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(
                         chunkRowIndex,
                         chunkColIndex,
@@ -1633,7 +1547,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         chunkCellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1681,9 +1595,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
- col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given
- by chunk row index _Row, chunk col index _Col as a
- double.
+     * col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given
+     * by chunk row index _Row, chunk col index _Col as a double.
      * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk
      * containing the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
@@ -1734,9 +1647,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
- col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given
- by chunk row index _Row, chunk col index _Col as a
- double.
+     * col index chunkCellColIndex of Grids_AbstractGrid2DSquareCellChunk given
+     * by chunk row index _Row, chunk col index _Col as a double.
      * @param grid2DSquareCellChunk The Grids_AbstractGrid2DSquareCellChunk
      * containing the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
@@ -2405,8 +2317,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return Cell column index for the cells in chunk column index
- _Col chunk cell column index chunkCellColIndex.
+     * @return Cell column index for the cells in chunk column index _Col chunk
+     * cell column index chunkCellColIndex.
      * @param chunkCellColIndex
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -2439,14 +2351,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return Cell column index for the cells in chunk column index
- _Col chunk cell column index chunkCellColIndex.
+     * @return Cell column index for the cells in chunk column index _Col chunk
+     * cell column index chunkCellColIndex.
      * @param chunkCellColIndex
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells not
- to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those
+     * AbstractGrid2DSquareCells not to be swapped if possible when an
+     * OutOfMemoryError is encountered.
      */
     public final long getCellColIndex(
             int chunkColIndex,
@@ -2476,8 +2389,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkColIndex
-     * @return Cell column index for the cells in chunk column index
- _Col chunk cell column index chunkCellColIndex.
+     * @return Cell column index for the cells in chunk column index _Col chunk
+     * cell column index chunkCellColIndex.
      * @param chunkCellColIndex
      */
     protected final long getCellColIndex(
@@ -2788,7 +2701,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return long CellRowIndex, the cell row index for the cells in chunk row
- index _Row chunk cell row index chunkCellRowIndex.
+     * index _Row chunk cell row index chunkCellRowIndex.
      */
     public final long getCellRowIndex(
             int chunkRowIndex,
@@ -2800,19 +2713,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     chunkCellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellRowIndex(
                         chunkRowIndex,
                         chunkCellRowIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -2823,10 +2733,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells not
- to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those
+     * AbstractGrid2DSquareCells not to be swapped if possible when an
+     * OutOfMemoryError is encountered.
      * @return long CellRowIndex, the cell row index for the cells in chunk row
- index _Row chunk cell row index chunkCellRowIndex.
+     * index _Row chunk cell row index chunkCellRowIndex.
      */
     public final long getCellRowIndex(
             int chunkRowIndex,
@@ -2868,7 +2779,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return long CellRowIndex, the cell row index for the cells in chunk row
- index _Row chunk cell row index chunkCellRowIndex.
+     * index _Row chunk cell row index chunkCellRowIndex.
      */
     public final long getCellRowIndex(
             int chunkRowIndex,
@@ -2898,8 +2809,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * @param chunkRowIndex
-     * @return CellRowIndex for the cells in chunk _Row, chunk cell
- column index chunkCellRowIndex.
+     * @return CellRowIndex for the cells in chunk _Row, chunk cell column index
+     * chunkCellRowIndex.
      * @param chunkCellRowIndex
      */
     protected final long getCellRowIndex(
@@ -2921,18 +2832,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     a_Random);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellRowIndex(
                         a_Random,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -2979,18 +2887,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = getChunkCellRowIndex(y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getChunkCellRowIndex(
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3021,18 +2926,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int result = getChunkCellRowIndex(a_CellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getChunkCellRowIndex(
                         a_CellRowIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3051,9 +2953,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param a_CellRowIndex
      * @param a_CellColIndex
-     * @return Grids_2D_ID_long of the cell given by cell row index _CellRowIndex, cell
-     * column index _CellColIndex. A Grids_2D_ID_long is returned even if that cell would
-     * not be in the grid.
+     * @return Grids_2D_ID_long of the cell given by cell row index
+     * _CellRowIndex, cell column index _CellColIndex. A Grids_2D_ID_long is
+     * returned even if that cell would not be in the grid.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3068,19 +2970,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     a_CellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellID(
                         a_CellRowIndex,
                         a_CellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3088,9 +2987,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param cellRowIndex
      * @param cellColIndex
-     * @return Grids_2D_ID_long of the cell given by cell row index _CellRowIndex, cell
-     * column index _CellColIndex. A Grids_2D_ID_long is returned even if that cell would
-     * not be in the grid.
+     * @return Grids_2D_ID_long of the cell given by cell row index
+     * _CellRowIndex, cell column index _CellColIndex. A Grids_2D_ID_long is
+     * returned even if that cell would not be in the grid.
      * @param cellRowIndex The cell row index.
      */
     protected final Grids_2D_ID_long getCellID(
@@ -3100,8 +2999,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_2D_ID_long of the cell given by x-coordinate x, y-coordinate y even
-     * if that cell would not be in the grid.
+     * @return Grids_2D_ID_long of the cell given by x-coordinate x,
+     * y-coordinate y even if that cell would not be in the grid.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -3118,26 +3017,23 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellID(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return a Grids_2D_ID_long of the cell given by x-coordinate x, y-coordinate y even
-     * if that cell would not be in the grid.
+     * @return a Grids_2D_ID_long of the cell given by x-coordinate x,
+     * y-coordinate y even if that cell would not be in the grid.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      */
@@ -3150,8 +3046,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_2D_ID_long of the cell given by x-coordinate x, y-coordinate y even
-     * if that cell would not be in the grid.
+     * @return Grids_2D_ID_long of the cell given by x-coordinate x,
+     * y-coordinate y even if that cell would not be in the grid.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -3168,26 +3064,23 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellID(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return a Grids_2D_ID_long of the cell given by x-coordinate x, y-coordinate y even
-     * if that cell would not be in the grid.
+     * @return a Grids_2D_ID_long of the cell given by x-coordinate x,
+     * y-coordinate y even if that cell would not be in the grid.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      */
@@ -3220,17 +3113,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
         try {
             writeToFile(swapToFileCache);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 writeToFileSwapping(
                         swapToFileCache);
                 ge.init_MemoryReserve(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3327,8 +3220,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * Grids_AbstractGrid2DSquareCellChunk attempted to be written is that with
      * a chunk row index of 0, and a chunk column index of 0.
      *
-     * @return Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk which was
- swapped or null.
+     * @return Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk which
+     * was swapped or null.
      */
     protected final Grids_2D_ID_int writeToFileGrid2DSquareCellChunk() {
         if (this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.isEmpty()) {
@@ -3341,9 +3234,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File a seriailized version of the
- Grids_AbstractGrid2DSquareCellChunk in
- this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by; chunk row
- index _Row, chunk column index _Col.
+     * Grids_AbstractGrid2DSquareCellChunk in
+     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by; chunk row
+     * index _Row, chunk column index _Col.
      *
      * @param chunkRowIndex The chunk row index of the
      * Grids_AbstractGrid2DSquareCellChunk to be written.
@@ -3420,12 +3313,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to File seriailized versions of those
- Grids_AbstractGrid2DSquareCellChunk in
- this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that have ID
- equal to those in _ChunkIDs.
+     * Grids_AbstractGrid2DSquareCellChunk in
+     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that have ID equal to
+     * those in _ChunkIDs.
      *
      * @param a_ChunkID_HashSet A HashSet containing the Grids_2D_ID_int of the
- Grids_AbstractGrid2DSquareCellChunk to be written to file.
+     * Grids_AbstractGrid2DSquareCellChunk to be written to file.
      */
     protected final void writeToFileGrid2DSquareCellChunks(
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
@@ -3447,50 +3340,49 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @return HashMap<Grids_AbstractGrid2DSquareCell,ID> for accounting
-     * what was swapped.
+     * @return HashMap<Grids_AbstractGrid2DSquareCell,ID> for accounting what
+     * was swapped.
      */
     public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
-                    = ge.tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(handleOutOfMemoryError);
-            ge.combine(
-                    result,
-                    potentialPartResult);
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+            result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+            potentialPartResult = ge.tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+                    handleOutOfMemoryError);
+            ge.combine(result, potentialPartResult);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+                result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
                 if (result.isEmpty()) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = ge.init_MemoryReserve_AccountDetail(
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+                potentialPartResult = ge.init_MemoryReserve_AccountDetail(
                         handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
+                ge.combine(result, potentialPartResult);
                 potentialPartResult = swapToFile_Grid2DSquareCellChunk_AccountDetail(
                         handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
+                ge.combine(result, potentialPartResult);
                 return result;
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail() {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
+        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
         Grids_2D_ID_int a_ChunkID = writeToFileGrid2DSquareCellChunk();
         clearFromCacheGrid2DSquareCellChunk(a_ChunkID);
-        HashSet<Grids_2D_ID_int> a_ChunkID_Hashset = new HashSet<Grids_2D_ID_int>(1);
-        a_ChunkID_Hashset.add(a_ChunkID);
-        result.put(
-                this,
-                a_ChunkID_Hashset);
+        HashSet<Grids_2D_ID_int> chunks = new HashSet<Grids_2D_ID_int>(1);
+        chunks.add(a_ChunkID);
+        result.put(this, chunks);
         return result;
     }
 
@@ -3501,16 +3393,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
     public Grids_2D_ID_int swapToFile_Grid2DSquareCellChunk_AccountChunk(
             boolean handleOutOfMemoryError) {
         try {
-            Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunk_AccountChunk();
+            Grids_2D_ID_int result;
+            result = swapToFile_Grid2DSquareCellChunk_AccountChunk();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunk_AccountChunk();
+                Grids_2D_ID_int result;
+                result = swapToFile_Grid2DSquareCellChunk_AccountChunk();
                 if (result == null) {
                     if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                        throw a_OutOfMemoryError;
+                        throw e;
                     }
                 }
                 ge.init_MemoryReserve(
@@ -3518,7 +3412,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                 return swapToFile_Grid2DSquareCellChunk_AccountChunk(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3623,24 +3517,20 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     public void swapToFile_Grid2DSquareCellChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            swapToFile_Grid2DSquareCellChunk(a_ChunkID);
+            swapToFile_Grid2DSquareCellChunk(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(
-                        handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 swapToFile_Grid2DSquareCellChunk(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
 
             }
         }
@@ -3667,18 +3557,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
         try {
             swapToFile_Grid2DSquareCellChunk();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(
-                        handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 swapToFile_Grid2DSquareCellChunk(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3732,17 +3618,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @return The Grids_2D_ID_int of Grids_AbstractGrid2DSquareCellChunk swapped or
- null.
+     * @return The Grids_2D_ID_int of Grids_AbstractGrid2DSquareCellChunk
+     * swapped or null.
      */
     public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(chunkID);
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+            result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
@@ -3753,20 +3640,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
                             this,
                             chunkID);
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
-                        = ge.init_MemoryReserve_AccountDetail(
-                                this,
-                                chunkID,
-                                handleOutOfMemoryError);
-                Grids_Environment.combine(result,
-                        potentialPartResult);
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+                potentialPartResult = ge.init_MemoryReserve_AccountDetail(
+                        this,
+                        chunkID,
+                        handleOutOfMemoryError);
+                Grids_Environment.combine(result, potentialPartResult);
                 potentialPartResult = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         chunkID);
-                Grids_Environment.combine(result,
-                        potentialPartResult);
+                Grids_Environment.combine(result, potentialPartResult);
                 return result;
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
 
             }
         }
@@ -3778,18 +3663,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param chunkID
-     * @return The Grids_2D_ID_int of Grids_AbstractGrid2DSquareCellChunk swapped or
- null.
+     * @return The Grids_2D_ID_int of Grids_AbstractGrid2DSquareCellChunk
+     * swapped or null.
      */
     protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             Grids_2D_ID_int chunkID) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-
+        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
         int cri;
-
         int cci;
         Grids_2D_ID_int b_ChunkID = null;
-
         for (cri = 0; cri
                 < this._NChunkRows; cri++) {
             for (cci = 0; cci
@@ -3802,41 +3685,42 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         writeToFileGrid2DSquareCellChunk(b_ChunkID);
                         clearFromCacheGrid2DSquareCellChunk(
                                 b_ChunkID);
-                        HashSet<Grids_2D_ID_int> a_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
-                        a_ChunkID_HashSet.add(b_ChunkID);
-                        result.put(this, a_ChunkID_HashSet);
+                        HashSet<Grids_2D_ID_int> chunks;
+                        chunks = new HashSet<Grids_2D_ID_int>(1);
+                        chunks.add(b_ChunkID);
+                        result.put(this, chunks);
                         return result;
                     }
                 }
             }
         }
         return result;
-
     }
 
     public Grids_2D_ID_int swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(
-                    a_ChunkID);
+                    chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(
-                        a_ChunkID);
+                Grids_2D_ID_int result;
+                result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(
+                        chunkID);
                 if (result == null) {
                     if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                             this,
-                            a_ChunkID) < 1L) {
+                            chunkID) < 1L) {
                         throw e;
                     }
                 }
                 ge.init_MemoryReserve(
                         this,
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
                 return result;
             } else {
@@ -3848,135 +3732,111 @@ public abstract class Grids_AbstractGrid2DSquareCell
     protected Grids_2D_ID_int swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(
             Grids_2D_ID_int a_ChunkID) {
         Grids_2D_ID_int result = null;
-
         int cri;
-
         int cci;
-
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 result = new Grids_2D_ID_int(
                         cri,
                         cci);
-
                 if (!result.equals(a_ChunkID)) {
                     if (isInCache(result)) {
                         writeToFileGrid2DSquareCellChunk(result);
                         clearFromCacheGrid2DSquareCellChunk(
                                 result);
-
                         return result;
-
                     }
                 }
             }
         }
         return result;
-
     }
 
     /**
      * Attempts to write to file and clear from the cache all
- Grid2DSquareCellChunkAbstracts in this except that with ID
- a_ChunkID.
+     * Grid2DSquareCellChunkAbstracts in this except that with ID a_ChunkID.
      *
-     * @param a_ChunkID
+     * @param chunkID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(a_ChunkID);
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+            result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-
             return result;
-
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-                        a_ChunkID);
-
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+                result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                        chunkID);
                 if (result.isEmpty()) {
                     result = ge.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                             this,
-                            a_ChunkID);
-
+                            chunkID);
                     if (result.isEmpty()) {
-                        throw a_OutOfMemoryError;
-
+                        throw e;
                     }
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
-                        = ge.init_MemoryReserve_AccountDetail(
-                                this,
-                                a_ChunkID,
-                                handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
-                potentialPartResult = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-                        a_ChunkID,
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+                potentialPartResult = ge.init_MemoryReserve_AccountDetail(
+                        this,
+                        chunkID,
                         handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
-
+                ge.combine(result, potentialPartResult);
+                potentialPartResult = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+                        chunkID,
+                        handleOutOfMemoryError);
+                ge.combine(result, potentialPartResult);
                 return result;
-
             } else {
-                throw a_OutOfMemoryError;
-
+                throw e;
             }
         }
     }
 
     /**
      * Attempts to write to file and clear from the cache all
- Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int _ChunkID.
+     * Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int
+     * _ChunkID.
      *
-     * @param _ChunkID
+     * @param chunkID
      * @return A HashSet with the ChunkIDs of those
      * Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_2D_ID_int _ChunkID) {
+            Grids_2D_ID_int chunkID) {
         // Using default as not sure if what to use as initialCapacity for result...
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-        HashSet<Grids_2D_ID_int> a_HashSet_ChunkID = new HashSet<Grids_2D_ID_int>();
-
+        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
+        HashSet<Grids_2D_ID_int> chunksSwapped = new HashSet<Grids_2D_ID_int>();
         int cri;
-
         int cci;
-        Grids_2D_ID_int a_ChunkIDToSwap = null;
-
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
-                a_ChunkIDToSwap = new Grids_2D_ID_int(
+        Grids_2D_ID_int chunkIDToSwap = null;
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
+                chunkIDToSwap = new Grids_2D_ID_int(
                         cri,
                         cci);
-
-                if (!_ChunkID.equals(a_ChunkIDToSwap)) {
-                    if (isInCache(a_ChunkIDToSwap)) {
-                        writeToFileGrid2DSquareCellChunk(a_ChunkIDToSwap);
+                if (!chunkID.equals(chunkIDToSwap)) {
+                    if (isInCache(chunkIDToSwap)) {
+                        writeToFileGrid2DSquareCellChunk(chunkIDToSwap);
                         clearFromCacheGrid2DSquareCellChunk(
-                                a_ChunkIDToSwap);
-                        a_HashSet_ChunkID.add(a_ChunkIDToSwap);
-
+                                chunkIDToSwap);
+                        chunksSwapped.add(chunkIDToSwap);
                     }
                 }
             }
         }
         result.put(
                 this,
-                a_HashSet_ChunkID);
-
+                chunksSwapped);
         return result;
 
     }
@@ -3986,17 +3846,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
         try {
             swapToFile_Grid2DSquareCellChunks();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 swapToFile_Grid2DSquareCellChunks(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4005,10 +3862,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
         int cri;
         int cci;
         Grids_2D_ID_int chunkID = null;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4023,51 +3878,51 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to write to file and clear from the cache all
- Grid2DSquareCellChunkAbstracts in this except that with ID
- _ChunkIDs.
+     * Grid2DSquareCellChunkAbstracts in this except that with ID _ChunkIDs.
      *
-     * @param a_ChunkID_HashSet
+     * @param chunks
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGrid2DSquareCellChunk swapped.
      */
     public long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
+            HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
         try {
-            long result = swapToFile_Grid2DSquareCellChunksExcept_Account(a_ChunkID_HashSet);
+            long result = swapToFile_Grid2DSquareCellChunksExcept_Account(chunks);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 long result = ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this,
-                        a_ChunkID_HashSet);
+                        chunks);
                 if (result < 1L) {
-                    result = ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID_HashSet);
+                    result = ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, chunks);
                     if (result < 1L) {
-                        throw a_OutOfMemoryError;
+                        throw e;
                     }
                 }
                 result += ge.init_MemoryReserve_Account(
                         this,
-                        a_ChunkID_HashSet,
+                        chunks,
                         handleOutOfMemoryError);
                 result += swapToFile_Grid2DSquareCellChunksExcept_Account(
-                        a_ChunkID_HashSet,
+                        chunks,
                         handleOutOfMemoryError);
                 return result;
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * Attempts to write to file and clear from the cache all
- Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int _ChunkID.
+     * Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int
+     * _ChunkID.
      *
      * @param a_ChunkID_HashSet HashSet of
      * Grids_AbstractGrid2DSquareCellChunk.ChunkIDs not to be swapped.
@@ -4076,16 +3931,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
-                = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
+        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
         HashSet<Grids_2D_ID_int> b_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>();
         int cri;
         int cci;
         Grids_2D_ID_int chunkID = null;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4109,10 +3962,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
         int cri;
         int cci;
         Grids_2D_ID_int chunkID = null;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4135,10 +3986,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
         int cri;
         int cci;
         Grids_2D_ID_int b_ChunkID = null;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 b_ChunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4161,10 +4010,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
         int cri;
         int cci;
         Grids_2D_ID_int chunkID = null;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4186,32 +4033,32 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * Grids_AbstractGrid2DSquareCellChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
-     * @param a_ChunkID_HashSet
-     * @return The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk swapped or
- null.
+     * @param chunks
+     * @return The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
+     * swapped or null.
      */
     protected final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
+            HashSet<Grids_2D_ID_int> chunks) {
         HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
         //HashSet<ChunkID> result_ChunkID_HashSet = new HashSet<ChunkID>(1);
         int cri;
         int cci;
-        Grids_2D_ID_int a_ChunkID = null;
+        Grids_2D_ID_int chunkID = null;
         for (cri = 0; cri
                 < this._NChunkRows; cri++) {
             for (cci = 0; cci
                     < this._NChunkCols; cci++) {
-                a_ChunkID = new Grids_2D_ID_int(
+                chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
-                if (!a_ChunkID_HashSet.contains(a_ChunkID)) {
-                    if (isInCache(a_ChunkID)) {
-                        writeToFileGrid2DSquareCellChunk(a_ChunkID);
+                if (!chunks.contains(chunkID)) {
+                    if (isInCache(chunkID)) {
+                        writeToFileGrid2DSquareCellChunk(chunkID);
                         clearFromCacheGrid2DSquareCellChunk(
-                                a_ChunkID);
+                                chunkID);
                         //result_ChunkID_HashSet.add(a_ChunkID);
-                        result.put(this, a_ChunkID_HashSet);
+                        result.put(this, chunks);
                         return result;
                     }
                 }
@@ -4235,31 +4082,31 @@ public abstract class Grids_AbstractGrid2DSquareCell
     public final HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunks_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+            result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+                result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
                 if (result.isEmpty()) {
                     result = ge.swapToFile_Grid2DSquareCellChunk_AccountDetail();
                     if (result.isEmpty()) {
-                        throw a_OutOfMemoryError;
+                        throw e;
                     }
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
-                        = ge.init_MemoryReserve_AccountDetail(
-                                handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
+                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+                potentialPartResult = ge.init_MemoryReserve_AccountDetail(
+                        handleOutOfMemoryError);
+                ge.combine(result, potentialPartResult);
                 potentialPartResult = swapToFile_Grid2DSquareCellChunks_AccountDetail(
                         handleOutOfMemoryError);
-                ge.combine(result,
-                        potentialPartResult);
+                ge.combine(result, potentialPartResult);
                 return result;
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4277,10 +4124,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
         int cri;
         int cci;
         Grids_2D_ID_int chunkID;
-        for (cri = 0; cri
-                < this._NChunkRows; cri++) {
-            for (cci = 0; cci
-                    < this._NChunkCols; cci++) {
+        for (cri = 0; cri < this._NChunkRows; cri++) {
+            for (cci = 0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri,
                         cci);
@@ -4334,12 +4179,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cci1);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 long result = swapToFile_Grid2DSquareCellChunk_Account();
                 if (result < 1) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.init_MemoryReserve(handleOutOfMemoryError);
                 result += swapToFile_Grid2DSquareCellChunks_Account(
@@ -4350,7 +4195,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         handleOutOfMemoryError);
                 return result;
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4379,8 +4224,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
         Grids_2D_ID_int chunkID = null;
         long result = 0L;
         if (cri0 != cri1) {
-            for (int cci = cci0; cci
-                    < this._NChunkCols; cci++) {
+            for (int cci = cci0; cci < this._NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri0,
                         cci);
@@ -4391,10 +4235,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     result++;
                 }
             }
-            for (int cri = cri0 + 1; cri
-                    < cri1; cri++) {
-                for (int cci = 0; cci
-                        < this._NChunkCols; cci++) {
+            for (int cri = cri0 + 1; cri < cri1; cri++) {
+                for (int cci = 0; cci < this._NChunkCols; cci++) {
                     chunkID = new Grids_2D_ID_int(
                             cri,
                             cci);
@@ -4406,8 +4248,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     }
                 }
             }
-            for (int cci = 0; cci
-                    < cci1; cci++) {
+            for (int cci = 0; cci < cci1; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri1,
                         cci);
@@ -4419,8 +4260,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                 }
             }
         } else {
-            for (int cci = cci0; cci
-                    < cci1 + 1; cci++) {
+            for (int cci = cci0; cci < cci1 + 1; cci++) {
                 chunkID = new Grids_2D_ID_int(
                         cri0,
                         cci);
@@ -4429,7 +4269,6 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     clearFromCacheGrid2DSquareCellChunk(
                             chunkID);
                     result++;
-
                 }
             }
         }
@@ -4439,8 +4278,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @return true iff grid2DSquareCellChunk given by _ChunkID is swapToFiled.
      * This must be an upToDate swapToFile.
-     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk tested to see
- if it is swapToFiled.
+     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk tested
+     * to see if it is swapToFiled.
      */
     protected final boolean isInCache(
             Grids_2D_ID_int a_ChunkID) {
@@ -4449,42 +4288,39 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * For releasing a grid2DSquareCellChunk stored in memory. This is usually
- only done after the equivallent of swapToFileChunk(ID) has been
- called.
+     * only done after the equivallent of swapToFileChunk(ID) has been called.
      *
-     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be cleared.
+     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
+     * cleared.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected final void clearFromCacheGrid2DSquareCellChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            clearFromCacheGrid2DSquareCellChunk(a_ChunkID);
+            clearFromCacheGrid2DSquareCellChunk(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 clearFromCacheGrid2DSquareCellChunk(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * For releasing a grid2DSquareCellChunk stored in memory. This is usually
- only done after the equivallent of swapToFileChunk(ID) has been
- called.
+     * only done after the equivallent of swapToFileChunk(ID) has been called.
      *
-     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be cleared.
+     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
+     * cleared.
      */
     protected final void clearFromCacheGrid2DSquareCellChunk(
             Grids_2D_ID_int a_ChunkID) {
@@ -4505,16 +4341,13 @@ public abstract class Grids_AbstractGrid2DSquareCell
         try {
             clearFromCacheGrid2DSquareCellChunks();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 clearFromCacheGrid2DSquareCellChunks(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4530,160 +4363,122 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     /**
      * Attempts to load into the memory cache a
- Grids_AbstractGrid2DSquareCellChunk with ID
+     * Grids_AbstractGrid2DSquareCellChunk with ID
      *
-     * @param a_ChunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be restored.
+     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
+     * restored.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final void loadIntoCacheChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            loadIntoCacheChunk(a_ChunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(a_ChunkID, handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+            loadIntoCacheChunk(chunkID);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(chunkID, handleOutOfMemoryError);
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 loadIntoCacheChunk(
-                        a_ChunkID,
+                        chunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * Attempts to load into the memory cache
- Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to _ChunkID.
+     * Grids_AbstractGrid2DSquareCellChunk with Grids_2D_ID_int equal to
+     * _ChunkID.
      *
      *
-     * @param a_ChunkID The Grids_2D_ID_int of the Grids_AbstractGrid2DSquareCellChunk
- to be restored.
+     * @param chunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGrid2DSquareCellChunk to be restored.
      */
     protected final void loadIntoCacheChunk(
-            Grids_2D_ID_int a_ChunkID) {
+            Grids_2D_ID_int chunkID) {
         boolean isInCache = isInCache(
-                a_ChunkID);
+                chunkID);
         if (!isInCache) {
             File file = new File(
                     this._Directory,
-                    "" + a_ChunkID.getRow()
-                    + "_" + a_ChunkID.getCol());
-
-            Object a_Object = Generic_StaticIO.readObject(file);
+                    "" + chunkID.getRow()
+                    + "_" + chunkID.getCol());
+            Object o = Generic_StaticIO.readObject(file);
             if (this.getClass() == Grids_Grid2DSquareCellInt.class) {
-                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
-                    Grids_Grid2DSquareCellIntChunk64CellMap grid2DSquareCellIntChunk64CellMap
-                            = (Grids_Grid2DSquareCellIntChunk64CellMap) a_Object;
-                    grid2DSquareCellIntChunk64CellMap.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellIntChunk64CellMap.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellIntChunk64CellMap);
-                    this.ge.dataToSwap = true;
-                    return;
+                Grids_AbstractGrid2DSquareCellIntChunk chunk = null;
+                if (o.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
+                    Grids_Grid2DSquareCellIntChunk64CellMap c;
+                    c = (Grids_Grid2DSquareCellIntChunk64CellMap) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
-                    Grids_Grid2DSquareCellIntChunkArray grid2DSquareCellIntChunkArray
-                            = (Grids_Grid2DSquareCellIntChunkArray) a_Object;
-                    grid2DSquareCellIntChunkArray.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellIntChunkArray.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellIntChunkArray);
-                    this.ge.dataToSwap = true;
-                    return;
+                if (o.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
+                    Grids_Grid2DSquareCellIntChunkArray c;
+                    c = (Grids_Grid2DSquareCellIntChunkArray) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
-                    Grids_Grid2DSquareCellIntChunkMap grid2DSquareCellIntChunkMap
-                            = (Grids_Grid2DSquareCellIntChunkMap) a_Object;
-                    grid2DSquareCellIntChunkMap.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellIntChunkMap.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellIntChunkMap);
-                    this.ge.dataToSwap = true;
-                    return;
+                if (o.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
+                    Grids_Grid2DSquareCellIntChunkMap c;
+                    c = (Grids_Grid2DSquareCellIntChunkMap) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellIntChunkJAI.class) {
-                    Grids_Grid2DSquareCellIntChunkJAI grid2DSquareCellIntChunkJAI
-                            = (Grids_Grid2DSquareCellIntChunkJAI) a_Object;
-                    grid2DSquareCellIntChunkJAI.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellIntChunkJAI.initChunkID(a_ChunkID);
+                if (o.getClass() == Grids_Grid2DSquareCellIntChunkJAI.class) {
+                    Grids_Grid2DSquareCellIntChunkJAI c;
+                    c = (Grids_Grid2DSquareCellIntChunkJAI) o;
+                    chunk = c;
+                }
+                if (chunk != null) {
+                    chunk.initGrid2DSquareCell(this);
+                    chunk.initChunkID(chunkID);
                     this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellIntChunkJAI);
+                            chunkID,
+                            chunk);
                     this.ge.dataToSwap = true;
                     return;
                 }
                 System.err.println(
                         "Unrecognised type of Grid2DSquareCellIntChunkAbstract or null "
                         + this.getClass().getName()
-                        + ".loadIntoCacheChunk( ChunkID( " + a_ChunkID.toString() + " ) )");
+                        + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
             } else {
-                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
-                    Grids_Grid2DSquareCellDoubleChunk64CellMap grid2DSquareCellDoubleChunk64CellMap
-                            = (Grids_Grid2DSquareCellDoubleChunk64CellMap) a_Object;
-                    grid2DSquareCellDoubleChunk64CellMap.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellDoubleChunk64CellMap.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellDoubleChunk64CellMap);
-                    this.ge.dataToSwap = true;
-                    return;
+                Grids_AbstractGrid2DSquareCellDoubleChunk chunk = null;
+                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
+                    Grids_Grid2DSquareCellDoubleChunk64CellMap c;
+                    c = (Grids_Grid2DSquareCellDoubleChunk64CellMap) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
-                    Grids_Grid2DSquareCellDoubleChunkArray grid2DSquareCellDoubleChunkArray
-                            = (Grids_Grid2DSquareCellDoubleChunkArray) a_Object;
-                    grid2DSquareCellDoubleChunkArray.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellDoubleChunkArray.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellDoubleChunkArray);
-                    this.ge.dataToSwap = true;
-                    return;
+                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+                    Grids_Grid2DSquareCellDoubleChunkArray c;
+                    c = (Grids_Grid2DSquareCellDoubleChunkArray) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
-                    Grids_Grid2DSquareCellDoubleChunkMap grid2DSquareCellDoubleChunkMap
-                            = (Grids_Grid2DSquareCellDoubleChunkMap) a_Object;
-                    grid2DSquareCellDoubleChunkMap.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellDoubleChunkMap.initChunkID(a_ChunkID);
-                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellDoubleChunkMap);
-                    this.ge.dataToSwap = true;
-                    return;
+                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+                    Grids_Grid2DSquareCellDoubleChunkMap c;
+                    c = (Grids_Grid2DSquareCellDoubleChunkMap) o;
+                    chunk = c;
                 }
-                if (a_Object.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
-                    Grids_Grid2DSquareCellDoubleChunkJAI grid2DSquareCellDoubleChunkJAI
-                            = (Grids_Grid2DSquareCellDoubleChunkJAI) a_Object;
-                    grid2DSquareCellDoubleChunkJAI.initGrid2DSquareCell(
-                            this);
-                    grid2DSquareCellDoubleChunkJAI.initChunkID(a_ChunkID);
+                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
+                    Grids_Grid2DSquareCellDoubleChunkJAI c;
+                    c = (Grids_Grid2DSquareCellDoubleChunkJAI) o;
+                    chunk = c;
+                }
+                if (chunk != null) {
+                    chunk.initGrid2DSquareCell(this);
+                    chunk.initChunkID(chunkID);
                     this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                            a_ChunkID,
-                            grid2DSquareCellDoubleChunkJAI);
+                            chunkID,
+                            chunk);
                     this.ge.dataToSwap = true;
                     return;
                 }
                 System.err.println(
                         "Unrecognised type of Grid2DSquareCellDoubleChunkAbstract or null "
                         + this.getClass().getName()
-                        + ".loadIntoCacheChunk( ChunkID( " + a_ChunkID.toString() + " ) )");
+                        + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
             }
         }
     }
@@ -4714,20 +4509,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     distance);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellIDs(
                         x,
                         y,
                         distance,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4756,9 +4548,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids would be
-     * intersected by circle with centre at centroid of cell given by cell row
-     * index _CellRowIndex, cell column index _CellColIndex, and radius
+     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids
+     * would be intersected by circle with centre at centroid of cell given by
+     * cell row index _CellRowIndex, cell column index _CellColIndex, and radius
      * distance.
      * @param cellRowIndex the row index for the cell thats centroid is the
      * circle centre from which cell values are returned.
@@ -4782,28 +4574,25 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     distance);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellIDs(
                         cellRowIndex,
                         cellColIndex,
                         distance,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids would be
-     * intersected by circle with centre at centroid of cell given by cell row
-     * index _CellRowIndex, cell column index _CellColIndex, and radius
+     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids
+     * would be intersected by circle with centre at centroid of cell given by
+     * cell row index _CellRowIndex, cell column index _CellColIndex, and radius
      * distance.
      * @param cellRowIndex the row index for the cell thats centroid is the
      * circle centre from which cell values are returned.
@@ -4856,13 +4645,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     distance);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellIDs(
                         x,
                         y,
@@ -4871,7 +4657,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         distance,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4907,11 +4693,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
         double thisY;
         int count = 0;
         //if ( limit > 0 ) {
-        for (row = cellRowIndex - cellDistance; row
-                <= cellRowIndex + cellDistance; row++) {
+        for (row = cellRowIndex - cellDistance; row <= cellRowIndex + cellDistance; row++) {
             thisY = getCellYDouble(row);
-            for (col = cellColIndex - cellDistance; col
-                    <= cellColIndex + cellDistance; col++) {
+            for (col = cellColIndex - cellDistance; col <= cellColIndex + cellDistance; col++) {
                 thisX = getCellXDouble(col);
                 if (Grids_Utilities.distance(x, y, thisX, thisY) <= distance) {
                     a_CellIDs0[count] = new Grids_2D_ID_long(
@@ -4948,19 +4732,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getNearestCellID(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -4984,13 +4765,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
      * to point given by cell row index _CellRowIndex, cell column index
      * _CellColIndex.
-     * @param cellRowIndex the row index from which nearest cell Grids_2D_ID_int is returned.
-     * @param cellColIndex the column index from which nearest cell Grids_2D_ID_int is
-     * returned.
+     * @param cellRowIndex the row index from which nearest cell Grids_2D_ID_int
+     * is returned.
+     * @param cellColIndex the column index from which nearest cell
+     * Grids_2D_ID_int is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown. TODO: return Grids_2D_ID_long[] as
-     * could be more than one nearest CellID
+     * then OutOfMemoryErrors are caught and thrown. TODO: return
+     * Grids_2D_ID_long[] as could be more than one nearest CellID
      */
     public Grids_2D_ID_long getNearestCellID(
             long cellRowIndex,
@@ -5002,19 +4784,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getNearestCellID(
                         cellRowIndex,
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5023,9 +4802,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
      * to point given by cell row index _CellRowIndex, cell column index
      * _CellColIndex.
-     * @param cellRowIndex the row index from which nearest cell Grids_2D_ID_int is returned.
-     * @param cellColIndex the column index from which nearest cell Grids_2D_ID_int is
-     * returned. TODO: return Grids_2D_ID_long[] as could be more than one nearest CellID
+     * @param cellRowIndex the row index from which nearest cell Grids_2D_ID_int
+     * is returned.
+     * @param cellColIndex the column index from which nearest cell
+     * Grids_2D_ID_int is returned. TODO: return Grids_2D_ID_long[] as could be
+     * more than one nearest CellID
      */
     protected Grids_2D_ID_long getNearestCellID(
             long cellRowIndex,
@@ -5038,8 +4819,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x, y-coordinate y
-     * in position given by _CellRowIndex, _CellColIndex.
+     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x,
+     * y-coordinate y in position given by _CellRowIndex, _CellColIndex.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      * @param cellRowIndex The cell row index of cell containing point.
@@ -5062,13 +4843,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getNearestCellID(
                         x,
                         y,
@@ -5076,14 +4854,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x, y-coordinate y
-     * in position given by _CellRowIndex, _CellColIndex.
+     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x,
+     * y-coordinate y in position given by _CellRowIndex, _CellColIndex.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      * @param cellRowIndex The cell row index of cell containing point.
@@ -5156,17 +4934,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getHeightDouble();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getHeightDouble(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5190,17 +4965,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getHeightBigDecimal();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getHeightBigDecimal(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5224,17 +4996,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getWidthDouble();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getWidthDouble(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5258,17 +5027,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getWidthBigDecimal();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getWidthBigDecimal(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5299,19 +5065,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     yBigDecimal);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         xBigDecimal,
                         yBigDecimal,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5350,19 +5113,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5400,19 +5160,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         cellRowIndex,
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5435,8 +5192,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return true iff position given by chunk row index _Row, chunk
- column index _Col is in the Grid.
+     * @return true iff position given by chunk row index _Row, chunk column
+     * index _Col is in the Grid.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -5451,19 +5208,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     chunkColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5471,8 +5225,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return true iff position given by chunk row index _Row, chunk
- column index _Col is in the Grid.
+     * @return true iff position given by chunk row index _Row, chunk column
+     * index _Col is in the Grid.
      */
     protected final boolean isInGrid(
             int chunkRowIndex,
@@ -5497,18 +5251,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean result = isInGrid(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         a_CellID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5538,18 +5289,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean result = isInGrid(a_ChunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         a_ChunkID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5571,8 +5319,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return true iff cell given by _Row, _Col,
- chunkCellRowIndex, chunkCellColIndex is in the Grid.
+     * @return true iff cell given by _Row, _Col, chunkCellRowIndex,
+     * chunkCellColIndex is in the Grid.
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -5593,13 +5341,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     chunkCellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return isInGrid(
                         chunkRowIndex,
                         chunkColIndex,
@@ -5607,7 +5352,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         chunkCellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5615,8 +5360,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param _ChunkRowIndex
      * @param _ChunkColIndex
-     * @return true iff cell given by _Row, _Col,
- chunkCellRowIndex, chunkCellColIndex is in the Grid.
+     * @return true iff cell given by _Row, _Col, chunkCellRowIndex,
+     * chunkCellColIndex is in the Grid.
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
      */
@@ -5646,18 +5391,18 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getCellXBigDecimal(cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.init_MemoryReserve(handleOutOfMemoryError);
                 return getCellXBigDecimal(
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5682,20 +5427,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getCellXBigDecimal(cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXBigDecimal(
                         cellColIndex,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5738,18 +5480,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXDouble(
                         cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5762,31 +5501,29 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param a_ChunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells
- not to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those
+     * AbstractGrid2DSquareCells not to be swapped if possible when an
+     * OutOfMemoryError is encountered.
      */
     public final double getCellXDouble(
             long cellColIndex,
             boolean handleOutOfMemoryError,
-            Grids_2D_ID_int a_ChunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             double result = getCellXDouble(
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(a_ChunkID, handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXDouble(
                         cellColIndex,
                         handleOutOfMemoryError,
-                        a_ChunkID);
+                        chunkID);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5813,20 +5550,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     chunkColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXDouble(
                         chunkCellColIndex,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5856,8 +5590,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int _CellID as a
-     * BigDecimal.
+     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
+     * _CellID as a BigDecimal.
      * @param a_CellID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -5870,66 +5604,59 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getCellXBigDecimal(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXBigDecimal(
                         a_CellID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is returned.
-     * @param chunkRowIndex
-     * @param a_ChunkRowIndex The chunk row index of the
+     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
+     * returned.
+     * @param chunkRowIndex The chunk row index of the
      * Grids_AbstractGrid2DSquareCellChunk not to be swapped if an
      * OutOfMemoryError is thrown.
-     * @param chunkColIndex
-     * @param a_ChunkColIndex The chunk column index of the
+     * @param chunkColIndex The chunk column index of the
      * Grids_AbstractGrid2DSquareCellChunk not to be swapped if an
      * OutOfMemoryError is thrown.
      * @param handleOutOfMemoryError
-     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * getCellXBigDecimal.
+     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a getCellXBigDecimal.
      */
     public final BigDecimal getCellXBigDecimal(
-            Grids_2D_ID_long a_CellID,
+            Grids_2D_ID_long cellID,
             int chunkRowIndex,
             int chunkColIndex,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getCellXBigDecimal(a_CellID);
+            BigDecimal result = getCellXBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXBigDecimal(
-                        a_CellID,
+                        cellID,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int _CellID as a
-     * BigDecimal.
+     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
+     * _CellID as a BigDecimal.
      * @param a_CellID
      */
     protected final BigDecimal getCellXBigDecimal(
@@ -5938,8 +5665,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int _CellID as a
-     * double
+     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
+     * _CellID as a double
      * @param a_CellID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -5952,18 +5679,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellXDouble(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXDouble(
                         a_CellID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -5972,9 +5696,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * double.
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is returned.
+     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a double.
+     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is
+     * returned.
      */
     public final double getCellXDouble(
             Grids_2D_ID_long a_CellID,
@@ -5985,28 +5710,25 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellXDouble(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellXDouble(
                         a_CellID,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @param _CellID
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int _CellID as a
-     * double
+     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
+     * _CellID as a double
      */
     protected final double getCellXDouble(
             Grids_2D_ID_long _CellID) {
@@ -6029,18 +5751,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getCellYBigDecimal(cellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYBigDecimal(
                         cellRowIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6063,20 +5782,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
             BigDecimal result = getCellYBigDecimal(cellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYBigDecimal(
                         cellRowIndex,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6110,18 +5826,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellYDouble(cellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYDouble(
                         cellRowIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6134,8 +5847,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param a_ChunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells
- not to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param a_ChunkID This is a Grids_2D_ID_int for those
+     * AbstractGrid2DSquareCells not to be swapped if possible when an
+     * OutOfMemoryError is encountered.
      */
     public final double getCellYDouble(
             long cellRowIndex,
@@ -6145,26 +5859,23 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellYDouble(cellRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYDouble(
                         cellRowIndex,
                         handleOutOfMemoryError,
                         a_ChunkID);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @param _ChunkColIndex
-     * @param _ChunkRowIndex
+     * @param chunkColIndex
+     * @param chunkRowIndex
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
      * @param chunkCellRowIndex the chunk cell column index thats centroid
@@ -6175,27 +5886,24 @@ public abstract class Grids_AbstractGrid2DSquareCell
      */
     public final double getCellYDouble(
             int chunkCellRowIndex,
-            int _ChunkRowIndex,
-            int _ChunkColIndex,
+            int chunkRowIndex,
+            int chunkColIndex,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getCellYDouble(chunkCellRowIndex, _ChunkRowIndex);
+            double result = getCellYDouble(chunkCellRowIndex, chunkRowIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYDouble(
                         chunkCellRowIndex,
-                        _ChunkRowIndex,
-                        _ChunkColIndex,
+                        chunkRowIndex,
+                        chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6224,75 +5932,71 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * BigDecimal.
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is returned.
+     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a BigDecimal.
+     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final BigDecimal getCellYBigDecimal(
-            Grids_2D_ID_long a_CellID,
+            Grids_2D_ID_long cellID,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getCellYBigDecimal(a_CellID);
+            BigDecimal result = getCellYBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYBigDecimal(
-                        a_CellID,
+                        cellID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is returned.
+     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
+     * returned.
      * @param chunkRowIndex
      * @param chunkColIndex
      * @param handleOutOfMemoryError
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * BigDecimal.
+     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a BigDecimal.
      */
     public final BigDecimal getCellYBigDecimal(
-            Grids_2D_ID_long a_CellID,
+            Grids_2D_ID_long cellID,
             int chunkRowIndex,
             int chunkColIndex,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getCellYBigDecimal(a_CellID);
+            BigDecimal result = getCellYBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYBigDecimal(
-                        a_CellID,
+                        cellID,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @param _CellID
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * BigDecimal.
+     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a BigDecimal.
      */
     protected final BigDecimal getCellYBigDecimal(
             Grids_2D_ID_long _CellID) {
@@ -6300,8 +6004,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * double.
+     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a double.
      * @param a_CellID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -6314,18 +6018,15 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellYDouble(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYDouble(
                         a_CellID,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6334,9 +6035,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param handleOutOfMemoryError
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * double.
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is returned.
+     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a double.
+     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is
+     * returned.
      */
     public final double getCellYDouble(
             Grids_2D_ID_long a_CellID,
@@ -6347,28 +6049,25 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double result = getCellYDouble(a_CellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellYDouble(
                         a_CellID,
                         chunkRowIndex,
                         chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
      * @param _CellID
-     * @return the y-coordinate of the centroid of cell with Grids_2D_ID_long _CellID as a
-     * double.
+     * @return the y-coordinate of the centroid of cell with Grids_2D_ID_long
+     * _CellID as a double.
      */
     protected final double getCellYDouble(
             Grids_2D_ID_long _CellID) {
@@ -6393,17 +6092,14 @@ public abstract class Grids_AbstractGrid2DSquareCell
             double[] result = getGridBounds();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getGridBounds(
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6449,28 +6145,24 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellBoundsDoubleArray(
                         cellRowIndex,
                         cellColIndex,
                         handleOutOfMemoryError);
 
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
 
             }
         }
     }
 
     /**
-     * @param _CellRowIndex
-     * @param _CellColIndex
+     * @param cellColIndex
      * @return double[] where; double[0] xmin, left most x-coordinate of cell at
      * (rowIndex,colIndex) double[1] ymin, lowest y-coordinate of cell at
      * (rowIndex,colIndex) double[2] xmax, right most x-coordinate of cell at
@@ -6480,11 +6172,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * returned
      */
     protected final double[] getCellBoundsDoubleArray(
-            long _CellRowIndex,
-            long _CellColIndex) {
+            long cellRowIndex,
+            long cellColIndex) {
         return getCellBoundsDoubleArray(
-                getCellXDouble(_CellColIndex),
-                getCellYDouble(_CellRowIndex));
+                getCellXDouble(cellColIndex),
+                getCellYDouble(cellRowIndex));
     }
 
     /**
@@ -6511,19 +6203,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellBoundsDoubleArray(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6576,19 +6265,16 @@ public abstract class Grids_AbstractGrid2DSquareCell
                     y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellBounds_BigDecimalArray(
                         x,
                         y,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6620,9 +6306,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @param _CellRowIndex
+     * @param cellRowIndex
      * @param handleOutOfMemoryError
-     * @param _CellColIndex
+     * @param cellColIndex
      * @return BigDecimal[] cellBounds_BigDecimalArray;
      * cellBounds_BigDecimalArray[0] xmin, left most x-coordinate of cell that
      * intersects point at (x,y) cellBounds_BigDecimalArray[1] ymin, lowest
@@ -6632,28 +6318,25 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * y-coordinate of cell that intersects point at (x,y)
      */
     public final BigDecimal[] getCellBounds_BigDecimalArray(
-            long _CellRowIndex,
-            long _CellColIndex,
+            long cellRowIndex,
+            long cellColIndex,
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal[] result = getCellBounds_BigDecimalArray(
-                    _CellRowIndex,
-                    _CellColIndex);
+                    cellRowIndex,
+                    cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
                 return getCellBounds_BigDecimalArray(
-                        _CellRowIndex,
-                        _CellColIndex,
+                        cellRowIndex,
+                        cellColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -6685,8 +6368,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
             boolean handleOutOfMemoryError);
 
     /**
-     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or null.
-     * @param a_ChunkID
+     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or
+     * null.
+     * @param chunkID
      * @param nChunkRows
      * @param nChunkCols
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -6694,37 +6378,35 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * then OutOfMemoryErrors are caught and thrown.
      */
     public Grids_2D_ID_int getNextChunk(
-            Grids_2D_ID_int a_ChunkID,
+            Grids_2D_ID_int chunkID,
             int nChunkRows,
             int nChunkCols,
             boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getNextChunk(
-                    a_ChunkID,
+                    chunkID,
                     nChunkRows,
                     nChunkCols);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                ge.init_MemoryReserve(this, a_ChunkID, handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNextChunk(
-                        a_ChunkID,
+                        chunkID,
                         nChunkRows,
                         nChunkCols,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
 
     /**
-     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or null.
+     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or
+     * null.
      * @param chunkID
      * @param nChunkRows
      * @param nChunkCols
