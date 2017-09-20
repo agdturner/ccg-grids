@@ -17,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 /**
  * A factory for constructing Grid2DSquareCellIntChunkJAI instances.
  */
@@ -37,7 +36,7 @@ public class Grids_Grid2DSquareCellIntChunkJAIFactory
     @Override
     public Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt, 
-            ChunkID chunkID) {
+            Grids_2D_ID_int chunkID) {
         return new Grids_Grid2DSquareCellIntChunkJAI( 
                 grid2DSquareCellInt, 
                 chunkID );
@@ -46,7 +45,7 @@ public class Grids_Grid2DSquareCellIntChunkJAIFactory
     @Override
     public Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk(
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk, 
-            ChunkID chunkID) {
+            Grids_2D_ID_int chunkID) {
         return new Grids_Grid2DSquareCellIntChunkJAI( 
                 grid2DSquareCellIntChunk, 
                 chunkID );

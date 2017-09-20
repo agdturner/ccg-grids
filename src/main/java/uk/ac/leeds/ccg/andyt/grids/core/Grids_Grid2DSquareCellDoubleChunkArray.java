@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -42,7 +41,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
      * Creates a new Grid2DSquareCellDoubleChunkArray.
      */
     public Grids_Grid2DSquareCellDoubleChunkArray() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.data = new double[1][1];
         //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
         this.isSwapUpToDate = false;
@@ -54,11 +53,11 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
      *
      * @param grid2DSquareCellDouble The Grid2DSquareCellDouble this is to be a
      * chunk of.
-     * @param _ChunkID The ChunkID to be this._ChunkID.
+     * @param _ChunkID The ID to be this._ChunkID.
      */
     protected Grids_Grid2DSquareCellDoubleChunkArray(
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
-            ChunkID _ChunkID) {
+            Grids_2D_ID_int _ChunkID) {
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell(grid2DSquareCellDouble);
         double _NoDataValue = grid2DSquareCellDouble._NoDataValue;
@@ -82,13 +81,13 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
      *
      * @param grid2DSquareCellDoubleChunk The
  Grids_AbstractGrid2DSquareCellDoubleChunk this values are taken from.
-     * @param _ChunkID The ChunkID to be this._ChunkID. TODO: A fast toArray()
-     * method in Grid2DSquareCellDoubleChunkMap could be coded then a
-     * constructor based on an double[] or double[][] might be faster?
+     * @param _ChunkID The ID to be this._ChunkID. TODO: A fast toArray()
+ method in Grid2DSquareCellDoubleChunkMap could be coded then a
+ constructor based on an double[] or double[][] might be faster?
      */
     protected Grids_Grid2DSquareCellDoubleChunkArray(
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk,
-            ChunkID _ChunkID) {
+            Grids_2D_ID_int _ChunkID) {
         this._ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();

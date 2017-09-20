@@ -25,12 +25,12 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.CellID;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellIntChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntFactory;
@@ -1399,7 +1399,7 @@ public class Grid2DSquareCellProcessorDEM
                 //Integer cellID1;
                 //Integer cellID2;
                 //Integer cellID3;
-                CellID[] cellIDs = new CellID[3];
+                Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
                 HashSet toVisitSet1 = null;
                 HashSet toVisitSet2 = null;
                 HashSet toVisitSet3 = null;
@@ -1431,9 +1431,9 @@ public class Grid2DSquareCellProcessorDEM
                             toVisitSet1 = new HashSet();
                             iterator1 = hollows2.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (CellID) iterator1.next();
-                                row = cellIDs[ 0].getCellRowIndex();
-                                col = cellIDs[ 0].getCellColIndex();
+                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
+                                row = cellIDs[ 0].getRow();
+                                col = cellIDs[ 0].getCol();
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
@@ -1460,12 +1460,12 @@ public class Grid2DSquareCellProcessorDEM
                             // Trace bottom of each hollow and raise to the height of the lowest cell around it.
                             iterator1 = hollows1.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (CellID) iterator1.next();
+                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
                                 if (!hollowsVisited.contains(cellIDs[ 0])) {
                                     hollowSet = new HashSet();
                                     hollowSet.add(cellIDs[ 0]);
-                                    row = cellIDs[ 0].getCellRowIndex();
-                                    col = cellIDs[ 0].getCellColIndex();
+                                    row = cellIDs[ 0].getRow();
+                                    col = cellIDs[ 0].getCol();
                                     toVisitSet1 = new HashSet();
                                     // Step 1: Add all cells in adjoining hollows to hollowSet
                                     for (p = -1; p < 2; p++) {
@@ -1488,10 +1488,10 @@ public class Grid2DSquareCellProcessorDEM
                                         toVisitSet2 = new HashSet();
                                         iterator2 = toVisitSet1.iterator();
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (CellID) iterator2.next();
+                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
                                             visitedSet2.add(cellIDs[ 1]);
-                                            row = cellIDs[ 1].getCellRowIndex();
-                                            col = cellIDs[ 1].getCellColIndex();
+                                            row = cellIDs[ 1].getRow();
+                                            col = cellIDs[ 1].getCol();
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
@@ -1538,9 +1538,9 @@ public class Grid2DSquareCellProcessorDEM
                                         outflowCellCount = 0;
                                         // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (CellID) iterator2.next();
-                                            row = cellIDs[ 1].getCellRowIndex();
-                                            col = cellIDs[ 1].getCellColIndex();
+                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                            row = cellIDs[ 1].getRow();
+                                            col = cellIDs[ 1].getCol();
                                             height = result.getCell(row, col, handleOutOfMemoryError);
                                             if (height == noDataValue) {
                                                 noDataCount++;
@@ -1566,9 +1566,9 @@ public class Grid2DSquareCellProcessorDEM
                                             if (minHeight > height0) {
                                                 iterator2 = toVisitSet3.iterator();
                                                 while (iterator2.hasNext()) {
-                                                    cellIDs[ 1] = (CellID) iterator2.next();
-                                                    row = cellIDs[ 1].getCellRowIndex();
-                                                    col = cellIDs[ 1].getCellColIndex();
+                                                    cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                                    row = cellIDs[ 1].getRow();
+                                                    col = cellIDs[ 1].getCol();
                                                     height = result.getCell(row, col, handleOutOfMemoryError);
                                                     if (height == minHeight) {
                                                         hollowSet.add(cellIDs[ 1]);
@@ -1597,9 +1597,9 @@ public class Grid2DSquareCellProcessorDEM
                                     hollowSet.removeAll(outflowCellIDs);
                                     iterator2 = hollowSet.iterator();
                                     while (iterator2.hasNext()) {
-                                        cellIDs[ 1] = (CellID) iterator2.next();
-                                        row = cellIDs[ 1].getCellRowIndex();
-                                        col = cellIDs[ 1].getCellColIndex();
+                                        cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[ 1].getRow();
+                                        col = cellIDs[ 1].getCol();
                                         result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), handleOutOfMemoryError);
                                     }
                                     hollowsVisited.addAll(hollowSet);
@@ -1667,7 +1667,7 @@ public class Grid2DSquareCellProcessorDEM
                 //Integer cellID1;
                 //Integer cellID2;
                 //Integer cellID3;
-                CellID[] cellIDs = new CellID[3];
+                Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
                 HashSet toVisitSet1 = null;
                 HashSet toVisitSet2 = null;
                 HashSet toVisitSet3 = null;
@@ -1702,9 +1702,9 @@ public class Grid2DSquareCellProcessorDEM
                             toVisitSet1 = new HashSet();
                             iterator1 = hollows2.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (CellID) iterator1.next();
-                                row = cellIDs[ 0].getCellRowIndex();
-                                col = cellIDs[ 0].getCellColIndex();
+                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
+                                row = cellIDs[ 0].getRow();
+                                col = cellIDs[ 0].getCol();
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
@@ -1731,12 +1731,12 @@ public class Grid2DSquareCellProcessorDEM
                             // Trace bottom of each hollow and raise to the height of the lowest cell around it.
                             iterator1 = hollows1.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (CellID) iterator1.next();
+                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
                                 if (!hollowsVisited.contains(cellIDs[ 0])) {
                                     hollowSet = new HashSet();
                                     hollowSet.add(cellIDs[ 0]);
-                                    row = cellIDs[ 0].getCellRowIndex();
-                                    col = cellIDs[ 0].getCellColIndex();
+                                    row = cellIDs[ 0].getRow();
+                                    col = cellIDs[ 0].getCol();
                                     toVisitSet1 = new HashSet();
                                     // Step 1: Add all cells in adjoining hollows to hollowSet
                                     for (p = -1; p < 2; p++) {
@@ -1759,10 +1759,10 @@ public class Grid2DSquareCellProcessorDEM
                                         toVisitSet2 = new HashSet();
                                         iterator2 = toVisitSet1.iterator();
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (CellID) iterator2.next();
+                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
                                             visitedSet2.add(cellIDs[ 1]);
-                                            row = cellIDs[ 1].getCellRowIndex();
-                                            col = cellIDs[ 1].getCellColIndex();
+                                            row = cellIDs[ 1].getRow();
+                                            col = cellIDs[ 1].getCol();
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
@@ -1809,9 +1809,9 @@ public class Grid2DSquareCellProcessorDEM
                                         outflowCellCount = 0;
                                         // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (CellID) iterator2.next();
-                                            row = cellIDs[ 1].getCellRowIndex();
-                                            col = cellIDs[ 1].getCellColIndex();
+                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                            row = cellIDs[ 1].getRow();
+                                            col = cellIDs[ 1].getCol();
                                             heightDouble = result.getCell(row, col, handleOutOfMemoryError);
                                             if (heightDouble == resultNoDataValue) {
                                                 noDataCount++;
@@ -1837,9 +1837,9 @@ public class Grid2DSquareCellProcessorDEM
                                             if (minHeight > height0) {
                                                 iterator2 = toVisitSet3.iterator();
                                                 while (iterator2.hasNext()) {
-                                                    cellIDs[ 1] = (CellID) iterator2.next();
-                                                    row = cellIDs[ 1].getCellRowIndex();
-                                                    col = cellIDs[ 1].getCellColIndex();
+                                                    cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                                    row = cellIDs[ 1].getRow();
+                                                    col = cellIDs[ 1].getCol();
                                                     heightDouble = result.getCell(row, col, handleOutOfMemoryError);
                                                     if (heightDouble == minHeight) {
                                                         hollowSet.add(cellIDs[ 1]);
@@ -1868,9 +1868,9 @@ public class Grid2DSquareCellProcessorDEM
                                     hollowSet.removeAll(outflowCellIDs);
                                     iterator2 = hollowSet.iterator();
                                     while (iterator2.hasNext()) {
-                                        cellIDs[ 1] = (CellID) iterator2.next();
-                                        row = cellIDs[ 1].getCellRowIndex();
-                                        col = cellIDs[ 1].getCellColIndex();
+                                        cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[ 1].getRow();
+                                        col = cellIDs[ 1].getCol();
                                         result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), handleOutOfMemoryError);
                                     }
                                     hollowsVisited.addAll(hollowSet);
@@ -2157,7 +2157,7 @@ public class Grid2DSquareCellProcessorDEM
             env.get_AbstractGrid2DSquareCell_HashSet().add(_Grid2DSquareCell);
             HashSet result = new HashSet();
             HashSet visited1 = new HashSet();
-            CellID cellID;
+            Grids_2D_ID_long cellID;
             long row;
             long col;
             long a;
@@ -2171,10 +2171,10 @@ public class Grid2DSquareCellProcessorDEM
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(handleOutOfMemoryError);
                 int[] heights = new int[9];
                 while (iterator1.hasNext()) {
-                    cellID = (CellID) iterator1.next();
+                    cellID = (Grids_2D_ID_long) iterator1.next();
                     if (!visited1.contains(cellID)) {
-                        row = cellID.getCellRowIndex();
-                        col = cellID.getCellColIndex();
+                        row = cellID.getRow();
+                        col = cellID.getCol();
                         // Examine neighbourhood
                         for (a = -1; a < 2; a++) {
                             for (b = -1; b < 2; b++) {
@@ -2227,10 +2227,10 @@ public class Grid2DSquareCellProcessorDEM
                 double noDataValue = _Grid2DSquareCellDouble.get_NoDataValue(handleOutOfMemoryError);
                 double[] heights = new double[9];
                 while (iterator1.hasNext()) {
-                    cellID = (CellID) iterator1.next();
+                    cellID = (Grids_2D_ID_long) iterator1.next();
                     if (!visited1.contains(cellID)) {
-                        row = cellID.getCellRowIndex();
-                        col = cellID.getCellColIndex();
+                        row = cellID.getRow();
+                        col = cellID.getCol();
                         // Examine neighbourhood
                         for (a = -1; a < 2; a++) {
                             for (b = -1; b < 2; b++) {
@@ -2304,7 +2304,7 @@ public class Grid2DSquareCellProcessorDEM
                 // return getInitialHollowsHashSet( grid );
             }
             HashSet result = new HashSet();
-            CellID cellID;
+            Grids_2D_ID_long cellID;
 
             long row;
 
@@ -2323,9 +2323,9 @@ public class Grid2DSquareCellProcessorDEM
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(handleOutOfMemoryError);
                 int[] heights = new int[9];
                 while (iterator1.hasNext()) {
-                    cellID = (CellID) iterator1.next();
-                    row = cellID.getCellRowIndex();
-                    col = cellID.getCellColIndex();
+                    cellID = (Grids_2D_ID_long) iterator1.next();
+                    row = cellID.getRow();
+                    col = cellID.getCol();
                     heights[ 0] = _Grid2DSquareCellInt.getCell(row, col, handleOutOfMemoryError);
                     if (heights[ 0] != noDataValue) {
                         //noDataCount = 0;
@@ -2364,9 +2364,9 @@ public class Grid2DSquareCellProcessorDEM
                 double[] heights = new double[9];
 
                 while (iterator1.hasNext()) {
-                    cellID = (CellID) iterator1.next();
-                    row = cellID.getCellRowIndex();
-                    col = cellID.getCellColIndex();
+                    cellID = (Grids_2D_ID_long) iterator1.next();
+                    row = cellID.getRow();
+                    col = cellID.getCol();
                     heights[
 
 0] = _Grid2DSquareCellDouble.getCell(row, col, handleOutOfMemoryError);
@@ -2971,7 +2971,7 @@ public class Grid2DSquareCellProcessorDEM
             long cellColIndex = 0L;
             double x = 0.0d;
             double y = 0.0d;
-            ChunkID chunkID = new ChunkID();
+            Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
             int nChunkRows = grid2DSquareCell.get_NChunkRows(handleOutOfMemoryError);
             int nChunkCols = grid2DSquareCell.get_NChunkCols(handleOutOfMemoryError);
             int chunkNRows = grid2DSquareCell.get_ChunkNRows(handleOutOfMemoryError);
@@ -2999,8 +2999,8 @@ public class Grid2DSquareCellProcessorDEM
                             handleOutOfMemoryError);
                     for (chunkColIndex = _int_0; chunkColIndex < nChunkCols; chunkColIndex++) {
                         System.out.println("chunkRowIndex, chunkColIndex " + chunkRowIndex + ", " + chunkColIndex);
-                        chunkID = new ChunkID(
-                                nChunkCols, chunkRowIndex, chunkColIndex);
+                        chunkID = new Grids_2D_ID_int(
+                                chunkRowIndex, chunkColIndex);
                         try {
                             grid2DSquareCellDoubleChunk = grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
                                     chunkRowIndex,
@@ -3128,8 +3128,7 @@ public class Grid2DSquareCellProcessorDEM
                                                                     handleOutOfMemoryError);
                                                         } catch (OutOfMemoryError _OutOfMemoryError) {
                                                             env.clear_MemoryReserve();
-                                                            ChunkID aChunkID = new ChunkID(
-                                                                    metrics1[i].get_NChunkCols(handleOutOfMemoryError),
+                                                            Grids_2D_ID_int aChunkID = new Grids_2D_ID_int(
                                                                     metrics1[i].getChunkRowIndex(cellRowIndex, handleOutOfMemoryError),
                                                                     metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
                                                             long swap = env.swapToFile_Grid2DSquareCellChunkExcept_Account(
@@ -3167,7 +3166,7 @@ public class Grid2DSquareCellProcessorDEM
                             _Message = "Done Chunk ( " + chunkRowIndex + ", " + chunkColIndex + " )";
                             _Message = env.println(_Message, _Message0, handleOutOfMemoryError);
                             if (swapOutProcessedChunks) {
-//                                ChunkID aChunkID = new ChunkID(
+//                                ID aChunkID = new ID(
 //                                        metrics1[i].get_NChunkCols(handleOutOfMemoryError),
 //                                        metrics1[i].getChunkRowIndex(cellRowIndex, handleOutOfMemoryError),
 //                                        metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
@@ -3196,8 +3195,8 @@ public class Grid2DSquareCellProcessorDEM
                             chunkRowIndex,
                             handleOutOfMemoryError);
                     for (chunkColIndex = _int_0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                        chunkID = new ChunkID(
-                                nChunkRows, chunkRowIndex, chunkColIndex);
+                        chunkID = new Grids_2D_ID_int(
+                                chunkRowIndex, chunkColIndex);
                         try {
                             grid2DSquareCellIntChunk = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
                                     chunkRowIndex,
@@ -3324,8 +3323,7 @@ public class Grid2DSquareCellProcessorDEM
                                                                     handleOutOfMemoryError);
                                                         } catch (OutOfMemoryError _OutOfMemoryError) {
                                                             env.clear_MemoryReserve();
-                                                            ChunkID aChunkID = new ChunkID(
-                                                                    metrics1[i].get_NChunkCols(handleOutOfMemoryError),
+                                                            Grids_2D_ID_int aChunkID = new Grids_2D_ID_int(
                                                                     metrics1[i].getChunkRowIndex(cellRowIndex, handleOutOfMemoryError),
                                                                     metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
                                                             long swap = env.swapToFile_Grid2DSquareCellChunkExcept_Account(
@@ -3532,7 +3530,7 @@ public class Grid2DSquareCellProcessorDEM
 //            long cellColIndex = 0L;
 //            double x = 0.0d;
 //            double y = 0.0d;
-//            ChunkID _ChunkID = new ChunkID();
+//            ID _ChunkID = new ID();
 //            int _NChunkRows = _Grid2DSquareCell.get_NChunkRows( handleOutOfMemoryError );
 //            int nChunkCols = _Grid2DSquareCell.get_NChunkCols( handleOutOfMemoryError );
 //            int chunkNrows = _Grid2DSquareCell.get_ChunkNRows( handleOutOfMemoryError );
@@ -3554,7 +3552,7 @@ public class Grid2DSquareCellProcessorDEM
 //                            _ChunkRowIndex,
 //                            handleOutOfMemoryError );
 //                    for ( _ChunkColIndex = _int_0; _ChunkColIndex < nChunkCols; _ChunkColIndex ++ ) {
-//                        _ChunkID = new ChunkID( _NChunkRows, _ChunkRowIndex, _ChunkColIndex );
+//                        _ChunkID = new ID( _NChunkRows, _ChunkRowIndex, _ChunkColIndex );
 //                        try {
 //                            _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
 //                                    _ChunkRowIndex,
@@ -3582,7 +3580,7 @@ public class Grid2DSquareCellProcessorDEM
 //                                } catch ( OutOfMemoryError _OutOfMemoryError ) {
 //                                    clear_MemoryReserve();
 //                                    System.out.println("Problem!!!");
-//                                    ChunkID _chunkID2 = new ChunkID(
+//                                    ID _chunkID2 = new ID(
 //                                            _Roughness.get_NChunkCols( handleOutOfMemoryError ),
 //                                            _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
 //                                            _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
@@ -3615,7 +3613,7 @@ public class Grid2DSquareCellProcessorDEM
 //                                                        _ChunkID );
 //                                            } catch ( OutOfMemoryError _OutOfMemoryError ) {
 //                                                clear_MemoryReserve();
-//                                                ChunkID _chunkID2 = new ChunkID(
+//                                                ID _chunkID2 = new ID(
 //                                                        _Roughness.get_NChunkCols( handleOutOfMemoryError ),
 //                                                        _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
 //                                                        _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
@@ -3666,7 +3664,7 @@ public class Grid2DSquareCellProcessorDEM
 //                                                                    _ChunkID );
 //                                                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
 //                                                            clear_MemoryReserve();
-//                                                            ChunkID _chunkID2 = new ChunkID(
+//                                                            ID _chunkID2 = new ID(
 //                                                                    _Roughness.get_NChunkCols( handleOutOfMemoryError ),
 //                                                                    _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
 //                                                                    _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
@@ -4066,8 +4064,7 @@ public class Grid2DSquareCellProcessorDEM
                                 env.HandleOutOfMemoryErrorFalse);
                         thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                         if (thisDistance < distance) {
-                            ChunkID _ChunkID = new ChunkID(
-                                    _Grid2DSquareCellDouble.get_ChunkNRows(env.HandleOutOfMemoryErrorFalse),
+                            Grids_2D_ID_int _ChunkID = new Grids_2D_ID_int(
                                     _Grid2DSquareCellDouble.getChunkRowIndex((long) rowIndex + p, env.HandleOutOfMemoryErrorFalse),
                                     _Grid2DSquareCellDouble.getChunkColIndex((long) colIndex + q, env.HandleOutOfMemoryErrorFalse));
                             _ChunkIDs.add(_ChunkID);
@@ -4197,8 +4194,8 @@ public class Grid2DSquareCellProcessorDEM
      * @param colIndex the column index of the cell being classified
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
-     * @param _ChunkID This is a ChunkID for those AbstractGrid2DSquareCells not
-     * to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param _ChunkID This is a ID for those AbstractGrid2DSquareCells not
+ to be swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
             Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble,
@@ -4215,7 +4212,7 @@ public class Grid2DSquareCellProcessorDEM
             double[] diff,
             double[] dummyDiff,
             boolean handleOutOfMemoryError,
-            ChunkID _ChunkID) {
+            Grids_2D_ID_int _ChunkID) {
         try {
             for (int i = 0; i
                     < metrics1.length; i++) {
@@ -4371,8 +4368,7 @@ public class Grid2DSquareCellProcessorDEM
                                     env.HandleOutOfMemoryErrorFalse);
                             thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                             if (thisDistance < distance) {
-                                ChunkID _ChunkID2 = new ChunkID(
-                                        _Grid2DSquareCellDouble.get_ChunkNRows(env.HandleOutOfMemoryErrorFalse),
+                                Grids_2D_ID_int _ChunkID2 = new Grids_2D_ID_int(
                                         _Grid2DSquareCellDouble.getChunkRowIndex((long) rowIndex + p, env.HandleOutOfMemoryErrorFalse),
                                         _Grid2DSquareCellDouble.getChunkColIndex((long) colIndex + q, env.HandleOutOfMemoryErrorFalse));
                                 _ChunkIDs.add(_ChunkID2);
@@ -4641,8 +4637,7 @@ public class Grid2DSquareCellProcessorDEM
             return;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                ChunkID _ChunkID = new ChunkID(
-                        _Grid2DSquareCellInt.get_ChunkNRows(handleOutOfMemoryError),
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         _Grid2DSquareCellInt.getChunkRowIndex(rowIndex, handleOutOfMemoryError),
                         _Grid2DSquareCellInt.getChunkColIndex(colIndex, handleOutOfMemoryError));
                 metrics1Calculate_All(
@@ -4768,8 +4763,8 @@ public class Grid2DSquareCellProcessorDEM
      * @param colIndex the column index of the cell being classified
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
-     * @param _ChunkID This is a ChunkID for those AbstractGrid2DSquareCells not
-     * to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a ID for those AbstractGrid2DSquareCells not
+ to be swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
@@ -4786,7 +4781,7 @@ public class Grid2DSquareCellProcessorDEM
             double[] diff,
             double[] dummyDiff,
             boolean handleOutOfMemoryError,
-            ChunkID _ChunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             for (int i = 0; i
                     < metrics1.length; i++) {
@@ -4940,8 +4935,7 @@ public class Grid2DSquareCellProcessorDEM
                                     env.HandleOutOfMemoryErrorFalse);
                             thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                             if (thisDistance < distance) {
-                                ChunkID _ChunkID2 = new ChunkID(
-                                        grid2DSquareCellInt.get_ChunkNRows(env.HandleOutOfMemoryErrorFalse),
+                                Grids_2D_ID_int _ChunkID2 = new Grids_2D_ID_int(
                                         grid2DSquareCellInt.getChunkRowIndex((long) rowIndex + p, env.HandleOutOfMemoryErrorFalse),
                                         grid2DSquareCellInt.getChunkColIndex((long) colIndex + q, env.HandleOutOfMemoryErrorFalse));
                                 _ChunkIDs.add(_ChunkID2);
@@ -4952,7 +4946,7 @@ public class Grid2DSquareCellProcessorDEM
                     Iterator _Iterator = env.get_AbstractGrid2DSquareCell_HashSet().iterator();
                     while (_Iterator.hasNext()) {
                         HashSet _ChunkIDHashSet = new HashSet();
-                        _ChunkIDHashSet.add(_ChunkID);
+                        _ChunkIDHashSet.add(chunkID);
                         _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(_Iterator.next(), _ChunkIDHashSet);
                     }
                     _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(grid2DSquareCellInt, _ChunkIDs);
@@ -4975,7 +4969,7 @@ public class Grid2DSquareCellProcessorDEM
                         diff,
                         dummyDiff,
                         handleOutOfMemoryError,
-                        _ChunkID);
+                        chunkID);
             } else {
                 throw _OutOfMemoryError;
 
@@ -6915,7 +6909,7 @@ public class Grid2DSquareCellProcessorDEM
 
             double noDataValue = grid.get_NoDataValue(handleOutOfMemoryError);
             Grids_Grid2DSquareCellDouble result = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, grid.get_Dimensions(handleOutOfMemoryError));
-            CellID cellID;
+            Grids_2D_ID_long cellID;
 
             long row;
 

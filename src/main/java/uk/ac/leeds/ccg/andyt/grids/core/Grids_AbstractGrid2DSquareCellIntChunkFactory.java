@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
+
 /**
  * Abstract Class for defining (an interface for) chunk factory methods. These 
  * methods generally would work as protected, but are tested externally and so 
@@ -43,7 +43,7 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunkFactory
      */
     public abstract Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk( 
             Grids_Grid2DSquareCellInt grid2DSquareCellInt, 
-            ChunkID chunkID );
+            Grids_2D_ID_int chunkID );
     
     /**
      * Creates a new AbstractGrid2DSquareCellIntChunk with values taken from 
@@ -55,6 +55,6 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunkFactory
      */
     public abstract Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk( 
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk, 
-            ChunkID chunkID );
+            Grids_2D_ID_int chunkID );
     
 }

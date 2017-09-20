@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellIntChunk extension that stores cell values in a
@@ -58,7 +57,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * Default constructor.
      */
     public Grids_Grid2DSquareCellIntChunkMap() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.data = new TIntObjectHashMap();
         this.defaultValue = Integer.MIN_VALUE;
         //this._Grid2DSquareCell = new Grid2DSquareCellInt(_AbstractGrid2DSquareCell_HashSet);
@@ -75,7 +74,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     protected Grids_Grid2DSquareCellIntChunkMap(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this(   grid2DSquareCellInt,
                 _ChunkID,
                 grid2DSquareCellInt.getNoDataValue(
@@ -91,7 +90,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     protected Grids_Grid2DSquareCellIntChunkMap(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
-            ChunkID _ChunkID,
+            Grids_2D_ID_int _ChunkID,
             int defaultValue ) {
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellInt );
@@ -112,7 +111,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     protected Grids_Grid2DSquareCellIntChunkMap(
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this(   grid2DSquareCellIntChunk,
                 _ChunkID,
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt().getNoDataValue(
@@ -123,7 +122,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * Creates a new Grid2DSquareCellIntChunkMap
      * 
      * @param grid2DSquareCellIntChunk
-     * @param _ChunkID
+     * @param chunkID
      * Default:
      * default value to grid2DSquareCellInt.getNoDataValue()
      * TODO:
@@ -132,9 +131,9 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     protected Grids_Grid2DSquareCellIntChunkMap(
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk,
-            ChunkID _ChunkID,
+            Grids_2D_ID_int chunkID,
             int defaultValue ) {
-        this._ChunkID = _ChunkID;
+        this._ChunkID = chunkID;
         Grids_Grid2DSquareCellInt grid2DSquareCellInt =
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
         initGrid2DSquareCell( grid2DSquareCellInt );

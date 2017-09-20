@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a 
@@ -55,7 +54,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      * Default constructor.
      */
     public Grids_Grid2DSquareCellDoubleChunkMap() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.data = new TDoubleObjectHashMap();
         this.defaultValue = Integer.MIN_VALUE;
         //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
@@ -72,7 +71,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      */
     protected Grids_Grid2DSquareCellDoubleChunkMap( 
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble, 
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this( 
                 grid2DSquareCellDouble, 
                 _ChunkID, 
@@ -88,7 +87,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      */
     protected Grids_Grid2DSquareCellDoubleChunkMap( 
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble, 
-            ChunkID _ChunkID, 
+            Grids_2D_ID_int _ChunkID, 
             double defaultValue ) {
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellDouble );
@@ -110,7 +109,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      */
     protected Grids_Grid2DSquareCellDoubleChunkMap( 
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk, 
-            ChunkID _ChunkID, 
+            Grids_2D_ID_int _ChunkID, 
             double defaultValue ) {
         this._ChunkID = _ChunkID;
         this.defaultValue = defaultValue;

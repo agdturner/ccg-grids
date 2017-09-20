@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
@@ -52,7 +51,7 @@ public class Grids_Grid2DSquareCellDoubleChunkRAF
      * Default constructor
      */
     public Grids_Grid2DSquareCellDoubleChunkRAF() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.file = Grids_FileCreator.createNewFile();
         //this._Grid2DSquareCell = new Grid2DSquareCellInt(_Grid2DSquareCells);
         this.isSwapUpToDate = true;
@@ -75,7 +74,7 @@ public class Grids_Grid2DSquareCellDoubleChunkRAF
     protected Grids_Grid2DSquareCellDoubleChunkRAF(
             File file, 
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this.file = file;
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellDouble );
@@ -125,7 +124,7 @@ public class Grids_Grid2DSquareCellDoubleChunkRAF
     protected Grids_Grid2DSquareCellDoubleChunkRAF( 
             File file, 
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk, 
-            ChunkID chunkID ) {
+            Grids_2D_ID_int chunkID ) {
         this._ChunkID = chunkID;
         this.file = file;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = 

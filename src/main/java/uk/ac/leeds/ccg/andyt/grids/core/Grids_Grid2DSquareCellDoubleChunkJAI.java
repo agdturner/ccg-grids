@@ -29,7 +29,6 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.TiledImage;
 import javax.media.jai.remote.SerializableRenderedImage;
 import javax.media.jai.RasterFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a
@@ -50,7 +49,7 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
      * Creates a new Grid2DSquareCellDoubleChunkJAI.
      */
     public Grids_Grid2DSquareCellDoubleChunkJAI() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         int numBands = 1;
         int dataType = DataBuffer.TYPE_DOUBLE;
         int minX = 0;
@@ -84,11 +83,11 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
      * 
      * @param serializableRenderedImage The SerializableRenderedImage from which 
      *   to create this.
-     * @param _ChunkID The ChunkID of this.
+     * @param _ChunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellDoubleChunkJAI(
             SerializableRenderedImage serializableRenderedImage,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         int numBands = 1;
         int dataType = DataBuffer.TYPE_DOUBLE;
@@ -114,15 +113,15 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
     
     /**
      * Creates a new Grid2DSquareCellDoubleChunkJAI for 
-     * Grid2DSquareCellDouble with _ChunkID ChunkID
+ Grid2DSquareCellDouble with _ChunkID ID
      * 
      * @param grid2DSquareCellDouble The Grid2DSquareCellDouble for which this is 
      *   created.
-     * @param _ChunkID The ChunkID of this.
+     * @param _ChunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellDoubleChunkJAI(
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellDouble );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
@@ -146,18 +145,18 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
     
     /**
      * Creates a new Grid2DSquareCellDoubleChunkJAI from a  
- Grids_AbstractGrid2DSquareCellDoubleChunk with _ChunkID ChunkID
+ Grids_AbstractGrid2DSquareCellDoubleChunk with _ChunkID ID
      * 
      * 
      * 
      * @param grid2DSquareCellDoubleChunk The 
    Grids_AbstractGrid2DSquareCellDoubleChunk from which this is 
    created.
-     * @param _ChunkID The ChunkID of this.
+     * @param _ChunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellDoubleChunkJAI(
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble =
                 grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();

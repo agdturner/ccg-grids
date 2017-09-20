@@ -18,7 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 import java.io.File;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 /**
  * A factory for constructing Grid2DSquareCellIntChunkRAF instances.
@@ -48,7 +47,7 @@ public class Grids_Grid2DSquareCellIntChunkRAFFactory
     @Override
     public Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk(
             Grids_Grid2DSquareCellInt _Grid2DSquareCellInt, 
-            ChunkID chunkID) {
+            Grids_2D_ID_int chunkID) {
         File file = Grids_FileCreator.createNewFile( 
                 _Grid2DSquareCellInt._Directory, 
                 "Chunk", 
@@ -67,7 +66,7 @@ public class Grids_Grid2DSquareCellIntChunkRAFFactory
     @Override
     public Grids_AbstractGrid2DSquareCellIntChunk createGrid2DSquareCellIntChunk(
             Grids_AbstractGrid2DSquareCellIntChunk _Grid2DSquareCellIntChunk, 
-            ChunkID chunkID) {
+            Grids_2D_ID_int chunkID) {
         File file = Grids_FileCreator.createNewFile( 
                 _Grid2DSquareCellIntChunk.getGrid2DSquareCellInt()._Directory,
                 "Chunk", 

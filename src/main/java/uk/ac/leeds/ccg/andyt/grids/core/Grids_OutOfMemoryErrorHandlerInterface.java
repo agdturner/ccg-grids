@@ -1,6 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 agdturner.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
  */
 
 package uk.ac.leeds.ccg.andyt.grids.core;
@@ -8,7 +22,6 @@ package uk.ac.leeds.ccg.andyt.grids.core;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 
 /**
  *
@@ -17,301 +30,145 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 public interface Grids_OutOfMemoryErrorHandlerInterface
         extends Serializable {
 
-    /**
-     * A method to ensure there is enough memory to continue.
-     * @param handleOutOfMemoryError
-     * @return 
-     */
-    boolean tryToEnsureThereIsEnoughMemoryToContinue(boolean handleOutOfMemoryError);
+    boolean tryToEnsureThereIsEnoughMemoryToContinue(
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * from a_Grid2DSquareCell.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     */
-    void tryToEnsureThereIsEnoughMemoryToContinue(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    void tryToEnsureThereIsEnoughMemoryToContinue(
+            Grids_AbstractGrid2DSquareCell g, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. The Chunk with
-     * a_ChunkID from a_Grid2DSquareCell is not swapped.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID
-     */
-    void tryToEnsureThereIsEnoughMemoryToContinue(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    void tryToEnsureThereIsEnoughMemoryToContinue(
+            Grids_AbstractGrid2DSquareCell g, 
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * with a_ChunkID.
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     */
-    void tryToEnsureThereIsEnoughMemoryToContinue(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    void tryToEnsureThereIsEnoughMemoryToContinue(
+            Grids_2D_ID_int chunkNotToSwap, boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * as identified by a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap.
-     * @param a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap
-     * @param handleOutOfMemoryError
-     */
-    void tryToEnsureThereIsEnoughMemoryToContinue(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    void tryToEnsureThereIsEnoughMemoryToContinue(
+            HashMap<Grids_AbstractGrid2DSquareCell, 
+                    HashSet<Grids_2D_ID_int>> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * in a_Grid2DSquareCell that has ChunkID in a_ChunkID_HashSet.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID_HashSet
-     */
-    void tryToEnsureThereIsEnoughMemoryToContinue(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    void tryToEnsureThereIsEnoughMemoryToContinue(
+            Grids_AbstractGrid2DSquareCell g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue.
-     * @param handleOutOfMemoryError
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * from a_Grid2DSquareCell.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Grids_AbstractGrid2DSquareCell g, boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. The Chunk with
-     * a_ChunkID from a_Grid2DSquareCell is not swapped.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Grids_AbstractGrid2DSquareCell g, 
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * with a_ChunkID.
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Grids_2D_ID_int chunkNotToSwap, boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * as identified by a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap.
-     * @param a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap
-     * @param handleOutOfMemoryError
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. No data is swapped
-     * as identified by a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID_HashSet
-     * @return Number of chunks swapped.
-     */
-    long tryToEnsureThereIsEnoughMemoryToContinue_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    long tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Grids_AbstractGrid2DSquareCell g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. For this to work
-     * accounting must be less expesive in terms of data size than swapping
-     * data!
-     * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue.  No data is
-     * swapped from a_Grid2DSquareCell. For this to work accounting must be less
-     * expesive in terms of data size than swapping data!
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g, boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue. The Chunk with
-     * a_ChunkID from a_Grid2DSquareCell is not swapped. For this to work
-     * accounting must be less expesive in terms of data size than swapping
-     * data!
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g,
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue.  No data is
-     * swapped with a_ChunkID. For this to work accounting must be less
-     * expesive in terms of data size than swapping data!
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_2D_ID_int chunkNotToSwap, boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue.  No data is swapped
-     * as identified by a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap. For
-     * this to work accounting must be less expesive in terms of data size than
-     * swapping data!
-     * @param a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap
-     * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
+            boolean handleOutOfMemoryError);
 
-    /**
-     * A method to ensure there is enough memory to continue.  No data is swapped
-     * as identified by a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap. For
-     * this to work accounting must be less expesive in terms of data size than
-     * swapping data!
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * @param a_ChunkID_HashSet
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> identifying
-     * chunks swapped.
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls swapToFile_Grid2DSquareCellChunksExcept_Account(_Grid2DSquareCell)
-     * (if that returns null then it calls swapToFile_Grid2DSquareCellChunk())
-     * then recurses.
-     * @param a_Grid2DSquareCell
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     */
-    void init_MemoryReserve(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    void init_MemoryReserve(
+            Grids_AbstractGrid2DSquareCell g, boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     */
-    void init_MemoryReserve(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    void init_MemoryReserve(
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_Grid2DSquareCell,_ChunkID,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_Grid2DSquareCell
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     */
-    void init_MemoryReserve(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    void init_MemoryReserve(
+            Grids_AbstractGrid2DSquareCell g, 
+            Grids_2D_ID_int chunkNotToSwap,
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_Grid2DSquareCell,a_ChunkID_HashSet,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_Grid2DSquareCell
-     * @param a_ChunkID_HashSet HashSet of Grids_AbstractGrid2DSquareCell.ChunkIDs
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     */
-    void init_MemoryReserve(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    void init_MemoryReserve(
+            Grids_AbstractGrid2DSquareCell g,
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_Grid2DSquareCell_ChunkIDHashSet,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     */
-    void init_MemoryReserve(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    void init_MemoryReserve(
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
+            boolean handleOutOfMemoryError);
 
     long init_MemoryReserve_Account(boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    long init_MemoryReserve_Account(
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    long init_MemoryReserve_Account(
+            Grids_AbstractGrid2DSquareCell g,
+            Grids_2D_ID_int chunkNotToSwap,
+            boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    long init_MemoryReserve_Account(
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
+            boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    long init_MemoryReserve_Account(
+            Grids_AbstractGrid2DSquareCell g, 
+            boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    long init_MemoryReserve_Account(
+            Grids_AbstractGrid2DSquareCell g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve.
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    /**
-     * Initialises _MemoryReserve. If an OutOfMemoryError is encountered
-     * this calls
-     * swapToFile_Grid2DSquareCellChunksExcept_AccountSuccess(_Grid2DSquareCell,_ChunkID,handleOutOfMemoryError)
-     * then recurses.
-     * @param a_Grid2DSquareCell
-     * @param a_ChunkID
-     * @param handleOutOfMemoryError
-     * If true then OutOfMemoryErrors are caught, swap operations are initiated,
-     * then the method is re-called.
-     * If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
-     */
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, ChunkID a_ChunkID, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g, 
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, HashSet<ChunkID> a_ChunkID_HashSet, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid2DSquareCell g, 
+            boolean handleOutOfMemoryError);
 
-    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> init_MemoryReserve_AccountDetail(HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap, boolean handleOutOfMemoryError);
+    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
 
 }

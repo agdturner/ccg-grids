@@ -140,8 +140,8 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param _ChunkID This is a ChunkID for those AbstractGrid2DSquareCells not
-     * to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells not
+ to be swapped if possible when an OutOfMemoryError is encountered.
      * @return
      */
     public int getCell(
@@ -149,7 +149,7 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             int chunkCellColIndex,
             int _NoDataValue,
             boolean handleOutOfMemoryError,
-            Grids_AbstractGrid2DSquareCell.ChunkID _ChunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             int result = getCell(
                     chunkCellRowIndex,
@@ -160,7 +160,7 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(_ChunkID, handleOutOfMemoryError) == null) {
+                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(chunkID, handleOutOfMemoryError) == null) {
                     this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunk_AccountDetail(handleOutOfMemoryError);
                 }
                 this._Grid2DSquareCell.env.init_MemoryReserve(
@@ -171,7 +171,7 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                         chunkCellColIndex,
                         _NoDataValue,
                         handleOutOfMemoryError,
-                        _ChunkID);
+                        chunkID);
             } else {
                 throw _OutOfMemoryError;
             }

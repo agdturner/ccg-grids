@@ -25,8 +25,8 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
@@ -277,8 +277,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             }
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                             _Grid2DSquareCell.env.clear_MemoryReserve();
-                            ChunkID a_ChunkID = new ChunkID(
-                                    _Grid2DSquareCell.get_NChunkCols(handleOutOfMemoryError),
+                            Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                                     _Grid2DSquareCell.getChunkRowIndex(row, handleOutOfMemoryError),
                                     _Grid2DSquareCell.getChunkColIndex(col, handleOutOfMemoryError));
                             if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
@@ -337,8 +336,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             }
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                             _Grid2DSquareCell.env.clear_MemoryReserve();
-                            ChunkID a_ChunkID = new ChunkID(
-                                    _Grid2DSquareCell.get_NChunkCols(handleOutOfMemoryError),
+                            Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                                     _Grid2DSquareCell.getChunkRowIndex(row, handleOutOfMemoryError),
                                     _Grid2DSquareCell.getChunkColIndex(col, handleOutOfMemoryError));
                             if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(

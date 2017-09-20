@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core;
 import java.io.Serializable;
 import java.util.Arrays;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellIntChunk extension that stores cell values in a 
@@ -40,7 +39,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
      * Default constructor
      */
     public Grids_Grid2DSquareCellIntChunkArray() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.data = new int[ 1 ][ 1 ];
         //this._Grid2DSquareCell = new Grid2DSquareCellInt(_AbstractGrid2DSquareCell_HashSet);
         this.isSwapUpToDate = false;
@@ -54,7 +53,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
      */
     protected Grids_Grid2DSquareCellIntChunkArray( 
             Grids_Grid2DSquareCellInt grid2DSquareCellInt, 
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellInt );
         int noDataValue = grid2DSquareCellInt.getNoDataValue(
@@ -83,7 +82,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
      */
     protected Grids_Grid2DSquareCellIntChunkArray( 
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk, 
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         Grids_Grid2DSquareCellInt grid2DSquareCellInt = 
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();

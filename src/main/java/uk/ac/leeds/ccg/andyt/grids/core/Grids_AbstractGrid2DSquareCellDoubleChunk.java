@@ -24,7 +24,6 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 
 /**
  * Provides general methods and controls what methods extended classes must
@@ -142,8 +141,8 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a ChunkID for those AbstractGrid2DSquareCells not
-     * to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a Grids_2D_ID_int for those AbstractGrid2DSquareCells not
+ to be swapped if possible when an OutOfMemoryError is encountered.
      * @return
      */
     public double getCell(
@@ -151,7 +150,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             int chunkCellColIndex,
             double noDataValue,
             boolean handleOutOfMemoryError,
-            ChunkID chunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             double result = getCell(
                     chunkCellRowIndex,

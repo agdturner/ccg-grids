@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.CellID;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
@@ -436,12 +436,12 @@ public class Grids_GenerateTestData extends Grid2DSquareCellProcessor implements
      */
     public void removeAll( HashSet cellIDHashSetToRemoveFrom, HashSet cellIDHashSetToRemove ) {
         boolean modified = false;
-        CellID cellIDToRemove;
-        CellID cellIDToTestForRemoval;
+        Grids_2D_ID_long cellIDToRemove;
+        Grids_2D_ID_long cellIDToTestForRemoval;
         for ( Iterator iteratorToRemove = cellIDHashSetToRemove.iterator(); iteratorToRemove.hasNext(); ) {
-            cellIDToRemove = ( CellID ) iteratorToRemove.next();
+            cellIDToRemove = ( Grids_2D_ID_long ) iteratorToRemove.next();
             for ( Iterator iteratorRemoveFrom = cellIDHashSetToRemoveFrom.iterator(); iteratorRemoveFrom.hasNext(); ) {
-                cellIDToTestForRemoval = ( CellID ) iteratorRemoveFrom.next();
+                cellIDToTestForRemoval = ( Grids_2D_ID_long ) iteratorRemoveFrom.next();
                 if ( cellIDToRemove.equals( cellIDToTestForRemoval ) ) {
                     cellIDHashSetToRemoveFrom.remove( cellIDToTestForRemoval );
                     break;
@@ -452,7 +452,7 @@ public class Grids_GenerateTestData extends Grid2DSquareCellProcessor implements
     
     
     public HashSet getCellIDsHashSet( Grids_Grid2DSquareCellDouble grid, long row, long col, double radius, boolean _HandleOutOfMemoryError ) {
-        CellID[] cellIDs = grid.getCellIDs( row, col, radius, _HandleOutOfMemoryError );
+        Grids_2D_ID_long[] cellIDs = grid.getCellIDs( row, col, radius, _HandleOutOfMemoryError );
         HashSet cellIDsHashSet = new HashSet();
         for ( int cellIDIndex = 0; cellIDIndex < cellIDs.length; cellIDIndex ++ ) {
             cellIDsHashSet.add( cellIDs[ cellIDIndex ] );

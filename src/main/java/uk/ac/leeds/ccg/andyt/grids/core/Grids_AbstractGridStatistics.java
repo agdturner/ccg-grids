@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.CellID;
 
 /**
  * An abstract class to be extended and methods overridden to provide statistics
@@ -1272,10 +1271,10 @@ public abstract class Grids_AbstractGridStatistics
                 long count;
                 long modeCount = ((Long) tmode[0]);
                 mode.add(((Integer) tmode[1]));
-                CellID cellID = (CellID) tmode[2];
+                Grids_2D_ID_long cellID = (Grids_2D_ID_long) tmode[2];
                 // Do remainder of the row
-                row = cellID._CellRowIndex;
-                for (col = cellID._CellColIndex + 1; col < _NCols; col++) {
+                row = cellID._Row;
+                for (col = cellID._Col + 1; col < _NCols; col++) {
                     value = grid2DSquareCellInt.getCell(
                             row,
                             col,
@@ -1347,10 +1346,10 @@ public abstract class Grids_AbstractGridStatistics
                 long count;
                 long modeCount = ((Long) tmode[0]).longValue();
                 mode.add(((Double) tmode[1]).doubleValue());
-                CellID cellID = (CellID) tmode[2];
+                Grids_2D_ID_long cellID = (Grids_2D_ID_long) tmode[2];
                 // Do remainder of the row
-                row = cellID._CellRowIndex;
-                for (col = cellID._CellColIndex + 1; col < _NCols; col++) {
+                row = cellID._Row;
+                for (col = cellID._Col + 1; col < _NCols; col++) {
                     value = grid2DSquareCellDouble.getCell(
                             row,
                             col,

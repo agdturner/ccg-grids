@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellIntChunk extension that stores cell values in a
@@ -49,7 +48,7 @@ public class Grids_Grid2DSquareCellIntChunkJAI
      * Creates a new Grid2DSquareCellIntChunkJAI.
      */
     public Grids_Grid2DSquareCellIntChunkJAI() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         int numBands = 1;
         int dataType = DataBuffer.TYPE_INT;
         int minX = 0;
@@ -83,12 +82,12 @@ public class Grids_Grid2DSquareCellIntChunkJAI
      * 
      * @param serializableRenderedImage The SerializableRenderedImage from which
      *   to create this.
-     * @param _ChunkID The ChunkID of this.
+     * @param chunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellIntChunkJAI(
             SerializableRenderedImage serializableRenderedImage,
-            ChunkID _ChunkID ) {
-        this._ChunkID = _ChunkID;
+            Grids_2D_ID_int chunkID ) {
+        this._ChunkID = chunkID;
         int numBands = 1;
         //int dataType = DataBuffer.TYPE_DOUBLE;
         int dataType = DataBuffer.TYPE_INT;
@@ -114,22 +113,22 @@ public class Grids_Grid2DSquareCellIntChunkJAI
     
     /**
      * Creates a new Grid2DSquareCellIntChunkJAI for
-     * Grid2DSquareCellDouble with _ChunkID ChunkID
+ Grid2DSquareCellDouble with _ChunkID ID
      * 
      * @param grid2DSquareCellInt The Grid2DSquareCellInt for which this is
      *   created.
-     * @param _ChunkID The ChunkID of this.
+     * @param chunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellIntChunkJAI(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
-            ChunkID _ChunkID ) {
-        this._ChunkID = _ChunkID;
+            Grids_2D_ID_int chunkID ) {
+        this._ChunkID = chunkID;
         initGrid2DSquareCell( grid2DSquareCellInt );
         int chunkNrows = grid2DSquareCellInt.getChunkNRows(
-                _ChunkID,
+                chunkID,
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellInt.getChunkNCols(
-                _ChunkID,
+                chunkID,
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int noDataValue = grid2DSquareCellInt.getNoDataValue(
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
@@ -144,26 +143,26 @@ public class Grids_Grid2DSquareCellIntChunkJAI
     
     /**
      * Creates a new Grid2DSquareCellIntChunkJAI from a
- Grids_AbstractGrid2DSquareCellIntChunk with _ChunkID ChunkID
+ Grids_AbstractGrid2DSquareCellIntChunk with _ChunkID ID
      * 
      * 
      * @param grid2DSquareCellIntChunk The
    Grids_AbstractGrid2DSquareCellIntChunk from which this is
    created.
-     * @param _ChunkID The ChunkID of this.
+     * @param chunkID The ID of this.
      */
     protected Grids_Grid2DSquareCellIntChunkJAI(
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk,
-            ChunkID _ChunkID ) {
-        this._ChunkID = _ChunkID;
+            Grids_2D_ID_int chunkID ) {
+        this._ChunkID = chunkID;
         Grids_Grid2DSquareCellInt grid2DSquareCellInt =
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
         initGrid2DSquareCell( grid2DSquareCellInt );
         int chunkNrows = grid2DSquareCellInt.getChunkNRows(
-                _ChunkID,
+                chunkID,
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellInt.getChunkNCols(
-                _ChunkID,
+                chunkID,
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
         int noDataValue = grid2DSquareCellInt.getNoDataValue(
                 _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );

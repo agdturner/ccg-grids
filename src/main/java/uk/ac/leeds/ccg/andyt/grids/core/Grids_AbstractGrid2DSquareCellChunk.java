@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core;
 
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -45,12 +44,12 @@ public abstract class Grids_AbstractGrid2DSquareCellChunk
      */
     protected transient Grids_AbstractGrid2DSquareCell _Grid2DSquareCell;
     /**
-     * For storing the ChunkID of this.
+     * For storing the Grids_2D_ID_int of this.
      * TODO:
      * Is this transient for caching?
      */
-    protected transient ChunkID _ChunkID;
-    //protected ChunkID _ChunkID;
+    protected transient Grids_2D_ID_int _ChunkID;
+    //protected Grids_2D_ID_int _ChunkID;
     /**
      * Indicator for whether the swapped version of this chunk is upToDate.
      * TODO:
@@ -118,7 +117,7 @@ public abstract class Grids_AbstractGrid2DSquareCellChunk
      * @param _ChunkID
      */
     protected void initChunkID(
-            ChunkID _ChunkID) {
+            Grids_2D_ID_int _ChunkID) {
         this._ChunkID = _ChunkID;
     }
 
@@ -131,10 +130,10 @@ public abstract class Grids_AbstractGrid2DSquareCellChunk
      *   If false then OutOfMemoryErrors are caught and thrown.
      * @return 
      */
-    public ChunkID getChunkID(
+    public Grids_2D_ID_int getChunkID(
             boolean handleOutOfMemoryError) {
         try {
-            ChunkID result = getChunkID();
+            Grids_2D_ID_int result = getChunkID();
             getGrid2DSquareCell(handleOutOfMemoryError).env.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
@@ -160,8 +159,8 @@ public abstract class Grids_AbstractGrid2DSquareCellChunk
      * Returns a copy of this._ChunkID.
      * @return 
      */
-    protected ChunkID getChunkID() {
-        return new ChunkID(this._ChunkID);
+    protected Grids_2D_ID_int getChunkID() {
+        return new Grids_2D_ID_int(this._ChunkID);
         //return this._ChunkID;
     }
 

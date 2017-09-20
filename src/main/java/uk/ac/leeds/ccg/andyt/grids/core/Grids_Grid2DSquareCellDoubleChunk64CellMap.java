@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell.ChunkID;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLong;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
@@ -53,7 +52,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      * Creates a new Grid2DSquareCellDoubleChunk64CellMap.
      */
     public Grids_Grid2DSquareCellDoubleChunk64CellMap() {
-        this._ChunkID = new ChunkID();
+        this._ChunkID = new Grids_2D_ID_int();
         this.data = new TDoubleLongHashMap();
         //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
         this.isSwapUpToDate = false;
@@ -64,14 +63,14 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      * 
      * @param grid2DSquareCellDouble The Grid2DSquareCellDouble this is a chunk 
      *   of.
-     * @param _ChunkID The ChunkID this will have.
-     * TODO:
-     * deal with case:
-     *   ( grid2DSquareCellDouble.getChunkNrows() * grid2DSquareCellDouble.getChunkNcols() > 64 )
+     * @param _ChunkID The ID this will have.
+ TODO:
+ deal with case:
+   ( grid2DSquareCellDouble.getChunkNrows() * grid2DSquareCellDouble.getChunkNcols() > 64 )
      */
     protected Grids_Grid2DSquareCellDoubleChunk64CellMap( 
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         //initChunkID( _ChunkID );
         this._ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellDouble );
@@ -102,11 +101,11 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      * 
      * @param grid2DSquareCellDoubleChunk The 
      * AbstractGrid2DSquareCellDoubleChunkk this is constructed from.
-     * @param _ChunkID The ChunkID this will have.
+     * @param _ChunkID The ID this will have.
      */
     protected Grids_Grid2DSquareCellDoubleChunk64CellMap( 
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk, 
-            ChunkID _ChunkID ) {
+            Grids_2D_ID_int _ChunkID ) {
         this._ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = 
                 grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
