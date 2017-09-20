@@ -51,10 +51,10 @@ public class Grids_Grid2DSquareCellIntChunkJAIIterator
                 grid2DSquareCellIntChunkJAI.getGrid2DSquareCellInt();
         this.chunkNrows = grid2DSquareCellInt.getChunkNRows(
                 grid2DSquareCellIntChunkJAI._ChunkID,
-                env.HandleOutOfMemoryErrorFalse);
+                ge.HandleOutOfMemoryErrorFalse);
         this.chunkNcols = grid2DSquareCellInt.getChunkNCols(
                 grid2DSquareCellIntChunkJAI._ChunkID,
-                env.HandleOutOfMemoryErrorFalse);
+                ge.HandleOutOfMemoryErrorFalse);
     }
 
     /**

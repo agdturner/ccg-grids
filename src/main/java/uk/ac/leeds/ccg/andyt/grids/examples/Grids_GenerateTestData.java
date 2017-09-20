@@ -78,7 +78,7 @@ public class Grids_GenerateTestData extends Grid2DSquareCellProcessor implements
         for ( int i = 0 ; i < testData.length ; i ++ ) {
             System.out.println( testData[i].toString() );
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".asc" );
-            new Grids_ESRIAsciiGridExporter(env).toAsciiFile( testData[i], file, _HandleOutOfMemoryError );
+            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile( testData[i], file, _HandleOutOfMemoryError );
             file = new File( testDataDirectory, testData[i].get_Name( _HandleOutOfMemoryError ) + ".png" );
             new Grids_ImageExporter(_Grids_Environment).toGreyScaleImage( testData[i], this, file, "png", _HandleOutOfMemoryError );
         }

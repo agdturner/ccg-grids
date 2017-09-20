@@ -12,9 +12,9 @@ package uk.ac.leeds.ccg.andyt.grids.core;
 public abstract class Grids_Object {
     
     /**
-     * A reference to env
+     * A reference to ge
      */
-    public transient Grids_Environment env;
+    public transient Grids_Environment ge;
 
     public Grids_Object() {
     }

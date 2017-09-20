@@ -48,10 +48,10 @@ public class Grids_Grid2DSquareCellDoubleChunkArrayIterator extends Grids_Abstra
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = grid2DSquareCellDoubleChunkArray.getGrid2DSquareCellDouble();
         this.chunkNrows = grid2DSquareCellDouble.getChunkNRows( 
                 grid2DSquareCellDoubleChunkArray._ChunkID,
-                env.HandleOutOfMemoryErrorFalse );
+                ge.HandleOutOfMemoryErrorFalse );
         this.chunkNcols = grid2DSquareCellDouble.getChunkNCols( 
                 grid2DSquareCellDoubleChunkArray._ChunkID,
-                env.HandleOutOfMemoryErrorFalse );
+                ge.HandleOutOfMemoryErrorFalse );
     }
     
     /**

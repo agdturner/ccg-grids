@@ -81,7 +81,7 @@ public class Grids_Grid2DSquareCellIntChunkRAF
         try {
             this.randomAccessFile = new RandomAccessFile( file, "rw" );
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                    _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                    _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
             int chunkNrows = grid2DSquareCellInt._ChunkNRows;
             int chunkNcols = grid2DSquareCellInt._ChunkNCols;
             // Calculate noDataValueAsByteArray
@@ -168,7 +168,7 @@ public class Grids_Grid2DSquareCellIntChunkRAF
                 int chunkNrows = grid2DSquareCellInt._ChunkNRows;
                 int chunkNcols = grid2DSquareCellInt._ChunkNCols;
                 int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                        _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                        _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
                 int row;
                 int col;
                 boolean handleOutOfMemoryError = true;

@@ -550,20 +550,20 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
                     try {
                         long chunkNrows = ( long ) this._Grid2DSquareCell.getChunkNRows( 
                                 this._ChunkID, 
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
                         long chunkNcols = ( long ) this._Grid2DSquareCell.getChunkNCols( 
                                 this._ChunkID, 
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
                         return new BigInteger( Long.toString( 
                                 ( chunkNrows * chunkNcols ) - 
                                 ( ( HashSet ) iterator.value() ).size() ) );
                     } catch ( java.lang.ClassCastException e ) {
                         long chunkNrows = ( long ) this._Grid2DSquareCell.getChunkNRows( 
                                 this._ChunkID, 
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
                         long chunkNcols = ( long ) this._Grid2DSquareCell.getChunkNCols( 
                                 this._ChunkID, 
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
                         return new BigInteger( Long.toString( 
                                 ( chunkNrows * chunkNcols ) - 1L ) );
                     }

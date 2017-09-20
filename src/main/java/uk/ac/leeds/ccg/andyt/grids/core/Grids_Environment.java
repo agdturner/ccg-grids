@@ -241,7 +241,7 @@ public class Grids_Environment
         init_AbstractGrid2DSquareCell_HashSet(a_AbstractGrid2DSquareCell_HashSet);
         Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         if (a_Iterator.hasNext()) {
-            a_Iterator.next().env.set_MemoryReserve(get_MemoryReserve());
+            a_Iterator.next().ge.set_MemoryReserve(get_MemoryReserve());
         } else {
             init_MemoryReserve();
         }
@@ -2099,7 +2099,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all chunks in env.
+     * Attempts to swap all chunks in ge.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
@@ -2147,7 +2147,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all chunks in env.
+     * Attempts to swap all chunks in ge.
      *
      * @return
      */
@@ -2160,7 +2160,7 @@ public class Grids_Environment
             Grids_AbstractGrid2DSquareCell g;
             g = a_Iterator.next();
             partResult = g.swapToFile_Grid2DSquareCellChunks_Account();
-//            partResult = g.env.swapToFile_Grid2DSquareCellChunks_Account(
+//            partResult = g.ge.swapToFile_Grid2DSquareCellChunks_Account(
 //                    HandleOutOfMemoryErrorFalse);
             result += partResult;
         }
@@ -2693,7 +2693,7 @@ public class Grids_Environment
         Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             a_AbstractGrid2DSquareCell = a_Iterator.next();
-            result += a_AbstractGrid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+            result += a_AbstractGrid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                     a_ChunkID);
             if (result > 0L) {
                 return result;
@@ -2711,7 +2711,7 @@ public class Grids_Environment
         Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             a_AbstractGrid2DSquareCell = a_Iterator.next();
-            if (a_AbstractGrid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(a_ChunkID) > 0) {
+            if (a_AbstractGrid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(a_ChunkID) > 0) {
                 return;
             }
         }
@@ -3488,7 +3488,7 @@ public class Grids_Environment
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
-                result += b_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunks_Account();
+                result += b_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunks_Account();
             }
         }
         return result;

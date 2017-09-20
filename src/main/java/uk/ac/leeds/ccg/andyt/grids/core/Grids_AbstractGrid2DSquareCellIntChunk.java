@@ -49,17 +49,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             Grids_Grid2DSquareCellInt result = getGrid2DSquareCellInt();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -103,17 +103,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     noDataValue);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                _Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -155,15 +155,15 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     _NoDataValue);
-            getGrid2DSquareCell(handleOutOfMemoryError).env.tryToEnsureThereIsEnoughMemoryToContinue();
+            getGrid2DSquareCell(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(chunkID, handleOutOfMemoryError) == null) {
-                    this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunk_AccountDetail(handleOutOfMemoryError);
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(chunkID, handleOutOfMemoryError) == null) {
+                    this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_AccountDetail(handleOutOfMemoryError);
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._ChunkID,
                         handleOutOfMemoryError);
                 return getCell(
@@ -220,17 +220,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     noDataValue);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                _Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -291,16 +291,16 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     valueToInitialise);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -347,13 +347,13 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             initCells(grid2DSquareCellIntChunkRAF);
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -436,17 +436,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
                     chunkCellColIndex,
                     valueToSet,
                     noDataValue);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -505,17 +505,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             int[] result = toArrayIncludingNoDataValues();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -580,17 +580,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             int[] result = toArrayNotIncludingNoDataValues();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -645,17 +645,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             BigInteger result = getNonNoDataValueCountBigInteger();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -699,17 +699,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             int result = getNonNoDataValueCountInt();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -755,17 +755,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getSumBigDecimal();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -813,17 +813,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             int result = getMinInt();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -873,17 +873,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             int result = getMaxInt();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -935,17 +935,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -1009,17 +1009,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             double result = getArithmeticMeanDouble();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -1080,17 +1080,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             TIntHashSet result = getModeTIntHashSet();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -1282,17 +1282,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             double result = getMedianDouble();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);
@@ -1454,17 +1454,17 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
             boolean handleOutOfMemoryError) {
         try {
             double result = getStandardDeviationDouble();
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
-                this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L) {
                     throw _OutOfMemoryError0;
                 }
-                this._Grid2DSquareCell.env.init_MemoryReserve(
+                this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError);

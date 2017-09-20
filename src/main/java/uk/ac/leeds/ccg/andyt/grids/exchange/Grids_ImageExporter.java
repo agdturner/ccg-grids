@@ -55,7 +55,7 @@ public class Grids_ImageExporter implements Serializable {
      * Creates a new instance of ImageExporter
      */
     //public Grids_ImageExporter() {
-    //    this.env = new env();
+    //    this.ge = new ge();
     //}
     /**
      * Creates a new instance of ImageExporter
@@ -89,7 +89,7 @@ public class Grids_ImageExporter implements Serializable {
                     processor,
                     file,
                     type);
-            grid.env.tryToEnsureThereIsEnoughMemoryToContinue(
+            grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
@@ -402,7 +402,7 @@ public class Grids_ImageExporter implements Serializable {
                     processor,
                     file,
                     type);
-            grid.env.tryToEnsureThereIsEnoughMemoryToContinue(
+            grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {

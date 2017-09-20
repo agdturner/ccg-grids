@@ -52,10 +52,10 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMapIterator
         this.numberOfCells = ( 
                 ( long ) grid2DSquareCellDouble.getChunkNRows( 
                 grid2DSquareCellDoubleChunk64CellMap._ChunkID,
-                env.HandleOutOfMemoryErrorFalse ) *
+                ge.HandleOutOfMemoryErrorFalse ) *
                 ( long ) grid2DSquareCellDouble.getChunkNCols( 
                 grid2DSquareCellDoubleChunk64CellMap._ChunkID,
-                env.HandleOutOfMemoryErrorFalse ) );
+                ge.HandleOutOfMemoryErrorFalse ) );
         try { // In case empty!
             this.dataIterator.advance();
             this.value = dataIterator.key();

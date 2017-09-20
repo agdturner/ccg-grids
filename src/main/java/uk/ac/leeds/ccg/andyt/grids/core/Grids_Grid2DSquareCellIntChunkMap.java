@@ -78,7 +78,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         this(   grid2DSquareCellInt,
                 _ChunkID,
                 grid2DSquareCellInt.getNoDataValue(
-                grid2DSquareCellInt.env.HandleOutOfMemoryErrorFalse ) );
+                grid2DSquareCellInt.ge.HandleOutOfMemoryErrorFalse ) );
     }
     
     /**
@@ -115,7 +115,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         this(   grid2DSquareCellIntChunk,
                 _ChunkID,
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt().getNoDataValue(
-                grid2DSquareCellIntChunk._Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) );
+                grid2DSquareCellIntChunk._Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse ) );
     }
     
     /**
@@ -261,7 +261,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
     @Override
     public int[] toArrayNotIncludingNoDataValues() {
         int noDataValue = getGrid2DSquareCellInt().getNoDataValue(
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         BigInteger nonNoDataValueCountBigInteger =
                 getNonNoDataValueCountBigInteger();
         int[] array;
@@ -573,7 +573,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     public @Override BigInteger getNonNoDataValueCountBigInteger() {
         int noDataValue = getGrid2DSquareCellInt().getNoDataValue(
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse);
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
         TIntObjectIterator iterator = this.data.iterator();
         BigInteger nonNoDataCountBigInteger = BigInteger.ZERO;
         if ( this.defaultValue == noDataValue ) {
@@ -594,18 +594,18 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                         return new BigInteger( Long.toString( ( 
                                 ( long ) this._Grid2DSquareCell.getChunkNRows(
                                 this._ChunkID,
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) *
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse ) *
                                 ( long ) this._Grid2DSquareCell.getChunkNCols(
                                 this._ChunkID,
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) ) - ( ( HashSet ) iterator.value() ).size() ) );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse ) ) - ( ( HashSet ) iterator.value() ).size() ) );
                     } catch ( java.lang.ClassCastException e ) {
                         return new BigInteger( Long.toString( ( 
                                 ( long ) this._Grid2DSquareCell.getChunkNRows(
                                 this._ChunkID,
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) *
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse ) *
                                 ( long ) this._Grid2DSquareCell.getChunkNCols(
                                 this._ChunkID,
-                                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse ) ) - 1L ) );
+                                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse ) ) - 1L ) );
                     }
                 }
             }

@@ -44,7 +44,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param env
      */
     public Grids_ESRIAsciiGridExporter(Grids_Environment env) {
-        this.env = env;
+        this.ge = env;
         //this.init_MemoryReserve( handleOutOfMemoryError );
     }
 
@@ -63,18 +63,18 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             boolean handleOutOfMemoryError) {
         try {
             File result = toAsciiFile(_Grid2DSquareCell);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grid2DSquareCell.env.clear_MemoryReserve();
-                if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                _Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grid2DSquareCell.env.init_MemoryReserve(
+                _Grid2DSquareCell.ge.init_MemoryReserve(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError);
                 return toAsciiFile(
@@ -124,18 +124,18 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             File result = toAsciiFile(
                     _Grid2DSquareCell,
                     file);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grid2DSquareCell.env.clear_MemoryReserve();
-                if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                _Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grid2DSquareCell.env.init_MemoryReserve(
+                _Grid2DSquareCell.ge.init_MemoryReserve(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError);
                 return toAsciiFile(
@@ -163,7 +163,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 _Grid2DSquareCell,
                 file,
                 _Grid2DSquareCell.getNoDataValueBigDecimal(
-                        env.HandleOutOfMemoryErrorFalse));
+                        ge.HandleOutOfMemoryErrorFalse));
     }
 
     /**
@@ -189,18 +189,18 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     _Grid2DSquareCell,
                     file,
                     noDataValueBigDecimal);
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue(
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(
                     handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grid2DSquareCell.env.clear_MemoryReserve();
-                if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                _Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grid2DSquareCell.env.init_MemoryReserve(
+                _Grid2DSquareCell.ge.init_MemoryReserve(
                         _Grid2DSquareCell,
                         handleOutOfMemoryError);
                 return toAsciiFile(
@@ -243,9 +243,9 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             BigDecimal[] dimensions = _Grid2DSquareCell.get_Dimensions(
                     handleOutOfMemoryError);
             long nrows = _Grid2DSquareCell.get_NRows(
-                    env.HandleOutOfMemoryErrorFalse);
+                    ge.HandleOutOfMemoryErrorFalse);
             long ncols = _Grid2DSquareCell.get_NCols(
-                    env.HandleOutOfMemoryErrorFalse);
+                    ge.HandleOutOfMemoryErrorFalse);
             long nrows_minus_1 = nrows - 1L;
             long _long_minus_1 = - 1L;
             long _long_0 = 0L;
@@ -276,17 +276,17 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                                 pw.print(value + " ");
                             }
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
-                            _Grid2DSquareCell.env.clear_MemoryReserve();
+                            _Grid2DSquareCell.ge.clear_MemoryReserve();
                             Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                                     _Grid2DSquareCell.getChunkRowIndex(row, handleOutOfMemoryError),
                                     _Grid2DSquareCell.getChunkColIndex(col, handleOutOfMemoryError));
-                            if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                            if (_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
                                     _Grid2DSquareCell,
                                     a_ChunkID,
                                     handleOutOfMemoryError) < 1L) {
                                 throw a_OutOfMemoryError;
                             }
-                            _Grid2DSquareCell.env.init_MemoryReserve(handleOutOfMemoryError);
+                            _Grid2DSquareCell.ge.init_MemoryReserve(handleOutOfMemoryError);
 
                             //pw.print( grid.getCell( row, col ) + " " );
                             value = _Grid2DSquareCellInt.getCell(
@@ -335,17 +335,17 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                                 }
                             }
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
-                            _Grid2DSquareCell.env.clear_MemoryReserve();
+                            _Grid2DSquareCell.ge.clear_MemoryReserve();
                             Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                                     _Grid2DSquareCell.getChunkRowIndex(row, handleOutOfMemoryError),
                                     _Grid2DSquareCell.getChunkColIndex(col, handleOutOfMemoryError));
-                            if (_Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                            if (_Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
                                     _Grid2DSquareCell,
                                     a_ChunkID,
                                     handleOutOfMemoryError) < 1L) {
                                 throw a_OutOfMemoryError;
                             }
-                            _Grid2DSquareCell.env.init_MemoryReserve(handleOutOfMemoryError);
+                            _Grid2DSquareCell.ge.init_MemoryReserve(handleOutOfMemoryError);
                             value = _Grid2DSquareCellDouble.getCell(
                                     row,
                                     col,

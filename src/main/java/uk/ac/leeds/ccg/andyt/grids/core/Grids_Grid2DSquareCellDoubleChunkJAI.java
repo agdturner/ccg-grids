@@ -126,10 +126,10 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
         initGrid2DSquareCell( grid2DSquareCellDouble );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         double _NoDataValue = grid2DSquareCellDouble._NoDataValue;
         initData();
         for ( int row = 0; row < chunkNrows; row ++ ) {
@@ -163,10 +163,10 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
         initGrid2DSquareCell( grid2DSquareCellDouble );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         double _NoDataValue = grid2DSquareCellDouble._NoDataValue;
         initData( chunkNrows, chunkNcols );
         boolean handleOutOfMemoryError = true;
@@ -194,10 +194,10 @@ public class Grids_Grid2DSquareCellDoubleChunkJAI
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         initData(
                 chunkNrows,
                 chunkNcols );

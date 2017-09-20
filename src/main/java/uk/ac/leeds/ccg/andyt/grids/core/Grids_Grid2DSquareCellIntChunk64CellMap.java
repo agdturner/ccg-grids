@@ -105,7 +105,7 @@ public class Grids_Grid2DSquareCellIntChunk64CellMap
                 ( long ) chunkNcols;
         if ( nChunkCells <= 64 ) {
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                    _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                    _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
             initData();
             int value;
                     boolean handleOutOfMemoryError = true;
@@ -166,7 +166,7 @@ public class Grids_Grid2DSquareCellIntChunk64CellMap
     protected @Override int[] toArrayIncludingNoDataValues() {
         Grids_Grid2DSquareCellInt grid2DSquareCellInt = getGrid2DSquareCellInt();
         int noDataValue = grid2DSquareCellInt.getNoDataValue(
-                _Grid2DSquareCell.env.HandleOutOfMemoryErrorFalse );
+                _Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse );
         int chunkNrows = grid2DSquareCellInt._ChunkNRows;
         int chunkNcols = grid2DSquareCellInt._ChunkNCols;
         int length = chunkNrows * chunkNcols;
@@ -368,16 +368,16 @@ public class Grids_Grid2DSquareCellIntChunk64CellMap
             boolean handleOutOfMemoryError ) {
         try {
             long result = powerOf2( value );
-            _Grid2DSquareCell.env.tryToEnsureThereIsEnoughMemoryToContinue();
+            _Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
         } catch ( OutOfMemoryError a_OutOfMemoryError ) {
-            this._Grid2DSquareCell.env.clear_MemoryReserve();
-                if (this._Grid2DSquareCell.env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+            this._Grid2DSquareCell.ge.clear_MemoryReserve();
+                if (this._Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                         this._Grid2DSquareCell,
                         this._ChunkID) < 1L){
                         throw a_OutOfMemoryError;
                 }
-            this._Grid2DSquareCell.env.init_MemoryReserve(
+            this._Grid2DSquareCell.ge.init_MemoryReserve(
                         this._Grid2DSquareCell,
                         this._ChunkID,
                         handleOutOfMemoryError );

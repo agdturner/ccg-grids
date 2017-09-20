@@ -134,7 +134,7 @@ public class Grids_UtilitiesRuns extends Grid2DSquareCellProcessor implements Ru
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
-        Grids_Grid2DSquareCellDoubleFactory grid2DSquareCellDoubleFactory = new Grids_Grid2DSquareCellDoubleFactory(env, _HandleOutOfMemoryError);
+        Grids_Grid2DSquareCellDoubleFactory grid2DSquareCellDoubleFactory = new Grids_Grid2DSquareCellDoubleFactory(ge, _HandleOutOfMemoryError);
         Grids_Grid2DSquareCellDouble xGrid = ( Grids_Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + xFilename + ".asc" ) );
         Grids_Grid2DSquareCellDouble yGrid = ( Grids_Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + yFilename + ".asc" ) );
         int divisions = 100;
@@ -151,7 +151,7 @@ public class Grids_UtilitiesRuns extends Grid2DSquareCellProcessor implements Ru
                 ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble( _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble( _HandleOutOfMemoryError ) ) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(env).toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );
+        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );
         PrintWriter pw = null;
         try {
             pw = new PrintWriter( new FileOutputStream( new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv" ) ) );
