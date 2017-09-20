@@ -69,11 +69,11 @@ public class Grids_Grid2DSquareCellDouble
 
     /**
      * Creates a new Grid2DSquareCellDouble. Warning!! Concurrent modification
- may occur if _Directory is in use. If a completely new instance is wanted
- then use: Grid2DSquareCellDouble( File, Grid2DSquareCellDoubleAbstract,
- Grids_AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long, long,
- long, double, HashSet) which can be accessed via a
- Grids_Grid2DSquareCellDoubleFactory.
+     * may occur if _Directory is in use. If a completely new instance is wanted
+     * then use: Grid2DSquareCellDouble( File, Grid2DSquareCellDoubleAbstract,
+     * Grids_AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long,
+     * long, long, double, HashSet) which can be accessed via a
+     * Grids_Grid2DSquareCellDoubleFactory.
      *
      * @param directory The File _Directory to be used for swapping.
      * @param gridFile The File _Directory containing the File names thisFile
@@ -105,7 +105,7 @@ public class Grids_Grid2DSquareCellDouble
      * @param gridStatistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param chunkFactory The Grids_AbstractGrid2DSquareCellDoubleChunkFactory
- prefered for creating chunks.
+     * prefered for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
@@ -144,25 +144,24 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * Creates a new Grid2DSquareCellDouble based on values in
- Grid2DSquareCell.
+     * Creates a new Grid2DSquareCellDouble based on values in Grid2DSquareCell.
      *
      * @param gridStatistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param grid The Grids_AbstractGrid2DSquareCell from which this is to be
- constructed.
+     * constructed.
      * @param chunkFactory The Grids_AbstractGrid2DSquareCellDoubleChunkFactory
- prefered to construct chunks of this.
+     * prefered to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param startRowIndex The Grid2DSquareCell row index which is the bottom
- most row of this.
+     * most row of this.
      * @param startColIndex The Grid2DSquareCell column index which is the left
- most column of this.
+     * most column of this.
      * @param endRowIndex The Grid2DSquareCell row index which is the top most
- row of this.
+     * row of this.
      * @param endColIndex The Grid2DSquareCell column index which is the right
- most column of this.
+     * most column of this.
      * @param noDataValue The _NoDataValue for this.
      * @param grids_Environment
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -202,8 +201,8 @@ public class Grids_Grid2DSquareCellDouble
     /**
      * Creates a new Grid2DSquareCellDouble with values obtained from gridFile.
      * Currently gridFile must be a _Directory of a Grid2DSquareCellDouble or
- Grids_Grid2DSquareCellInt or a ESRI Asciigrid format file with a _Name ending
- ".asc".
+     * Grids_Grid2DSquareCellInt or a ESRI Asciigrid format file with a _Name
+     * ending ".asc".
      *
      * @param gridStatistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
@@ -211,17 +210,17 @@ public class Grids_Grid2DSquareCellDouble
      * extension containing the data and information about the
      * Grid2DSquareCellDouble to be returned.
      * @param chunkFactory The Grids_AbstractGrid2DSquareCellDoubleChunkFactory
- prefered to construct chunks of this.
+     * prefered to construct chunks of this.
      * @param chunkNRows
      * @param startRowIndex The Grid2DSquareCell row index which is the bottom
- most row of this.
+     * most row of this.
      * @param chunkNCols
      * @param startColIndex The Grid2DSquareCell column index which is the left
- most column of this.
+     * most column of this.
      * @param endRowIndex The Grid2DSquareCell row index which is the top most
- row of this.
+     * row of this.
      * @param endColIndex The Grid2DSquareCell column index which is the right
- most column of this.
+     * most column of this.
      * @param noDataValue The _NoDataValue for this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -304,8 +303,8 @@ public class Grids_Grid2DSquareCellDouble
     /**
      * Initialises this.
      *
-     * @param a_Grid2DSquareCellDouble The Grids_Grid2DSquareCellDouble from which the
- fields of this are set.
+     * @param a_Grid2DSquareCellDouble The Grids_Grid2DSquareCellDouble from
+     * which the fields of this are set.
      * @param initTransientFields Iff true then transient fields of this are set
      * with those of _Grid2DSquareCellDouble.
      */
@@ -337,7 +336,7 @@ public class Grids_Grid2DSquareCellDouble
      * that the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
- Grids_AbstractGrid2DSquareCell instances.
+     * Grids_AbstractGrid2DSquareCell instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -433,7 +432,8 @@ public class Grids_Grid2DSquareCellDouble
      * @param gridStatistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param grid2DSquareCellDoubleChunkFactory The
- Grids_AbstractGrid2DSquareCellDoubleChunkFactory prefered for creating chunks.
+     * Grids_AbstractGrid2DSquareCellDoubleChunkFactory prefered for creating
+     * chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
@@ -441,7 +441,7 @@ public class Grids_Grid2DSquareCellDouble
      * @param _Dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param noDataValue The _NoDataValue.
      * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
- Grids_AbstractGrid2DSquareCell instances.
+     * Grids_AbstractGrid2DSquareCell instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -565,22 +565,22 @@ public class Grids_Grid2DSquareCellDouble
      * @param _GridStatistics The AbstractGridStatistics to accompany this.
      * @param directory gridStatistics File _Directory to be used for swapping.
      * @param grid The Grids_AbstractGrid2DSquareCell from which this is to be
- constructed.
+     * constructed.
      * @param chunkFactory The Grids_AbstractGrid2DSquareCellDoubleChunkFactory
- prefered to construct chunks of this.
+     * prefered to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param startRowIndex The Grid2DSquareCell row index which is the bottom
- most row of this.
+     * most row of this.
      * @param startColIndex The Grid2DSquareCell column index which is the left
- most column of this.
+     * most column of this.
      * @param endRowIndex The Grid2DSquareCell row index which is the top most
- row of this.
+     * row of this.
      * @param endColIndex The Grid2DSquareCell column index which is the right
- most column of this.
+     * most column of this.
      * @param noDataValue The _NoDataValue for this.
      * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
- Grids_AbstractGrid2DSquareCell instances.
+     * Grids_AbstractGrid2DSquareCell instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -854,10 +854,10 @@ public class Grids_Grid2DSquareCellDouble
      * @param gridStatistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param gridFile Either a _Directory, or a formatted File with a specific
- extension containing the data and information about the
- Grids_Grid2DSquareCellDouble to be returned.
+     * extension containing the data and information about the
+     * Grids_Grid2DSquareCellDouble to be returned.
      * @param chunkFactory The Grids_AbstractGrid2DSquareCellDoubleChunkFactory
- prefered to construct chunks of this.
+     * prefered to construct chunks of this.
      * @param chunkNRows The Grids_Grid2DSquareCellDouble _ChunkNRows.
      * @param chunkNCols The Grids_Grid2DSquareCellDouble _ChunkNCols.
      * @param startRowIndex The topmost row index of the grid stored as
@@ -869,7 +869,7 @@ public class Grids_Grid2DSquareCellDouble
      * gridFile.
      * @param noDataValue The _NoDataValue for this.
      * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
- Grids_AbstractGrid2DSquareCell instances.
+     * Grids_AbstractGrid2DSquareCell instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1266,43 +1266,33 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @param _ChunkRowIndex
-     * @param _ChunkColIndex
+     * @param chunkRowIndex
+     * @param chunkColIndex
      * @return grid2DSquareCellDoubleChunks.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public Grids_AbstractGrid2DSquareCellDoubleChunk getGrid2DSquareCellDoubleChunk(
-            int _ChunkRowIndex,
-            int _ChunkColIndex,
+            int chunkRowIndex,
+            int chunkColIndex,
             boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid2DSquareCellDoubleChunk result = getGrid2DSquareCellDoubleChunk(
-                    _ChunkRowIndex,
-                    _ChunkColIndex);
+                    chunkRowIndex,
+                    chunkColIndex);
             env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 env.clear_MemoryReserve();
-                ChunkID a_ChunkID = new ChunkID(
-                        this._NChunkCols,
-                        _ChunkRowIndex,
-                        _ChunkColIndex);
-                if (env.swapToFile_Grid2DSquareCellChunksExcept_Account(this, a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
-                }
-                env.init_MemoryReserve(
-                        this,
-                        a_ChunkID,
-                        handleOutOfMemoryError);
+                freeSomeMemoryAndResetReserve(chunkRowIndex, chunkColIndex, e, handleOutOfMemoryError);
                 return getGrid2DSquareCellDoubleChunk(
-                        _ChunkRowIndex,
-                        _ChunkColIndex,
+                        chunkRowIndex,
+                        chunkColIndex,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1375,9 +1365,9 @@ public class Grids_Grid2DSquareCellDouble
 
     /**
      * If newValue and oldValue are the same then statistics won't change. A
- test might be appropriate in set cell so that this method is not called.
- Also want to keep track if underlying data has changed for getting
- statistics of Grids_GridStatistics1 type.
+     * test might be appropriate in set cell so that this method is not called.
+     * Also want to keep track if underlying data has changed for getting
+     * statistics of Grids_GridStatistics1 type.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
@@ -1416,9 +1406,9 @@ public class Grids_Grid2DSquareCellDouble
 
     /**
      * If newValue and oldValue are the same then statistics won't change. A
- test might be appropriate in set cell so that this method is not called.
- Also want to keep track if underlying data has changed for getting
- statistics of Grids_GridStatistics1 type.
+     * test might be appropriate in set cell so that this method is not called.
+     * Also want to keep track if underlying data has changed for getting
+     * statistics of Grids_GridStatistics1 type.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
@@ -1502,8 +1492,10 @@ public class Grids_Grid2DSquareCellDouble
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 env.clear_MemoryReserve();
-                if (env.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this) < 1L) {
+                    if (!env.swapToFile_Grid2DSquareCellChunk(this)) {
+                        throw a_OutOfMemoryError;
+                    }
                 }
                 env.init_MemoryReserve(handleOutOfMemoryError);
                 return get_NoDataValue(
@@ -1529,14 +1521,19 @@ public class Grids_Grid2DSquareCellDouble
                 // Cannot convert to a BigDecimal!
                 return null;
             }
+            if (Double.isNaN(_NoDataValue)) {
+                return null;
+            }
             BigDecimal result = new BigDecimal(_NoDataValue);
             env.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 env.clear_MemoryReserve();
-                if (env.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this) < 1L) {
+                    if (!env.swapToFile_Grid2DSquareCellChunk(this)) {
+                        throw a_OutOfMemoryError;
+                    }
                 }
                 env.init_MemoryReserve(handleOutOfMemoryError);
                 return getNoDataValueBigDecimal(
@@ -1590,10 +1587,12 @@ public class Grids_Grid2DSquareCellDouble
                         this._NChunkCols,
                         getChunkRowIndex(a_CellRowIndex),
                         getChunkColIndex(a_CellColIndex));
-                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(
-                        this,
-                        a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
+                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this) < 1L) {
+                    if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                            this,
+                            a_ChunkID) < 1L) {
+                        throw a_OutOfMemoryError;
+                    }
                 }
                 env.init_MemoryReserve(
                         this,
@@ -1702,10 +1701,12 @@ public class Grids_Grid2DSquareCellDouble
                         this._NChunkCols,
                         a_ChunkRowIndex,
                         a_ChunkColIndex);
-                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(
-                        this,
-                        a_ChunkID) < 1L) {
-                    throw a_OutOfMemoryError;
+                if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this) < 1L) {
+                    if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                            this,
+                            a_ChunkID) < 1L) {
+                        throw a_OutOfMemoryError;
+                    }
                 }
                 env.init_MemoryReserve(
                         this,
@@ -4092,8 +4093,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return A Grids_Grid2DSquareCellDoubleIterator for iterating over the cell
- values in this.
+     * @return A Grids_Grid2DSquareCellDoubleIterator for iterating over the
+     * cell values in this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.

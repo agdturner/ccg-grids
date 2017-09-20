@@ -4237,29 +4237,29 @@ public class Grid2DSquareCellProcessorDEM
             int p = 0;
             int q = 0;
             double noDataValue = _Grid2DSquareCellDouble.get_NoDataValue(
-                    env.HandleOutOfMemoryErrorFalse);
+                    env.HandleOutOfMemoryErrorTrue);
             double cellHeight = _Grid2DSquareCellDouble.getCell(
                     rowIndex,
                     colIndex,
-                    env.HandleOutOfMemoryErrorFalse);
+                    env.HandleOutOfMemoryErrorTrue);
             for (p = 0; p <= cellDistance; p++) {
                 thisCellY = _Grid2DSquareCellDouble.getCellYDouble(
                         rowIndex + p,
-                        env.HandleOutOfMemoryErrorFalse);
+                        env.HandleOutOfMemoryErrorTrue);
                 yDiff = thisCellY - cellY;
                 for (q = 1; q <= cellDistance; q++) {
                     //if ( p == 2 && q == 2 ) { int debug2 = 0; }
                     noDataCount = 0.0d;
                     thisCellX = _Grid2DSquareCellDouble.getCellXDouble(
                             colIndex + q,
-                            env.HandleOutOfMemoryErrorFalse);
+                            env.HandleOutOfMemoryErrorTrue);
                     weight = weights[p][q];
                     xDiff = thisCellX - cellX;
                     yDiff = thisCellY - cellY;
                     heights[0] = _Grid2DSquareCellDouble.getCell(
                             thisCellX,
                             thisCellY,
-                            env.HandleOutOfMemoryErrorFalse);
+                            env.HandleOutOfMemoryErrorTrue);
                     if (heights[ 0] == noDataValue) {
                         heights[ 0] = cellHeight;
                         noDataCount += 1.0d;
@@ -4267,7 +4267,7 @@ public class Grid2DSquareCellProcessorDEM
                     heights[ 1] = _Grid2DSquareCellDouble.getCell(
                             cellX + yDiff,
                             cellY - xDiff,
-                            env.HandleOutOfMemoryErrorFalse);
+                            env.HandleOutOfMemoryErrorTrue);
                     if (heights[ 1] == noDataValue) {
                         heights[ 1] = cellHeight;
                         noDataCount += 1.0d;
@@ -4275,7 +4275,7 @@ public class Grid2DSquareCellProcessorDEM
                     heights[ 2] = _Grid2DSquareCellDouble.getCell(
                             cellX - xDiff,
                             cellY - yDiff,
-                            env.HandleOutOfMemoryErrorFalse);
+                            env.HandleOutOfMemoryErrorTrue);
                     if (heights[ 2] == noDataValue) {
                         heights[ 2] = cellHeight;
                         noDataCount += 1.0d;
@@ -4283,7 +4283,7 @@ public class Grid2DSquareCellProcessorDEM
                     heights[ 3] = _Grid2DSquareCellDouble.getCell(
                             cellX - yDiff,
                             cellY + xDiff,
-                            env.HandleOutOfMemoryErrorFalse);
+                            env.HandleOutOfMemoryErrorTrue);
                     if (heights[ 3] == noDataValue) {
                         heights[ 3] = cellHeight;
                         noDataCount += 1.0d;

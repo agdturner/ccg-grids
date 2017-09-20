@@ -4684,7 +4684,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      * @param grid
      * @param processor
      * @param outputDirectory
-     * @param imageExporter
+     * @param ie
      * @param imageTypes
      * @param handleOutOfMemoryError
      * @throws IOException
@@ -4692,14 +4692,14 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
     public void outputImage(
             Grids_AbstractGrid2DSquareCell grid,
             File outputDirectory,
-            Grids_ImageExporter imageExporter,
+            Grids_ImageExporter ie,
             String[] imageTypes,
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            System.out.println("_Output " + grid.toString(handleOutOfMemoryError));
-            if (imageExporter == null) {
-                imageExporter = new Grids_ImageExporter(env);
+            System.out.println("Output " + grid.toString(handleOutOfMemoryError));
+            if (ie == null) {
+                ie = new Grids_ImageExporter(env);
             }
             if (imageTypes == null) {
                 imageTypes = new String[1];
@@ -4720,7 +4720,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
                         outputDirectory,
                         string,
                         handleOutOfMemoryError);
-                imageExporter.toGreyScaleImage(
+                ie.toGreyScaleImage(
                         grid,
                         this,
                         file,
@@ -4739,7 +4739,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
                 outputImage(
                         grid,
                         outputDirectory,
-                        imageExporter,
+                        ie,
                         imageTypes,
                         handleOutOfMemoryError);
             } else {

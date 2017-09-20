@@ -7224,6 +7224,17 @@ public abstract class Grids_AbstractGrid2DSquareCell
 
     }
 
+    protected void freeSomeMemoryAndResetReserve(int chunkRowIndex, int chunkColIndex, OutOfMemoryError e, boolean handleOutOfMemoryError) {
+        //env.clear_MemoryReserve();
+        ChunkID a_ChunkID = new ChunkID(this._NChunkCols, chunkRowIndex, chunkColIndex);
+        if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this) < 1L) {
+            if (env.swapToFile_Grid2DSquareCellChunkExcept_Account(this, a_ChunkID) < 1L) {
+                throw e;
+            }
+        }
+        env.init_MemoryReserve(this, a_ChunkID, handleOutOfMemoryError);
+    }
+
     /**
      * A simple CellID class for distinguishing cells.
      */
