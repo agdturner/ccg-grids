@@ -3464,25 +3464,25 @@ public abstract class Grids_AbstractGrid2DSquareCell
             HashSet<Grids_2D_ID_int> chunkIDs,
             boolean handleOutOfMemoryError) {
         try {
-            Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(chunkIDs);
+            Grids_2D_ID_int result;
+            result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(chunkIDs);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
-                Grids_2D_ID_int result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(chunkIDs);
+                Grids_2D_ID_int result;
+                result = swapToFile_Grid2DSquareCellChunkExcept_AccountChunk(chunkIDs);
                 if (result == null) {
                     if (ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                        throw a_OutOfMemoryError;
+                        throw e;
                     }
                 }
-                ge.init_MemoryReserve(
-                        handleOutOfMemoryError);
-
+                ge.init_MemoryReserve(handleOutOfMemoryError);
                 return result;
 
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
 
             }
         }

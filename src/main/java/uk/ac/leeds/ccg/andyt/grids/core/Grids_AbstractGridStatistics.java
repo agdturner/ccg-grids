@@ -274,16 +274,16 @@ public abstract class Grids_AbstractGridStatistics
             String result = getDescription();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(false);
                 return toString(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -332,16 +332,16 @@ public abstract class Grids_AbstractGridStatistics
             BigInteger result = getNonNoDataValueCountBigInteger();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(false);
                 return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -360,16 +360,16 @@ public abstract class Grids_AbstractGridStatistics
             BigInteger result = getNonZeroAndNonNoDataValueCountBigInteger();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -448,17 +448,17 @@ public abstract class Grids_AbstractGridStatistics
             long result = getNonNoDataValueCountLong();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -495,16 +495,16 @@ public abstract class Grids_AbstractGridStatistics
             long result = getNonZeroAndNonNoDataValueCountLong();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -544,17 +544,17 @@ public abstract class Grids_AbstractGridStatistics
             int result = getNonNoDataValueCountInt();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountInt(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -595,17 +595,17 @@ public abstract class Grids_AbstractGridStatistics
             BigDecimal result = getSumBigDecimal();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigDecimal(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -632,17 +632,17 @@ public abstract class Grids_AbstractGridStatistics
             BigInteger result = getSumBigInteger();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigInteger(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -672,17 +672,17 @@ public abstract class Grids_AbstractGridStatistics
             double result = getSumDouble();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getSumDouble(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -719,17 +719,17 @@ public abstract class Grids_AbstractGridStatistics
             long result = getSumLong();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getSumLong(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -770,17 +770,17 @@ public abstract class Grids_AbstractGridStatistics
             int result = getSumInt();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getSumInt(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -822,17 +822,17 @@ public abstract class Grids_AbstractGridStatistics
             BigDecimal result = getMinBigDecimal();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMinBigDecimal(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -859,17 +859,17 @@ public abstract class Grids_AbstractGridStatistics
             BigInteger result = getMinBigInteger();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMinBigInteger(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -898,17 +898,17 @@ public abstract class Grids_AbstractGridStatistics
             double result = getMinDouble();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMinDouble(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -946,17 +946,17 @@ public abstract class Grids_AbstractGridStatistics
             long result = getMinLong();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMinLong(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -996,17 +996,17 @@ public abstract class Grids_AbstractGridStatistics
             int result = getMinInt();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMinInt(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1035,17 +1035,17 @@ public abstract class Grids_AbstractGridStatistics
             BigInteger result = getMaxBigInteger();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxBigInteger(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1074,17 +1074,17 @@ public abstract class Grids_AbstractGridStatistics
             BigDecimal result = getMaxBigDecimal();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxBigDecimal(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1111,17 +1111,17 @@ public abstract class Grids_AbstractGridStatistics
             double result = getMaxDouble();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxDouble(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1157,17 +1157,17 @@ public abstract class Grids_AbstractGridStatistics
             long result = getMaxLong();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxLong(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1210,17 +1210,17 @@ public abstract class Grids_AbstractGridStatistics
             int result = getMaxInt();
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxInt(handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1539,11 +1539,11 @@ public abstract class Grids_AbstractGridStatistics
                     value);
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
@@ -1556,7 +1556,7 @@ public abstract class Grids_AbstractGridStatistics
                         value,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1643,11 +1643,11 @@ public abstract class Grids_AbstractGridStatistics
                     value);
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
@@ -1660,7 +1660,7 @@ public abstract class Grids_AbstractGridStatistics
                         value,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1731,11 +1731,11 @@ public abstract class Grids_AbstractGridStatistics
             BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
@@ -1743,7 +1743,7 @@ public abstract class Grids_AbstractGridStatistics
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1775,11 +1775,11 @@ public abstract class Grids_AbstractGridStatistics
             BigDecimal result = getStandardDeviationBigDecimal(numberOfDecimalPlaces);
             Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue();
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 this.Grid2DSquareCell.ge.clear_MemoryReserve();
                 if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account() < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 this.Grid2DSquareCell.ge.init_MemoryReserve(
                         Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
@@ -1787,7 +1787,7 @@ public abstract class Grids_AbstractGridStatistics
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
