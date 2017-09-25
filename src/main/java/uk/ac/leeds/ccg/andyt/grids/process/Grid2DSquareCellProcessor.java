@@ -1601,9 +1601,11 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
             double value = noDataValue;
             Grids_Grid2DSquareCellDouble outputGrid;
             //outputGrid = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(grid);
-            outputGrid = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_Directory, grid, 0, 0, nrows - 1, ncols - 1,
+            outputGrid = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(
+                    _Directory, grid, 0, 0, nrows - 1, ncols - 1,
                     ge, handleOutOfMemoryError);
             outputGrid.set_Name(grid.get_Name(handleOutOfMemoryError), handleOutOfMemoryError);
+            System.out.println(outputGrid.toString(handleOutOfMemoryError));
             ge.get_AbstractGrid2DSquareCell_HashSet().add(outputGrid);
             int chunkRowIndex = 0;
             int chunkColIndex = 0;

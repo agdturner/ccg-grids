@@ -301,8 +301,8 @@ public class Grids_Grid2DSquareCellDouble
     /**
      * Initialises this.
      *
-     * @param g The Grids_Grid2DSquareCellDouble from
-     * which the fields of this are set.
+     * @param g The Grids_Grid2DSquareCellDouble from which the fields of this
+     * are set.
      * @param initTransientFields Iff true then transient fields of this are set
      * with those of _Grid2DSquareCellDouble.
      */
@@ -634,7 +634,9 @@ public class Grids_Grid2DSquareCellDouble
             String println0 = this.ge.initString(1000, handleOutOfMemoryError);
             String println = this.ge.initString(1000, handleOutOfMemoryError);
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
-            Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
+            Grids_2D_ID_int chunkID2 = new Grids_2D_ID_int();
+            Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk;
+            grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
                     this,
                     chunkID);
             Grids_AbstractGrid2DSquareCellChunk gridChunk;
@@ -670,24 +672,32 @@ public class Grids_Grid2DSquareCellDouble
                                 chunkID = new Grids_2D_ID_int(
                                         chunkRowIndex,
                                         chunkColIndex);
-                                grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
-                                        this,
-                                        chunkID);
-                                this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                                        chunkID,
-                                        grid2DSquareCellDoubleChunk);
                                 gridNrowsInChunk = grid.getChunkNRows(chunkID, handleOutOfMemoryError);
                                 gridNcolsInChunk = grid.getChunkNCols(chunkID, handleOutOfMemoryError);
                                 for (chunkCellRowIndex = 0; chunkCellRowIndex < gridNrowsInChunk; chunkCellRowIndex++) {
                                     rowIndex = grid.getCellRowIndex(chunkRowIndex, chunkCellRowIndex, chunkID, handleOutOfMemoryError);
+                                    row = rowIndex - startRowIndex;
                                     if (rowIndex >= startRowIndex && rowIndex <= endRowIndex) {
-                                        col = 0;
                                         for (chunkCellColIndex = 0; chunkCellColIndex < gridNcolsInChunk; chunkCellColIndex++) {
                                             colIndex = grid.getCellColIndex(chunkColIndex, chunkCellColIndex, chunkID, handleOutOfMemoryError);
+                                            col = colIndex - startColIndex;
                                             if (colIndex >= startColIndex && colIndex <= endColIndex) {
                                                 cellDouble = grid.getCellDouble(
                                                         rowIndex,
                                                         colIndex);
+                                                // Initialise chunk if it does not exist
+                                                chunkID2 = new Grids_2D_ID_int(
+                                                        this.getChunkRowIndex(row),
+                                                        this.getChunkColIndex(col));
+                                                if (!this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey(chunkID2)) {
+                                                    grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
+                                                            this,
+                                                            chunkID2);
+                                                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
+                                                            chunkID2,
+                                                            grid2DSquareCellDoubleChunk);
+                                                }
+                                                // Initialise value
                                                 if (cellDouble == gridNoDataValue) {
                                                     initCell(
                                                             row,
@@ -731,7 +741,7 @@ public class Grids_Grid2DSquareCellDouble
                     }
                     println = "Done chunkRow " + chunkRow + " out of " + nChunkRows;
                     println = this.ge.println(println, println0, handleOutOfMemoryError);
-                    chunkRow ++;
+                    chunkRow++;
                 }
             } else {
                 for (chunkRowIndex = startChunkRowIndex; chunkRowIndex <= endChunkRowIndex; chunkRowIndex++) {
@@ -742,29 +752,44 @@ public class Grids_Grid2DSquareCellDouble
                                 chunkID = new Grids_2D_ID_int(
                                         chunkRowIndex,
                                         chunkColIndex);
-                                grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
-                                        this,
-                                        chunkID);
-                                this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
-                                        chunkID,
-                                        grid2DSquareCellDoubleChunk);
+//                                grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
+//                                        this,
+//                                        chunkID);
+//                                this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
+//                                        chunkID,
+//                                        grid2DSquareCellDoubleChunk);
                                 gridNrowsInChunk = grid.getChunkNRows(chunkID, handleOutOfMemoryError);
                                 gridNcolsInChunk = grid.getChunkNCols(chunkID, handleOutOfMemoryError);
+                                col = 0;
                                 for (chunkCellRowIndex = 0; chunkCellRowIndex < gridNrowsInChunk; chunkCellRowIndex++) {
                                     rowIndex = grid.getCellRowIndex(chunkRowIndex, chunkCellRowIndex, chunkID, handleOutOfMemoryError);
+                                    row = rowIndex - startRowIndex;
                                     if (rowIndex >= startRowIndex && rowIndex <= endRowIndex) {
-                                        col = 0;
                                         for (chunkCellColIndex = 0; chunkCellColIndex < gridNcolsInChunk; chunkCellColIndex++) {
                                             colIndex = grid.getCellColIndex(chunkColIndex, chunkCellColIndex, chunkID, handleOutOfMemoryError);
+                                            col = colIndex - startColIndex;
                                             if (colIndex >= startColIndex && colIndex <= endColIndex) {
+                                                // Initialise chunk if it does not exist
+                                                chunkID2 = new Grids_2D_ID_int(
+                                                        this.getChunkRowIndex(row),
+                                                        this.getChunkColIndex(col));
+                                                if (!this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey(chunkID2)) {
+                                                    grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
+                                                            this,
+                                                            chunkID2);
+                                                    this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.put(
+                                                            chunkID2,
+                                                            grid2DSquareCellDoubleChunk);
+                                                }
+                                                // Initialise value
                                                 cellDouble = grid.getCellDouble(
                                                         rowIndex,
                                                         colIndex);
                                                 initCell(
-                                                    row,
-                                                    col,
-                                                    cellDouble,
-                                                    handleOutOfMemoryError);
+                                                        row,
+                                                        col,
+                                                        cellDouble,
+                                                        handleOutOfMemoryError);
                                                 col++;
                                             }
                                         }
@@ -796,7 +821,7 @@ public class Grids_Grid2DSquareCellDouble
                     }
                     println = "Done chunkRow " + chunkRow + " out of " + nChunkRows;
                     println = this.ge.println(println, println0, handleOutOfMemoryError);
-                    chunkRow ++;
+                    chunkRow++;
                 }
             }
             this.ge._AbstractGrid2DSquareCell_HashSet.add(this);
@@ -1254,7 +1279,7 @@ public class Grids_Grid2DSquareCellDouble
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();                
+                ge.clear_MemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
@@ -1760,7 +1785,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * For returning the value of the cell with cell Grids_2D_ID_int cellID as a int.
+     * For returning the value of the cell with cell Grids_2D_ID_int cellID as a
+     * int.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -1855,8 +1881,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * For returning the value of the cell with cell Grids_2D_ID_int _CellID and setting it
-     * to newValue.
+     * For returning the value of the cell with cell Grids_2D_ID_int _CellID and
+     * setting it to newValue.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param newValue .
@@ -2183,7 +2209,7 @@ public class Grids_Grid2DSquareCellDouble
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                     chunkRowIndex,
                     chunkColIndex);
-            //boolean containsKey = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey( a_ChunkID ); // For debugging
+            //boolean containsKey = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey(chunkID); // For debugging
             Grids_AbstractGrid2DSquareCellDoubleChunk chunk
                     = getGrid2DSquareCellDoubleChunk(chunkID);
             chunk.initCell(
@@ -2870,8 +2896,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values to
-     * point given by x-coordinate x, y-coordinate y.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -2906,8 +2932,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values to
-     * point given by x-coordinate x, y-coordinate y.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      */
@@ -2933,8 +2959,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values to
-     * position given by row index rowIndex, column index colIndex.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values to position given by row index rowIndex, column index colIndex.
      * @param cellRowIndex The row index from which the cell IDs of the nearest
      * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
@@ -2971,8 +2997,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values to
-     * position given by row index rowIndex, column index colIndex.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values to position given by row index rowIndex, column index colIndex.
      * @param cellRowIndex The row index from which the cell IDs of the nearest
      * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
@@ -3000,9 +3026,10 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values
-     * nearest to point with position given by: x-coordinate x, y-coordinate y;
-     * and, cell row index _CellRowIndex, cell column index _CellColIndex.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values nearest to point with position given by: x-coordinate x,
+     * y-coordinate y; and, cell row index _CellRowIndex, cell column index
+     * _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
      * @param cellRowIndex The row index from which the cell IDs of the nearest
@@ -3051,9 +3078,10 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data values
-     * nearest to point with position given by: x-coordinate x, y-coordinate y;
-     * and, cell row index _CellRowIndex, cell column index _CellColIndex.
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values nearest to point with position given by: x-coordinate x,
+     * y-coordinate y; and, cell row index _CellRowIndex, cell column index
+     * _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
      * @param cellRowIndex The row index from which the cell IDs of the nearest
@@ -3615,8 +3643,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return Value of the cell with cell Grids_2D_ID_int cellID and adds valueToAdd to that
-     * cell.
+     * @return Value of the cell with cell Grids_2D_ID_int cellID and adds
+     * valueToAdd to that cell.
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param valueToAdd the value to be added to the cell containing the point
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -3651,8 +3679,8 @@ public class Grids_Grid2DSquareCellDouble
     }
 
     /**
-     * @return Value of the cell with cell Grids_2D_ID_int cellID and adds valueToAdd to that
-     * cell.
+     * @return Value of the cell with cell Grids_2D_ID_int cellID and adds
+     * valueToAdd to that cell.
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param valueToAdd the value to be added to the cell containing the point
      */

@@ -4404,11 +4404,11 @@ public abstract class Grids_AbstractGrid2DSquareCell
         boolean isInCache = isInCache(
                 chunkID);
         if (!isInCache) {
-            File file = new File(
+            File f = new File(
                     this._Directory,
                     "" + chunkID.getRow()
                     + "_" + chunkID.getCol());
-            Object o = Generic_StaticIO.readObject(file);
+            Object o = Generic_StaticIO.readObject(f);
             if (this.getClass() == Grids_Grid2DSquareCellInt.class) {
                 Grids_AbstractGrid2DSquareCellIntChunk chunk = null;
                 if (o.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
@@ -4446,6 +4446,12 @@ public abstract class Grids_AbstractGrid2DSquareCell
                         + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
             } else {
                 Grids_AbstractGrid2DSquareCellDoubleChunk chunk = null;
+                
+                if (o == null) {
+                    int debug = 1;
+                    System.out.println("No chunk loading from file " + f);
+                }
+                
                 if (o.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
                     Grids_Grid2DSquareCellDoubleChunk64CellMap c;
                     c = (Grids_Grid2DSquareCellDoubleChunk64CellMap) o;
