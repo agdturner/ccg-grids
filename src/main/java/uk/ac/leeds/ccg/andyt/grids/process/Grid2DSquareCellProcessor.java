@@ -203,8 +203,8 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      * Creates a new instance of Grid2DSquareCellDoubleProcessor.
      **/
     public Grid2DSquareCellProcessor(
-            Grids_Environment env) {
-        this.ge = env;
+            Grids_Environment ge) {
+        this.ge = ge;
         this.startTime = System.currentTimeMillis();
         File workspace = new File(System.getProperty("java.io.tmpdir"));
         File logFile = new File(workspace, "log.txt");
@@ -214,17 +214,17 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
                     new FileOutputStream(logFile, true));
         } catch (FileNotFoundException e) {
             int _MessageLength = 1000;
-            String _Message0 = env.initString(
+            String _Message0 = ge.initString(
                     _MessageLength,
-                    env.HandleOutOfMemoryErrorTrue);
-            String _Message = env.initString(
+                    ge.HandleOutOfMemoryErrorTrue);
+            String _Message = ge.initString(
                     _MessageLength,
-                    env.HandleOutOfMemoryErrorTrue);
+                    ge.HandleOutOfMemoryErrorTrue);
             _Message = e.getMessage();
-            _Message = env.println(
+            _Message = ge.println(
                     _Message,
                     _Message0,
-                    env.HandleOutOfMemoryErrorTrue);
+                    ge.HandleOutOfMemoryErrorTrue);
             System.err.println(e.getMessage());
             //e.printStackTrace();
         }

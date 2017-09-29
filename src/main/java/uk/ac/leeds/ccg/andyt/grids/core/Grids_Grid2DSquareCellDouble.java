@@ -760,7 +760,6 @@ public class Grids_Grid2DSquareCellDouble
 //                                        grid2DSquareCellDoubleChunk);
                                 gridNrowsInChunk = grid.getChunkNRows(chunkID, handleOutOfMemoryError);
                                 gridNcolsInChunk = grid.getChunkNCols(chunkID, handleOutOfMemoryError);
-                                col = 0;
                                 for (chunkCellRowIndex = 0; chunkCellRowIndex < gridNrowsInChunk; chunkCellRowIndex++) {
                                     rowIndex = grid.getCellRowIndex(chunkRowIndex, chunkCellRowIndex, chunkID, handleOutOfMemoryError);
                                     row = rowIndex - startRowIndex;
