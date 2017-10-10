@@ -69,7 +69,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  or multiple Grid2DSquareCellAbstracts. TODO: Implement a general replace
  * method ( deprecate/replace mask methods ).
  */
-public class Grid2DSquareCellProcessor extends Grids_Object {
+public class Grids_Processor extends Grids_Object {
 
     /**
      * For storing the start time of the processing.
@@ -166,7 +166,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
     /**
      * Creates a new instance of Grid2DSquareCellDoubleProcessor
      */
-    public Grid2DSquareCellProcessor() {
+    public Grids_Processor() {
         //this( FileCreator.createNewFile() );
         //this( FileCreator.createNewFile( new File( System.getProperty( "tmpdir" ) ) ) );
         //this( FileCreator.createNewFile( new File( System.getProperty( "java.io.tmpdir" ) ) ) );
@@ -180,7 +180,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      *
      * @param _Directory
      */
-    public Grid2DSquareCellProcessor(
+    public Grids_Processor(
             File _Directory) {
         this(_Directory, true);
     }
@@ -193,7 +193,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      * @param _Grids_Environment
      * @param _Directory
      */
-    public Grid2DSquareCellProcessor(
+    public Grids_Processor(
             Grids_Environment _Grids_Environment,
             File _Directory) {
         this(_Grids_Environment, _Directory, true);
@@ -202,7 +202,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
     /*
      * Creates a new instance of Grid2DSquareCellDoubleProcessor.
      **/
-    public Grid2DSquareCellProcessor(
+    public Grids_Processor(
             Grids_Environment ge) {
         this.ge = ge;
         this.startTime = System.currentTimeMillis();
@@ -242,7 +242,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      * @param _Directory
      * @param appendToLogFile
      */
-    public Grid2DSquareCellProcessor(
+    public Grids_Processor(
             File _Directory,
             boolean appendToLogFile) {
         this(null, _Directory, appendToLogFile);
@@ -256,7 +256,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
      * @param _Directory
      * @param appendToLogFile
      */
-    public Grid2DSquareCellProcessor(
+    public Grids_Processor(
             Grids_Environment env,
             File _Directory,
             boolean appendToLogFile) {
@@ -2604,7 +2604,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
                 //            } catch ( OutOfMemoryError e ) {
                 //                // TODO:
                 //                // Clear some memory, cache, use chankRAF etc... try again. Perhaps fail and throw error to deal with higher up...
-                //                println( "Warning!!! OutOfMemoryError in Grid2DSquareCellProcessor.addToGrid( grid ( ))" );
+                //                println( "Warning!!! OutOfMemoryError in Grids_Processor.addToGrid( grid ( ))" );
                 //                int outOfMemoryErrorDebug0 = 1;
                 //            }
                 //            return addToGrid( grid, aggregateGrid2DSquareCellDoubleToAddToAdd, dimensionConstraints, weight );
@@ -3069,7 +3069,7 @@ public class Grid2DSquareCellProcessor extends Grids_Object {
     //     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
     //     *   in this method then swap operations are initiated prior to retrying.
     //     *   If false then OutOfMemoryErrors are caught and thrown.
-    //     * @see Grid2DSquareCellProcessor#addToGrid(Grids_Grid2DSquareCellDouble,Grids_Grid2DSquareCellDouble,boolean)
+    //     * @see Grids_Processor#addToGrid(Grids_Grid2DSquareCellDouble,Grids_Grid2DSquareCellDouble,boolean)
     //     * TODO:
     //     * see multiply first
     //     */

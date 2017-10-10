@@ -2105,42 +2105,37 @@ public class Grids_Grid2DSquareCellDouble
             int chunkCellColIndex,
             double newValue) {
         double result = get_NoDataValue(ge.HandleOutOfMemoryErrorFalse);
+        if (chunk != null) {
         if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
             result = ((Grids_Grid2DSquareCellDoubleChunk64CellMap) chunk).setCell(
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
                     result);
+        } else if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+            result = ((Grids_Grid2DSquareCellDoubleChunkArray) chunk).setCell(
+                    chunkCellRowIndex,
+                    chunkCellColIndex,
+                    newValue,
+                    result);
+        } else if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
+            result = ((Grids_Grid2DSquareCellDoubleChunkJAI) chunk).setCell(
+                    chunkCellRowIndex,
+                    chunkCellColIndex,
+                    newValue,
+                    result);
+        } else if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+            result = ((Grids_Grid2DSquareCellDoubleChunkMap) chunk).setCell(
+                    chunkCellRowIndex,
+                    chunkCellColIndex,
+                    newValue,
+                    result);
         } else {
-            if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
-                result = ((Grids_Grid2DSquareCellDoubleChunkArray) chunk).setCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        newValue,
-                        result);
-            } else {
-                if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkJAI.class) {
-                    result = ((Grids_Grid2DSquareCellDoubleChunkJAI) chunk).setCell(
-                            chunkCellRowIndex,
-                            chunkCellColIndex,
-                            newValue,
-                            result);
-                } else {
-                    if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
-                        result = ((Grids_Grid2DSquareCellDoubleChunkMap) chunk).setCell(
-                                chunkCellRowIndex,
-                                chunkCellColIndex,
-                                newValue,
-                                result);
-                    } else {
-                        System.err.println(
-                                "Error in "
-                                + getClass().getName() + ".setCell(Grid2DSquareCellDoubleChunkAbstract,int,int,int,int,double) \n"
-                                + "unable to handle Grid2DSquareCellChunkAbstract " + chunk.toString());
-                        return result;
-                    }
-                }
-            }
+            System.err.println(
+                    "Error in "
+                    + getClass().getName() + ".setCell(Grid2DSquareCellDoubleChunkAbstract,int,int,int,int,double) \n"
+                    + "unable to handle Grid2DSquareCellChunkAbstract " + chunk.toString());
+            return result;
         }
         // Update Statistics
         upDateGridStatistics(
@@ -2148,6 +2143,8 @@ public class Grids_Grid2DSquareCellDouble
                 result,
                 _NoDataValue);
         return result;
+        }
+        return _NoDataValue;
     }
 
     /**

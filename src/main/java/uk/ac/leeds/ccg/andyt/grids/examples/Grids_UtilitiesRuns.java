@@ -24,7 +24,7 @@ import java.io.PrintWriter;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
-import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
 
@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
  * TODO:
  * docs
  */
-public class Grids_UtilitiesRuns extends Grid2DSquareCellProcessor implements Runnable {
+public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 
     public Grids_UtilitiesRuns() throws IOException {
     }

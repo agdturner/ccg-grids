@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
-import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
  *
@@ -48,9 +48,9 @@ public class Grids_Environment
     private transient Generic_BigDecimal _Generic_BigDecimal;
 
     /**
-     * For storing a Grid2DSquareCellProcessor.
+     * For storing a Grids_Processor.
      */
-    protected transient Grid2DSquareCellProcessor _Grid2DSquareCellProcessor;
+    protected transient Grids_Processor _Grid2DSquareCellProcessor;
 
     public Grids_Environment() {
         init_AbstractGrid2DSquareCell_HashSet();
@@ -60,7 +60,7 @@ public class Grids_Environment
     /**
      * @return the _Grid2DSquareCellProcessor
      */
-    public Grid2DSquareCellProcessor get_Grid2DSquareCellProcessor() {
+    public Grids_Processor get_Grid2DSquareCellProcessor() {
         if (_Grid2DSquareCellProcessor == null) {
             init_Grid2DSquareCellProcessor();
         }
@@ -70,7 +70,7 @@ public class Grids_Environment
     /**
      * @param a_Grid2DSquareCellProcessor
      */
-    public void setGrid2DSquareCellProcessor(Grid2DSquareCellProcessor a_Grid2DSquareCellProcessor) {
+    public void setGrid2DSquareCellProcessor(Grids_Processor a_Grid2DSquareCellProcessor) {
         this._Grid2DSquareCellProcessor = a_Grid2DSquareCellProcessor;
     }
 
@@ -78,7 +78,7 @@ public class Grids_Environment
      * @return the _Grid2DSquareCellProcessor
      */
     private void init_Grid2DSquareCellProcessor() {
-        _Grid2DSquareCellProcessor = new Grid2DSquareCellProcessor(this);
+        _Grid2DSquareCellProcessor = new Grids_Processor(this);
     }
 
     /**

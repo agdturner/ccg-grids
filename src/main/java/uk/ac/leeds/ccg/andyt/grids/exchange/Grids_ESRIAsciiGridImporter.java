@@ -25,7 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
  * Class for importing ESRI Asciigrid.
@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
 public class Grids_ESRIAsciiGridImporter {
     
     
-    public Grid2DSquareCellProcessor _Grid2DSquareCellProcessor;
+    public Grids_Processor _Grid2DSquareCellProcessor;
     
     /**
      * For storing ESRIAsciigrid File
@@ -56,7 +56,7 @@ public class Grids_ESRIAsciiGridImporter {
      */
     public Grids_ESRIAsciiGridImporter(
             File file,
-            Grid2DSquareCellProcessor _Grid2DSquareCellProcessor ) {
+            Grids_Processor _Grid2DSquareCellProcessor ) {
         this._Grid2DSquareCellProcessor = _Grid2DSquareCellProcessor;
         this.file = file;
         try {
@@ -76,7 +76,7 @@ public class Grids_ESRIAsciiGridImporter {
     public Grids_ESRIAsciiGridImporter(
             File file,
             Grids_Environment _Grids_Environment) {
-        this._Grid2DSquareCellProcessor = new Grid2DSquareCellProcessor( _Grids_Environment );
+        this._Grid2DSquareCellProcessor = new Grids_Processor( _Grids_Environment );
         this.file = file;
         try {
             this.bufferedReader = new BufferedReader(

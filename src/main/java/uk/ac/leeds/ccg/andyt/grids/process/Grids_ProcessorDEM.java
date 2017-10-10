@@ -42,8 +42,8 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  * A class of methods relevant to the processing of Digital Elevation Model
  * Data.
  */
-public class Grid2DSquareCellProcessorDEM
-        extends Grid2DSquareCellProcessor {
+public class Grids_ProcessorDEM
+        extends Grids_Processor {
 
     /**
      * A HashSet for storing Grids_AbstractGrid2DSquareCell.CellIDs
@@ -53,7 +53,7 @@ public class Grid2DSquareCellProcessorDEM
     /**
      * Creates a new Grid2DSquareCellProcessorDEM
      */
-    public Grid2DSquareCellProcessorDEM() {
+    public Grids_ProcessorDEM() {
         super();
     }
 
@@ -64,7 +64,7 @@ public class Grid2DSquareCellProcessorDEM
      *
      * @param _Directory
      */
-    public Grid2DSquareCellProcessorDEM(
+    public Grids_ProcessorDEM(
             File _Directory) {
         super(_Directory);
     }
@@ -77,7 +77,7 @@ public class Grid2DSquareCellProcessorDEM
      * @param env
      * @param _Directory
      */
-    public Grid2DSquareCellProcessorDEM(
+    public Grids_ProcessorDEM(
             Grids_Environment env,
             File _Directory) {
         super(env, _Directory);
@@ -90,7 +90,7 @@ public class Grid2DSquareCellProcessorDEM
      * @param _Directory
      * @param appendToLogFile
      */
-    public Grid2DSquareCellProcessorDEM(
+    public Grids_ProcessorDEM(
             File _Directory,
             boolean appendToLogFile) {
         super(_Directory,

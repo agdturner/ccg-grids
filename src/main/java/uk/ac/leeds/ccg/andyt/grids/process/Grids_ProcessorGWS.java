@@ -36,20 +36,20 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  * Class of methods for processing and generating geographically weighted
  Grids_Grid2DSquareCellDouble statistics.
  */
-public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
+public class Grids_ProcessorGWS extends Grids_Processor {
 
     /**
      * Creates a new Grid2DSquareCellDoubleProcessorGWS
      * @throws java.io.IOException
      */
-    public Grid2DSquareCellProcessorGWS() throws IOException {
+    public Grids_ProcessorGWS() throws IOException {
     }
 
     /*
      * Creates a new instance of Grid2DSquareCellDoubleProcessor.
      *
      */
-    public Grid2DSquareCellProcessorGWS(
+    public Grids_ProcessorGWS(
             Grids_Environment env) {
         super(env);
     }
@@ -62,7 +62,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @param workspace
      * @throws java.io.IOException
      */
-    public Grid2DSquareCellProcessorGWS(File workspace) throws IOException {
+    public Grids_ProcessorGWS(File workspace) throws IOException {
         super(workspace);
     }
 
@@ -74,7 +74,7 @@ public class Grid2DSquareCellProcessorGWS extends Grid2DSquareCellProcessor {
      * @param appendToLogFile
      * @throws java.io.IOException
      */
-    public Grid2DSquareCellProcessorGWS(File workspace, boolean appendToLogFile) throws IOException {
+    public Grids_ProcessorGWS(File workspace, boolean appendToLogFile) throws IOException {
         super(workspace, appendToLogFile);
     }
 

@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.process.Grid2DSquareCellProcessor;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
  * Class for exporting to images.
@@ -79,7 +79,7 @@ public class Grids_ImageExporter implements Serializable {
      */
     public void toGreyScaleImage(
             Grids_AbstractGrid2DSquareCell grid,
-            Grid2DSquareCellProcessor processor,
+            Grids_Processor processor,
             File file,
             String type,
             boolean handleOutOfMemoryError) {
@@ -123,7 +123,7 @@ public class Grids_ImageExporter implements Serializable {
      */
     protected void toGreyScaleImage(
             Grids_AbstractGrid2DSquareCell grid,
-            Grid2DSquareCellProcessor processor,
+            Grids_Processor processor,
             File file,
             String type) {
         // Initialisation
@@ -389,7 +389,6 @@ public class Grids_ImageExporter implements Serializable {
             TreeMap<Double, Color> colours,
             Color noDataValueColour,
             Grids_Grid2DSquareCellDouble grid,
-            Grid2DSquareCellProcessor processor,
             File file,
             String type,
             boolean handleOutOfMemoryError) {
@@ -399,7 +398,6 @@ public class Grids_ImageExporter implements Serializable {
                     colours,
                     noDataValueColour,
                     grid,
-                    processor,
                     file,
                     type);
             grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(
@@ -418,7 +416,6 @@ public class Grids_ImageExporter implements Serializable {
                         colours,
                         noDataValueColour,
                         grid,
-                        processor,
                         file,
                         type,
                         handleOutOfMemoryError);
@@ -446,7 +443,6 @@ public class Grids_ImageExporter implements Serializable {
             TreeMap<Double, Color> colours,
             Color noDataValueColour,
             Grids_Grid2DSquareCellDouble grid,
-            Grid2DSquareCellProcessor processor,
             File file,
             String type) {
         // Initialisation
