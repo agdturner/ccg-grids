@@ -56,9 +56,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkJAIFactory
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkRAFFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_GridStatistics0;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_GridStatistics1;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;

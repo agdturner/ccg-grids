@@ -18,6 +18,9 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

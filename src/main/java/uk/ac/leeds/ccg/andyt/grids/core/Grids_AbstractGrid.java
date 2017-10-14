@@ -5,6 +5,8 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -60,7 +62,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * A reference to the grid Statistics Object.
      */
-    protected Grids_AbstractGridStatistics _GridStatistics;
+    private Grids_AbstractGridStatistics _GridStatistics;
     /**
      * For storing the number of chunk rows.
      */
@@ -188,7 +190,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         //this._AbstractGrid2DSquareCell_HashSet = new HashSet();
         this._GridStatistics = new Grids_GridStatistics0();
         // Set the reference to this in the Grid Statistics
-        this._GridStatistics.init(this);
+        this.getGridStatistics().init(this);
         //this._GridStatistics.grid2DSquareCell = this;
         this._NChunkCols = 1;
         this._NCols = 1L;
@@ -209,9 +211,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         this._Dimensions = a_Grid2DSquareCell._Dimensions;
         this._DimensionsScale = a_Grid2DSquareCell._DimensionsScale;
         //this._Directory = _Grid2DSquareCell._Directory;
-        this._GridStatistics = a_Grid2DSquareCell._GridStatistics;
+        this._GridStatistics = a_Grid2DSquareCell.getGridStatistics();
         // Set the reference to this in the Grid Statistics
-        this._GridStatistics.init(this);
+        this.getGridStatistics().init(this);
         //this._GridStatistics._Grid2DSquareCell = this;
         this._Name = a_Grid2DSquareCell._Name;
         this._NChunkCols = a_Grid2DSquareCell._NChunkCols;
@@ -275,13 +277,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * this._GridStatistics. Or the _GridStatistics need to be made safe in that
      * only copies of fields are passed.
      */
-    protected Grids_AbstractGridStatistics getGridStatistics() {
+    public Grids_AbstractGridStatistics getGridStatistics() {
         //        if ( this._GridStatistics.grid2DSquareCell != this ) {
         //            boolean DEBUG = true;
         //        }
         return this._GridStatistics;
     }
 
+    public void setGridStatistics(Grids_AbstractGridStatistics s) {
+        this._GridStatistics = s;
+    }
+    
     /**
      * @return the Grids_AbstractGridChunk with ID._Row equal to
      * chunkRowIndex and ID._Col equal to chunkColIndex.
@@ -454,7 +460,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         } else {
             result += " ), unsignedLongPowersOf2( " + _UnsignedLongPowersOf2.toString();
         }
-        result += " ), Statistics( " + this._GridStatistics.toString(true);
+        result += " ), Statistics( " + this.getGridStatistics().toString(true);
         if (ge.get_AbstractGrid2DSquareCell_HashSet() == null) {
             result += " ), grid2DSquareCells( null )";
         } else {
