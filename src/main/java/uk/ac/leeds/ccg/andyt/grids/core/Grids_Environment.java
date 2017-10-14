@@ -29,16 +29,16 @@ public class Grids_Environment
     protected transient File _Directory;
 
     /**
-     * A HashSet of Grids_AbstractGrid2DSquareCell objects that have data that
+     * A HashSet of Grids_AbstractGrid objects that have data that
      * can be swapped to release memory for processing.
      */
-    protected transient HashSet<Grids_AbstractGrid2DSquareCell> _AbstractGrid2DSquareCell_HashSet;
+    protected transient HashSet<Grids_AbstractGrid> _AbstractGrid2DSquareCell_HashSet;
 
     /**
-     * A HashSet of Grids_AbstractGrid2DSquareCell objects that have data that
+     * A HashSet of Grids_AbstractGrid objects that have data that
      * can be swapped to release memory for processing.
      */
-    protected transient HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> _NotToSwapData;
+    protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> _NotToSwapData;
 
     /**
      * Local _Directory used for caching. TODO If this were not transient upon
@@ -114,7 +114,7 @@ public class Grids_Environment
      */
     protected final void init_AbstractGrid2DSquareCell_HashSet() {
         if (this._AbstractGrid2DSquareCell_HashSet == null) {
-            this._AbstractGrid2DSquareCell_HashSet = new HashSet<Grids_AbstractGrid2DSquareCell>();
+            this._AbstractGrid2DSquareCell_HashSet = new HashSet<Grids_AbstractGrid>();
         }
     }
 
@@ -127,7 +127,7 @@ public class Grids_Environment
      */
     protected final void init_NotToSwapData() {
         if (this._NotToSwapData == null) {
-            this._NotToSwapData = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
+            this._NotToSwapData = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
         }
     }
 
@@ -148,13 +148,13 @@ public class Grids_Environment
      * @param a_AbstractGrid2DSquareCell_HashSet
      */
     protected void init_AbstractGrid2DSquareCell_HashSet(
-            HashSet<Grids_AbstractGrid2DSquareCell> a_AbstractGrid2DSquareCell_HashSet) {
+            HashSet<Grids_AbstractGrid> a_AbstractGrid2DSquareCell_HashSet) {
         if (this._AbstractGrid2DSquareCell_HashSet == null) {
             this._AbstractGrid2DSquareCell_HashSet = a_AbstractGrid2DSquareCell_HashSet;
         } else {
             //System.err.println( this.getClass().getName() + ".init_AbstractGrid2DSquareCell_HashSet(HashSet)" );
             if (a_AbstractGrid2DSquareCell_HashSet == null) { // Debug
-                this._AbstractGrid2DSquareCell_HashSet = new HashSet<Grids_AbstractGrid2DSquareCell>();
+                this._AbstractGrid2DSquareCell_HashSet = new HashSet<Grids_AbstractGrid>();
             } else {
                 this._AbstractGrid2DSquareCell_HashSet = a_AbstractGrid2DSquareCell_HashSet;
             }
@@ -164,7 +164,7 @@ public class Grids_Environment
     /**
      * @return this._AbstractGrid2DSquareCell_HashSet.
      */
-    public HashSet<Grids_AbstractGrid2DSquareCell> get_AbstractGrid2DSquareCell_HashSet() {
+    public HashSet<Grids_AbstractGrid> get_AbstractGrid2DSquareCell_HashSet() {
         return this._AbstractGrid2DSquareCell_HashSet;
     }
 
@@ -176,7 +176,7 @@ public class Grids_Environment
      * @param handleOutOfMemoryError
      */
     public void set_AbstractGrid2DSquareCell_HashSet(
-            HashSet<Grids_AbstractGrid2DSquareCell> a_AbstractGrid2DSquareCell_HashSet,
+            HashSet<Grids_AbstractGrid> a_AbstractGrid2DSquareCell_HashSet,
             boolean handleOutOfMemoryError) {
         try {
             this._AbstractGrid2DSquareCell_HashSet = a_AbstractGrid2DSquareCell_HashSet;
@@ -204,7 +204,7 @@ public class Grids_Environment
      * @param a_AbstractGrid2DSquareCell_HashSet
      */
     protected void set_AbstractGrid2DSquareCell_HashSet(
-            HashSet<Grids_AbstractGrid2DSquareCell> a_AbstractGrid2DSquareCell_HashSet) {
+            HashSet<Grids_AbstractGrid> a_AbstractGrid2DSquareCell_HashSet) {
         this._AbstractGrid2DSquareCell_HashSet = a_AbstractGrid2DSquareCell_HashSet;
     }
 
@@ -213,7 +213,7 @@ public class Grids_Environment
      * @param handleOutOfMemoryError
      */
     public void init_Grid2DSquareCells_MemoryReserve(
-            HashSet<Grids_AbstractGrid2DSquareCell> a_AbstractGrid2DSquareCell_HashSet,
+            HashSet<Grids_AbstractGrid> a_AbstractGrid2DSquareCell_HashSet,
             boolean handleOutOfMemoryError) {
         try {
             init_Grid2DSquareCells_MemoryReserve(a_AbstractGrid2DSquareCell_HashSet);
@@ -237,9 +237,9 @@ public class Grids_Environment
      * @param a_AbstractGrid2DSquareCell_HashSet
      */
     protected void init_Grid2DSquareCells_MemoryReserve(
-            HashSet<Grids_AbstractGrid2DSquareCell> a_AbstractGrid2DSquareCell_HashSet) {
+            HashSet<Grids_AbstractGrid> a_AbstractGrid2DSquareCell_HashSet) {
         init_AbstractGrid2DSquareCell_HashSet(a_AbstractGrid2DSquareCell_HashSet);
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         if (a_Iterator.hasNext()) {
             a_Iterator.next().ge.set_MemoryReserve(get_MemoryReserve());
         } else {
@@ -257,7 +257,7 @@ public class Grids_Environment
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -265,9 +265,9 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunk_AccountDetail();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentailPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentailPartResult
                         = init_MemoryReserve_AccountDetail(
                                 handleOutOfMemoryError);
                 combine(result,
@@ -314,7 +314,7 @@ public class Grids_Environment
      */
     @Override
     public final void init_MemoryReserve(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -385,7 +385,7 @@ public class Grids_Environment
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -396,13 +396,13 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                                 a_ChunkID);
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_ChunkID,
                                 handleOutOfMemoryError);
@@ -457,7 +457,7 @@ public class Grids_Environment
      */
     @Override
     public final void init_MemoryReserve(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -483,7 +483,7 @@ public class Grids_Environment
 
     @Override
     public long init_MemoryReserve_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -527,8 +527,8 @@ public class Grids_Environment
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -540,14 +540,14 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                                 a_Grid2DSquareCell,
                                 a_ChunkID);
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_Grid2DSquareCell,
                                 a_ChunkID,
@@ -562,8 +562,8 @@ public class Grids_Environment
     }
 
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
             boolean handleOutOfMemoryError) {
         try {
@@ -575,14 +575,14 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                                 a_Grid2DSquareCell,
                                 a_ChunkID_HashSet);
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_Grid2DSquareCell,
                                 a_ChunkID_HashSet,
@@ -597,8 +597,8 @@ public class Grids_Environment
     }
 
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -608,13 +608,13 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                                 a_Grid2DSquareCell);
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_Grid2DSquareCell,
                                 handleOutOfMemoryError);
@@ -629,7 +629,7 @@ public class Grids_Environment
 
     @Override
     public long init_MemoryReserve_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -657,7 +657,7 @@ public class Grids_Environment
 
     @Override
     public long init_MemoryReserve_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -685,7 +685,7 @@ public class Grids_Environment
 
     @Override
     public long init_MemoryReserve_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
             boolean handleOutOfMemoryError) {
         try {
@@ -723,14 +723,14 @@ public class Grids_Environment
      *
      * @param a_Grid2DSquareCell
      * @param a_ChunkID_HashSet HashSet of
-     * Grids_AbstractGrid2DSquareCell.ChunkIDs
+     * Grids_AbstractGrid.ChunkIDs
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     @Override
     public final void init_MemoryReserve(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
             boolean handleOutOfMemoryError) {
         try {
@@ -770,7 +770,7 @@ public class Grids_Environment
      */
     @Override
     public void init_MemoryReserve(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -794,8 +794,8 @@ public class Grids_Environment
     }
 
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
             boolean handleOutOfMemoryError) {
         try {
             init_MemoryReserve();
@@ -805,13 +805,13 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         chunksNotToSwap);
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
                 potentialPartResult = init_MemoryReserve_AccountDetail(
                         chunksNotToSwap,
                         handleOutOfMemoryError);
@@ -878,7 +878,7 @@ public class Grids_Environment
      */
     @Override
     public void tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell gridNotToSwap,
+            Grids_AbstractGrid gridNotToSwap,
             boolean handleOutOfMemoryError) {
         try {
             if (tryToEnsureThereIsEnoughMemoryToContinue(gridNotToSwap)) {
@@ -911,7 +911,7 @@ public class Grids_Environment
     }
 
     protected boolean tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
+            Grids_AbstractGrid a_Grid2DSquareCell) {
         while (getTotalFreeMemory() < Memory_Threshold) {
             if (swapToFile_Grid2DSquareCellChunkExcept_Account(a_Grid2DSquareCell) < 1) {
                 return false;
@@ -930,7 +930,7 @@ public class Grids_Environment
      */
     @Override
     public void tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -965,7 +965,7 @@ public class Grids_Environment
     }
 
     protected boolean tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
         while (getTotalFreeMemory() < Memory_Threshold) {
             if (swapToFile_Grid2DSquareCellChunkExcept_Account(a_Grid2DSquareCell, a_ChunkID) < 1) {
@@ -1035,7 +1035,7 @@ public class Grids_Environment
      */
     @Override
     public void tryToEnsureThereIsEnoughMemoryToContinue(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             if (tryToEnsureThereIsEnoughMemoryToContinue(a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap)) {
@@ -1067,7 +1067,7 @@ public class Grids_Environment
     }
 
     protected boolean tryToEnsureThereIsEnoughMemoryToContinue(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
         while (getTotalFreeMemory() < Memory_Threshold) {
             if (swapToFile_Grid2DSquareCellChunkExcept_Account(a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) < 1) {
                 return false;
@@ -1086,7 +1086,7 @@ public class Grids_Environment
      */
     @Override
     public void tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
             boolean handleOutOfMemoryError) {
         try {
@@ -1130,7 +1130,7 @@ public class Grids_Environment
     }
 
     protected boolean tryToEnsureThereIsEnoughMemoryToContinue(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
         while (getTotalFreeMemory() < Memory_Threshold) {
             if (swapToFile_Grid2DSquareCellChunkExcept_Account(a_Grid2DSquareCell, a_ChunkID_HashSet) < 1) {
@@ -1188,14 +1188,14 @@ public class Grids_Environment
      * not enough memory to continue it will attempt to make room. If
      * successful, this will return an Object[] with the first element being a
      * Boolean with value true. The second element being a
-     * HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> indicating the
+     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the
      * data that was swapped. If unsuccessful, this will return an Object[] with
      * the first element being a Boolean with value false. The second element
-     * being a HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * being a HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * indicating the data that was swapped.
      *
      * @return Either null or an Object[] of length 2 with first element a
-     * Boolean and second element a HashMap<Grids_AbstractGrid2DSquareCell,
+     * Boolean and second element a HashMap<Grids_AbstractGrid,
      * HashSet<ChunkID>>.
      */
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account() {
@@ -1228,7 +1228,7 @@ public class Grids_Environment
      */
     @Override
     public long tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
@@ -1264,7 +1264,7 @@ public class Grids_Environment
     }
 
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
+            Grids_AbstractGrid a_Grid2DSquareCell) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
             long result1 = 0L;
@@ -1295,7 +1295,7 @@ public class Grids_Environment
      */
     @Override
     public long tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -1335,7 +1335,7 @@ public class Grids_Environment
     }
 
     public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
@@ -1432,7 +1432,7 @@ public class Grids_Environment
      */
     @Override
     public long tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
@@ -1468,7 +1468,7 @@ public class Grids_Environment
     }
 
     public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
             long result1 = 0L;
@@ -1499,7 +1499,7 @@ public class Grids_Environment
      */
     @Override
     public long tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
         try {
@@ -1534,7 +1534,7 @@ public class Grids_Environment
     }
 
     public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
@@ -1567,7 +1567,7 @@ public class Grids_Environment
      * terms of data size than swapping data!
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
             Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
@@ -1584,7 +1584,7 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
@@ -1602,22 +1602,22 @@ public class Grids_Environment
      * not enough memory to continue it will attempt to make room. If
      * successful, this will return an Object[] with the first element being a
      * Boolean with value true. The second element being a
-     * HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>> indicating the
+     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the
      * data that was swapped. If unsuccessful, this will return an Object[] with
      * the first element being a Boolean with value false. The second element
-     * being a HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * being a HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * indicating the data that was swapped.
      *
      * @return Either null or an Object[] of length 2 with first element a
-     * Boolean and second element a HashMap<Grids_AbstractGrid2DSquareCell,
+     * Boolean and second element a HashMap<Grids_AbstractGrid,
      * HashSet<ChunkID>>.
      */
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail() {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1;
-            result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1;
+            result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunk_AccountDetail();
                 if (potentialPartResult.isEmpty()) {
@@ -1642,12 +1642,12 @@ public class Grids_Environment
      *
      * @param a_Grid2DSquareCell
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * identifying chunks swapped.
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
@@ -1665,7 +1665,7 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
@@ -1679,11 +1679,11 @@ public class Grids_Environment
     }
 
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
+            Grids_AbstractGrid a_Grid2DSquareCell) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunk_AccountDetail();
                 if (potentialPartResult.isEmpty()) {
@@ -1710,12 +1710,12 @@ public class Grids_Environment
      * @param a_Grid2DSquareCell
      * @param handleOutOfMemoryError
      * @param a_ChunkID
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * identifying chunks swapped.
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -1735,15 +1735,15 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                         a_Grid2DSquareCell,
                         a_ChunkID,
                         handleOutOfMemoryError);
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
                         a_Grid2DSquareCell,
                         a_ChunkID,
                         handleOutOfMemoryError);
@@ -1757,12 +1757,12 @@ public class Grids_Environment
     }
 
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_Grid2DSquareCell,
@@ -1789,11 +1789,11 @@ public class Grids_Environment
      *
      * @param a_ChunkID
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * identifying chunks swapped.
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -1812,14 +1812,14 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                         a_ChunkID,
                         handleOutOfMemoryError);
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
                         a_ChunkID,
                         handleOutOfMemoryError);
                 combine(result,
@@ -1835,8 +1835,8 @@ public class Grids_Environment
             Grids_2D_ID_int a_ChunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_ChunkID);
@@ -1863,12 +1863,12 @@ public class Grids_Environment
      *
      * @param a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * identifying chunks swapped.
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
@@ -1886,14 +1886,14 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                         a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
                         handleOutOfMemoryError);
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
                         a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap,
                         handleOutOfMemoryError);
                 combine(result,
@@ -1906,11 +1906,11 @@ public class Grids_Environment
     }
 
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_AbstractGrid2DSquareCell_ChunkID_HashSet_HashMap);
@@ -1938,12 +1938,12 @@ public class Grids_Environment
      * @param g
      * @param handleOutOfMemoryError
      * @param chunks
-     * @return HashMap<Grids_AbstractGrid2DSquareCell, HashSet<ChunkID>>
+     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>>
      * identifying chunks swapped.
      */
     @Override
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell g,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
         try {
@@ -1963,7 +1963,7 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) test[1];
+            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
@@ -1978,12 +1978,12 @@ public class Grids_Environment
     }
 
     protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = null;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_Grid2DSquareCell,
@@ -2004,7 +2004,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap all Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -2012,23 +2012,23 @@ public class Grids_Environment
      * false then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunks_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunks_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunks_AccountDetail();
             try {
                 if (result.isEmpty()) {
                     Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                                     handleOutOfMemoryError);
                     combine(result,
@@ -2051,16 +2051,16 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap all Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunks_AccountDetail() {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
-        result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> partResult;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunks_AccountDetail() {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
             partResult = a_Iterator.next().swapToFile_Grid2DSquareCellChunks_AccountDetail(HandleOutOfMemoryErrorFalse);
             combine(result,
@@ -2120,11 +2120,11 @@ public class Grids_Environment
      */
     protected long swapToFile_Grid2DSquareCellChunks_Account() {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator;
+        Iterator<Grids_AbstractGrid> a_Iterator;
         a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
             long partResult;
-            Grids_AbstractGrid2DSquareCell g;
+            Grids_AbstractGrid g;
             g = a_Iterator.next();
             partResult = g.swapToFile_Grid2DSquareCellChunks_Account();
 //            partResult = g.ge.swapToFile_Grid2DSquareCellChunks_Account(
@@ -2136,7 +2136,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap all Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -2173,13 +2173,13 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap all Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
     protected boolean swapToFile_Grid2DSquareCellChunks() {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
             a_Iterator.next().swapToFile_Grid2DSquareCellChunks();
         }
@@ -2188,34 +2188,34 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet. This is the lowest level of
      * OutOfMemoryError handling in this class.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail(
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
             try {
                 if (result.isEmpty()) {
                     Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                                     handleOutOfMemoryError);
                     combine(result,
@@ -2276,13 +2276,13 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
     protected boolean swapToFile_Grid2DSquareCellChunk() {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
             if (a_Iterator.next().swapToFile_Grid2DSquareCellChunk_Account() < 1) {
                 return false;
@@ -2295,13 +2295,13 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in grid
+     * Attempts to swap any Grids_AbstractGridChunk in grid
      *
      * @param grid
      * @return
      */
     protected boolean swapToFile_Grid2DSquareCellChunk(
-            Grids_AbstractGrid2DSquareCell grid) {
+            Grids_AbstractGrid grid) {
         if (grid.swapToFile_Grid2DSquareCellChunk_Account() < 1) {
             return false;
         } else {
@@ -2310,13 +2310,13 @@ public class Grids_Environment
     }
 
 //    /**
-//     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in grid
+//     * Attempts to swap any Grids_AbstractGridChunk in grid
 //     *
 //     * @param grid
 //     * @return
 //     */
 //    protected void swapToFile_Grid2DSquareCellChunk(
-//            Grids_AbstractGrid2DSquareCell grid,
+//            Grids_AbstractGrid grid,
 //            Grids_2D_ID_int chunkID) {
 //        grid.swapToFile_Grid2DSquareCellChunk(chunkID);
 //    }
@@ -2356,7 +2356,7 @@ public class Grids_Environment
     }
 
     protected long swapToFile_Grid2DSquareCellChunk_Account() {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
             if (a_Iterator.next().swapToFile_Grid2DSquareCellChunk_Account() > 0) {
                 return 1L;
@@ -2367,7 +2367,7 @@ public class Grids_Environment
     }
 
     /**
-     * Swap to File any Grids_AbstractGrid2DSquareCell.Chunk in
+     * Swap to File any Grids_AbstractGrid.Chunk in
      * this._AbstractGrid2DSquareCell_HashSet except one in
      * a_AbstractGrid2DSquareCell.
      *
@@ -2375,7 +2375,7 @@ public class Grids_Environment
      * @param handleOutOfMemoryError
      */
     public void swapToFile_Grid2DSquareCellChunkExcept(
-            Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell,
+            Grids_AbstractGrid a_AbstractGrid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             boolean success = swapToFile_Grid2DSquareCellChunkExcept(
@@ -2416,7 +2416,7 @@ public class Grids_Environment
     }
 
     /**
-     * Swap to File any Grids_AbstractGrid2DSquareCell.Chunk in
+     * Swap to File any Grids_AbstractGrid.Chunk in
      * this._AbstractGrid2DSquareCell_HashSet except one in
      * a_AbstractGrid2DSquareCell.
      *
@@ -2424,9 +2424,9 @@ public class Grids_Environment
      * @return
      */
     protected boolean swapToFile_Grid2DSquareCellChunkExcept(
-            Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell) {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_AbstractGrid2DSquareCell;
+            Grids_AbstractGrid a_AbstractGrid2DSquareCell) {
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             b_AbstractGrid2DSquareCell = a_Iterator.next();
             if (b_AbstractGrid2DSquareCell != a_AbstractGrid2DSquareCell) {
@@ -2446,14 +2446,14 @@ public class Grids_Environment
      * @param toCombine
      */
     public static void combine(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> toGetCombined,
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> toCombine) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> toGetCombined,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> toCombine) {
         if (toCombine != null) {
             if (!toCombine.isEmpty()) {
-                Set<Grids_AbstractGrid2DSquareCell> toGetCombined_KeySet = toGetCombined.keySet();
-                Set<Grids_AbstractGrid2DSquareCell> toCombine_KeySet = toCombine.keySet();
-                Iterator<Grids_AbstractGrid2DSquareCell> toCombine_KeySet_Iterator = toCombine_KeySet.iterator();
-                Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
+                Set<Grids_AbstractGrid> toGetCombined_KeySet = toGetCombined.keySet();
+                Set<Grids_AbstractGrid> toCombine_KeySet = toCombine.keySet();
+                Iterator<Grids_AbstractGrid> toCombine_KeySet_Iterator = toCombine_KeySet.iterator();
+                Grids_AbstractGrid a_AbstractGrid2DSquareCell;
                 while (toCombine_KeySet_Iterator.hasNext()) {
                     a_AbstractGrid2DSquareCell = toCombine_KeySet_Iterator.next();
                     if (toGetCombined_KeySet.contains(a_AbstractGrid2DSquareCell)) {
@@ -2467,18 +2467,18 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGrid2DSquareCellChunk in
+     * Attempts to swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail() {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunk_AccountDetail() {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell = a_Iterator.next();
+            Grids_AbstractGrid a_Grid2DSquareCell = a_Iterator.next();
             result = a_Grid2DSquareCell.swapToFile_Grid2DSquareCellChunk_AccountDetail(
                     HandleOutOfMemoryErrorFalse);
             if (!result.isEmpty()) {
@@ -2491,19 +2491,19 @@ public class Grids_Environment
 
     /**
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in with
-     * Grids_AbstractGrid2DSquareCell.ID = _ChunkID.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * Grids_AbstractGrid.ID = _ChunkID.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                     a_ChunkID);
             try {
@@ -2513,13 +2513,13 @@ public class Grids_Environment
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                                     a_ChunkID,
                                     handleOutOfMemoryError);
@@ -2535,13 +2535,13 @@ public class Grids_Environment
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result
                         = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                                 a_ChunkID);
                 if (result.isEmpty()) {
                     throw a_OutOfMemoryError;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_ChunkID,
                                 handleOutOfMemoryError);
@@ -2555,19 +2555,19 @@ public class Grids_Environment
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in with
-     * Grids_AbstractGrid2DSquareCell.ID = _ChunkID.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * Grids_AbstractGrid.ID = _ChunkID.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
             Grids_2D_ID_int a_ChunkID) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             a_AbstractGrid2DSquareCell = a_Iterator.next();
             result = a_AbstractGrid2DSquareCell.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
@@ -2633,19 +2633,19 @@ public class Grids_Environment
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in with
-     * Grids_AbstractGrid2DSquareCell.ID = _ChunkID.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * Grids_AbstractGrid.ID = _ChunkID.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
     protected long swapToFile_Grid2DSquareCellChunkExcept_Account(
             Grids_2D_ID_int a_ChunkID) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             a_AbstractGrid2DSquareCell = a_Iterator.next();
             result += a_AbstractGrid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
@@ -2658,12 +2658,12 @@ public class Grids_Environment
     }
 
     /**
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
     protected void swapToFile_Grid2DSquareCellChunkExcept(
             Grids_2D_ID_int a_ChunkID) {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_AbstractGrid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_AbstractGrid2DSquareCell;
         while (a_Iterator.hasNext()) {
             a_AbstractGrid2DSquareCell = a_Iterator.next();
             if (a_AbstractGrid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunkExcept_Account(a_ChunkID) > 0) {
@@ -2674,24 +2674,24 @@ public class Grids_Environment
 
     /**
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
      * @param a_Grid2DSquareCell_ChunkIDHashSet HashMap with
-     * Grids_AbstractGrid2DSquareCell as keys and a respective HashSet of
-     * Grids_AbstractGrid2DSquareCell.ChunkIDs. Identifying those ChunkIDs not
-     * to be swapped from the Grids_AbstractGrid2DSquareCell. TODO
-     * tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(<Grids_AbstractGrid2DSquareCell,
+     * Grids_AbstractGrid as keys and a respective HashSet of
+     * Grids_AbstractGrid.ChunkIDs. Identifying those ChunkIDs not
+     * to be swapped from the Grids_AbstractGrid. TODO
+     * tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(<Grids_AbstractGrid,
      * HashSet<ChunkID>>,boolean);
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkIDHashSet,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkIDHashSet,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                     a_Grid2DSquareCell_ChunkIDHashSet);
             try {
                 if (result.isEmpty()) {
@@ -2700,13 +2700,13 @@ public class Grids_Environment
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                                     a_Grid2DSquareCell_ChunkIDHashSet,
                                     handleOutOfMemoryError);
@@ -2722,7 +2722,7 @@ public class Grids_Environment
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_Grid2DSquareCell_ChunkIDHashSet);
                 if (result.isEmpty()) {
                     throw a_OutOfMemoryError;
@@ -2739,18 +2739,18 @@ public class Grids_Environment
 
     /**
      * @param a_Grid2DSquareCell_ChunkID_HashSet_HashMap
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell;
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> result_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
         HashSet<Grids_2D_ID_int> a_ChunkID_HashSet;
         Grids_2D_ID_int a_ChunkID;
@@ -2781,12 +2781,12 @@ public class Grids_Environment
         return result; // If we get here then nothing could be swapped.
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> result_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
         Grids_2D_ID_int b_ChunkID;
         while (a_Iterator.hasNext()) {
@@ -2816,12 +2816,12 @@ public class Grids_Environment
         return result; // If we get here then nothing could be swapped.
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> result_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
         Grids_2D_ID_int b_ChunkID;
         while (a_Iterator.hasNext()) {
@@ -2851,11 +2851,11 @@ public class Grids_Environment
         return result; // If we get here then nothing could be swapped.
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>(1);
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell) {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>(1);
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> result_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
         Grids_2D_ID_int b_ChunkID;
         while (a_Iterator.hasNext()) {
@@ -2875,10 +2875,10 @@ public class Grids_Environment
     }
 
     protected long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> a_ChunkID_HashSet;
         Grids_2D_ID_int a_ChunkID;
         while (a_Iterator.hasNext()) {
@@ -2901,9 +2901,9 @@ public class Grids_Environment
     }
 
     protected void swapToFile_Grid2DSquareCellChunkExcept(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell;
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> result_ChunkID_HashSet = new HashSet<Grids_2D_ID_int>(1);
         HashSet<Grids_2D_ID_int> a_ChunkID_HashSet;
         Grids_2D_ID_int a_ChunkID;
@@ -2929,18 +2929,18 @@ public class Grids_Environment
     /**
      * @param handleOutOfMemoryError
      * @param a_ChunkID_HashSet
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
-     * _Grid2DSquareCell with Grids_AbstractGrid2DSquareCell._ChunkID in
+     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID in
      * a_ChunkID_HashSet.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
      */
     public long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
             boolean handleOutOfMemoryError) {
         try {
@@ -2993,26 +2993,26 @@ public class Grids_Environment
 
     /**
      * @param a_ChunkID_HashSet
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
-     * _Grid2DSquareCell with Grids_AbstractGrid2DSquareCell._ChunkID in
+     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID in
      * a_ChunkID_HashSet.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
      */
     protected long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<Grids_2D_ID_int, Grids_AbstractGrid2DSquareCellChunk> b_ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
+        HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> b_ChunkID_AbstractGrid2DSquareCellChunk_HashMap;
         Set<Grids_2D_ID_int> b_ChunkID_Set;
         Iterator<Grids_2D_ID_int> b_Iterator;
         Grids_2D_ID_int b_ChunkID;
-        Grids_AbstractGrid2DSquareCellChunk b_AbstractGrid2DSquareCellChunk;
+        Grids_AbstractGridChunk b_AbstractGrid2DSquareCellChunk;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3037,18 +3037,18 @@ public class Grids_Environment
 
     /**
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for that in
-     * _Grid2DSquareCell with Grids_AbstractGrid2DSquareCell._ChunkID _ChunkID.
-     * @param g Grids_AbstractGrid2DSquareCell that's chunks
+     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
+     * @param g Grids_AbstractGrid that's chunks
      * are not to be swapped.
-     * @param chunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
      */
     public long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -3100,18 +3100,18 @@ public class Grids_Environment
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for that in
-     * _Grid2DSquareCell with Grids_AbstractGrid2DSquareCell._ChunkID _ChunkID.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
     protected long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
         long result = swapToFile_Grid2DSquareCellChunkExcept_Account(
                 a_Grid2DSquareCell);
@@ -3123,17 +3123,17 @@ public class Grids_Environment
 
     /**
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
      * _Grid2DSquareCell.
-     * @param g Grids_AbstractGrid2DSquareCell that's chunks are not to be
+     * @param g Grids_AbstractGrid that's chunks are not to be
      * swapped.
      */
     public long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGrid g,
             boolean handleOutOfMemoryError) {
         try {
             long result = swapToFile_Grid2DSquareCellChunkExcept_Account(
@@ -3179,19 +3179,19 @@ public class Grids_Environment
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped. Attempts to
-     * swap any Grids_AbstractGrid2DSquareCellChunk in
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped. Attempts to
+     * swap any Grids_AbstractGridChunk in
      * this._AbstractGrid2DSquareCell_HashSet except for those in
      * _Grid2DSquareCell.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
      */
     protected long swapToFile_Grid2DSquareCellChunkExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+            Grids_AbstractGrid a_Grid2DSquareCell) {
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3205,21 +3205,21 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
                     a_ChunkID);
             try {
                 if (result.isEmpty()) {
@@ -3228,13 +3228,13 @@ public class Grids_Environment
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(a_ChunkID, handleOutOfMemoryError);
                     combine(result,
                             potentialPartResult);
@@ -3248,12 +3248,12 @@ public class Grids_Environment
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_ChunkID);
                 if (result.isEmpty()) {
                     throw a_OutOfMemoryError;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_ChunkID,
                                 handleOutOfMemoryError);
@@ -3272,22 +3272,22 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
             Grids_2D_ID_int a_ChunkID) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
         while (a_Iterator.hasNext()) {
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell = a_Iterator.next();
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+            Grids_AbstractGrid a_Grid2DSquareCell = a_Iterator.next();
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                     = a_Grid2DSquareCell.swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
                             a_ChunkID);
             combine(result,
@@ -3297,22 +3297,22 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped. swapped.
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
                     a_Grid2DSquareCell);
             try {
                 if (result.isEmpty()) {
@@ -3321,13 +3321,13 @@ public class Grids_Environment
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(a_Grid2DSquareCell, handleOutOfMemoryError);
                     combine(result,
                             potentialPartResult);
@@ -3341,12 +3341,12 @@ public class Grids_Environment
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_Grid2DSquareCell);
                 if (result.isEmpty()) {
                     throw a_OutOfMemoryError;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                         = init_MemoryReserve_AccountDetail(
                                 a_Grid2DSquareCell,
                                 handleOutOfMemoryError);
@@ -3365,22 +3365,22 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell) {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3393,7 +3393,7 @@ public class Grids_Environment
     }
 
     public long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             boolean handleOutOfMemoryError) {
         try {
             long result = swapToFile_Grid2DSquareCellChunksExcept_Account(
@@ -3442,10 +3442,10 @@ public class Grids_Environment
     }
 
     protected long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell) {
+            Grids_AbstractGrid a_Grid2DSquareCell) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3456,24 +3456,24 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
      * @param handleOutOfMemoryError
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    public HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
                     a_Grid2DSquareCell,
                     a_ChunkID);
             try {
@@ -3484,13 +3484,13 @@ public class Grids_Environment
                     if (account != null) {
                         if ((Boolean) account[0]) {
                             combine(result,
-                                    (HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>) account[1]);
+                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                             = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                                     a_Grid2DSquareCell,
                                     a_ChunkID,
@@ -3507,13 +3507,13 @@ public class Grids_Environment
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 clear_MemoryReserve();
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
                         a_Grid2DSquareCell,
                         a_ChunkID);
                 if (result.isEmpty()) {
                     throw a_OutOfMemoryError;
                 }
-                HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
                         a_Grid2DSquareCell,
                         a_ChunkID,
                         handleOutOfMemoryError);
@@ -3533,7 +3533,7 @@ public class Grids_Environment
     }
 
     public long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID,
             boolean handleOutOfMemoryError) {
         try {
@@ -3587,12 +3587,12 @@ public class Grids_Environment
     }
 
     protected long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3605,24 +3605,24 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ID _ChunkID.
+     * Grids_AbstractGrid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
-     * @param a_ChunkID The Grids_AbstractGrid2DSquareCell.ID not to be swapped.
+     * @param a_ChunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             Grids_2D_ID_int a_ChunkID) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell == a_Grid2DSquareCell) {
@@ -3639,13 +3639,13 @@ public class Grids_Environment
         return result;
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapToFile_Grid2DSquareCellChunksExcept_AccountDetail(
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>>();
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>();
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
             if (b_Grid2DSquareCell != a_Grid2DSquareCell) {
@@ -3663,24 +3663,24 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid2DSquareCell.ChunkIDs in
+     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in
      * this._AbstractGrid2DSquareCell_HashSet except those with
-     * Grids_AbstractGrid2DSquareCell.ChunkIDs in a_ChunkID_HashSet.
+     * Grids_AbstractGrid.ChunkIDs in a_ChunkID_HashSet.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid2DSquareCell from
-     * which the Grids_AbstractGrid2DSquareCellChunk was swapped; and, value as
-     * the Grids_AbstractGrid2DSquareCellChunk._ChunkID swapped.
-     * @param a_Grid2DSquareCell Grids_AbstractGrid2DSquareCell that's chunks
+     * @return HashMap with: key as the Grids_AbstractGrid from
+     * which the Grids_AbstractGridChunk was swapped; and, value as
+     * the Grids_AbstractGridChunk._ChunkID swapped.
+     * @param a_Grid2DSquareCell Grids_AbstractGrid that's chunks
      * are not to be swapped.
-     * @param a_ChunkID_HashSet The Grids_AbstractGrid2DSquareCell.ID not to be
+     * @param a_ChunkID_HashSet The Grids_AbstractGrid.ID not to be
      * swapped.
      */
     protected long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell,
+            Grids_AbstractGrid a_Grid2DSquareCell,
             HashSet<Grids_2D_ID_int> a_ChunkID_HashSet) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell b_Grid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = _AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid b_Grid2DSquareCell;
         Set<Grids_2D_ID_int> b_ChunkID_Set;
         while (a_Iterator.hasNext()) {
             b_Grid2DSquareCell = a_Iterator.next();
@@ -3701,7 +3701,7 @@ public class Grids_Environment
      * @return
      */
     public long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap,
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap,
             boolean handleOutOfMemoryError) {
         try {
             long result = swapToFile_Grid2DSquareCellChunksExcept_Account(
@@ -3749,10 +3749,10 @@ public class Grids_Environment
     }
 
     protected long swapToFile_Grid2DSquareCellChunksExcept_Account(
-            HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> a_Grid2DSquareCell_ChunkID_HashSet_HashMap) {
         long result = 0L;
-        Iterator<Grids_AbstractGrid2DSquareCell> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
-        Grids_AbstractGrid2DSquareCell a_Grid2DSquareCell;
+        Iterator<Grids_AbstractGrid> a_Iterator = this._AbstractGrid2DSquareCell_HashSet.iterator();
+        Grids_AbstractGrid a_Grid2DSquareCell;
         HashSet<Grids_2D_ID_int> a_ChunkID_HashSet;
         while (a_Iterator.hasNext()) {
             a_Grid2DSquareCell = a_Iterator.next();
@@ -3823,7 +3823,7 @@ public class Grids_Environment
 //     */
 //    protected void handleOutOfMemoryErrorOrNot(
 //            OutOfMemoryError e,
-//            Grids_AbstractGrid2DSquareCell grid,
+//            Grids_AbstractGrid grid,
 //            int _NChunkCols,
 //            int _ChunkRowIndex,
 //            int _ChunkColIndex) {
@@ -3838,14 +3838,14 @@ public class Grids_Environment
 //            throw e;
 //        }
 //    }
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
-            Grids_AbstractGrid2DSquareCell g,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
+            Grids_AbstractGrid g,
             boolean handleOutOfMemoryError) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                 g,
                 handleOutOfMemoryError);
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         potentialPartResult = init_MemoryReserve_AccountDetail(
                 g,
                 handleOutOfMemoryError);
@@ -3854,15 +3854,15 @@ public class Grids_Environment
         return result;
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
-            Grids_AbstractGrid2DSquareCell g,
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
+            Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                 g,
                 chunks,
                 handleOutOfMemoryError);
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult = init_MemoryReserve_AccountDetail(
                 g,
                 chunks,
                 handleOutOfMemoryError);
@@ -3871,27 +3871,27 @@ public class Grids_Environment
         return result;
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
             OutOfMemoryError e,
             boolean handleOutOfMemoryError) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = swapToFile_Grid2DSquareCellChunk_AccountDetail();
         if (result.isEmpty()) {
             throw e;
         }
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult
                 = init_MemoryReserve_AccountDetail(handleOutOfMemoryError);
         combine(result,
                 potentialPartResult);
         return result;
     }
 
-    protected HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> freeSomeMemoryAndResetReserve_AccountDetails(
             boolean handleOutOfMemoryError) {
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> result;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                 handleOutOfMemoryError);
-        HashMap<Grids_AbstractGrid2DSquareCell, HashSet<Grids_2D_ID_int>> potentialPartResult;
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
         potentialPartResult = init_MemoryReserve_AccountDetail(
                 handleOutOfMemoryError);
         combine(result,
@@ -3900,7 +3900,7 @@ public class Grids_Environment
     }
 
     protected long freeSomeMemoryAndResetReserve_Account(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
         long result = tryToEnsureThereIsEnoughMemoryToContinue_Account(

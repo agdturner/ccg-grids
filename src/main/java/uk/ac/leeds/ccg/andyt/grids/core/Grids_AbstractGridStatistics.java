@@ -36,14 +36,14 @@ import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
  about the data in Grids_AbstractGrid2DSquareCell and Grid2DSquareCellChunkAbstract
  more optimally.
  */
-public abstract class Grids_AbstractGridStatistics
+public abstract class Grids_AbstractGridStatistics extends Grids_Object
         implements Serializable, Grids_GridStatisticsInterface {
 
     private static final long serialVersionUID = 1L;
     /**
      * A reference to the Grids_AbstractGrid2DSquareCell this is for.
      */
-    protected Grids_AbstractGrid2DSquareCell Grid2DSquareCell;
+    protected Grids_AbstractGrid Grid2DSquareCell;
     /**
      * For storing the number of cells with non noDataValues.
      */
@@ -83,7 +83,7 @@ public abstract class Grids_AbstractGridStatistics
                 = new BigDecimal(Integer.MAX_VALUE);
         this.minBigDecimal
                 = bigDecimalIntegerMAX_VALUE.add(bigDecimalIntegerMAX_VALUE);
-        this.minCountBigInteger = new BigInteger("0");
+        this.minCountBigInteger = BigInteger.ZERO;
         //this.maxBigDecimal = new BigDecimal( Double.NEGATIVE_INFINITY );
         //this.minBigDecimal = new BigDecimal(
         //        "-99999999999999999999999999999999999999999" );
@@ -92,7 +92,7 @@ public abstract class Grids_AbstractGridStatistics
                 = new BigDecimal(Integer.MIN_VALUE);
         this.maxBigDecimal
                 = bigDecimalIntegerMIN_VALUE.add(bigDecimalIntegerMIN_VALUE);
-        this.maxCountBigInteger = new BigInteger("0");
+        this.maxCountBigInteger = BigInteger.ZERO;
     }
 
     /**
@@ -101,7 +101,7 @@ public abstract class Grids_AbstractGridStatistics
      * @param grid2DSquareCell
      */
     protected void init(
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell) {
+            Grids_AbstractGrid grid2DSquareCell) {
         this.Grid2DSquareCell = grid2DSquareCell;
         this.Grid2DSquareCell._GridStatistics = this;
         init();

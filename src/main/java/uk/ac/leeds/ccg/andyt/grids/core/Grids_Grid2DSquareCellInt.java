@@ -356,7 +356,7 @@ public class Grids_Grid2DSquareCellInt
                 initGrid2DSquareCellChunks(gridFile);
                 Iterator chunkIterator = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.values().iterator();
                 while (chunkIterator.hasNext()) {
-                    Grids_AbstractGrid2DSquareCellChunk _Grid2DSquareCellChunkAbstract = (Grids_AbstractGrid2DSquareCellChunk) chunkIterator.next();
+                    Grids_AbstractGridChunk _Grid2DSquareCellChunkAbstract = (Grids_AbstractGridChunk) chunkIterator.next();
                     _Grid2DSquareCellChunkAbstract._Grid2DSquareCell = this;
                 }
                 // Set the reference to this in the Grid Statistics
@@ -1695,7 +1695,7 @@ public class Grids_Grid2DSquareCellInt
             long _ChunkColIndexLong = _ChunkColIndex;
             int chunkCellRowIndex = (int) (cellRowIndex - (_ChunkRowIndexLong * _ChunkNrowsLong));
             int chunkCellColIndex = (int) (cellColIndex - (_ChunkColIndexLong * _ChunkNcolsLong));
-            Grids_AbstractGrid2DSquareCellChunk _Grid2DSquareCellChunk = getGrid2DSquareCellChunk(
+            Grids_AbstractGridChunk _Grid2DSquareCellChunk = getGrid2DSquareCellChunk(
                     _ChunkRowIndex,
                     _ChunkColIndex);
             if (_Grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {

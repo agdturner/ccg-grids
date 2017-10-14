@@ -30,7 +30,7 @@ import java.math.BigInteger;
  * implement acting as an interface.
  */
 public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
-        extends Grids_AbstractGrid2DSquareCellChunk
+        extends Grids_AbstractGridChunk
         implements Serializable {
     //implements Serializable, GridDoubleStatisticsInterface {
 
@@ -1111,10 +1111,10 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
                 long count;
                 long modeCount = ((Long) tmode[ 0]).longValue();
                 mode.add(((Double) tmode[ 1]).doubleValue());
-                ChunkCellID chunkCellID = (ChunkCellID) tmode[ 2];
+                Grids_2D_ID_int chunkCellID = (Grids_2D_ID_int) tmode[ 2];
                 // Do remainder of the row
-                p = chunkCellID.chunkCellRowIndex;
-                for (q = chunkCellID.chunkCellColIndex + 1; q < ncols; q++) {
+                p = chunkCellID._Row;
+                for (q = chunkCellID._Col + 1; q < ncols; q++) {
                     value = getCell(p, q, _NoDataValue);
                     if (value != _NoDataValue) {
                         count = count(
@@ -1197,7 +1197,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
                     }
                     initMode[0] = new Long(modeCount);
                     initMode[1] = new Double(value);
-                    initMode[2] = new ChunkCellID(
+                    initMode[2] = new Grids_2D_ID_int(
                             p,
                             q);
                     return initMode;

@@ -48,8 +48,8 @@ public  class Grids_Grid2DSquareCellIntChunkMap
     private int defaultValue;
     
     /**
-     * For storing values mapped to a ChunkCellID HashSet or an individual
-     * ChunkCellID.
+     * For storing values mapped to a Grids_2D_ID_int HashSet or an individual
+     * Grids_2D_ID_int.
      */
     private TIntObjectHashMap data;
     
@@ -228,7 +228,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         TIntObjectHashMap data = getData();
         TIntObjectIterator iterator = data.iterator();
         HashSet set;
-        ChunkCellID chunkCellID;
+        Grids_2D_ID_int chunkCellID;
         int ite;
         int position;
         for ( ite = 0; ite < data.size(); ite ++ ) {
@@ -237,17 +237,17 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                 set = ( HashSet ) iterator.value();
                 Iterator setIterator = set.iterator();
                 while ( setIterator.hasNext() ) {
-                    chunkCellID = ( ChunkCellID ) setIterator.next();
+                    chunkCellID = ( Grids_2D_ID_int ) setIterator.next();
                     position =
-                            ( chunkCellID.chunkCellRowIndex * ncols ) +
-                            chunkCellID.chunkCellColIndex;
+                            ( chunkCellID._Row * ncols ) +
+                            chunkCellID._Col;
                     array[ position ] = iterator.key();
                 }
             } catch ( java.lang.ClassCastException e ) {
-                chunkCellID = ( ChunkCellID ) iterator.value();
+                chunkCellID = ( Grids_2D_ID_int ) iterator.value();
                 position =
-                        ( chunkCellID.chunkCellRowIndex * ncols ) +
-                        chunkCellID.chunkCellColIndex;
+                        ( chunkCellID._Row * ncols ) +
+                        chunkCellID._Col;
                 array[ position ] = iterator.key();
             }
         }
@@ -284,7 +284,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         TIntObjectIterator iterator = this.data.iterator();
         TIntObjectHashMap data = getData();
         HashSet set;
-        ChunkCellID chunkCellID;
+        Grids_2D_ID_int chunkCellID;
         int ite;
         int position = 0;
         int value;
@@ -295,7 +295,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                     set = ( HashSet ) iterator.value();
                     Iterator setIterator = set.iterator();
                     while ( setIterator.hasNext() ) {
-                        chunkCellID = ( ChunkCellID ) setIterator.next();
+                        chunkCellID = ( Grids_2D_ID_int ) setIterator.next();
                         value = iterator.key();
                         if ( value != noDataValue ) {
                             array[ position ] = iterator.key();
@@ -303,7 +303,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                         position ++;
                     }
                 } catch ( java.lang.ClassCastException e ) {
-                    chunkCellID = ( ChunkCellID ) iterator.value();
+                    chunkCellID = ( Grids_2D_ID_int ) iterator.value();
                     value = iterator.key();
                     if ( value != noDataValue ) {
                         array[ position ] = iterator.key();
@@ -332,7 +332,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             int chunkCellColIndex,
             int noDataValue ) {
         return getCell(
-                new ChunkCellID( chunkCellRowIndex, chunkCellColIndex ),
+                new Grids_2D_ID_int( chunkCellRowIndex, chunkCellColIndex ),
                 noDataValue );
     }
     
@@ -343,11 +343,11 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * @return 
      */
     public int getCell(
-            ChunkCellID chunkCellID,
+            Grids_2D_ID_int chunkCellID,
             int noDataValue ) {
         TIntObjectIterator iterator = this.data.iterator();
         HashSet set;
-        ChunkCellID individual;
+        Grids_2D_ID_int individual;
         int ite;
         for ( ite = 0; ite < this.data.size(); ite ++ ) {
             iterator.advance();
@@ -357,7 +357,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                     return iterator.key();
                 }
             } catch ( java.lang.ClassCastException e ) {
-                individual = ( ChunkCellID ) iterator.value();
+                individual = ( Grids_2D_ID_int ) iterator.value();
                 if ( individual.equals( chunkCellID ) ) {
                     return iterator.key();
                 }
@@ -381,7 +381,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             int chunkCellColIndex,
             int valueToInitialise) {
         initCell(
-                new ChunkCellID( chunkCellRowIndex, chunkCellColIndex ),
+                new Grids_2D_ID_int( chunkCellRowIndex, chunkCellColIndex ),
                 valueToInitialise );
     }
     
@@ -389,12 +389,12 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * Initialises the value of the chunk referred to by chunkCellID to
      * valueToInitialise. Utility method for constructor.
      * 
-     * @param chunkCellID the Grids_AbstractGrid2DSquareCellIntChunk.ChunkCellID of
+     * @param chunkCellID the Grids_AbstractGrid2DSquareCellIntChunk.Grids_2D_ID_int of
    the cell to be initialised
      * @param valueToInitialise the value with which the cell is initialised
      */
     protected void initCell(
-            ChunkCellID chunkCellID,
+            Grids_2D_ID_int chunkCellID,
             int valueToInitialise ) {
         if ( this.data.containsKey( valueToInitialise ) ) {
             HashSet set;
@@ -402,8 +402,8 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                 set = ( HashSet ) this.data.get( valueToInitialise );
                 set.add( chunkCellID );
             } catch ( java.lang.ClassCastException e ) {
-                ChunkCellID individual =
-                        ( ChunkCellID ) this.data.get( valueToInitialise );
+                Grids_2D_ID_int individual =
+                        ( Grids_2D_ID_int ) this.data.get( valueToInitialise );
                 set = new HashSet();
                 set.add( individual );
                 set.add( chunkCellID );
@@ -432,7 +432,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             int valueToSet,
             int noDataValue ) {
         return setCell(
-                new ChunkCellID( chunkCellRowIndex, chunkCellColIndex ),
+                new Grids_2D_ID_int( chunkCellRowIndex, chunkCellColIndex ),
                 valueToSet );
     }
     
@@ -440,13 +440,13 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell column chunkCellColIndex and sets it to valueToSet
      * 
-     * @param chunkCellID the Grids_AbstractGrid2DSquareCellIntChunk.ChunkCellID of
+     * @param chunkCellID the Grids_AbstractGrid2DSquareCellIntChunk.Grids_2D_ID_int of
    the cell to be initialised
      * @param valueToSet the value the cell is to be set to
      * @return 
      */
     public int setCell(
-            ChunkCellID chunkCellID,
+            Grids_2D_ID_int chunkCellID,
             int valueToSet ) {
         int result = this.defaultValue;
         TIntObjectIterator iterator = this.data.iterator();
@@ -461,7 +461,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         int ite;
         int maxIte = this.data.size();
         HashSet set;
-        ChunkCellID individual;
+        Grids_2D_ID_int individual;
         boolean remove = false;
         int removeValue = value;
         for ( ite = 0; ite < maxIte; ite ++ ) {
@@ -473,7 +473,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                     /* Is this better than:
                      * if ( iterator.value().getClass() == HashSet.class  ) {
                      * } else {
-                     *     // ( iterator.value().getClass() == ChunkCellID.class )
+                     *     // ( iterator.value().getClass() == Grids_2D_ID_int.class )
                      * }
                      * ?
                      */
@@ -487,10 +487,10 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                                 return value;
                             }
                             if ( set.size() == 2 ) {
-                                // Convert other entry to a ChunkCellID
+                                // Convert other entry to a Grids_2D_ID_int
                                 Iterator setIterator = set.iterator();
                                 for ( int setIteratorIndex = 0; setIteratorIndex < 2; setIteratorIndex ++ ) {
-                                    individual = ( ChunkCellID ) setIterator.next();
+                                    individual = ( Grids_2D_ID_int ) setIterator.next();
                                     if ( ! individual.equals( chunkCellID ) ) {
                                         iterator.setValue( individual );
                                     }
@@ -502,7 +502,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                             gotValue = true;
                         }
                     } catch ( java.lang.ClassCastException e ) {
-                        individual = ( ChunkCellID ) iterator.value();
+                        individual = ( Grids_2D_ID_int ) iterator.value();
                         if ( individual.equals( chunkCellID ) ) {
                             if ( value == valueToSet ) {
                                 return value;
@@ -520,7 +520,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                             set = ( HashSet ) iterator.value();
                             set.add( chunkCellID );
                         } catch ( java.lang.ClassCastException cce ) {
-                            individual = ( ChunkCellID ) iterator.value();
+                            individual = ( Grids_2D_ID_int ) iterator.value();
                             set = new HashSet();
                             set.add( individual );
                             set.add( chunkCellID );
@@ -622,7 +622,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         BigDecimal thisCount;
         TIntObjectIterator iterator = this.data.iterator();
         HashSet set;
-        ChunkCellID individual;
+        Grids_2D_ID_int individual;
         for ( int ite = 0; ite < data.size(); ite ++ ) {
             iterator.advance();
             try {
@@ -773,7 +773,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
     //        double mean = getArithmeticMean();
     //        TIntObjectIterator iterator = this.data.iterator();
     //        HashSet set;
-    //        ChunkCellID individual;
+    //        Grids_2D_ID_int individual;
     //        int ite;
     //        long count = 0L;
     //        long thisCount;

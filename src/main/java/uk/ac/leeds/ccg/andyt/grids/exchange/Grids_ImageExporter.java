@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellIntChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;

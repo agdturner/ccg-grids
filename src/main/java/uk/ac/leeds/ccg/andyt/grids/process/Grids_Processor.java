@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunkFactory;
@@ -435,10 +436,10 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Grids_AbstractGrid2DSquareCell getGrid2DSquareCell(
+    public Grids_AbstractGrid getGrid2DSquareCell(
             boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractGrid2DSquareCell result = getGrid2DSquareCell();
+            Grids_AbstractGrid result = getGrid2DSquareCell();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
@@ -461,7 +462,7 @@ public class Grids_Processor extends Grids_Object {
      *
      * @return
      */
-    protected Grids_AbstractGrid2DSquareCell getGrid2DSquareCell() {
+    protected Grids_AbstractGrid getGrid2DSquareCell() {
         return ge.get_AbstractGrid2DSquareCell_HashSet().iterator().next();
     }
 

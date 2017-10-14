@@ -361,10 +361,10 @@ public class Grids_Grid2DSquareCellDouble
                 ois.close();
                 // Set the reference to this in the Grid Chunks
                 initGrid2DSquareCellChunks(grid_File);
-                Iterator<Grids_AbstractGrid2DSquareCellChunk> chunkIterator;
+                Iterator<Grids_AbstractGridChunk> chunkIterator;
                 chunkIterator = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.values().iterator();
                 while (chunkIterator.hasNext()) {
-                    Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunkAbstract = chunkIterator.next();
+                    Grids_AbstractGridChunk grid2DSquareCellChunkAbstract = chunkIterator.next();
                     grid2DSquareCellChunkAbstract._Grid2DSquareCell = this;
                 }
             } catch (ClassCastException e) {
@@ -430,7 +430,7 @@ public class Grids_Grid2DSquareCellDouble
      * @param gs The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param grid2DSquareCellDoubleChunkFactory The
-     * Grids_AbstractGrid2DSquareCellDoubleChunkFactory prefered for creating
+     * Grids_AbstractGridDoubleChunkFactory prefered for creating
      * chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
@@ -439,7 +439,7 @@ public class Grids_Grid2DSquareCellDouble
      * @param _Dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param noDataValue The _NoDataValue.
      * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGrid2DSquareCell instances.
+     * Grids_AbstractGrid instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -639,7 +639,7 @@ public class Grids_Grid2DSquareCellDouble
             grid2DSquareCellDoubleChunk = chunkFactory.createGrid2DSquareCellDoubleChunk(
                     this,
                     chunkID);
-            Grids_AbstractGrid2DSquareCellChunk gridChunk;
+            Grids_AbstractGridChunk gridChunk;
 
             int gridChunkNRows = grid.get_ChunkNRows();
             int gridChunkNCols = grid.get_ChunkNCols();
@@ -1593,7 +1593,7 @@ public class Grids_Grid2DSquareCellDouble
             long _ChunkColIndexLong = _ChunkColIndex;
             int _ChunkCellRowIndex = (int) (a_CellRowIndex - (_ChunkRowIndexLong * _ChunkNrowsLong));
             int _ChunkCellColIndex = (int) (a_CellColIndex - (_ChunkColIndexLong * _ChunkNcolsLong));
-            Grids_AbstractGrid2DSquareCellChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
+            Grids_AbstractGridChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
                     _ChunkRowIndex,
                     _ChunkColIndex);
             if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {

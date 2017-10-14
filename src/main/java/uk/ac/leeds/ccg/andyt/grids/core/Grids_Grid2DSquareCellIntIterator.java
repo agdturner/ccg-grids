@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 public class Grids_Grid2DSquareCellIntIterator
         extends Grids_AbstractIterator {
 
-    private Iterator<Grids_AbstractGrid2DSquareCellChunk> _Grid2DSquareCellIntHashMapIterator;
+    private Iterator<Grids_AbstractGridChunk> _Grid2DSquareCellIntHashMapIterator;
     private Grids_AbstractGrid2DSquareCellIntChunk _Grid2DSquareCellIntChunk;
     private Grids_AbstractIterator _Grid2DSquareCellIntChunkIterator;
 
