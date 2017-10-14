@@ -36,26 +36,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunkFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleChunkRAFFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleChunk64CellMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleChunkArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleChunkJAIFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleChunkMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellInt;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunk64CellMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellIntChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellIntChunkFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkJAIFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntChunkRAFFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellIntFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunkFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunk64CellMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunk64CellMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunkFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
@@ -108,17 +104,9 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_Grid2DSquareCellIntChunkArrayFactory _Grid2DSquareCellIntChunkArrayFactory;
     /**
-     * Grids_Grid2DSquareCellIntChunkJAIFactory
-     */
-    public Grids_Grid2DSquareCellIntChunkJAIFactory _Grid2DSquareCellIntChunkJAIFactory;
-    /**
      * Grids_Grid2DSquareCellIntChunkMapFactory
      */
     public Grids_Grid2DSquareCellIntChunkMapFactory _Grid2DSquareCellIntChunkMapFactory;
-    /**
-     * Grids_Grid2DSquareCellIntChunkRAFFactory
-     */
-    public Grids_Grid2DSquareCellIntChunkRAFFactory _Grid2DSquareCellIntChunkRAFFactory;
     /**
      * Grids_Grid2DSquareCellIntFactory
      */
@@ -136,17 +124,9 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_Grid2DSquareCellDoubleChunkArrayFactory _Grid2DSquareCellDoubleChunkArrayFactory;
     /**
-     * Grids_Grid2DSquareCellDoubleChunkJAIFactory
-     */
-    public Grids_Grid2DSquareCellDoubleChunkJAIFactory _Grid2DSquareCellDoubleChunkJAIFactory;
-    /**
      * Grids_Grid2DSquareCellDoubleChunkMapFactory
      */
     public Grids_Grid2DSquareCellDoubleChunkMapFactory _Grid2DSquareCellDoubleChunkMapFactory;
-    /**
-     * Grids_Grid2DSquareCellDoubleChunkRAFFactory
-     */
-    public Grids_Grid2DSquareCellDoubleChunkRAFFactory _Grid2DSquareCellDoubleChunkRAFFactory;
     /**
      * Grids_Grid2DSquareCellDoubleFactory
      */
@@ -335,16 +315,12 @@ public class Grids_Processor extends Grids_Object {
     private void initChunkFactories() {
         this._Grid2DSquareCellIntChunk64CellMapFactory = new Grids_Grid2DSquareCellIntChunk64CellMapFactory();
         this._Grid2DSquareCellIntChunkArrayFactory = new Grids_Grid2DSquareCellIntChunkArrayFactory();
-        this._Grid2DSquareCellIntChunkJAIFactory = new Grids_Grid2DSquareCellIntChunkJAIFactory();
         this._Grid2DSquareCellIntChunkMapFactory = new Grids_Grid2DSquareCellIntChunkMapFactory();
-        this._Grid2DSquareCellIntChunkRAFFactory = new Grids_Grid2DSquareCellIntChunkRAFFactory();
         //this._Grid2DSquareCellIntChunkFactory = _Grid2DSquareCellIntChunkMapFactory;
         this._Grid2DSquareCellIntChunkFactory = _Grid2DSquareCellIntChunkArrayFactory;
         this._Grid2DSquareCellDoubleChunk64CellMapFactory = new Grids_Grid2DSquareCellDoubleChunk64CellMapFactory();
         this._Grid2DSquareCellDoubleChunkArrayFactory = new Grids_Grid2DSquareCellDoubleChunkArrayFactory();
-        this._Grid2DSquareCellDoubleChunkJAIFactory = new Grids_Grid2DSquareCellDoubleChunkJAIFactory();
         this._Grid2DSquareCellDoubleChunkMapFactory = new Grids_Grid2DSquareCellDoubleChunkMapFactory();
-        this._Grid2DSquareCellDoubleChunkRAFFactory = new Grids_Grid2DSquareCellDoubleChunkRAFFactory();
         //this._Grid2DSquareCellDoubleChunkFactory = _Grid2DSquareCellDoubleChunkMapFactory;
         this._Grid2DSquareCellDoubleChunkFactory = _Grid2DSquareCellDoubleChunkArrayFactory;
     }
@@ -1060,7 +1036,8 @@ public class Grids_Processor extends Grids_Object {
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
                                         maskNoDataValue,
-                                        handleOutOfMemoryError);
+                                        handleOutOfMemoryError,
+                                        chunkID);
                                 if (value == maskNoDataValue) {
                                     grid.setCell(
                                             ((long) _ChunkRowIndex * (long) chunkNrows) + (long) chunkCellRowIndex,
@@ -1145,7 +1122,8 @@ public class Grids_Processor extends Grids_Object {
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
                                         maskNoDataValue,
-                                        handleOutOfMemoryError);
+                                        handleOutOfMemoryError,
+                                        chunkID);
                                 if (value == maskNoDataValue) {
                                     grid.setCell(
                                             ((long) _ChunkRowIndex * (long) chunkNrows) + (long) chunkCellRowIndex,

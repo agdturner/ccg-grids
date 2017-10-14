@@ -21,7 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.statistics;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 
 /**
  * Used by Grids_AbstractGrid2DSquareCell instances to access statistics. This class

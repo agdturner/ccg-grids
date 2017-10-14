@@ -1,6 +1,7 @@
 /**
- * Copyright (C) 2017 Andy Turner, CCG, University of Leeds, UK.
- *
+ * Version 1.0 is to handle single variable 2DSquareCelled raster data.
+ * Copyright (C) 2005 Andy Turner, CCG, University of Leeds, UK.
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -15,25 +16,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
+
+import java.io.Serializable;
 
 /**
- *
- * @author geoagdt
+ * Basic wrapper.
  */
-public abstract class Grids_Object {
-    
-    /**
-     * A reference to Grids_Environment.
-     */
-    public transient Grids_Environment ge;
-
-    public Grids_Object() {
-    }
-    
-    public Grids_Object(Grids_Environment ge) {
-        this.ge = ge;
-    }
-    
-    
+public abstract class Grids_AbstractGrid2DSquareCellChunkFactory implements Serializable {
 }

@@ -18,25 +18,21 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.statistics;
 
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatisticsInterface;
 import gnu.trove.TDoubleHashSet;
 import gnu.trove.TIntHashSet;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCellIntChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 
 /**
@@ -395,7 +391,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             Iterator<Double> ite;
             ite = g.iterator(handleOutOfMemoryError);
             while (ite.hasNext()) {
-                double value = (Double) ite.next();
+                double value = ite.next();
                 if (!(value == noDataValue || value == 0)) {
                     result = result.add(BigInteger.ONE);
                 }
@@ -1343,8 +1339,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             } else {
                 double value;
                 long count;
-                long modeCount = ((Long) tmode[0]).longValue();
-                mode.add(((Double) tmode[1]).doubleValue());
+                long modeCount = ((Long) tmode[0]);
+                mode.add(((Double) tmode[1]));
                 Grids_2D_ID_long cellID = (Grids_2D_ID_long) tmode[2];
                 // Do remainder of the row
                 row = cellID.getRow();
@@ -1440,8 +1436,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                             }
                         }
                     }
-                    initMode[0] = new Long(modeCount);
-                    initMode[1] = new Integer(value);
+                    initMode[0] = modeCount;
+                    initMode[1] = value;
                     initMode[2] = grid2DSquareCellInt.getCellID(
                             p,
                             q,
@@ -1490,8 +1486,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                             }
                         }
                     }
-                    initMode[0] = new Long(modeCount);
-                    initMode[1] = new Double(value);
+                    initMode[0] = modeCount;
+                    initMode[1] = value;
                     initMode[2] = grid2DSquareCellDouble.getCellID(
                             p,
                             q,
@@ -1827,8 +1823,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             BigDecimal differenceFromMean;
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                    Grids_AbstractGrid2DSquareCellIntChunk chunk
-                            = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
+                    Grids_AbstractGrid2DSquareCellIntChunk chunk;
+                    chunk = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
                                     chunkRowIndex,
                                     chunkColIndex,
                                     handleOutOfMemoryError);
@@ -1843,7 +1839,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                                         chunkRowIndex,
                                         chunkColIndex,
                                         noDataValue,
-                                        handleOutOfMemoryError);
+                                        handleOutOfMemoryError,
+                                        chunk.getChunkID(handleOutOfMemoryError));
                                 if (value != noDataValue) {
                                     differenceFromMean = new BigDecimal(value).subtract(mean);
                                     stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
@@ -1932,8 +1929,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             g = (Grids_Grid2DSquareCellDouble) this.Grid2DSquareCell;
             TreeMap<Integer, Double> minDouble;
             TreeMap<Integer, Double> maxDouble;
-            minDouble = new TreeMap<Integer, Double>();
-            maxDouble = new TreeMap<Integer, Double>();
+            minDouble = new TreeMap<>();
+            maxDouble = new TreeMap<>();
             for (int i = 1; i < nClasses; i++) {
                 minDouble.put(i, Double.POSITIVE_INFINITY);
                 maxDouble.put(i, Double.NEGATIVE_INFINITY);
@@ -1952,7 +1949,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             double noDataValue;
             noDataValue = g.get_NoDataValue(handleOutOfMemoryError);
             TreeMap<Integer, Long> classCounts;
-            classCounts = new TreeMap<Integer, Long>();
+            classCounts = new TreeMap<>();
             for (int i = 1; i < nClasses; i++) {
                 classCounts.put(i, 0L);
             }
@@ -1961,9 +1958,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 //        TreeMap<Integer,TreeMap<Double,HashSet<AbstractGrid2DSquareCell.CellID>>> classMap;
 //        classMap = new TreeMap<Integer,TreeMap<Double,HashSet<AbstractGrid2DSquareCell.CellID>>>();
             TreeMap<Integer, TreeMap<Double, Long>> classMap;
-            classMap = new TreeMap<Integer, TreeMap<Double, Long>>();
+            classMap = new TreeMap<>();
             for (int i = 0; i < nClasses; i++) {
-                classMap.put(i, new TreeMap<Double, Long>());
+                classMap.put(i, new TreeMap<>());
             }
             result[2] = classMap;
             int count = 0;
@@ -2251,7 +2248,6 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             }
         }
         long classToCheckCount;
-        classToCheckCount = classCounts.get(classToCheck);
         // 2. If the value already exists, add to the count, else add to the map
         // and counts and ensure maxDouble and minDouble are correct (which has 
         // to be done first)

@@ -19,8 +19,8 @@
 package uk.ac.leeds.ccg.andyt.grids.utilities;
 
 import java.awt.geom.Point2D;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Grid2DSquareCellDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
 
 /**
  * This class holds miscellaneous general utility methods

@@ -19,6 +19,7 @@
 
 package uk.ac.leeds.ccg.andyt.grids.core;
 
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
