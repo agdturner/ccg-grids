@@ -51,57 +51,28 @@ public class Grids_ProcessorDEM
     private HashSet _CellIDs;
 
     /**
-     * Creates a new Grid2DSquareCellProcessorDEM
+     * Creates a new Grids_ProcessorDEM
      */
-    public Grids_ProcessorDEM() {
-        super();
+    protected Grids_ProcessorDEM() {
     }
 
     /**
-     * Creates a new instance of Grid2DSquareCellProcessorDEM. By default the
-     * logs are appended to the end of the log _File if it exists. To overwrite
-     * the log _File use: Grid2DSquareCellDoubleProcessor( _Directory, false );
+     * Creates a new instance of Grids_ProcessorDEM. By default the logs are
+     * appended to the end of the log _File if it exists. To overwrite the log
+     * _File use: Grids_ProcessorDEM( _Directory, false );
      *
-     * @param _Directory
+     * @param ge
      */
-    public Grids_ProcessorDEM(
-            File _Directory) {
-        super(_Directory);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellProcessorDEM. By default the
-     * logs are appended to the end of the log _File if it exists. To overwrite
-     * the log _File use: Grid2DSquareCellDoubleProcessor( _Directory, false );
-     *
-     * @param env
-     * @param _Directory
-     */
-    public Grids_ProcessorDEM(
-            Grids_Environment env,
-            File _Directory) {
-        super(env, _Directory);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellProcessorDEM. The log file in
-     * _Directory will be overwritten if appendToLogFile is false.
-     *
-     * @param _Directory
-     * @param appendToLogFile
-     */
-    public Grids_ProcessorDEM(
-            File _Directory,
-            boolean appendToLogFile) {
-        super(_Directory,
-                appendToLogFile);
+    public Grids_ProcessorDEM(Grids_Environment ge) {
+        super(ge);
     }
 
     /**
      * Calculates and returns measures of the slope and aspect for the
- Grids_AbstractGrid2DSquareCell _Grid2DSquareCell passed in.
+     * Grids_AbstractGrid2DSquareCell _Grid2DSquareCell passed in.
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be processed.
+     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be
+     * processed.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then caching operations are initiated prior to retrying.
      * If false then OutOfMemoryErrors are caught and thrown. Defaults: kernel
@@ -136,12 +107,13 @@ public class Grids_ProcessorDEM
 
     /**
      * Calculates and returns measures of the slope and aspect for the
- Grids_AbstractGrid2DSquareCell _Grid2DSquareCell passed in.
+     * Grids_AbstractGrid2DSquareCell _Grid2DSquareCell passed in.
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be processed.
- Defaults: kernel to have distance = ( _Grid2DSquareCell.get_Dimensions(
- handleOutOfMemoryError )[ 0 ].doubleValue() ) * ( 3.0d / 2.0d );
- weightIntersect = 1.0d; weightFactor = 0.0d;
+     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be
+     * processed. Defaults: kernel to have distance = (
+     * _Grid2DSquareCell.get_Dimensions( handleOutOfMemoryError )[ 0
+     * ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
+     * = 0.0d;
      * @return Grids_Grid2DSquareCellDouble[] _SlopeAndAspect. /n
      * @throws java.io.IOException
      */
@@ -152,7 +124,7 @@ public class Grids_ProcessorDEM
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
         BigDecimal[] dimensions = _Grid2DSquareCell.get_Dimensions(handleOutOfMemoryError);
-        double distance = (dimensions[ 0].doubleValue()) * (3.0d / 2.0d);
+        double distance = (dimensions[0].doubleValue()) * (3.0d / 2.0d);
         double weightIntersect = 1.0d;
         double weightFactor = 0.0d;
         return getSlopeAspect(
@@ -205,19 +177,19 @@ public class Grids_ProcessorDEM
      * (Formerly the difference in its height was taken as the average
      * difference in height for those cells with values.) )
      * @return Grids_Grid2DSquareCellDouble[] _SlopeAndAspect where:
- _SlopeAndAspect[0] Is the distance weighted aggregate slope over the
- region. This is normalised by the sum of the weights used and the average
- distance to give a proportional measure. _SlopeAndAspect[1] Is the
- distance weighted aggregate aspect over the region. This is the clockwize
- angle from the y axis (usually North). _SlopeAndAspect[2] Is the sine of
- _SlopeAndAspect[1]. _SlopeAndAspect[3] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 1 ) / 8). _SlopeAndAspect[4] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 2 ) / 8). _SlopeAndAspect[5] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 3 ) / 8). _SlopeAndAspect[6] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 4 ) / 8). _SlopeAndAspect[7] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 5 ) / 8). _SlopeAndAspect[8] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 6 ) / 8). _SlopeAndAspect[9] Is the sine of _SlopeAndAspect[1]
- + ( ( Pi * 7 ) / 8).
+     * _SlopeAndAspect[0] Is the distance weighted aggregate slope over the
+     * region. This is normalised by the sum of the weights used and the average
+     * distance to give a proportional measure. _SlopeAndAspect[1] Is the
+     * distance weighted aggregate aspect over the region. This is the clockwize
+     * angle from the y axis (usually North). _SlopeAndAspect[2] Is the sine of
+     * _SlopeAndAspect[1]. _SlopeAndAspect[3] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 1 ) / 8). _SlopeAndAspect[4] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 2 ) / 8). _SlopeAndAspect[5] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 3 ) / 8). _SlopeAndAspect[6] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 4 ) / 8). _SlopeAndAspect[7] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 5 ) / 8). _SlopeAndAspect[8] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 6 ) / 8). _SlopeAndAspect[9] Is the sine of _SlopeAndAspect[1]
+     * + ( ( Pi * 7 ) / 8).
      * @throws java.io.IOException
      */
     public Grids_Grid2DSquareCellDouble[] getSlopeAspect(
@@ -250,7 +222,7 @@ public class Grids_ProcessorDEM
             long ncols = g.get_NCols(handleOutOfMemoryError);
             long nrows = g.get_NRows(handleOutOfMemoryError);
             BigDecimal[] dimensions = g.get_Dimensions(handleOutOfMemoryError);
-            long cellDistance = (long) Math.ceil(distance / dimensions[ 0].doubleValue());
+            long cellDistance = (long) Math.ceil(distance / dimensions[0].doubleValue());
             double thisDistance = 0.0d;
             double x = 0.0d;
             double y = 0.0d;
@@ -311,7 +283,7 @@ public class Grids_ProcessorDEM
             int int0 = Integer.MIN_VALUE;
             int int1 = Integer.MIN_VALUE;
             boolean boolean0 = false;
-            double cellSize = dimensions[ 0].doubleValue();
+            double cellSize = dimensions[0].doubleValue();
             for (p = -cellDistance; p <= cellDistance; p++) {
                 thisY = p * cellSize;
                 for (q = -cellDistance; q <= cellDistance; q++) {
@@ -368,25 +340,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             this._Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 0] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[0] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 0].set_Name(
+            _SlopeAndAspect[0].set_Name(
                     _Filename,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 0].writeToFile(
+                _SlopeAndAspect[0].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 0]);
-            _Message = _SlopeAndAspect[ 0].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[0]);
+            _Message = _SlopeAndAspect[0].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 1 ]";
@@ -403,25 +375,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 1] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[1] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 1].set_Name(
+            _SlopeAndAspect[1].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 1].writeToFile(
+                _SlopeAndAspect[1].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 1]);
-            _Message = _SlopeAndAspect[ 1].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[1]);
+            _Message = _SlopeAndAspect[1].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 2 ]";
@@ -438,26 +410,26 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 2] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[2] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 2].set_Name(
+            _SlopeAndAspect[2].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 2].writeToFile(
+                _SlopeAndAspect[2].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
                 //ioe0.printStackTrace();
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 2]);
-            _Message = _SlopeAndAspect[ 2].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[2]);
+            _Message = _SlopeAndAspect[2].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 3 ]";
@@ -474,26 +446,26 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 3] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[3] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 3].set_Name(
+            _SlopeAndAspect[3].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 3].writeToFile(
+                _SlopeAndAspect[3].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
                 //ioe0.printStackTrace();
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 3]);
-            _Message = _SlopeAndAspect[ 3].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[3]);
+            _Message = _SlopeAndAspect[3].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 4 ]";
@@ -510,26 +482,26 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 4] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[4] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 4].set_Name(
+            _SlopeAndAspect[4].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 4].writeToFile(
+                _SlopeAndAspect[4].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
 //                ioe0.printStackTrace();
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 4]);
-            _Message = _SlopeAndAspect[ 4].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[4]);
+            _Message = _SlopeAndAspect[4].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 5 ]";
@@ -546,25 +518,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 5] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[5] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 5].set_Name(
+            _SlopeAndAspect[5].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 5].writeToFile(
+                _SlopeAndAspect[5].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 5]);
-            _Message = _SlopeAndAspect[ 5].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[5]);
+            _Message = _SlopeAndAspect[5].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 6 ]";
@@ -581,25 +553,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 6] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[6] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 6].set_Name(
+            _SlopeAndAspect[6].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 6].writeToFile(
+                _SlopeAndAspect[6].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 6]);
-            _Message = _SlopeAndAspect[ 6].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[6]);
+            _Message = _SlopeAndAspect[6].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 7 ]";
@@ -616,25 +588,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 7] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[7] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 7].set_Name(
+            _SlopeAndAspect[7].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 7].writeToFile(
+                _SlopeAndAspect[7].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 7]);
-            _Message = _SlopeAndAspect[ 7].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[7]);
+            _Message = _SlopeAndAspect[7].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 8 ]";
@@ -651,25 +623,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 8] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[8] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 8].set_Name(
+            _SlopeAndAspect[8].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 8].writeToFile(
+                _SlopeAndAspect[8].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 8]);
-            _Message = _SlopeAndAspect[ 8].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[8]);
+            _Message = _SlopeAndAspect[8].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialising _SlopeAndAspect[ 9 ]";
@@ -686,25 +658,25 @@ public class Grids_ProcessorDEM
             }
             _File = ge.initFileDirectory(_Directory, _Filename, handleOutOfMemoryError);
             _Grid2DSquareCellDoubleFactory.set_Directory(_File);
-            _SlopeAndAspect[ 9] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
+            _SlopeAndAspect[9] = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
                     ge,
                     handleOutOfMemoryError);
-            _SlopeAndAspect[ 9].set_Name(
+            _SlopeAndAspect[9].set_Name(
                     _Filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
             try {
-                _SlopeAndAspect[ 9].writeToFile(
+                _SlopeAndAspect[9].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
             } catch (IOException ioe0) {
                 System.err.println(ioe0.getMessage());
             }
-            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[ 9]);
-            _Message = _SlopeAndAspect[ 9].toString(handleOutOfMemoryError);
+            ge.get_AbstractGrid2DSquareCell_HashSet().add(_SlopeAndAspect[9]);
+            _Message = _SlopeAndAspect[9].toString(handleOutOfMemoryError);
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             _Message = "Initialised Results";
@@ -783,7 +755,7 @@ public class Grids_ProcessorDEM
                                         double0 = weightSum * averageDistance;
                                         slope /= double0;
                                         slope *= doubleOneHundred;
-                                        _SlopeAndAspect[ 0].setCell(
+                                        _SlopeAndAspect[0].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 slope,
@@ -793,62 +765,62 @@ public class Grids_ProcessorDEM
                                         angle = angle(x, y, double0, double1,
                                                 nChunkCols, cri,
                                                 cci, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 1].setCell(
+                                        _SlopeAndAspect[1].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 angle,
                                                 handleOutOfMemoryError);
                                         sinAngle = ge.sin(angle, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 2].setCell(
+                                        _SlopeAndAspect[2].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 3].setCell(
+                                        _SlopeAndAspect[3].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleFour);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 4].setCell(
+                                        _SlopeAndAspect[4].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleThree / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 5].setCell(
+                                        _SlopeAndAspect[5].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleTwo);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 6].setCell(
+                                        _SlopeAndAspect[6].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleFive / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 7].setCell(
+                                        _SlopeAndAspect[7].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleSix / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 8].setCell(
+                                        _SlopeAndAspect[8].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleSeven / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 9].setCell(
+                                        _SlopeAndAspect[9].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
@@ -930,7 +902,7 @@ public class Grids_ProcessorDEM
                                         double0 = weightSum * averageDistance;
                                         slope /= double0;
                                         slope *= doubleOneHundred;
-                                        _SlopeAndAspect[ 0].setCell(
+                                        _SlopeAndAspect[0].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 slope,
@@ -939,62 +911,62 @@ public class Grids_ProcessorDEM
                                         double1 = y + diffY;
                                         angle = angle(x, y, double0, double1,
                                                 nChunkCols, cri, cci, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 1].setCell(
+                                        _SlopeAndAspect[1].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 angle,
                                                 handleOutOfMemoryError);
                                         sinAngle = ge.sin(angle, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 2].setCell(
+                                        _SlopeAndAspect[2].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 3].setCell(
+                                        _SlopeAndAspect[3].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleFour);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 4].setCell(
+                                        _SlopeAndAspect[4].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleThree / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 5].setCell(
+                                        _SlopeAndAspect[5].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI / doubleTwo);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 6].setCell(
+                                        _SlopeAndAspect[6].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleFive / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 7].setCell(
+                                        _SlopeAndAspect[7].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleSix / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 8].setCell(
+                                        _SlopeAndAspect[8].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
                                                 handleOutOfMemoryError);
                                         double3 = angle + (PI * doubleSeven / doubleEight);
                                         sinAngle = ge.sin(double3, handleOutOfMemoryError);
-                                        _SlopeAndAspect[ 9].setCell(
+                                        _SlopeAndAspect[9].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
                                                 sinAngle,
@@ -1039,7 +1011,8 @@ public class Grids_ProcessorDEM
      * weightIntersect and weightFactor. This is the cosine of the clockwize
      * angle from north.
      *
-     * @param _Grid2DSquareCell the Grids_Grid2DSquareCellDouble to be processed.
+     * @param _Grid2DSquareCell the Grids_Grid2DSquareCellDouble to be
+     * processed.
      * @param rowIndex the rowIndex where _SlopeAndAspect is calculated.
      * @param colIndex the colIndex where _SlopeAndAspec
      * @param handleOutOfMemoryError
@@ -1101,7 +1074,8 @@ public class Grids_ProcessorDEM
      * weightIntersect and weightFactor. This is the cosine of the clockwize
      * angle from north.
      *
-     * @param _Grid2DSquareCell the Grids_Grid2DSquareCellDouble to be processed.
+     * @param _Grid2DSquareCell the Grids_Grid2DSquareCellDouble to be
+     * processed.
      * @param x the x coordinate from where the aspect is calculated
      * @param y the y coordinate from where the aspect is calculated
      * @param distance the distance which defines the aggregate region.
@@ -1192,10 +1166,10 @@ public class Grids_ProcessorDEM
                 Grids_Grid2DSquareCellInt _Grid2DSquareCellInt = (Grids_Grid2DSquareCellInt) _Grid2DSquareCell;
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(true);
                 double[] _SlopeAndAspect = new double[2];
-                _SlopeAndAspect[ 0] = noDataValue;
-                _SlopeAndAspect[ 1] = noDataValue;
-                _SlopeAndAspect[ 2] = noDataValue;
-                _SlopeAndAspect[ 3] = noDataValue;
+                _SlopeAndAspect[0] = noDataValue;
+                _SlopeAndAspect[1] = noDataValue;
+                _SlopeAndAspect[2] = noDataValue;
+                _SlopeAndAspect[3] = noDataValue;
                 int height = _Grid2DSquareCellInt.getCell(x, y, handleOutOfMemoryError);
                 if (height != noDataValue) {
                     double cellsize = _Grid2DSquareCell.get_Dimensions(handleOutOfMemoryError)[0].doubleValue();
@@ -1229,10 +1203,10 @@ public class Grids_ProcessorDEM
                             }
                         }
                     }
-                    _SlopeAndAspect[ 0] = slope;
-                    _SlopeAndAspect[ 1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
-                    _SlopeAndAspect[ 2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
-                    _SlopeAndAspect[ 3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    _SlopeAndAspect[0] = slope;
+                    _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
+                    _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
                 }
                 return _SlopeAndAspect;
             } else {
@@ -1241,10 +1215,10 @@ public class Grids_ProcessorDEM
                 double noDataValue = _Grid2DSquareCellDouble.get_NoDataValue(handleOutOfMemoryError);
                 double value;
                 double[] _SlopeAndAspect = new double[2];
-                _SlopeAndAspect[ 0] = noDataValue;
-                _SlopeAndAspect[ 1] = noDataValue;
-                _SlopeAndAspect[ 2] = noDataValue;
-                _SlopeAndAspect[ 3] = noDataValue;
+                _SlopeAndAspect[0] = noDataValue;
+                _SlopeAndAspect[1] = noDataValue;
+                _SlopeAndAspect[2] = noDataValue;
+                _SlopeAndAspect[3] = noDataValue;
                 double height = _Grid2DSquareCellDouble.getCell(x, y, handleOutOfMemoryError);
                 if (height != noDataValue) {
                     double cellsize = _Grid2DSquareCell.get_Dimensions(handleOutOfMemoryError)[0].doubleValue();
@@ -1278,10 +1252,10 @@ public class Grids_ProcessorDEM
                             }
                         }
                     }
-                    _SlopeAndAspect[ 0] = slope;
-                    _SlopeAndAspect[ 1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
-                    _SlopeAndAspect[ 2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
-                    _SlopeAndAspect[ 3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    _SlopeAndAspect[0] = slope;
+                    _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
+                    _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
                 }
                 return _SlopeAndAspect;
             }
@@ -1307,10 +1281,10 @@ public class Grids_ProcessorDEM
      * @param _TreatNoDataValueAsOutflow
      * @param outflowCellIDsSet
      * @return Grids_Grid2DSquareCellDouble which has cell values as in
- _Grid2DSquareCell except with hollows raised. The attempt to raise
- hollows may not remove all hollows. The process of removing hollows works
- iteratively. Essentially, the algorithm is as follows:
- <ol>
+     * _Grid2DSquareCell except with hollows raised. The attempt to raise
+     * hollows may not remove all hollows. The process of removing hollows works
+     * iteratively. Essentially, the algorithm is as follows:
+     * <ol>
      * <li>Identify all hollows.</li>
      * <li>Raise all hollows by a small amount.</li>
      * <li>Identify all hollows.</li>
@@ -1432,9 +1406,9 @@ public class Grids_ProcessorDEM
                             toVisitSet1 = new HashSet();
                             iterator1 = hollows2.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
-                                row = cellIDs[ 0].getRow();
-                                col = cellIDs[ 0].getCol();
+                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                                row = cellIDs[0].getRow();
+                                col = cellIDs[0].getCol();
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
@@ -1461,27 +1435,27 @@ public class Grids_ProcessorDEM
                             // Trace bottom of each hollow and raise to the height of the lowest cell around it.
                             iterator1 = hollows1.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
-                                if (!hollowsVisited.contains(cellIDs[ 0])) {
+                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                                if (!hollowsVisited.contains(cellIDs[0])) {
                                     hollowSet = new HashSet();
-                                    hollowSet.add(cellIDs[ 0]);
-                                    row = cellIDs[ 0].getRow();
-                                    col = cellIDs[ 0].getCol();
+                                    hollowSet.add(cellIDs[0]);
+                                    row = cellIDs[0].getRow();
+                                    col = cellIDs[0].getCol();
                                     toVisitSet1 = new HashSet();
                                     // Step 1: Add all cells in adjoining hollows to hollowSet
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 if (_Grid2DSquareCell.isInGrid(row + p, col + q, handleOutOfMemoryError)) {
-                                                    cellIDs[ 1] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
-                                                    toVisitSet1.add(cellIDs[ 1]);
+                                                    cellIDs[1] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
+                                                    toVisitSet1.add(cellIDs[1]);
                                                 }
                                             }
                                         }
                                     }
                                     toVisitSet1.removeAll(outflowCellIDs);
                                     visitedSet2 = new HashSet();
-                                    visitedSet2.add(cellIDs[ 0]);
+                                    visitedSet2.add(cellIDs[0]);
                                     toVisitSet3 = new HashSet();
                                     toVisitSet3.addAll(toVisitSet1);
                                     calculated2 = false;
@@ -1489,19 +1463,19 @@ public class Grids_ProcessorDEM
                                         toVisitSet2 = new HashSet();
                                         iterator2 = toVisitSet1.iterator();
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                            visitedSet2.add(cellIDs[ 1]);
-                                            row = cellIDs[ 1].getRow();
-                                            col = cellIDs[ 1].getCol();
+                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            visitedSet2.add(cellIDs[1]);
+                                            row = cellIDs[1].getRow();
+                                            col = cellIDs[1].getCol();
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
                                                         if (_Grid2DSquareCell.isInGrid(row + p, col + q, handleOutOfMemoryError)) {
-                                                            cellIDs[ 2] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
-                                                            visitedSet1.add(cellIDs[ 2]);
+                                                            cellIDs[2] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
+                                                            visitedSet1.add(cellIDs[2]);
                                                             // If a hollow then add to hollow set and visit neighbours if not done already
-                                                            if (hollows1.contains(cellIDs[ 2])) {
-                                                                hollowSet.add(cellIDs[ 2]);
+                                                            if (hollows1.contains(cellIDs[2])) {
+                                                                hollowSet.add(cellIDs[2]);
                                                                 for (r = -1; r < 2; r++) {
                                                                     for (s = -1; s < 2; s++) {
                                                                         if (!(r == 0 && s == 0)) { // Is this correct?
@@ -1539,14 +1513,14 @@ public class Grids_ProcessorDEM
                                         outflowCellCount = 0;
                                         // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                            row = cellIDs[ 1].getRow();
-                                            col = cellIDs[ 1].getCol();
+                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            row = cellIDs[1].getRow();
+                                            col = cellIDs[1].getCol();
                                             height = result.getCell(row, col, handleOutOfMemoryError);
                                             if (height == noDataValue) {
                                                 noDataCount++;
                                             } else {
-                                                if (outflowCellIDs.contains(cellIDs[ 1])) {
+                                                if (outflowCellIDs.contains(cellIDs[1])) {
                                                     outflowCellCount++;
                                                 } else {
                                                     minHeight = Math.min(minHeight, height);
@@ -1567,13 +1541,13 @@ public class Grids_ProcessorDEM
                                             if (minHeight > height0) {
                                                 iterator2 = toVisitSet3.iterator();
                                                 while (iterator2.hasNext()) {
-                                                    cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                                    row = cellIDs[ 1].getRow();
-                                                    col = cellIDs[ 1].getCol();
+                                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                                    row = cellIDs[1].getRow();
+                                                    col = cellIDs[1].getCol();
                                                     height = result.getCell(row, col, handleOutOfMemoryError);
                                                     if (height == minHeight) {
-                                                        hollowSet.add(cellIDs[ 1]);
-                                                        toVisitSet2.remove(cellIDs[ 1]);
+                                                        hollowSet.add(cellIDs[1]);
+                                                        toVisitSet2.remove(cellIDs[1]);
                                                         for (r = -1; r < 2; r++) {
                                                             for (s = -1; s < 2; s++) {
                                                                 if (!(r == 0L && s == 0L)) {
@@ -1598,9 +1572,9 @@ public class Grids_ProcessorDEM
                                     hollowSet.removeAll(outflowCellIDs);
                                     iterator2 = hollowSet.iterator();
                                     while (iterator2.hasNext()) {
-                                        cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                        row = cellIDs[ 1].getRow();
-                                        col = cellIDs[ 1].getCol();
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
                                         result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), handleOutOfMemoryError);
                                     }
                                     hollowsVisited.addAll(hollowSet);
@@ -1703,9 +1677,9 @@ public class Grids_ProcessorDEM
                             toVisitSet1 = new HashSet();
                             iterator1 = hollows2.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
-                                row = cellIDs[ 0].getRow();
-                                col = cellIDs[ 0].getCol();
+                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                                row = cellIDs[0].getRow();
+                                col = cellIDs[0].getCol();
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
@@ -1732,27 +1706,27 @@ public class Grids_ProcessorDEM
                             // Trace bottom of each hollow and raise to the height of the lowest cell around it.
                             iterator1 = hollows1.iterator();
                             while (iterator1.hasNext()) {
-                                cellIDs[ 0] = (Grids_2D_ID_long) iterator1.next();
-                                if (!hollowsVisited.contains(cellIDs[ 0])) {
+                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                                if (!hollowsVisited.contains(cellIDs[0])) {
                                     hollowSet = new HashSet();
-                                    hollowSet.add(cellIDs[ 0]);
-                                    row = cellIDs[ 0].getRow();
-                                    col = cellIDs[ 0].getCol();
+                                    hollowSet.add(cellIDs[0]);
+                                    row = cellIDs[0].getRow();
+                                    col = cellIDs[0].getCol();
                                     toVisitSet1 = new HashSet();
                                     // Step 1: Add all cells in adjoining hollows to hollowSet
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 if (_Grid2DSquareCell.isInGrid(row + p, col + q, handleOutOfMemoryError)) {
-                                                    cellIDs[ 1] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
-                                                    toVisitSet1.add(cellIDs[ 1]);
+                                                    cellIDs[1] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
+                                                    toVisitSet1.add(cellIDs[1]);
                                                 }
                                             }
                                         }
                                     }
                                     toVisitSet1.removeAll(outflowCellIDs);
                                     visitedSet2 = new HashSet();
-                                    visitedSet2.add(cellIDs[ 0]);
+                                    visitedSet2.add(cellIDs[0]);
                                     toVisitSet3 = new HashSet();
                                     toVisitSet3.addAll(toVisitSet1);
                                     calculated2 = false;
@@ -1760,19 +1734,19 @@ public class Grids_ProcessorDEM
                                         toVisitSet2 = new HashSet();
                                         iterator2 = toVisitSet1.iterator();
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                            visitedSet2.add(cellIDs[ 1]);
-                                            row = cellIDs[ 1].getRow();
-                                            col = cellIDs[ 1].getCol();
+                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            visitedSet2.add(cellIDs[1]);
+                                            row = cellIDs[1].getRow();
+                                            col = cellIDs[1].getCol();
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
                                                         if (_Grid2DSquareCell.isInGrid(row + p, col + q, handleOutOfMemoryError)) {
-                                                            cellIDs[ 2] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
-                                                            visitedSet1.add(cellIDs[ 2]);
+                                                            cellIDs[2] = _Grid2DSquareCell.getCellID(row + p, col + q, handleOutOfMemoryError);
+                                                            visitedSet1.add(cellIDs[2]);
                                                             // If a hollow then add to hollow set and visit neighbours if not done already
-                                                            if (hollows1.contains(cellIDs[ 2])) {
-                                                                hollowSet.add(cellIDs[ 2]);
+                                                            if (hollows1.contains(cellIDs[2])) {
+                                                                hollowSet.add(cellIDs[2]);
                                                                 for (r = -1; r < 2; r++) {
                                                                     for (s = -1; s < 2; s++) {
                                                                         if (!(r == 0 && s == 0)) { // Is this correct?
@@ -1810,14 +1784,14 @@ public class Grids_ProcessorDEM
                                         outflowCellCount = 0;
                                         // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
                                         while (iterator2.hasNext()) {
-                                            cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                            row = cellIDs[ 1].getRow();
-                                            col = cellIDs[ 1].getCol();
+                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            row = cellIDs[1].getRow();
+                                            col = cellIDs[1].getCol();
                                             heightDouble = result.getCell(row, col, handleOutOfMemoryError);
                                             if (heightDouble == resultNoDataValue) {
                                                 noDataCount++;
                                             } else {
-                                                if (outflowCellIDs.contains(cellIDs[ 1])) {
+                                                if (outflowCellIDs.contains(cellIDs[1])) {
                                                     outflowCellCount++;
                                                 } else {
                                                     minHeight = Math.min(minHeight, heightDouble);
@@ -1838,13 +1812,13 @@ public class Grids_ProcessorDEM
                                             if (minHeight > height0) {
                                                 iterator2 = toVisitSet3.iterator();
                                                 while (iterator2.hasNext()) {
-                                                    cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                                    row = cellIDs[ 1].getRow();
-                                                    col = cellIDs[ 1].getCol();
+                                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                                    row = cellIDs[1].getRow();
+                                                    col = cellIDs[1].getCol();
                                                     heightDouble = result.getCell(row, col, handleOutOfMemoryError);
                                                     if (heightDouble == minHeight) {
-                                                        hollowSet.add(cellIDs[ 1]);
-                                                        toVisitSet2.remove(cellIDs[ 1]);
+                                                        hollowSet.add(cellIDs[1]);
+                                                        toVisitSet2.remove(cellIDs[1]);
                                                         for (r = -1; r < 2; r++) {
                                                             for (s = -1; s < 2; s++) {
                                                                 if (!(r == 0L && s == 0L)) {
@@ -1869,9 +1843,9 @@ public class Grids_ProcessorDEM
                                     hollowSet.removeAll(outflowCellIDs);
                                     iterator2 = hollowSet.iterator();
                                     while (iterator2.hasNext()) {
-                                        cellIDs[ 1] = (Grids_2D_ID_long) iterator2.next();
-                                        row = cellIDs[ 1].getRow();
-                                        col = cellIDs[ 1].getCol();
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
                                         result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), handleOutOfMemoryError);
                                     }
                                     hollowsVisited.addAll(hollowSet);
@@ -1918,11 +1892,11 @@ public class Grids_ProcessorDEM
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param handleOutOfMemoryError If true then encountered OutOfMemeroyErrors
      * are handled. If false then an encountered OutOfMemeroyError is thrown.
-     * @return HashSet containing Grids_AbstractGrid2DSquareCell.CellIDs of those
- cells in _Grid2DSquareCell that are to be regarded as outflow cells.
- Outflow cells are those: with a value <= outflowHeight; those with CellID
-     * in outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
-     * cell with a value of _NoDataValue.
+     * @return HashSet containing Grids_AbstractGrid2DSquareCell.CellIDs of
+     * those cells in _Grid2DSquareCell that are to be regarded as outflow
+     * cells. Outflow cells are those: with a value <= outflowHeight; those with
+     * CellID in outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true
+     * then any cell with a value of _NoDataValue.
      */
     private HashSet getHollowFilledDEMOutflowCellIDs(
             HashSet outflowCellIDsSet,
@@ -2037,8 +2011,8 @@ public class Grids_ProcessorDEM
                 int[] heights = new int[9];
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        heights[ 0] = _Grid2DSquareCellInt.getCell(row, col, handleOutOfMemoryError);
-                        if (heights[ 0] != noDataValue) {
+                        heights[0] = _Grid2DSquareCellInt.getCell(row, col, handleOutOfMemoryError);
+                        if (heights[0] != noDataValue) {
                             k = 0;
                             for (p = -1; p < 2; p++) {
                                 for (q = -1; q < 2; q++) {
@@ -2049,25 +2023,25 @@ public class Grids_ProcessorDEM
                                 }
                             }
                             if (_TreatNoDataValueAsOutflow) {
-                                if ((heights[ 1] >= heights[ 0])
-                                        && (heights[ 2] >= heights[ 0])
-                                        && (heights[ 3] >= heights[ 0])
-                                        && (heights[ 4] >= heights[ 0])
-                                        && (heights[ 5] >= heights[ 0])
-                                        && (heights[ 6] >= heights[ 0])
-                                        && (heights[ 7] >= heights[ 0])
-                                        && (heights[ 8] >= heights[ 0])) {
+                                if ((heights[1] >= heights[0])
+                                        && (heights[2] >= heights[0])
+                                        && (heights[3] >= heights[0])
+                                        && (heights[4] >= heights[0])
+                                        && (heights[5] >= heights[0])
+                                        && (heights[6] >= heights[0])
+                                        && (heights[7] >= heights[0])
+                                        && (heights[8] >= heights[0])) {
                                     initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, handleOutOfMemoryError));
                                 }
                             } else {
-                                if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                        && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                        && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                        && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                        && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                        && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                        && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                        && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                                if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                        && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                        && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                        && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                        && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                        && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                        && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                        && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                                     initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, handleOutOfMemoryError));
                                 }
                             }
@@ -2081,8 +2055,8 @@ public class Grids_ProcessorDEM
                 double[] heights = new double[9];
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        heights[ 0] = _Grid2DSquareCellDouble.getCell(row, col, handleOutOfMemoryError);
-                        if (heights[ 0] != noDataValue) {
+                        heights[0] = _Grid2DSquareCellDouble.getCell(row, col, handleOutOfMemoryError);
+                        if (heights[0] != noDataValue) {
                             k = 0;
                             for (p = -1; p < 2; p++) {
                                 for (q = -1; q < 2; q++) {
@@ -2093,25 +2067,25 @@ public class Grids_ProcessorDEM
                                 }
                             }
                             if (_TreatNoDataValueAsOutflow) {
-                                if ((heights[ 1] >= heights[ 0])
-                                        && (heights[ 2] >= heights[ 0])
-                                        && (heights[ 3] >= heights[ 0])
-                                        && (heights[ 4] >= heights[ 0])
-                                        && (heights[ 5] >= heights[ 0])
-                                        && (heights[ 6] >= heights[ 0])
-                                        && (heights[ 7] >= heights[ 0])
-                                        && (heights[ 8] >= heights[ 0])) {
+                                if ((heights[1] >= heights[0])
+                                        && (heights[2] >= heights[0])
+                                        && (heights[3] >= heights[0])
+                                        && (heights[4] >= heights[0])
+                                        && (heights[5] >= heights[0])
+                                        && (heights[6] >= heights[0])
+                                        && (heights[7] >= heights[0])
+                                        && (heights[8] >= heights[0])) {
                                     initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, handleOutOfMemoryError));
                                 }
                             } else {
-                                if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                        && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                        && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                        && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                        && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                        && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                        && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                        && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                                if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                        && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                        && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                        && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                        && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                        && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                        && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                        && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                                     initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, handleOutOfMemoryError));
                                 }
                             }
@@ -2146,7 +2120,8 @@ public class Grids_ProcessorDEM
      *
      *
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be processed.
+     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell to be
+     * processed.
      * @param _CellIDs the HashSet storing _CellIDs that must be examined.
      */
     private HashSet getHollowsInNeighbourhood(
@@ -2180,8 +2155,8 @@ public class Grids_ProcessorDEM
                         for (a = -1; a < 2; a++) {
                             for (b = -1; b < 2; b++) {
                                 visited1.add(_Grid2DSquareCellInt.getCellID(row + a, col + b, handleOutOfMemoryError));
-                                heights[ 0] = _Grid2DSquareCellInt.getCell(row + a, col + b, handleOutOfMemoryError);
-                                if (heights[ 0] != noDataValue) {
+                                heights[0] = _Grid2DSquareCellInt.getCell(row + a, col + b, handleOutOfMemoryError);
+                                if (heights[0] != noDataValue) {
                                     k = 0;
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
@@ -2195,25 +2170,25 @@ public class Grids_ProcessorDEM
                                         }
                                     }
                                     if (_TreatNoDataValueAsOutflow) {
-                                        if ((heights[ 1] >= heights[ 0])
-                                                && (heights[ 2] >= heights[ 0])
-                                                && (heights[ 3] >= heights[ 0])
-                                                && (heights[ 4] >= heights[ 0])
-                                                && (heights[ 5] >= heights[ 0])
-                                                && (heights[ 6] >= heights[ 0])
-                                                && (heights[ 7] >= heights[ 0])
-                                                && (heights[ 8] >= heights[ 0])) {
+                                        if ((heights[1] >= heights[0])
+                                                && (heights[2] >= heights[0])
+                                                && (heights[3] >= heights[0])
+                                                && (heights[4] >= heights[0])
+                                                && (heights[5] >= heights[0])
+                                                && (heights[6] >= heights[0])
+                                                && (heights[7] >= heights[0])
+                                                && (heights[8] >= heights[0])) {
                                             result.add(_Grid2DSquareCell.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     } else {
-                                        if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                                && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                                && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                                && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                                && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                                && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                                && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                                && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                                             result.add(_Grid2DSquareCellInt.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     }
@@ -2236,8 +2211,8 @@ public class Grids_ProcessorDEM
                         for (a = -1; a < 2; a++) {
                             for (b = -1; b < 2; b++) {
                                 visited1.add(_Grid2DSquareCellDouble.getCellID(row + a, col + b, handleOutOfMemoryError));
-                                heights[ 0] = _Grid2DSquareCellDouble.getCell(row + a, col + b, handleOutOfMemoryError);
-                                if (heights[ 0] != noDataValue) {
+                                heights[0] = _Grid2DSquareCellDouble.getCell(row + a, col + b, handleOutOfMemoryError);
+                                if (heights[0] != noDataValue) {
                                     k = 0;
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
@@ -2251,25 +2226,25 @@ public class Grids_ProcessorDEM
                                         }
                                     }
                                     if (_TreatNoDataValueAsOutflow) {
-                                        if ((heights[ 1] >= heights[ 0])
-                                                && (heights[ 2] >= heights[ 0])
-                                                && (heights[ 3] >= heights[ 0])
-                                                && (heights[ 4] >= heights[ 0])
-                                                && (heights[ 5] >= heights[ 0])
-                                                && (heights[ 6] >= heights[ 0])
-                                                && (heights[ 7] >= heights[ 0])
-                                                && (heights[ 8] >= heights[ 0])) {
+                                        if ((heights[1] >= heights[0])
+                                                && (heights[2] >= heights[0])
+                                                && (heights[3] >= heights[0])
+                                                && (heights[4] >= heights[0])
+                                                && (heights[5] >= heights[0])
+                                                && (heights[6] >= heights[0])
+                                                && (heights[7] >= heights[0])
+                                                && (heights[8] >= heights[0])) {
                                             result.add(_Grid2DSquareCell.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     } else {
-                                        if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                                && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                                && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                                && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                                && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                                && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                                && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                                && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                                             result.add(_Grid2DSquareCellDouble.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     }
@@ -2327,8 +2302,8 @@ public class Grids_ProcessorDEM
                     cellID = (Grids_2D_ID_long) iterator1.next();
                     row = cellID.getRow();
                     col = cellID.getCol();
-                    heights[ 0] = _Grid2DSquareCellInt.getCell(row, col, handleOutOfMemoryError);
-                    if (heights[ 0] != noDataValue) {
+                    heights[0] = _Grid2DSquareCellInt.getCell(row, col, handleOutOfMemoryError);
+                    if (heights[0] != noDataValue) {
                         //noDataCount = 0;
                         k = 0;
                         for (p = -1; p < 2; p++) {
@@ -2344,14 +2319,14 @@ public class Grids_ProcessorDEM
                         }
                         // This deals with single isolated cells surrounded by noDataValues
                         //if ( noDataCount < 8 ) {
-                        if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                             result.add(cellID);
                         }
                         //}
@@ -2368,11 +2343,9 @@ public class Grids_ProcessorDEM
                     cellID = (Grids_2D_ID_long) iterator1.next();
                     row = cellID.getRow();
                     col = cellID.getCol();
-                    heights[
+                    heights[0] = _Grid2DSquareCellDouble.getCell(row, col, handleOutOfMemoryError);
 
-0] = _Grid2DSquareCellDouble.getCell(row, col, handleOutOfMemoryError);
-
-                    if (heights[ 0] != noDataValue) {
+                    if (heights[0] != noDataValue) {
                         //noDataCount = 0;
                         k = 0;
 
@@ -2392,14 +2365,14 @@ public class Grids_ProcessorDEM
                         }
                         // This deals with single isolated cells surrounded by noDataValues
                         //if ( noDataCount < 8 ) {
-                        if ((heights[ 1] >= heights[ 0] || heights[ 1] == noDataValue)
-                                && (heights[ 2] >= heights[ 0] || heights[ 2] == noDataValue)
-                                && (heights[ 3] >= heights[ 0] || heights[ 3] == noDataValue)
-                                && (heights[ 4] >= heights[ 0] || heights[ 4] == noDataValue)
-                                && (heights[ 5] >= heights[ 0] || heights[ 5] == noDataValue)
-                                && (heights[ 6] >= heights[ 0] || heights[ 6] == noDataValue)
-                                && (heights[ 7] >= heights[ 0] || heights[ 7] == noDataValue)
-                                && (heights[ 8] >= heights[ 0] || heights[ 8] == noDataValue)) {
+                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
+                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
+                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
+                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
+                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
+                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
+                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
+                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
                             result.add(cellID);
 
                         } //}
@@ -2436,90 +2409,91 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble[] metrics1 where: metrics1[0] = no data
- count; metrics1[1] = flatness; metrics1[2] = roughness; metrics1[3] =
- slopyness; metrics1[4] = levelness; metrics1[5] = totalDownness;
- metrics1[6] = averageDownness; metrics1[7] = totalUpness; metrics1[8] =
- averageUpness; metrics1[9] = maxd_hhhh [ sum of distance weighted maximum
- height differences ]; metrics1[10] = mind_hhhh [ sum of distance weighted
- minimum height differences ]; metrics1[11] = sumd_hhhh [ sum of distance
- weighted height differences ]; metrics1[12] = aved_hhhh [ sum of distance
- weighted average height difference ]; metrics1[13] = count_hhhh [ count
- ]; metrics1[14] = w_hhhh [ sum of distance weights ]; metrics1[15] =
- mind_hxhx_ai_hhhl [ sum of distance weighted ( minimum difference of
- cells adjacent to lower cell ) ]; metrics1[16] = maxd_hxhx_ai_hhhl [ sum
- of distance weighted ( maximum difference of cells adjacent to lower cell
- ) ]; metrics1[17] = sumd_hxhx_ai_hhhl [ sum of distance weighted ( sum of
- differences of cells adjacent to lower cell ) ]; metrics1[18] =
- d_xhxx_ai_hhhl [ sum of distance weighted ( difference of cell opposite
- lower cell ) ]; metrics1[19] = d_xxxl_ai_hhhl [ sum of distance weighted
- ( difference of lower cell ) ]; metrics1[20] = sumd_xhxl_ai_hhhl [ sum of
- distance weighted ( sum of differences of lower cell and cell opposite )
- ]; metrics1[21] = mind_abs_xhxl_ai_hhhl [ sum of distance weighted (
- minimum difference magnitude of lower cell and cell opposite ) ];
- metrics1[22] = maxd_abs_xhxl_ai_hhhl [ sum of distance weighted ( maximum
- difference magnitude of lower cell and cell opposite ) ]; metrics1[23] =
- sumd_abs_xhxl_ai_hhhl [ sum of distance weighted ( sum of difference
- magnitudes of lower cell and cell opposite ) ]; metrics1[24] = count_hhhl
- [ count ]; metrics1[25] = w_hhhl [ sum of distance weights ];
- metrics1[26] = mind_hxhx_ai_hlhl [ sum of distance weighted ( minimum
- difference of higher cells ) ]; metrics1[27] = maxd_hxhx_ai_hlhl [ sum of
- distance weighted ( maximum difference of higher cells ) ]; metrics1[28]
- = sumd_hxhx_ai_hlhl [ sum of distance weighted ( sum differences of
- higher cells ) ]; metrics1[29] = mind_xlxl_ai_hlhl [ sum of distance
- weighted ( minimum difference of lower cells ) ]; metrics1[30] =
- maxd_xlxl_ai_hlhl [ sum of distance weighted ( maximum difference of
- lower cells ) ]; metrics1[31] = sumd_xlxl_ai_hlhl [ sum of distance
- weighted ( sum of differences of lower cells ) ]; metrics1[32] =
- mind_abs_hlhl [ sum of distance weighted ( minimum difference magnitude
- of cells ) ]; metrics1[33] = maxd_abs_hlhl [ sum of distance weighted (
- maximum difference magnitude of cells ) ]; metrics1[34] = sumd_abs_hlhl [
- sum of distance weighted ( sum of difference magnitudes of cells ) ];
- metrics1[35] = count_hlhl [ count ]; metrics1[36] = w_hlhl [ sum of
- distance weights ]; metrics1[37] = mind_hhxx_ai_hhll [ sum of distance
- weighted ( minimum difference of higher cells ) ]; metrics1[38] =
- maxd_hhxx_ai_hhll [ sum of distance weighted ( maximum difference of
- higher cells ) ]; metrics1[39] = sumd_hhxx_ai_hhll [ sum of distance
- weighted ( sum of differences of higher cells ) ]; metrics1[40] =
- mind_xxll_ai_hhll [ sum of distance weighted ( minimum difference of
- lower cells ) ]; metrics1[41] = maxd_xxll_ai_hhll [ sum of distance
- weighted ( maximum difference of lower cells ) ]; metrics1[42] =
- sumd_xxll_ai_hhll [ sum of distance weighted ( sum of differences of
- lower cells ) ]; metrics1[43] = mind_abs_hhll [ sum of distance weighted
- ( minimum difference magnitude of cells ) ]; metrics1[44] = maxd_abs_hhll
- [ sum of distance weighted ( maximum difference magnitude of cells ) ];
- metrics1[45] = sumd_abs_hhll [ sum of distance weighted ( sum of
- difference magnitudes of cells ) ]; metrics1[46] = count_hhll [ count ];
- metrics1[47] = w_hhll [ sum of distance weights ]; metrics1[48] =
- mind_lxlx_ai_lllh [ sum of distance weighted ( minimum difference of
- cells adjacent to higher cell ) ]; metrics1[49] = maxd_lxlx_ai_lllh [ sum
- of distance weighted ( maximum difference of cells adjacent to higher
- cell ) ]; metrics1[50] = sumd_lxlx_ai_lllh [ sum of distance weighted (
- sum of differences of cells adjacent to higher cell ) ]; metrics1[51] =
- d_xlxx_ai_lllh [ sum of distance weighted ( difference of cell opposite
- higher cell ) ]; metrics1[52] = d_xxxh_ai_lllh [ sum of distance weighted
- ( difference of higher cell ) ]; metrics1[53] = sumd_xlxh_ai_lllh [ sum
- of distance weighted ( sum of differences of higher cell and cell
- opposite ) ]; metrics1[54] = mind_abs_xlxh_ai_lllh [ sum of distance
- weighted ( minimum difference magnitude of higher cell and cell opposite
- ) ]; metrics1[55] = maxd_abs_xlxh_ai_lllh [ sum of distance weighted (
- maximum difference magnitude of higher cell and cell opposite ) ];
- metrics1[56] = sumd_abs_xlxh_ai_lllh [ sum of distance weighted ( sum of
- difference magnitudes of higher cell and cell opposite ) ]; metrics1[57]
- = count_lllh [ count ]; metrics1[58] = w_lllh [ sum of distance weights
- ]; metrics1[59] = maxd_llll [ sum of distance weighted maximum height
- differences ]; metrics1[60] = mind_llll [ sum of distance weighted
- minimum height differences ]; metrics1[61] = sumd_llll [ sum of distance
- weighted height differences ]; metrics1[62] = aved_llll [ sum of distance
- weighted average height difference ]; metrics1[63] = count_llll [ count
- ]; metrics1[64] = w_llll [ sum of distance weights ];
+     * Returns an Grids_Grid2DSquareCellDouble[] metrics1 where: metrics1[0] =
+     * no data count; metrics1[1] = flatness; metrics1[2] = roughness;
+     * metrics1[3] = slopyness; metrics1[4] = levelness; metrics1[5] =
+     * totalDownness; metrics1[6] = averageDownness; metrics1[7] = totalUpness;
+     * metrics1[8] = averageUpness; metrics1[9] = maxd_hhhh [ sum of distance
+     * weighted maximum height differences ]; metrics1[10] = mind_hhhh [ sum of
+     * distance weighted minimum height differences ]; metrics1[11] = sumd_hhhh
+     * [ sum of distance weighted height differences ]; metrics1[12] = aved_hhhh
+     * [ sum of distance weighted average height difference ]; metrics1[13] =
+     * count_hhhh [ count ]; metrics1[14] = w_hhhh [ sum of distance weights ];
+     * metrics1[15] = mind_hxhx_ai_hhhl [ sum of distance weighted ( minimum
+     * difference of cells adjacent to lower cell ) ]; metrics1[16] =
+     * maxd_hxhx_ai_hhhl [ sum of distance weighted ( maximum difference of
+     * cells adjacent to lower cell ) ]; metrics1[17] = sumd_hxhx_ai_hhhl [ sum
+     * of distance weighted ( sum of differences of cells adjacent to lower cell
+     * ) ]; metrics1[18] = d_xhxx_ai_hhhl [ sum of distance weighted (
+     * difference of cell opposite lower cell ) ]; metrics1[19] = d_xxxl_ai_hhhl
+     * [ sum of distance weighted ( difference of lower cell ) ]; metrics1[20] =
+     * sumd_xhxl_ai_hhhl [ sum of distance weighted ( sum of differences of
+     * lower cell and cell opposite ) ]; metrics1[21] = mind_abs_xhxl_ai_hhhl [
+     * sum of distance weighted ( minimum difference magnitude of lower cell and
+     * cell opposite ) ]; metrics1[22] = maxd_abs_xhxl_ai_hhhl [ sum of distance
+     * weighted ( maximum difference magnitude of lower cell and cell opposite )
+     * ]; metrics1[23] = sumd_abs_xhxl_ai_hhhl [ sum of distance weighted ( sum
+     * of difference magnitudes of lower cell and cell opposite ) ];
+     * metrics1[24] = count_hhhl [ count ]; metrics1[25] = w_hhhl [ sum of
+     * distance weights ]; metrics1[26] = mind_hxhx_ai_hlhl [ sum of distance
+     * weighted ( minimum difference of higher cells ) ]; metrics1[27] =
+     * maxd_hxhx_ai_hlhl [ sum of distance weighted ( maximum difference of
+     * higher cells ) ]; metrics1[28] = sumd_hxhx_ai_hlhl [ sum of distance
+     * weighted ( sum differences of higher cells ) ]; metrics1[29] =
+     * mind_xlxl_ai_hlhl [ sum of distance weighted ( minimum difference of
+     * lower cells ) ]; metrics1[30] = maxd_xlxl_ai_hlhl [ sum of distance
+     * weighted ( maximum difference of lower cells ) ]; metrics1[31] =
+     * sumd_xlxl_ai_hlhl [ sum of distance weighted ( sum of differences of
+     * lower cells ) ]; metrics1[32] = mind_abs_hlhl [ sum of distance weighted
+     * ( minimum difference magnitude of cells ) ]; metrics1[33] = maxd_abs_hlhl
+     * [ sum of distance weighted ( maximum difference magnitude of cells ) ];
+     * metrics1[34] = sumd_abs_hlhl [ sum of distance weighted ( sum of
+     * difference magnitudes of cells ) ]; metrics1[35] = count_hlhl [ count ];
+     * metrics1[36] = w_hlhl [ sum of distance weights ]; metrics1[37] =
+     * mind_hhxx_ai_hhll [ sum of distance weighted ( minimum difference of
+     * higher cells ) ]; metrics1[38] = maxd_hhxx_ai_hhll [ sum of distance
+     * weighted ( maximum difference of higher cells ) ]; metrics1[39] =
+     * sumd_hhxx_ai_hhll [ sum of distance weighted ( sum of differences of
+     * higher cells ) ]; metrics1[40] = mind_xxll_ai_hhll [ sum of distance
+     * weighted ( minimum difference of lower cells ) ]; metrics1[41] =
+     * maxd_xxll_ai_hhll [ sum of distance weighted ( maximum difference of
+     * lower cells ) ]; metrics1[42] = sumd_xxll_ai_hhll [ sum of distance
+     * weighted ( sum of differences of lower cells ) ]; metrics1[43] =
+     * mind_abs_hhll [ sum of distance weighted ( minimum difference magnitude
+     * of cells ) ]; metrics1[44] = maxd_abs_hhll [ sum of distance weighted (
+     * maximum difference magnitude of cells ) ]; metrics1[45] = sumd_abs_hhll [
+     * sum of distance weighted ( sum of difference magnitudes of cells ) ];
+     * metrics1[46] = count_hhll [ count ]; metrics1[47] = w_hhll [ sum of
+     * distance weights ]; metrics1[48] = mind_lxlx_ai_lllh [ sum of distance
+     * weighted ( minimum difference of cells adjacent to higher cell ) ];
+     * metrics1[49] = maxd_lxlx_ai_lllh [ sum of distance weighted ( maximum
+     * difference of cells adjacent to higher cell ) ]; metrics1[50] =
+     * sumd_lxlx_ai_lllh [ sum of distance weighted ( sum of differences of
+     * cells adjacent to higher cell ) ]; metrics1[51] = d_xlxx_ai_lllh [ sum of
+     * distance weighted ( difference of cell opposite higher cell ) ];
+     * metrics1[52] = d_xxxh_ai_lllh [ sum of distance weighted ( difference of
+     * higher cell ) ]; metrics1[53] = sumd_xlxh_ai_lllh [ sum of distance
+     * weighted ( sum of differences of higher cell and cell opposite ) ];
+     * metrics1[54] = mind_abs_xlxh_ai_lllh [ sum of distance weighted ( minimum
+     * difference magnitude of higher cell and cell opposite ) ]; metrics1[55] =
+     * maxd_abs_xlxh_ai_lllh [ sum of distance weighted ( maximum difference
+     * magnitude of higher cell and cell opposite ) ]; metrics1[56] =
+     * sumd_abs_xlxh_ai_lllh [ sum of distance weighted ( sum of difference
+     * magnitudes of higher cell and cell opposite ) ]; metrics1[57] =
+     * count_lllh [ count ]; metrics1[58] = w_lllh [ sum of distance weights ];
+     * metrics1[59] = maxd_llll [ sum of distance weighted maximum height
+     * differences ]; metrics1[60] = mind_llll [ sum of distance weighted
+     * minimum height differences ]; metrics1[61] = sumd_llll [ sum of distance
+     * weighted height differences ]; metrics1[62] = aved_llll [ sum of distance
+     * weighted average height difference ]; metrics1[63] = count_llll [ count
+     * ]; metrics1[64] = w_llll [ sum of distance weights ];
      *
      * @param _Grid2DSquareCell the Grids_Grid2DSquareCellDouble to be processed
      * @param distance the distance within which metrics will be calculated
      * @param weightIntersect kernel parameter ( weight at the centre )
      * @param weightFactor kernel parameter ( distance decay )
-     * @param _Grid2DSquareCellDoubleFactory The Grids_Grid2DSquareCellDoubleFactory
- for creating grids
+     * @param _Grid2DSquareCellDoubleFactory The
+     * Grids_Grid2DSquareCellDoubleFactory for creating grids
      * @param _Grid2DSquareCellIntFactory
      * @param swapOutInitialisedFiles
      * @param swapOutProcessedChunks
@@ -2815,98 +2789,99 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble[] metrics1 where: \n metrics1[0] = no
- data count; \n metrics1[1] = flatness; \n metrics1[2] = roughness; \n
- metrics1[3] = slopyness; \n metrics1[4] = levelness; \n metrics1[5] =
- totalDownness; \n metrics1[6] = averageDownness; \n metrics1[7] =
- totalUpness; \n metrics1[8] = averageUpness; \n metrics1[9] = maxd_hhhh [
- sum of distance weighted maximum height differences ]; \n metrics1[10] =
- mind_hhhh [ sum of distance weighted minimum height differences ]; \n
- metrics1[11] = sumd_hhhh [ sum of distance weighted height differences ];
- \n metrics1[12] = aved_hhhh [ sum of distance weighted average height
- difference ]; \n metrics1[13] = count_hhhh [ count ]; \n metrics1[14] =
- w_hhhh [ sum of distance weights ]; \n metrics1[15] = mind_hxhx_ai_hhhl [
- sum of distance weighted ( minimum difference of cells adjacent to lower
- cell ) ]; \n metrics1[16] = maxd_hxhx_ai_hhhl [ sum of distance weighted
- ( maximum difference of cells adjacent to lower cell ) ]; \n metrics1[17]
- = sumd_hxhx_ai_hhhl [ sum of distance weighted ( sum of differences of
- cells adjacent to lower cell ) ]; \n metrics1[18] = d_xhxx_ai_hhhl [ sum
- of distance weighted ( difference of cell opposite lower cell ) ]; \n
- metrics1[19] = d_xxxl_ai_hhhl [ sum of distance weighted ( difference of
- lower cell ) ]; \n metrics1[20] = sumd_xhxl_ai_hhhl [ sum of distance
- weighted ( sum of differences of lower cell and cell opposite ) ]; \n
- metrics1[21] = mind_abs_xhxl_ai_hhhl [ sum of distance weighted ( minimum
- difference magnitude of lower cell and cell opposite ) ]; \n metrics1[22]
- = maxd_abs_xhxl_ai_hhhl [ sum of distance weighted ( maximum difference
- magnitude of lower cell and cell opposite ) ]; \n metrics1[23] =
- sumd_abs_xhxl_ai_hhhl [ sum of distance weighted ( sum of difference
- magnitudes of lower cell and cell opposite ) ]; \n metrics1[24] =
- count_hhhl [ count ]; \n metrics1[25] = w_hhhl [ sum of distance weights
- ]; \n metrics1[26] = mind_hxhx_ai_hlhl [ sum of distance weighted (
- minimum difference of higher cells ) ]; \n metrics1[27] =
- maxd_hxhx_ai_hlhl [ sum of distance weighted ( maximum difference of
- higher cells ) ]; \n metrics1[28] = sumd_hxhx_ai_hlhl [ sum of distance
- weighted ( sum differences of higher cells ) ]; \n metrics1[29] =
- mind_xlxl_ai_hlhl [ sum of distance weighted ( minimum difference of
- lower cells ) ]; \n metrics1[30] = maxd_xlxl_ai_hlhl [ sum of distance
- weighted ( maximum difference of lower cells ) ]; \n metrics1[31] =
- sumd_xlxl_ai_hlhl [ sum of distance weighted ( sum of differences of
- lower cells ) ]; \n metrics1[32] = mind_abs_hlhl [ sum of distance
- weighted ( minimum difference magnitude of cells ) ]; \n metrics1[33] =
- maxd_abs_hlhl [ sum of distance weighted ( maximum difference magnitude
- of cells ) ]; \n metrics1[34] = sumd_abs_hlhl [ sum of distance weighted
- ( sum of difference magnitudes of cells ) ]; \n metrics1[35] = count_hlhl
- [ count ]; \n metrics1[36] = w_hlhl [ sum of distance weights ]; \n
- metrics1[37] = mind_hhxx_ai_hhll [ sum of distance weighted ( minimum
- difference of higher cells ) ]; \n metrics1[38] = maxd_hhxx_ai_hhll [ sum
- of distance weighted ( maximum difference of higher cells ) ]; \n
- metrics1[39] = sumd_hhxx_ai_hhll [ sum of distance weighted ( sum of
- differences of higher cells ) ]; \n metrics1[40] = mind_xxll_ai_hhll [
- sum of distance weighted ( minimum difference of lower cells ) ]; \n
- metrics1[41] = maxd_xxll_ai_hhll [ sum of distance weighted ( maximum
- difference of lower cells ) ]; \n metrics1[42] = sumd_xxll_ai_hhll [ sum
- of distance weighted ( sum of differences of lower cells ) ]; \n
- metrics1[43] = mind_abs_hhll [ sum of distance weighted ( minimum
- difference magnitude of cells ) ]; \n metrics1[44] = maxd_abs_hhll [ sum
- of distance weighted ( maximum difference magnitude of cells ) ]; \n
- metrics1[45] = sumd_abs_hhll [ sum of distance weighted ( sum of
- difference magnitudes of cells ) ]; \n metrics1[46] = count_hhll [ count
- ]; \n metrics1[47] = w_hhll [ sum of distance weights ]; \n metrics1[48]
- = mind_lxlx_ai_lllh [ sum of distance weighted ( minimum difference of
- cells adjacent to higher cell ) ]; \n metrics1[49] = maxd_lxlx_ai_lllh [
- sum of distance weighted ( maximum difference of cells adjacent to higher
- cell ) ]; \n metrics1[50] = sumd_lxlx_ai_lllh [ sum of distance weighted
- ( sum of differences of cells adjacent to higher cell ) ]; \n
- metrics1[51] = d_xlxx_ai_lllh [ sum of distance weighted ( difference of
- cell opposite higher cell ) ]; \n metrics1[52] = d_xxxh_ai_lllh [ sum of
- distance weighted ( difference of higher cell ) ]; \n metrics1[53] =
- sumd_xlxh_ai_lllh [ sum of distance weighted ( sum of differences of
- higher cell and cell opposite ) ]; \n metrics1[54] =
- mind_abs_xlxh_ai_lllh [ sum of distance weighted ( minimum difference
- magnitude of higher cell and cell opposite ) ]; \n metrics1[55] =
- maxd_abs_xlxh_ai_lllh [ sum of distance weighted ( maximum difference
- magnitude of higher cell and cell opposite ) ]; \n metrics1[56] =
- sumd_abs_xlxh_ai_lllh [ sum of distance weighted ( sum of difference
- magnitudes of higher cell and cell opposite ) ]; \n metrics1[57] =
- count_lllh [ count ]; \n metrics1[58] = w_lllh [ sum of distance weights
- ]; \n metrics1[59] = maxd_llll [ sum of distance weighted maximum height
- differences ]; \n metrics1[60] = mind_llll [ sum of distance weighted
- minimum height differences ]; \n metrics1[61] = sumd_llll [ sum of
- distance weighted height differences ]; \n metrics1[62] = aved_llll [ sum
- of distance weighted average height difference ]; \n metrics1[63] =
- count_llll [ count ]; \n metrics1[64] = w_llll [ sum of distance weights
- ]; \n
+     * Returns an Grids_Grid2DSquareCellDouble[] metrics1 where: \n metrics1[0]
+     * = no data count; \n metrics1[1] = flatness; \n metrics1[2] = roughness;
+     * \n metrics1[3] = slopyness; \n metrics1[4] = levelness; \n metrics1[5] =
+     * totalDownness; \n metrics1[6] = averageDownness; \n metrics1[7] =
+     * totalUpness; \n metrics1[8] = averageUpness; \n metrics1[9] = maxd_hhhh [
+     * sum of distance weighted maximum height differences ]; \n metrics1[10] =
+     * mind_hhhh [ sum of distance weighted minimum height differences ]; \n
+     * metrics1[11] = sumd_hhhh [ sum of distance weighted height differences ];
+     * \n metrics1[12] = aved_hhhh [ sum of distance weighted average height
+     * difference ]; \n metrics1[13] = count_hhhh [ count ]; \n metrics1[14] =
+     * w_hhhh [ sum of distance weights ]; \n metrics1[15] = mind_hxhx_ai_hhhl [
+     * sum of distance weighted ( minimum difference of cells adjacent to lower
+     * cell ) ]; \n metrics1[16] = maxd_hxhx_ai_hhhl [ sum of distance weighted
+     * ( maximum difference of cells adjacent to lower cell ) ]; \n metrics1[17]
+     * = sumd_hxhx_ai_hhhl [ sum of distance weighted ( sum of differences of
+     * cells adjacent to lower cell ) ]; \n metrics1[18] = d_xhxx_ai_hhhl [ sum
+     * of distance weighted ( difference of cell opposite lower cell ) ]; \n
+     * metrics1[19] = d_xxxl_ai_hhhl [ sum of distance weighted ( difference of
+     * lower cell ) ]; \n metrics1[20] = sumd_xhxl_ai_hhhl [ sum of distance
+     * weighted ( sum of differences of lower cell and cell opposite ) ]; \n
+     * metrics1[21] = mind_abs_xhxl_ai_hhhl [ sum of distance weighted ( minimum
+     * difference magnitude of lower cell and cell opposite ) ]; \n metrics1[22]
+     * = maxd_abs_xhxl_ai_hhhl [ sum of distance weighted ( maximum difference
+     * magnitude of lower cell and cell opposite ) ]; \n metrics1[23] =
+     * sumd_abs_xhxl_ai_hhhl [ sum of distance weighted ( sum of difference
+     * magnitudes of lower cell and cell opposite ) ]; \n metrics1[24] =
+     * count_hhhl [ count ]; \n metrics1[25] = w_hhhl [ sum of distance weights
+     * ]; \n metrics1[26] = mind_hxhx_ai_hlhl [ sum of distance weighted (
+     * minimum difference of higher cells ) ]; \n metrics1[27] =
+     * maxd_hxhx_ai_hlhl [ sum of distance weighted ( maximum difference of
+     * higher cells ) ]; \n metrics1[28] = sumd_hxhx_ai_hlhl [ sum of distance
+     * weighted ( sum differences of higher cells ) ]; \n metrics1[29] =
+     * mind_xlxl_ai_hlhl [ sum of distance weighted ( minimum difference of
+     * lower cells ) ]; \n metrics1[30] = maxd_xlxl_ai_hlhl [ sum of distance
+     * weighted ( maximum difference of lower cells ) ]; \n metrics1[31] =
+     * sumd_xlxl_ai_hlhl [ sum of distance weighted ( sum of differences of
+     * lower cells ) ]; \n metrics1[32] = mind_abs_hlhl [ sum of distance
+     * weighted ( minimum difference magnitude of cells ) ]; \n metrics1[33] =
+     * maxd_abs_hlhl [ sum of distance weighted ( maximum difference magnitude
+     * of cells ) ]; \n metrics1[34] = sumd_abs_hlhl [ sum of distance weighted
+     * ( sum of difference magnitudes of cells ) ]; \n metrics1[35] = count_hlhl
+     * [ count ]; \n metrics1[36] = w_hlhl [ sum of distance weights ]; \n
+     * metrics1[37] = mind_hhxx_ai_hhll [ sum of distance weighted ( minimum
+     * difference of higher cells ) ]; \n metrics1[38] = maxd_hhxx_ai_hhll [ sum
+     * of distance weighted ( maximum difference of higher cells ) ]; \n
+     * metrics1[39] = sumd_hhxx_ai_hhll [ sum of distance weighted ( sum of
+     * differences of higher cells ) ]; \n metrics1[40] = mind_xxll_ai_hhll [
+     * sum of distance weighted ( minimum difference of lower cells ) ]; \n
+     * metrics1[41] = maxd_xxll_ai_hhll [ sum of distance weighted ( maximum
+     * difference of lower cells ) ]; \n metrics1[42] = sumd_xxll_ai_hhll [ sum
+     * of distance weighted ( sum of differences of lower cells ) ]; \n
+     * metrics1[43] = mind_abs_hhll [ sum of distance weighted ( minimum
+     * difference magnitude of cells ) ]; \n metrics1[44] = maxd_abs_hhll [ sum
+     * of distance weighted ( maximum difference magnitude of cells ) ]; \n
+     * metrics1[45] = sumd_abs_hhll [ sum of distance weighted ( sum of
+     * difference magnitudes of cells ) ]; \n metrics1[46] = count_hhll [ count
+     * ]; \n metrics1[47] = w_hhll [ sum of distance weights ]; \n metrics1[48]
+     * = mind_lxlx_ai_lllh [ sum of distance weighted ( minimum difference of
+     * cells adjacent to higher cell ) ]; \n metrics1[49] = maxd_lxlx_ai_lllh [
+     * sum of distance weighted ( maximum difference of cells adjacent to higher
+     * cell ) ]; \n metrics1[50] = sumd_lxlx_ai_lllh [ sum of distance weighted
+     * ( sum of differences of cells adjacent to higher cell ) ]; \n
+     * metrics1[51] = d_xlxx_ai_lllh [ sum of distance weighted ( difference of
+     * cell opposite higher cell ) ]; \n metrics1[52] = d_xxxh_ai_lllh [ sum of
+     * distance weighted ( difference of higher cell ) ]; \n metrics1[53] =
+     * sumd_xlxh_ai_lllh [ sum of distance weighted ( sum of differences of
+     * higher cell and cell opposite ) ]; \n metrics1[54] =
+     * mind_abs_xlxh_ai_lllh [ sum of distance weighted ( minimum difference
+     * magnitude of higher cell and cell opposite ) ]; \n metrics1[55] =
+     * maxd_abs_xlxh_ai_lllh [ sum of distance weighted ( maximum difference
+     * magnitude of higher cell and cell opposite ) ]; \n metrics1[56] =
+     * sumd_abs_xlxh_ai_lllh [ sum of distance weighted ( sum of difference
+     * magnitudes of higher cell and cell opposite ) ]; \n metrics1[57] =
+     * count_lllh [ count ]; \n metrics1[58] = w_lllh [ sum of distance weights
+     * ]; \n metrics1[59] = maxd_llll [ sum of distance weighted maximum height
+     * differences ]; \n metrics1[60] = mind_llll [ sum of distance weighted
+     * minimum height differences ]; \n metrics1[61] = sumd_llll [ sum of
+     * distance weighted height differences ]; \n metrics1[62] = aved_llll [ sum
+     * of distance weighted average height difference ]; \n metrics1[63] =
+     * count_llll [ count ]; \n metrics1[64] = w_llll [ sum of distance weights
+     * ]; \n
      *
      * @param metrics1 an Grids_Grid2DSquareCellDouble[] for storing result \n
-     * @param grid2DSquareCell the Grids_Grid2DSquareCellDouble to be processed \n
+     * @param grid2DSquareCell the Grids_Grid2DSquareCellDouble to be processed
+     * \n
      * @param dimensions
      * @param distance the distance within which metrics will be calculated \n
      * @param weightIntersect kernel parameter ( weight at the centre ) \n
      * @param weightFactor kernel parameter ( distance decay ) \n Going directly
      * to this method is useful if the initialisation of the metrics1 is slow
      * and has already been done.
-     * @param swapOutToFile If this is true, then intermediate swapping is done 
-     * to try to prevent OutOfMemoryErrors Being Encountered. Perhaps set this 
+     * @param swapOutToFile If this is true, then intermediate swapping is done
+     * to try to prevent OutOfMemoryErrors Being Encountered. Perhaps set this
      * to true for large grids if the process seems to get stuck.
      * @param handleOutOfMemoryError
      * @return
@@ -3155,7 +3130,7 @@ public class Grids_ProcessorDEM
                                             throw _OutOfMemoryError;
                                         }
                                     }
-                                    
+
                                 } catch (OutOfMemoryError _OutOfMemoryError) {
                                     throw _OutOfMemoryError;
                                 }
@@ -3173,7 +3148,7 @@ public class Grids_ProcessorDEM
 //                                        metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
 //                                metrics1[i].swapToFile_Grid2DSquareCellChunk(aChunkID, handleOutOfMemoryError);
                                 for (i = _int_0; i < metrics1.length; i++) {
-                                     metrics1[i].swapToFile_Grid2DSquareCellChunk(chunkID, handleOutOfMemoryError);
+                                    metrics1[i].swapToFile_Grid2DSquareCellChunk(chunkID, handleOutOfMemoryError);
                                 }
                             }
                         } catch (OutOfMemoryError _OutOfMemoryError) {
@@ -3261,7 +3236,7 @@ public class Grids_ProcessorDEM
                                                         handleOutOfMemoryError,
                                                         chunkID);
                                                 _boolean1 = (height != noDataValue);
-                                    } catch (OutOfMemoryError _OutOfMemoryError) {
+                                            } catch (OutOfMemoryError _OutOfMemoryError) {
                                                 ge.clear_MemoryReserve();
                                                 long swap = ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                                                         grid2DSquareCell,
@@ -3974,8 +3949,8 @@ public class Grids_ProcessorDEM
                             cellX - xDiff,
                             cellY - yDiff,
                             ge.HandleOutOfMemoryErrorFalse);
-                    if (heights[ 2] == noDataValue) {
-                        heights[ 2] = cellHeight;
+                    if (heights[2] == noDataValue) {
+                        heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
                     heights[3] = _Grid2DSquareCellDouble.getCell(
@@ -3986,7 +3961,7 @@ public class Grids_ProcessorDEM
                         heights[3] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    metrics1[ 0] += noDataCount;
+                    metrics1[0] += noDataCount;
                     if (noDataCount < 4.0d) {
                         // height[1]   height[0]
                         //      cellHeight
@@ -4011,26 +3986,26 @@ public class Grids_ProcessorDEM
                                     upness += diff[r];
                                     upCount += 1.0d;
                                 } else {
-                                    metrics1[ 1] += weight; // flatness
+                                    metrics1[1] += weight; // flatness
                                 }
                             }
-                            metrics1[ 2] += weight * Math.abs(diff[r]); // roughness
+                            metrics1[2] += weight * Math.abs(diff[r]); // roughness
                         }
                         averageHeight /= (4.0d - noDataCount);
                         averageDiff /= (4.0d - noDataCount);
                         metrics1[5] += weight * downness; // totalDownness
                         if (downCount > 0.0d) {
-                            metrics1[ 6] += metrics1[ 5] / downCount; // averageDownness
+                            metrics1[6] += metrics1[5] / downCount; // averageDownness
                         }
-                        metrics1[ 7] += weight * upness; // totalUpness
+                        metrics1[7] += weight * upness; // totalUpness
                         if (upCount > 0.0d) {
-                            metrics1[ 8] += metrics1[ 7] / upCount; // averageUpness
+                            metrics1[8] += metrics1[7] / upCount; // averageUpness
                         }
                         // Slopyness and levelness similar to slope in getSlopeAspect
                         // slopyness
-                        metrics1[ 3] += weight * Math.sqrt(
-                                ((diff[ 0] - diff[ 2]) * (diff[ 0] - diff[ 2]))
-                                + ((diff[ 1] - diff[ 3]) * (diff[ 1] - diff[ 3])));
+                        metrics1[3] += weight * Math.sqrt(
+                                ((diff[0] - diff[2]) * (diff[0] - diff[2]))
+                                + ((diff[1] - diff[3]) * (diff[1] - diff[3])));
                         //levelness
                         metrics1[4] += weight * averageDiff;
                         //levelness += weight * Math.abs( averageHeight - cellsize );
@@ -4195,8 +4170,8 @@ public class Grids_ProcessorDEM
      * @param colIndex the column index of the cell being classified
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
-     * @param _ChunkID This is a ID for those AbstractGrid2DSquareCells not
- to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param _ChunkID This is a ID for those AbstractGrid2DSquareCells not to
+     * be swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
             Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble,
@@ -4258,35 +4233,35 @@ public class Grids_ProcessorDEM
                             thisCellX,
                             thisCellY,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (heights[ 0] == noDataValue) {
-                        heights[ 0] = cellHeight;
+                    if (heights[0] == noDataValue) {
+                        heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 1] = _Grid2DSquareCellDouble.getCell(
+                    heights[1] = _Grid2DSquareCellDouble.getCell(
                             cellX + yDiff,
                             cellY - xDiff,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (heights[ 1] == noDataValue) {
-                        heights[ 1] = cellHeight;
+                    if (heights[1] == noDataValue) {
+                        heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 2] = _Grid2DSquareCellDouble.getCell(
+                    heights[2] = _Grid2DSquareCellDouble.getCell(
                             cellX - xDiff,
                             cellY - yDiff,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (heights[ 2] == noDataValue) {
-                        heights[ 2] = cellHeight;
+                    if (heights[2] == noDataValue) {
+                        heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 3] = _Grid2DSquareCellDouble.getCell(
+                    heights[3] = _Grid2DSquareCellDouble.getCell(
                             cellX - yDiff,
                             cellY + xDiff,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (heights[ 3] == noDataValue) {
-                        heights[ 3] = cellHeight;
+                    if (heights[3] == noDataValue) {
+                        heights[3] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    metrics1[ 0] += noDataCount;
+                    metrics1[0] += noDataCount;
                     if (noDataCount < 4.0d) {
                         // height[1]   height[0]
                         //      cellHeight
@@ -4312,26 +4287,26 @@ public class Grids_ProcessorDEM
                                     upCount += 1.0d;
 
                                 } else {
-                                    metrics1[ 1] += weight; // flatness
+                                    metrics1[1] += weight; // flatness
                                 }
                             }
-                            metrics1[ 2] += weight * Math.abs(diff[r]); // roughness
+                            metrics1[2] += weight * Math.abs(diff[r]); // roughness
                         }
                         averageHeight /= (4.0d - noDataCount);
                         averageDiff /= (4.0d - noDataCount);
                         metrics1[5] += weight * downness; // totalDownness
                         if (downCount > 0.0d) {
-                            metrics1[ 6] += metrics1[ 5] / downCount; // averageDownness
+                            metrics1[6] += metrics1[5] / downCount; // averageDownness
                         }
-                        metrics1[ 7] += weight * upness; // totalUpness
+                        metrics1[7] += weight * upness; // totalUpness
                         if (upCount > 0.0d) {
-                            metrics1[ 8] += metrics1[ 7] / upCount; // averageUpness
+                            metrics1[8] += metrics1[7] / upCount; // averageUpness
                         }
                         // Slopyness and levelness similar to slope in getSlopeAspect
                         // slopyness
-                        metrics1[ 3] += weight * Math.sqrt(
-                                ((diff[ 0] - diff[ 2]) * (diff[ 0] - diff[ 2]))
-                                + ((diff[ 1] - diff[ 3]) * (diff[ 1] - diff[ 3])));
+                        metrics1[3] += weight * Math.sqrt(
+                                ((diff[0] - diff[2]) * (diff[0] - diff[2]))
+                                + ((diff[1] - diff[3]) * (diff[1] - diff[3])));
                         //levelness
                         metrics1[4] += weight * averageDiff;
                         //levelness += weight * Math.abs( averageHeight - cellsize );
@@ -4562,26 +4537,26 @@ public class Grids_ProcessorDEM
                     xDiff = thisCellX - cellX;
                     yDiff = thisCellY - cellY;
                     heights[0] = _Grid2DSquareCellInt.getCell(thisCellX, thisCellY, handleOutOfMemoryError);
-                    if (heights[ 0] == noDataValue) {
-                        heights[ 0] = cellHeight;
+                    if (heights[0] == noDataValue) {
+                        heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
                     heights[1] = _Grid2DSquareCellInt.getCell(cellX + yDiff, cellY - xDiff, handleOutOfMemoryError);
-                    if (heights[ 1] == noDataValue) {
-                        heights[ 1] = cellHeight;
+                    if (heights[1] == noDataValue) {
+                        heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 2] = _Grid2DSquareCellInt.getCell(cellX - xDiff, cellY - yDiff, handleOutOfMemoryError);
-                    if (heights[ 2] == noDataValue) {
-                        heights[ 2] = cellHeight;
+                    heights[2] = _Grid2DSquareCellInt.getCell(cellX - xDiff, cellY - yDiff, handleOutOfMemoryError);
+                    if (heights[2] == noDataValue) {
+                        heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 3] = _Grid2DSquareCellInt.getCell(cellX - yDiff, cellY + xDiff, handleOutOfMemoryError);
-                    if (heights[ 3] == noDataValue) {
-                        heights[ 3] = cellHeight;
+                    heights[3] = _Grid2DSquareCellInt.getCell(cellX - yDiff, cellY + xDiff, handleOutOfMemoryError);
+                    if (heights[3] == noDataValue) {
+                        heights[3] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    metrics1[ 0] += noDataCount;
+                    metrics1[0] += noDataCount;
                     if (noDataCount < 4.0d) {
                         // height[1]   height[0]
                         //      cellHeight
@@ -4606,24 +4581,24 @@ public class Grids_ProcessorDEM
                                     upness += diff[r];
                                     upCount += 1.0d;
                                 } else {
-                                    metrics1[ 1] += weight; // flatness
+                                    metrics1[1] += weight; // flatness
                                 }
                             }
-                            metrics1[ 2] += weight * Math.abs(diff[r]); // roughness
+                            metrics1[2] += weight * Math.abs(diff[r]); // roughness
                         }
                         averageHeight /= (4.0d - noDataCount);
                         averageDiff /= (4.0d - noDataCount);
                         metrics1[5] += weight * downness; // totalDownness
                         if (downCount > 0.0d) {
-                            metrics1[ 6] += metrics1[ 5] / downCount; // averageDownness
+                            metrics1[6] += metrics1[5] / downCount; // averageDownness
                         }
-                        metrics1[ 7] += weight * upness; // totalUpness
+                        metrics1[7] += weight * upness; // totalUpness
                         if (upCount > 0.0d) {
-                            metrics1[ 8] += metrics1[ 7] / upCount; // averageUpness
+                            metrics1[8] += metrics1[7] / upCount; // averageUpness
                         }
                         // Slopyness and levelness similar to slope in getSlopeAspect
                         // slopyness
-                        metrics1[ 3] += weight * Math.sqrt(((diff[ 0] - diff[ 2]) * (diff[ 0] - diff[ 2])) + ((diff[ 1] - diff[ 3]) * (diff[ 1] - diff[ 3])));
+                        metrics1[3] += weight * Math.sqrt(((diff[0] - diff[2]) * (diff[0] - diff[2])) + ((diff[1] - diff[3]) * (diff[1] - diff[3])));
                         //levelness
                         metrics1[4] += weight * averageDiff;
                         //levelness += weight * Math.abs( averageHeight - cellsize );
@@ -4663,7 +4638,7 @@ public class Grids_ProcessorDEM
         }
     }
 
-/**
+    /**
      * Returns a double[] metrics1 of the cells in grid upto distance from a
      * cell given by rowIndex and colIndex. The elements of metrics1 do not
      * explicitly take into account any axis such as that which can be defined
@@ -4764,8 +4739,8 @@ public class Grids_ProcessorDEM
      * @param colIndex the column index of the cell being classified
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
-     * @param chunkID This is a ID for those AbstractGrid2DSquareCells not
- to be swapped if possible when an OutOfMemoryError is encountered.
+     * @param chunkID This is a ID for those AbstractGrid2DSquareCells not to be
+     * swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
@@ -4827,35 +4802,35 @@ public class Grids_ProcessorDEM
                             thisCellX,
                             thisCellY,
                             ge.HandleOutOfMemoryErrorFalse);
-                    if (heights[ 0] == noDataValue) {
-                        heights[ 0] = cellHeight;
+                    if (heights[0] == noDataValue) {
+                        heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 1] = grid2DSquareCellInt.getCell(
+                    heights[1] = grid2DSquareCellInt.getCell(
                             cellX + yDiff,
                             cellY - xDiff,
                             ge.HandleOutOfMemoryErrorFalse);
-                    if (heights[ 1] == noDataValue) {
-                        heights[ 1] = cellHeight;
+                    if (heights[1] == noDataValue) {
+                        heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 2] = grid2DSquareCellInt.getCell(
+                    heights[2] = grid2DSquareCellInt.getCell(
                             cellX - xDiff,
                             cellY - yDiff,
                             ge.HandleOutOfMemoryErrorFalse);
-                    if (heights[ 2] == noDataValue) {
-                        heights[ 2] = cellHeight;
+                    if (heights[2] == noDataValue) {
+                        heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[ 3] = grid2DSquareCellInt.getCell(
+                    heights[3] = grid2DSquareCellInt.getCell(
                             cellX - yDiff,
                             cellY + xDiff,
                             ge.HandleOutOfMemoryErrorFalse);
-                    if (heights[ 3] == noDataValue) {
-                        heights[ 3] = cellHeight;
+                    if (heights[3] == noDataValue) {
+                        heights[3] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    metrics1[ 0] += noDataCount;
+                    metrics1[0] += noDataCount;
                     if (noDataCount < 4.0d) {
                         // height[1]   height[0]
                         //      cellHeight
@@ -4881,26 +4856,26 @@ public class Grids_ProcessorDEM
                                     upCount += 1.0d;
 
                                 } else {
-                                    metrics1[ 1] += weight; // flatness
+                                    metrics1[1] += weight; // flatness
                                 }
                             }
-                            metrics1[ 2] += weight * Math.abs(diff[r]); // roughness
+                            metrics1[2] += weight * Math.abs(diff[r]); // roughness
                         }
                         averageHeight /= (4.0d - noDataCount);
                         averageDiff /= (4.0d - noDataCount);
                         metrics1[5] += weight * downness; // totalDownness
                         if (downCount > 0.0d) {
-                            metrics1[ 6] += metrics1[ 5] / downCount; // averageDownness
+                            metrics1[6] += metrics1[5] / downCount; // averageDownness
                         }
-                        metrics1[ 7] += weight * upness; // totalUpness
+                        metrics1[7] += weight * upness; // totalUpness
                         if (upCount > 0.0d) {
-                            metrics1[ 8] += metrics1[ 7] / upCount; // averageUpness
+                            metrics1[8] += metrics1[7] / upCount; // averageUpness
                         }
                         // Slopyness and levelness similar to slope in getSlopeAspect
                         // slopyness
-                        metrics1[ 3] += weight * Math.sqrt(
-                                ((diff[ 0] - diff[ 2]) * (diff[ 0] - diff[ 2]))
-                                + ((diff[ 1] - diff[ 3]) * (diff[ 1] - diff[ 3])));
+                        metrics1[3] += weight * Math.sqrt(
+                                ((diff[0] - diff[2]) * (diff[0] - diff[2]))
+                                + ((diff[1] - diff[3]) * (diff[1] - diff[3])));
                         //levelness
                         metrics1[4] += weight * averageDiff;
                         //levelness += weight * Math.abs( averageHeight - cellsize );
@@ -4976,8 +4951,8 @@ public class Grids_ProcessorDEM
 
             }
         }
-    }    
-    
+    }
+
     private void metrics1Calculate_Complex(
             double[] metrics1,
             double[] diff,
@@ -5960,14 +5935,14 @@ public class Grids_ProcessorDEM
      */
     private int metrics1Calculate_CaseSwitch(
             double[] diff) {
-        if (diff[ 0] > 0.0d) {
-            if (diff[ 1] > 0.0d) {
-                if (diff[ 2] > 0.0d) {
-                    if (diff[ 3] > 0.0d) {
+        if (diff[0] > 0.0d) {
+            if (diff[1] > 0.0d) {
+                if (diff[2] > 0.0d) {
+                    if (diff[3] > 0.0d) {
                         return 0; // metrics1Calculate_hhhh
 
                     } else {
-                        if (diff[ 3] < 0.0d) {
+                        if (diff[3] < 0.0d) {
                             return 1; // metrics1Calculate_hhhl
 
                         } else {
@@ -5976,12 +5951,12 @@ public class Grids_ProcessorDEM
                         }
                     }
                 } else {
-                    if (diff[ 2] < 0.0d) {
-                        if (diff[ 3] > 0.0d) {
+                    if (diff[2] < 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 3; // metrics1Calculate_hhlh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 4; // metrics1Calculate_hhll
 
                             } else {
@@ -5990,11 +5965,11 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 3] > 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 6; // metrics1Calculate_hhsh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 7; // metrics1Calculate_hhsl
 
                             } else {
@@ -6005,13 +5980,13 @@ public class Grids_ProcessorDEM
                     }
                 }
             } else {
-                if (diff[ 1] < 0.0d) {
-                    if (diff[ 2] > 0.0d) {
-                        if (diff[ 3] > 0.0d) {
+                if (diff[1] < 0.0d) {
+                    if (diff[2] > 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 9; // metrics1Calculate_hlhh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 10; // metrics1Calculate_hlhl
 
                             } else {
@@ -6020,12 +5995,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] < 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] < 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 12; // metrics1Calculate_hllh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 13; // metrics1Calculate_hlll
 
                                 } else {
@@ -6034,11 +6009,11 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 3] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 15; // metrics1Calculate_hlsh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 16; // metrics1Calculate_hlsl
 
                                 } else {
@@ -6049,12 +6024,12 @@ public class Grids_ProcessorDEM
                         }
                     }
                 } else {
-                    if (diff[ 2] > 0.0d) {
-                        if (diff[ 3] > 0.0d) {
+                    if (diff[2] > 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 18; // metrics1Calculate_hshh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 19; // metrics1Calculate_hshl
 
                             } else {
@@ -6063,12 +6038,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] < 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] < 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 21; // metrics1Calculate_hslh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 22; // metrics1Calculate_hsll
 
                                 } else {
@@ -6077,11 +6052,11 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 3] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 24; // metrics1Calculate_hssh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 25; // metrics1Calculate_hssl
 
                                 } else {
@@ -6094,14 +6069,14 @@ public class Grids_ProcessorDEM
                 }
             }
         } else {
-            if (diff[ 0] < 0.0d) {
-                if (diff[ 1] > 0.0d) {
-                    if (diff[ 2] > 0.0d) {
-                        if (diff[ 3] > 0.0d) {
+            if (diff[0] < 0.0d) {
+                if (diff[1] > 0.0d) {
+                    if (diff[2] > 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 27; // metrics1Calculate_lhhh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 28; // metrics1Calculate_lhhl
 
                             } else {
@@ -6110,12 +6085,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] < 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] < 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 30; // metrics1Calculate_lhlh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 31; // metrics1Calculate_lhll
 
                                 } else {
@@ -6124,11 +6099,11 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 3] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 33; // metrics1Calculate_lhsh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 34; // metrics1Calculate_lhsl
 
                                 } else {
@@ -6139,13 +6114,13 @@ public class Grids_ProcessorDEM
                         }
                     }
                 } else {
-                    if (diff[ 1] < 0.0d) {
-                        if (diff[ 2] > 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                    if (diff[1] < 0.0d) {
+                        if (diff[2] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 36; // metrics1Calculate_llhh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 37; // metrics1Calculate_llhl
 
                                 } else {
@@ -6154,12 +6129,12 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 2] < 0.0d) {
-                                if (diff[ 3] > 0.0d) {
+                            if (diff[2] < 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 39; // metrics1Calculate_lllh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 40; // metrics1Calculate_llll
 
                                     } else {
@@ -6168,11 +6143,11 @@ public class Grids_ProcessorDEM
                                     }
                                 }
                             } else {
-                                if (diff[ 3] > 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 42; // metrics1Calculate_llsh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 43; // metrics1Calculate_llsl
 
                                     } else {
@@ -6183,12 +6158,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] > 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 45; // metrics1Calculate_lshh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 46; // metrics1Calculate_lshl
 
                                 } else {
@@ -6197,12 +6172,12 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 2] < 0.0d) {
-                                if (diff[ 3] > 0.0d) {
+                            if (diff[2] < 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 48; // metrics1Calculate_lslh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 49; // metrics1Calculate_lsll
 
                                     } else {
@@ -6211,11 +6186,11 @@ public class Grids_ProcessorDEM
                                     }
                                 }
                             } else {
-                                if (diff[ 3] > 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 51; // metrics1Calculate_lssh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 52; // metrics1Calculate_lssl
 
                                     } else {
@@ -6228,13 +6203,13 @@ public class Grids_ProcessorDEM
                     }
                 }
             } else {
-                if (diff[ 1] > 0.0d) {
-                    if (diff[ 2] > 0.0d) {
-                        if (diff[ 3] > 0.0d) {
+                if (diff[1] > 0.0d) {
+                    if (diff[2] > 0.0d) {
+                        if (diff[3] > 0.0d) {
                             return 54; // metrics1Calculate_shhh
 
                         } else {
-                            if (diff[ 3] < 0.0d) {
+                            if (diff[3] < 0.0d) {
                                 return 55; // metrics1Calculate_shhl
 
                             } else {
@@ -6243,12 +6218,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] < 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] < 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 57; // metrics1Calculate_shlh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 58; // metrics1Calculate_shll
 
                                 } else {
@@ -6257,11 +6232,11 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 3] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 60; // metrics1Calculate_shsh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 61; // metrics1Calculate_shsl
 
                                 } else {
@@ -6272,13 +6247,13 @@ public class Grids_ProcessorDEM
                         }
                     }
                 } else {
-                    if (diff[ 1] < 0.0d) {
-                        if (diff[ 2] > 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                    if (diff[1] < 0.0d) {
+                        if (diff[2] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 63; // metrics1Calculate_slhh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 64; // metrics1Calculate_slhl
 
                                 } else {
@@ -6287,12 +6262,12 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 2] < 0.0d) {
-                                if (diff[ 3] > 0.0d) {
+                            if (diff[2] < 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 66; // metrics1Calculate_sllh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 67; // metrics1Calculate_slll
 
                                     } else {
@@ -6301,11 +6276,11 @@ public class Grids_ProcessorDEM
                                     }
                                 }
                             } else {
-                                if (diff[ 3] > 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 69; // metrics1Calculate_slsh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 70; // metrics1Calculate_slsl
 
                                     } else {
@@ -6316,12 +6291,12 @@ public class Grids_ProcessorDEM
                             }
                         }
                     } else {
-                        if (diff[ 2] > 0.0d) {
-                            if (diff[ 3] > 0.0d) {
+                        if (diff[2] > 0.0d) {
+                            if (diff[3] > 0.0d) {
                                 return 72; // metrics1Calculate_sshh
 
                             } else {
-                                if (diff[ 3] < 0.0d) {
+                                if (diff[3] < 0.0d) {
                                     return 73; // metrics1Calculate_sshl
 
                                 } else {
@@ -6330,12 +6305,12 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         } else {
-                            if (diff[ 2] < 0.0d) {
-                                if (diff[ 3] > 0.0d) {
+                            if (diff[2] < 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 75; // metrics1Calculate_sslh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 76; // metrics1Calculate_ssll
 
                                     } else {
@@ -6344,11 +6319,11 @@ public class Grids_ProcessorDEM
                                     }
                                 }
                             } else {
-                                if (diff[ 3] > 0.0d) {
+                                if (diff[3] > 0.0d) {
                                     return 78; // metrics1Calculate_sssh
 
                                 } else {
-                                    if (diff[ 3] < 0.0d) {
+                                    if (diff[3] < 0.0d) {
                                         return 79; // metrics1Calculate_sssl
 
                                     } else {
@@ -6370,15 +6345,9 @@ public class Grids_ProcessorDEM
      */
     private void metrics1Shuffle1(double[] dummyDiff, double[] diff) {
         dummyDiff[0] = diff[3];
-        dummyDiff[
-
-1] = diff[0];
-        dummyDiff[
-
-2] = diff[1];
-        dummyDiff[
-
-3] = diff[2];
+        dummyDiff[1] = diff[0];
+        dummyDiff[2] = diff[1];
+        dummyDiff[3] = diff[2];
 
     }
 
@@ -6388,15 +6357,9 @@ public class Grids_ProcessorDEM
      */
     private void metrics1Shuffle2(double[] dummyDiff, double[] diff) {
         dummyDiff[0] = diff[2];
-        dummyDiff[
-
-1] = diff[3];
-        dummyDiff[
-
-2] = diff[0];
-        dummyDiff[
-
-3] = diff[1];
+        dummyDiff[1] = diff[3];
+        dummyDiff[2] = diff[0];
+        dummyDiff[3] = diff[1];
 
     }
 
@@ -6406,15 +6369,9 @@ public class Grids_ProcessorDEM
      */
     private void metrics1Shuffle3(double[] dummyDiff, double[] diff) {
         dummyDiff[0] = diff[1];
-        dummyDiff[
-
-1] = diff[2];
-        dummyDiff[
-
-2] = diff[3];
-        dummyDiff[
-
-3] = diff[0];
+        dummyDiff[1] = diff[2];
+        dummyDiff[2] = diff[3];
+        dummyDiff[3] = diff[0];
 
     }
 
@@ -6432,31 +6389,21 @@ public class Grids_ProcessorDEM
      * @param diff the array of differences of cell values
      * @param weight the weight to be applied to weighted metrics
      * @param averageDiff the average difference in height for diff (N.B This is
- passed in rather than calculated here because of cell values that were
- noDataValue in the Grids_Grid2DSquareCellDouble for which metrics1 are being
- processed.
+     * passed in rather than calculated here because of cell values that were
+     * noDataValue in the Grids_Grid2DSquareCellDouble for which metrics1 are
+     * being processed.
      */
     private void metrics1Calculate_hhhh(
             double[] metrics1,
             double[] diff,
             double weight,
             double averageDiff) {
-        metrics1[ 9] += weight * Math.max(Math.max(diff[ 0], diff[ 1]), Math.max(diff[ 2], diff[ 3]));
-        metrics1[
-
-10] += weight * Math.min(Math.min(diff[ 0], diff[ 1]), Math.min(diff[ 2], diff[ 3]));
-        metrics1[
-
-11] += weight * (diff[ 0] + diff[ 1] + diff[ 2] + diff[ 3]);
-        metrics1[
-
-12] += weight * averageDiff;
-        metrics1[
-
-13] += 1.0d;
-        metrics1[
-
-14] += weight;
+        metrics1[9] += weight * Math.max(Math.max(diff[0], diff[1]), Math.max(diff[2], diff[3]));
+        metrics1[10] += weight * Math.min(Math.min(diff[0], diff[1]), Math.min(diff[2], diff[3]));
+        metrics1[11] += weight * (diff[0] + diff[1] + diff[2] + diff[3]);
+        metrics1[12] += weight * averageDiff;
+        metrics1[13] += 1.0d;
+        metrics1[14] += weight;
 
     }
 
@@ -6489,37 +6436,17 @@ public class Grids_ProcessorDEM
             double[] metrics1,
             double[] diff,
             double weight) {
-        metrics1[ 15] += weight * Math.min(diff[ 0], diff[ 2]);
-        metrics1[
-
-16] += weight * Math.max(diff[ 0], diff[ 2]);
-        metrics1[
-
-17] += weight * (diff[ 0] + diff[ 2]);
-        metrics1[
-
-18] += weight * diff[ 1];
-        metrics1[
-
-19] += weight * diff[ 3];
-        metrics1[
-
-20] += weight * (diff[ 1] + diff[ 3]);
-        metrics1[
-
-21] += weight * Math.min(diff[ 1], Math.abs(diff[ 3]));
-        metrics1[
-
-22] += weight * Math.max(diff[ 1], Math.abs(diff[ 3]));
-        metrics1[
-
-23] += weight * (diff[ 1] + Math.abs(diff[ 3]));
-        metrics1[
-
-24] += 1.0d;
-        metrics1[
-
-25] += weight;
+        metrics1[15] += weight * Math.min(diff[0], diff[2]);
+        metrics1[16] += weight * Math.max(diff[0], diff[2]);
+        metrics1[17] += weight * (diff[0] + diff[2]);
+        metrics1[18] += weight * diff[1];
+        metrics1[19] += weight * diff[3];
+        metrics1[20] += weight * (diff[1] + diff[3]);
+        metrics1[21] += weight * Math.min(diff[1], Math.abs(diff[3]));
+        metrics1[22] += weight * Math.max(diff[1], Math.abs(diff[3]));
+        metrics1[23] += weight * (diff[1] + Math.abs(diff[3]));
+        metrics1[24] += 1.0d;
+        metrics1[25] += weight;
 
     }
 
@@ -6550,37 +6477,17 @@ public class Grids_ProcessorDEM
             double[] metrics1,
             double[] diff,
             double weight) {
-        metrics1[ 26] += weight * Math.min(diff[ 0], diff[ 2]);
-        metrics1[
-
-27] += weight * Math.max(diff[ 0], diff[ 2]);
-        metrics1[
-
-28] += weight * (diff[ 0] + diff[ 2]);
-        metrics1[
-
-29] += weight * Math.min(diff[ 1], diff[ 3]);
-        metrics1[
-
-30] += weight * Math.max(diff[ 1], diff[ 3]);
-        metrics1[
-
-31] += weight * (diff[ 1] + diff[ 3]);
-        metrics1[
-
-32] += weight * (Math.min(Math.abs(Math.max(diff[ 1], diff[ 3])), Math.min(diff[ 0], diff[ 2])));
-        metrics1[
-
-33] += weight * (Math.max(Math.abs(Math.min(diff[ 1], diff[ 3])), Math.max(diff[ 0], diff[ 2])));
-        metrics1[
-
-34] += weight * (diff[ 0] + Math.abs(diff[ 1]) + diff[ 2] + Math.abs(diff[ 3]));
-        metrics1[
-
-35] += 1.0d;
-        metrics1[
-
-36] += weight;
+        metrics1[26] += weight * Math.min(diff[0], diff[2]);
+        metrics1[27] += weight * Math.max(diff[0], diff[2]);
+        metrics1[28] += weight * (diff[0] + diff[2]);
+        metrics1[29] += weight * Math.min(diff[1], diff[3]);
+        metrics1[30] += weight * Math.max(diff[1], diff[3]);
+        metrics1[31] += weight * (diff[1] + diff[3]);
+        metrics1[32] += weight * (Math.min(Math.abs(Math.max(diff[1], diff[3])), Math.min(diff[0], diff[2])));
+        metrics1[33] += weight * (Math.max(Math.abs(Math.min(diff[1], diff[3])), Math.max(diff[0], diff[2])));
+        metrics1[34] += weight * (diff[0] + Math.abs(diff[1]) + diff[2] + Math.abs(diff[3]));
+        metrics1[35] += 1.0d;
+        metrics1[36] += weight;
 
     }
 
@@ -6611,37 +6518,17 @@ public class Grids_ProcessorDEM
             double[] metrics1,
             double[] diff,
             double weight) {
-        metrics1[ 37] += weight * Math.min(diff[ 0], diff[ 1]);
-        metrics1[
-
-38] += weight * Math.max(diff[ 0], diff[ 1]);
-        metrics1[
-
-39] += weight * (diff[ 0] + diff[ 1]);
-        metrics1[
-
-40] += weight * Math.min(diff[ 2], diff[ 3]);
-        metrics1[
-
-41] += weight * Math.max(diff[ 2], diff[ 3]);
-        metrics1[
-
-42] += weight * (diff[ 2] + diff[ 3]);
-        metrics1[
-
-43] += weight * (Math.min(Math.abs(Math.max(diff[ 2], diff[ 3])), Math.min(diff[ 1], diff[ 0])));
-        metrics1[
-
-44] += weight * (Math.max(Math.abs(Math.min(diff[ 2], diff[ 3])), Math.max(diff[ 1], diff[ 0])));
-        metrics1[
-
-45] += weight * (diff[ 1] + Math.abs(diff[ 2]) + diff[ 0] + Math.abs(diff[ 3]));
-        metrics1[
-
-46] += 1.0d;
-        metrics1[
-
-47] += weight;
+        metrics1[37] += weight * Math.min(diff[0], diff[1]);
+        metrics1[38] += weight * Math.max(diff[0], diff[1]);
+        metrics1[39] += weight * (diff[0] + diff[1]);
+        metrics1[40] += weight * Math.min(diff[2], diff[3]);
+        metrics1[41] += weight * Math.max(diff[2], diff[3]);
+        metrics1[42] += weight * (diff[2] + diff[3]);
+        metrics1[43] += weight * (Math.min(Math.abs(Math.max(diff[2], diff[3])), Math.min(diff[1], diff[0])));
+        metrics1[44] += weight * (Math.max(Math.abs(Math.min(diff[2], diff[3])), Math.max(diff[1], diff[0])));
+        metrics1[45] += weight * (diff[1] + Math.abs(diff[2]) + diff[0] + Math.abs(diff[3]));
+        metrics1[46] += 1.0d;
+        metrics1[47] += weight;
 
     }
 
@@ -6670,46 +6557,26 @@ public class Grids_ProcessorDEM
      * @param diff the array of differences of cell values
      * @param weight the weight to be applied to weighted metrics
      * @param averageDiff the average difference in height for diff (N.B This is
- passed in rather than calculated here because of cell values that were
- noDataValue in the Grids_Grid2DSquareCellDouble for which metrics1 are being
- processed.
+     * passed in rather than calculated here because of cell values that were
+     * noDataValue in the Grids_Grid2DSquareCellDouble for which metrics1 are
+     * being processed.
      *
      */
     private void metrics1Calculate_hlll(
             double[] metrics1,
             double[] diff,
             double weight) {
-        metrics1[ 48] += weight * Math.min(diff[ 1], diff[ 3]);
-        metrics1[
-
-49] += weight * Math.max(diff[ 1], diff[ 3]);
-        metrics1[
-
-50] += weight * (diff[ 1] + diff[ 3]);
-        metrics1[
-
-51] += weight * diff[ 2];
-        metrics1[
-
-52] += weight * diff[ 0];
-        metrics1[
-
-53] += weight * (diff[ 2] + diff[ 0]);
-        metrics1[
-
-54] = weight * Math.min(diff[ 0], Math.abs(diff[ 2]));
-        metrics1[
-
-55] = weight * Math.max(diff[ 0], Math.abs(diff[ 2]));
-        metrics1[
-
-56] = weight * (diff[ 0] + Math.abs(diff[ 2]));
-        metrics1[
-
-57] += 1.0d;
-        metrics1[
-
-58] += weight;
+        metrics1[48] += weight * Math.min(diff[1], diff[3]);
+        metrics1[49] += weight * Math.max(diff[1], diff[3]);
+        metrics1[50] += weight * (diff[1] + diff[3]);
+        metrics1[51] += weight * diff[2];
+        metrics1[52] += weight * diff[0];
+        metrics1[53] += weight * (diff[2] + diff[0]);
+        metrics1[54] = weight * Math.min(diff[0], Math.abs(diff[2]));
+        metrics1[55] = weight * Math.max(diff[0], Math.abs(diff[2]));
+        metrics1[56] = weight * (diff[0] + Math.abs(diff[2]));
+        metrics1[57] += 1.0d;
+        metrics1[58] += weight;
 
     }
 
@@ -6728,28 +6595,18 @@ public class Grids_ProcessorDEM
             double[] diff,
             double weight,
             double averageDiff) {
-        metrics1[ 59] += weight * Math.max(Math.max(diff[ 0], diff[ 1]), Math.max(diff[ 2], diff[ 3]));
-        metrics1[
-
-60] += weight * Math.min(Math.min(diff[ 0], diff[ 1]), Math.min(diff[ 2], diff[ 3]));
-        metrics1[
-
-61] += weight * (diff[ 0] + diff[ 1] + diff[ 2] + diff[ 3]);
-        metrics1[
-
-62] += weight * averageDiff;
-        metrics1[
-
-63] += 1.0d;
-        metrics1[
-
-64] += weight;
+        metrics1[59] += weight * Math.max(Math.max(diff[0], diff[1]), Math.max(diff[2], diff[3]));
+        metrics1[60] += weight * Math.min(Math.min(diff[0], diff[1]), Math.min(diff[2], diff[3]));
+        metrics1[61] += weight * (diff[0] + diff[1] + diff[2] + diff[3]);
+        metrics1[62] += weight * averageDiff;
+        metrics1[63] += 1.0d;
+        metrics1[64] += weight;
 
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble[] metrics2 where: TODO: metrics2 is a
- mess. Need to decide what to do with regard to contour tracing and
+     * Returns an Grids_Grid2DSquareCellDouble[] metrics2 where: TODO: metrics2
+     * is a mess. Need to decide what to do with regard to contour tracing and
      * profile trace for axes and comparisons. metrics2[0] = slope; metrics2[1]
      * = aspect; metrics2[2] = no data count; metrics2[3] = contourConcavity;
      * metrics2[4] = contourConvexity; metrics2[5] = profileConcavity;
@@ -6788,8 +6645,8 @@ public class Grids_ProcessorDEM
             //double noDataValue = Double.NaN;
             Grids_Grid2DSquareCellDouble[] _SlopeAndAspect = null;
             //Grid2DSquareCellDouble[] _SlopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
-            result[0] = _SlopeAndAspect[ 0];
-            result[1] = _SlopeAndAspect[ 1];
+            result[0] = _SlopeAndAspect[0];
+            result[1] = _SlopeAndAspect[1];
 
             for (int i = 0; i
                     < result.length; i++) {
@@ -6814,8 +6671,8 @@ public class Grids_ProcessorDEM
                 for (col = 0; col
                         < ncols; col++) {
                     if (grid.getCell(row, col, handleOutOfMemoryError) != gridNoDataValue) {
-                        slope = result[ 0].getCell(row, col, handleOutOfMemoryError);
-                        aspect = result[ 1].getCell(row, col, handleOutOfMemoryError);
+                        slope = result[0].getCell(row, col, handleOutOfMemoryError);
+                        aspect = result[1].getCell(row, col, handleOutOfMemoryError);
                         metrics2Points = getMetrics2Points(_SlopeAndAspect, distance, samplingDensity);
                         weights = Grids_Kernel.getKernelWeights(grid, row, col, distance, weightIntersect, weightFactor, metrics2Points);
                         metrics2 = getMetrics2(grid, row, col, _SlopeAndAspect, distance, weights);
@@ -6831,7 +6688,7 @@ public class Grids_ProcessorDEM
                 _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
 
             }
-            result[ 2].set_Name("", handleOutOfMemoryError);
+            result[2].set_Name("", handleOutOfMemoryError);
             result[3].set_Name("", handleOutOfMemoryError);
             result[4].set_Name("", handleOutOfMemoryError);
             result[5].set_Name("", handleOutOfMemoryError);
@@ -6886,14 +6743,14 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble result containing values which indicate
- the direction of the maximum down slope for the immediate 8 cell
- neighbourhood. 1 2 3 4 0 5 6 7 8 If there is no downhill slope then the
+     * Returns an Grids_Grid2DSquareCellDouble result containing values which
+     * indicate the direction of the maximum down slope for the immediate 8 cell
+     * neighbourhood. 1 2 3 4 0 5 6 7 8 If there is no downhill slope then the
      * flow direction is 0.
      *
      * @param grid the Grids_Grid2DSquareCellDouble to be processed
      * @param gridFactory the Grids_Grid2DSquareCellDoubleFactory used to create
- result
+     * result
      * @param handleOutOfMemoryError
      * @return
      */
@@ -6938,9 +6795,9 @@ public class Grids_ProcessorDEM
                     < nrows; row++) {
                 for (col = 0; col
                         < ncols; col++) {
-                    z[ 0] = grid.getCell(row, col, handleOutOfMemoryError);
+                    z[0] = grid.getCell(row, col, handleOutOfMemoryError);
 
-                    if (z[ 0] != noDataValue) {
+                    if (z[0] != noDataValue) {
                         minz = Double.MAX_VALUE;
                         minzCount = 0;
                         minzCountNoDataValue = 0;
@@ -6956,7 +6813,7 @@ public class Grids_ProcessorDEM
                                     z[k] = grid.getCell(row + p, col + q, handleOutOfMemoryError);
 
                                     if (z[k] != noDataValue) {
-                                        if (z[k] <= minz && z[k] < z[ 0]) {
+                                        if (z[k] <= minz && z[k] < z[0]) {
                                             if (z[k] == minz) {
                                                 minzCount++;
 
@@ -7015,9 +6872,9 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble[] each element of which corresponds to
- a metrics of up slope cells of grid - a DEM The steeper the slope the
- higher the runoff?
+     * Returns an Grids_Grid2DSquareCellDouble[] each element of which
+     * corresponds to a metrics of up slope cells of grid - a DEM The steeper
+     * the slope the higher the runoff?
      *
      * @param handleOutOfMemoryError
      * @param gridFactory
@@ -7100,9 +6957,9 @@ public class Grids_ProcessorDEM
                     < nrows; row++) {
                 for (int col = 0; col
                         < ncols; col++) {
-                    heights[ 0] = grid.getCell(row, col, handleOutOfMemoryError);
+                    heights[0] = grid.getCell(row, col, handleOutOfMemoryError);
 
-                    if (heights[ 0] != noDataValue) {
+                    if (heights[0] != noDataValue) {
                         k = 0;
 
                         for (int p = -1; p
@@ -7117,14 +6974,14 @@ public class Grids_ProcessorDEM
                             }
                         }
                         // This deals with single isolated cells surrounded by noDataValues
-                        if ((heights[ 1] <= heights[ 0] || heights[ 1] == noDataValue)
-                                && (heights[ 2] <= heights[ 0] || heights[ 2] == noDataValue)
-                                && (heights[ 3] <= heights[ 0] || heights[ 3] == noDataValue)
-                                && (heights[ 4] <= heights[ 0] || heights[ 4] == noDataValue)
-                                && (heights[ 5] <= heights[ 0] || heights[ 5] == noDataValue)
-                                && (heights[ 6] <= heights[ 0] || heights[ 6] == noDataValue)
-                                && (heights[ 7] <= heights[ 0] || heights[ 7] == noDataValue)
-                                && (heights[ 8] <= heights[ 0] || heights[ 8] == noDataValue)) {
+                        if ((heights[1] <= heights[0] || heights[1] == noDataValue)
+                                && (heights[2] <= heights[0] || heights[2] == noDataValue)
+                                && (heights[3] <= heights[0] || heights[3] == noDataValue)
+                                && (heights[4] <= heights[0] || heights[4] == noDataValue)
+                                && (heights[5] <= heights[0] || heights[5] == noDataValue)
+                                && (heights[6] <= heights[0] || heights[6] == noDataValue)
+                                && (heights[7] <= heights[0] || heights[7] == noDataValue)
+                                && (heights[8] <= heights[0] || heights[8] == noDataValue)) {
                             initialPeaksHashSet.add(grid.getCellID(row, col, handleOutOfMemoryError));
                             upSlopeAreaMetrics.addToCell(row, col, 1.0d, handleOutOfMemoryError);
 

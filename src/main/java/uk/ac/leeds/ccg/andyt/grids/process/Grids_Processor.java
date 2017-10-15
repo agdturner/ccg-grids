@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
@@ -144,56 +145,59 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_AbstractGridStatistics _GridStatistics;
 
-    /**
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor
-     */
-    public Grids_Processor() {
-        //this( FileCreator.createNewFile() );
-        //this( FileCreator.createNewFile( new File( System.getProperty( "tmpdir" ) ) ) );
-        //this( FileCreator.createNewFile( new File( System.getProperty( "java.io.tmpdir" ) ) ) );
-        this(new File(System.getProperty("java.io.tmpdir")));
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor. By default the
-     * logs are appended to the end of the log file if it exists. To overwrite
-     * the log file use: Grid2DSquareCellDoubleProcessor( _Directory, false );
-     *
-     * @param _Directory
-     */
-    public Grids_Processor(
-            File _Directory) {
-        this(_Directory, true);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor. By default the
-     * logs are appended to the end of the log file if it exists. To overwrite
-     * the log file use: Grid2DSquareCellDoubleProcessor( _Directory, false );
-     *
-     * @param _Grids_Environment
-     * @param _Directory
-     */
-    public Grids_Processor(
-            Grids_Environment _Grids_Environment,
-            File _Directory) {
-        this(_Grids_Environment, _Directory, true);
-    }
+    protected Grids_Processor() {}
 
     /*
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor.
+     * Creates a new instance of Grids_Processor.
      **/
     public Grids_Processor(
             Grids_Environment ge) {
-        this.ge = ge;
+        super(ge);
         this.startTime = System.currentTimeMillis();
-        File workspace = new File(System.getProperty("java.io.tmpdir"));
-        File logFile = new File(workspace, "log.txt");
-        this._Directory = workspace;
+        this._Directory = ge.getDirectory();
+        File logFile = new File(_Directory, "log.txt");
+            this.log = Generic_StaticIO.getPrintWriter(logFile, true);
+        this.logIndentation = 0;
+        initFactories();
+    }
+
+    /**
+     * Creates a new instance of Grids_Processor. The log file
+     * in _Directory will be overwritten if appendToLogFile is false.
+     *
+     * @param ge
+     * @param Directory
+     * @param appendToLogFile
+     */
+    public Grids_Processor(
+            Grids_Environment ge,
+            File Directory,
+            boolean appendToLogFile) {
+        super(ge);
         try {
+            this.startTime = System.currentTimeMillis();
+            File logFile;
+            if (Directory.exists()) {
+                logFile = new File(Directory, "log.txt");
+                if (!logFile.exists()) {
+                    logFile.createNewFile();
+                }
+                if (appendToLogFile) {
+                }
+            } else {
+                Directory.mkdir();
+                logFile = new File(Directory, "log.txt");
+                logFile.createNewFile();
+            }
+            this._Directory = Directory;
             this.log = new PrintWriter(
                     new FileOutputStream(logFile, true));
-        } catch (FileNotFoundException e) {
+            this.logIndentation = 0;
+            log(this.logIndentation,
+                    "log file " + Directory.toString() + File.separator + "log.txt set up " + Calendar.getInstance().getTime().toString(),
+                    ge.HandleOutOfMemoryErrorTrue);
+            initFactories();
+        } catch (IOException ioe0) {
             int _MessageLength = 1000;
             String _Message0 = ge.initString(
                     _MessageLength,
@@ -201,83 +205,11 @@ public class Grids_Processor extends Grids_Object {
             String _Message = ge.initString(
                     _MessageLength,
                     ge.HandleOutOfMemoryErrorTrue);
-            _Message = e.getMessage();
+            _Message = ioe0.getMessage();
             _Message = ge.println(
                     _Message,
                     _Message0,
                     ge.HandleOutOfMemoryErrorTrue);
-            System.err.println(e.getMessage());
-            //e.printStackTrace();
-        }
-        this.logIndentation = 0;
-//        log(    this.logIndentation,
-//                "log file " + _Directory.toString() + File.separator + "log.txt set up " + Calendar.getInstance().getTime().toString(),
-//       this.handleOutOfMemoryErrorFalse );
-        initFactories();
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor. The log file
-     * in _Directory will be overwritten if appendToLogFile is false.
-     *
-     * @param _Directory
-     * @param appendToLogFile
-     */
-    public Grids_Processor(
-            File _Directory,
-            boolean appendToLogFile) {
-        this(null, _Directory, appendToLogFile);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor. The log file
-     * in _Directory will be overwritten if appendToLogFile is false.
-     *
-     * @param env
-     * @param _Directory
-     * @param appendToLogFile
-     */
-    public Grids_Processor(
-            Grids_Environment env,
-            File _Directory,
-            boolean appendToLogFile) {
-        try {
-            this.ge = env;
-            this.startTime = System.currentTimeMillis();
-            File logFile;
-            if (_Directory.exists()) {
-                logFile = new File(_Directory, "log.txt");
-                if (!logFile.exists()) {
-                    logFile.createNewFile();
-                }
-                if (appendToLogFile) {
-                }
-            } else {
-                _Directory.mkdir();
-                logFile = new File(_Directory, "log.txt");
-                logFile.createNewFile();
-            }
-            this._Directory = _Directory;
-            this.log = new PrintWriter(
-                    new FileOutputStream(logFile, true));
-            this.logIndentation = 0;
-            log(this.logIndentation,
-                    "log file " + _Directory.toString() + File.separator + "log.txt set up " + Calendar.getInstance().getTime().toString(),
-                    env.HandleOutOfMemoryErrorTrue);
-            initFactories();
-        } catch (IOException ioe0) {
-            int _MessageLength = 1000;
-            String _Message0 = env.initString(
-                    _MessageLength,
-                    env.HandleOutOfMemoryErrorTrue);
-            String _Message = env.initString(
-                    _MessageLength,
-                    env.HandleOutOfMemoryErrorTrue);
-            _Message = ioe0.getMessage();
-            _Message = env.println(
-                    _Message,
-                    _Message0,
-                    env.HandleOutOfMemoryErrorTrue);
             System.err.println(ioe0.getMessage());
             //ioe0.printStackTrace();
         }
@@ -571,10 +503,10 @@ public class Grids_Processor extends Grids_Object {
             this.log.close();
             File workspace = get_Directory(handleOutOfMemoryError);
             File oldLog = new File(workspace, "log.txt");
-            BufferedInputStream bis = new BufferedInputStream(
-                    new FileInputStream(oldLog));
-            BufferedOutputStream bos = new BufferedOutputStream(
-                    new FileOutputStream(newLog));
+            BufferedInputStream bis;
+            bis = Generic_StaticIO.getBufferedInputStream(oldLog);
+            BufferedOutputStream bos;
+            bos = Generic_StaticIO.getBufferedOutputStream(newLog);
             for (int i = 0; i < oldLog.length(); i++) {
                 bos.write(bis.read());
             }
@@ -3272,6 +3204,10 @@ public class Grids_Processor extends Grids_Object {
      * noDataValues are simply ignored. Formerly noDataValues were treated as
      * the average of values within a result cell. TODO: implement median, mode
      * and variance aggregations. @return
+     * @param colOffset
+     * @param gridFactory
+     * @param handleOutOfMemoryError
+     * @return 
      */
     public Grids_Grid2DSquareCellDouble aggregate(
             Grids_AbstractGrid2DSquareCell grid,
@@ -4416,7 +4352,7 @@ public class Grids_Processor extends Grids_Object {
     //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getGridStatistics();
     //        double maxDistance = distanceGridStatistics.getMax();
     //
-    //        AbstractGrid2DSquareCellDouble[] geometricDensity = Grid2DSquareCellDoubleProcessorGWS.geometricDensity( grid0, maxDistance, gridFactory );
+    //        AbstractGrid2DSquareCellDouble[] geometricDensity = Grids_ProcessorGWS.geometricDensity( grid0, maxDistance, gridFactory );
     //        //return geometricDensity[ geometricDensity.length - 1 ];
     //        return geometricDensity[ geometricDensity.length / 2 ];
     //        /*
@@ -4437,7 +4373,7 @@ public class Grids_Processor extends Grids_Object {
     //                        thisGrid.setCell( i, j, thatValue );
     //                    } else {
     //                        if ( thatValue == noDataValue && thisDistance < ( iterations * cellsize ) ) {
-    //                            thisGrid.setCell( i, j, Grid2DSquareCellDoubleProcessor.regionUnivariateStatistics( thatGrid, i, j, "mean", distance, 1.0d, 1.0d, gridFactory ) );
+    //                            thisGrid.setCell( i, j, Grids_Processor.regionUnivariateStatistics( thatGrid, i, j, "mean", distance, 1.0d, 1.0d, gridFactory ) );
     //                        }
     //                    }
     //                }
@@ -4665,7 +4601,6 @@ public class Grids_Processor extends Grids_Object {
     /**
      *
      * @param grid
-     * @param processor
      * @param outputDirectory
      * @param ie
      * @param imageTypes

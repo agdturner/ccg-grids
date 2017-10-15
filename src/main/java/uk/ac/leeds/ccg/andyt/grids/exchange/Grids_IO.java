@@ -49,25 +49,6 @@ public class Grids_IO {
     }
 
     /**
-     * Returns a double[] of grid information where; [0] = (double) ncols; [1] =
-     * (double) nrows; [2] = xllcorner; [3] = yllcorner; [4] = cellsize; [5] =
-     * noDataValue if it exists or Double.NEGATIVE_INFINITY otherwise
-     *
-     * @param gridFile The File of the grid.
-     * @return 
-     */
-    public static double[] getBasicGridInfo(File gridFile) {
-        if (gridFile.toString().endsWith(".asc")) {
-            // Assume it is ESRI asciigrid
-
-            Grids_ESRIAsciiGridImporter eSRIAsciigridImporter = new Grids_ESRIAsciiGridImporter(gridFile, new Grids_Environment());
-            return eSRIAsciigridImporter.readHeaderDouble();
-        }
-        System.out.println("<!-- Warning: Unrecognised file type in getBasicGridInfo(" + gridFile.toString() + "-->");
-        return null;
-    }
-
-    /**
      * Returns true if writerType is available
      *
      * @param writerType - usually a well known text String for an image type

@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
@@ -39,43 +38,16 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 public class Grids_ProcessorGWS extends Grids_Processor {
 
     /**
-     * Creates a new Grid2DSquareCellDoubleProcessorGWS
-     * @throws java.io.IOException
+     * Creates a new Grids_ProcessorGWS
      */
-    public Grids_ProcessorGWS() throws IOException {
-    }
+    protected Grids_ProcessorGWS() {}
 
     /*
-     * Creates a new instance of Grid2DSquareCellDoubleProcessor.
+     * Creates a new instance of Grids_ProcessorGWS.
      *
      */
-    public Grids_ProcessorGWS(
-            Grids_Environment env) {
-        super(env);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellProcessorGWS. By default the
-     * logs are appended to the end of the log file if it exists. To overwrite
-     * the log file use: Grid2DSquareCellDoubleProcessor( workspace, false );
-     *
-     * @param workspace
-     * @throws java.io.IOException
-     */
-    public Grids_ProcessorGWS(File workspace) throws IOException {
-        super(workspace);
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareCellProcessorGWS. The log file in
-     * workspace will be overwritten if appendToLogFile is false.
-     *
-     * @param workspace
-     * @param appendToLogFile
-     * @throws java.io.IOException
-     */
-    public Grids_ProcessorGWS(File workspace, boolean appendToLogFile) throws IOException {
-        super(workspace, appendToLogFile);
+    public Grids_ProcessorGWS(Grids_Environment ge) {
+        super(ge);
     }
 
     //    /**
@@ -1481,8 +1453,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @param weightFactor
      * @return 
      */
-    public Vector regionUnivariateStatisticsCrossScale(Grids_Grid2DSquareCellDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersept, double scaleFactor, Grids_Grid2DSquareCellDoubleFactory gridFactory) {
-        Vector result = new Vector();
+    public ArrayList regionUnivariateStatisticsCrossScale(
+            Grids_Grid2DSquareCellDouble grid, 
+            ArrayList statistics, double distance, 
+            double weightIntersept, double weightFactor, 
+            double scaleIntersept, double scaleFactor, 
+            Grids_Grid2DSquareCellDoubleFactory gridFactory) {
+        ArrayList result = new ArrayList();
         return result;
     }
 
@@ -1929,7 +1906,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_Grid2DSquareCellDouble[] regionBivariateStatistics(
             Grids_Grid2DSquareCellDouble grid0,
             Grids_Grid2DSquareCellDouble grid1,
-            Vector statistics,
+            ArrayList statistics,
             double distance,
             double weightIntersect,
             double weightFactor,
@@ -1942,19 +1919,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         boolean dozdiff = false;
         int allStatistics = 0;
         for (int i = 0; i < statistics.size(); i++) {
-            if (((String) statistics.elementAt(i)).equalsIgnoreCase("diff")) {
+            if (((String) statistics.get(i)).equalsIgnoreCase("diff")) {
                 if (!dodiff) {
                     dodiff = true;
                     allStatistics += 4;
                 }
             }
-            if (((String) statistics.elementAt(i)).equalsIgnoreCase("corr")) {
+            if (((String) statistics.get(i)).equalsIgnoreCase("corr")) {
                 if (!docorr) {
                     docorr = true;
                     allStatistics += 2;
                 }
             }
-            if (((String) statistics.elementAt(i)).equalsIgnoreCase("zdiff")) {
+            if (((String) statistics.get(i)).equalsIgnoreCase("zdiff")) {
                 if (!dozdiff) {
                     dozdiff = true;
                     allStatistics += 2;

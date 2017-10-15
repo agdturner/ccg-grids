@@ -46,18 +46,10 @@ public class Grids_GenerateRoofData
     String[] _ImageTypes;
     Grids_ESRIAsciiGridExporter _ESRIAsciiGridExporter;
 
-    /** Creates a new GenerateRoofData */
-    public Grids_GenerateRoofData() {
-        this(Grids_FileCreator.createNewFile());
-    }
+    protected Grids_GenerateRoofData() {}
 
-    /**
-     * Creates a new GenerateRoofData using specified _Directory.
-     * WARNING: Files in the specified _Directory may get overwritten.
-     * @param _Directory
-     */
-    public Grids_GenerateRoofData(File _Directory) {
-        super(_Directory);
+    public Grids_GenerateRoofData(Grids_Environment ge) {
+        super(ge);
         this._Time = System.currentTimeMillis();
         this._HandleOutOfMemoryError = true;
         this._FileSeparator = System.getProperty("file.separator");
@@ -73,15 +65,19 @@ public class Grids_GenerateRoofData
      */
     public static void main(String[] args) {
         try {
-            File _Directory = new File("C:/Work/People/Sadhvi Selvaraj/Roofs/data/synthetic/");
-            Grids_GenerateRoofData _GenerateRoofData = new Grids_GenerateRoofData(_Directory);
-            _GenerateRoofData._ImageExporter = null;
-            _GenerateRoofData._ImageTypes = null;
-            _GenerateRoofData._ESRIAsciiGridExporter = null;
-            _GenerateRoofData._HandleOutOfMemoryError = true;
+            File Directory = new File(
+                    "C:/Work/People/Sadhvi Selvaraj/Roofs/data/synthetic/");
+            Grids_Environment ge;
+            ge = new Grids_Environment(Directory);
+            Grids_GenerateRoofData p;
+            p = new Grids_GenerateRoofData(ge);
+            p._ImageExporter = null;
+            p._ImageTypes = null;
+            p._ESRIAsciiGridExporter = null;
+            p._HandleOutOfMemoryError = true;
             //_GenerateRoofData.run_0();
             //_GenerateRoofData.run_1();
-            _GenerateRoofData.run_2();
+            p.run_2();
         } catch (Error _Error) {
             _Error.printStackTrace();
         } catch (Exception _Exception) {

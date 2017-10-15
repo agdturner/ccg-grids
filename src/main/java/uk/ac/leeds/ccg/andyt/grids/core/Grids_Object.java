@@ -17,11 +17,13 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
+import java.io.Serializable;
+
 /**
  *
  * @author geoagdt
  */
-public abstract class Grids_Object {
+public abstract class Grids_Object implements Serializable{
     
     /**
      * A reference to Grids_Environment.

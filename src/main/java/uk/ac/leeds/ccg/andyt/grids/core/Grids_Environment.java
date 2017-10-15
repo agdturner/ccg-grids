@@ -82,9 +82,12 @@ public class Grids_Environment
      */
     private transient Grids_Processor _Grid2DSquareCellProcessor;
 
-    public Grids_Environment() {
+    protected Grids_Environment() {}
+    
+    public Grids_Environment(File Directory) {
         init_AbstractGrid2DSquareCell_HashSet();
         init_NotToSwapData();
+        this._Directory = Directory;
     }
 
     /**
