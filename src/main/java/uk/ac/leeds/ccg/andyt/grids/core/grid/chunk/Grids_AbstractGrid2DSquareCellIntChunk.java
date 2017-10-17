@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * Provides general methods and controls what methods extended classes must
@@ -34,8 +35,13 @@ public abstract class Grids_AbstractGrid2DSquareCellIntChunk
         implements Serializable {
     //implements Serializable, GridIntStatisticsInterface {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
 
+    protected Grids_AbstractGrid2DSquareCellIntChunk(){}
+    
+    public Grids_AbstractGrid2DSquareCellIntChunk(Grids_Environment ge){
+        super(ge);
+    }
     /**
      *
      *

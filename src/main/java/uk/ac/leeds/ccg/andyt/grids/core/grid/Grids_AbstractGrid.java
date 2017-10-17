@@ -206,7 +206,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         this.setDirectory(Grids_FileCreator.createNewFile(ge.getDirectory(), getName()));
         this.setChunkID_AbstractGrid2DSquareCellChunk_HashMap((HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) new HashMap());
         //this._AbstractGrid2DSquareCell_HashSet = new HashSet();
-        this._GridStatistics = new Grids_GridStatistics0();
+        this._GridStatistics = new Grids_GridStatistics0(ge);
         // Set the reference to this in the Grid Statistics
         this.getGridStatistics().init(this);
         //this._GridStatistics.grid2DSquareCell = this;

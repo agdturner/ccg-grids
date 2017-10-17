@@ -29,6 +29,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a 
@@ -38,7 +39,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
         extends Grids_AbstractGrid2DSquareCellDoubleChunk 
         implements Serializable {
     
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     
     /**
      * A value initialised with grid that can be used to optimise storage.
@@ -55,7 +56,10 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
     /**
      * Default constructor.
      */
-    public Grids_Grid2DSquareCellDoubleChunkMap() {
+    protected Grids_Grid2DSquareCellDoubleChunkMap() {}
+    
+    public Grids_Grid2DSquareCellDoubleChunkMap(Grids_Environment ge) {
+        super(ge);
         this.ChunkID = new Grids_2D_ID_int();
         this.data = new TDoubleObjectHashMap();
         this.defaultValue = Integer.MIN_VALUE;

@@ -23,17 +23,18 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import java.io.Serializable;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values in a
- double[][].
+ * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values
+ * in a double[][].
  */
 public class Grids_Grid2DSquareCellDoubleChunkArray
         extends Grids_AbstractGrid2DSquareCellDoubleChunk
         implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
 
     /**
      * For storing values arranged in rows and columns.
@@ -43,7 +44,10 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
     /**
      * Creates a new Grid2DSquareCellDoubleChunkArray.
      */
-    public Grids_Grid2DSquareCellDoubleChunkArray() {
+    protected Grids_Grid2DSquareCellDoubleChunkArray() {}
+
+    public Grids_Grid2DSquareCellDoubleChunkArray(Grids_Environment ge) {
+        super(ge);
         this.ChunkID = new Grids_2D_ID_int();
         this.data = new double[1][1];
         //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
@@ -61,6 +65,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
     protected Grids_Grid2DSquareCellDoubleChunkArray(
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
             Grids_2D_ID_int _ChunkID) {
+        super(grid2DSquareCellDouble.ge);
         this.ChunkID = _ChunkID;
         initGrid2DSquareCell(grid2DSquareCellDouble);
         double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
@@ -83,14 +88,15 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
      *
      *
      * @param grid2DSquareCellDoubleChunk The
- Grids_AbstractGrid2DSquareCellDoubleChunk this values are taken from.
-     * @param _ChunkID The ID to be this._ChunkID. TODO: A fast toArray()
- method in Grid2DSquareCellDoubleChunkMap could be coded then a
- constructor based on an double[] or double[][] might be faster?
+     * Grids_AbstractGrid2DSquareCellDoubleChunk this values are taken from.
+     * @param _ChunkID The ID to be this._ChunkID. TODO: A fast toArray() method
+     * in Grid2DSquareCellDoubleChunkMap could be coded then a constructor based
+     * on an double[] or double[][] might be faster?
      */
     protected Grids_Grid2DSquareCellDoubleChunkArray(
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk,
             Grids_2D_ID_int _ChunkID) {
+        super(grid2DSquareCellDoubleChunk.ge);
         this.ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
@@ -227,8 +233,8 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
     }
 
     /**
-     * Returns a Grids_Grid2DSquareCellDoubleChunkArrayIterator for iterating over the
- cells in this.
+     * Returns a Grids_Grid2DSquareCellDoubleChunkArrayIterator for iterating
+     * over the cells in this.
      *
      * @return
      */

@@ -261,8 +261,8 @@ public class Grids_Processor extends Grids_Object {
      * Initialises GridStatistics.
      */
     private void initGridStatistics() {
-        this._GridStatistics0 = new Grids_GridStatistics0();
-        this._GridStatistics1 = new Grids_GridStatistics1();
+        this._GridStatistics0 = new Grids_GridStatistics0(ge);
+        this._GridStatistics1 = new Grids_GridStatistics1(ge);
         this._GridStatistics = _GridStatistics0;
         //this._GridStatistics = _GridStatistics1;
     }

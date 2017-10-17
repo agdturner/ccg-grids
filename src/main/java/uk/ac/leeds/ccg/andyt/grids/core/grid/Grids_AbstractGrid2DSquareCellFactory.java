@@ -184,10 +184,10 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
      */
     public Grids_AbstractGridStatistics get_GridStatistics() {
         if (this._GridStatistics.getClass() == Grids_GridStatistics0.class) {
-            return new Grids_GridStatistics0();
+            return new Grids_GridStatistics0(ge);
         }
         if (this._GridStatistics.getClass() == Grids_GridStatistics1.class) {
-            return new Grids_GridStatistics1();
+            return new Grids_GridStatistics1(ge);
         }
         return this._GridStatistics;
     }

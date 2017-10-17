@@ -22,6 +22,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
 import java.io.Serializable;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellIntChunk extension that stores cell values in a 
@@ -31,7 +32,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
         extends Grids_AbstractGrid2DSquareCellIntChunk 
         implements Serializable {
     
-    private static final long serialVersionUID = 1L; 
+    //private static final long serialVersionUID = 1L; 
     
     /**
      * For storing values arranged in rows and columns.
@@ -41,7 +42,10 @@ public class Grids_Grid2DSquareCellIntChunkArray
     /**
      * Default constructor
      */
-    public Grids_Grid2DSquareCellIntChunkArray() {
+    public Grids_Grid2DSquareCellIntChunkArray() {}
+    
+    public Grids_Grid2DSquareCellIntChunkArray(Grids_Environment ge) {
+        super(ge);
         this.ChunkID = new Grids_2D_ID_int();
         this.data = new int[ 1 ][ 1 ];
         //this._Grid2DSquareCell = new Grid2DSquareCellInt(_AbstractGrid2DSquareCell_HashSet);
@@ -57,6 +61,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
     protected Grids_Grid2DSquareCellIntChunkArray( 
             Grids_Grid2DSquareCellInt grid2DSquareCellInt, 
             Grids_2D_ID_int _ChunkID ) {
+        super(grid2DSquareCellInt.ge);
         this.ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellInt );
         int noDataValue = grid2DSquareCellInt.getNoDataValue(
@@ -86,6 +91,7 @@ public class Grids_Grid2DSquareCellIntChunkArray
     protected Grids_Grid2DSquareCellIntChunkArray( 
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk, 
             Grids_2D_ID_int _ChunkID ) {
+        super(grid2DSquareCellIntChunk.ge);
         this.ChunkID = _ChunkID;
         Grids_Grid2DSquareCellInt grid2DSquareCellInt = 
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();

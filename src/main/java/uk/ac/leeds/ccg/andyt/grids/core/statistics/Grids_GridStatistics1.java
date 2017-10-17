@@ -21,35 +21,40 @@ package uk.ac.leeds.ccg.andyt.grids.core.statistics;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 
 /**
- * Used by Grids_AbstractGrid2DSquareCell instances to access statistics. This class
- to be instantiated for Grids_AbstractGrid2DSquareCell that do not keep all
- statistic fields up to date as the underlying data is changed. (Keeping
- statistic fields up to date as the underlying data is changed can be
- expensive.)
+ * Used by Grids_AbstractGrid2DSquareCell instances to access statistics. This
+ * class to be instantiated for Grids_AbstractGrid2DSquareCell that do not keep
+ * all statistic fields up to date as the underlying data is changed. (Keeping
+ * statistic fields up to date as the underlying data is changed can be
+ * expensive.)
  */
 public class Grids_GridStatistics1
         extends Grids_AbstractGridStatistics
         implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    //private static final long serialVersionUID = 1L;
     /**
      * Creates a new instance of GridStatistics1
      */
     public Grids_GridStatistics1() {
     }
 
+    public Grids_GridStatistics1(Grids_Environment ge) {
+        super(ge);
+    }
+    
     /**
      * Creates a new instance of GridStatistics1
      *
-     * @param _Grid2DSquareCell
+     * @param g
      */
     public Grids_GridStatistics1(
-            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell) {
-        init(_Grid2DSquareCell);
+            Grids_AbstractGrid2DSquareCell g) {
+        super(g.ge);
+        init(g);
     }
 
     /**
@@ -86,8 +91,8 @@ public class Grids_GridStatistics1
         if (!getIsUpToDate()) {
             init();
             super.update(
-                    this.Grid2DSquareCell.get_NRows(this.ge._HandleOutOfMemoryError_boolean), 
-                this.Grid2DSquareCell.get_NCols(this.ge._HandleOutOfMemoryError_boolean));
+                    this.Grid2DSquareCell.get_NRows(this.ge._HandleOutOfMemoryError_boolean),
+                    this.Grid2DSquareCell.get_NCols(this.ge._HandleOutOfMemoryError_boolean));
             setIsUpToDate(true);
         }
     }

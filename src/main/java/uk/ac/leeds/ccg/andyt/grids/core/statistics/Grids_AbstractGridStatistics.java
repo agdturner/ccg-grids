@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
@@ -73,6 +74,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     private BigInteger maxCountBigInteger;
 
+    protected Grids_AbstractGridStatistics(){}
+    
+    public Grids_AbstractGridStatistics(Grids_Environment ge){
+        super(ge);
+    }
+    
     /**
      * For intitialisation
      */

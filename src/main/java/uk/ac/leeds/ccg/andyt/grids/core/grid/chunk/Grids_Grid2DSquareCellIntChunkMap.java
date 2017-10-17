@@ -28,6 +28,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGrid2DSquareCellIntChunk extension that stores cell values in a
@@ -39,7 +40,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         extends Grids_AbstractGrid2DSquareCellIntChunk
         implements Serializable {
     
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     
     /**
      * A value initialised with grid that can be used to optimise storage.
@@ -58,7 +59,10 @@ public  class Grids_Grid2DSquareCellIntChunkMap
     /**
      * Default constructor.
      */
-    public Grids_Grid2DSquareCellIntChunkMap() {
+    public Grids_Grid2DSquareCellIntChunkMap() {}
+    
+    public Grids_Grid2DSquareCellIntChunkMap(Grids_Environment ge) {
+        super(ge);
         this.ChunkID = new Grids_2D_ID_int();
         this.data = new TIntObjectHashMap();
         this.defaultValue = Integer.MIN_VALUE;
@@ -94,6 +98,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             Grids_Grid2DSquareCellInt grid2DSquareCellInt,
             Grids_2D_ID_int _ChunkID,
             int defaultValue ) {
+        super(grid2DSquareCellInt.ge);
         this.ChunkID = _ChunkID;
         initGrid2DSquareCell( grid2DSquareCellInt );
         this.defaultValue = defaultValue;
@@ -135,6 +140,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             Grids_AbstractGrid2DSquareCellIntChunk grid2DSquareCellIntChunk,
             Grids_2D_ID_int chunkID,
             int defaultValue ) {
+        super(grid2DSquareCellIntChunk.ge);
         this.ChunkID = chunkID;
         Grids_Grid2DSquareCellInt grid2DSquareCellInt =
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();

@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLong;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
@@ -44,7 +45,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
         extends Grids_AbstractGrid2DSquareCellDoubleChunk
         implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
 
     /**
      * For storing values mapped to a binary encoded long. The long is a key
@@ -53,10 +54,14 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      */
     private TDoubleLongHashMap data;
 
+    protected Grids_Grid2DSquareCellDoubleChunk64CellMap() {}
+
     /**
      * Creates a new Grid2DSquareCellDoubleChunk64CellMap.
+     * @param ge
      */
-    public Grids_Grid2DSquareCellDoubleChunk64CellMap() {
+    public Grids_Grid2DSquareCellDoubleChunk64CellMap(Grids_Environment ge) {
+        super(ge);
         this.ChunkID = new Grids_2D_ID_int();
         this.data = new TDoubleLongHashMap();
         //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
@@ -74,6 +79,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
     protected Grids_Grid2DSquareCellDoubleChunk64CellMap(
             Grids_Grid2DSquareCellDouble g,
             Grids_2D_ID_int chunkID) {
+        super(g.ge);
         this.ChunkID = chunkID;
         initGrid2DSquareCell(g);
         Long nCellsInChunk
@@ -108,6 +114,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
     protected Grids_Grid2DSquareCellDoubleChunk64CellMap(
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk,
             Grids_2D_ID_int _ChunkID) {
+        super(grid2DSquareCellDoubleChunk.ge);
         this.ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();

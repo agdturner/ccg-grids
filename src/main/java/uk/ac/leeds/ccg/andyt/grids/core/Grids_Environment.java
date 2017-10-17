@@ -87,6 +87,9 @@ public class Grids_Environment
     public Grids_Environment(File Directory) {
         init_AbstractGrid2DSquareCell_HashSet();
         init_NotToSwapData();
+        if (!Directory.exists()) {
+            Directory.mkdirs();
+        }
         this._Directory = Directory;
     }
 

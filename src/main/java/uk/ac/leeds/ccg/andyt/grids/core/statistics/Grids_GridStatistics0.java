@@ -20,6 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.statistics;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 
 /**
@@ -32,20 +33,24 @@ public class Grids_GridStatistics0
         extends Grids_AbstractGridStatistics 
         implements Serializable {
     
-    private static final long serialVersionUID = 1L; 
+    //private static final long serialVersionUID = 1L; 
     
     /** Creates a new instance of GridStatistics0 */
-    public Grids_GridStatistics0() {
-    }
+    protected Grids_GridStatistics0() {}
     
+    public Grids_GridStatistics0(Grids_Environment ge) {
+        super(ge);
+    }
+
     /**
      * Creates a new instance of GridStatistics0
      * 
-     * @param _Grid2DSquareCell
+     * @param g
      */
     public Grids_GridStatistics0( 
-            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell ) {
-        init( _Grid2DSquareCell );
+            Grids_AbstractGrid2DSquareCell g ) {
+        super(g.ge);
+        init( g );
     }
     
     /**

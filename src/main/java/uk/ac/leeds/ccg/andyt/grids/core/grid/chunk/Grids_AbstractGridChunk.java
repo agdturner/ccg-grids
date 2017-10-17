@@ -8,6 +8,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
@@ -37,6 +38,12 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     protected transient boolean isSwapUpToDate;
     //protected boolean isSwapUpToDate;
 
+    public Grids_AbstractGridChunk(){}
+    
+    protected Grids_AbstractGridChunk(Grids_Environment ge){
+        super(ge);
+    }
+    
     /**
      * Returns this._Grid2DSquareCell.
      *
