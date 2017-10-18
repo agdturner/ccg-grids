@@ -1597,43 +1597,44 @@ public class Grids_Grid2DSquareCellDouble
     /**
      * @return Value at _CellRowIndex, _CellColIndex else returns _NoDataValue.
      *
-     * @param a_CellRowIndex .
-     * @param a_CellColIndex .
+     * @param cellRowIndex .
+     * @param cellColIndex .
      */
     protected double getCell(
-            long a_CellRowIndex,
-            long a_CellColIndex) {
+            long cellRowIndex,
+            long cellColIndex) {
         boolean isInGrid = isInGrid(
-                a_CellRowIndex,
-                a_CellColIndex);
+                cellRowIndex,
+                cellColIndex);
         if (isInGrid) {
-            long _ChunkNrowsLong = this.getChunkNRows();
-            long _ChunkNcolsLong = this.getChunkNCols();
-            int _ChunkRowIndex = getChunkRowIndex(a_CellRowIndex);
-            int _ChunkColIndex = getChunkColIndex(a_CellColIndex);
-            long _ChunkRowIndexLong = _ChunkRowIndex;
-            long _ChunkColIndexLong = _ChunkColIndex;
-            int _ChunkCellRowIndex = (int) (a_CellRowIndex - (_ChunkRowIndexLong * _ChunkNrowsLong));
-            int _ChunkCellColIndex = (int) (a_CellColIndex - (_ChunkColIndexLong * _ChunkNcolsLong));
-            Grids_AbstractGridChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
-                    _ChunkRowIndex,
-                    _ChunkColIndex);
-            if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
-                return ((Grids_Grid2DSquareCellDoubleChunk64CellMap) grid2DSquareCellChunk).getCell(
-                        _ChunkCellRowIndex,
-                        _ChunkCellColIndex,
+            long chunkNrows = this.getChunkNRows();
+            long chunkNcols = this.getChunkNCols();
+            int chunkRowIndex = getChunkRowIndex(cellRowIndex);
+            int chunkColIndex = getChunkColIndex(cellColIndex);
+            long chunkRowIndexLong = chunkRowIndex;
+            long chunkColIndexLong = chunkColIndex;
+            int chunkCellRowIndex = (int) (cellRowIndex - (chunkRowIndexLong * chunkNrows));
+            int chunkCellColIndex = (int) (cellColIndex - (chunkColIndexLong * chunkNcols));
+            Grids_AbstractGridChunk chunk;
+            chunk = getGrid2DSquareCellChunk(
+                    chunkRowIndex,
+                    chunkColIndex);
+            if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
+                return ((Grids_Grid2DSquareCellDoubleChunk64CellMap) chunk).getCell(
+                        chunkCellRowIndex,
+                        chunkCellColIndex,
                         _NoDataValue,
                         false);
-            } else if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
-                return ((Grids_Grid2DSquareCellDoubleChunkArray) grid2DSquareCellChunk).getCell(
-                        _ChunkCellRowIndex,
-                        _ChunkCellColIndex,
+            } else if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
+                return ((Grids_Grid2DSquareCellDoubleChunkArray) chunk).getCell(
+                        chunkCellRowIndex,
+                        chunkCellColIndex,
                         _NoDataValue,
                         false);
-            } else if (grid2DSquareCellChunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
-                return ((Grids_Grid2DSquareCellDoubleChunkMap) grid2DSquareCellChunk).getCell(
-                        _ChunkCellRowIndex,
-                        _ChunkCellColIndex,
+            } else if (chunk.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
+                return ((Grids_Grid2DSquareCellDoubleChunkMap) chunk).getCell(
+                        chunkCellRowIndex,
+                        chunkCellColIndex,
                         _NoDataValue,
                         false);
             }

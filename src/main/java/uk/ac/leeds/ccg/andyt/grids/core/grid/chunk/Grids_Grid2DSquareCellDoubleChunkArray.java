@@ -18,7 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import java.io.Serializable;
 import java.util.Arrays;
