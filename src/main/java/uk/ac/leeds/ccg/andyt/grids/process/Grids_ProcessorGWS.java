@@ -18,12 +18,11 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.process;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
@@ -100,15 +99,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
 
-        List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<Grids_AbstractGrid2DSquareCell>();
+        List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<>();
         //Vector result = new Vector();
 
-        long ncols = grid.get_NCols(handleOutOfMemoryError);
-        long nrows = grid.get_NRows(handleOutOfMemoryError);
-        BigDecimal[] dimensions = grid.get_Dimensions(handleOutOfMemoryError);
-        double noDataValue = grid.get_NoDataValue(handleOutOfMemoryError);
-        int cellDistance = (int) Math.ceil(distance / dimensions[0].doubleValue());
-
+        long ncols = grid.getNCols(handleOutOfMemoryError);
+        long nrows = grid.getNRows(handleOutOfMemoryError);
+        Grids_Dimensions dimensions = grid.getDimensions(handleOutOfMemoryError);
+        double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
+        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble(handleOutOfMemoryError));
+        
         // @HACK If cellDistance is so great that data for a single kernel is
         // unlikely to fit in memory
         if (cellDistance > 1024) {
@@ -735,124 +734,124 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          * meanZscoreGrid[ 0 ]; }
          */
 
-        sumWeightGrid.set_Name(
-                "SumWeight_" + grid.get_Name(handleOutOfMemoryError),
+        sumWeightGrid.setName(
+                "SumWeight_" + grid.getName(handleOutOfMemoryError),
                 ge.HandleOutOfMemoryErrorFalse);
         result.add(sumWeightGrid);
 
         if (doSum) {
-            sumGrid.set_Name(
-                    "Sum_" + grid.get_Name(handleOutOfMemoryError),
+            sumGrid.setName(
+                    "Sum_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(sumGrid);
         }
         if (doWSum) {
-            wSumGrid.set_Name(
-                    "WSum_" + grid.get_Name(handleOutOfMemoryError),
+            wSumGrid.setName(
+                    "WSum_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wSumGrid);
         }
         if (doNWSum) {
-            nWSumGrid.set_Name(
-                    "NWSum_" + grid.get_Name(handleOutOfMemoryError),
+            nWSumGrid.setName(
+                    "NWSum_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(nWSumGrid);
         }
         if (doWSumN) {
-            wSumNGrid.set_Name(
-                    "WSumN_" + grid.get_Name(handleOutOfMemoryError),
+            wSumNGrid.setName(
+                    "WSumN_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wSumNGrid);
         }
 
         if (doMean) {
-            meanGrid.set_Name(
-                    "Mean_" + grid.get_Name(handleOutOfMemoryError),
+            meanGrid.setName(
+                    "Mean_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(meanGrid);
         }
         if (doWMean1) {
-            wMean1Grid.set_Name(
-                    "WMean1_" + grid.get_Name(handleOutOfMemoryError),
+            wMean1Grid.setName(
+                    "WMean1_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wMean1Grid);
         }
         if (doWMean2) {
-            wMean2Grid.set_Name(
-                    "WMean2_" + grid.get_Name(handleOutOfMemoryError),
+            wMean2Grid.setName(
+                    "WMean2_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wMean2Grid);
         }
         if (doNWMean) {
-            nWMeanGrid.set_Name(
-                    "NWMean_" + grid.get_Name(handleOutOfMemoryError),
+            nWMeanGrid.setName(
+                    "NWMean_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(nWMeanGrid);
         }
         if (doWMeanN) {
-            wMeanNGrid.set_Name(
-                    "WMeanN_" + grid.get_Name(handleOutOfMemoryError),
+            wMeanNGrid.setName(
+                    "WMeanN_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wMeanNGrid);
         }
 
         if (doProp) {
-            propGrid.set_Name(
-                    "Prop_" + grid.get_Name(handleOutOfMemoryError), 
+            propGrid.setName(
+                    "Prop_" + grid.getName(handleOutOfMemoryError), 
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(propGrid);
         }
         if (doWProp) {
-            wPropGrid.set_Name(
-                    "WProp_" + grid.get_Name(handleOutOfMemoryError), 
+            wPropGrid.setName(
+                    "WProp_" + grid.getName(handleOutOfMemoryError), 
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wPropGrid);
         }
         if (doVar) {
-            varGrid.set_Name(
-                    "Var_" + grid.get_Name(handleOutOfMemoryError), 
+            varGrid.setName(
+                    "Var_" + grid.getName(handleOutOfMemoryError), 
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(varGrid);
         }
         if (doWVar) {
-            wVarGrid.set_Name(
-                    "WVar_" + grid.get_Name(handleOutOfMemoryError),
+            wVarGrid.setName(
+                    "WVar_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wVarGrid);
         }
         if (doSkew) {
-            skewGrid.set_Name(
-                    "Skew_" + grid.get_Name(handleOutOfMemoryError),
+            skewGrid.setName(
+                    "Skew_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(skewGrid);
         }
         if (doWSkew) {
-            wSkewGrid.set_Name(
-                    "WSkew_" + grid.get_Name(handleOutOfMemoryError),
+            wSkewGrid.setName(
+                    "WSkew_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wSkewGrid);
         }
         if (doCVar) {
-            cVarGrid.set_Name(
-                    "CVar_" + grid.get_Name(handleOutOfMemoryError),
+            cVarGrid.setName(
+                    "CVar_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(cVarGrid);
         }
         if (doWCVar) {
-            wCVarGrid.set_Name(
-                    "WCVar_" + grid.get_Name(handleOutOfMemoryError),
+            wCVarGrid.setName(
+                    "WCVar_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wCVarGrid);
         }
         if (doCSkew) {
-            cSkewGrid.set_Name(
-                    "CSkew" + grid.get_Name(handleOutOfMemoryError),
+            cSkewGrid.setName(
+                    "CSkew" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(cSkewGrid);
         }
         if (doWCSkew) {
-            wCSkewGrid.set_Name(
-                    "WCSkew_" + grid.get_Name(handleOutOfMemoryError),
+            wCSkewGrid.setName(
+                    "WCSkew_" + grid.getName(handleOutOfMemoryError),
                     ge.HandleOutOfMemoryErrorFalse);
             result.add(wCSkewGrid);
         }
@@ -891,14 +890,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double weightFactor,
             Grids_Grid2DSquareCellDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
-        List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<Grids_AbstractGrid2DSquareCell>();
+        List<Grids_AbstractGrid2DSquareCell> result = new ArrayList<>();
         //        Vector result = new Vector();
-        long ncols = grid.get_NCols(handleOutOfMemoryError);
-        long nrows = grid.get_NRows(handleOutOfMemoryError);
-        BigDecimal[] dimensions = grid.get_Dimensions(handleOutOfMemoryError);
+        long ncols = grid.getNCols(handleOutOfMemoryError);
+        long nrows = grid.getNRows(handleOutOfMemoryError);
+        Grids_Dimensions dimensions = grid.getDimensions(handleOutOfMemoryError);
         //double cellsize = dimensions[0].doubleValue();
-        double noDataValue = grid.get_NoDataValue(handleOutOfMemoryError);
-        int cellDistance = (int) Math.ceil(distance / dimensions[0].doubleValue());
+        double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
+        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble(handleOutOfMemoryError));
         boolean doMean = false;
         boolean doWMean = false;
         boolean doSum = false;
@@ -1347,60 +1346,60 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          */
 
         if (doSum) {
-            sumGrid.set_Name("Sum", ge.HandleOutOfMemoryErrorFalse);
+            sumGrid.setName("Sum", ge.HandleOutOfMemoryErrorFalse);
             result.add(sumGrid);
         }
         if (doWSum) {
-            wSumGrid.set_Name("WSum", ge.HandleOutOfMemoryErrorFalse);
+            wSumGrid.setName("WSum", ge.HandleOutOfMemoryErrorFalse);
             result.add(wSumGrid);
         }
         if (doMean) {
-            meanGrid.set_Name("Mean", ge.HandleOutOfMemoryErrorFalse);
+            meanGrid.setName("Mean", ge.HandleOutOfMemoryErrorFalse);
             result.add(meanGrid);
         }
         if (doWMean) {
-            wMeanGrid.set_Name("WMean", ge.HandleOutOfMemoryErrorFalse);
+            wMeanGrid.setName("WMean", ge.HandleOutOfMemoryErrorFalse);
             result.add(wMeanGrid);
         }
 
         if (doProp) {
-            propGrid.set_Name("Prop", ge.HandleOutOfMemoryErrorFalse);
+            propGrid.setName("Prop", ge.HandleOutOfMemoryErrorFalse);
             result.add(propGrid);
         }
         if (doWProp) {
-            wPropGrid.set_Name("WProp", ge.HandleOutOfMemoryErrorFalse);
+            wPropGrid.setName("WProp", ge.HandleOutOfMemoryErrorFalse);
             result.add(wPropGrid);
         }
         if (doVar) {
-            varGrid.set_Name("Var", ge.HandleOutOfMemoryErrorFalse);
+            varGrid.setName("Var", ge.HandleOutOfMemoryErrorFalse);
             result.add(varGrid);
         }
         if (doWVar) {
-            wVarGrid.set_Name("WVar", ge.HandleOutOfMemoryErrorFalse);
+            wVarGrid.setName("WVar", ge.HandleOutOfMemoryErrorFalse);
             result.add(wVarGrid);
         }
         if (doSkew) {
-            skewGrid.set_Name("Skew", ge.HandleOutOfMemoryErrorFalse);
+            skewGrid.setName("Skew", ge.HandleOutOfMemoryErrorFalse);
             result.add(skewGrid);
         }
         if (doWSkew) {
-            wSkewGrid.set_Name("WSkew", ge.HandleOutOfMemoryErrorFalse);
+            wSkewGrid.setName("WSkew", ge.HandleOutOfMemoryErrorFalse);
             result.add(wSkewGrid);
         }
         if (doCVar) {
-            cVarGrid.set_Name("CVar", ge.HandleOutOfMemoryErrorFalse);
+            cVarGrid.setName("CVar", ge.HandleOutOfMemoryErrorFalse);
             result.add(cVarGrid);
         }
         if (doWCVar) {
-            wCVarGrid.set_Name("WCVar", ge.HandleOutOfMemoryErrorFalse);
+            wCVarGrid.setName("WCVar", ge.HandleOutOfMemoryErrorFalse);
             result.add(wCVarGrid);
         }
         if (doCSkew) {
-            cSkewGrid.set_Name("CSkew", ge.HandleOutOfMemoryErrorFalse);
+            cSkewGrid.setName("CSkew", ge.HandleOutOfMemoryErrorFalse);
             result.add(cSkewGrid);
         }
         if (doWCSkew) {
-            wCSkewGrid.set_Name("WCSkew", ge.HandleOutOfMemoryErrorFalse);
+            wCSkewGrid.setName("WCSkew", ge.HandleOutOfMemoryErrorFalse);
             result.add(wCSkewGrid);
         }
 
@@ -1410,15 +1409,24 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     /**
      * TODO
      *
+     * @param grid
      * @param rowIndex the rowIndex of the cell about which the statistics are
      * returned
      * @param colIndex the rowIndex of the cell about which the statistics are
      * returned
+     * @param statistic
+     * @param distance
      * @param weightFactor
      * @param weightIntersect
      * @return 
      */
-    public double[] regionUnivariateStatistics(Grids_Grid2DSquareCellDouble grid, int rowIndex, int colIndex, String statistic, double distance, double weightIntersect, double weightFactor) {
+    public double[] regionUnivariateStatistics(
+            Grids_Grid2DSquareCellDouble grid, 
+            int rowIndex, int colIndex, 
+            String statistic, 
+            double distance, 
+            double weightIntersect, 
+            double weightFactor) {
         return null;
     }
 
@@ -1441,8 +1449,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     /**
      * TODO
      *
+     * @param grid
+     * @param statistics
      * @param scaleIntersept typically a number between 0 and 1 which controls
      * the weight applied at the initial scale
+     * @param distance
      * @param scaleFactor = 0.0d all scales equally weighted > 0.0d means that
      * the last scale has a zero weight < 0.0d means that the final scale has a
      * weight of 1 > -1.0d && < 1.0d provides an inverse decay on scale
@@ -1475,9 +1486,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      */
     /*
      * public Grids_Grid2DSquareCellDouble[] geometricDensity( Grids_Grid2DSquareCellDouble
-     * grid, double distance ) { int nrows = grid.get_NRows(); int ncols =
-     * grid.get_NCols(); double cellsize = grid.getCellsize(); double
-     * noDataValue = grid.get_NoDataValue(); Grids_Grid2DSquareCellDouble[] result =
+     * grid, double distance ) { int nrows = grid.getNRows(); int ncols =
+     * grid.getNCols(); double cellsize = grid.getCellsize(); double
+     * noDataValue = grid.getNoDataValue(); Grids_Grid2DSquareCellDouble[] result =
      * null; try { result = ( new Grids_Grid2DSquareCellDoubleFactory()
      * ).createGrid2DSquareCellDouble( nrows, ncols, grid.getXllcorner(),
      * grid.getYllcorner(), cellsize, noDataValue ); } catch (
@@ -1551,13 +1562,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         BigInteger nonNoDataValueCount =
                 grid.getGridStatistics(handleOutOfMemoryError).getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
         //double sparseness = grid.getGridStatistics().getSparseness();
-        long nrows = grid.get_NRows(handleOutOfMemoryError);
-        long ncols = grid.get_NCols(handleOutOfMemoryError);
+        long nrows = grid.getNRows(handleOutOfMemoryError);
+        long ncols = grid.getNCols(handleOutOfMemoryError);
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );
 
-        BigDecimal[] dimensions = grid.get_Dimensions(handleOutOfMemoryError);
-        double cellsize = dimensions[0].doubleValue();
-        double noDataValue = grid.get_NoDataValue(handleOutOfMemoryError);
+        Grids_Dimensions dimensions = grid.getDimensions(handleOutOfMemoryError);
+        double cellsize = grid.getCellsizeDouble(handleOutOfMemoryError);
+        double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
         int cellDistance = (int) Math.ceil(distance / cellsize);
         double d1;
         double d2;
@@ -1749,12 +1760,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     //        boolean outOfMemoryTrigger0 = false;
     //        Grids_Grid2DSquareCellDouble[] result = null;
     //        Grid2DSquareCellDoubleJAIFactory jf = new Grid2DSquareCellDoubleJAIFactory();
-    //        int nrows = grid.get_NRows();
-    //        int ncols = grid.get_NCols();
+    //        int nrows = grid.getNRows();
+    //        int ncols = grid.getNCols();
     //        double xllcorner = grid.getXllcorner();
     //        double yllcorner = grid.getYllcorner();
     //        double cellsize = grid.getCellsize();
-    //        double noDataValue = grid.get_NoDataValue();
+    //        double noDataValue = grid.getNoDataValue();
     //        int cellDistance = ( int ) Math.ceil( distance / cellsize );
     //        // Check chunkSize
     //        if ( chunkSize < ( cellDistance * 3 ) ) {
@@ -1823,9 +1834,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     //                chunk.clear();
     //                // Add central part of chunkDensity to result
     //                for ( int i = 0; i < numberOfIterations; i ++ ) {
-    //                    //System.out.println( "chunkDensity[ " + i + " ] nrows( " + chunkDensity[ i ].get_NRows() + " ), ncols( " + chunkDensity[ i ].get_NCols() + " )" );
+    //                    //System.out.println( "chunkDensity[ " + i + " ] nrows( " + chunkDensity[ i ].getNRows() + " ), ncols( " + chunkDensity[ i ].getNCols() + " )" );
     //                    //System.out.println( "Scale " + i + " GeometricDensity " + chunkDensity[ i ].toString() );
-    //                    addToGrid( result[ i ], chunkDensity[ i ], cellDistance, cellDistance, chunkDensity[ i ].get_NRows() - 1 - cellDistance, chunkDensity[ i ].get_NCols() - 1 - cellDistance, 1.0d );
+    //                    addToGrid( result[ i ], chunkDensity[ i ], cellDistance, cellDistance, chunkDensity[ i ].getNRows() - 1 - cellDistance, chunkDensity[ i ].getNCols() - 1 - cellDistance, 1.0d );
     //                    //System.out.println( "result[ " + i + " ]" );
     //                    //System.out.println( result[ i ].toString() );
     //                    // Tidy
@@ -1947,16 +1958,16 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_Grid2DSquareCellDouble correlationGrid = null;
         Grids_Grid2DSquareCellDouble weightedZdiffGrid = null;
         Grids_Grid2DSquareCellDouble zdiffGrid = null;
-        long grid0Nrows = grid0.get_NRows(handleOutOfMemoryError);
-        long grid0Ncols = grid0.get_NCols(handleOutOfMemoryError);
-        BigDecimal[] grid0Dimensions = grid0.get_Dimensions(handleOutOfMemoryError);
-        double grid0NoDataValue = grid0.get_NoDataValue(handleOutOfMemoryError);
-        long grid1Nrows = grid1.get_NRows(handleOutOfMemoryError);
-        long grid1Ncols = grid1.get_NCols(handleOutOfMemoryError);
-        BigDecimal[] grid1Dimensions = grid1.get_Dimensions(handleOutOfMemoryError);
-        double grid1NoDataValue = grid1.get_NoDataValue(handleOutOfMemoryError);
+        long grid0Nrows = grid0.getNRows(handleOutOfMemoryError);
+        long grid0Ncols = grid0.getNCols(handleOutOfMemoryError);
+        Grids_Dimensions grid0Dimensions = grid0.getDimensions(handleOutOfMemoryError);
+        double grid0NoDataValue = grid0.getNoDataValue(handleOutOfMemoryError);
+        long grid1Nrows = grid1.getNRows(handleOutOfMemoryError);
+        long grid1Ncols = grid1.getNCols(handleOutOfMemoryError);
+        Grids_Dimensions grid1Dimensions = grid1.getDimensions(handleOutOfMemoryError);
+        double grid1NoDataValue = grid1.getNoDataValue(handleOutOfMemoryError);
         double noDataValue = grid0NoDataValue;
-        int grid0CellDistance = (int) Math.ceil(distance / grid0Dimensions[ 0].doubleValue());
+        int grid0CellDistance = (int) Math.ceil(distance / grid1.getCellsizeDouble(handleOutOfMemoryError));
 
         // setNumberOfPairs is the number of pairs of values needed to calculate
         // the comparison statistics. It must be > 2
@@ -1975,11 +1986,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         double weight;
         double sumWeight;
         // Intersection check
-        if ((grid1Dimensions[1].compareTo(grid0Dimensions[1].add(grid0Dimensions[0].multiply(new BigDecimal(Long.toString(grid0Ncols))))) == 1)
-                || (grid1Dimensions[2].compareTo(grid0Dimensions[2].add(grid0Dimensions[0].multiply(new BigDecimal(Long.toString(grid0Nrows))))) == 1)
-                || (grid1Dimensions[1].add(grid1Dimensions[0].multiply(new BigDecimal(Long.toString(grid1Ncols)))).compareTo(grid0Dimensions[1]) == -1)
-                || (grid1Dimensions[2].add(grid1Dimensions[0].multiply(new BigDecimal(Long.toString(grid1Nrows)))).compareTo(grid0Dimensions[1]) == -1)) {
-            //System.out.println( "Warning!!! No intersection in " + getClass().get_Name( handleOutOfMemoryError ) + " regionBivariateStatistics()" );
+        BigDecimal grid0Cellsize;
+        BigDecimal grid1Cellsize;
+        grid0Cellsize = grid0Dimensions.getCellsize();
+        grid1Cellsize = grid1Dimensions.getCellsize();
+        if ((grid1Dimensions.getXMin().compareTo(grid0Dimensions.getXMin().add(grid0Cellsize.multiply(new BigDecimal(Long.toString(grid0Ncols))))) == 1)
+                || (grid1Dimensions.getXMax().compareTo(grid0Dimensions.getXMax().add(grid0Cellsize.multiply(new BigDecimal(Long.toString(grid0Nrows))))) == 1)
+                || (grid1Dimensions.getYMin().add(grid1Cellsize.multiply(new BigDecimal(Long.toString(grid1Ncols)))).compareTo(grid0Dimensions.getYMin()) == -1)
+                || (grid1Dimensions.getYMax().add(grid1Cellsize.multiply(new BigDecimal(Long.toString(grid1Nrows)))).compareTo(grid0Dimensions.getYMin()) == -1)) {
+            //System.out.println( "Warning!!! No intersection in " + getClass().getName( handleOutOfMemoryError ) + " regionBivariateStatistics()" );
             return result;
         }
         //        if ( ( grid1Xllcorner > grid0Xllcorner + ( ( double ) grid0Ncols * grid0Cellsize ) ) ||
@@ -2346,32 +2361,32 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         }
         allStatistics = 0;
         if (dodiff) {
-            diffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_Diff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            diffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Diff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = diffGrid;
             allStatistics++;
-            weightedDiffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_WDiff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = weightedDiffGrid;
             allStatistics++;
-            normalisedDiffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_NDiff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            normalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = normalisedDiffGrid;
             allStatistics++;
-            weightedNormalisedDiffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_NWDiff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedNormalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NWDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = weightedNormalisedDiffGrid;
             allStatistics++;
         }
         if (docorr) {
-            weightedCorrelationGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_WCorr_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedCorrelationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WCorr_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = weightedCorrelationGrid;
             allStatistics++;
-            correlationGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_Corr_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            correlationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Corr_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = correlationGrid;
             allStatistics++;
         }
         if (dozdiff) {
-            weightedZdiffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_WZDiff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedZdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = weightedZdiffGrid;
             allStatistics++;
-            zdiffGrid.set_Name(grid0.get_Name(handleOutOfMemoryError) + "_ZDiff_" + grid1.get_Name(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            zdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_ZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
             result[ allStatistics] = zdiffGrid;
             allStatistics++;
         }

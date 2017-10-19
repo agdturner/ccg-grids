@@ -39,8 +39,7 @@ public class Grids_GridStatistics1
     /**
      * Creates a new instance of GridStatistics1
      */
-    public Grids_GridStatistics1() {
-    }
+    protected Grids_GridStatistics1() {}
 
     public Grids_GridStatistics1(Grids_Environment ge) {
         super(ge);
@@ -91,8 +90,8 @@ public class Grids_GridStatistics1
         if (!getIsUpToDate()) {
             init();
             super.update(
-                    this.Grid2DSquareCell.get_NRows(this.ge._HandleOutOfMemoryError_boolean),
-                    this.Grid2DSquareCell.get_NCols(this.ge._HandleOutOfMemoryError_boolean));
+                    this.Grid2DSquareCell.getNRows(this.ge._HandleOutOfMemoryError_boolean),
+                    this.Grid2DSquareCell.getNCols(this.ge._HandleOutOfMemoryError_boolean));
             setIsUpToDate(true);
         }
     }

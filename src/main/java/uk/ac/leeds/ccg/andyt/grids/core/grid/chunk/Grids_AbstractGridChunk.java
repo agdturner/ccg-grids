@@ -85,7 +85,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      *
      * @param g
      */
-    public void initGrid2DSquareCell(Grids_AbstractGrid g) {
+    public final void initGrid2DSquareCell(Grids_AbstractGrid g) {
         this.setGrid(g);
     }
 

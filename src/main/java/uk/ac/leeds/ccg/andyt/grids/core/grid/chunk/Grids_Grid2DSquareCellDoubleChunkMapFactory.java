@@ -53,7 +53,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMapFactory
         return new Grids_Grid2DSquareCellDoubleChunkMap(
                 grid2DSquareCellDoubleChunk, 
                 chunkID, 
-                grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble().get_NoDataValue(false) );
+                grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble().getNoDataValue(false) );
     }
 
     public Grids_AbstractGrid2DSquareCellDoubleChunk createGrid2DSquareCellDoubleChunk(

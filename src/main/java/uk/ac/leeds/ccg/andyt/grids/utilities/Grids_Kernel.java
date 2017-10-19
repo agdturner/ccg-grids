@@ -45,18 +45,18 @@ public abstract class Grids_Kernel {
      * mean and variance of the normal distribution is given by the distances to
      * the centroids of the cells in _Grid2DSquareCell within distance for any 
      * cell centroid.
-     * @param _Grid2DSquareCell
+     * @param g
      * @param _Distance
      */
     public static double[][] getNormalDistributionKernelWeights( 
-            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell, 
+            Grids_AbstractGrid2DSquareCell g, 
             double _Distance ) {
         boolean handleOutOfMemoryError = true;
-        double cellsize = _Grid2DSquareCell.get_Dimensions( handleOutOfMemoryError )[0].doubleValue();
+        double cellsize = g.getCellsizeDouble(handleOutOfMemoryError);
         int cellDistance = ( int ) Math.ceil( _Distance / cellsize );
         double[][] weights = new double[ ( cellDistance * 2 ) + 1 ][ ( cellDistance * 2 ) + 1 ];
-        double x0 = _Grid2DSquareCell.getCellXDouble( 0L, handleOutOfMemoryError );
-        double y0 = _Grid2DSquareCell.getCellYDouble( 0L, handleOutOfMemoryError );
+        double x0 = g.getCellXDouble( 0L, handleOutOfMemoryError );
+        double y0 = g.getCellYDouble( 0L, handleOutOfMemoryError );
         double x1;
         double y1;
         double thisDistance;
@@ -68,8 +68,8 @@ public abstract class Grids_Kernel {
         double numberOfCentroids = 0.0d;
         for ( row = - cellDistance; row <= cellDistance; row ++ ) {
             for ( col = - cellDistance; col <= cellDistance; col ++ ) {
-                x1 = _Grid2DSquareCell.getCellXDouble( col, handleOutOfMemoryError );
-                y1 = _Grid2DSquareCell.getCellYDouble( row, handleOutOfMemoryError );
+                x1 = g.getCellXDouble( col, handleOutOfMemoryError );
+                y1 = g.getCellYDouble( row, handleOutOfMemoryError );
                 thisDistance = Grids_Utilities.distance( x0, y0, x1, y1 );
                 if ( thisDistance < _Distance ) {
                     numberOfCentroids ++;
@@ -81,8 +81,8 @@ public abstract class Grids_Kernel {
         // Calcuate the variance or standard deviation
         for ( row = - cellDistance; row <= cellDistance; row ++ ) {
             for ( col = - cellDistance; col <= cellDistance; col ++ ) {
-                x1 = _Grid2DSquareCell.getCellXDouble( col, handleOutOfMemoryError );
-                y1 = _Grid2DSquareCell.getCellYDouble( row, handleOutOfMemoryError );
+                x1 = g.getCellXDouble( col, handleOutOfMemoryError );
+                y1 = g.getCellYDouble( row, handleOutOfMemoryError );
                 thisDistance = Grids_Utilities.distance( x0, y0, x1, y1 );
                 if ( thisDistance < _Distance ) {
                     variance += ( thisDistance - mean ) * ( thisDistance - mean );
@@ -94,8 +94,8 @@ public abstract class Grids_Kernel {
         // Calculate the weights (expected values)
         for ( row = - cellDistance; row <= cellDistance; row ++ ) {
             for ( col = - cellDistance; col <= cellDistance; col ++ ) {
-                x1 = _Grid2DSquareCell.getCellXDouble( col, handleOutOfMemoryError );
-                y1 = _Grid2DSquareCell.getCellYDouble( row, handleOutOfMemoryError );
+                x1 = g.getCellXDouble( col, handleOutOfMemoryError );
+                y1 = g.getCellYDouble( row, handleOutOfMemoryError );
                 thisDistance = Grids_Utilities.distance( x0, y0, x1, y1 );
                 if ( thisDistance < _Distance ) {
                     weights[ row + cellDistance ][ col + cellDistance ] = getNormalDistributionKernelWeight( thisDistance, mean, variance );
@@ -148,25 +148,25 @@ public abstract class Grids_Kernel {
     
     /**
      * Returns a double[] of kernel weights.
-     * @param grid2DSquareCell
+     * @param g
      * @param distance
      * @param weightIntersect
      * @param weightFactor
      * @return 
      */
     public static double[][] getKernelWeights( 
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell, 
+            Grids_AbstractGrid2DSquareCell g, 
             double distance, 
             double weightIntersect, 
             double weightFactor ) {
         boolean handleOutOfMemoryError = true;
-        double cellsize = grid2DSquareCell.get_Dimensions( handleOutOfMemoryError )[0].doubleValue();
+        double cellsize = g.getCellsizeDouble(handleOutOfMemoryError);
         int cellDistance = ( int ) Math.ceil( distance / cellsize );
         double[][] weights = new double[ ( cellDistance * 2 ) + 1 ][ ( cellDistance * 2 ) + 1 ];
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
-        double x0 = grid2DSquareCell.getCellXDouble( 0L, handleOutOfMemoryError );
-        double y0 = grid2DSquareCell.getCellYDouble( 0L, handleOutOfMemoryError );
+        double x0 = g.getCellXDouble( 0L, handleOutOfMemoryError );
+        double y0 = g.getCellYDouble( 0L, handleOutOfMemoryError );
         double x1;
         double y1;
         double thisDistance;
@@ -174,8 +174,8 @@ public abstract class Grids_Kernel {
         int col;
         for ( row = - cellDistance; row <= cellDistance; row ++ ) {
             for ( col = - cellDistance; col <= cellDistance; col ++ ) {
-                x1 = grid2DSquareCell.getCellXDouble( col, handleOutOfMemoryError );
-                y1 = grid2DSquareCell.getCellYDouble( row, handleOutOfMemoryError );
+                x1 = g.getCellXDouble( col, handleOutOfMemoryError );
+                y1 = g.getCellYDouble( row, handleOutOfMemoryError );
                 thisDistance = Grids_Utilities.distance( x0, y0, x1, y1 );
                 //if ( thisDistance <= distance ) {
                 if ( thisDistance < distance ) {

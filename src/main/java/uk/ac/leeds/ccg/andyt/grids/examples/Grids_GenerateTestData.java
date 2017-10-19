@@ -63,16 +63,16 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     public void run() {
         System.out.println("Initialising...");
         boolean _HandleOutOfMemoryError = true;
-        testDataDirectory = this.get_Directory(_HandleOutOfMemoryError);
+        testDataDirectory = this.getDirectory(_HandleOutOfMemoryError);
         //Grid2DSquareCellDouble[] testData = generateCatchment( _HandleOutOfMemoryError );
         //Grid2DSquareCellDouble[] testData = generateSquareData( _HandleOutOfMemoryError );
         Grids_Grid2DSquareCellDouble[] testData = generateCircularData(_HandleOutOfMemoryError);
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
-            file = new File(testDataDirectory, testData[i].get_Name(_HandleOutOfMemoryError) + ".asc");
+            file = new File(testDataDirectory, testData[i].getName(_HandleOutOfMemoryError) + ".asc");
             new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file, _HandleOutOfMemoryError);
-            file = new File(testDataDirectory, testData[i].get_Name(_HandleOutOfMemoryError) + ".png");
+            file = new File(testDataDirectory, testData[i].getName(_HandleOutOfMemoryError) + ".png");
             new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", _HandleOutOfMemoryError);
         }
         System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time0));
@@ -106,7 +106,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         for (int i = 0; i < ngrids; i++) {
             grids[i] = (Grids_Grid2DSquareCellDouble) new Grids_Grid2DSquareCellDoubleFactory(ge, _HandleOutOfMemoryError).create(nrows, ncols);
             addToGrid(grids[i], 0.0d, _HandleOutOfMemoryError);
-            grids[i].set_Name("Grid" + i, _HandleOutOfMemoryError);
+            grids[i].setName("Grid" + i, _HandleOutOfMemoryError);
         }
 
         // grid 1
@@ -522,7 +522,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
             }
         }
         // Mask
-        double noDataValue = catchment[0].get_NoDataValue(_HandleOutOfMemoryError);
+        double noDataValue = catchment[0].getNoDataValue(_HandleOutOfMemoryError);
         double centreX = catchment[0].getCellXDouble(49, _HandleOutOfMemoryError);
         double centreY = catchment[0].getCellYDouble(49, _HandleOutOfMemoryError);
         for (int row = 0; row < nrows; row++) {
@@ -532,7 +532,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
                 }
             }
         }
-        catchment[0].set_Name("catchment1", _HandleOutOfMemoryError);
+        catchment[0].setName("catchment1", _HandleOutOfMemoryError);
         return catchment;
     }
 }

@@ -141,15 +141,15 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             Grids_2D_ID_int chunkID,
             int defaultValue ) {
         super(grid2DSquareCellIntChunk.ge);
+        boolean handleOutOfMemoryError = false;
         this.ChunkID = chunkID;
-        Grids_Grid2DSquareCellInt grid2DSquareCellInt =
+        Grids_Grid2DSquareCellInt g =
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
-        initGrid2DSquareCell( grid2DSquareCellInt );
-        int chunkNrows = grid2DSquareCellInt.getChunkNRows();
-        int chunkNcols = grid2DSquareCellInt.getChunkNCols();
+        initGrid2DSquareCell( g );
+        int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
+        int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         initData();
         int value;
-        boolean handleOutOfMemoryError = true;
         for ( int row = 0; row < chunkNrows; row ++ ) {
             for ( int col = 0; col < chunkNcols; col ++ ) {
                 value = grid2DSquareCellIntChunk.getCell(
@@ -182,7 +182,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * Initialises the data associated with this.
      */
     @Override
-    public void initData() {
+    public final void initData() {
         this.data = new TIntObjectHashMap();
     }
     
@@ -216,9 +216,10 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      */
     @Override
     public int[] toArrayIncludingNoDataValues() {
-        Grids_Grid2DSquareCellInt grid2DSquareCellInt = getGrid2DSquareCellInt();
-        int nrows = grid2DSquareCellInt.getChunkNRows();
-        int ncols = grid2DSquareCellInt.getChunkNCols();
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellInt g = getGrid2DSquareCellInt();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
         int[] array;
         long ncells = ( long ) nrows * ( long ) ncols;
         if ( ncells > Integer.MAX_VALUE ) {
@@ -319,8 +320,8 @@ public  class Grids_Grid2DSquareCellIntChunkMap
                     position ++;
                 }
             }
-        } catch ( java.lang.ArrayIndexOutOfBoundsException e ) {
-        } catch ( java.lang.NegativeArraySizeException e ) {}
+        } catch ( java.lang.ArrayIndexOutOfBoundsException | java.lang.NegativeArraySizeException e ) {
+        }
         return array;
     }
     
@@ -384,7 +385,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
      * @param valueToInitialise the value with which the cell is initialised
      */
     @Override
-    protected void initCell(
+    protected final void initCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
             int valueToInitialise) {

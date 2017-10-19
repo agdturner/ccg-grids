@@ -34,7 +34,6 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
-
     /**
      * For storing values arranged in rows and columns.
      */
@@ -43,7 +42,8 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
     /**
      * Creates a new Grid2DSquareCellDoubleChunkArray.
      */
-    protected Grids_Grid2DSquareCellDoubleChunkArray() {}
+    protected Grids_Grid2DSquareCellDoubleChunkArray() {
+    }
 
     public Grids_Grid2DSquareCellDoubleChunkArray(Grids_Environment ge) {
         super(ge);
@@ -67,7 +67,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
         super(grid2DSquareCellDouble.ge);
         this.ChunkID = _ChunkID;
         initGrid2DSquareCell(grid2DSquareCellDouble);
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        double _NoDataValue = grid2DSquareCellDouble.getNoDataValue(false);
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
@@ -106,7 +106,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
         int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
                 _ChunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        double _NoDataValue = grid2DSquareCellDouble.getNoDataValue(false);
         initData();
         int row;
         int col;
@@ -127,12 +127,13 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
     /**
      * Initialises the data associated with this.
      */
-    protected @Override
-    void initData() {
+    @Override
+    protected final void initData() {
+        boolean handleOutOfMemoryError = false;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = this.getGrid2DSquareCellDouble();
-        int chunkNrows = grid2DSquareCellDouble.getChunkNRows();
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols();
+        int chunkNrows = grid2DSquareCellDouble.getChunkNRows(handleOutOfMemoryError);
+        int chunkNcols = grid2DSquareCellDouble.getChunkNCols(handleOutOfMemoryError);
         this.data = new double[chunkNrows][chunkNcols];
     }
 

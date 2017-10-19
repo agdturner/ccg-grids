@@ -18,42 +18,39 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 
 /**
- * Abstract class to be extended by all Grids_AbstractGrid2DSquareCell 
- factories.
+ * Abstract class to be extended by all Grids_AbstractGrid2DSquareCell
+ * factories.
  */
-public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object{
+public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object {
 
     /**
-     * A _Directory for swapping.
+     * A Directory for swapping.
      */
-    protected File _Directory;
+    protected File Directory;
     /**
      * The number of rows in a chunk.
      */
-    protected int _ChunkNRows;
+    protected int ChunkNRows;
     /**
      * The number of columns in a chunk.
      */
-    protected int _ChunkNCols;
+    protected int ChunkNCols;
     /**
      * The Dimensions
      */
-    protected BigDecimal[] _Dimensions;
+    protected Grids_Dimensions Dimensions;
 //    /**
 //     * A container of other Grids_AbstractGrid2DSquareCell references.
 //     */
@@ -61,35 +58,38 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
     /**
      * The Grids_AbstractGridStatistics
      */
-    private Grids_AbstractGridStatistics _GridStatistics;
+    protected Grids_AbstractGridStatistics GridStatistics;
     /**
      * _HandleOutOfMemoryError
      */
-    protected boolean _HandleOutOfMemoryError;
+    protected boolean HandleOutOfMemoryError;
 
-    protected Grids_AbstractGrid2DSquareCellFactory(){}
-    
-    protected Grids_AbstractGrid2DSquareCellFactory(Grids_Environment ge){
+    protected Grids_AbstractGrid2DSquareCellFactory() {
+    }
+
+    public Grids_AbstractGrid2DSquareCellFactory(Grids_Environment ge) {
         super(ge);
     }
-    
+
     /**
-     * Returns a copy of this._Directory.
-     * @return 
+     * Returns a copy of this.Directory.
+     *
+     * @return
      */
-    protected File get_Directory() {
-        return new File(this._Directory.getPath());
+    protected File getDirectory() {
+        return new File(this.Directory.getPath());
     }
 
     /**
-     * Returns a copy of this._Directory.
+     * Returns a copy of this.Directory.
+     *
      * @param handleOutOfMemoryError
-     * @return 
+     * @return
      */
-    public File get_Directory(
+    public File getDirectory(
             boolean handleOutOfMemoryError) {
         try {
-            return get_Directory();
+            return getDirectory();
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
@@ -97,7 +97,7 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
                     throw _OutOfMemoryError;
                 }
                 ge.init_MemoryReserve(handleOutOfMemoryError);
-                return get_Directory(handleOutOfMemoryError);
+                return getDirectory(handleOutOfMemoryError);
             } else {
                 throw _OutOfMemoryError;
             }
@@ -105,63 +105,83 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
     }
 
     /**
-     * Sets this._Directory to _Directory.
-     * @param _Directory
+     * Sets this.Directory to Directory.
+     *
+     * @param directory
      */
-    public void set_Directory(
-            File _Directory) {
-        this._Directory = _Directory;
+    public void setDirectory(
+            File directory) {
+        this.Directory = directory;
     }
 
     /**
-     * Returns a copy of this._ChunkNRows.
-     * @return 
+     * Returns a copy of this.ChunkNRows.
+     *
+     * @return
      */
-    public int get_ChunkNRows() {
-        return this._ChunkNRows;
+    public int getChunkNRows() {
+        return this.ChunkNRows;
     }
 
     /**
-     * Sets this._ChunkNRows to _ChunkNRows
-     * @param _ChunkNRows
+     * Sets this.ChunkNRows to ChunkNRows
+     *
+     * @param chunkNRows
      */
-    public void set_ChunkNRows(
-            int _ChunkNRows) {
-        this._ChunkNRows = _ChunkNRows;
+    public void setChunkNRows(
+            int chunkNRows) {
+        this.ChunkNRows = chunkNRows;
     }
 
     /**
-     * Returns a copy of this._ChunkNCols.
-     * @return 
+     * Returns a copy of this.ChunkNCols.
+     *
+     * @return
      */
-    public int get_ChunkNCols() {
-        return this._ChunkNCols;
+    public int getChunkNCols() {
+        return this.ChunkNCols;
     }
 
     /**
-     * Sets this._ChunkNCols to _ChunkNCols
-     * @param _ChunkNCols
+     * Sets this.ChunkNCols to ChunkNCols
+     *
+     * @param chunkNCols
      */
-    public void set_ChunkNCols(
-            int _ChunkNCols) {
-        this._ChunkNCols = _ChunkNCols;
+    public void setChunkNCols(
+            int chunkNCols) {
+        this.ChunkNCols = chunkNCols;
     }
 
+    protected final void initDimensions(
+            Grids_Environment ge,
+            int chunkNCols,
+            int chunkNRows) {
+        this.Dimensions = new Grids_Dimensions(
+                ge,
+                new BigDecimal(0L),
+                new BigDecimal(0L),
+                new BigDecimal(chunkNCols),
+                new BigDecimal(chunkNRows),
+                new BigDecimal(1L));
+    }
+    
     /**
      * Returns this._Dimensions
-     * @return 
+     *
+     * @return
      */
-    public BigDecimal[] get_Dimensions() {
-        return this._Dimensions;
+    public Grids_Dimensions getDimensions() {
+        return this.Dimensions;
     }
 
     /**
      * Sets this._Dimensions to _Dimensions
-     * @param _Dimensions
+     *
+     * @param dimensions
      */
-    public void set_Dimensions(
-            BigDecimal[] _Dimensions) {
-        this._Dimensions = _Dimensions;
+    public void setDimensions(
+            Grids_Dimensions dimensions) {
+        this.Dimensions = dimensions;
     }
 
 //    /**
@@ -179,159 +199,168 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
 //        this._AbstractGrid2DSquareCell_HashSet = _AbstractGrid2DSquareCell_HashSet;
 //    }
     /**
-     * Returns this._GridStatistics
-     * @return 
+     * Returns this.GridStatistics
+     *
+     * @return
      */
-    public Grids_AbstractGridStatistics get_GridStatistics() {
-        if (this._GridStatistics.getClass() == Grids_GridStatistics0.class) {
-            return new Grids_GridStatistics0(ge);
-        }
-        if (this._GridStatistics.getClass() == Grids_GridStatistics1.class) {
-            return new Grids_GridStatistics1(ge);
-        }
-        return this._GridStatistics;
+    public Grids_AbstractGridStatistics getGridStatistics() {
+//        if (this.GridStatistics.getClass() == Grids_GridStatistics0.class) {
+//            return new Grids_GridStatistics0(ge);
+//        }
+//        if (this.GridStatistics.getClass() == Grids_GridStatistics1.class) {
+//            return new Grids_GridStatistics1(ge);
+//        }
+        return this.GridStatistics;
     }
 
     /**
-     * Sets this._GridStatistics to _GridStatistics
-     * @param _GridStatistics
+     * Sets this._GridStatistics to gs.
+     *
+     * @param gridStatistics
      */
-    public void set_GridStatistics(
-            Grids_AbstractGridStatistics _GridStatistics) {
-        this._GridStatistics = _GridStatistics;
+    public final void setGridStatistics(
+            Grids_AbstractGridStatistics gridStatistics) {
+        this.GridStatistics = gridStatistics;
     }
 
     /**
      * Returns this._HandleOutOfMemoryError
-     * @return 
+     *
+     * @return
      */
     protected boolean getHandleOutOfMemoryError() {
-        return this._HandleOutOfMemoryError;
+        return this.HandleOutOfMemoryError;
     }
 
     /**
      * Sets this._HandleOutOfMemoryError to _HandleOutOfMemoryError
+     *
      * @param handleOutOfMemoryError
      */
     public void setHandleOutOfMemoryError(
             boolean handleOutOfMemoryError) {
-        this._HandleOutOfMemoryError = handleOutOfMemoryError;
+        this.HandleOutOfMemoryError = handleOutOfMemoryError;
     }
 
     //////////////////////
     // Default Creation //
     //////////////////////
     /**
-     * @return Grids_AbstractGrid2DSquareCell loaded from this._Directory.
+     * @return Grids_AbstractGrid2DSquareCell loaded from this.Directory.
      */
     public Grids_AbstractGrid2DSquareCell create() {
-        return create(this._Directory);
+        return create(this.Directory);
     }
 
     /////////////////////////
     // Create from scratch //
     /////////////////////////
     /**
-     * @return Grids_AbstractGrid2DSquareCell with all values as
- _NoDataValues.
-     * @param _NRows The _NRows for the construct.
-     * @param _NCols The _NCols for the construct.
+     * @return Grids_AbstractGrid2DSquareCell with all values as NoDataValues.
+     * @param nRows The _NRows for the construct.
+     * @param nCols The _NCols for the construct.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            long _NRows,
-            long _NCols) {
+            long nRows,
+            long nCols) {
         // Correct the ymax and xmax of the grid just in case...
-        this._Dimensions[3] = _Dimensions[1].add(
-                new BigDecimal(_NCols).multiply(_Dimensions[0]));
-        this._Dimensions[4] = _Dimensions[2].add(
-                new BigDecimal(_NRows).multiply(_Dimensions[0]));
+        Grids_Dimensions dimensions;
+        dimensions = getDimensions(nRows, nCols);
         return create(
-                _NRows,
-                _NCols,
-                this._Dimensions);
+                nRows,
+                nCols,
+                dimensions);
+    }
+    
+    protected Grids_Dimensions getDimensions(
+            long nRows,
+            long nCols){
+        Grids_Dimensions result;
+        BigDecimal cellsize;
+        cellsize = Dimensions.getCellsize();
+        BigDecimal xMax = Dimensions.getXMin().add(
+                new BigDecimal(nCols).multiply(cellsize));
+        BigDecimal yMax = Dimensions.getYMin().add(
+                new BigDecimal(nRows).multiply(cellsize));
+        result = new Grids_Dimensions(
+                ge, Dimensions.getXMin(), Dimensions.getYMin(), xMax, yMax, cellsize);
+        return result;
     }
 
     /**
      * @param directory
-     * @return Grids_AbstractGrid2DSquareCell with all values as
- _NoDataValues.
-     * @param _NRows The _NRows for the construct.
-     * @param _NCols The _NCols for the construct.
+     * @return Grids_AbstractGrid2DSquareCell with all values as _NoDataValues.
+     * @param nRows The NumberRows for the construct.
+     * @param nCols The _NCols for the construct.
      */
     public Grids_AbstractGrid2DSquareCell create(
             File directory,
-            long _NRows,
-            long _NCols) {
+            long nRows,
+            long nCols) {
         // Correct the ymax and xmax of the grid just in case...
-        this._Dimensions[3] = _Dimensions[1].add(
-                new BigDecimal(_NCols).multiply(_Dimensions[0]));
-        this._Dimensions[4] = _Dimensions[2].add(
-                new BigDecimal(_NRows).multiply(_Dimensions[0]));
+        Grids_Dimensions dimensions;
+        dimensions = getDimensions(nRows, nCols);
         directory.mkdirs();
-        return create(
-                _Directory,
-                _NRows,
-                _NCols,
-                this._Dimensions);
+        return create(Directory,
+                nRows,
+                nCols,
+                dimensions);
     }
 
     /**
-     * @return Grids_AbstractGrid2DSquareCell with all values as
- _NoDataValues.
-     * @param _NRows The _NRows for the construct.
-     * @param _NCols The _NCols for the construct.
-     * @param _Dimensions The cellsize and bounding box details for the construct.
+     * @return Grids_AbstractGrid2DSquareCell with all values as _NoDataValues.
+     * @param nRows The _NRows for the construct.
+     * @param nCols The _NCols for the construct.
+     * @param dimensions The cellsize and bounding box details for the
+     * construct.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            long _NRows,
-            long _NCols,
-            BigDecimal[] _Dimensions) {
-        return create(Grids_FileCreator.createNewFile(this._Directory),
-                _NRows,
-                _NCols,
-                _Dimensions);
+            long nRows,
+            long nCols,
+            Grids_Dimensions dimensions) {
+        return create(Grids_FileCreator.createNewFile(this.Directory),
+                nRows,
+                nCols,
+                dimensions);
     }
 
     /**
-     * @return Grids_AbstractGrid2DSquareCell with all values as
- _NoDataValues.
-     * @param _Directory The _Directory for swapping to file.
-     * @param _NRows The _NRows for the construct.
-     * @param _NCols The _NCols for the construct.
-     * @param _Dimensions The cellsize and bounding box details for the construct.
+     * @return Grids_AbstractGrid2DSquareCell with all values as _NoDataValues.
+     * @param directory The Directory for swapping to file.
+     * @param nRows The _NRows for the construct.
+     * @param nCols The _NCols for the construct.
+     * @param dimensions The cellsize and bounding box details for the
+     * construct.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
-            long _NRows,
-            long _NCols,
-            BigDecimal[] _Dimensions) {
+            File directory,
+            long nRows,
+            long nCols,
+            Grids_Dimensions dimensions) {
         return create(
-                _Directory,
-                _NRows,
-                _NCols,
-                _Dimensions,
-                this.ge,
-                this._HandleOutOfMemoryError);
+                directory,
+                nRows,
+                nCols,
+                dimensions,
+                this.HandleOutOfMemoryError);
     }
 
     /**
      * @return Grids_AbstractGrid2DSquareCell grid with all values as
- _NoDataValues.
-     * @param _Directory The _Directory for swapping to file.
-     * @param _NRows The _NRows for the construct.
-     * @param _NCols The _NCols for the construct.
+     * _NoDataValues.
+     * @param directory The Directory for swapping to file.
+     * @param nRows The _NRows for the construct.
+     * @param nCols The _NCols for the construct.
      * @param dimensions
-     * @param ge 
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
-     *   in this method then swap operations are initiated prior to retrying.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * in this method then swap operations are initiated prior to retrying. If
+     * false then OutOfMemoryErrors are caught and thrown.
      */
     public abstract Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
-            long _NRows,
-            long _NCols,
-            BigDecimal[] dimensions,
-            Grids_Environment ge,
+            File directory,
+            long nRows,
+            long nCols,
+            Grids_Dimensions dimensions,
             boolean handleOutOfMemoryError);
 
     //////////////////////////////////////////////////////
@@ -339,34 +368,33 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
     //////////////////////////////////////////////////////
     /**
      * @return Grids_AbstractGrid2DSquareCell with all values as int values from
- _Grid2DSquareCell.
-     * @param _Grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
-   are obtained.
+     * _Grid2DSquareCell.
+     * @param g The Grids_AbstractGrid2DSquareCell from which
+     * values are obtained.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            Grids_AbstractGrid2DSquareCell _Grid2DSquareCell) {
-        return create(
-                this._Directory,
-                _Grid2DSquareCell,
+            Grids_AbstractGrid2DSquareCell g) {
+        return create(this.Directory,
+                g,
                 0L,
                 0L,
-                _Grid2DSquareCell.get_NRows(_HandleOutOfMemoryError) - 1L,
-                _Grid2DSquareCell.get_NCols(_HandleOutOfMemoryError) - 1L);
+                g.getNRows(HandleOutOfMemoryError) - 1L,
+                g.getNCols(HandleOutOfMemoryError) - 1L);
     }
 
     /**
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- grid2DSquareCell.
-     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
-   are obtained.
+     * grid2DSquareCell.
+     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which
+     * values are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      */
     public Grids_AbstractGrid2DSquareCell create(
             Grids_AbstractGrid2DSquareCell grid2DSquareCell,
@@ -374,8 +402,7 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
             long startColIndex,
             long endRowIndex,
             long endColIndex) {
-        File file = Grids_FileCreator.createNewFile(
-                this._Directory,
+        File file = Grids_FileCreator.createNewFile(this.Directory,
                 "" + startRowIndex + "_" + startColIndex + "_" + endRowIndex + "_" + endColIndex);
         return create(
                 file,
@@ -388,64 +415,60 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
 
     /**
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- grid2DSquareCell.
-     * @param _Directory The _Directory to be used for storing data in files.
-     *   Grid2DSquareCellInt information.
-     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
-   are obtained.
+     * grid2DSquareCell.
+     * @param directory The Directory to be used for storing data in files.
+     * Grid2DSquareCellInt information.
+     * @param g The Grids_AbstractGrid2DSquareCell from which
+     * values are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
+            File directory,
+            Grids_AbstractGrid2DSquareCell g,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex) {
         return create(
-                _Directory,
-                grid2DSquareCell,
+                directory,
+                g,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                ge,
-                this._HandleOutOfMemoryError);
+                this.HandleOutOfMemoryError);
     }
 
     /**
      * @param handleOutOfMemoryError
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- grid2DSquareCell.
-     * @param _Directory The _Directory to be used for storing data in files.
-     * @param grid2DSquareCell The Grids_AbstractGrid2DSquareCell from which values
-   are obtained.
+     * grid2DSquareCell.
+     * @param directory The Directory to be used for storing data in files.
+     * @param g The Grids_AbstractGrid2DSquareCell from which
+     * values are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     *   values are used.
+     * values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     *   values are used.
-     * @param ge A HashSet of swappable Grids_AbstractGrid2DSquareCell
-   instances.
+     * values are used.
      */
     public abstract Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell,
+            File directory,
+            Grids_AbstractGrid2DSquareCell g,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError);
 
     ////////////////////////
@@ -453,12 +476,13 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
     ////////////////////////
     /**
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- gridFile. If gridFile is a _Directory then it is assumed to contain a
- file called cache which can be opened into an object input stream and
- initailised as an instance of a class extending Grids_AbstractGrid2DSquareCell.
-     * @param gridFile either a _Directory, or a formatted File with a specific
-   extension containing the data and information about the
-   Grids_AbstractGrid2DSquareCell to be returned.
+     * gridFile. If gridFile is a Directory then it is assumed to contain a file
+     * called cache which can be opened into an object input stream and
+     * initailised as an instance of a class extending
+     * Grids_AbstractGrid2DSquareCell.
+     * @param gridFile either a Directory, or a formatted File with a specific
+     * extension containing the data and information about the
+     * Grids_AbstractGrid2DSquareCell to be returned.
      */
     public Grids_AbstractGrid2DSquareCell create(
             File gridFile) {
@@ -468,38 +492,37 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
                     gridFile,
                     "thisFile");
             try {
-                ObjectInputStream objectInputStream = new ObjectInputStream(
-                        new BufferedInputStream(
-                        new FileInputStream(thisFile)));
-                return create(
-                        this._Directory,
+                ObjectInputStream ois;
+                ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                return create(this.Directory,
                         gridFile,
-                        objectInputStream);
+                        ois);
             } catch (Exception e0) {
                 System.out.println(e0);
                 e0.printStackTrace();
             }
         }
         // Assume it is ESRI asciigrid
-        Grids_ESRIAsciiGridImporter _ESRIAsciigridImporter = new Grids_ESRIAsciiGridImporter(
+        Grids_ESRIAsciiGridImporter eagi;
+        eagi  = new Grids_ESRIAsciiGridImporter(
                 gridFile,
                 ge);
-        Object[] header = _ESRIAsciigridImporter.readHeaderObject();
-        long _NCols = (Long) header[ 0];
-        long _NRows = (Long) header[ 1];
-        double _NoDataValue = (Double) header[ 5];
-        _ESRIAsciigridImporter.close();
+        Object[] header = eagi.readHeaderObject();
+        long _NCols = (Long) header[0];
+        long _NRows = (Long) header[1];
+        double _NoDataValue = (Double) header[5];
+        eagi.close();
         String gridName = gridFile.getName().substring(0, gridFile.getName().length() - 4);
-        String _DirectoryName = gridFile.getParentFile()
+        String directoryName = gridFile.getParentFile()
                 + System.getProperty("file.separator")
                 + gridName
                 + this.getClass().getName()
-                + "_chunkNrows(" + _ChunkNRows + ")_chunkNcols(" + _ChunkNCols + ")";
-        //this._Directory = Grids_FileCreator.createNewFile( new File( _DirectoryName ) );
-        this._Directory = new File(_DirectoryName);
-        this._Directory.mkdirs();
+                + "_chunkNrows(" + ChunkNRows + ")_chunkNcols(" + ChunkNCols + ")";
+        //this.Directory = Grids_FileCreator.createNewFile( new File( _DirectoryName ) );
+        this.Directory = new File(directoryName);
+        this.Directory.mkdirs();
         return create(
-                this._Directory,
+                this.Directory,
                 gridFile,
                 0L,
                 0L,
@@ -509,109 +532,100 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
 
     /**
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- gridFile.
-     * @param _Directory The _Directory to be used for storing cached
-     *   Grid2DSquareCellInt information.
-     * @param gridFile either a _Directory, or a formatted File with a specific
-   extension containing the data and information about the
-   Grids_AbstractGrid2DSquareCell to be returned.
+     * gridFile.
+     * @param directory The Directory to be used for storing cached
+     * Grid2DSquareCellInt information.
+     * @param gridFile either a Directory, or a formatted File with a specific
+     * extension containing the data and information about the
+     * Grids_AbstractGrid2DSquareCell to be returned.
      * @param startRowIndex The topmost row index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param startColIndex The leftmost column index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param endRowIndex The bottom row index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
-     *   gridFile thats values are used.
-     * Default:
-     * _AbstractGrid2DSquareCell_HashSet to null;
-     * _HandleOutOfMemoryError to true.
+     * gridFile thats values are used. Default:
+     * _AbstractGrid2DSquareCell_HashSet to null; _HandleOutOfMemoryError to
+     * true.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
+            File directory,
             File gridFile,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex) {
         return create(
-                _Directory,
+                directory,
                 gridFile,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                this.ge,
-                this._HandleOutOfMemoryError);
+                this.HandleOutOfMemoryError);
     }
 
     /**
      * @param handleOutOfMemoryError
      * @param ge
      * @return Grids_AbstractGrid2DSquareCell with values obtained from
- gridFile.
-     * @param _Directory The _Directory to be used for storing cached
-     *   Grid2DSquareCellInt information.
-     * @param gridFile either a _Directory, or a formatted File with a specific
-   extension containing the data and information about the
-   Grids_AbstractGrid2DSquareCell to be returned.
+     * gridFile.
+     * @param directory The Directory to be used for storing cached
+     * Grid2DSquareCellInt information.
+     * @param gridFile either a Directory, or a formatted File with a specific
+     * extension containing the data and information about the
+     * Grids_AbstractGrid2DSquareCell to be returned.
      * @param startRowIndex The topmost row index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param startColIndex The leftmost column index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param endRowIndex The bottom row index of the grid represented in
-     *   gridFile thats values are used.
+     * gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
-     *   gridFile thats values are used.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable Grids_AbstractGrid2DSquareCell
-   instances.
+     * gridFile thats values are used.
      */
     public abstract Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
+            File directory,
             File gridFile,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError);
 
     /////////////////////////
     // Create from a cache //
     /////////////////////////
     /**
-     * @return Grids_AbstractGrid2DSquareCell with values obtained from 
- gridFile.
-     * @param _Directory The _Directory for swapping to file.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+     * gridFile.
+     * @param directory The Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
      */
     public Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
+            File directory,
             File gridFile,
             ObjectInputStream ois) {
         return create(
-                _Directory,
+                directory,
                 gridFile,
                 ois,
-                this.ge,
-                this._HandleOutOfMemoryError);
+                this.HandleOutOfMemoryError);
     }
 
     /**
      * @param handleOutOfMemoryError
-     * @param ge
-     * @return Grids_AbstractGrid2DSquareCell with values obtained from gridFile.
-     * @param _Directory The _Directory for swapping to file.
+     * @return Grids_AbstractGrid2DSquareCell with values obtained from
+     * gridFile.
+     * @param directory The Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable Grids_AbstractGrid2DSquareCell
-   instances.
      */
     public abstract Grids_AbstractGrid2DSquareCell create(
-            File _Directory,
+            File directory,
             File gridFile,
             ObjectInputStream ois,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError);
 }

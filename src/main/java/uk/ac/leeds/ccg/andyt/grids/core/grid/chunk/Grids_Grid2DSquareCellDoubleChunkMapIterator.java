@@ -56,7 +56,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMapIterator extends Grids_Abstract
         this.dataIterator = grid2DSquareCellDoubleChunkMap.getData().iterator();
         iteratorIndex = 0L;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = grid2DSquareCellDoubleChunkMap.getGrid2DSquareCellDouble();
-        this.noDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        this.noDataValue = grid2DSquareCellDouble.getNoDataValue(false);
         this.numberOfCells = ( 
                 ( long ) grid2DSquareCellDouble.getChunkNRows(grid2DSquareCellDoubleChunkMap.ChunkID,
                 ge.HandleOutOfMemoryErrorFalse ) *

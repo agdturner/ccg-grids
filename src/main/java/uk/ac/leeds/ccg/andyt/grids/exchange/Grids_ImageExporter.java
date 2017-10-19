@@ -128,8 +128,8 @@ public class Grids_ImageExporter implements Serializable {
             String type) {
         // Initialisation
         boolean handleOutOfMemoryError = true;
-        long nrows = grid.get_NRows(handleOutOfMemoryError);
-        long ncols = grid.get_NCols(handleOutOfMemoryError);
+        long nrows = grid.getNRows(handleOutOfMemoryError);
+        long ncols = grid.getNCols(handleOutOfMemoryError);
         // Check int precision OK here.
         if (nrows * ncols > Integer.MAX_VALUE) {
             System.err.println(
@@ -192,8 +192,8 @@ public class Grids_ImageExporter implements Serializable {
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_Grid2DSquareCellDouble rescaledGrid = processor.rescale(
                 grid, null, 0.0d, 255.0d, handleOutOfMemoryError);
-        int nChunkCols = rescaledGrid.get_NChunkCols(handleOutOfMemoryError);
-        double noDataValue = rescaledGrid.get_NoDataValue(handleOutOfMemoryError);
+        int nChunkCols = rescaledGrid.getNChunkCols(handleOutOfMemoryError);
+        double noDataValue = rescaledGrid.getNoDataValue(handleOutOfMemoryError);
         int countNoDataValues = 0;
         int rescaledValue;
         Grids_2D_ID_int chunkID;
@@ -204,15 +204,15 @@ public class Grids_ImageExporter implements Serializable {
 //        int chunkCellRowIndex;
 //        int chunkCellColIndex;
 //        Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellChunk;
-//        int chunkNrows = gridDouble.get_ChunkNRows(handleOutOfMemoryError);
-//        int chunkNcols = gridDouble.get_ChunkNCols(handleOutOfMemoryError);
+//        int chunkNrows = gridDouble.getChunkNRows(handleOutOfMemoryError);
+//        int chunkNcols = gridDouble.getChunkNCols(handleOutOfMemoryError);
 //        for (chunkRowIndex = 0; chunkRowIndex < chunkNrows; chunkRowIndex++) {
 //            for (chunkColIndex = 0; chunkColIndex < chunkNcols; chunkColIndex++) {
 //                chunkID = new ID(
 //                        nChunkCols, chunkRowIndex, chunkColIndex);
-////                int chunkNCols = grid.get_ChunkNCols(
+////                int chunkNCols = grid.getChunkNCols(
 ////                        chunkColIndex, handleOutOfMemoryError, chunkID);
-////                int chunkNRows = grid.get_ChunkNRows(
+////                int chunkNRows = grid.getChunkNRows(
 ////                        chunkRowIndex, handleOutOfMemoryError);
 //                grid2DSquareCellChunk = rescaledGrid.getGrid2DSquareCellDoubleChunk(
 //                        chunkID, handleOutOfMemoryError);
@@ -447,8 +447,8 @@ public class Grids_ImageExporter implements Serializable {
             String type) {
         // Initialisation
         boolean handleOutOfMemoryError = true;
-        long nrows = grid.get_NRows(handleOutOfMemoryError);
-        long ncols = grid.get_NCols(handleOutOfMemoryError);
+        long nrows = grid.getNRows(handleOutOfMemoryError);
+        long ncols = grid.getNCols(handleOutOfMemoryError);
         // Check int precision OK here.
         if (nrows * ncols * (duplication + 1) * (duplication + 1) > Integer.MAX_VALUE) {
             System.err.println(
@@ -514,8 +514,8 @@ public class Grids_ImageExporter implements Serializable {
         _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
                 handleOutOfMemoryError);
         // If not already in the range 0 to 255, rescale grid into this range.
-        int nChunkCols = grid.get_NChunkCols(handleOutOfMemoryError);
-        double noDataValue = grid.get_NoDataValue(handleOutOfMemoryError);
+        int nChunkCols = grid.getNChunkCols(handleOutOfMemoryError);
+        double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
         int countNoDataValues = 0;
         Grids_2D_ID_int chunkID;
         Color pixel;
@@ -526,15 +526,15 @@ public class Grids_ImageExporter implements Serializable {
 //        int chunkCellRowIndex;
 //        int chunkCellColIndex;
 //        Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellChunk;
-//        int chunkNrows = gridDouble.get_ChunkNRows(handleOutOfMemoryError);
-//        int chunkNcols = gridDouble.get_ChunkNCols(handleOutOfMemoryError);
+//        int chunkNrows = gridDouble.getChunkNRows(handleOutOfMemoryError);
+//        int chunkNcols = gridDouble.getChunkNCols(handleOutOfMemoryError);
 //        for (chunkRowIndex = 0; chunkRowIndex < chunkNrows; chunkRowIndex++) {
 //            for (chunkColIndex = 0; chunkColIndex < chunkNcols; chunkColIndex++) {
 //                chunkID = new ID(
 //                        nChunkCols, chunkRowIndex, chunkColIndex);
-////                int chunkNCols = grid.get_ChunkNCols(
+////                int chunkNCols = grid.getChunkNCols(
 ////                        chunkColIndex, handleOutOfMemoryError, chunkID);
-////                int chunkNRows = grid.get_ChunkNRows(
+////                int chunkNRows = grid.getChunkNRows(
 ////                        chunkRowIndex, handleOutOfMemoryError);
 //                grid2DSquareCellChunk = rescaledGrid.getGrid2DSquareCellDoubleChunk(
 //                        chunkID, handleOutOfMemoryError);

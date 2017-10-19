@@ -50,7 +50,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMapIterator
         this.dataIterator = grid2DSquareCellDoubleChunk64CellMap.getData().iterator();
         iteratorIndex = 0L;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = grid2DSquareCellDoubleChunk64CellMap.getGrid2DSquareCellDouble();
-        this.noDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        this.noDataValue = grid2DSquareCellDouble.getNoDataValue(false);
         this.numberOfCells = ( 
                 ( long ) grid2DSquareCellDouble.getChunkNRows(grid2DSquareCellDoubleChunk64CellMap.ChunkID,
                 ge.HandleOutOfMemoryErrorFalse ) *

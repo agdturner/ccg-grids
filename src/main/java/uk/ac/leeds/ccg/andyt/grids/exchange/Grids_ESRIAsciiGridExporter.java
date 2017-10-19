@@ -19,13 +19,11 @@
 package uk.ac.leeds.ccg.andyt.grids.exchange;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
@@ -96,10 +94,10 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
     protected File toAsciiFile(
             Grids_AbstractGrid2DSquareCell grid2DSquareCell) {
         boolean handleOutOfMemoryError = false;
-        File directory = grid2DSquareCell.get_Directory(handleOutOfMemoryError);
+        File directory = grid2DSquareCell.getDirectory(handleOutOfMemoryError);
         File file = new File(
                 directory.getParentFile(),
-                grid2DSquareCell.get_Name(handleOutOfMemoryError) + ".asc");
+                grid2DSquareCell.getName(handleOutOfMemoryError) + ".asc");
         return toAsciiFile(
                 grid2DSquareCell,
                 file);
@@ -235,28 +233,23 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
         } else {
             noDataValueBigDecimalString = noDataValueBigDecimal.toString();
         }
-        try {
-            PrintWriter pw = new PrintWriter(
-                    new BufferedWriter(
-                            new OutputStreamWriter(
-                                    new FileOutputStream(file))));
-            BigDecimal[] dimensions = _Grid2DSquareCell.get_Dimensions(
+        try (PrintWriter pw = Generic_StaticIO.getPrintWriter(file, false)) {
+            Grids_Dimensions dimensions = _Grid2DSquareCell.getDimensions(
                     handleOutOfMemoryError);
-            long nrows = _Grid2DSquareCell.get_NRows(
+            long nrows = _Grid2DSquareCell.getNRows(
                     ge.HandleOutOfMemoryErrorFalse);
-            long ncols = _Grid2DSquareCell.get_NCols(
+            long ncols = _Grid2DSquareCell.getNCols(
                     ge.HandleOutOfMemoryErrorFalse);
             long nrows_minus_1 = nrows - 1L;
             long _long_minus_1 = - 1L;
             long _long_0 = 0L;
             pw.println("ncols " + ncols);
             pw.println("nrows " + nrows);
-            pw.println("xllcorner " + dimensions[1].toString());
-            pw.println("yllcorner " + dimensions[2].toString());
-            pw.println("cellsize " + dimensions[0].toString());
+            pw.println("xllcorner " + dimensions.getXMin().toString());
+            pw.println("yllcorner " + dimensions.getYMin().toString());
+            pw.println("cellsize " + dimensions.getCellsize().toString());
             long row = 0L;
             long col = 0L;
-
             if (_Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellInt.class) {
                 Grids_Grid2DSquareCellInt _Grid2DSquareCellInt = (Grids_Grid2DSquareCellInt) _Grid2DSquareCell;
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(
@@ -287,7 +280,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                                 throw a_OutOfMemoryError;
                             }
                             _Grid2DSquareCell.ge.init_MemoryReserve(handleOutOfMemoryError);
-
+                            
                             //pw.print( grid.getCell( row, col ) + " " );
                             value = _Grid2DSquareCellInt.getCell(
                                     row,
@@ -305,14 +298,14 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             } else {
                 //_Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellDouble.class
                 Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCell;
-                double noDataValue = _Grid2DSquareCellDouble.get_NoDataValue(handleOutOfMemoryError);
+                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
                 if (Double.isInfinite(noDataValue)) {
                     System.out.println(
                             "Warning!!! noDataValue = "
-                            + noDataValue
-                            + " in ESRIAsciigridExporter.toAsciiFile( \n"
-                            + "Grid2DSquareCellAbstract( " + _Grid2DSquareCellDouble.toString() + " ), \n"
-                            + "File( " + file.toString() + " ) )");
+                                    + noDataValue
+                                    + " in ESRIAsciigridExporter.toAsciiFile( \n"
+                                            + "Grid2DSquareCellAbstract( " + _Grid2DSquareCellDouble.toString() + " ), \n"
+                                                    + "File( " + file.toString() + " ) )");
                 }
                 pw.println("NODATA_Value " + noDataValueBigDecimalString);
                 double value = 0.0d;
@@ -362,10 +355,6 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             }
             // Close output
             pw.flush();
-            pw.close();
-        } catch (FileNotFoundException fnfe0) {
-            System.out.println(fnfe0.toString());
-            fnfe0.printStackTrace();
         }
         return file;
     }

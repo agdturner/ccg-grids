@@ -21,6 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCellFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
@@ -77,7 +78,7 @@ public class Grids_GenerateRoofData
             p._HandleOutOfMemoryError = true;
             //_GenerateRoofData.run_0();
             //_GenerateRoofData.run_1();
-            p.run_2();
+            //p.run_2();
         } catch (Error _Error) {
             _Error.printStackTrace();
         } catch (Exception _Exception) {
@@ -85,102 +86,106 @@ public class Grids_GenerateRoofData
         }
     }
 
-    /**
-     * Creates ouputs with ridge heights between 1 and 10 and all the same dimensions (rows and columns)
-     * @throws java.io.IOException
-     */
-    public void run_2()
-            throws IOException {
-        BigDecimal[] _Dimensions = new BigDecimal[5];
-        _Dimensions[0] = new BigDecimal("1");
-        _Dimensions[1] = new BigDecimal("0");
-        _Dimensions[2] = new BigDecimal("0");
-        _Dimensions[3] = new BigDecimal("64");
-        _Dimensions[4] = new BigDecimal("32");
-        long _ResizedNRows = _Dimensions[4].intValue();
-        long _ResizedNCols = _Dimensions[3].intValue();
-        long nrows;
-        long ncols;
-        double _CellsizeDivideTwo = _Dimensions[0].doubleValue() / 2.0d;
-        long _RowWithRidgeProportion;
-        long _RowWithRidge;
-        long _ColWithRidgeProportion;
-        long _ColWithRidge;
-        // ---------------------------
-        // Because we are rescaling in _CreateGableRoofs and _CreateHippedRoofs and the roofs are non complex this is arbitrary so long as it is a positive non-zero
-        double _RowRidgeHeight = 1.0d;
-        double _ColRidgeHeight = 1.0d;
-        // ---------------------------
-        long _ColStartRidgeProportion;
-        long _ColStartRidge;
-        long _ColEndRidgeProportion;
-        long _ColEndRidge;
-        long _RowStartRidgeProportion;
-        long _RowStartRidge;
-        long _RowEndRidgeProportion;
-        long _RowEndRidge;
-        Grids_Grid2DSquareCellDouble _ResizedGrid2DSquareCellDouble = this._Grid2DSquareCellDoubleFactory.create(_Directory, _ResizedNRows, _ResizedNCols, _Dimensions, _Grids_Environment, _HandleOutOfMemoryError);
-        //for (nrows = 10; nrows <= 80; nrows *= 2) {
-        //for ( nrows = 5; nrows <= 80; nrows *= 2 ) {
-        for (nrows = 11; nrows <= 88; nrows *= 2) {
-            //for ( ncols = 4; ncols <= 64; ncols *= 2 ) {
-            //for (ncols = 8; ncols <= 64; ncols *= 2) {
-            for (ncols = 9; ncols <= 72; ncols *= 2) {
-                for (_RowWithRidgeProportion = 2; _RowWithRidgeProportion <= 2; _RowWithRidgeProportion++) {
-                    //for (_RowWithRidgeProportion = 2; _RowWithRidgeProportion <= 8; _RowWithRidgeProportion *= 2) {
-                    _RowWithRidge = nrows / _RowWithRidgeProportion;
-                    for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 2; _ColWithRidgeProportion++) {
-                        //for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 8; _ColWithRidgeProportion *= 2) {
-                        _ColWithRidge = ncols / _ColWithRidgeProportion;
-//                        // Because we are rescaling in _CreateGableRoofs and _CreateHippedRoofs and the roofs are non complex we do not need these loops
-//                        for ( _RowRidgeHeight = 2; _RowRidgeHeight <= 8; _RowRidgeHeight *= 2 ) {
-//                            for ( _ColRidgeHeight = 2; _ColRidgeHeight <= 8; _ColRidgeHeight *= 2 ) {
-                        _CreateGableRoofs(
-                                _ResizedGrid2DSquareCellDouble,
-                                nrows,
-                                ncols,
-                                _CellsizeDivideTwo,
-                                _RowWithRidge,
-                                _ColWithRidge,
-                                (double) _RowRidgeHeight,
-                                (double) _ColRidgeHeight);
-                        //for (_RowStartRidgeProportion = 2; _RowStartRidgeProportion <= 8; _RowStartRidgeProportion *= 2) {
-                        for (_RowStartRidgeProportion = 2; _RowStartRidgeProportion <= 4; _RowStartRidgeProportion++) {
-                            _RowStartRidge = nrows / _RowStartRidgeProportion;
-                            //for (_ColStartRidgeProportion = 2; _ColStartRidgeProportion <= 8; _ColStartRidgeProportion *= 2) {
-                            //_ColEndRidgeProportion = _ColStartRidgeProportion;
-                            for (_ColStartRidgeProportion = 2; _ColStartRidgeProportion <= 4; _ColStartRidgeProportion++) {
-                                _ColStartRidge = ncols / _ColStartRidgeProportion;
-                                //_RowEndRidgeProportion = _RowStartRidgeProportion;
-                                //for (_RowEndRidgeProportion = 2; _RowEndRidgeProportion <= 8; _RowEndRidgeProportion *= 2) {
-                                for (_RowEndRidgeProportion = 2; _RowEndRidgeProportion <= 4; _RowEndRidgeProportion++) {
-                                    _RowEndRidge = nrows * (_RowEndRidgeProportion - 1) / _RowEndRidgeProportion;
-                                    //for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 8; _ColEndRidgeProportion *= 2) {
-                                    //_ColEndRidgeProportion = _ColStartRidgeProportion;
-                                    for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 4; _ColEndRidgeProportion++) {
-                                        _ColEndRidge = ncols * (_ColEndRidgeProportion - 1) / _ColEndRidgeProportion;
-                                        _CreateHippedRoofs(
-                                                _ResizedGrid2DSquareCellDouble,
-                                                nrows,
-                                                ncols,
-                                                _CellsizeDivideTwo,
-                                                _RowWithRidge,
-                                                (double) _RowRidgeHeight,
-                                                _ColStartRidge,
-                                                _ColEndRidge,
-                                                _ColWithRidge,
-                                                (double) _ColRidgeHeight,
-                                                _RowStartRidge,
-                                                _RowEndRidge);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    /**
+//     * Creates ouputs with ridge heights between 1 and 10 and all the same dimensions (rows and columns)
+//     * @throws java.io.IOException
+//     */
+//    public void run_2()
+//            throws IOException {
+//        Grids_Dimensions _Dimensions = new Grids_Dimensions(
+//                ge,
+//        new BigDecimal("0"),
+//                new BigDecimal("0"),
+//                new BigDecimal("64"),
+//                new BigDecimal("32"),
+//                _Dimensions[4].intValue(),
+//                new BigDecimal("1"));
+//        
+//        long _ResizedNCols = _Dimensions[3].intValue();
+//        long nrows;
+//        long ncols;
+//        double _CellsizeDivideTwo = _Dimensions[0].doubleValue() / 2.0d;
+//        long _RowWithRidgeProportion;
+//        long _RowWithRidge;
+//        long _ColWithRidgeProportion;
+//        long _ColWithRidge;
+//        // ---------------------------
+//        // Because we are rescaling in _CreateGableRoofs and _CreateHippedRoofs and the roofs are non complex this is arbitrary so long as it is a positive non-zero
+//        double _RowRidgeHeight = 1.0d;
+//        double _ColRidgeHeight = 1.0d;
+//        // ---------------------------
+//        long _ColStartRidgeProportion;
+//        long _ColStartRidge;
+//        long _ColEndRidgeProportion;
+//        long _ColEndRidge;
+//        long _RowStartRidgeProportion;
+//        long _RowStartRidge;
+//        long _RowEndRidgeProportion;
+//        long _RowEndRidge;
+//        Grids_Grid2DSquareCellDouble _ResizedGrid2DSquareCellDouble;
+//        _ResizedGrid2DSquareCellDouble = this.Grid2DSquareCellDoubleFactory.create(
+//                Directory, _ResizedNRows, _ResizedNCols, _Dimensions, _HandleOutOfMemoryError);
+//        //for (nrows = 10; nrows <= 80; nrows *= 2) {
+//        //for ( nrows = 5; nrows <= 80; nrows *= 2 ) {
+//        for (nrows = 11; nrows <= 88; nrows *= 2) {
+//            //for ( ncols = 4; ncols <= 64; ncols *= 2 ) {
+//            //for (ncols = 8; ncols <= 64; ncols *= 2) {
+//            for (ncols = 9; ncols <= 72; ncols *= 2) {
+//                for (_RowWithRidgeProportion = 2; _RowWithRidgeProportion <= 2; _RowWithRidgeProportion++) {
+//                    //for (_RowWithRidgeProportion = 2; _RowWithRidgeProportion <= 8; _RowWithRidgeProportion *= 2) {
+//                    _RowWithRidge = nrows / _RowWithRidgeProportion;
+//                    for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 2; _ColWithRidgeProportion++) {
+//                        //for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 8; _ColWithRidgeProportion *= 2) {
+//                        _ColWithRidge = ncols / _ColWithRidgeProportion;
+////                        // Because we are rescaling in _CreateGableRoofs and _CreateHippedRoofs and the roofs are non complex we do not need these loops
+////                        for ( _RowRidgeHeight = 2; _RowRidgeHeight <= 8; _RowRidgeHeight *= 2 ) {
+////                            for ( _ColRidgeHeight = 2; _ColRidgeHeight <= 8; _ColRidgeHeight *= 2 ) {
+//                        _CreateGableRoofs(
+//                                _ResizedGrid2DSquareCellDouble,
+//                                nrows,
+//                                ncols,
+//                                _CellsizeDivideTwo,
+//                                _RowWithRidge,
+//                                _ColWithRidge,
+//                                (double) _RowRidgeHeight,
+//                                (double) _ColRidgeHeight);
+//                        //for (_RowStartRidgeProportion = 2; _RowStartRidgeProportion <= 8; _RowStartRidgeProportion *= 2) {
+//                        for (_RowStartRidgeProportion = 2; _RowStartRidgeProportion <= 4; _RowStartRidgeProportion++) {
+//                            _RowStartRidge = nrows / _RowStartRidgeProportion;
+//                            //for (_ColStartRidgeProportion = 2; _ColStartRidgeProportion <= 8; _ColStartRidgeProportion *= 2) {
+//                            //_ColEndRidgeProportion = _ColStartRidgeProportion;
+//                            for (_ColStartRidgeProportion = 2; _ColStartRidgeProportion <= 4; _ColStartRidgeProportion++) {
+//                                _ColStartRidge = ncols / _ColStartRidgeProportion;
+//                                //_RowEndRidgeProportion = _RowStartRidgeProportion;
+//                                //for (_RowEndRidgeProportion = 2; _RowEndRidgeProportion <= 8; _RowEndRidgeProportion *= 2) {
+//                                for (_RowEndRidgeProportion = 2; _RowEndRidgeProportion <= 4; _RowEndRidgeProportion++) {
+//                                    _RowEndRidge = nrows * (_RowEndRidgeProportion - 1) / _RowEndRidgeProportion;
+//                                    //for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 8; _ColEndRidgeProportion *= 2) {
+//                                    //_ColEndRidgeProportion = _ColStartRidgeProportion;
+//                                    for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 4; _ColEndRidgeProportion++) {
+//                                        _ColEndRidge = ncols * (_ColEndRidgeProportion - 1) / _ColEndRidgeProportion;
+//                                        _CreateHippedRoofs(
+//                                                _ResizedGrid2DSquareCellDouble,
+//                                                nrows,
+//                                                ncols,
+//                                                _CellsizeDivideTwo,
+//                                                _RowWithRidge,
+//                                                (double) _RowRidgeHeight,
+//                                                _ColStartRidge,
+//                                                _ColEndRidge,
+//                                                _ColWithRidge,
+//                                                (double) _ColRidgeHeight,
+//                                                _RowStartRidge,
+//                                                _RowEndRidge);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Creates ouputs with varied ridge heights and varied dimensions (rows and columns)
@@ -437,7 +442,7 @@ public class Grids_GenerateRoofData
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
         double _RowStartRidgeTanAngle = _ColRidgeHeight / (double) (_RowStartRidge - _CellsizeDivideTwo);
         double _RowEndRidgeTanAngle = _ColRidgeHeight / (double) ((nrows - _RowEndRidge) - _CellsizeDivideTwo);
-        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -470,11 +475,10 @@ public class Grids_GenerateRoofData
                 _Grid2DSquareCellDouble.setCell(row - 1, col, _HeightToAdd, _HandleOutOfMemoryError);
             }
         }
-        _Grid2DSquareCellDouble.set_Name("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge + "_" + _ColStartRidge + "_" + _ColEndRidge, _HandleOutOfMemoryError);
-        _ResizeRescaleOutput(
-                _ResizedGrid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge + "_" + _ColStartRidge + "_" + _ColEndRidge, _HandleOutOfMemoryError);
+        _ResizeRescaleOutput(_ResizedGrid2DSquareCellDouble,
                 _Grid2DSquareCellDouble,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -509,11 +513,10 @@ public class Grids_GenerateRoofData
                 _Grid2DSquareCellDouble.setCell(row, col - 1, _HeightToAdd, _HandleOutOfMemoryError);
             }
         }
-        _Grid2DSquareCellDouble.set_Name("HippedColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge + "_" + _RowStartRidge + "_" + _RowEndRidge, _HandleOutOfMemoryError);
-        _ResizeRescaleOutput(
-                _ResizedGrid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("HippedColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge + "_" + _RowStartRidge + "_" + _RowEndRidge, _HandleOutOfMemoryError);
+        _ResizeRescaleOutput(_ResizedGrid2DSquareCellDouble,
                 _Grid2DSquareCellDouble,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -562,7 +565,7 @@ public class Grids_GenerateRoofData
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
         double _RowStartRidgeTanAngle = _ColRidgeHeight / (double) (_RowStartRidge - _CellsizeDivideTwo);
         double _RowEndRidgeTanAngle = _ColRidgeHeight / (double) ((nrows - _RowEndRidge) - _CellsizeDivideTwo);
-        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -595,11 +598,10 @@ public class Grids_GenerateRoofData
                 _Grid2DSquareCellDouble.setCell(row, col, _HeightToAdd, _HandleOutOfMemoryError);
             }
         }
-        _Grid2DSquareCellDouble.set_Name("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge + "_" + _ColStartRidge + "_" + _ColEndRidge, _HandleOutOfMemoryError);
-        output(
-                _Grid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge + "_" + _ColStartRidge + "_" + _ColEndRidge, _HandleOutOfMemoryError);
+        output(_Grid2DSquareCellDouble,
                 //this,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -634,11 +636,10 @@ public class Grids_GenerateRoofData
                 _Grid2DSquareCellDouble.setCell(row, col, _HeightToAdd, _HandleOutOfMemoryError);
             }
         }
-        _Grid2DSquareCellDouble.set_Name("HippedColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge + "_" + _RowStartRidge + "_" + _RowEndRidge, _HandleOutOfMemoryError);
-        output(
-                _Grid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("HippedColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge + "_" + _RowStartRidge + "_" + _RowEndRidge, _HandleOutOfMemoryError);
+        output(_Grid2DSquareCellDouble,
                 //this,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -675,7 +676,7 @@ public class Grids_GenerateRoofData
         double _TopRowRidgeTanAngle = _RowRidgeHeight / (double) ((nrows - _RowWithRidge) - _CellsizeDivideTwo);
         double _LeftColRidgeTanAngle = _ColRidgeHeight / (double) (_ColWithRidge - _CellsizeDivideTwo);
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
-        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -694,11 +695,10 @@ public class Grids_GenerateRoofData
                 _BottomRowRidgeTanAngle,
                 _TopRowRidgeTanAngle,
                 _HandleOutOfMemoryError);
-        _Grid2DSquareCellDouble.set_Name("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge, _HandleOutOfMemoryError);
-        _ResizeRescaleOutput(
-                _ResizedGrid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge, _HandleOutOfMemoryError);
+        _ResizeRescaleOutput(_ResizedGrid2DSquareCellDouble,
                 _Grid2DSquareCellDouble,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -719,11 +719,10 @@ public class Grids_GenerateRoofData
                 _LeftColRidgeTanAngle,
                 _RightColRidgeTanAngle,
                 _HandleOutOfMemoryError);
-        _Grid2DSquareCellDouble.set_Name("GableColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge, _HandleOutOfMemoryError);
-        _ResizeRescaleOutput(
-                _ResizedGrid2DSquareCellDouble,
+        _Grid2DSquareCellDouble.setName("GableColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge, _HandleOutOfMemoryError);
+        _ResizeRescaleOutput(_ResizedGrid2DSquareCellDouble,
                 _Grid2DSquareCellDouble,
-                _Directory,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -758,14 +757,14 @@ public class Grids_GenerateRoofData
 //                    _Grid2DSquareCellDouble,
 //                    "SUM",
 //                    _Dimensions,
-//                    this._Grid2DSquareCellDoubleFactory,
+//                    this.Grid2DSquareCellDoubleFactory,
 //                    _HandleOutOfMemoryError);
 //            // If not aggregation, then disaggregation
 //            if (_ResizedGrid2DSquareCellDouble == null) {
 //                _ResizedGrid2DSquareCellDouble = disaggregate(
 //                        _Dimensions,
 //                        _Grid2DSquareCellDouble,
-//                        this._Grid2DSquareCellDoubleFactory,
+//                        this.Grid2DSquareCellDoubleFactory,
 //                        _HandleOutOfMemoryError);
 //            }
             _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(_ResizedGrid2DSquareCellDouble);
@@ -777,9 +776,9 @@ public class Grids_GenerateRoofData
                     10.0d,
                     _HandleOutOfMemoryError);
             _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(_AggregatedGrid2DSquareCellDouble);
-            _AggregatedGrid2DSquareCellDouble.set_Name(_Grid2DSquareCellDouble.get_Name(_HandleOutOfMemoryError) + "ResizedRescaled", _HandleOutOfMemoryError);
+            _AggregatedGrid2DSquareCellDouble.setName(_Grid2DSquareCellDouble.getName(_HandleOutOfMemoryError) + "ResizedRescaled", _HandleOutOfMemoryError);
             output(_AggregatedGrid2DSquareCellDouble,
-                    _Directory,
+                    Directory,
                     _ImageExporter,
                     _ImageTypes,
                     _ESRIAsciiGridExporter,
@@ -830,7 +829,7 @@ public class Grids_GenerateRoofData
         double _TopRowRidgeTanAngle = _RowRidgeHeight / (double) ((nrows - _RowWithRidge) - _CellsizeDivideTwo);
         double _LeftColRidgeTanAngle = _ColRidgeHeight / (double) (_ColWithRidge - _CellsizeDivideTwo);
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
-        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -849,10 +848,9 @@ public class Grids_GenerateRoofData
                 _BottomRowRidgeTanAngle,
                 _TopRowRidgeTanAngle,
                 _HandleOutOfMemoryError);
-        _Grid2DSquareCellDouble.set_Name("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge, _HandleOutOfMemoryError);
-        output(
-                _Grid2DSquareCellDouble,
-                _Directory,
+        _Grid2DSquareCellDouble.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" + _RowRidgeHeight + "_" + _RowWithRidge, _HandleOutOfMemoryError);
+        output(_Grid2DSquareCellDouble,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -873,10 +871,9 @@ public class Grids_GenerateRoofData
                 _LeftColRidgeTanAngle,
                 _RightColRidgeTanAngle,
                 _HandleOutOfMemoryError);
-        _Grid2DSquareCellDouble.set_Name("GableColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge, _HandleOutOfMemoryError);
-        output(
-                _Grid2DSquareCellDouble,
-                _Directory,
+        _Grid2DSquareCellDouble.setName("GableColRidgedRoof_" + nrows + "_" + ncols + "_" + _ColRidgeHeight + "_" + _ColWithRidge, _HandleOutOfMemoryError);
+        output(_Grid2DSquareCellDouble,
+                Directory,
                 _ImageExporter,
                 _ImageTypes,
                 _ESRIAsciiGridExporter,
@@ -891,12 +888,12 @@ public class Grids_GenerateRoofData
      * @return 
      **/
     public Grids_Grid2DSquareCellDouble disaggregate(
-            BigDecimal[] _Dimensions,
+            Grids_Dimensions _Dimensions,
             Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble,
             Grids_AbstractGrid2DSquareCellFactory _Grid2DSquareCellFactory,
             boolean _HandleOutOfMemoryError) {
-        long _NRows = _Grid2DSquareCellDouble.get_NRows(_HandleOutOfMemoryError);
-        long _NCols = _Grid2DSquareCellDouble.get_NCols(_HandleOutOfMemoryError);
+        long _NRows = _Grid2DSquareCellDouble.getNRows(_HandleOutOfMemoryError);
+        long _NCols = _Grid2DSquareCellDouble.getNCols(_HandleOutOfMemoryError);
         Grids_Grid2DSquareCellDouble result = (Grids_Grid2DSquareCellDouble) _Grid2DSquareCellFactory.create(
                 _NRows,
                 _NCols,
@@ -930,10 +927,10 @@ public class Grids_GenerateRoofData
             Grids_Grid2DSquareCellDouble _ResizeGrid2DSquareCell,
             Grids_Grid2DSquareCellDouble _Grid2DSquareCellDouble,
             boolean _HandleOutOfMemoryError) {
-        long _NRows = _Grid2DSquareCellDouble.get_NRows(_HandleOutOfMemoryError);
-        long _ResizeNRows = _ResizeGrid2DSquareCell.get_NRows(_HandleOutOfMemoryError);
-        long _NCols = _Grid2DSquareCellDouble.get_NCols(_HandleOutOfMemoryError);
-        long _ResizeNCols = _ResizeGrid2DSquareCell.get_NCols(_HandleOutOfMemoryError);
+        long _NRows = _Grid2DSquareCellDouble.getNRows(_HandleOutOfMemoryError);
+        long _ResizeNRows = _ResizeGrid2DSquareCell.getNRows(_HandleOutOfMemoryError);
+        long _NCols = _Grid2DSquareCellDouble.getNCols(_HandleOutOfMemoryError);
+        long _ResizeNCols = _ResizeGrid2DSquareCell.getNCols(_HandleOutOfMemoryError);
         double _NRows_double = (double) _NRows;
         double _OutputNRows_double = (double) _ResizeNRows;
         double _NCols_double = (double) _NCols;

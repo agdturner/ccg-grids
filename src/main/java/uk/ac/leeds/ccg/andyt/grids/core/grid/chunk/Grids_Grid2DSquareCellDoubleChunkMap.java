@@ -81,7 +81,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
         this( 
                 grid2DSquareCellDouble, 
                 _ChunkID, 
-                grid2DSquareCellDouble.get_NoDataValue(false) );
+                grid2DSquareCellDouble.getNoDataValue(false) );
     }
     
     /**
@@ -117,16 +117,16 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
             Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk, 
             Grids_2D_ID_int _ChunkID, 
             double defaultValue ) {
+        boolean handleOutOfMemoryError = false;
         this.ChunkID = _ChunkID;
         this.defaultValue = defaultValue;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = 
-                grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
-        initGrid2DSquareCell( grid2DSquareCellDouble );
-        int chunkNrows = grid2DSquareCellDouble.getChunkNRows();
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols();
+        Grids_Grid2DSquareCellDouble g;
+        g = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
+        initGrid2DSquareCell( g );
+        int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
+        int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         initData();
         double value;
-        boolean handleOutOfMemoryError = true;
         for ( int row = 0; row < chunkNrows; row ++ ) {
             for ( int col = 0; col < chunkNcols; col ++ ) {
                 value = grid2DSquareCellDoubleChunk.getCell( 
@@ -175,9 +175,10 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      * @return 
      */
     protected @Override double[] toArrayIncludingNoDataValues() {
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
         double[] array;
         if ( ( ( long ) nrows * ( long ) ncols ) > Integer.MAX_VALUE ) {
             //throw new PrecisionExcpetion
@@ -221,7 +222,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      * @return 
      */
     protected @Override double[] toArrayNotIncludingNoDataValues() {
-        double _NoDataValue = getGrid2DSquareCellDouble().get_NoDataValue(false);
+        double _NoDataValue = getGrid2DSquareCellDouble().getNoDataValue(false);
         BigInteger nonNoDataValueCountBigInteger = getNonNoDataValueCountBigInteger();
         double[] array;
         if ( ( nonNoDataValueCountBigInteger.add( BigInteger.ONE ) ).compareTo( new BigInteger( Integer.toString( Integer.MAX_VALUE ) ) ) > 0 ) {
@@ -532,7 +533,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
      * @return 
      */
     protected @Override BigInteger getNonNoDataValueCountBigInteger() {
-        double _NoDataValue = getGrid2DSquareCellDouble().get_NoDataValue(false);
+        double _NoDataValue = getGrid2DSquareCellDouble().getNoDataValue(false);
         TDoubleObjectIterator iterator = this.data.iterator();
         BigInteger nonNoDataCountBigInteger = BigInteger.ZERO;
         if ( this.defaultValue == _NoDataValue ) {
@@ -651,7 +652,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
                     325, 
                     BigDecimal.ROUND_HALF_EVEN ).doubleValue();
         } else {
-            return getGrid2DSquareCellDouble().get_NoDataValue(false);
+            return getGrid2DSquareCellDouble().getNoDataValue(false);
         }
     }
     
@@ -737,7 +738,7 @@ public class Grids_Grid2DSquareCellDoubleChunkMap
                 }
             }
         }
-        return getGrid2DSquareCellDouble().get_NoDataValue(false);
+        return getGrid2DSquareCellDouble().getNoDataValue(false);
     }
     
     /**

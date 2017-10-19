@@ -18,9 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
 import gnu.trove.TDoubleHashSet;
 import gnu.trove.TDoubleLongHashMap;
 import gnu.trove.TDoubleLongIterator;
@@ -33,7 +31,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLong;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 
 /**
  * Grids_AbstractGrid2DSquareCellDoubleChunk extension that stores cell values
@@ -46,7 +43,6 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
-
     /**
      * For storing values mapped to a binary encoded long. The long is a key
      * which indicates if the value is that at a given location. Both keys and
@@ -54,10 +50,12 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      */
     private TDoubleLongHashMap data;
 
-    protected Grids_Grid2DSquareCellDoubleChunk64CellMap() {}
+    protected Grids_Grid2DSquareCellDoubleChunk64CellMap() {
+    }
 
     /**
      * Creates a new Grid2DSquareCellDoubleChunk64CellMap.
+     *
      * @param ge
      */
     public Grids_Grid2DSquareCellDoubleChunk64CellMap(Grids_Environment ge) {
@@ -80,11 +78,12 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
             Grids_Grid2DSquareCellDouble g,
             Grids_2D_ID_int chunkID) {
         super(g.ge);
+        boolean handleOutOfMemoryError = false;
         this.ChunkID = chunkID;
         initGrid2DSquareCell(g);
         Long nCellsInChunk
-                = (long) g.getChunkNRows()
-                * (long) g.getChunkNCols();
+                = (long) g.getChunkNRows(handleOutOfMemoryError)
+                * (long) g.getChunkNCols(handleOutOfMemoryError);
         if (nCellsInChunk <= 64) {
             initData();
         } else {
@@ -107,28 +106,28 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      *
      *
      *
-     * @param grid2DSquareCellDoubleChunk The
-     * AbstractGrid2DSquareCellDoubleChunkk this is constructed from.
+     * @param gridChunk The AbstractGrid2DSquareCellDoubleChunkk this is
+     * constructed from.
      * @param _ChunkID The ID this will have.
      */
     protected Grids_Grid2DSquareCellDoubleChunk64CellMap(
-            Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellDoubleChunk,
+            Grids_AbstractGrid2DSquareCellDoubleChunk gridChunk,
             Grids_2D_ID_int _ChunkID) {
-        super(grid2DSquareCellDoubleChunk.ge);
+        super(gridChunk.ge);
+        boolean handleOutOfMemoryError = false;
         this.ChunkID = _ChunkID;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
-        initGrid2DSquareCell(grid2DSquareCellDouble);
-        int chunkNrows = grid2DSquareCellDouble.getChunkNRows();
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols();
+        Grids_Grid2DSquareCellDouble g
+                = gridChunk.getGrid2DSquareCellDouble();
+        initGrid2DSquareCell(g);
+        int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
+        int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         if (chunkNrows * chunkNcols <= 64) {
-            double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+            double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
             initData();
             double value;
-            boolean handleOutOfMemoryError = true;
             for (int row = 0; row < chunkNrows; row++) {
                 for (int col = 0; col < chunkNcols; col++) {
-                    value = grid2DSquareCellDoubleChunk.getCell(
+                    value = gridChunk.getCell(
                             row,
                             col,
                             _NoDataValue,
@@ -149,7 +148,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
                     + this.getClass().getName()
                     + ".Grid2DSquareCellDoubleChunk64CellMap( \n"
                     + "    Grid2DSquareCellDouble ( "
-                    + grid2DSquareCellDouble.getBasicDescription(false) + " ), \n"
+                    + g.getBasicDescription(handleOutOfMemoryError) + " ), \n"
                     + "    ChunkID ( " + _ChunkID + " ) );");
             // Sample? What to do? Hmmmmmmm!
         }
@@ -159,16 +158,16 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
     /**
      * Initialises the data associated with this.
      */
-    protected @Override
-    void initData() {
+    @Override
+    protected final void initData() {
         this.data = new TDoubleLongHashMap();
     }
 
     /**
      * Clears the data associated with this.
      */
-    protected @Override
-    void clearData() {
+    @Override
+    protected void clearData() {
         this.data = null;
         System.gc();
     }
@@ -189,12 +188,13 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      */
     protected @Override
     double[] toArrayIncludingNoDataValues() {
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
         double[] array = new double[nrows * ncols];
-        Arrays.fill(array, _NoDataValue);
+        Arrays.fill(array, noDataValue);
         TDoubleLongIterator iterator = this.data.iterator();
         Grids_UnsignedLong valueMap = new Grids_UnsignedLong();
         int ite;
@@ -258,10 +258,11 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double _NoDataValue) {
+        boolean handleOutOfMemoryError = false;
         TDoubleLongIterator iterator = this.data.iterator();
         Grids_UnsignedLong valueMap = new Grids_UnsignedLong();
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols();
+        int chunkNcols = grid2DSquareCellDouble.getChunkNCols(handleOutOfMemoryError);
         int ite;
         int position;
         for (ite = 0; ite < data.size(); ite++) {
@@ -285,13 +286,14 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      * of this chunk.
      * @param valueToInitialise The value with which the cell is initialised.
      */
-    protected @Override
-    void initCell(
+    @Override
+    protected final void initCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double valueToInitialise) {
+        boolean handleOutOfMemoryError = false;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols();
+        int chunkNcols = grid2DSquareCellDouble.getChunkNCols(handleOutOfMemoryError);
         long long0;
         if (this.data.containsKey(valueToInitialise)) {
             long0 = data.get(valueToInitialise)
@@ -316,24 +318,25 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
      * @param chunkCellColIndex The column index of the cell w.r.t. the origin
      * of this chunk.
      * @param valueToSet The value the cell is to be set to
-     * @param _NoDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
      * @return
-     */
-    protected @Override
+     */@Override
+    protected 
     double setCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double valueToSet,
-            double _NoDataValue) {
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        double result = _NoDataValue;
+            double noDataValue) {
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        double result = noDataValue;
         TDoubleLongIterator iterator = this.data.iterator();
         Grids_UnsignedLong valueMap = new Grids_UnsignedLong();
         double value;
         boolean gotValue = false;
         boolean setValue;
         setValue = valueToSet == result;
-        int position = (chunkCellRowIndex * grid2DSquareCellDouble.getChunkNCols()) + chunkCellColIndex;
+        int position = (chunkCellRowIndex * g.getChunkNCols(handleOutOfMemoryError)) + chunkCellColIndex;
         long powerOf2 = powerOf2(position);
         int ite;
         for (ite = 0; ite < data.size(); ite++) {
@@ -408,7 +411,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
             if (this.getGrid().ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
                     this.getGrid(),
                     this.ChunkID,
-                        false) < 1L) {
+                    false) < 1L) {
                 throw e;
             }
             this.getGrid().ge.init_MemoryReserve(this.getGrid(),
@@ -733,7 +736,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
                 }
             }
         }
-        return getGrid2DSquareCellDouble().get_NoDataValue(false);
+        return getGrid2DSquareCellDouble().getNoDataValue(false);
     }
 
     /**

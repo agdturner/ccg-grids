@@ -465,9 +465,10 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected double[] toArrayIncludingNoDataValues() {
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
         double[] array;
         if (((long) nrows * (long) ncols) > Integer.MAX_VALUE) {
             //throw new PrecisionExcpetion
@@ -479,7 +480,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
                     + Integer.MAX_VALUE + " instead of "
                     + ((long) nrows * (long) ncols));
         }
-        double _NoDataValue = getGrid2DSquareCellDouble().get_NoDataValue(false);
+        double _NoDataValue = getGrid2DSquareCellDouble().getNoDataValue(handleOutOfMemoryError);
         array = new double[nrows * ncols];
         int row;
         int col;
@@ -536,10 +537,11 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected double[] toArrayNotIncludingNoDataValues() {
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        boolean handleOutOfMemoryError = false;
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double[] array = new double[getNonNoDataValueCountInt()];
         int row;
         int col;
@@ -599,11 +601,12 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected BigInteger getNonNoDataValueCountBigInteger() {
+        boolean handleOutOfMemoryError = false;
         BigInteger nonNoDataValueCount = BigInteger.ZERO;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(false);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
                 if (getCell(row, col, _NoDataValue) != _NoDataValue) {
@@ -695,11 +698,12 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected BigDecimal getSumBigDecimal() {
+        boolean handleOutOfMemoryError = false;
         BigDecimal sum = BigDecimal.ZERO;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(false);
         double value;
         int row;
         int col;
@@ -753,11 +757,12 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected double getMinDouble() {
+        boolean handleOutOfMemoryError = false;
         double min = Double.POSITIVE_INFINITY;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(false);
         double value;
         int row;
         int col;
@@ -816,11 +821,12 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected double getMaxDouble() {
+        boolean handleOutOfMemoryError = false;
         double max = Double.NEGATIVE_INFINITY;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        Grids_Grid2DSquareCellDouble g = getGrid2DSquareCellDouble();
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double value;
         int row;
         int col;
@@ -889,14 +895,15 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      */
     protected BigDecimal getArithmeticMeanBigDecimal(
             int numberOfDecimalPlaces) {
+        boolean handleOutOfMemoryError = false;
         BigDecimal mean = BigDecimal.ZERO;
         BigDecimal count = BigDecimal.ZERO;
         BigDecimal one = BigDecimal.ONE;
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
+        Grids_Grid2DSquareCellDouble g
                 = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double value;
         int row;
         int col;
@@ -966,7 +973,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
         try {
             return arithmeticMeanBigDecimal.doubleValue();
         } catch (NullPointerException npe0) {
-            return getGrid2DSquareCellDouble().get_NoDataValue(false);
+            return getGrid2DSquareCellDouble().getNoDataValue(false);
         }
     }
 
@@ -1010,16 +1017,17 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected TDoubleHashSet getModeTDoubleHashSet() {
+        boolean handleOutOfMemoryError = false;
         TDoubleHashSet mode = new TDoubleHashSet();
         BigInteger nonNoDataValueCountBigInteger
                 = getNonNoDataValueCountBigInteger();
         if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
             //TDoubleObjectHashMap modes = new TDoubleObjectHashMap();
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
+            Grids_Grid2DSquareCellDouble g
                     = getGrid2DSquareCellDouble();
-            int nrows = grid2DSquareCellDouble.getChunkNRows();
-            int ncols = grid2DSquareCellDouble.getChunkNCols();
-            double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+            int nrows = g.getChunkNRows(handleOutOfMemoryError);
+            int ncols = g.getChunkNCols(handleOutOfMemoryError);
+            double _NoDataValue = g.getNoDataValue(false);
             boolean calculated = false;
             int row = 0;
             int col = 0;
@@ -1150,7 +1158,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
         long count = 1L;
         double thisValue;
         double _NoDataValue
-                = getGrid2DSquareCellDouble().get_NoDataValue(false);
+                = getGrid2DSquareCellDouble().getNoDataValue(false);
         // Do remainder of the row
         for (q++; q < ncols; q++) {
             thisValue = getCell(
@@ -1219,7 +1227,7 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = getGrid2DSquareCellDouble();
         int scale = 20;
-        double median = grid2DSquareCellDouble.get_NoDataValue(false);
+        double median = grid2DSquareCellDouble.getNoDataValue(false);
         BigInteger nonNoDataValueCountBigInteger
                 = getNonNoDataValueCountBigInteger();
         if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
@@ -1388,13 +1396,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
      * @return
      */
     protected double getStandardDeviationDouble() {
+        boolean handleOutOfMemoryError = false;
         double standardDeviation = 0.0d;
         double mean = getArithmeticMeanDouble();
-        Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
+        Grids_Grid2DSquareCellDouble g
                 = getGrid2DSquareCellDouble();
-        int nrows = grid2DSquareCellDouble.getChunkNRows();
-        int ncols = grid2DSquareCellDouble.getChunkNCols();
-        double _NoDataValue = grid2DSquareCellDouble.get_NoDataValue(false);
+        int nrows = g.getChunkNRows(handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double value;
         double count = 0.0d;
         for (int row = 0; row < nrows; row++) {
