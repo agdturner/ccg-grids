@@ -112,7 +112,7 @@ public class Grids_Grid2DSquareCellIntFactory
         }
         this.ChunkNRows = chunkNRows;
         this.ChunkNCols = chunkNCols;
-        initDimensions(ge, chunkNCols, chunkNRows);
+        initDimensions(chunkNCols, chunkNRows);
         this.ChunkFactory = gcf;
         this.ge = ge;
         this.setGridStatistics(new Grids_GridStatistics1(ge));

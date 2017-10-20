@@ -1390,7 +1390,7 @@ public class Grids_Grid2DSquareCellDouble
         s = getGridStatistics();
         if (this.getGridStatistics() instanceof Grids_GridStatistics0) {
             boolean handleOutOfMemoryError;
-            handleOutOfMemoryError = ge._HandleOutOfMemoryError_boolean;
+            handleOutOfMemoryError = ge.HandleOutOfMemoryError;
             if (oldValue != _NoDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
                 s.setNonNoDataValueCountBigInteger(
@@ -2179,7 +2179,7 @@ public class Grids_Grid2DSquareCellDouble
                     Grids_AbstractGridStatistics s;
                     s = getGridStatistics();
                     boolean handleOutOfMemoryError;
-                    handleOutOfMemoryError = ge._HandleOutOfMemoryError_boolean;
+                    handleOutOfMemoryError = ge.HandleOutOfMemoryError;
 
                     s.setNonNoDataValueCountBigInteger(
                             s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));

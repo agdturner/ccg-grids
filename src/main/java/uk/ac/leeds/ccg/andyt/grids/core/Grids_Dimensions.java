@@ -24,13 +24,17 @@ import java.math.BigDecimal;
  *
  * @author geoagdt
  */
-public class Grids_Dimensions extends Grids_Object {
+public class Grids_Dimensions {
 
     private BigDecimal XMin;
     private BigDecimal XMax;
     private BigDecimal YMin;
     private BigDecimal YMax;
     private BigDecimal Cellsize;
+    private BigDecimal HalfCellsize;
+    private BigDecimal Width;
+    private BigDecimal Height;
+    private BigDecimal Area;
     /**
      * Stores the minimum number of decimal places used to store Dimensions.
      */
@@ -38,14 +42,9 @@ public class Grids_Dimensions extends Grids_Object {
     
     protected Grids_Dimensions() {
     }
-
-    protected Grids_Dimensions(Grids_Environment ge) {
-        super(ge);
-    }
     
     /**
      * DimensionsScale will default to the maximum scale in any of the BigDecimal inputs. 
-     * @param ge The Grids_Environment.
      * @param xMin The minimum x coordinate.
      * @param xMax The maximum x coordinate.
      * @param yMin The minimum y coordinate.
@@ -53,13 +52,11 @@ public class Grids_Dimensions extends Grids_Object {
      * @param cellsize The cellsize.
      */ 
     public Grids_Dimensions(
-            Grids_Environment ge,
             BigDecimal xMin,
             BigDecimal xMax,
             BigDecimal yMin,
             BigDecimal yMax,
             BigDecimal cellsize){
-        super(ge);
         this.XMax = xMax;
         this.XMin = xMin;
         this.YMax = yMax;
@@ -83,7 +80,6 @@ public class Grids_Dimensions extends Grids_Object {
     }
     
     /**
-     * @param ge The Grids_Environment.
      * @param xMin The minimum x coordinate.
      * @param xMax The maximum x coordinate.
      * @param yMin The minimum y coordinate.
@@ -93,21 +89,18 @@ public class Grids_Dimensions extends Grids_Object {
      */
     
     public Grids_Dimensions(
-            Grids_Environment ge,
             BigDecimal xMin,
             BigDecimal xMax,
             BigDecimal yMin,
             BigDecimal yMax,
             BigDecimal cellsize,
             int dimensionsScale) {
-        super(ge);
         this.XMax = xMax;
         this.XMin = xMin;
         this.YMax = yMax;
         this.YMin = yMin;
         this.DimensionsScale = dimensionsScale;
     }
-
     
     @Override
     public String toString(){
@@ -161,6 +154,34 @@ public class Grids_Dimensions extends Grids_Object {
      */
     public int getDimensionsScale() {
         return DimensionsScale;
+    }
+    
+    public BigDecimal getWidth() {
+        if (Width == null) {
+            Width = XMax.subtract(XMin);
+        }
+        return Width;
+    }
+    
+    public BigDecimal getHeight() {
+        if (Height == null) {
+            Height = YMax.subtract(YMin);
+        }
+        return Height;
+    }
+    
+    public BigDecimal getArea() {
+        if (Area == null) {
+            Area = getWidth().multiply(getHeight());
+        }
+        return Area;
+    }
+    
+    public BigDecimal getHalfCellsize() {
+        if (HalfCellsize == null) {
+            HalfCellsize = Cellsize.divide(BigDecimal.valueOf(2L));
+        }
+        return HalfCellsize;
     }
 
 }

@@ -212,7 +212,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             BigDecimal cellBigDecimal;
             double cellDouble;
             boolean handleOutOfMemoryError = true;
-            double noDataValueDouble = grid2DSquareCellDouble.getNoDataValue(ge._HandleOutOfMemoryError_boolean);
+            double noDataValueDouble = grid2DSquareCellDouble.getNoDataValue(ge.HandleOutOfMemoryError);
             // BigDecimal oneBigDecimal = BigDecimal.ONE;
             for (row = 0; row < _NRows; row++) {
                 for (col = 0; col < _NCols; col++) {
@@ -1248,8 +1248,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     protected Object getMode() {
-        long _NRows = this.Grid2DSquareCell.getNRows(ge._HandleOutOfMemoryError_boolean);
-        long _NCols = this.Grid2DSquareCell.getNCols(ge._HandleOutOfMemoryError_boolean);
+        long _NRows = this.Grid2DSquareCell.getNRows(ge.HandleOutOfMemoryError);
+        long _NCols = this.Grid2DSquareCell.getNCols(ge.HandleOutOfMemoryError);
         long row;
         long col;
         boolean calculated = false;

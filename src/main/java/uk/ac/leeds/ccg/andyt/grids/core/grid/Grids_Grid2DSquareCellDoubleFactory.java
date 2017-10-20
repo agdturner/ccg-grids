@@ -24,7 +24,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleC
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
@@ -190,7 +189,7 @@ public class Grids_Grid2DSquareCellDoubleFactory
         this.Directory = directory;
         this.ChunkNRows = chunkNRows;
         this.ChunkNCols = chunkNCols;
-        initDimensions(ge, chunkNCols, chunkNRows);
+        initDimensions(chunkNCols, chunkNRows);
         this.ChunkFactory = gcf;
         this.setGridStatistics(new Grids_GridStatistics0(ge));
         this.HandleOutOfMemoryError = handleOutOfMemoryError;

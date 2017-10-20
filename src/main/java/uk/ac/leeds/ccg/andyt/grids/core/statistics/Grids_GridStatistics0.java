@@ -61,8 +61,8 @@ public class Grids_GridStatistics0
     public @Override void update() {
         init();
         super.update( 
-                this.Grid2DSquareCell.getNRows(this.ge._HandleOutOfMemoryError_boolean), 
-                this.Grid2DSquareCell.getNCols(this.ge._HandleOutOfMemoryError_boolean));
+                this.Grid2DSquareCell.getNRows(this.ge.HandleOutOfMemoryError), 
+                this.Grid2DSquareCell.getNCols(this.ge.HandleOutOfMemoryError));
     }
     
     /**

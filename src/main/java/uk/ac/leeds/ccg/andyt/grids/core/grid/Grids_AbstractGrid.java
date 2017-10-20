@@ -5,14 +5,9 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -195,13 +190,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         this.ChunkNCols = 1;
         this.ChunkNRows = 1;
         this.Dimensions = new Grids_Dimensions(
-                ge,
-                new BigDecimal(1L),
                 new BigDecimal(0L),
                 new BigDecimal(0L),
                 new BigDecimal(Grids_AbstractGrid.this.getChunkNCols()),
                 new BigDecimal(Grids_AbstractGrid.this.getChunkNRows()),
-                0);
+                new BigDecimal(1L));
         //this._Directory = Grids_FileCreator.createNewFile();
         this.Name = "DefaultName_" + getBasicDescription();
         this.setDirectory(Grids_FileCreator.createNewFile(ge.getDirectory(), Grids_AbstractGrid.this.getName()));
@@ -1150,6 +1143,32 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
+     * This method is for convenience.
+     *
+     * @return BigDecimal equal to this.Dimensions.getCellsize().
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public final BigDecimal getCellsize(boolean handleOutOfMemoryError) {
+        try {
+            BigDecimal result = getDimensions().getCellsize();
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clear_MemoryReserve();
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
+                return getCellsize(handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * This method is for convenience.
+     *
      * @return double equal to this.Dimensions[0].doubleValue.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -1157,7 +1176,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final double getCellsizeDouble(boolean handleOutOfMemoryError) {
         try {
-            double result = getDimensions().getCellsize().doubleValue();
+            double result = getCellsize(handleOutOfMemoryError).doubleValue();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -4679,17 +4698,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param y the centroid y-coordinate of the cell for which the bounds are
      * returned.
      */
-    public final BigDecimal[] getCellBounds_BigDecimalArray(
+    public final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, BigDecimal x, BigDecimal y, boolean handleOutOfMemoryError) {
         try {
-            BigDecimal[] result = getCellBounds_BigDecimalArray(halfCellsize, x, y);
+            Grids_Dimensions result = Grids_AbstractGrid.this.getCellDimensions(halfCellsize, x, y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellBounds_BigDecimalArray(halfCellsize, x, y, handleOutOfMemoryError);
+                return getCellDimensions(halfCellsize, x, y, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -4710,15 +4729,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param y the centroid y-coordinate of the cell for which the bounds are
      * returned.
      */
-    protected final BigDecimal[] getCellBounds_BigDecimalArray(
+    protected final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, BigDecimal x, BigDecimal y) {
-        BigDecimal[] cellBounds_BigDecimalArray = new BigDecimal[4];
-        //TODO probably do this a lot, so move to a static field to speed up
-        cellBounds_BigDecimalArray[0] = x.subtract(halfCellsize);
-        cellBounds_BigDecimalArray[1] = y.subtract(halfCellsize);
-        cellBounds_BigDecimalArray[2] = x.add(halfCellsize);
-        cellBounds_BigDecimalArray[3] = y.add(halfCellsize);
-        return cellBounds_BigDecimalArray;
+        Grids_Dimensions result;
+        result = new Grids_Dimensions(
+                getCellsize(false),
+                x.subtract(halfCellsize),
+                y.subtract(halfCellsize),
+                x.add(halfCellsize),
+                y.add(halfCellsize));
+        return result;
     }
 
     /**
@@ -4734,17 +4754,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * intersects point at (x,y) cellBounds_BigDecimalArray[3] ymax, highest
      * y-coordinate of cell that intersects point at (x,y)
      */
-    public final BigDecimal[] getCellBounds_BigDecimalArray(
+    public final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, long cellRowIndex, long cellColIndex, boolean handleOutOfMemoryError) {
         try {
-            BigDecimal[] result = getCellBounds_BigDecimalArray(halfCellsize, cellRowIndex, cellColIndex);
+            Grids_Dimensions result = Grids_AbstractGrid.this.getCellDimensions(halfCellsize, cellRowIndex, cellColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clear_MemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellBounds_BigDecimalArray(halfCellsize, cellRowIndex, cellColIndex, handleOutOfMemoryError);
+                return Grids_AbstractGrid.this.getCellDimensions(halfCellsize, cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -4763,9 +4783,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * intersects point at (x,y) cellBounds_BigDecimalArray[3] ymax, highest
      * y-coordinate of cell that intersects point at (x,y)
      */
-    protected final BigDecimal[] getCellBounds_BigDecimalArray(
+    protected final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, long cellRowIndex, long cellColIndex) {
-        return getCellBounds_BigDecimalArray(
+        return Grids_AbstractGrid.this.getCellDimensions(
                 halfCellsize,
                 getCellXBigDecimal(cellColIndex),
                 getCellYBigDecimal(cellRowIndex));
@@ -4973,7 +4993,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         yMin = ((BigDecimal) header[3]).add(cellsize.multiply(new BigDecimal(startRowIndex)));
         xMax = xMin.add(new BigDecimal(Long.toString(this.getNCols())).multiply(cellsize));
         yMax = yMin.add(new BigDecimal(Long.toString(this.getNRows())).multiply(cellsize));
-        Dimensions = new Grids_Dimensions(ge, xMin, xMax, yMin, yMax, cellsize);
+        Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
     /**
@@ -5002,7 +5022,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         yMin = Dimensions.getYMin().add(startRowIndexBigDecimal.multiply(cellsize));
         xMax = Dimensions.getXMin().add(nColsBigDecimal.multiply(cellsize));
         yMax = Dimensions.getYMin().add(nRowsBigDecimal.multiply(cellsize));
-        Dimensions = new Grids_Dimensions(ge, xMin, xMax, yMin, yMax, cellsize, Dimensions.getDimensionsScale());
+        Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
 }

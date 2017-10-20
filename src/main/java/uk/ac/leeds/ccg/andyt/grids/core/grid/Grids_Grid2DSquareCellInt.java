@@ -1499,7 +1499,7 @@ public class Grids_Grid2DSquareCellInt
         Grids_AbstractGridStatistics s;
         s = getGridStatistics();
         boolean handleOutOfMemoryError;
-        handleOutOfMemoryError = ge._HandleOutOfMemoryError_boolean;
+        handleOutOfMemoryError = ge.HandleOutOfMemoryError;
         if (s instanceof Grids_GridStatistics0) {
             if (oldValue != _NoDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
@@ -2432,7 +2432,7 @@ public class Grids_Grid2DSquareCellInt
             Grids_AbstractGridStatistics s;
             s = getGridStatistics();
             boolean handleOutOfMemoryError;
-            handleOutOfMemoryError = ge._HandleOutOfMemoryError_boolean;
+            handleOutOfMemoryError = ge.HandleOutOfMemoryError;
 
             if (valueToInitialise != _NoDataValue) {
                 BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);

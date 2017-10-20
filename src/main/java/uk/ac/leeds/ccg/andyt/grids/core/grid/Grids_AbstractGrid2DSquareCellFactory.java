@@ -153,11 +153,9 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
     }
 
     protected final void initDimensions(
-            Grids_Environment ge,
             int chunkNCols,
             int chunkNRows) {
         this.Dimensions = new Grids_Dimensions(
-                ge,
                 new BigDecimal(0L),
                 new BigDecimal(0L),
                 new BigDecimal(chunkNCols),
@@ -283,7 +281,7 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
         BigDecimal yMax = Dimensions.getYMin().add(
                 new BigDecimal(nRows).multiply(cellsize));
         result = new Grids_Dimensions(
-                ge, Dimensions.getXMin(), Dimensions.getYMin(), xMax, yMax, cellsize);
+                Dimensions.getXMin(), Dimensions.getYMin(), xMax, yMax, cellsize);
         return result;
     }
 
