@@ -18,13 +18,14 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  *
  * @author geoagdt
  */
-public class Grids_Dimensions {
+public class Grids_Dimensions implements Serializable {
 
     private BigDecimal XMin;
     private BigDecimal XMax;
@@ -61,6 +62,7 @@ public class Grids_Dimensions {
         this.XMin = xMin;
         this.YMax = yMax;
         this.YMin = yMin;
+        this.Cellsize = cellsize;
         this.DimensionsScale = getScale(xMin, xMax, yMin, yMax, cellsize);
     }
     

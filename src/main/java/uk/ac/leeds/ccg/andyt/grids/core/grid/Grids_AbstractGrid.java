@@ -5017,11 +5017,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         BigDecimal yMin;
         BigDecimal xMax;
         BigDecimal yMax;
-        BigDecimal cellsize = Dimensions.getCellsize();
-        xMin = Dimensions.getXMin().add(startColIndexBigDecimal.multiply(cellsize));
-        yMin = Dimensions.getYMin().add(startRowIndexBigDecimal.multiply(cellsize));
-        xMax = Dimensions.getXMin().add(nColsBigDecimal.multiply(cellsize));
-        yMax = Dimensions.getYMin().add(nRowsBigDecimal.multiply(cellsize));
+        BigDecimal cellsize;
+        if (Dimensions == null) {
+            cellsize = BigDecimal.ONE;
+            xMin = startColIndexBigDecimal;
+            yMin = startRowIndexBigDecimal;
+            xMax = xMin.add(nColsBigDecimal);
+            yMax = yMin.add(nRowsBigDecimal);
+        } else {
+            cellsize = Dimensions.getCellsize();
+            xMin = Dimensions.getXMin().add(startColIndexBigDecimal.multiply(cellsize));
+            yMin = Dimensions.getYMin().add(startRowIndexBigDecimal.multiply(cellsize));
+            xMax = Dimensions.getXMin().add(nColsBigDecimal.multiply(cellsize));
+            yMax = Dimensions.getYMin().add(nRowsBigDecimal.multiply(cellsize));
+        }
         Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 

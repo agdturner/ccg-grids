@@ -148,7 +148,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         Grids_Grid2DSquareCellDouble densityPlotGrid = ( Grids_Grid2DSquareCellDouble ) result[ 3 ];
         System.out.println( densityPlotGrid.toString() );
         double divx = 
-                ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble( _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble( _HandleOutOfMemoryError ) ) / divisions;
+                ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble(true, _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble(true, _HandleOutOfMemoryError ) ) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
         new Grids_ESRIAsciiGridExporter(ge).toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );

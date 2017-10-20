@@ -1501,8 +1501,8 @@ public class Grids_Processor extends Grids_Object {
             double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
             double range = max - min;
             Grids_AbstractGridStatistics stats = grid.getGridStatistics(handleOutOfMemoryError);
-            double minGrid = stats.getMinDouble(handleOutOfMemoryError);
-            double maxGrid = stats.getMaxDouble(handleOutOfMemoryError);
+            double minGrid = stats.getMinDouble(true, handleOutOfMemoryError);
+            double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
             double rangeGrid = maxGrid - minGrid;
             double value = noDataValue;
             Grids_Grid2DSquareCellDouble outputGrid;
@@ -1792,8 +1792,8 @@ public class Grids_Processor extends Grids_Object {
             int noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
             double range = max - min;
             Grids_AbstractGridStatistics stats = grid.getGridStatistics(handleOutOfMemoryError);
-            double minGrid = stats.getMinDouble(handleOutOfMemoryError);
-            double maxGrid = stats.getMaxDouble(handleOutOfMemoryError);
+            double minGrid = stats.getMinDouble(true, handleOutOfMemoryError);
+            double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
             double rangeGrid = maxGrid - minGrid;
             double value = noDataValue;
             Grids_Grid2DSquareCellDouble outputGrid;

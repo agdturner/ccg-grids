@@ -39,12 +39,13 @@ public class Grids_GridStatistics1
     /**
      * Creates a new instance of GridStatistics1
      */
-    protected Grids_GridStatistics1() {}
+    protected Grids_GridStatistics1() {
+    }
 
     public Grids_GridStatistics1(Grids_Environment ge) {
         super(ge);
     }
-    
+
     /**
      * Creates a new instance of GridStatistics1
      *
@@ -90,8 +91,8 @@ public class Grids_GridStatistics1
         if (!getIsUpToDate()) {
             init();
             super.update(
-                    this.Grid2DSquareCell.getNRows(this.ge.HandleOutOfMemoryError),
-                    this.Grid2DSquareCell.getNCols(this.ge.HandleOutOfMemoryError));
+                    this.Grid.getNRows(this.ge.HandleOutOfMemoryError),
+                    this.Grid.getNCols(this.ge.HandleOutOfMemoryError));
             setIsUpToDate(true);
         }
     }
@@ -102,9 +103,9 @@ public class Grids_GridStatistics1
      * @return
      */
     protected @Override
-    BigInteger getNonNoDataValueCountBigInteger() {
+    BigInteger getNonNoDataValueCount() {
         update();
-        return this.nonNoDataValueCountBigInteger;
+        return this.NonNoDataValueCount;
     }
 
     /**
@@ -113,9 +114,9 @@ public class Grids_GridStatistics1
      * @return
      */
     protected @Override
-    BigDecimal getSumBigDecimal() {
+    BigDecimal getSum() {
         update();
-        return this.sumBigDecimal;
+        return this.Sum;
     }
 
     /**
@@ -123,10 +124,12 @@ public class Grids_GridStatistics1
      *
      * @return
      */
-    protected @Override
-    BigDecimal getMinBigDecimal() {
-        update();
-        return this.minBigDecimal;
+    @Override
+    protected BigDecimal getMin(boolean update) {
+        if (update) {
+            update();
+        }
+        return this.Min;
     }
 
     /**
@@ -134,16 +137,18 @@ public class Grids_GridStatistics1
      *
      * @return
      */
-    protected @Override
-    BigDecimal getMaxBigDecimal() {
-        update();
-        return this.maxBigDecimal;
+    @Override
+    protected BigDecimal getMax(boolean update) {
+        if (update) {
+            update();
+        }
+        return this.Max;
     }
 
     /**
      * For returning the arithmetic mean of all non noDataValues as a BigDecimal
-     * Throws an ArithmeticException if nonNoDataValueCountBigInteger is equal
-     * to zero.
+ Throws an ArithmeticException if NonNoDataValueCount is equal
+ to zero.
      *
      * @return
      */
@@ -151,8 +156,7 @@ public class Grids_GridStatistics1
     BigDecimal getArithmeticMeanBigDecimal(
             int numberOfDecimalPlaces) {
         update();
-        return this.sumBigDecimal.divide(
-                new BigDecimal(this.nonNoDataValueCountBigInteger),
+        return this.Sum.divide(new BigDecimal(this.NonNoDataValueCount),
                 numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
     }

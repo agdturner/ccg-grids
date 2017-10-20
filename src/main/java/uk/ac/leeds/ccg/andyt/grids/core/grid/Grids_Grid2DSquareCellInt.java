@@ -1503,41 +1503,41 @@ public class Grids_Grid2DSquareCellInt
         if (s instanceof Grids_GridStatistics0) {
             if (oldValue != _NoDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
-                getGridStatistics().setNonNoDataValueCountBigInteger(
+                getGridStatistics().setNonNoDataValueCount(
                         s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).subtract(BigInteger.ONE));
-                s.setSumBigDecimal(s.getSumBigDecimal(handleOutOfMemoryError).subtract(oldValueBigDecimal));
-                if (oldValueBigDecimal.compareTo(s.getMinBigDecimal(handleOutOfMemoryError)) == 0) {
-                    s.setMinCountBigInteger(s.getMinCountBigInteger().subtract(BigInteger.ONE));
+                s.setSum(s.getSumBigDecimal(handleOutOfMemoryError).subtract(oldValueBigDecimal));
+                if (oldValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
+                    s.setMinCount(s.getMinCount().subtract(BigInteger.ONE));
                 }
-                if (oldValueBigDecimal.compareTo(s.getMaxBigDecimal(handleOutOfMemoryError)) == 0) {
-                    s.setMaxCountBigInteger(s.getMaxCountBigInteger().subtract(BigInteger.ONE));
+                if (oldValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 0) {
+                    s.setMaxCount(s.getMaxCount().subtract(BigInteger.ONE));
                 }
             }
             if (newValue != _NoDataValue) {
                 BigDecimal newValueBigDecimal = new BigDecimal(newValue);
-                s.setNonNoDataValueCountBigInteger(s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));
-                s.setSumBigDecimal(s.getSumBigDecimal(handleOutOfMemoryError).add(newValueBigDecimal));
-                if (newValueBigDecimal.compareTo(s.getMinBigDecimal(handleOutOfMemoryError)) == -1) {
-                    s.setMinBigDecimal(newValueBigDecimal);
-                    s.setMinCountBigInteger(BigInteger.ONE);
+                s.setNonNoDataValueCount(s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));
+                s.setSum(s.getSumBigDecimal(handleOutOfMemoryError).add(newValueBigDecimal));
+                if (newValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == -1) {
+                    s.setMin(newValueBigDecimal);
+                    s.setMinCount(BigInteger.ONE);
                 } else {
-                    if (newValueBigDecimal.compareTo(s.getMinBigDecimal(handleOutOfMemoryError)) == 0) {
-                        s.setMinCountBigInteger(s.getMinCountBigInteger().add(BigInteger.ONE));
+                    if (newValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
+                        s.setMinCount(s.getMinCount().add(BigInteger.ONE));
                     } else {
-                        if (s.getMinCountBigInteger().compareTo(BigInteger.ONE) == -1) {
+                        if (s.getMinCount().compareTo(BigInteger.ONE) == -1) {
                             // The GridStatistics need recalculating
                             s.update();
                         }
                     }
                 }
-                if (newValueBigDecimal.compareTo(s.getMaxBigDecimal(handleOutOfMemoryError)) == 1) {
-                    s.setMaxBigDecimal(newValueBigDecimal);
-                    s.setMaxCountBigInteger(BigInteger.ONE);
+                if (newValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 1) {
+                    s.setMax(newValueBigDecimal);
+                    s.setMaxCount(BigInteger.ONE);
                 } else {
-                    if (newValueBigDecimal.compareTo(s.getMaxBigDecimal(handleOutOfMemoryError)) == 0) {
-                        s.setMaxCountBigInteger(s.getMaxCountBigInteger().add(BigInteger.ONE));
+                    if (newValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 0) {
+                        s.setMaxCount(s.getMaxCount().add(BigInteger.ONE));
                     } else {
-                        if (s.getMaxCountBigInteger().compareTo(BigInteger.ONE) == -1) {
+                        if (s.getMaxCount().compareTo(BigInteger.ONE) == -1) {
                             // The GridStatistics need recalculating
                             s.update();
                         }
@@ -2436,22 +2436,22 @@ public class Grids_Grid2DSquareCellInt
 
             if (valueToInitialise != _NoDataValue) {
                 BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);
-                s.setNonNoDataValueCountBigInteger(s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));
-                s.setSumBigDecimal(s.getSumBigDecimal(handleOutOfMemoryError).add(cellBigDecimal));
-                if (cellBigDecimal.compareTo(s.getMinBigDecimal(handleOutOfMemoryError)) == -1) {
-                    s.setMinCountBigInteger(BigInteger.ONE);
-                    s.setMinBigDecimal(cellBigDecimal);
+                s.setNonNoDataValueCount(s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));
+                s.setSum(s.getSumBigDecimal(handleOutOfMemoryError).add(cellBigDecimal));
+                if (cellBigDecimal.compareTo(s.getMin(false, handleOutOfMemoryError)) == -1) {
+                    s.setMinCount(BigInteger.ONE);
+                    s.setMin(cellBigDecimal);
                 } else {
-                    if (cellBigDecimal.compareTo(s.getMinBigDecimal(handleOutOfMemoryError)) == 0) {
-                        s.setMinCountBigInteger(s.getMinCountBigInteger().add(BigInteger.ONE));
+                    if (cellBigDecimal.compareTo(s.getMin(false, handleOutOfMemoryError)) == 0) {
+                        s.setMinCount(s.getMinCount().add(BigInteger.ONE));
                     }
                 }
-                if (cellBigDecimal.compareTo(s.getMaxBigDecimal(handleOutOfMemoryError)) == 1) {
-                    s.setMaxCountBigInteger(BigInteger.ONE);
-                    s.setMaxBigDecimal(cellBigDecimal);
+                if (cellBigDecimal.compareTo(s.getMax(false, handleOutOfMemoryError)) == 1) {
+                    s.setMaxCount(BigInteger.ONE);
+                    s.setMax(cellBigDecimal);
                 } else {
-                    if (cellBigDecimal.compareTo(s.getMaxBigDecimal(handleOutOfMemoryError)) == 0) {
-                        s.setMaxCountBigInteger(s.getMaxCountBigInteger().add(BigInteger.ONE));
+                    if (cellBigDecimal.compareTo(s.getMax(false, handleOutOfMemoryError)) == 0) {
+                        s.setMaxCount(s.getMaxCount().add(BigInteger.ONE));
                     }
                 }
             }

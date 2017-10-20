@@ -1,7 +1,7 @@
 /**
  * Version 1.0 is to handle single variable 2DSquareCelled raster data.
  * Copyright (C) 2005 Andy Turner, CCG, University of Leeds, UK.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,222 +17,244 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.core.statistics;
+
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
 /**
- * An interface to be implemented by classes that provide statistics about 
+ * An interface to be implemented by classes that provide statistics about
  * raster data.
  */
 public interface Grids_GridStatisticsInterface {
-    
+
     /**
      * For returning the number of cells with noDataValues as a BigInteger
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public BigInteger getNonNoDataValueCountBigInteger(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the number of cells with noDataValues as a long
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public long getNonNoDataValueCountLong(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the number of cells with noDataValues as a int
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public int getNonNoDataValueCountInt(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the sum of all non noDataValues as a BigDecimal
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public BigDecimal getSumBigDecimal(
-            boolean handleOutOfMemoryError );
+            boolean handleOutOfMemoryError);
 
     /**
      * For returning the sum of all non noDataValues as a BigInteger
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public BigInteger getSumBigInteger(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the sum of all non noDataValues as a double
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public double getSumDouble(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the sum of all non noDataValues as a long
+     *
      * @param handleOutOfMemoryError
-     * @return 
+     * @return
      */
     public long getSumLong(
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the sum of all non noDataValues as a int
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public int getSumInt(
-            boolean handleOutOfMemoryError );
-    
-    
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a BigDecimal
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
-    public BigDecimal getMinBigDecimal(
-            boolean handleOutOfMemoryError );
-    
+    public BigDecimal getMin(
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a BigInteger
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public BigInteger getMinBigInteger(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a double
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public double getMinDouble(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a long
+     *
+     * @param update If true then an update of the statistics is made.
      * @param handleOutOfMemoryError
-     * @return 
+     * @return
      */
     public long getMinLong(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a int
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public int getMinInt(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the maximum of all non noDataValues as a BigDecimal
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
-    public BigDecimal getMaxBigDecimal(
-            boolean handleOutOfMemoryError );
-    
+    public BigDecimal getMax(
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the maximum of all non noDataValues as a BigInteger
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public BigInteger getMaxBigInteger(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a double
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public double getMaxDouble(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a long
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public long getMaxLong(
-            boolean handleOutOfMemoryError );
-    
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the minimum of all non noDataValues as a int
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param update If true then an update of the statistics is made.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
     public int getMaxInt(
-            boolean handleOutOfMemoryError );
-        
+            boolean update,
+            boolean handleOutOfMemoryError);
+
     /**
      * For returning the arithmetic mean of all non noDataValues as a BigDecimal
-     * @param numberOfDecimalPlaces The number of decimal places to which 
-     *   the result is precise.
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are 
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
-     * @return 
+     *
+     * @param numberOfDecimalPlaces The number of decimal places to which the
+     * result is precise.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
-    public BigDecimal getArithmeticMeanBigDecimal( 
+    public BigDecimal getArithmeticMeanBigDecimal(
             int numberOfDecimalPlaces,
-            boolean handleOutOfMemoryError );
-    
+            boolean handleOutOfMemoryError);
+
 //    /**
 //     * For returning the arithmetic mean of all non noDataValues as a double
 //     * @param handleOutOfMemoryError
@@ -292,5 +314,4 @@ public interface Grids_GridStatisticsInterface {
 //     */
 //    public BigInteger getDiversity(
 //            boolean handleOutOfMemoryError );
-    
 }

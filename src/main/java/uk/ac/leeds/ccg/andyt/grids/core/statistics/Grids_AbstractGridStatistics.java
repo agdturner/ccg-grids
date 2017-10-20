@@ -38,86 +38,87 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 
 /**
  * An abstract class to be extended and methods overridden to provide statistics
- about the data in Grids_AbstractGrid2DSquareCell and Grid2DSquareCellChunkAbstract
- more optimally.
+ * about the data in Grids_AbstractGrid2DSquareCell and
+ * Grid2DSquareCellChunkAbstract more optimally.
  */
 public abstract class Grids_AbstractGridStatistics extends Grids_Object
         implements Serializable, Grids_GridStatisticsInterface {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     /**
      * A reference to the Grids_AbstractGrid2DSquareCell this is for.
      */
-    protected Grids_AbstractGrid Grid2DSquareCell;
+    protected Grids_AbstractGrid Grid;
     /**
      * For storing the number of cells with non noDataValues.
      */
-    protected BigInteger nonNoDataValueCountBigInteger;
+    protected BigInteger NonNoDataValueCount;
     /**
      * For storing the sum of all non noDataValues as a BigDecimal.
      */
-    protected BigDecimal sumBigDecimal;
+    protected BigDecimal Sum;
     /**
      * For storing the minimum of all non noDataValues as a BigDecimal.
      */
-    protected BigDecimal minBigDecimal;
+    protected BigDecimal Min;
     /**
      * For storing the number of min values as a BigInteger.
      */
-    private BigInteger minCountBigInteger;
+    private BigInteger MinCount;
     /**
      * For storing the maximum of all non noDataValues as a BigDecimal.
      */
-    protected BigDecimal maxBigDecimal;
+    protected BigDecimal Max;
     /**
      * For storing the number of max values as a BigInteger.
      */
-    private BigInteger maxCountBigInteger;
+    private BigInteger MaxCount;
 
-    protected Grids_AbstractGridStatistics(){}
-    
-    public Grids_AbstractGridStatistics(Grids_Environment ge){
+    protected Grids_AbstractGridStatistics() {
+    }
+
+    public Grids_AbstractGridStatistics(Grids_Environment ge) {
         super(ge);
     }
-    
+
     /**
-     * For intitialisation
+     * For initialisation
      */
     protected void init() {
-        this.setNonNoDataValueCountBigInteger(new BigInteger("0"));
-        this.setSumBigDecimal(new BigDecimal(0.0d));
-        //this.minBigDecimal = new BigDecimal( Double.POSITIVE_INFINITY );
-        //this.minBigDecimal = new BigDecimal(
+        this.setNonNoDataValueCount(new BigInteger("0"));
+        this.setSum(new BigDecimal(0.0d));
+        //this.Min = new BigDecimal( Double.POSITIVE_INFINITY );
+        //this.Min = new BigDecimal(
         //        "99999999999999999999999999999999999999999" );
         //Integer.MAX_VALUE used instead of Double.MAX_VALUE
         BigDecimal bigDecimalIntegerMAX_VALUE
                 = new BigDecimal(Integer.MAX_VALUE);
-        this.setMinBigDecimal(bigDecimalIntegerMAX_VALUE.add(bigDecimalIntegerMAX_VALUE));
-        this.setMinCountBigInteger(BigInteger.ZERO);
-        //this.maxBigDecimal = new BigDecimal( Double.NEGATIVE_INFINITY );
-        //this.minBigDecimal = new BigDecimal(
+        this.setMin(bigDecimalIntegerMAX_VALUE.add(bigDecimalIntegerMAX_VALUE));
+        this.setMinCount(BigInteger.ZERO);
+        //this.Max = new BigDecimal( Double.NEGATIVE_INFINITY );
+        //this.Min = new BigDecimal(
         //        "-99999999999999999999999999999999999999999" );
         //Integer.MIN_VALUE used instead of Double.MIN_VALUE
         BigDecimal bigDecimalIntegerMIN_VALUE
                 = new BigDecimal(Integer.MIN_VALUE);
-        this.setMaxBigDecimal(bigDecimalIntegerMIN_VALUE.add(bigDecimalIntegerMIN_VALUE));
-        this.setMaxCountBigInteger(BigInteger.ZERO);
+        this.setMax(bigDecimalIntegerMIN_VALUE.add(bigDecimalIntegerMIN_VALUE));
+        this.setMaxCount(BigInteger.ZERO);
     }
 
     /**
-     * For intitialisation
+     * For initialisation
      *
      * @param g
      */
-    public void init(
+    public final void init(
             Grids_AbstractGrid g) {
-        this.Grid2DSquareCell = g;
-        this.Grid2DSquareCell.setGridStatistics(this);
+        this.Grid = g;
+        this.Grid.setGridStatistics(this);
         init();
     }
 
     /**
-     * Updates fields from _GridStatistics except this.Grid2DSquareCell
+     * Updates fields from _GridStatistics except this.Grid
      *
      *
      * @param _GridStatistics the _GridStatistics instance which fields are used
@@ -125,12 +126,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     protected void update(
             Grids_AbstractGridStatistics _GridStatistics) {
-        this.setNonNoDataValueCountBigInteger(_GridStatistics.nonNoDataValueCountBigInteger);
-        this.setSumBigDecimal(_GridStatistics.sumBigDecimal);
-        this.setMinBigDecimal(_GridStatistics.minBigDecimal);
-        this.setMinCountBigInteger(_GridStatistics.getMinCountBigInteger());
-        this.setMaxBigDecimal(_GridStatistics.maxBigDecimal);
-        this.setMaxCountBigInteger(_GridStatistics.getMaxCountBigInteger());
+        this.setNonNoDataValueCount(_GridStatistics.NonNoDataValueCount);
+        this.setSum(_GridStatistics.Sum);
+        this.setMin(_GridStatistics.Min);
+        this.setMinCount(_GridStatistics.getMinCount());
+        this.setMax(_GridStatistics.Max);
+        this.setMaxCount(_GridStatistics.getMaxCount());
     }
 
     /**
@@ -158,11 +159,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         long row;
         long col;
 //        //DEBUG code
-//        System.out.println("this.Grid2DSquareCell.toString()" + this.Grid2DSquareCell.toString() );
-        if (this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellInt.class) {
-            //if ( this.Grid2DSquareCell instanceof Grids_Grid2DSquareCellInt ) {
+//        System.out.println("this.Grid.toString()" + this.Grid.toString() );
+        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
+            //if ( this.Grid instanceof Grids_Grid2DSquareCellInt ) {
             Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellInt) Grid;
 //            //DEBUG code
 //            System.out.println("grid2DSquareCellInt.toString()" + grid2DSquareCellInt.toString() );
             BigDecimal cellBigDecimal;
@@ -183,32 +184,32 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 //                            handleOutOfMemoryError );
                     if (cellInt != noDataValueInt) {
                         cellBigDecimal = new BigDecimal(cellInt);
-                        this.setNonNoDataValueCountBigInteger(this.nonNoDataValueCountBigInteger.add(BigInteger.ONE));
-                        this.setSumBigDecimal(this.sumBigDecimal.add(cellBigDecimal));
-                        if (cellBigDecimal.compareTo(this.minBigDecimal) == -1) {
-                            this.setMinCountBigInteger(BigInteger.ONE);
-                            this.setMinBigDecimal(cellBigDecimal);
+                        this.setNonNoDataValueCount(this.NonNoDataValueCount.add(BigInteger.ONE));
+                        this.setSum(this.Sum.add(cellBigDecimal));
+                        if (cellBigDecimal.compareTo(this.Min) == -1) {
+                            this.setMinCount(BigInteger.ONE);
+                            this.setMin(cellBigDecimal);
                         } else {
-                            if (cellBigDecimal.compareTo(this.minBigDecimal) == 0) {
-                                this.setMinCountBigInteger(this.getMinCountBigInteger().add(BigInteger.ONE));
+                            if (cellBigDecimal.compareTo(this.Min) == 0) {
+                                this.setMinCount(this.getMinCount().add(BigInteger.ONE));
                             }
                         }
-                        if (cellBigDecimal.compareTo(this.maxBigDecimal) == 1) {
-                            this.setMaxCountBigInteger(BigInteger.ONE);
-                            this.setMaxBigDecimal(cellBigDecimal);
+                        if (cellBigDecimal.compareTo(this.Max) == 1) {
+                            this.setMaxCount(BigInteger.ONE);
+                            this.setMax(cellBigDecimal);
                         } else {
-                            if (cellBigDecimal.compareTo(this.maxBigDecimal) == 0) {
-                                this.setMaxCountBigInteger(this.getMaxCountBigInteger().add(BigInteger.ONE));
+                            if (cellBigDecimal.compareTo(this.Max) == 0) {
+                                this.setMaxCount(this.getMaxCount().add(BigInteger.ONE));
                             }
                         }
                     }
                 }
             }
         } else {
-            //if ( this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellDouble.class ) {
-            //if ( this.Grid2DSquareCell instanceof Grids_Grid2DSquareCellDouble ) {
+            //if ( this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class ) {
+            //if ( this.Grid instanceof Grids_Grid2DSquareCellDouble ) {
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellDouble) Grid;
             BigDecimal cellBigDecimal;
             double cellDouble;
             boolean handleOutOfMemoryError = true;
@@ -235,22 +236,22 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                             }
 
                             cellBigDecimal = new BigDecimal(cellDouble);
-                            this.setNonNoDataValueCountBigInteger(this.nonNoDataValueCountBigInteger.add(BigInteger.ONE));
-                            this.setSumBigDecimal(this.sumBigDecimal.add(cellBigDecimal));
-                            if (cellBigDecimal.compareTo(this.minBigDecimal) == -1) {
-                                this.setMinCountBigInteger(BigInteger.ONE);
-                                this.setMinBigDecimal(cellBigDecimal);
+                            this.setNonNoDataValueCount(this.NonNoDataValueCount.add(BigInteger.ONE));
+                            this.setSum(this.Sum.add(cellBigDecimal));
+                            if (cellBigDecimal.compareTo(this.Min) == -1) {
+                                this.setMinCount(BigInteger.ONE);
+                                this.setMin(cellBigDecimal);
                             } else {
-                                if (cellBigDecimal.compareTo(this.minBigDecimal) == 0) {
-                                    this.setMinCountBigInteger(this.getMinCountBigInteger().add(BigInteger.ONE));
+                                if (cellBigDecimal.compareTo(this.Min) == 0) {
+                                    this.setMinCount(this.getMinCount().add(BigInteger.ONE));
                                 }
                             }
-                            if (cellBigDecimal.compareTo(this.maxBigDecimal) == 1) {
-                                this.setMaxCountBigInteger(BigInteger.ONE);
-                                this.setMaxBigDecimal(cellBigDecimal);
+                            if (cellBigDecimal.compareTo(this.Max) == 1) {
+                                this.setMaxCount(BigInteger.ONE);
+                                this.setMax(cellBigDecimal);
                             } else {
-                                if (cellBigDecimal.compareTo(this.maxBigDecimal) == 0) {
-                                    this.setMaxCountBigInteger(this.getMaxCountBigInteger().add(BigInteger.ONE));
+                                if (cellBigDecimal.compareTo(this.Max) == 0) {
+                                    this.setMaxCount(this.getMaxCount().add(BigInteger.ONE));
                                 }
                             }
                         } catch (NumberFormatException e) {
@@ -278,11 +279,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
+                this.Grid.ge.clear_MemoryReserve();
                 if (ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(false);
+                this.Grid.ge.init_MemoryReserve(false);
                 return toString(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -310,12 +311,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         String result = this.getName();
         result
                 += "( nonNoDataValueCountBigInteger( "
-                + this.nonNoDataValueCountBigInteger.toString() + " ), "
-                + "maxBigDecimal( " + this.maxBigDecimal.toString() + " ), "
-                + "minBigDecimal( " + this.minBigDecimal.toString() + " ), "
-                + "maxCountBigInteger( " + this.getMaxCountBigInteger().toString() + " ), "
-                + "minCountBigInteger( " + this.getMinCountBigInteger().toString() + " ), "
-                + "sumBigDecimal( " + this.sumBigDecimal.toString() + " ) )";
+                + this.NonNoDataValueCount.toString() + " ), "
+                + "maxBigDecimal( " + this.Max.toString() + " ), "
+                + "minBigDecimal( " + this.Min.toString() + " ), "
+                + "maxCountBigInteger( " + this.getMaxCount().toString() + " ), "
+                + "minCountBigInteger( " + this.getMinCount().toString() + " ), "
+                + "sumBigDecimal( " + this.Sum.toString() + " ) )";
         return result;
     }
 
@@ -331,16 +332,16 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     public final BigInteger getNonNoDataValueCountBigInteger(
             boolean handleOutOfMemoryError) {
         try {
-            BigInteger result = getNonNoDataValueCountBigInteger();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigInteger result = getNonNoDataValueCount();
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(false);
+                this.Grid.ge.init_MemoryReserve(false);
                 return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -360,15 +361,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigInteger result = getNonZeroAndNonNoDataValueCountBigInteger();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(false);
+                this.Grid.ge.init_MemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -379,7 +380,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * @return The number of cells with non noDataValues as a BigInteger.
      */
-    protected abstract BigInteger getNonNoDataValueCountBigInteger();
+    protected abstract BigInteger getNonNoDataValueCount();
 
     /**
      * @return The number of cells with non zero and non noDataValues as a
@@ -390,9 +391,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         BigInteger result;
         result = BigInteger.ZERO;
         boolean handleOutOfMemoryError = true;
-        if (this.Grid2DSquareCell instanceof Grids_Grid2DSquareCellDouble) {
+        if (this.Grid instanceof Grids_Grid2DSquareCellDouble) {
             Grids_Grid2DSquareCellDouble g;
-            g = (Grids_Grid2DSquareCellDouble) this.Grid2DSquareCell;
+            g = (Grids_Grid2DSquareCellDouble) this.Grid;
             double noDataValue;
             noDataValue = g.getNoDataValue(handleOutOfMemoryError);
             Iterator<Double> ite;
@@ -448,16 +449,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             long result = getNonNoDataValueCountLong();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -495,15 +495,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             long result = getNonZeroAndNonNoDataValueCountLong();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(false);
+                this.Grid.ge.init_MemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -544,16 +544,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             int result = getNonNoDataValueCountInt();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -594,17 +593,16 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     public final BigDecimal getSumBigDecimal(
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getSumBigDecimal();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigDecimal result = getSum();
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigDecimal(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -617,7 +615,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      *
      * @return
      */
-    protected abstract BigDecimal getSumBigDecimal();
+    protected abstract BigDecimal getSum();
 
     /**
      * For returning the sum of all non noDataValues as a BigInteger.
@@ -632,16 +630,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigInteger result = getSumBigInteger();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -672,16 +669,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             double result = getSumDouble();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumDouble(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -690,10 +686,10 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     }
 
     /**
-     * For returning the sum of all non noDataValues as a double. If
-     * this.sumBigDecimal is to big/small to represent as a double then an
-     * Arithmetic Exception is thrown and Double.POSITIVE_INFINITY or
-     * Double.NEGATIVE_INFINITY are returned as appropriate.
+     * For returning the sum of all non noDataValues as a double. If this.Sum is
+     * to big/small to represent as a double then an Arithmetic Exception is
+     * thrown and Double.POSITIVE_INFINITY or Double.NEGATIVE_INFINITY are
+     * returned as appropriate.
      *
      * @return
      */
@@ -719,16 +715,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             long result = getSumLong();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -770,16 +765,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             int result = getSumInt();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -818,21 +812,21 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     @Override
-    public final BigDecimal getMinBigDecimal(
+    public final BigDecimal getMin(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getMinBigDecimal();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigDecimal result = getMin(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMinBigDecimal(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMin(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -842,12 +836,16 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a BigInteger.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected abstract BigDecimal getMinBigDecimal();
+    protected abstract BigDecimal getMin(boolean update);
 
     /**
      * For returning the minimum of all non noDataValues as a BigInteger.
+     *
+     * @param update If true then an update of the statistics is made.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -856,20 +854,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final BigInteger getMinBigInteger(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            BigInteger result = getMinBigInteger();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigInteger result = getMinBigInteger(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMinBigInteger(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMinBigInteger(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -879,14 +877,18 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a BigInteger.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected final BigInteger getMinBigInteger() {
-        return getMinBigDecimal().toBigIntegerExact();
+    protected final BigInteger getMinBigInteger(boolean update) {
+        return getMin(update).toBigIntegerExact();
     }
 
     /**
      * For returning the minimum of all non noDataValues as a double.
+     *
+     * @param update If true then an update of the statistics is made.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -895,20 +897,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final double getMinDouble(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getMinDouble();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            double result = getMinDouble(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMinDouble(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMinDouble(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -917,16 +919,18 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 
     /**
      * For returning the minimum of all non noDataValues as a double. If
-     * this.minBigDecimal is to big/small to represent as a double then an
-     * Arithmetic Exception is thrown and Double.POSITIVE_INFINITY or
+     * this.Min is to big/small to represent as a double then an Arithmetic
+     * Exception is thrown and Double.POSITIVE_INFINITY or
      * Double.NEGATIVE_INFINITY are returned as appropriate.
+     *
+     * @param update If true then an update of the statistics is made.
      *
      * @return
      */
-    protected final double getMinDouble() {
+    protected final double getMinDouble(boolean update) {
         //update();
-        double result = getMinBigDecimal().doubleValue();
-        //double result = this.minBigDecimal.doubleValue();
+        double result = getMin(update).doubleValue();
+        //double result = this.Min.doubleValue();
         if (Double.isInfinite(result)) {
             throw new ArithmeticException();
         }
@@ -936,6 +940,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a long.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -943,20 +949,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final long getMinLong(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            long result = getMinLong();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            long result = getMinLong(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMinLong(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMinLong(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -966,10 +972,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a long
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected final long getMinLong() {
-        return getMinBigInteger().longValue();
+    protected final long getMinLong(boolean update) {
+        return getMinBigInteger(update).longValue();
         //BigDecimal value;
         //if ( value.compareTo( BigDecimal.valueOf( Long.MAX_VALUE ) ) == -1 &&
         //     value.compareTo( BigDecimal.valueOf( Long.MIN_VALUE ) ) == 1 ) {
@@ -986,6 +994,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a int.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -993,20 +1003,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final int getMinInt(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            int result = getMinInt();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            int result = getMinInt(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMinInt(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMinInt(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1016,14 +1026,18 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a int.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected final int getMinInt() {
-        return getMinBigInteger().intValue();
+    protected final int getMinInt(boolean update) {
+        return getMinBigInteger(update).intValue();
     }
 
     /**
      * For returning the maximum of all non noDataValues as a BigInteger.
+     *
+     * @param update If true then an update of the statistics is made.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -1032,19 +1046,19 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final BigInteger getMaxBigInteger(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            BigInteger result = getMaxBigInteger();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigInteger result = getMaxBigInteger(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1055,36 +1069,38 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the maximum of all non noDataValues as a BigInteger.
      *
+     * @param update If true then an update of the statistics is made.
      * @return
      */
-    protected final BigInteger getMaxBigInteger() {
-        return getMaxBigDecimal().toBigIntegerExact();
+    protected final BigInteger getMaxBigInteger(boolean update) {
+        return getMax(update).toBigIntegerExact();
     }
 
     /**
      * For returning the maximum of all non noDataValues as a BigDecimal.
      *
+     * @param update If true then an update of the statistics is made.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
-    public final BigDecimal getMaxBigDecimal(
+    public final BigDecimal getMax(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getMaxBigDecimal();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            BigDecimal result = getMax(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMaxBigDecimal(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return Grids_AbstractGridStatistics.this.getMax(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1094,13 +1110,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the maximum of all non noDataValues as a BigInteger.
      *
+     * @param update If true then an update of the statistics is made.
      * @return
      */
-    protected abstract BigDecimal getMaxBigDecimal();
+    protected abstract BigDecimal getMax(boolean update);
 
     /**
      * For returning the maximum of all non noDataValues as a double.
      *
+     * @param update If true then an update of the statistics is made.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1108,20 +1126,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final double getMaxDouble(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getMaxDouble();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            double result = getMaxDouble(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMaxDouble(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMaxDouble(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1130,14 +1148,16 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 
     /**
      * For returning the maximum of all non noDataValues as a double. If
-     * this.minBigDecimal is to big/small to represent as a double then an
-     * Arithmetic Exception is thrown and Double.POSITIVE_INFINITY or
-     * Double.NEGATIVE_INFINITY are returned as appropriate.
+     *
+     * @param update If true then an update of the statistics is made. this.Min
+     * is to big/small to represent as a double then an Arithmetic Exception is
+     * thrown and Double.POSITIVE_INFINITY or Double.NEGATIVE_INFINITY are
+     * returned as appropriate.
      *
      * @return
      */
-    protected final double getMaxDouble() {
-        double result = getMaxBigDecimal().doubleValue();
+    protected final double getMaxDouble(boolean update) {
+        double result = getMax(update).doubleValue();
         if (Double.isInfinite(result)) {
             throw new ArithmeticException();
         }
@@ -1147,6 +1167,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the maximum of all non noDataValues as a long.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1154,20 +1176,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final long getMaxLong(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            long result = getMaxLong();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            long result = getMaxLong(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
-                return getMaxLong(handleOutOfMemoryError);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                return getMaxLong(update, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1177,13 +1199,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a long.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected final long getMaxLong() {
+    protected final long getMaxLong(boolean update) {
         //return getMaxBigInteger().longValue();
         //boolean handleOutOfMemoryError = true;
-        //return getMaxBigDecimal( handleOutOfMemoryError ).longValueExact();
-        return getMaxBigDecimal().longValueExact();
+        //return getMax( handleOutOfMemoryError ).longValueExact();
+        return getMax(update).longValueExact();
         //BigDecimal value;
         //if ( value.compareTo( BigDecimal.valueOf( Long.MAX_VALUE ) ) == -1 &&
         //     value.compareTo( BigDecimal.valueOf( Long.MIN_VALUE ) ) == 1 ) {
@@ -1200,6 +1224,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the maximum of all non noDataValues as a int.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1207,19 +1233,19 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     @Override
     public final int getMaxInt(
+            boolean update,
             boolean handleOutOfMemoryError) {
         try {
-            int result = getMaxInt();
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            int result = getMaxInt(update);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1230,32 +1256,33 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     /**
      * For returning the minimum of all non noDataValues as a int.
      *
+     * @param update If true then an update of the statistics is made.
+     *
      * @return
      */
-    protected final int getMaxInt() {
-        boolean handleOutOfMemoryError = true;
-        return getMaxBigDecimal(handleOutOfMemoryError).intValueExact();
+    protected final int getMaxInt(boolean update) {
+        return getMax(update).intValueExact();
     }
 
     /**
      * For returning the mode of all non noDataValues either as a TDoubleHashSet
- or as a TIntHashSet respectively depending on if (
- this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellInt.class ) or if (
- this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellDouble.class ).
-     * TODO: Change for loops so as to look through each chunk in turn. Is it
-     * better to use toArray and go through a sorted version?
+     * or as a TIntHashSet respectively depending on if ( this.Grid.getClass()
+     * == Grids_Grid2DSquareCellInt.class ) or if ( this.Grid.getClass() ==
+     * Grids_Grid2DSquareCellDouble.class ). TODO: Change for loops so as to
+     * look through each chunk in turn. Is it better to use toArray and go
+     * through a sorted version?
      *
      * @return
      */
     protected Object getMode() {
-        long _NRows = this.Grid2DSquareCell.getNRows(ge.HandleOutOfMemoryError);
-        long _NCols = this.Grid2DSquareCell.getNCols(ge.HandleOutOfMemoryError);
+        long _NRows = this.Grid.getNRows(ge.HandleOutOfMemoryError);
+        long _NCols = this.Grid.getNCols(ge.HandleOutOfMemoryError);
         long row;
         long col;
         boolean calculated = false;
-        if (this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellInt.class) {
+        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
             Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) this.Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellInt) this.Grid;
             TIntHashSet mode = new TIntHashSet();
             boolean handleOutOfMemoryError = true;
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
@@ -1330,9 +1357,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             }
             return mode;
         } else {
-            //this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellDouble.class
+            //this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) this.Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellDouble) this.Grid;
             TDoubleHashSet mode = new TDoubleHashSet();
             boolean handleOutOfMemoryError = true;
             double noDataValue = grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
@@ -1539,16 +1566,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     _NRows,
                     _NCols,
                     value);
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return count(
                         grid2DSquareCellInt,
                         row,
@@ -1643,16 +1669,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     _NRows,
                     _NCols,
                     value);
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return count(
                         grid2DSquareCellDouble,
                         row,
@@ -1731,16 +1756,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getArithmeticMeanBigDecimal(
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
@@ -1775,16 +1799,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getStandardDeviationBigDecimal(numberOfDecimalPlaces);
-            Grid2DSquareCell.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            Grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid2DSquareCell.ge.clear_MemoryReserve();
-                if (this.Grid2DSquareCell.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clear_MemoryReserve();
+                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid2DSquareCell.ge.init_MemoryReserve(
-                        Grid2DSquareCell.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getStandardDeviationBigDecimal(
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
@@ -1809,20 +1832,20 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         BigDecimal mean = getArithmeticMeanBigDecimal(
                 2 * numberOfDecimalPlaces,
                 handleOutOfMemoryError);
-        int chunkNrows = this.Grid2DSquareCell.getChunkNRows(handleOutOfMemoryError);
-        int chunkNcols = this.Grid2DSquareCell.getChunkNCols(handleOutOfMemoryError);
-        int nChunkRows = this.Grid2DSquareCell.getNChunkRows(
+        int chunkNrows = this.Grid.getChunkNRows(handleOutOfMemoryError);
+        int chunkNcols = this.Grid.getChunkNCols(handleOutOfMemoryError);
+        int nChunkRows = this.Grid.getNChunkRows(
                 handleOutOfMemoryError);
-        int nChunkCols = this.Grid2DSquareCell.getNChunkCols(
+        int nChunkCols = this.Grid.getNChunkCols(
                 handleOutOfMemoryError);
         int chunkRowIndex;
         int chunkColIndex;
         int chunkRow;
         int chunkCol;
         boolean isInGrid;
-        if (this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellInt.class) {
+        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
             Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) this.Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellInt) this.Grid;
             int value;
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
                     handleOutOfMemoryError);
@@ -1832,9 +1855,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
                     Grids_AbstractGrid2DSquareCellIntChunk chunk;
                     chunk = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
-                                    chunkRowIndex,
-                                    chunkColIndex,
-                                    handleOutOfMemoryError);
+                            chunkRowIndex,
+                            chunkColIndex,
+                            handleOutOfMemoryError);
                     for (chunkRow = 0; chunkRow < chunkNrows; chunkRow++) {
                         for (chunkCol = 0; chunkCol < chunkNcols; chunkCol++) {
                             isInGrid = grid2DSquareCellInt.isInGrid(
@@ -1867,15 +1890,15 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
             Generic_BigDecimal t_Generic_BigDecimal
-                    = Grid2DSquareCell.ge.get_Generic_BigDecimal();
+                    = Grid.ge.get_Generic_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,
                     t_Generic_BigDecimal.get_RoundingMode());
         } else {
-            //this.Grid2DSquareCell.getClass() == Grids_Grid2DSquareCellDouble.class
+            //this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) this.Grid2DSquareCell;
+                    = (Grids_Grid2DSquareCellDouble) this.Grid;
             double value;
             double noDataValue = grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
             BigDecimal nonNoDataValueCountBigDecimal = new BigDecimal("-1");
@@ -1918,7 +1941,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
             Generic_BigDecimal t_Generic_BigDecimal
-                    = Grid2DSquareCell.ge.get_Generic_BigDecimal();
+                    = Grid.ge.get_Generic_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,
@@ -1931,9 +1954,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         Object[] result;
         result = new Object[3];
-        if (this.Grid2DSquareCell instanceof Grids_Grid2DSquareCellDouble) {
+        if (this.Grid instanceof Grids_Grid2DSquareCellDouble) {
             Grids_Grid2DSquareCellDouble g;
-            g = (Grids_Grid2DSquareCellDouble) this.Grid2DSquareCell;
+            g = (Grids_Grid2DSquareCellDouble) this.Grid;
             TreeMap<Integer, Double> minDouble;
             TreeMap<Integer, Double> maxDouble;
             minDouble = new TreeMap<>();
@@ -2062,7 +2085,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                 maxFromClassMap = classMapClassMap.lastKey();
                 Collection<Long> values;
                 values = classMapClassMap.values();
-                countFromClassMap = getSum(values);
+                countFromClassMap = Grids_AbstractGridStatistics.this.getSum(values);
                 if (!(minFromMinDouble == minFromClassMap)) {
                     int debug = 0;
                     result = false;
@@ -2408,58 +2431,58 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     }
 
     /**
-     * @param nonNoDataValueCountBigInteger the nonNoDataValueCountBigInteger to set
+     * @param NonNoDataValueCount the NonNoDataValueCount to set
      */
-    public void setNonNoDataValueCountBigInteger(BigInteger nonNoDataValueCountBigInteger) {
-        this.nonNoDataValueCountBigInteger = nonNoDataValueCountBigInteger;
+    public void setNonNoDataValueCount(BigInteger NonNoDataValueCount) {
+        this.NonNoDataValueCount = NonNoDataValueCount;
     }
 
     /**
-     * @param sumBigDecimal the sumBigDecimal to set
+     * @param Sum the Sum to set
      */
-    public void setSumBigDecimal(BigDecimal sumBigDecimal) {
-        this.sumBigDecimal = sumBigDecimal;
+    public void setSum(BigDecimal Sum) {
+        this.Sum = Sum;
     }
 
     /**
-     * @param minBigDecimal the minBigDecimal to set
+     * @param Min the Min to set
      */
-    public void setMinBigDecimal(BigDecimal minBigDecimal) {
-        this.minBigDecimal = minBigDecimal;
+    public void setMin(BigDecimal Min) {
+        this.Min = Min;
     }
 
     /**
-     * @param minCountBigInteger the minCountBigInteger to set
+     * @param MinCount the MinCount to set
      */
-    public void setMinCountBigInteger(BigInteger minCountBigInteger) {
-        this.minCountBigInteger = minCountBigInteger;
+    public void setMinCount(BigInteger MinCount) {
+        this.MinCount = MinCount;
     }
 
     /**
-     * @param maxBigDecimal the maxBigDecimal to set
+     * @param Max the Max to set
      */
-    public void setMaxBigDecimal(BigDecimal maxBigDecimal) {
-        this.maxBigDecimal = maxBigDecimal;
+    public void setMax(BigDecimal Max) {
+        this.Max = Max;
     }
 
     /**
-     * @param maxCountBigInteger the maxCountBigInteger to set
+     * @param MaxCount the MaxCount to set
      */
-    public void setMaxCountBigInteger(BigInteger maxCountBigInteger) {
-        this.maxCountBigInteger = maxCountBigInteger;
+    public void setMaxCount(BigInteger MaxCount) {
+        this.MaxCount = MaxCount;
     }
 
     /**
-     * @return the minCountBigInteger
+     * @return the MinCount
      */
-    public BigInteger getMinCountBigInteger() {
-        return minCountBigInteger;
+    public BigInteger getMinCount() {
+        return MinCount;
     }
 
     /**
-     * @return the maxCountBigInteger
+     * @return the MaxCount
      */
-    public BigInteger getMaxCountBigInteger() {
-        return maxCountBigInteger;
+    public BigInteger getMaxCount() {
+        return MaxCount;
     }
 }
