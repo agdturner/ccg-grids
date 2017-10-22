@@ -66,7 +66,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
             Grids_2D_ID_int _ChunkID) {
         super(grid2DSquareCellDouble.ge);
         this.ChunkID = _ChunkID;
-        initGrid2DSquareCell(grid2DSquareCellDouble);
+        initGrid(grid2DSquareCellDouble);
         double _NoDataValue = grid2DSquareCellDouble.getNoDataValue(false);
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
@@ -99,7 +99,7 @@ public class Grids_Grid2DSquareCellDoubleChunkArray
         this.ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
                 = grid2DSquareCellDoubleChunk.getGrid2DSquareCellDouble();
-        initGrid2DSquareCell(grid2DSquareCellDouble);
+        initGrid(grid2DSquareCellDouble);
         int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
                 _ChunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);

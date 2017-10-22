@@ -53,7 +53,7 @@ public class Grids_Grid2DSquareCellIntIterator
     public Grids_Grid2DSquareCellIntIterator(
             Grids_Grid2DSquareCellInt a_Grid2DSquareCellInt) {
         this._Grid2DSquareCellIntHashMapIterator =
-                a_Grid2DSquareCellInt.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().values().iterator();
+                a_Grid2DSquareCellInt.getChunkIDChunkMap().values().iterator();
         if (_Grid2DSquareCellIntHashMapIterator.hasNext()) {
             this._Grid2DSquareCellIntChunk =
                     (Grids_AbstractGrid2DSquareCellIntChunk) this._Grid2DSquareCellIntHashMapIterator.next();

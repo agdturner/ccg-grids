@@ -55,7 +55,7 @@ public class Grids_Grid2DSquareCellDoubleIterator
     public Grids_Grid2DSquareCellDoubleIterator(
             Grids_Grid2DSquareCellDouble a_Grid2DSquareCellDouble) {
         this._Iterator =
-                a_Grid2DSquareCellDouble.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().values().iterator();
+                a_Grid2DSquareCellDouble.getChunkIDChunkMap().values().iterator();
         if (_Iterator.hasNext()) {
             //this.grid2DSquareCellDoubleChunkIterator = 
             //      ( ( Grids_AbstractGrid2DSquareCellDoubleChunk ) 

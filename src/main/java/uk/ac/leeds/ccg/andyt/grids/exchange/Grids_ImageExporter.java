@@ -93,13 +93,13 @@ public class Grids_ImageExporter implements Serializable {
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grids_Environment.clear_MemoryReserve();
-                long swap = _Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(
+                _Grids_Environment.clearMemoryReserve();
+                long swap = _Grids_Environment.swapChunks_Account(
                         handleOutOfMemoryError);
                 if (swap < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 toGreyScaleImage(
                         grid,
                         processor,
@@ -177,13 +177,13 @@ public class Grids_ImageExporter implements Serializable {
             gridImageArray = new int[size];
             Arrays.fill(gridImageArray, 0);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
-            _Grids_Environment.clear_MemoryReserve();
-            long swap = _Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(
+            _Grids_Environment.clearMemoryReserve();
+            long swap = _Grids_Environment.swapChunks_Account(
                     handleOutOfMemoryError);
             if (swap < 1L) {
                 throw a_OutOfMemoryError;
             }
-            _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+            _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
             gridImageArray = new int[size];
             Arrays.fill(gridImageArray, 0);
         }
@@ -264,17 +264,17 @@ public class Grids_ImageExporter implements Serializable {
                             col,
                             handleOutOfMemoryError);
                 } catch (OutOfMemoryError e) {
-                    _Grids_Environment.clear_MemoryReserve();
+                    _Grids_Environment.clearMemoryReserve();
                     chunkRowIndex = rescaledGrid.getChunkRowIndex(row, handleOutOfMemoryError);
                     chunkColIndex = rescaledGrid.getChunkColIndex(col, handleOutOfMemoryError);
                     chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
-                    _Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                    _Grids_Environment.swapChunkExcept_Account(
                             grid, chunkID, handleOutOfMemoryError);
                     rescaledValue = (int) rescaledGrid.getCell(
                             row,
                             col,
                             handleOutOfMemoryError);
-                    _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                    _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 }
                 _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                 pos = (int) ((((nrows - 1) - row) * ncols) + col);
@@ -331,11 +331,11 @@ public class Grids_ImageExporter implements Serializable {
             rescaledGrid = null;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             try {
-                _Grids_Environment.clear_MemoryReserve();
-                if (_Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(handleOutOfMemoryError) < 1L) {
+                _Grids_Environment.clearMemoryReserve();
+                if (_Grids_Environment.swapChunks_Account(handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 MemoryImageSource gridImageSource = new MemoryImageSource(
                         (int) ncols,
                         (int) nrows,
@@ -404,13 +404,13 @@ public class Grids_ImageExporter implements Serializable {
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                _Grids_Environment.clear_MemoryReserve();
-                long swap = _Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(
+                _Grids_Environment.clearMemoryReserve();
+                long swap = _Grids_Environment.swapChunks_Account(
                         handleOutOfMemoryError);
                 if (swap < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 toColourImage(
                         duplication,
                         colours,
@@ -501,13 +501,13 @@ public class Grids_ImageExporter implements Serializable {
             gridImageArray = new int[size];
             Arrays.fill(gridImageArray, 0);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
-            _Grids_Environment.clear_MemoryReserve();
-            long swap = _Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(
+            _Grids_Environment.clearMemoryReserve();
+            long swap = _Grids_Environment.swapChunks_Account(
                     handleOutOfMemoryError);
             if (swap < 1L) {
                 throw a_OutOfMemoryError;
             }
-            _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+            _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
             gridImageArray = new int[size];
             Arrays.fill(gridImageArray, 0);
         }
@@ -586,17 +586,17 @@ public class Grids_ImageExporter implements Serializable {
                             col,
                             handleOutOfMemoryError);
                 } catch (OutOfMemoryError e) {
-                    _Grids_Environment.clear_MemoryReserve();
+                    _Grids_Environment.clearMemoryReserve();
                     chunkRowIndex = grid.getChunkRowIndex(row, handleOutOfMemoryError);
                     chunkColIndex = grid.getChunkColIndex(col, handleOutOfMemoryError);
                     chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
-                    _Grids_Environment.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                    _Grids_Environment.swapChunkExcept_Account(
                             grid, chunkID, handleOutOfMemoryError);
                     value = grid.getCell(
                             row,
                             col,
                             handleOutOfMemoryError);
-                    _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                    _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 }
                 _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                 if (value == noDataValue) {
@@ -660,11 +660,11 @@ public class Grids_ImageExporter implements Serializable {
             tempImage.flush();
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             try {
-                _Grids_Environment.clear_MemoryReserve();
-                if (_Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(handleOutOfMemoryError) < 1L) {
+                _Grids_Environment.clearMemoryReserve();
+                if (_Grids_Environment.swapChunks_Account(handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                _Grids_Environment.init_MemoryReserve(handleOutOfMemoryError);
+                _Grids_Environment.initMemoryReserve(handleOutOfMemoryError);
                 MemoryImageSource gridImageSource = new MemoryImageSource(
                         (int) duplicationncols,
                         (int) duplicationnrows,

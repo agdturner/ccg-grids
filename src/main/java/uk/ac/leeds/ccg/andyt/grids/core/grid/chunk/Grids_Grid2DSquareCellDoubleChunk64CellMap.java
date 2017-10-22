@@ -80,7 +80,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
         super(g.ge);
         boolean handleOutOfMemoryError = false;
         this.ChunkID = chunkID;
-        initGrid2DSquareCell(g);
+        initGrid(g);
         Long nCellsInChunk
                 = (long) g.getChunkNRows(handleOutOfMemoryError)
                 * (long) g.getChunkNCols(handleOutOfMemoryError);
@@ -118,7 +118,7 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
         this.ChunkID = _ChunkID;
         Grids_Grid2DSquareCellDouble g
                 = gridChunk.getGrid2DSquareCellDouble();
-        initGrid2DSquareCell(g);
+        initGrid(g);
         int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
         int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         if (chunkNrows * chunkNcols <= 64) {
@@ -407,14 +407,14 @@ public class Grids_Grid2DSquareCellDoubleChunk64CellMap
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
-            this.getGrid().ge.clear_MemoryReserve();
-            if (this.getGrid().ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+            this.getGrid().ge.clearMemoryReserve();
+            if (this.getGrid().ge.swapChunkExcept_Account(
                     this.getGrid(),
                     this.ChunkID,
                     false) < 1L) {
                 throw e;
             }
-            this.getGrid().ge.init_MemoryReserve(this.getGrid(),
+            this.getGrid().ge.initMemoryReserve(this.getGrid(),
                     this.ChunkID,
                     handleOutOfMemoryError);
             return powerOf2(

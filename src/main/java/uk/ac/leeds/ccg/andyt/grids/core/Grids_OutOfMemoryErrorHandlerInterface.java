@@ -102,73 +102,73 @@ public interface Grids_OutOfMemoryErrorHandlerInterface
             HashSet<Grids_2D_ID_int> chunksNotToSwap, 
             boolean handleOutOfMemoryError);
 
-    void init_MemoryReserve(
+    void initMemoryReserve(
             Grids_AbstractGrid g, boolean handleOutOfMemoryError);
 
-    void init_MemoryReserve(
+    void initMemoryReserve(
             Grids_2D_ID_int chunkNotToSwap, 
             boolean handleOutOfMemoryError);
 
-    void init_MemoryReserve(
+    void initMemoryReserve(
             Grids_AbstractGrid g, 
             Grids_2D_ID_int chunkNotToSwap,
             boolean handleOutOfMemoryError);
 
-    void init_MemoryReserve(
+    void initMemoryReserve(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunksNotToSwap, 
             boolean handleOutOfMemoryError);
 
-    void init_MemoryReserve(
+    void initMemoryReserve(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
             boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(boolean handleOutOfMemoryError);
+    long initMemoryReserve_Account(boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(
+    long initMemoryReserve_Account(
             Grids_2D_ID_int chunkNotToSwap, 
             boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(
+    long initMemoryReserve_Account(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkNotToSwap,
             boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(
+    long initMemoryReserve_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> chunksNotToSwap,
             boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(
+    long initMemoryReserve_Account(
             Grids_AbstractGrid g, 
             boolean handleOutOfMemoryError);
 
-    long init_MemoryReserve_Account(
-            Grids_AbstractGrid g, 
-            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
-            boolean handleOutOfMemoryError);
-
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            boolean handleOutOfMemoryError);
-
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            Grids_2D_ID_int chunkNotToSwap, 
-            boolean handleOutOfMemoryError);
-
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
-            Grids_AbstractGrid g, 
-            Grids_2D_ID_int chunkNotToSwap, 
-            boolean handleOutOfMemoryError);
-
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+    long initMemoryReserve_Account(
             Grids_AbstractGrid g, 
             HashSet<Grids_2D_ID_int> chunksNotToSwap, 
             boolean handleOutOfMemoryError);
 
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
+            boolean handleOutOfMemoryError);
+
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
+
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
+            Grids_AbstractGrid g, 
+            Grids_2D_ID_int chunkNotToSwap, 
+            boolean handleOutOfMemoryError);
+
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
+            Grids_AbstractGrid g, 
+            HashSet<Grids_2D_ID_int> chunksNotToSwap, 
+            boolean handleOutOfMemoryError);
+
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
             Grids_AbstractGrid g, 
             boolean handleOutOfMemoryError);
 
-    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> init_MemoryReserve_AccountDetail(
+    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> initMemoryReserve_AccountDetail(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> chunksNotToSwap, 
             boolean handleOutOfMemoryError);
 

@@ -279,11 +279,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(false);
+                this.Grid.ge.initMemoryReserve(false);
                 return toString(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -337,11 +337,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(false);
+                this.Grid.ge.initMemoryReserve(false);
                 return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -365,11 +365,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(false);
+                this.Grid.ge.initMemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -416,7 +416,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 //                    chunkNrows = g.getChunkNRows(
 //                            chunkRowIndex, handleOutOfMemoryError);
 //                    AbstractGrid2DSquareCellDoubleChunk chunk;
-//                    chunk = (AbstractGrid2DSquareCellDoubleChunk) g.getGrid2DSquareCellChunk(
+//                    chunk = (AbstractGrid2DSquareCellDoubleChunk) g.getChunk(
 //                            chunkRowIndex, chunkColIndex, handleOutOfMemoryError);
 //                    for (int chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
 //                        for (int chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
@@ -453,11 +453,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -499,11 +499,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(false);
+                this.Grid.ge.initMemoryReserve(false);
                 return getNonZeroAndNonNoDataValueCountLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -548,11 +548,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getNonNoDataValueCountInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -598,11 +598,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigDecimal(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -634,11 +634,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -673,11 +673,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumDouble(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -719,11 +719,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumLong(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -769,11 +769,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getSumInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -821,11 +821,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMin(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -862,11 +862,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMinBigInteger(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -905,11 +905,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMinDouble(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -957,11 +957,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMinLong(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1011,11 +1011,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMinInt(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1054,11 +1054,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxBigInteger(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1095,11 +1095,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return Grids_AbstractGridStatistics.this.getMax(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1134,11 +1134,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxDouble(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1184,11 +1184,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxLong(update, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1241,11 +1241,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getMaxInt(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1570,11 +1570,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return count(
                         grid2DSquareCellInt,
                         row,
@@ -1673,11 +1673,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return count(
                         grid2DSquareCellDouble,
                         row,
@@ -1760,11 +1760,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getArithmeticMeanBigDecimal(
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
@@ -1803,11 +1803,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.Grid.ge.clear_MemoryReserve();
-                if (this.Grid.ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                this.Grid.ge.clearMemoryReserve();
+                if (this.Grid.ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                this.Grid.ge.init_MemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
+                this.Grid.ge.initMemoryReserve(Grid.ge.HandleOutOfMemoryErrorFalse);
                 return getStandardDeviationBigDecimal(
                         numberOfDecimalPlaces,
                         handleOutOfMemoryError);
@@ -1889,12 +1889,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     nonNoDataValueCountBigDecimal,
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
-            Generic_BigDecimal t_Generic_BigDecimal
-                    = Grid.ge.get_Generic_BigDecimal();
+            Generic_BigDecimal bd
+                    = Grid.ge.getGeneric_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,
-                    t_Generic_BigDecimal.get_RoundingMode());
+                    bd.get_RoundingMode());
         } else {
             //this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class
             Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
@@ -1940,12 +1940,12 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     nonNoDataValueCountBigDecimal,
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
-            Generic_BigDecimal t_Generic_BigDecimal
-                    = Grid.ge.get_Generic_BigDecimal();
+            Generic_BigDecimal bg
+                    = Grid.ge.getGeneric_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,
-                    t_Generic_BigDecimal.get_RoundingMode());
+                    bg.get_RoundingMode());
         }
     }
 

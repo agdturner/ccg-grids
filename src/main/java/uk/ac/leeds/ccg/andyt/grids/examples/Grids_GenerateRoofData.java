@@ -1,5 +1,4 @@
 /**
- * <one line to give the library's name and a brief idea of what it does.>
  * Copyright (C) 2008 Andy Turner, Sadhvi Selvaraj, CCG, University of Leeds, UK
  *
  * This library is free software; you can redistribute it and/or
@@ -33,8 +32,6 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 public class Grids_GenerateRoofData
         extends Grids_Processor {
 
-        Grids_Environment _Grids_Environment;
-
     private long _Time;
     boolean _HandleOutOfMemoryError;
     String _FileSeparator;
@@ -56,9 +53,9 @@ public class Grids_GenerateRoofData
         this._FileSeparator = System.getProperty("file.separator");
         this._MessageLength = 1000;
         this._FilenameLength = 1000;
-        this._Message0 = _Grids_Environment.initString(_MessageLength, _HandleOutOfMemoryError);
-        this._Message = _Grids_Environment.initString(_MessageLength, _HandleOutOfMemoryError);
-        this._Filename = _Grids_Environment.initString(_FilenameLength, _HandleOutOfMemoryError);
+        this._Message0 = this.ge.initString(_MessageLength, _HandleOutOfMemoryError);
+        this._Message = this.ge.initString(_MessageLength, _HandleOutOfMemoryError);
+        this._Filename = this.ge.initString(_FilenameLength, _HandleOutOfMemoryError);
     }
 
     /**
@@ -767,7 +764,7 @@ public class Grids_GenerateRoofData
 //                        this.Grid2DSquareCellDoubleFactory,
 //                        _HandleOutOfMemoryError);
 //            }
-            _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(_ResizedGrid2DSquareCellDouble);
+            ge.getGrids().add(_ResizedGrid2DSquareCellDouble);
             // Rescale
             Grids_Grid2DSquareCellDouble _AggregatedGrid2DSquareCellDouble = rescale(
                     _ResizedGrid2DSquareCellDouble,
@@ -775,7 +772,7 @@ public class Grids_GenerateRoofData
                     1.0d,
                     10.0d,
                     _HandleOutOfMemoryError);
-            _Grids_Environment.get_AbstractGrid2DSquareCell_HashSet().add(_AggregatedGrid2DSquareCellDouble);
+            ge.getGrids().add(_AggregatedGrid2DSquareCellDouble);
             _AggregatedGrid2DSquareCellDouble.setName(_Grid2DSquareCellDouble.getName(_HandleOutOfMemoryError) + "ResizedRescaled", _HandleOutOfMemoryError);
             output(_AggregatedGrid2DSquareCellDouble,
                     Directory,
@@ -785,9 +782,9 @@ public class Grids_GenerateRoofData
                     _HandleOutOfMemoryError);
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (_HandleOutOfMemoryError) {
-                _Grids_Environment.clear_MemoryReserve();
-                _Grids_Environment.swapToFile_Grid2DSquareCellChunks_Account(_HandleOutOfMemoryError);
-                _Grids_Environment.init_MemoryReserve(_HandleOutOfMemoryError);
+                ge.clearMemoryReserve();
+                ge.swapChunks_Account(_HandleOutOfMemoryError);
+                ge.initMemoryReserve(_HandleOutOfMemoryError);
                 _ResizeRescaleOutput(
                         _ResizedGrid2DSquareCellDouble,
                         _Grid2DSquareCellDouble,

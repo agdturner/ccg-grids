@@ -493,7 +493,6 @@ public class Grids_Grid2DSquareCellDoubleFactory
      * @param directory The Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param ge
      * @return
      */
     public @Override

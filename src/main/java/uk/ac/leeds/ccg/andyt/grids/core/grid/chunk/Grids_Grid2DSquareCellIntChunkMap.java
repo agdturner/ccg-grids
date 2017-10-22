@@ -100,7 +100,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
             int defaultValue ) {
         super(grid2DSquareCellInt.ge);
         this.ChunkID = _ChunkID;
-        initGrid2DSquareCell( grid2DSquareCellInt );
+        initGrid( grid2DSquareCellInt );
         this.defaultValue = defaultValue;
         initData();
         this.isSwapUpToDate = false;
@@ -145,7 +145,7 @@ public  class Grids_Grid2DSquareCellIntChunkMap
         this.ChunkID = chunkID;
         Grids_Grid2DSquareCellInt g =
                 grid2DSquareCellIntChunk.getGrid2DSquareCellInt();
-        initGrid2DSquareCell( g );
+        initGrid( g );
         int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
         int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         initData();

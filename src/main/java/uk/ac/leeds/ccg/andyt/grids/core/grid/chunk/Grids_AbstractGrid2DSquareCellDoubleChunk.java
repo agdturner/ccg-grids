@@ -59,14 +59,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getGrid2DSquareCellDouble(handleOutOfMemoryError);
@@ -113,14 +113,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getCell(
@@ -166,14 +166,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_AccountDetail(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_AccountDetail(
                         chunkID,
                         false) == null) {
-                    ge.swapToFile_Grid2DSquareCellChunk_AccountDetail(
+                    ge.swapChunk_AccountDetail(
                             false);
                 }
-                ge.init_MemoryReserve(this.ChunkID,
+                ge.initMemoryReserve(this.ChunkID,
                         handleOutOfMemoryError);
                 return getCell(
                         chunkCellRowIndex,
@@ -232,14 +232,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getCellBigDecimal(
@@ -306,14 +306,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 initCell(
@@ -374,14 +374,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return setCell(
@@ -442,14 +442,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return toArrayIncludingNoDataValues(handleOutOfMemoryError);
@@ -514,14 +514,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return toArrayNotIncludingNoDataValues(handleOutOfMemoryError);
@@ -578,14 +578,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
@@ -633,14 +633,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getNonNoDataValueCountInt(handleOutOfMemoryError);
@@ -675,14 +675,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getSumBigDecimal(handleOutOfMemoryError);
@@ -734,14 +734,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getMinDouble(handleOutOfMemoryError);
@@ -798,14 +798,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getMaxDouble(handleOutOfMemoryError);
@@ -866,14 +866,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getArithmeticMeanBigDecimal(
@@ -943,14 +943,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getArithmeticMeanDouble(handleOutOfMemoryError);
@@ -993,14 +993,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getModeTDoubleHashSet(handleOutOfMemoryError);
@@ -1200,14 +1200,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getMedianDouble(handleOutOfMemoryError);
@@ -1373,14 +1373,14 @@ public abstract class Grids_AbstractGrid2DSquareCellDoubleChunk
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(this.getGrid(),
+                ge.initMemoryReserve(this.getGrid(),
                         this.ChunkID,
                         handleOutOfMemoryError);
                 return getStandardDeviationDouble(handleOutOfMemoryError);

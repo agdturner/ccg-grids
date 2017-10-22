@@ -92,11 +92,11 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
             return getDirectory();
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(handleOutOfMemoryError) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
                     throw _OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 return getDirectory(handleOutOfMemoryError);
             } else {
                 throw _OutOfMemoryError;
@@ -185,7 +185,7 @@ public abstract class Grids_AbstractGrid2DSquareCellFactory extends Grids_Object
 //    /**
 //     * Returns this._AbstractGrid2DSquareCell_HashSet
 //     */
-//    public HashSet getGrid2DSquareCells() {
+//    public HashSet getGrids() {
 //        return this._AbstractGrid2DSquareCell_HashSet;
 //    }
 //    

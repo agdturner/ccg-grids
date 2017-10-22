@@ -270,11 +270,11 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 return toString(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -296,19 +296,19 @@ public class Grids_Grid2DSquareCellInt
         try {
             initGrid2DSquareCell(g);
             if (initTransientFields) {
-                this.setChunkID_AbstractGrid2DSquareCellChunk_HashMap(
-                        g.getChunkID_AbstractGrid2DSquareCellChunk_HashMap());
+                this.setChunkIDChunkMap(
+                        g.getChunkIDChunkMap());
                 //this._AbstractGrid2DSquareCell_HashSet = _Grid2DSquareCellInt._AbstractGrid2DSquareCell_HashSet;
                 // Set the reference to this in the Grid Statistics
                 this.getGridStatistics().init(this);
                 //this._GridStatistics.Grid2DSquareCell = this;
             }
         } catch (OutOfMemoryError e) {
-            ge.clear_MemoryReserve();
-            if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+            ge.clearMemoryReserve();
+            if (ge.swapChunk_Account(false) < 1L) {
                 throw e;
             }
-            ge.init_MemoryReserve(
+            ge.initMemoryReserve(
                     ge.HandleOutOfMemoryErrorTrue);
             initGrid2DSquareCellInt(
                     g,
@@ -348,7 +348,7 @@ public class Grids_Grid2DSquareCellInt
                 ois.close();
                 // Set the refernce to this in the Grid Chunks
                 initGrid2DSquareCellChunks(gridFile);
-                Iterator chunkIterator = this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().values().iterator();
+                Iterator chunkIterator = this.getChunkIDChunkMap().values().iterator();
                 while (chunkIterator.hasNext()) {
                     Grids_AbstractGridChunk chunk = (Grids_AbstractGridChunk) chunkIterator.next();
                     chunk.setGrid(this);
@@ -394,14 +394,14 @@ public class Grids_Grid2DSquareCellInt
                 //throw e;
             }
             //initGrid2DSquareCellChunks( gridFile );
-            ge.getAbstractGrid2DSquareCell_HashSet().add(this);
+            ge.getGrids().add(this);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunks_Account(handleOutOfMemoryError) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunks_Account(handleOutOfMemoryError) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 initGrid2DSquareCellInt(
                         directory,
                         gridFile,
@@ -457,12 +457,12 @@ public class Grids_Grid2DSquareCellInt
             this.NCols = nCols;
             this.Dimensions = dimensions;
             //this._AbstractGrid2DSquareCell_HashSet = _AbstractGrid2DSquareCell_HashSet;
-            ge.getAbstractGrid2DSquareCell_HashSet().add(this);
+            ge.getGrids().add(this);
             this.Name = directory.getName();
             initNChunkRows();
             initNChunkCols();
             long nChunks = getNChunks();
-            this.setChunkID_AbstractGrid2DSquareCellChunk_HashMap(
+            this.setChunkIDChunkMap(
                     new HashMap<>((int) nChunks));
             int chunkRowIndex = Integer.MIN_VALUE;
             int chunkColIndex = Integer.MIN_VALUE;
@@ -488,13 +488,13 @@ public class Grids_Grid2DSquareCellInt
                             _Grid2DSquareCellIntChunk = cf.createGrid2DSquareCellIntChunk(
                                     this,
                                     chunkID);
-                            this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                            this.getChunkIDChunkMap().put(
                                     chunkID,
                                     _Grid2DSquareCellIntChunk);
                             isLoadedChunk = true;
                         } catch (OutOfMemoryError e) {
                             if (handleOutOfMemoryError) {
-                                ge.clear_MemoryReserve();
+                                ge.clearMemoryReserve();
 //                                ge.handleOutOfMemoryErrorOrNot(
 //                                        a_OutOfMemoryError,
 //                                        this,_NChunkCols,
@@ -503,13 +503,13 @@ public class Grids_Grid2DSquareCellInt
                                 chunkID = new Grids_2D_ID_int(
                                         chunkRowIndex,
                                         chunkColIndex);
-                                if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                if (ge.swapChunksExcept_Account(
                                         this,
                                         chunkID,
                                         false) < 1L) {
                                     throw e;
                                 }
-                                ge.init_MemoryReserve(handleOutOfMemoryError);
+                                ge.initMemoryReserve(handleOutOfMemoryError);
                             } else {
                                 throw e;
                             }
@@ -522,14 +522,14 @@ public class Grids_Grid2DSquareCellInt
                 println = "Done chunkRow " + chunkRowIndex;
                 println = ge.println(println, println0, handleOutOfMemoryError);
             }
-            ge.getAbstractGrid2DSquareCell_HashSet().add(this);
+            ge.getGrids().add(this);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunks_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunks_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 initGrid2DSquareCellInt(
                         gridsStatistics,
                         directory,
@@ -597,7 +597,7 @@ public class Grids_Grid2DSquareCellInt
             initNChunkRows();
             initNChunkCols();
             long nChunks = getNChunks();
-            this.setChunkID_AbstractGrid2DSquareCellChunk_HashMap((HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) new HashMap((int) nChunks));
+            this.setChunkIDChunkMap((HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) new HashMap((int) nChunks));
             initDimensions(g, startRowIndex, startColIndex, handleOutOfMemoryError);
             setGridStatistics(gridStatistics);
             // Set the reference to this in the Grid Statistics
@@ -639,7 +639,7 @@ public class Grids_Grid2DSquareCellInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                                    this.getChunkIDChunkMap().put(
                                             chunkID,
                                             _Grid2DSquareCellIntChunk);
                                     row = ((long) chunkRowIndex * (long) this.getChunkNRows());
@@ -660,17 +660,17 @@ public class Grids_Grid2DSquareCellInt
                                     isLoadedChunk = true;
                                 } catch (OutOfMemoryError a_OutOfMemoryError) {
                                     if (handleOutOfMemoryError) {
-                                        ge.clear_MemoryReserve();
+                                        ge.clearMemoryReserve();
                                         chunkID = new Grids_2D_ID_int(
                                                 chunkRowIndex,
                                                 chunkColIndex);
-                                        if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                        if (ge.swapChunksExcept_Account(
                                                 this,
                                                 chunkID,
                                                 false) < 1L) {
                                             throw a_OutOfMemoryError;
                                         }
-                                        ge.init_MemoryReserve(handleOutOfMemoryError);
+                                        ge.initMemoryReserve(handleOutOfMemoryError);
                                     } else {
                                         throw a_OutOfMemoryError;
                                     }
@@ -706,7 +706,7 @@ public class Grids_Grid2DSquareCellInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                                    this.getChunkIDChunkMap().put(
                                             chunkID,
                                             _Grid2DSquareCellIntChunk);
                                     row = ((long) chunkRowIndex * (long) this.getChunkNRows());
@@ -740,17 +740,17 @@ public class Grids_Grid2DSquareCellInt
                                     isLoadedChunk = true;
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
-                                        ge.clear_MemoryReserve();
+                                        ge.clearMemoryReserve();
                                         chunkID = new Grids_2D_ID_int(
                                                 chunkRowIndex,
                                                 chunkColIndex);
-                                        if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                        if (ge.swapChunksExcept_Account(
                                                 this,
                                                 chunkID,
                                                 false) < 1L) {
                                             throw e;
                                         }
-                                        ge.init_MemoryReserve(handleOutOfMemoryError);
+                                        ge.initMemoryReserve(handleOutOfMemoryError);
                                     } else {
                                         throw e;
                                     }
@@ -786,7 +786,7 @@ public class Grids_Grid2DSquareCellInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                                    this.getChunkIDChunkMap().put(
                                             chunkID,
                                             _Grid2DSquareCellIntChunk);
                                     row = ((long) chunkRowIndex * (long) this.getChunkNRows());
@@ -807,17 +807,17 @@ public class Grids_Grid2DSquareCellInt
                                     isLoadedChunk = true;
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
-                                        ge.clear_MemoryReserve();
+                                        ge.clearMemoryReserve();
                                         chunkID = new Grids_2D_ID_int(
                                                 chunkRowIndex,
                                                 chunkColIndex);
-                                        if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                        if (ge.swapChunksExcept_Account(
                                                 this,
                                                 chunkID,
                                                 false) < 1L) {
                                             throw e;
                                         }
-                                        ge.init_MemoryReserve(handleOutOfMemoryError);
+                                        ge.initMemoryReserve(handleOutOfMemoryError);
                                     } else {
                                         throw e;
                                     }
@@ -853,7 +853,7 @@ public class Grids_Grid2DSquareCellInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                                    this.getChunkIDChunkMap().put(
                                             chunkID,
                                             _Grid2DSquareCellIntChunk);
                                     row = ((long) chunkRowIndex * (long) this.getChunkNRows());
@@ -887,17 +887,17 @@ public class Grids_Grid2DSquareCellInt
                                     isLoadedChunk = true;
                                 } catch (OutOfMemoryError a_OutOfMemoryError) {
                                     if (handleOutOfMemoryError) {
-                                        ge.clear_MemoryReserve();
+                                        ge.clearMemoryReserve();
                                         chunkID = new Grids_2D_ID_int(
                                                 chunkRowIndex,
                                                 chunkColIndex);
-                                        if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                        if (ge.swapChunksExcept_Account(
                                                 this,
                                                 chunkID,
                                                 false) < 1L) {
                                             throw a_OutOfMemoryError;
                                         }
-                                        ge.init_MemoryReserve(handleOutOfMemoryError);
+                                        ge.initMemoryReserve(handleOutOfMemoryError);
                                     } else {
                                         throw a_OutOfMemoryError;
                                     }
@@ -913,14 +913,14 @@ public class Grids_Grid2DSquareCellInt
                     }
                 }
             }
-            ge.getAbstractGrid2DSquareCell_HashSet().add(this);
+            ge.getGrids().add(this);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 initGrid2DSquareCellInt(
                         gridStatistics,
                         directory,
@@ -1033,7 +1033,7 @@ public class Grids_Grid2DSquareCellInt
                 initNChunkRows();
                 initNChunkCols();
                 long nChunks = getNChunks();
-                this.setChunkID_AbstractGrid2DSquareCellChunk_HashMap((HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) new HashMap((int) nChunks));
+                this.setChunkIDChunkMap((HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) new HashMap((int) nChunks));
                 setGridStatistics(gridStatistics);
                 // Set the reference to this in the Grid Statistics
                 this.getGridStatistics().init(this);
@@ -1086,23 +1086,23 @@ public class Grids_Grid2DSquareCellInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().put(
+                                    this.getChunkIDChunkMap().put(
                                             chunkID,
                                             _Grid2DSquareCellIntChunk);
                                     isLoadedChunk = true;
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
-                                        ge.clear_MemoryReserve();
+                                        ge.clearMemoryReserve();
                                         chunkID = new Grids_2D_ID_int(
                                                 chunkRowIndex,
                                                 chunkColIndex);
-                                        if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                        if (ge.swapChunksExcept_Account(
                                                 this,
                                                 chunkID,
                                                 false) < 1L) {
                                             throw e;
                                         }
-                                        ge.init_MemoryReserve(handleOutOfMemoryError);
+                                        ge.initMemoryReserve(handleOutOfMemoryError);
                                     } else {
                                         throw e;
                                     }
@@ -1135,17 +1135,17 @@ public class Grids_Grid2DSquareCellInt
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
                                             if (handleOutOfMemoryError) {
-                                                ge.clear_MemoryReserve();
+                                                ge.clearMemoryReserve();
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRowIndex,
                                                         chunkColIndex);
-                                                if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                                if (ge.swapChunksExcept_Account(
                                                         this,
                                                         chunkID,
                                                         false) < 1L) {
                                                     throw e;
                                                 }
-                                                ge.init_MemoryReserve(handleOutOfMemoryError);
+                                                ge.initMemoryReserve(handleOutOfMemoryError);
                                             } else {
                                                 throw e;
                                             }
@@ -1173,17 +1173,17 @@ public class Grids_Grid2DSquareCellInt
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
                                             if (handleOutOfMemoryError) {
-                                                ge.clear_MemoryReserve();
+                                                ge.clearMemoryReserve();
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRowIndex,
                                                         chunkColIndex);
-                                                if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                                if (ge.swapChunksExcept_Account(
                                                         this,
                                                         chunkID,
                                                         false) < 1L) {
                                                     throw e;
                                                 }
-                                                ge.init_MemoryReserve(handleOutOfMemoryError);
+                                                ge.initMemoryReserve(handleOutOfMemoryError);
                                             } else {
                                                 throw e;
                                             }
@@ -1220,17 +1220,17 @@ public class Grids_Grid2DSquareCellInt
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
                                             if (handleOutOfMemoryError) {
-                                                ge.clear_MemoryReserve();
+                                                ge.clearMemoryReserve();
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRowIndex,
                                                         chunkColIndex);
-                                                if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                                if (ge.swapChunksExcept_Account(
                                                         this,
                                                         chunkID,
                                                         false) < 1L) {
                                                     throw e;
                                                 }
-                                                ge.init_MemoryReserve(handleOutOfMemoryError);
+                                                ge.initMemoryReserve(handleOutOfMemoryError);
                                             } else {
                                                 throw e;
                                             }
@@ -1265,17 +1265,17 @@ public class Grids_Grid2DSquareCellInt
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
                                             if (handleOutOfMemoryError) {
-                                                ge.clear_MemoryReserve();
+                                                ge.clearMemoryReserve();
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRowIndex,
                                                         chunkColIndex);
-                                                if (ge.swapToFile_Grid2DSquareCellChunksExcept_Account(
+                                                if (ge.swapChunksExcept_Account(
                                                         this,
                                                         chunkID,
                                                         false) < 1L) {
                                                     throw e;
                                                 }
-                                                ge.init_MemoryReserve(handleOutOfMemoryError);
+                                                ge.initMemoryReserve(handleOutOfMemoryError);
                                             } else {
                                                 throw e;
                                             }
@@ -1293,7 +1293,7 @@ public class Grids_Grid2DSquareCellInt
                     }
                 }
             }
-            ge.getAbstractGrid2DSquareCell_HashSet().add(this);
+            ge.getGrids().add(this);
             setGridStatistics(gridStatistics);
             // Set the reference to this in the Grid Statistics
             //this._GridStatistics.Grid2DSquareCell = this;
@@ -1301,13 +1301,13 @@ public class Grids_Grid2DSquareCellInt
             //this._GridStatistics.Grid2DSquareCell = this;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 initGrid2DSquareCellInt(
                         gridStatistics,
                         directory,
@@ -1346,17 +1346,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         a_ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         a_ChunkID,
                         handleOutOfMemoryError);
@@ -1400,14 +1400,14 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(
                         this,
                         a_ChunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         a_ChunkID,
                         handleOutOfMemoryError);
@@ -1429,11 +1429,11 @@ public class Grids_Grid2DSquareCellInt
         boolean isInGrid = isInGrid(
                 a_ChunkID);
         if (isInGrid) {
-            if (!this.ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey(a_ChunkID)) {
+            if (!this.ChunkIDChunkMap.containsKey(a_ChunkID)) {
                 loadIntoCacheChunk(
                         a_ChunkID);
             }
-            return (Grids_AbstractGrid2DSquareCellIntChunk) this.getChunkID_AbstractGrid2DSquareCellChunk_HashMap().get(a_ChunkID);
+            return (Grids_AbstractGrid2DSquareCellIntChunk) this.getChunkIDChunkMap().get(a_ChunkID);
         }
         return null;
     }
@@ -1463,11 +1463,11 @@ public class Grids_Grid2DSquareCellInt
                     _NoDataValue);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 upDateGridStatistics(
                         newValue,
                         oldValue,
@@ -1566,11 +1566,11 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 return getNoDataValue(
                         handleOutOfMemoryError);
             } else {
@@ -1602,11 +1602,11 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 return getNoDataValueBigDecimal(
                         handleOutOfMemoryError);
             } else {
@@ -1635,17 +1635,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -1680,7 +1680,7 @@ public class Grids_Grid2DSquareCellInt
             long _ChunkColIndexLong = _ChunkColIndex;
             int chunkCellRowIndex = (int) (cellRowIndex - (_ChunkRowIndexLong * _ChunkNrowsLong));
             int chunkCellColIndex = (int) (cellColIndex - (_ChunkColIndexLong * _ChunkNcolsLong));
-            Grids_AbstractGridChunk chunk = getGrid2DSquareCellChunk(
+            Grids_AbstractGridChunk chunk = getChunk(
                     _ChunkRowIndex,
                     _ChunkColIndex);
             if (chunk.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
@@ -1744,17 +1744,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int a_ChunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         a_ChunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         a_ChunkID,
                         handleOutOfMemoryError);
@@ -1841,17 +1841,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -1900,17 +1900,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellID.getRow()),
                         getChunkColIndex(cellID.getCol()));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -1949,17 +1949,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2017,17 +2017,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellID.getRow()),
                         getChunkColIndex(cellID.getCol()));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2087,17 +2087,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(_CellRowIndex),
                         getChunkColIndex(_CellColIndex));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2178,17 +2178,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2271,17 +2271,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2374,17 +2374,17 @@ public class Grids_Grid2DSquareCellInt
                     valueToInitialise);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(_CellRowIndex),
                         getChunkColIndex(_CellColIndex));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2481,17 +2481,17 @@ public class Grids_Grid2DSquareCellInt
                     valueToInitialise);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2564,7 +2564,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 long _CellRowIndex = getCellRowIndex(y);
                 long _CellColIndex = getCellColIndex(x);
                 HashSet a_ChunkIDs = getChunkIDs(
@@ -2573,13 +2573,13 @@ public class Grids_Grid2DSquareCellInt
                         y,
                         _CellRowIndex,
                         _CellColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         a_ChunkIDs,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         a_ChunkIDs,
                         handleOutOfMemoryError);
@@ -2645,7 +2645,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 double x = getCellXDouble(_CellColIndex);
                 double y = getCellYDouble(_CellRowIndex);
                 HashSet a_ChunkIDs = getChunkIDs(
@@ -2654,13 +2654,13 @@ public class Grids_Grid2DSquareCellInt
                         y,
                         _CellRowIndex,
                         _CellColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         a_ChunkIDs,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         a_ChunkIDs,
                         handleOutOfMemoryError);
@@ -2705,8 +2705,8 @@ public class Grids_Grid2DSquareCellInt
      * returned.
      * @param y The y-coordinate of the circle centre from which cell values are
      * returned.
-     * @param _CellRowIndex The row index at y.
-     * @param _CellColIndex
+     * @param cellRowIndex The row index at y.
+     * @param cellColIndex
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -2716,45 +2716,45 @@ public class Grids_Grid2DSquareCellInt
     public int[] getCells(
             double x,
             double y,
-            long _CellRowIndex,
-            long _CellColIndex,
+            long cellRowIndex,
+            long cellColIndex,
             double distance,
             boolean handleOutOfMemoryError) {
         try {
             return getCells(
                     x,
                     y,
-                    _CellRowIndex,
-                    _CellColIndex,
+                    cellRowIndex,
+                    cellColIndex,
                     distance);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                HashSet a_ChunkIDs = getChunkIDs(
+                ge.clearMemoryReserve();
+                HashSet chunkIDs = getChunkIDs(
                         distance,
                         x,
                         y,
-                        _CellRowIndex,
-                        _CellColIndex);
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                        cellRowIndex,
+                        cellColIndex);
+                if (ge.swapChunkExcept_Account(
                         this,
-                        a_ChunkIDs,
+                        chunkIDs,
                         false) < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
-                        a_ChunkIDs,
+                        chunkIDs,
                         handleOutOfMemoryError);
                 return getCells(
                         x,
                         y,
-                        _CellRowIndex,
-                        _CellColIndex,
+                        cellRowIndex,
+                        cellColIndex,
                         distance,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -2829,17 +2829,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2899,17 +2899,17 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(_CellRowIndex),
                         getChunkColIndex(_CellColIndex));
-                if (ge.swapToFile_Grid2DSquareCellChunkExcept_Account(
+                if (ge.swapChunkExcept_Account(
                         this,
                         chunkID,
                         false) < 1L) {
                     throw a_OutOfMemoryError;
                 }
-                ge.init_MemoryReserve(
+                ge.initMemoryReserve(
                         this,
                         chunkID,
                         handleOutOfMemoryError);
@@ -2978,7 +2978,7 @@ public class Grids_Grid2DSquareCellInt
                     _NoDataValue);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -3184,7 +3184,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
@@ -3249,7 +3249,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -3326,7 +3326,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -3531,7 +3531,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
@@ -3592,7 +3592,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -3663,7 +3663,7 @@ public class Grids_Grid2DSquareCellInt
                     _NoDataValue);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -3892,7 +3892,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
@@ -3946,7 +3946,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellID.getRow()),
                         getChunkColIndex(cellID.getCol()));
@@ -4003,7 +4003,7 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -4074,11 +4074,11 @@ public class Grids_Grid2DSquareCellInt
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
-                if (ge.swapToFile_Grid2DSquareCellChunk_Account(false) < 1L) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunk_Account(false) < 1L) {
                     throw e;
                 }
-                ge.init_MemoryReserve(handleOutOfMemoryError);
+                ge.initMemoryReserve(handleOutOfMemoryError);
                 return iterator(
                         handleOutOfMemoryError);
             } else {

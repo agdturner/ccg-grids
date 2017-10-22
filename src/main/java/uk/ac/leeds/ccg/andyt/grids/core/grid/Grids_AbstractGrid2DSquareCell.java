@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
@@ -47,15 +48,16 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChun
 public abstract class Grids_AbstractGrid2DSquareCell
         extends Grids_AbstractGrid {
 
-    protected Grids_AbstractGrid2DSquareCell(){}
-    
+    protected Grids_AbstractGrid2DSquareCell() {
+    }
+
     public Grids_AbstractGrid2DSquareCell(Grids_Environment ge) {
         super(ge);
     }
-    
+
     /**
-     * @return Grids_AbstractGridChunk cell value at at
-     * Point2D.Double point as a double.
+     * @return Grids_AbstractGridChunk cell value at at Point2D.Double point as
+     * a double.
      * @param point The Point2D.Double for which the cell value is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -70,7 +72,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(point.getY()),
                         getChunkColIndex(point.getX()));
@@ -85,8 +87,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_AbstractGridChunk cell value at at
-     * Point2D.Double point as a double.
+     * @return Grids_AbstractGridChunk cell value at at Point2D.Double point as
+     * a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
     protected double getCellDouble(
@@ -99,8 +101,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_AbstractGridChunk cell value at at point given
-     * by x-coordinate x and y-coordinate y as a double.
+     * @return Grids_AbstractGridChunk cell value at at point given by
+     * x-coordinate x and y-coordinate y as a double.
      * @param x The x coordinate of the point at which the cell value is
      * returned.
      * @param y The y coordinate of the point at which the cell value is
@@ -121,7 +123,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(y),
                         getChunkColIndex(x));
@@ -137,8 +139,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_AbstractGridChunk cell value at at point given
-     * by x-coordinate x and y-coordinate y as a double.
+     * @return Grids_AbstractGridChunk cell value at at point given by
+     * x-coordinate x and y-coordinate y as a double.
      * @param x The x coordinate of the point at which the cell value is
      * returned.
      * @param y The y coordinate of the point at which the cell value is
@@ -157,9 +159,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param cellRowIndex
      * @param cellColIndex
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to _CellRowIndex, cell col index equal to _CellColIndex as a
-     * double.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -176,7 +177,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -195,9 +196,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param cellRowIndex
      * @param cellColIndex
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to _CellRowIndex, cell col index equal to _CellColIndex as a
-     * double.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      */
     protected double getCellDouble(
             long cellRowIndex,
@@ -212,9 +212,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to _CellRowIndex, cell col index equal to _CellColIndex as a
-     * double.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -237,7 +236,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
@@ -259,9 +258,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      *
      * @param chunkRowIndex
      * @param chunkColIndex
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to _CellRowIndex, cell col index equal to _CellColIndex as a
-     * double.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -279,7 +277,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             }
         }
         Grids_AbstractGridChunk grid2DSquareCellChunk
-                = getGrid2DSquareCellChunk(
+                = getChunk(
                         chunkRowIndex,
                         chunkColIndex);
         if (grid2DSquareCellChunk == null) {
@@ -294,13 +292,19 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
+     * @param handleOutOfMemoryError
+     * @return the _NoDataValue of this as a BigDecimal.
+     */
+    public abstract BigDecimal getNoDataValueBigDecimal(boolean handleOutOfMemoryError);
+
+    /**
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index _Row, chunk col index _Col as a double.
-     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk
-     * containing the cell.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index _Row, chunk col index _Col as a double.
+     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk containing the
+     * cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -325,7 +329,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
@@ -349,10 +353,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index _Row, chunk col index _Col as a double.
-     * @param chunk The Grids_AbstractGridChunk
-     * containing the cell.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index _Row, chunk col index _Col as a double.
+     * @param chunk The Grids_AbstractGridChunk containing the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -442,8 +445,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     /**
      * @param cellRowIndex
      * @param cellColIndex
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to cellRowIndex, cell col index equal to cellColIndex as a int.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * cellRowIndex, cell col index equal to cellColIndex as a int.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -460,7 +463,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRowIndex(cellRowIndex),
                         getChunkColIndex(cellColIndex));
@@ -476,8 +479,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
     }
 
     /**
-     * @return Grids_AbstractGridChunk cell value at cell row index
-     * equal to cellRowIndex, cell col index equal to cellColIndex as a int.
+     * @return Grids_AbstractGridChunk cell value at cell row index equal to
+     * cellRowIndex, cell col index equal to cellColIndex as a int.
      * @param cellRowIndex The cell row index.
      * @param cellColIndex The cell column index.
      */
@@ -495,8 +498,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkRowIndex
      * @param chunkColIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index chunkRowIndex, chunk col index chunkColIndex as a int.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index chunkRowIndex, chunk col index chunkColIndex as a int.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -519,7 +522,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
@@ -540,8 +543,8 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkRowIndex
      * @param chunkColIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index chunkRowIndex, chunk col index chunkColIndex as a int.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index chunkRowIndex, chunk col index chunkColIndex as a int.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -550,7 +553,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             int chunkColIndex,
             int chunkCellRowIndex,
             int chunkCellColIndex) {
-        Grids_AbstractGridChunk grid2DSquareCellChunk = getGrid2DSquareCellChunk(
+        Grids_AbstractGridChunk grid2DSquareCellChunk = getChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return getCellInt(
@@ -565,10 +568,10 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk
-     * containing the cell.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index chunkRowIndex, chunk col index chunkColIndex as a int.
+     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk containing the
+     * cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -593,7 +596,7 @@ public abstract class Grids_AbstractGrid2DSquareCell
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clear_MemoryReserve();
+                ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         chunkRowIndex,
                         chunkColIndex);
@@ -615,10 +618,9 @@ public abstract class Grids_AbstractGrid2DSquareCell
      * @param chunkColIndex
      * @param chunkRowIndex
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given
-     * by chunk row index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param chunk The Grids_AbstractGridChunk
-     * containing the cell.
+     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
+     * index chunkRowIndex, chunk col index chunkColIndex as a int.
+     * @param chunk The Grids_AbstractGridChunk containing the cell.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
@@ -703,5 +705,42 @@ public abstract class Grids_AbstractGrid2DSquareCell
         }
     }
 
+    /**
+     * @param valueToSet
+     * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
+     * to valueToSet.
+     * @param cellRowIndex The cell row index.
+     * @param cellColIndex The cell column index.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public double setCell(long cellRowIndex, long cellColIndex, double valueToSet, boolean handleOutOfMemoryError) {
+        try {
+            double result = setCell(cellRowIndex, cellColIndex, valueToSet);
+            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                freeSomeMemoryAndResetReserve(chunkID, e);
+                return setCell(cellRowIndex, cellColIndex, valueToSet, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Sets the value at _CellRowIndex, _CellColIndex to valueToSet.
+     *
+     * @param cellRowIndex The cell row index.
+     * @param cellColIndex The cell column index.
+     * @param valueToSet The value set.
+     * @return
+     */
+    protected abstract double setCell(long cellRowIndex, long cellColIndex, double valueToSet);
 
 }
