@@ -24,20 +24,6 @@ public class Grids_Environment
         implements Serializable, Grids_OutOfMemoryErrorHandlerInterface {
 
     /**
-     * @return the Directory
-     */
-    public File getDirectory() {
-        return Directory;
-    }
-
-    /**
-     * @return the Grids
-     */
-    public HashSet<Grids_AbstractGrid> getGrids() {
-        return Grids;
-    }
-
-    /**
      * Local Directory used for caching. TODO If this were not transient upon
      * reloading, it would be possible to ascertain what it was which might be
      * useful.
@@ -158,6 +144,20 @@ public class Grids_Environment
     }
 
     /**
+     * @return the Directory
+     */
+    public File getDirectory() {
+        return Directory;
+    }
+
+    /**
+     * @return the Grids
+     */
+    public HashSet<Grids_AbstractGrid> getGrids() {
+        return Grids;
+    }
+
+    /**
      * Sets Grids to be grids.
      *
      * @param grids
@@ -183,6 +183,15 @@ public class Grids_Environment
                 throw e;
             }
         }
+    }
+
+    /**
+     * Adds g to Grids.
+     *
+     * @param g
+     */
+    public void addGrid(Grids_AbstractGrid g) {
+        Grids.add(g);
     }
 
     /**
@@ -271,7 +280,8 @@ public class Grids_Environment
             boolean handleOutOfMemoryError) {
         try {
             initMemoryReserve();
-            return tryToEnsureThereIsEnoughMemoryToContinue_Account(handleOutOfMemoryError);
+            return tryToEnsureThereIsEnoughMemoryToContinue_Account(
+                    handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -279,8 +289,7 @@ public class Grids_Environment
                 if (result < 1L) {
                     throw e;
                 }
-                result += initMemoryReserve_Account(
-                        handleOutOfMemoryError);
+                result += initMemoryReserve_Account(handleOutOfMemoryError);
                 return result;
             } else {
                 throw e;
@@ -304,18 +313,14 @@ public class Grids_Environment
             boolean handleOutOfMemoryError) {
         try {
             initMemoryReserve();
-            tryToEnsureThereIsEnoughMemoryToContinue(
-                    g,
-                    handleOutOfMemoryError);
+            tryToEnsureThereIsEnoughMemoryToContinue(g, handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
                 if (swapChunkExcept_Account(g) < 1L) {
                     throw e;
                 }
-                initMemoryReserve(
-                        g,
-                        handleOutOfMemoryError);
+                initMemoryReserve(g, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -324,8 +329,7 @@ public class Grids_Environment
 
     /**
      * Initialises MemoryReserve. If an OutOfMemoryError is encountered this
-     * calls
-     * swapChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
+     * calls swapChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
      * then recurses.
      *
      * @param chunkID
@@ -360,8 +364,7 @@ public class Grids_Environment
 
     /**
      * Initialises MemoryReserve. If an OutOfMemoryError is encountered this
-     * calls
-     * swapChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
+     * calls swapChunksExcept_AccountSuccess(_ChunkID,handleOutOfMemoryError)
      * then recurses.
      *
      * @param chunkID
@@ -846,14 +849,11 @@ public class Grids_Environment
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
                 boolean isEnoughMemoryToContinue;
-                isEnoughMemoryToContinue = tryToEnsureThereIsEnoughMemoryToContinue(
-                        g);
+                isEnoughMemoryToContinue = tryToEnsureThereIsEnoughMemoryToContinue(g);
                 if (!isEnoughMemoryToContinue) {
                     throw e;
                 }
-                initMemoryReserve(
-                        g,
-                        handleOutOfMemoryError);
+                initMemoryReserve(g, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -897,10 +897,11 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
-                boolean isEnoughMemoryToContinue = tryToEnsureThereIsEnoughMemoryToContinue(
+                boolean enough;
+                enough = tryToEnsureThereIsEnoughMemoryToContinue(
                         g,
                         chunkID);
-                if (!isEnoughMemoryToContinue) {
+                if (!enough) {
                     throw e;
                 }
                 initMemoryReserve(
@@ -949,14 +950,12 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
-                boolean isEnoughMemoryToContinue = tryToEnsureThereIsEnoughMemoryToContinue(
+                boolean enough = tryToEnsureThereIsEnoughMemoryToContinue(
                         chunkID);
-                if (!isEnoughMemoryToContinue) {
+                if (!enough) {
                     throw e;
                 }
-                initMemoryReserve(
-                        chunkID,
-                        handleOutOfMemoryError);
+                initMemoryReserve(chunkID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -998,14 +997,11 @@ public class Grids_Environment
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
-                boolean isEnoughMemoryToContinue = tryToEnsureThereIsEnoughMemoryToContinue(
-                        m);
-                if (!isEnoughMemoryToContinue) {
+                boolean enough = tryToEnsureThereIsEnoughMemoryToContinue(m);
+                if (!enough) {
                     throw e;
                 }
-                initMemoryReserve(
-                        m,
-                        handleOutOfMemoryError);
+                initMemoryReserve(m, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1099,12 +1095,11 @@ public class Grids_Environment
     public long tryToEnsureThereIsEnoughMemoryToContinue_Account(
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account();
+            Account test = tryToEnsureThereIsEnoughMemoryToContinue_Account();
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
                         + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(boolean)";
@@ -1113,7 +1108,7 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1131,34 +1126,23 @@ public class Grids_Environment
     /**
      * A method to try to ensure there is enough memory to continue. This method
      * should quickly return null if there is enough memory to continue. If
-     * there is not enough memory to continue it will attempt to make room. If
-     * successful, this will return an Object[] with the first element being a
-     * Boolean with value true. The second element being a
-     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the data that
-     * was swapped. If unsuccessful, this will return an Object[] with the first
-     * element being a Boolean with value false. The second element being a
-     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the data that
-     * was swapped.
+     * there is not enough memory to continue it will attempt to make room. This
+     * will return an Account indicating the data that was swapped and whether
+     * this created enough memory to continue.
      *
-     * @return Either null or an Object[] of length 2 with first element a
-     * Boolean and second element a HashMap<Grids_AbstractGrid,
-     * HashSet<ChunkID>>.
+     * @return
      */
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account() {
+    protected Account tryToEnsureThereIsEnoughMemoryToContinue_Account() {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunk_Account() < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1177,13 +1161,12 @@ public class Grids_Environment
             Grids_AbstractGrid g,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Account test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                     g);
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
                         + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(AbstractGrid2DSquareCell,boolean)";
@@ -1192,7 +1175,7 @@ public class Grids_Environment
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1209,22 +1192,18 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
+    protected Account tryToEnsureThereIsEnoughMemoryToContinue_Account(
             Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunkExcept_Account(g) < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1245,23 +1224,25 @@ public class Grids_Environment
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Account test;
+            test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                     g,
                     chunkID);
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(AbstractGrid2DSquareCell,ChunkID,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account("
+                        + g.getClass().getName() + ","
+                        + chunkID.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1280,23 +1261,19 @@ public class Grids_Environment
         }
     }
 
-    public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
+    public Account tryToEnsureThereIsEnoughMemoryToContinue_Account(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunkExcept_Account(g, chunkID) < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1315,22 +1292,22 @@ public class Grids_Environment
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Account test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                     chunkID);
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(ChunkID,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account("
+                        + chunkID.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1347,22 +1324,18 @@ public class Grids_Environment
         }
     }
 
-    public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
+    public Account tryToEnsureThereIsEnoughMemoryToContinue_Account(
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunkExcept_Account(chunkID) < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1381,21 +1354,21 @@ public class Grids_Environment
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(m);
+            Account test = tryToEnsureThereIsEnoughMemoryToContinue_Account(m);
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>>,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account("
+                        + m.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1412,22 +1385,18 @@ public class Grids_Environment
         }
     }
 
-    public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
+    public Account tryToEnsureThereIsEnoughMemoryToContinue_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunkExcept_Account(m) < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1448,23 +1417,25 @@ public class Grids_Environment
             HashSet<Grids_2D_ID_int> chunks,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+            Account test = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                     g,
                     chunks);
             if (test == null) {
                 return 0;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
-                String message = "Warning! Not enough data to swap in "
+            if (!test.Success) {
+                String message;
+                message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account(AbstractGrid2DSquareCell,HashSet<ChunkID>,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_Account("
+                        + g.getClass().getName() + ","
+                        + chunks.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (Long) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1478,23 +1449,19 @@ public class Grids_Environment
         }
     }
 
-    public Object[] tryToEnsureThereIsEnoughMemoryToContinue_Account(
+    public Account tryToEnsureThereIsEnoughMemoryToContinue_Account(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            long result1 = 0L;
+            Account result = new Account();
             while (getTotalFreeMemory() < Memory_Threshold) {
                 if (swapChunkExcept_Account(g, chunkIDs) < 1) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    result1++;
+                    result.Detail++;
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
             return result;
         }
         return null;
@@ -1516,21 +1483,24 @@ public class Grids_Environment
             tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                     boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
+            AccountDetail test;
+            test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
             if (test == null) {
                 return null;
             }
-            boolean test0 = (Boolean) test[0];
+            boolean test0 = test.Success;
             if (!test0) {
-                String message = "Warning! Not enough data to swap in "
+                String message;
+                message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + "boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1545,38 +1515,26 @@ public class Grids_Environment
     /**
      * A method to ensure there is enough memory to continue. This method will
      * quickly return null if there is enough memory to continue. If there is
-     * not enough memory to continue it will attempt to make room. If
-     * successful, this will return an Object[] with the first element being a
-     * Boolean with value true. The second element being a
-     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the data that
-     * was swapped. If unsuccessful, this will return an Object[] with the first
-     * element being a Boolean with value false. The second element being a
-     * HashMap<Grids_AbstractGrid, HashSet<ChunkID>> indicating the data that
-     * was swapped.
+     * not enough memory to continue it will attempt to make room and will pass
+     * back a detailed account of this and an indication if there is enough
+     * memory to continue.
      *
-     * @return Either null or an Object[] of length 2 with first element a
-     * Boolean and second element a HashMap<Grids_AbstractGrid,
-     * HashSet<ChunkID>>.
+     * @return
      */
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail() {
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail() {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1;
-            result1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapChunk_AccountDetail();
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = result1;
+                    result.Success = false;
                     return result;
                 } else {
-                    combine(result1,
-                            potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
         }
         return null;
     }
@@ -1588,7 +1546,7 @@ public class Grids_Environment
      *
      * @param g
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>> identifying chunks
+     * @return HashMap identifying chunks
      * swapped.
      */
     @Override
@@ -1597,22 +1555,22 @@ public class Grids_Environment
                     Grids_AbstractGrid g,
                     boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
-                    g);
+            AccountDetail test;
+            test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(g);
             if (test == null) {
                 return null;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + g.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1625,25 +1583,20 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapChunk_AccountDetail();
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    combine(result1,
-                            potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
         }
         return null;
     }
@@ -1656,7 +1609,7 @@ public class Grids_Environment
      * @param g
      * @param handleOutOfMemoryError
      * @param chunkID
-     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>> identifying chunks
+     * @return HashMap identifying chunks
      * swapped.
      */
     @Override
@@ -1666,23 +1619,24 @@ public class Grids_Environment
                     Grids_2D_ID_int chunkID,
                     boolean handleOutOfMemoryError) {
         try {
-            Object[] test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+            AccountDetail test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                     g,
                     chunkID);
             if (test == null) {
                 return null;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(AbstractGrid2DSquareCell,ChunkID,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + g.getClass().getName() + ","
+                        + chunkID.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1705,28 +1659,23 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapChunkExcept_AccountDetail(
                         g,
                         chunkID);
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    combine(result1,
-                            potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
         }
         return null;
     }
@@ -1738,7 +1687,7 @@ public class Grids_Environment
      *
      * @param chunkID
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>> identifying chunks
+     * @return HashMap identifying chunks
      * swapped.
      */
     @Override
@@ -1746,22 +1695,23 @@ public class Grids_Environment
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            Object[] result;
+            AccountDetail result;
             result = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(chunkID);
             if (result == null) {
                 return null;
             }
-            boolean resultPart0 = (Boolean) result[0];
+            boolean resultPart0 = result.Success;
             if (!resultPart0) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(ChunkID,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + chunkID.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) result[1];
+            return result.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1782,27 +1732,24 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> resultPart1;
-            resultPart1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
+//            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> resultPart1;
+//            resultPart1 = new HashMap<>(1);
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapChunkExcept_AccountDetail(
                         chunkID);
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = resultPart1;
+                    result.Success = false;
                     return result;
                 } else {
-                    combine(resultPart1,
-                            potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = resultPart1;;
+            result.Success = true;
         }
         return null;
     }
@@ -1814,7 +1761,7 @@ public class Grids_Environment
      *
      * @param m
      * @param handleOutOfMemoryError
-     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>> identifying chunks
+     * @return HashMap identifying chunks
      * swapped.
      */
     @Override
@@ -1823,22 +1770,22 @@ public class Grids_Environment
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
                     boolean handleOutOfMemoryError) {
         try {
-            Object[] test;
+            AccountDetail test;
             test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(m);
             if (test == null) {
                 return null;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(HashMap<AbstractGrid2DSquareCell, HashSet<ChunkID>>,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + m.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
@@ -1859,24 +1806,21 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapExcept_AccountDetail(m);
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = result1;
+                    result.Success = false;
                     return result;
                 } else {
-                    combine(result1, potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
         }
         return null;
     }
@@ -1888,41 +1832,42 @@ public class Grids_Environment
      *
      * @param g
      * @param handleOutOfMemoryError
-     * @param chunks
-     * @return HashMap<Grids_AbstractGrid, HashSet<ChunkID>> identifying chunks
+     * @param chunkIDs
+     * @return HashMap identifying chunks
      * swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
             tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                     Grids_AbstractGrid g,
-                    HashSet<Grids_2D_ID_int> chunks,
+                    HashSet<Grids_2D_ID_int> chunkIDs,
                     boolean handleOutOfMemoryError) {
         try {
-            Object[] test;
+            AccountDetail test;
             test = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                     g,
-                    chunks);
+                    chunkIDs);
             if (test == null) {
                 return null;
             }
-            boolean test0 = (Boolean) test[0];
-            if (!test0) {
+            if (!test.Success) {
                 String message = "Warning! Not enough data to swap in "
                         + this.getClass().getName()
-                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(AbstractGrid2DSquareCell,HashSet<ChunkID>,boolean)";
+                        + ".tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail("
+                        + g.getClass().getName() + ","
+                        + chunkIDs.getClass().getName() + ",boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 handleOutOfMemoryError = false;
                 throw new OutOfMemoryError(message);
             }
-            return (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) test[1];
+            return test.Detail;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 clearMemoryReserve();
                 return freeSomeMemoryAndResetReserve_AccountDetails(
                         g,
-                        chunks,
+                        chunkIDs,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1930,28 +1875,23 @@ public class Grids_Environment
         }
     }
 
-    protected Object[] tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
+    protected AccountDetail tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Object[] result = new Object[2];
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result1 = new HashMap<>(1);
+            AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
             while (getTotalFreeMemory() < Memory_Threshold) {
                 potentialPartResult = swapChunkExcept_AccountDetail(
                         g,
                         chunkIDs);
                 if (potentialPartResult.isEmpty()) {
-                    result[0] = false;
-                    result[1] = result1;
                     return result;
                 } else {
-                    combine(result1,
-                            potentialPartResult);
+                    combine(result.Detail, potentialPartResult);
                 }
             }
-            result[0] = true;
-            result[1] = result1;
+            result.Success = true;
         }
         return null;
     }
@@ -1971,11 +1911,11 @@ public class Grids_Environment
             result = swapChunks_AccountDetail();
             try {
                 if (result.isEmpty()) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
+                    AccountDetail account;
+                    account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2036,10 +1976,10 @@ public class Grids_Environment
             result = swapChunks_Account(); // Should this really be here and not in the try loop?
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
+                    Account account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2152,11 +2092,11 @@ public class Grids_Environment
             result = swapChunk_AccountDetail();
             try {
                 if (result.isEmpty()) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
+                    AccountDetail account;
+                    account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail();
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2165,8 +2105,7 @@ public class Grids_Environment
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
                     potentialPartResult = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             handleOutOfMemoryError);
-                    combine(result,
-                            potentialPartResult);
+                    combine(result, potentialPartResult);
                 }
             } catch (OutOfMemoryError e) {
                 // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
@@ -2194,9 +2133,9 @@ public class Grids_Environment
             boolean success = swapChunk();
             try {
                 if (!success) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
+                    Account account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
                     if (account != null) {
-                        if (!(Boolean) account[0]) {
+                        if (!account.Success) {
                             throw new OutOfMemoryError();
                         }
                     }
@@ -2244,11 +2183,7 @@ public class Grids_Environment
      */
     protected boolean swapChunk(
             Grids_AbstractGrid grid) {
-        if (grid.swapChunk_Account(HandleOutOfMemoryErrorFalse) < 1) {
-            return false;
-        } else {
-            return true;
-        }
+        return grid.swapChunk_Account(HandleOutOfMemoryErrorFalse) >= 1;
     }
 
 //    /**
@@ -2268,12 +2203,12 @@ public class Grids_Environment
             long result = swapChunk_Account();
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
+                    Account account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
                     if (account != null) {
-                        if (!(Boolean) account[0]) {
+                        if (!account.Success) {
                             throw new OutOfMemoryError();
                         } else {
-                            result += (Long) account[1];
+                            result += account.Detail;
                         }
                     }
                 } else {
@@ -2321,10 +2256,10 @@ public class Grids_Environment
             boolean success = swapChunkExcept(g);
             try {
                 if (!success) {
-                    Object[] account;
+                    Account account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_Account(g);
                     if (account != null) {
-                        if (!(Boolean) account[0]) {
+                        if (!account.Success) {
                             throw new OutOfMemoryError();
                         }
                     }
@@ -2440,13 +2375,12 @@ public class Grids_Environment
                     chunkID);
             try {
                 if (result.isEmpty()) {
-                    Object[] account;
+                    AccountDetail account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2456,8 +2390,7 @@ public class Grids_Environment
                     potentialPartResult = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             chunkID,
                             handleOutOfMemoryError);
-                    combine(result,
-                            potentialPartResult);
+                    combine(result, potentialPartResult);
                 }
             } catch (OutOfMemoryError e) {
                 // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
@@ -2523,11 +2456,11 @@ public class Grids_Environment
             long result = swapChunkExcept_Account(chunkID);
             try {
                 if (result < 1) {
-                    Object[] account;
+                    Account account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_Account(chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2616,12 +2549,11 @@ public class Grids_Environment
             result = swapExcept_AccountDetail(m);
             try {
                 if (result.isEmpty()) {
-                    Object[] account;
+                    AccountDetail account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(m);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2894,12 +2826,12 @@ public class Grids_Environment
             result = swapChunkExcept_Account(g, chunkIDs);
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+                    Account account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                             g,
                             chunkIDs);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -2995,12 +2927,13 @@ public class Grids_Environment
             result = swapChunkExcept_Account(g, chunkID);
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
+                    Account account;
+                    account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                             g,
                             chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3079,10 +3012,11 @@ public class Grids_Environment
                     g);
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account(g);
+                    Account account;
+                    account = tryToEnsureThereIsEnoughMemoryToContinue_Account(g);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3123,12 +3057,12 @@ public class Grids_Environment
             Grids_AbstractGrid g) {
         Iterator<Grids_AbstractGrid> ite;
         ite = getGrids().iterator();
-        Grids_AbstractGrid bg;
+        Grids_AbstractGrid gb;
         while (ite.hasNext()) {
-            bg = ite.next();
-            if (bg != g) {
+            gb = ite.next();
+            if (gb != g) {
                 Grids_2D_ID_int chunkID;
-                chunkID = bg.swapChunk_AccountChunk(
+                chunkID = gb.swapChunk_AccountChunk(
                         HandleOutOfMemoryErrorFalse);
                 if (chunkID != null) {
                     return 1L;
@@ -3156,13 +3090,11 @@ public class Grids_Environment
             result = swapChunksExcept_AccountDetail(chunkID);
             try {
                 if (result.isEmpty()) {
-                    Object[] account;
+                    AccountDetail account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(
-                                    result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3171,8 +3103,7 @@ public class Grids_Environment
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
                     potentialPartResult = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             chunkID, handleOutOfMemoryError);
-                    combine(result,
-                            potentialPartResult);
+                    combine(result, potentialPartResult);
                 }
             } catch (OutOfMemoryError e) {
                 // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
@@ -3248,12 +3179,11 @@ public class Grids_Environment
             result = swapChunksExcept_AccountDetail(g);
             try {
                 if (result.isEmpty()) {
-                    Object[] account;
+                    AccountDetail account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(g);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3262,8 +3192,7 @@ public class Grids_Environment
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
                     potentialPartResult = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             g, handleOutOfMemoryError);
-                    combine(result,
-                            potentialPartResult);
+                    combine(result, potentialPartResult);
                 }
             } catch (OutOfMemoryError e) {
                 // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
@@ -3332,12 +3261,12 @@ public class Grids_Environment
             long result = swapChunksExcept_Account(g);
             try {
                 if (result < 1) {
-                    Object[] account;
+                    Account account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                             g);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3409,14 +3338,13 @@ public class Grids_Environment
                     chunkID);
             try {
                 if (result.isEmpty()) {
-                    Object[] account;
+                    AccountDetail account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
                             g,
                             chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            combine(result,
-                                    (HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>) account[1]);
+                        if (account.Success) {
+                            combine(result, account.Detail);
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3427,8 +3355,7 @@ public class Grids_Environment
                                     g,
                                     chunkID,
                                     handleOutOfMemoryError);
-                    combine(result,
-                            potentialPartResult);
+                    combine(result, potentialPartResult);
                 }
             } catch (OutOfMemoryError e) {
                 // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
@@ -3476,13 +3403,13 @@ public class Grids_Environment
                     chunkID);
             try {
                 if (result < 1) {
-                    Object[] account;
+                    Account account;
                     account = tryToEnsureThereIsEnoughMemoryToContinue_Account(
                             g,
                             chunkID);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3661,10 +3588,11 @@ public class Grids_Environment
             long result = swapChunksExcept_Account(m);
             try {
                 if (result < 1) {
-                    Object[] account = tryToEnsureThereIsEnoughMemoryToContinue_Account(m);
+                    Account account;
+                    account = tryToEnsureThereIsEnoughMemoryToContinue_Account(m);
                     if (account != null) {
-                        if ((Boolean) account[0]) {
-                            result += (Long) account[1];
+                        if (account.Success) {
+                            result += account.Detail;
                         } else {
                             throw new OutOfMemoryError();
                         }
@@ -3861,4 +3789,33 @@ public class Grids_Environment
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> getNotToSwapData() {
         return NotToSwapData;
     }
+
+    /**
+     * Simple inner class for accounting memory swapping detail.
+     */
+    protected class AccountDetail {
+
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> Detail;
+        boolean Success;
+
+        protected AccountDetail() {
+            Detail = new HashMap<>();
+            Success = false;
+        }
+    }
+
+    /**
+     * Simple inner class for accounting memory swapping.
+     */
+    protected class Account {
+
+        long Detail;
+        boolean Success;
+
+        protected Account() {
+            Detail = 0;
+            Success = false;
+        }
+    }
+
 }

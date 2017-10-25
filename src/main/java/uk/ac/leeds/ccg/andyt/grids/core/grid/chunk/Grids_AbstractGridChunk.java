@@ -58,16 +58,16 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
             Grids_AbstractGrid result = getGrid();
             result.ge.tryToEnsureThereIsEnoughMemoryToContinue(result, handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError)< 1L) {
-                    throw _OutOfMemoryError;
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError)< 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -95,7 +95,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @param chunkID
      */
     public void initChunkID(Grids_2D_ID_int chunkID) {
-        this.ChunkID = chunkID;
+        ChunkID = chunkID;
     }
 
     /**
@@ -110,18 +110,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public Grids_2D_ID_int getChunkID(boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getChunkID();
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getChunkID(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -131,7 +131,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @return
      */
     protected Grids_2D_ID_int getChunkID() {
-        return new Grids_2D_ID_int(this.ChunkID);
+        return new Grids_2D_ID_int(ChunkID);
         //return this._ChunkID;
     }
 
@@ -146,18 +146,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public boolean getIsSwapUpToDate(boolean handleOutOfMemoryError) {
         try {
             boolean result = getIsSwapUpToDate();
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getIsSwapUpToDate(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -181,16 +181,16 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public void setIsSwapUpToDate(boolean isSwapUpToDate, boolean handleOutOfMemoryError) {
         try {
             setIsSwapUpToDate(isSwapUpToDate);
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 setIsSwapUpToDate(isSwapUpToDate, handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -214,18 +214,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public String toString(boolean handleOutOfMemoryError) {
         try {
             String result = getDescription();
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return toString(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -235,7 +235,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @return
      */
     protected String getDescription() {
-        return this.getClass().toString() + "( ChunkID ( " + this.ChunkID.toString() + " ) )";
+        return this.getClass().toString() + "( ChunkID ( " + ChunkID.toString() + " ) )";
     }
 
     /**
@@ -249,18 +249,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public String getName(boolean handleOutOfMemoryError) {
         try {
             String result = getName();
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getName(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -285,18 +285,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public Grids_AbstractIterator iterator(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractIterator result = iterator();
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return iterator(handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -322,18 +322,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public boolean inChunk(int chunkCellRowIndex, int chunkCellColIndex, boolean handleOutOfMemoryError) {
         try {
             boolean result = inChunk(chunkCellRowIndex, chunkCellColIndex);
-            Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError).ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                this.getGrid().ge.clearMemoryReserve();
-                if (this.getGrid().ge.swapChunkExcept_Account(this.getGrid(), this.ChunkID, handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
-                this.getGrid().ge.initMemoryReserve(this.getGrid(), this.ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return inChunk(chunkCellRowIndex, chunkCellColIndex, handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -346,8 +346,8 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @return
      */
     protected boolean inChunk(int chunkCellRowIndex, int chunkCellColIndex) {
-        int chunkNrows = this.getGrid().getChunkNRows(this.ChunkID, false);
-        int chunkNcols = this.getGrid().getChunkNCols(this.ChunkID, false);
+        int chunkNrows = Grid.getChunkNRows(ChunkID, false);
+        int chunkNcols = Grid.getChunkNCols(ChunkID, false);
         return chunkCellRowIndex > -1 && chunkCellRowIndex < chunkNrows && chunkCellColIndex > -1 && chunkCellColIndex < chunkNcols;
     }
 
