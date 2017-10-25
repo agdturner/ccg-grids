@@ -56,7 +56,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid result = getGrid();
-            result.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            result.ge.tryToEnsureThereIsEnoughMemoryToContinue(result, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError) {
             if (handleOutOfMemoryError) {
