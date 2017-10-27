@@ -22,14 +22,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
- * Used by Grids_AbstractGrid2DSquareCell instances to access statistics. This
- * class to be instantiated for Grids_AbstractGrid2DSquareCell that keep all
- * statistic fields up to date as the underlying data is changed. (Keeping
- * statistic fields up to date as the underlying data is changed can be
- * expensive.)
+ * Used by Grids_AbstractGridNumber instances to access statistics. This class
+ * is to be instantiated for Grids_AbstractGridNumber that keep all statistic
+ * fields up to date as the underlying data is changed. (Keeping statistic
+ * fields up to date as the underlying data is changed can be expensive!)
  */
 public class Grids_GridStatistics0
         extends Grids_AbstractGridStatistics
@@ -52,7 +51,7 @@ public class Grids_GridStatistics0
      * @param g
      */
     public Grids_GridStatistics0(
-            Grids_AbstractGrid2DSquareCell g) {
+            Grids_AbstractGridNumber g) {
         super(g.ge);
         init(g);
     }
@@ -122,8 +121,7 @@ public class Grids_GridStatistics0
 
     /**
      * For returning the arithmetic mean of all non noDataValues as a BigDecimal
- Throws an ArithmeticException if NonNoDataValueCount is equal
- to zero.
+     * Throws an ArithmeticException if NonNoDataValueCount is equal to zero.
      *
      * @return
      */

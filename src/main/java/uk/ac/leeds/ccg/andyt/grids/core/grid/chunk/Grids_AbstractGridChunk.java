@@ -17,40 +17,38 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * @author geoagdt
  */
 public abstract class Grids_AbstractGridChunk extends Grids_Object implements Serializable {
-    
+
     /**
      * A reference to the Grid.
      */
     protected transient Grids_AbstractGrid Grid;
     /**
-     * For storing the Grids_2D_ID_int of this.
-     * TODO:
-     * Is this transient for caching?
+     * For storing the Grids_2D_ID_int of this. TODO: Is this transient for
+     * caching?
      */
     protected transient Grids_2D_ID_int ChunkID;
     //protected Grids_2D_ID_int _ChunkID;
     /**
      * Indicator for whether the swapped version of this chunk is upToDate.
-     * TODO:
-     * This adds a small amount of weight, so for 64CellMap implementations
-     * it may be undesirable?
+     * TODO: This adds a small amount of weight, so for 64CellMap
+     * implementations it may be undesirable?
      */
-    protected transient boolean isSwapUpToDate;
-    //protected boolean isSwapUpToDate;
+    protected transient boolean SwapUpToDate;
+    //protected boolean SwapUpToDate;
 
-    public Grids_AbstractGridChunk(){}
-    
-    protected Grids_AbstractGridChunk(Grids_Environment ge){
+    public Grids_AbstractGridChunk() {
+    }
+
+    protected Grids_AbstractGridChunk(Grids_Environment ge) {
         super(ge);
     }
-    
+
     /**
      * Returns this._Grid2DSquareCell.
      *
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
@@ -61,7 +59,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError)< 1L) {
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
@@ -74,6 +72,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
 
     /**
      * Returns Grid.
+     *
      * @return
      */
     protected Grids_AbstractGrid getGrid() {
@@ -101,10 +100,9 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     /**
      * Returns a copy of this._ChunkID.
      *
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_2D_ID_int getChunkID(boolean handleOutOfMemoryError) {
@@ -128,6 +126,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
 
     /**
      * Returns a copy of this._ChunkID.
+     *
      * @return
      */
     protected Grids_2D_ID_int getChunkID() {
@@ -136,16 +135,16 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns this.isSwapUpToDate
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * Returns this.SwapUpToDate
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public boolean getIsSwapUpToDate(boolean handleOutOfMemoryError) {
+    public boolean isSwapUpToDate(boolean handleOutOfMemoryError) {
         try {
-            boolean result = getIsSwapUpToDate();
+            boolean result = isSwapUpToDate();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -155,7 +154,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getIsSwapUpToDate(handleOutOfMemoryError);
+                return Grids_AbstractGridChunk.this.isSwapUpToDate(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -163,24 +162,25 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns this.isSwapUpToDate
+     * Returns this.SwapUpToDate
+     *
      * @return
      */
-    protected boolean getIsSwapUpToDate() {
-        return this.isSwapUpToDate;
+    protected boolean isSwapUpToDate() {
+        return this.SwapUpToDate;
     }
 
     /**
-     * Sets this.isSwapUpToDate to isSwapUpToDate
-     * @param isSwapUpToDate
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * Sets this.SwapUpToDate to SwapUpToDate
+     *
+     * @param swapUpToDate
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      */
-    public void setIsSwapUpToDate(boolean isSwapUpToDate, boolean handleOutOfMemoryError) {
+    public void setSwapUpToDate(boolean swapUpToDate, boolean handleOutOfMemoryError) {
         try {
-            setIsSwapUpToDate(isSwapUpToDate);
+            Grids_AbstractGridChunk.this.setSwapUpToDate(swapUpToDate);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -188,7 +188,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                setIsSwapUpToDate(isSwapUpToDate, handleOutOfMemoryError);
+                setSwapUpToDate(swapUpToDate, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -196,19 +196,20 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns this.isSwapUpToDate
-     * @param isSwapUpToDate
+     * Returns this.SwapUpToDate
+     *
+     * @param swapUpToDate
      */
-    protected void setIsSwapUpToDate(boolean isSwapUpToDate) {
-        this.isSwapUpToDate = isSwapUpToDate;
+    protected void setSwapUpToDate(boolean swapUpToDate) {
+        this.SwapUpToDate = swapUpToDate;
     }
 
     /**
      * For returning a description of this.
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public String toString(boolean handleOutOfMemoryError) {
@@ -232,18 +233,19 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
 
     /**
      * For returning a description of this.
+     *
      * @return
      */
     protected String getDescription() {
-        return this.getClass().toString() + "( ChunkID ( " + ChunkID.toString() + " ) )";
+        return getName() + "(ChunkID(" + ChunkID.toString() + "))";
     }
 
     /**
      * Returns the name of this.
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public String getName(boolean handleOutOfMemoryError) {
@@ -267,6 +269,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
 
     /**
      * Returns the name of this.
+     *
      * @return
      */
     protected String getName() {
@@ -274,12 +277,12 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns an iterator over the cell values. These are not guaranteed
-     * to be in any particular order.
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * Returns an iterator over the cell values. These are not guaranteed to be
+     * in any particular order.
+     *
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_AbstractIterator iterator(boolean handleOutOfMemoryError) {
@@ -302,21 +305,22 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns an iterator over the cell values. These are not guaranteed
-     * to be in any particular order.
+     * Returns an iterator over the cell values. These are not guaranteed to be
+     * in any particular order.
+     *
      * @return
      */
     protected abstract Grids_AbstractIterator iterator();
 
     /**
-     * Returns true if the cell given by chunk cell row index
-     * chunkCellRowIndex, chunk cell col index chunkCellColIndex is in this.
+     * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
+     * chunk cell col index chunkCellColIndex is in this.
+     *
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
-     * @param handleOutOfMemoryError
-     *   If true then OutOfMemoryErrors are caught, swap operations are
-     *     initiated, then the method is re-called.
-     *   If false then OutOfMemoryErrors are caught and thrown.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public boolean inChunk(int chunkCellRowIndex, int chunkCellColIndex, boolean handleOutOfMemoryError) {
@@ -339,8 +343,9 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns true if the cell given by chunk cell row index
-     * chunkCellRowIndex, chunk cell col index chunkCellColIndex is in this.
+     * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
+     * chunk cell col index chunkCellColIndex is in this.
+     *
      * @param chunkCellRowIndex
      * @param chunkCellColIndex
      * @return
@@ -367,5 +372,5 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public void setGrid(Grids_AbstractGrid grid) {
         this.Grid = grid;
     }
-    
+
 }

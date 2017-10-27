@@ -18,7 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.utilities;
 import java.awt.geom.Point2D;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
  * Class of methods to do with kernels.
@@ -49,7 +49,7 @@ public abstract class Grids_Kernel {
      * @param _Distance
      */
     public static double[][] getNormalDistributionKernelWeights( 
-            Grids_AbstractGrid2DSquareCell g, 
+            Grids_AbstractGridNumber g, 
             double _Distance ) {
         boolean handleOutOfMemoryError = true;
         double cellsize = g.getCellsizeDouble(handleOutOfMemoryError);
@@ -155,7 +155,7 @@ public abstract class Grids_Kernel {
      * @return 
      */
     public static double[][] getKernelWeights( 
-            Grids_AbstractGrid2DSquareCell g, 
+            Grids_AbstractGridNumber g, 
             double distance, 
             double weightIntersect, 
             double weightFactor ) {
@@ -201,7 +201,7 @@ public abstract class Grids_Kernel {
      * @return 
      */
     public static double[] getKernelWeights( 
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell, 
+            Grids_AbstractGridNumber grid2DSquareCell, 
             long rowIndex, 
             long colIndex, 
             double distance, 
@@ -258,7 +258,7 @@ public abstract class Grids_Kernel {
      * result[0] = The total sum of all the weights for a given kernel;
      * result[1] = The total number of cells thats centroids are within distance
      * of an arbitrary cell centroid of grid2DSquareCell.
-     * @param grid2DSquareCell Grids_AbstractGrid2DSquareCell for which kernel parameters are returned
+     * @param grid2DSquareCell Grids_AbstractGridNumber for which kernel parameters are returned
      * @param cellDistance
      * @param distance
      * @param weightIntersect
@@ -266,7 +266,7 @@ public abstract class Grids_Kernel {
      * @return 
      */
     public static double[] getKernelParameters( 
-            Grids_AbstractGrid2DSquareCell grid2DSquareCell, 
+            Grids_AbstractGridNumber grid2DSquareCell, 
             int cellDistance, 
             double distance, 
             double weightIntersect, 

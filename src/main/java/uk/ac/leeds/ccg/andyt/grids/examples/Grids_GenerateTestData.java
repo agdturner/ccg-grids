@@ -26,8 +26,8 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ImageExporter;
@@ -66,7 +66,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         testDataDirectory = this.getDirectory(_HandleOutOfMemoryError);
         //Grid2DSquareCellDouble[] testData = generateCatchment( _HandleOutOfMemoryError );
         //Grid2DSquareCellDouble[] testData = generateSquareData( _HandleOutOfMemoryError );
-        Grids_Grid2DSquareCellDouble[] testData = generateCircularData(_HandleOutOfMemoryError);
+        Grids_GridDouble[] testData = generateCircularData(_HandleOutOfMemoryError);
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
@@ -78,7 +78,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time0));
     }
 
-    public Grids_Grid2DSquareCellDouble[] generateCircularData(
+    public Grids_GridDouble[] generateCircularData(
             boolean _HandleOutOfMemoryError) {
 
         PrintWriter pw = null;
@@ -102,9 +102,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ngrids = 10;
         int nrows = 100;
         int ncols = 100;
-        Grids_Grid2DSquareCellDouble[] grids = new Grids_Grid2DSquareCellDouble[ngrids];
+        Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_Grid2DSquareCellDouble) new Grids_Grid2DSquareCellDoubleFactory(ge, _HandleOutOfMemoryError).create(nrows, ncols);
+            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge, _HandleOutOfMemoryError).create(nrows, ncols);
             addToGrid(grids[i], 0.0d, _HandleOutOfMemoryError);
             grids[i].setName("Grid" + i, _HandleOutOfMemoryError);
         }
@@ -403,7 +403,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         pw.println("minRadius " + minRadius + ", maxRadius " + maxRadius + ", height " + height + ", cellAtCentre ( " + row + ", " + col + " )");
     }
 
-    public HashSet getCellIDs(Grids_Grid2DSquareCellDouble grid, long row, long col, double minRadius, double maxRadius, boolean _HandleOutOfMemoryError) {
+    public HashSet getCellIDs(Grids_GridDouble grid, long row, long col, double minRadius, double maxRadius, boolean _HandleOutOfMemoryError) {
         HashSet cellIDsHashSet = getCellIDsHashSet(grid, row, col, maxRadius, _HandleOutOfMemoryError);
         //cellIDsHashSet.removeAll( getCellIDsHashSet( grid, row, col, minRadius ) );
         if (minRadius > 0.0d) {
@@ -443,7 +443,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         }
     }
 
-    public HashSet getCellIDsHashSet(Grids_Grid2DSquareCellDouble grid, long row, long col, double radius, boolean _HandleOutOfMemoryError) {
+    public HashSet getCellIDsHashSet(Grids_GridDouble grid, long row, long col, double radius, boolean _HandleOutOfMemoryError) {
         Grids_2D_ID_long[] cellIDs = grid.getCellIDs(row, col, radius, _HandleOutOfMemoryError);
         HashSet cellIDsHashSet = new HashSet();
         for (int cellIDIndex = 0; cellIDIndex < cellIDs.length; cellIDIndex++) {
@@ -464,13 +464,13 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         return (Math.random() * (max - min)) + min;
     }
 
-    public Grids_Grid2DSquareCellDouble[] generateSquareData(boolean _HandleOutOfMemoryError) {
+    public Grids_GridDouble[] generateSquareData(boolean _HandleOutOfMemoryError) {
         int ngrids = 5;
         int nrows = 100;
         int ncols = 100;
-        Grids_Grid2DSquareCellDouble[] grids = new Grids_Grid2DSquareCellDouble[ngrids];
+        Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_Grid2DSquareCellDouble) new Grids_Grid2DSquareCellDoubleFactory(ge, _HandleOutOfMemoryError).create(nrows, ncols);
+            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge, _HandleOutOfMemoryError).create(nrows, ncols);
         }
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
@@ -505,11 +505,11 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         return grids;
     }
 
-    public Grids_Grid2DSquareCellDouble[] generateCatchment(boolean _HandleOutOfMemoryError) {
+    public Grids_GridDouble[] generateCatchment(boolean _HandleOutOfMemoryError) {
         int nrows = 100;
         int ncols = 100;
-        Grids_Grid2DSquareCellDouble[] catchment = new Grids_Grid2DSquareCellDouble[1];
-        catchment[0] = (Grids_Grid2DSquareCellDouble) new Grids_Grid2DSquareCellDoubleFactory(ge,
+        Grids_GridDouble[] catchment = new Grids_GridDouble[1];
+        catchment[0] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge,
                  _HandleOutOfMemoryError).create(nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );
         for (int iterations = 0; iterations < 100; iterations++) {

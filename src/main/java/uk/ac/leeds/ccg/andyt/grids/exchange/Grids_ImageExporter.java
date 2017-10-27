@@ -32,13 +32,13 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
@@ -78,7 +78,7 @@ public class Grids_ImageExporter implements Serializable {
      * @param handleOutOfMemoryError
      */
     public void toGreyScaleImage(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             Grids_Processor processor,
             File file,
             String type,
@@ -122,7 +122,7 @@ public class Grids_ImageExporter implements Serializable {
      * "jpeg"
      */
     protected void toGreyScaleImage(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             Grids_Processor processor,
             File file,
             String type) {
@@ -190,7 +190,7 @@ public class Grids_ImageExporter implements Serializable {
         _Grids_Environment.tryToEnsureThereIsEnoughMemoryToContinue(
                 handleOutOfMemoryError);
         // If not already in the range 0 to 255, rescale grid into this range.
-        Grids_Grid2DSquareCellDouble rescaledGrid = processor.rescale(
+        Grids_GridDouble rescaledGrid = processor.rescale(
                 grid, null, 0.0d, 255.0d, handleOutOfMemoryError);
         int nChunkCols = rescaledGrid.getNChunkCols(handleOutOfMemoryError);
         double noDataValue = rescaledGrid.getNoDataValue(handleOutOfMemoryError);
@@ -203,7 +203,7 @@ public class Grids_ImageExporter implements Serializable {
 //        boolean inGrid;
 //        int chunkCellRowIndex;
 //        int chunkCellColIndex;
-//        Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellChunk;
+//        Grids_AbstractGridChunkDouble grid2DSquareCellChunk;
 //        int chunkNrows = gridDouble.getChunkNRows(handleOutOfMemoryError);
 //        int chunkNcols = gridDouble.getChunkNCols(handleOutOfMemoryError);
 //        for (chunkRowIndex = 0; chunkRowIndex < chunkNrows; chunkRowIndex++) {
@@ -388,7 +388,7 @@ public class Grids_ImageExporter implements Serializable {
             int duplication,
             TreeMap<Double, Color> colours,
             Color noDataValueColour,
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             File file,
             String type,
             boolean handleOutOfMemoryError) {
@@ -442,7 +442,7 @@ public class Grids_ImageExporter implements Serializable {
             int duplication,
             TreeMap<Double, Color> colours,
             Color noDataValueColour,
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             File file,
             String type) {
         // Initialisation
@@ -525,7 +525,7 @@ public class Grids_ImageExporter implements Serializable {
 //        boolean inGrid;
 //        int chunkCellRowIndex;
 //        int chunkCellColIndex;
-//        Grids_AbstractGrid2DSquareCellDoubleChunk grid2DSquareCellChunk;
+//        Grids_AbstractGridChunkDouble grid2DSquareCellChunk;
 //        int chunkNrows = gridDouble.getChunkNRows(handleOutOfMemoryError);
 //        int chunkNcols = gridDouble.getChunkNCols(handleOutOfMemoryError);
 //        for (chunkRowIndex = 0; chunkRowIndex < chunkNrows; chunkRowIndex++) {

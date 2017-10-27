@@ -30,10 +30,10 @@ import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 
 /**
@@ -160,10 +160,10 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         long col;
 //        //DEBUG code
 //        System.out.println("this.Grid.toString()" + this.Grid.toString() );
-        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-            //if ( this.Grid instanceof Grids_Grid2DSquareCellInt ) {
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) Grid;
+        if (this.Grid.getClass() == Grids_GridInt.class) {
+            //if ( this.Grid instanceof Grids_GridInt ) {
+            Grids_GridInt grid2DSquareCellInt
+                    = (Grids_GridInt) Grid;
 //            //DEBUG code
 //            System.out.println("grid2DSquareCellInt.toString()" + grid2DSquareCellInt.toString() );
             BigDecimal cellBigDecimal;
@@ -206,10 +206,10 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                 }
             }
         } else {
-            //if ( this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class ) {
-            //if ( this.Grid instanceof Grids_Grid2DSquareCellDouble ) {
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) Grid;
+            //if ( this.Grid.getClass() == Grids_GridDouble.class ) {
+            //if ( this.Grid instanceof Grids_GridDouble ) {
+            Grids_GridDouble grid2DSquareCellDouble
+                    = (Grids_GridDouble) Grid;
             BigDecimal cellBigDecimal;
             double cellDouble;
             boolean handleOutOfMemoryError = true;
@@ -391,9 +391,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         BigInteger result;
         result = BigInteger.ZERO;
         boolean handleOutOfMemoryError = true;
-        if (this.Grid instanceof Grids_Grid2DSquareCellDouble) {
-            Grids_Grid2DSquareCellDouble g;
-            g = (Grids_Grid2DSquareCellDouble) this.Grid;
+        if (this.Grid instanceof Grids_GridDouble) {
+            Grids_GridDouble g;
+            g = (Grids_GridDouble) this.Grid;
             double noDataValue;
             noDataValue = g.getNoDataValue(handleOutOfMemoryError);
             Iterator<Double> ite;
@@ -1266,9 +1266,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 
     /**
      * For returning the mode of all non noDataValues either as a TDoubleHashSet
-     * or as a TIntHashSet respectively depending on if ( this.Grid.getClass()
-     * == Grids_Grid2DSquareCellInt.class ) or if ( this.Grid.getClass() ==
-     * Grids_Grid2DSquareCellDouble.class ). TODO: Change for loops so as to
+ or as a TIntHashSet respectively depending on if ( this.Grid.getClass()
+ == Grids_GridInt.class ) or if ( this.Grid.getClass() ==
+ Grids_GridDouble.class ). TODO: Change for loops so as to
      * look through each chunk in turn. Is it better to use toArray and go
      * through a sorted version?
      *
@@ -1280,9 +1280,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         long row;
         long col;
         boolean calculated = false;
-        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) this.Grid;
+        if (this.Grid.getClass() == Grids_GridInt.class) {
+            Grids_GridInt grid2DSquareCellInt
+                    = (Grids_GridInt) this.Grid;
             TIntHashSet mode = new TIntHashSet();
             boolean handleOutOfMemoryError = true;
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
@@ -1357,9 +1357,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             }
             return mode;
         } else {
-            //this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) this.Grid;
+            //this.Grid.getClass() == Grids_GridDouble.class
+            Grids_GridDouble grid2DSquareCellDouble
+                    = (Grids_GridDouble) this.Grid;
             TDoubleHashSet mode = new TDoubleHashSet();
             boolean handleOutOfMemoryError = true;
             double noDataValue = grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
@@ -1438,7 +1438,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * For initialising mode calculation in getMode().
      */
     private Object[] initMode(
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt,
+            Grids_GridInt grid2DSquareCellInt,
             long _NRows,
             long _NCols,
             int noDataValue) {
@@ -1488,7 +1488,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * For initialising mode calculation in getMode().
      */
     private Object[] initMode(
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
+            Grids_GridDouble grid2DSquareCellDouble,
             long _NRows,
             long _NCols,
             double noDataValue) {
@@ -1551,7 +1551,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     public long count(
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt,
+            Grids_GridInt grid2DSquareCellInt,
             long row,
             long col,
             long _NRows,
@@ -1603,7 +1603,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     protected static long count(
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt,
+            Grids_GridInt grid2DSquareCellInt,
             long row,
             long col,
             long _NRows,
@@ -1654,7 +1654,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     public long count(
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
+            Grids_GridDouble grid2DSquareCellDouble,
             long row,
             long col,
             long _NRows,
@@ -1706,7 +1706,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * @return
      */
     protected static long count(
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble,
+            Grids_GridDouble grid2DSquareCellDouble,
             long row,
             long col,
             long _NRows,
@@ -1843,9 +1843,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         int chunkRow;
         int chunkCol;
         boolean isInGrid;
-        if (this.Grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-            Grids_Grid2DSquareCellInt grid2DSquareCellInt
-                    = (Grids_Grid2DSquareCellInt) this.Grid;
+        if (this.Grid.getClass() == Grids_GridInt.class) {
+            Grids_GridInt grid2DSquareCellInt
+                    = (Grids_GridInt) this.Grid;
             int value;
             int noDataValue = grid2DSquareCellInt.getNoDataValue(
                     handleOutOfMemoryError);
@@ -1853,7 +1853,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             BigDecimal differenceFromMean;
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                    Grids_AbstractGrid2DSquareCellIntChunk chunk;
+                    Grids_AbstractGridChunkInt chunk;
                     chunk = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
                             chunkRowIndex,
                             chunkColIndex,
@@ -1896,16 +1896,16 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     numberOfDecimalPlaces,
                     bd.get_RoundingMode());
         } else {
-            //this.Grid.getClass() == Grids_Grid2DSquareCellDouble.class
-            Grids_Grid2DSquareCellDouble grid2DSquareCellDouble
-                    = (Grids_Grid2DSquareCellDouble) this.Grid;
+            //this.Grid.getClass() == Grids_GridDouble.class
+            Grids_GridDouble grid2DSquareCellDouble
+                    = (Grids_GridDouble) this.Grid;
             double value;
             double noDataValue = grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
             BigDecimal nonNoDataValueCountBigDecimal = new BigDecimal("-1");
             BigDecimal differenceFromMean;
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                    Grids_AbstractGrid2DSquareCellDoubleChunk chunk
+                    Grids_AbstractGridChunkDouble chunk
                             = grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
                                     chunkRowIndex,
                                     chunkColIndex,
@@ -1954,9 +1954,9 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         Object[] result;
         result = new Object[3];
-        if (this.Grid instanceof Grids_Grid2DSquareCellDouble) {
-            Grids_Grid2DSquareCellDouble g;
-            g = (Grids_Grid2DSquareCellDouble) this.Grid;
+        if (this.Grid instanceof Grids_GridDouble) {
+            Grids_GridDouble g;
+            g = (Grids_GridDouble) this.Grid;
             TreeMap<Integer, Double> minDouble;
             TreeMap<Integer, Double> maxDouble;
             minDouble = new TreeMap<>();

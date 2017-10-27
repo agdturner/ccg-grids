@@ -35,13 +35,13 @@ import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunkFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunk64CellMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -55,8 +55,9 @@ public abstract class Grids_GridBinary
         implements Serializable {
 
     BitSet data;
-    
-    protected Grids_GridBinary() {    }
+
+    protected Grids_GridBinary() {
+    }
 
     /**
      * Creates a new Grid2DSquareCellDouble
@@ -73,8 +74,8 @@ public abstract class Grids_GridBinary
      * Creates a new Grid2DSquareCellDouble. Warning!! Concurrent modification
      * may occur if _Directory is in use. If a completely new instance is wanted
      * then use: Grid2DSquareCellDouble( File, Grid2DSquareCellDoubleAbstract,
-     * Grids_AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long,
-     * long, long, double, HashSet) which can be accessed via a
+     * Grids_AbstractGridChunkDoubleFactory, int, int, long, long, long, long,
+     * double, HashSet) which can be accessed via a
      * Grids_Grid2DSquareCellDoubleFactory.
      *
      * @param directory The File _Directory to be used for swapping.

@@ -21,8 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -134,9 +134,9 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
-        Grids_Grid2DSquareCellDoubleFactory grid2DSquareCellDoubleFactory = new Grids_Grid2DSquareCellDoubleFactory(ge, _HandleOutOfMemoryError);
-        Grids_Grid2DSquareCellDouble xGrid = ( Grids_Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + xFilename + ".asc" ) );
-        Grids_Grid2DSquareCellDouble yGrid = ( Grids_Grid2DSquareCellDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + yFilename + ".asc" ) );
+        Grids_GridDoubleFactory grid2DSquareCellDoubleFactory = new Grids_GridDoubleFactory(ge, _HandleOutOfMemoryError);
+        Grids_GridDouble xGrid = ( Grids_GridDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + xFilename + ".asc" ) );
+        Grids_GridDouble yGrid = ( Grids_GridDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + yFilename + ".asc" ) );
         int divisions = 100;
         System.out.println( xGrid.toString() );
         System.out.println( yGrid.toString() );
@@ -145,7 +145,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         double[] stdevy = ( double[] ) result[ 0 ];
         double[] meany = ( double[] ) result[ 1 ];
         double[] numy = ( double[] ) result[ 2 ];
-        Grids_Grid2DSquareCellDouble densityPlotGrid = ( Grids_Grid2DSquareCellDouble ) result[ 3 ];
+        Grids_GridDouble densityPlotGrid = ( Grids_GridDouble ) result[ 3 ];
         System.out.println( densityPlotGrid.toString() );
         double divx = 
                 ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble(true, _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble(true, _HandleOutOfMemoryError ) ) / divisions;

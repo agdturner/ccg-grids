@@ -26,16 +26,16 @@ import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunk64CellMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunk64CellMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
@@ -49,9 +49,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * For storing individual locations mapped to a binary encoded long. This is
-     * only used in Grids_Grid2DSquareCellDoubleChunk64CellMap and
-     * Grids_Grid2DSquareCellIntChunk64CellMap. It is stored in this to save it
-     * being stored in every chunk or calculated on the fly.
+     * only used in Grids_GridChunkDouble64CellMap and
+     * Grids_GridChunkInt64CellMap. It is stored in this to save it being stored
+     * in every chunk or calculated on the fly.
      */
     protected Grids_UnsignedLongPowersOf2 UnsignedLongPowersOf2;
     //    /**
@@ -482,7 +482,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
         result += "," + GridStatistics.toString(true);
         HashSet<Grids_AbstractGrid> grids;
-        grids = ge.getGrids(); 
+        grids = ge.getGrids();
         if (grids == null) {
             result += ",Grids(null)";
         } else {
@@ -1191,6 +1191,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
+
     /**
      * @param valueToSet
      * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
@@ -2198,7 +2199,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Grids_AbstractGridChunk gridChunk;
         gridChunk = ChunkIDChunkMap.get(chunkID);
         if (gridChunk != null) {
-            if (!gridChunk.getIsSwapUpToDate(handleOutOfMemoryError)) {
+            if (!gridChunk.isSwapUpToDate(handleOutOfMemoryError)) {
                 File file = new File(this.getDirectory(), chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
                 try {
@@ -2213,7 +2214,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     System.err.println(ioe0.getMessage());
                 }
                 System.gc();
-                gridChunk.setIsSwapUpToDate(true, handleOutOfMemoryError);
+                gridChunk.setSwapUpToDate(true, handleOutOfMemoryError);
             }
         } else {
             result = false;
@@ -2772,8 +2773,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int
      * _ChunkID.
      *
-     * @param chunkIDs HashSet of Grids_AbstractGridChunk.ChunkIDs not
-     * to be swapped.
+     * @param chunkIDs HashSet of Grids_AbstractGridChunk.ChunkIDs not to be
+     * swapped.
      * @return A HashSet with the ChunkIDs of those Grids_AbstractGridChunk
      * swapped.
      */
@@ -3076,8 +3077,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return true iff grid2DSquareCellChunk given by _ChunkID is swapToFiled.
      * This must be an upToDate swapToFile.
-     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk tested
-     * to see if it is swapToFiled.
+     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk tested to
+     * see if it is swapToFiled.
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
         return getChunkIDChunkMap().containsKey(chunkID);
@@ -3193,21 +3194,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             System.out.println(f); // DEBUGGING CODE
 
             Object o = Generic_StaticIO.readObject(f);
-            if (this.getClass() == Grids_Grid2DSquareCellInt.class) {
-                Grids_AbstractGrid2DSquareCellIntChunk chunk = null;
-                if (o.getClass() == Grids_Grid2DSquareCellIntChunk64CellMap.class) {
-                    Grids_Grid2DSquareCellIntChunk64CellMap c;
-                    c = (Grids_Grid2DSquareCellIntChunk64CellMap) o;
+            if (this.getClass() == Grids_GridInt.class) {
+                Grids_AbstractGridChunkInt chunk = null;
+                if (o.getClass() == Grids_GridChunkInt64CellMap.class) {
+                    Grids_GridChunkInt64CellMap c;
+                    c = (Grids_GridChunkInt64CellMap) o;
                     chunk = c;
                 }
-                if (o.getClass() == Grids_Grid2DSquareCellIntChunkArray.class) {
-                    Grids_Grid2DSquareCellIntChunkArray c;
-                    c = (Grids_Grid2DSquareCellIntChunkArray) o;
+                if (o.getClass() == Grids_GridChunkIntArray.class) {
+                    Grids_GridChunkIntArray c;
+                    c = (Grids_GridChunkIntArray) o;
                     chunk = c;
                 }
-                if (o.getClass() == Grids_Grid2DSquareCellIntChunkMap.class) {
-                    Grids_Grid2DSquareCellIntChunkMap c;
-                    c = (Grids_Grid2DSquareCellIntChunkMap) o;
+                if (o.getClass() == Grids_GridChunkIntMap.class) {
+                    Grids_GridChunkIntMap c;
+                    c = (Grids_GridChunkIntMap) o;
                     chunk = c;
                 }
                 if (chunk != null) {
@@ -3219,24 +3220,24 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 }
                 System.err.println("Unrecognised type of Grid2DSquareCellIntChunkAbstract or null " + this.getClass().getName() + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
             } else {
-                Grids_AbstractGrid2DSquareCellDoubleChunk chunk = null;
+                Grids_AbstractGridChunkDouble chunk = null;
                 if (o == null) {
                     int debug = 1;
                     System.out.println("No chunk loading from file " + f);
                 }
-                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunk64CellMap.class) {
-                    Grids_Grid2DSquareCellDoubleChunk64CellMap c;
-                    c = (Grids_Grid2DSquareCellDoubleChunk64CellMap) o;
+                if (o.getClass() == Grids_GridChunkDouble64CellMap.class) {
+                    Grids_GridChunkDouble64CellMap c;
+                    c = (Grids_GridChunkDouble64CellMap) o;
                     chunk = c;
                 }
-                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunkArray.class) {
-                    Grids_Grid2DSquareCellDoubleChunkArray c;
-                    c = (Grids_Grid2DSquareCellDoubleChunkArray) o;
+                if (o.getClass() == Grids_GridChunkDoubleArray.class) {
+                    Grids_GridChunkDoubleArray c;
+                    c = (Grids_GridChunkDoubleArray) o;
                     chunk = c;
                 }
-                if (o.getClass() == Grids_Grid2DSquareCellDoubleChunkMap.class) {
-                    Grids_Grid2DSquareCellDoubleChunkMap c;
-                    c = (Grids_Grid2DSquareCellDoubleChunkMap) o;
+                if (o.getClass() == Grids_GridChunkDoubleMap.class) {
+                    Grids_GridChunkDoubleMap c;
+                    c = (Grids_GridChunkDoubleMap) o;
                     chunk = c;
                 }
                 if (chunk != null) {
@@ -4942,8 +4943,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param m the HashMap that ChunkIDChunkMap
- is set to.
+     * @param m the HashMap that ChunkIDChunkMap is set to.
      */
     public void setChunkIDChunkMap(
             HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> m) {
@@ -4983,7 +4983,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param handleOutOfMemoryError
      */
     protected void initDimensions(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGridNumber g,
             long startRowIndex, long startColIndex,
             boolean handleOutOfMemoryError) {
         Dimensions = g.getDimensions(handleOutOfMemoryError); // temporary assignment

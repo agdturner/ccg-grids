@@ -34,21 +34,21 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid2DSquareCell;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunkFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellDoubleChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunk64CellMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellDoubleChunkMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunk64CellMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGrid2DSquareCellIntChunkFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_Grid2DSquareCellIntChunkMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_Grid2DSquareCellIntFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
@@ -60,7 +60,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
  * A class holding methods for processing an individual
- * Grids_AbstractGrid2DSquareCell or multiple Grid2DSquareCellAbstracts. TODO:
+ Grids_AbstractGridNumber or multiple Grid2DSquareCellAbstracts. TODO:
  * Implement a general replace method ( deprecate/replace mask methods ).
  */
 public class Grids_Processor extends Grids_Object {
@@ -89,45 +89,45 @@ public class Grids_Processor extends Grids_Object {
 //     */
 //    public HashSet _AbstractGrid2DSquareCell_HashSet;
     /**
-     * Default Grids_AbstractGrid2DSquareCellIntChunkFactory
+     * Default Grids_AbstractGridChunkIntFactory
      */
-    public Grids_AbstractGrid2DSquareCellIntChunkFactory _Grid2DSquareCellIntChunkFactory;
+    public Grids_AbstractGridChunkIntFactory _Grid2DSquareCellIntChunkFactory;
     /**
-     * Grids_Grid2DSquareCellIntChunk64CellMapFactory
+     * Grids_GridChunkInt64CellMapFactory
      */
-    public Grids_Grid2DSquareCellIntChunk64CellMapFactory _Grid2DSquareCellIntChunk64CellMapFactory;
+    public Grids_GridChunkInt64CellMapFactory _Grid2DSquareCellIntChunk64CellMapFactory;
     /**
-     * Grids_Grid2DSquareCellIntChunkArrayFactory
+     * Grids_GridChunkIntArrayFactory
      */
-    public Grids_Grid2DSquareCellIntChunkArrayFactory _Grid2DSquareCellIntChunkArrayFactory;
+    public Grids_GridChunkIntArrayFactory _Grid2DSquareCellIntChunkArrayFactory;
     /**
-     * Grids_Grid2DSquareCellIntChunkMapFactory
+     * Grids_GridChunkIntMapFactory
      */
-    public Grids_Grid2DSquareCellIntChunkMapFactory _Grid2DSquareCellIntChunkMapFactory;
+    public Grids_GridChunkIntMapFactory _Grid2DSquareCellIntChunkMapFactory;
     /**
-     * Grids_Grid2DSquareCellIntFactory
+     * Grids_GridIntFactory
      */
-    public Grids_Grid2DSquareCellIntFactory Grid2DSquareCellIntFactory;
+    public Grids_GridIntFactory Grid2DSquareCellIntFactory;
     /**
-     * Default Grids_AbstractGrid2DSquareCellDoubleChunkFactory
+     * Default Grids_AbstractGridChunkDoubleFactory
      */
-    public Grids_AbstractGrid2DSquareCellDoubleChunkFactory _Grid2DSquareCellDoubleChunkFactory;
+    public Grids_AbstractGridChunkDoubleFactory _Grid2DSquareCellDoubleChunkFactory;
     /**
-     * Grids_Grid2DSquareCellDoubleChunk64CellMapFactory
+     * Grids_GridChunkDouble64CellMapFactory
      */
-    public Grids_Grid2DSquareCellDoubleChunk64CellMapFactory _Grid2DSquareCellDoubleChunk64CellMapFactory;
+    public Grids_GridChunkDouble64CellMapFactory _Grid2DSquareCellDoubleChunk64CellMapFactory;
     /**
-     * Grids_Grid2DSquareCellDoubleChunkArrayFactory
+     * Grids_GridChunkDoubleArrayFactory
      */
-    public Grids_Grid2DSquareCellDoubleChunkArrayFactory _Grid2DSquareCellDoubleChunkArrayFactory;
+    public Grids_GridChunkDoubleArrayFactory _Grid2DSquareCellDoubleChunkArrayFactory;
     /**
-     * Grids_Grid2DSquareCellDoubleChunkMapFactory
+     * Grids_GridChunkDoubleMapFactory
      */
-    public Grids_Grid2DSquareCellDoubleChunkMapFactory _Grid2DSquareCellDoubleChunkMapFactory;
+    public Grids_GridChunkDoubleMapFactory _Grid2DSquareCellDoubleChunkMapFactory;
     /**
-     * Grids_Grid2DSquareCellDoubleFactory
+     * Grids_GridDoubleFactory
      */
-    public Grids_Grid2DSquareCellDoubleFactory Grid2DSquareCellDoubleFactory;
+    public Grids_GridDoubleFactory Grid2DSquareCellDoubleFactory;
     /**
      * Grids_GridStatistics0
      */
@@ -227,11 +227,11 @@ public class Grids_Processor extends Grids_Object {
      * directories in.
      */
     private void initFactories(File workspace) {
-        this.Grid2DSquareCellIntFactory = new Grids_Grid2DSquareCellIntFactory(
+        this.Grid2DSquareCellIntFactory = new Grids_GridIntFactory(
                 new File(workspace, "Grid2DSquareCellInt"),
                 ge,
                 ge.HandleOutOfMemoryErrorTrue);
-        this.Grid2DSquareCellDoubleFactory = new Grids_Grid2DSquareCellDoubleFactory(
+        this.Grid2DSquareCellDoubleFactory = new Grids_GridDoubleFactory(
                 new File(workspace, "Grid2DSquareCellDouble"),
                 ge,
                 ge.HandleOutOfMemoryErrorTrue);
@@ -241,14 +241,14 @@ public class Grids_Processor extends Grids_Object {
      * Initialises Grid2DSquareCellChunk Factories.
      */
     private void initChunkFactories() {
-        this._Grid2DSquareCellIntChunk64CellMapFactory = new Grids_Grid2DSquareCellIntChunk64CellMapFactory();
-        this._Grid2DSquareCellIntChunkArrayFactory = new Grids_Grid2DSquareCellIntChunkArrayFactory();
-        this._Grid2DSquareCellIntChunkMapFactory = new Grids_Grid2DSquareCellIntChunkMapFactory();
+        this._Grid2DSquareCellIntChunk64CellMapFactory = new Grids_GridChunkInt64CellMapFactory();
+        this._Grid2DSquareCellIntChunkArrayFactory = new Grids_GridChunkIntArrayFactory();
+        this._Grid2DSquareCellIntChunkMapFactory = new Grids_GridChunkIntMapFactory();
         //this._Grid2DSquareCellIntChunkFactory = _Grid2DSquareCellIntChunkMapFactory;
         this._Grid2DSquareCellIntChunkFactory = _Grid2DSquareCellIntChunkArrayFactory;
-        this._Grid2DSquareCellDoubleChunk64CellMapFactory = new Grids_Grid2DSquareCellDoubleChunk64CellMapFactory();
-        this._Grid2DSquareCellDoubleChunkArrayFactory = new Grids_Grid2DSquareCellDoubleChunkArrayFactory();
-        this._Grid2DSquareCellDoubleChunkMapFactory = new Grids_Grid2DSquareCellDoubleChunkMapFactory();
+        this._Grid2DSquareCellDoubleChunk64CellMapFactory = new Grids_GridChunkDouble64CellMapFactory();
+        this._Grid2DSquareCellDoubleChunkArrayFactory = new Grids_GridChunkDoubleArrayFactory();
+        this._Grid2DSquareCellDoubleChunkMapFactory = new Grids_GridChunkDoubleMapFactory();
         //this._Grid2DSquareCellDoubleChunkFactory = _Grid2DSquareCellDoubleChunkMapFactory;
         this._Grid2DSquareCellDoubleChunkFactory = _Grid2DSquareCellDoubleChunkArrayFactory;
     }
@@ -331,8 +331,8 @@ public class Grids_Processor extends Grids_Object {
 //        return this._AbstractGrid2DSquareCell_HashSet;
 //    }
     /**
-     * Returns a Grids_AbstractGrid2DSquareCell from
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Returns a Grids_AbstractGridNumber from
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -361,8 +361,8 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a Grids_AbstractGrid2DSquareCell from
-     * this._AbstractGrid2DSquareCell_HashSet.
+     * Returns a Grids_AbstractGridNumber from
+ this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
@@ -914,8 +914,8 @@ public class Grids_Processor extends Grids_Object {
      * @param handleOutOfMemoryError
      */
     public void mask(
-            Grids_AbstractGrid2DSquareCell grid,
-            Grids_AbstractGrid2DSquareCell mask,
+            Grids_AbstractGridNumber grid,
+            Grids_AbstractGridNumber mask,
             boolean handleOutOfMemoryError) {
         try {
             ge.getGrids().add(grid);
@@ -929,21 +929,21 @@ public class Grids_Processor extends Grids_Object {
             int chunkColIndex;
             int chunkCellRowIndex;
             int chunkCellColIndex;
-            if (grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-                int noDataValue = ((Grids_Grid2DSquareCellInt) grid).getNoDataValue(handleOutOfMemoryError);
-                if (mask.getClass() == Grids_Grid2DSquareCellInt.class) {
-                    Grids_Grid2DSquareCellInt maskInt;
-                           maskInt = (Grids_Grid2DSquareCellInt) mask;
+            if (grid.getClass() == Grids_GridInt.class) {
+                int noDataValue = ((Grids_GridInt) grid).getNoDataValue(handleOutOfMemoryError);
+                if (mask.getClass() == Grids_GridInt.class) {
+                    Grids_GridInt maskInt;
+                           maskInt = (Grids_GridInt) mask;
                     int maskNoDataValue = maskInt.getNoDataValue(
                             handleOutOfMemoryError);
                     int value;
                     Iterator iterator = maskInt.iterator(
                             handleOutOfMemoryError);
-                    Grids_AbstractGrid2DSquareCellIntChunk maskIntChunk;
-                    Grids_AbstractGrid2DSquareCellIntChunk resultChunk;
+                    Grids_AbstractGridChunkInt maskIntChunk;
+                    Grids_AbstractGridChunkInt resultChunk;
                     while (iterator.hasNext()) {
                         maskIntChunk
-                                = (Grids_AbstractGrid2DSquareCellIntChunk) iterator.next();
+                                = (Grids_AbstractGridChunkInt) iterator.next();
                         chunkID = maskIntChunk.getChunkID(handleOutOfMemoryError);
                         thisChunkNrows = maskInt.getChunkNRows(
                                 chunkID,
@@ -972,19 +972,19 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 } else {
-                    // ( mask.getClass() == Grids_Grid2DSquareCellDouble.class )
-                    Grids_Grid2DSquareCellDouble maskDouble
-                            = (Grids_Grid2DSquareCellDouble) mask;
+                    // ( mask.getClass() == Grids_GridDouble.class )
+                    Grids_GridDouble maskDouble
+                            = (Grids_GridDouble) mask;
                     double maskNoDataValue = maskDouble.getNoDataValue(
                             handleOutOfMemoryError);
                     double value;
                     Iterator iterator = maskDouble.iterator(
                             handleOutOfMemoryError);
-                    Grids_AbstractGrid2DSquareCellDoubleChunk maskDoubleChunk;
-                    Grids_AbstractGrid2DSquareCellIntChunk resultChunk;
+                    Grids_AbstractGridChunkDouble maskDoubleChunk;
+                    Grids_AbstractGridChunkInt resultChunk;
                     while (iterator.hasNext()) {
                         maskDoubleChunk
-                                = (Grids_AbstractGrid2DSquareCellDoubleChunk) iterator.next();
+                                = (Grids_AbstractGridChunkDouble) iterator.next();
                         chunkID = maskDoubleChunk.getChunkID(handleOutOfMemoryError);
                         thisChunkNrows = maskDouble.getChunkNRows(
                                 chunkID,
@@ -1013,23 +1013,23 @@ public class Grids_Processor extends Grids_Object {
                     }
                 }
             } else {
-                //( grid.getClass() == Grids_Grid2DSquareCellDouble.class ) {
+                //( grid.getClass() == Grids_GridDouble.class ) {
                 double resultNoDataValue
-                        = ((Grids_Grid2DSquareCellDouble) grid).getNoDataValue(
+                        = ((Grids_GridDouble) grid).getNoDataValue(
                                 handleOutOfMemoryError);
-                if (mask.getClass() == Grids_Grid2DSquareCellInt.class) {
-                    Grids_Grid2DSquareCellInt maskInt
-                            = (Grids_Grid2DSquareCellInt) mask;
+                if (mask.getClass() == Grids_GridInt.class) {
+                    Grids_GridInt maskInt
+                            = (Grids_GridInt) mask;
                     int maskNoDataValue = maskInt.getNoDataValue(
                             handleOutOfMemoryError);
                     int value;
                     Iterator iterator = maskInt.iterator(
                             handleOutOfMemoryError);
-                    Grids_AbstractGrid2DSquareCellIntChunk maskIntChunk;
-                    Grids_AbstractGrid2DSquareCellIntChunk resultChunk;
+                    Grids_AbstractGridChunkInt maskIntChunk;
+                    Grids_AbstractGridChunkInt resultChunk;
                     while (iterator.hasNext()) {
                         maskIntChunk
-                                = (Grids_AbstractGrid2DSquareCellIntChunk) iterator.next();
+                                = (Grids_AbstractGridChunkInt) iterator.next();
                         chunkID = maskIntChunk.getChunkID(handleOutOfMemoryError);
                         thisChunkNrows = maskInt.getChunkNRows(
                                 chunkID,
@@ -1057,9 +1057,9 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 } else {
-                    // ( mask.getClass() == Grids_Grid2DSquareCellDouble.class )
-                    Grids_Grid2DSquareCellDouble maskDouble
-                            = (Grids_Grid2DSquareCellDouble) mask;
+                    // ( mask.getClass() == Grids_GridDouble.class )
+                    Grids_GridDouble maskDouble
+                            = (Grids_GridDouble) mask;
                     double maskNoDataValue = maskDouble.getNoDataValue(
                             handleOutOfMemoryError);
                     double value;
@@ -1069,13 +1069,13 @@ public class Grids_Processor extends Grids_Object {
                     Iterator iterator = maskDouble.getGrid2DSquareCellChunkIDHashSet(
                             handleOutOfMemoryError).iterator();
 
-                    Grids_AbstractGrid2DSquareCellDoubleChunk maskDoubleChunk;
-                    Grids_AbstractGrid2DSquareCellIntChunk resultChunk;
+                    Grids_AbstractGridChunkDouble maskDoubleChunk;
+                    Grids_AbstractGridChunkInt resultChunk;
                     while (iterator.hasNext()) {
 
 //                        maskDoubleChunk =
-//                                (Grids_AbstractGrid2DSquareCellDoubleChunk) iterator.next();
-                        maskDoubleChunk = (Grids_AbstractGrid2DSquareCellDoubleChunk) mask.getChunk((Grids_2D_ID_int) iterator.next(), handleOutOfMemoryError);
+//                                (Grids_AbstractGridChunkDouble) iterator.next();
+                        maskDoubleChunk = (Grids_AbstractGridChunkDouble) mask.getChunk((Grids_2D_ID_int) iterator.next(), handleOutOfMemoryError);
 
                         chunkID = maskDoubleChunk.getChunkID(handleOutOfMemoryError);
                         thisChunkNrows = maskDouble.getChunkNRows(
@@ -1127,7 +1127,7 @@ public class Grids_Processor extends Grids_Object {
      * Modifies grid with the values of cells in the range [min,max] set to its
      * noDataValue. (Existing noDataValue cells in grid remain as noDataValue.)
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be masked.
+     * @param grid The Grids_GridDouble to be masked.
      * @param min The minimum value in the range.
      * @param max The maximum value in the range.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -1135,7 +1135,7 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void mask(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             double min,
             double max,
             boolean handleOutOfMemoryError) {
@@ -1152,15 +1152,15 @@ public class Grids_Processor extends Grids_Object {
             //int nChunkRows = grid.getNChunkRows( handleOutOfMemoryError );
             //int nChunkCols = grid.getNChunkCols( handleOutOfMemoryError );
             Grids_2D_ID_int chunkID;
-            if (grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-                Grids_Grid2DSquareCellInt gridInt = (Grids_Grid2DSquareCellInt) grid;
+            if (grid.getClass() == Grids_GridInt.class) {
+                Grids_GridInt gridInt = (Grids_GridInt) grid;
                 int noDataValue = gridInt.getNoDataValue(true);
                 int value;
                 Iterator iterator = gridInt.iterator(handleOutOfMemoryError);
-                Grids_AbstractGrid2DSquareCellIntChunk _Grid2DSquareCellIntChunk;
+                Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk;
                 //Iterator gridChunkIterator;
                 while (iterator.hasNext()) {
-                    _Grid2DSquareCellIntChunk = (Grids_AbstractGrid2DSquareCellIntChunk) iterator.next();
+                    _Grid2DSquareCellIntChunk = (Grids_AbstractGridChunkInt) iterator.next();
                     chunkID = _Grid2DSquareCellIntChunk.getChunkID(handleOutOfMemoryError);
                     chunkNrows
                             = gridInt.getChunkNRows(chunkID, handleOutOfMemoryError);
@@ -1191,15 +1191,15 @@ public class Grids_Processor extends Grids_Object {
                     }
                 }
             } else {
-                // ( grid.getClass() == Grids_Grid2DSquareCellDouble.class )
-                Grids_Grid2DSquareCellDouble gridDouble = (Grids_Grid2DSquareCellDouble) grid;
+                // ( grid.getClass() == Grids_GridDouble.class )
+                Grids_GridDouble gridDouble = (Grids_GridDouble) grid;
                 double noDataValue = gridDouble.getNoDataValue(handleOutOfMemoryError);
                 double value;
                 Iterator iterator = grid.iterator(handleOutOfMemoryError);
-                Grids_AbstractGrid2DSquareCellDoubleChunk gridChunk;
+                Grids_AbstractGridChunkDouble gridChunk;
                 //Iterator gridChunkIterator;
                 while (iterator.hasNext()) {
-                    gridChunk = (Grids_AbstractGrid2DSquareCellDoubleChunk) iterator.next();
+                    gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
                     chunkID = gridChunk.getChunkID(handleOutOfMemoryError);
                     chunkNrows = grid.getChunkNRows(chunkID, handleOutOfMemoryError);
                     chunkNcols = grid.getChunkNCols(chunkID, handleOutOfMemoryError);
@@ -1262,7 +1262,7 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void mask(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             double xmin,
             double ymin,
             double xmax,
@@ -1302,7 +1302,7 @@ public class Grids_Processor extends Grids_Object {
      * the rectangle given by:
      * (startRowIndex,startColIndex,endRowIndex,endColIndex).
      *
-     * @param grid the Grids_Grid2DSquareCellDouble to be masked
+     * @param grid the Grids_GridDouble to be masked
      * @param startRowIndex the index of the first row to be masked
      * @param startColIndex the index of the first column to be masked
      * @param endRowIndex the index of the final row to be masked
@@ -1312,18 +1312,18 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void mask(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractGrid2DSquareCell result;
+            Grids_AbstractGridNumber result;
             long rowIndex;
             long colIndex;
-            if (grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-                Grids_Grid2DSquareCellInt gridInt = (Grids_Grid2DSquareCellInt) grid;
+            if (grid.getClass() == Grids_GridInt.class) {
+                Grids_GridInt gridInt = (Grids_GridInt) grid;
                 int noDataValue = gridInt.getNoDataValue(handleOutOfMemoryError);
                 int value;
                 for (rowIndex = startRowIndex; rowIndex <= endRowIndex; rowIndex++) {
@@ -1337,15 +1337,15 @@ public class Grids_Processor extends Grids_Object {
                 }
                 result = gridInt;
             } else {
-                // ( grid.getClass() == Grids_Grid2DSquareCellDouble.class )
-                Grids_Grid2DSquareCellDouble gridDouble = (Grids_Grid2DSquareCellDouble) grid;
+                // ( grid.getClass() == Grids_GridDouble.class )
+                Grids_GridDouble gridDouble = (Grids_GridDouble) grid;
                 double noDataValue = gridDouble.getNoDataValue(handleOutOfMemoryError);
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
                 HashSet _ChunkIDHashSet = new HashSet();
                 _ChunkIDHashSet.add(chunkID);
                 HashMap _Grid2DSquareCell_ChunkIDHashSet_HashMap = new HashMap();
                 _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(grid, _ChunkIDHashSet);
-                Grids_AbstractGrid2DSquareCellDoubleChunk chunk;
+                Grids_AbstractGridChunkDouble chunk;
                 double value = 0.0d;
 //                // TODO: Chunk Processing would be better! the following is a start, but need some intersection type method...
 //                int _ChunkCellRowIndex = 0;
@@ -1423,8 +1423,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_Grid2DSquareCellDouble Values are either linearly
-     * rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly
+ rescaled into the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -1435,23 +1435,23 @@ public class Grids_Processor extends Grids_Object {
      *
      * @TODO Improve Memory Handling
      */
-    public Grids_Grid2DSquareCellDouble rescale(
-            Grids_AbstractGrid2DSquareCell grid,
+    public Grids_GridDouble rescale(
+            Grids_AbstractGridNumber grid,
             String type,
             double min,
             double max,
             boolean handleOutOfMemoryError) {
-        if (grid instanceof Grids_Grid2DSquareCellDouble) {
-            return rescale((Grids_Grid2DSquareCellDouble) grid,
+        if (grid instanceof Grids_GridDouble) {
+            return rescale((Grids_GridDouble) grid,
                     type,
                     min,
                     max,
                     handleOutOfMemoryError);
         } else {
-            if (!(grid instanceof Grids_Grid2DSquareCellInt)) {
+            if (!(grid instanceof Grids_GridInt)) {
                 throw new UnsupportedOperationException();
             }
-            return rescale((Grids_Grid2DSquareCellInt) grid,
+            return rescale((Grids_GridInt) grid,
                     type,
                     min,
                     max,
@@ -1461,8 +1461,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_Grid2DSquareCellDouble Values are either linearly
-     * rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly
+ rescaled into the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -1475,8 +1475,8 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Log rescaling implementation is not brilliant and could be
      * parametrised.
      */
-    public Grids_Grid2DSquareCellDouble rescale(
-            Grids_Grid2DSquareCellDouble grid,
+    public Grids_GridDouble rescale(
+            Grids_GridDouble grid,
             String type,
             double min,
             double max,
@@ -1502,9 +1502,9 @@ public class Grids_Processor extends Grids_Object {
             double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
             double rangeGrid = maxGrid - minGrid;
             double value = noDataValue;
-            Grids_Grid2DSquareCellDouble outputGrid;
-            //outputGrid = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(grid);
-            outputGrid = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(
+            Grids_GridDouble outputGrid;
+            //outputGrid = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(grid);
+            outputGrid = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(
                     Directory, grid, 0, 0, nrows - 1, ncols - 1,
                     handleOutOfMemoryError);
             outputGrid.setName(grid.getName(handleOutOfMemoryError), handleOutOfMemoryError);
@@ -1528,10 +1528,10 @@ public class Grids_Processor extends Grids_Object {
                                     chunkColIndex, handleOutOfMemoryError, chunkID);
                             int thisChunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk gridChunk;
+                            Grids_AbstractGridChunkDouble gridChunk;
                             gridChunk = grid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk outputGridChunk;
+                            Grids_AbstractGridChunkDouble outputGridChunk;
                             outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
@@ -1600,10 +1600,10 @@ public class Grids_Processor extends Grids_Object {
                                     chunkColIndex, handleOutOfMemoryError, chunkID);
                             int thisChunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk gridChunk;
+                            Grids_AbstractGridChunkDouble gridChunk;
                             gridChunk = grid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk outputGridChunk;
+                            Grids_AbstractGridChunkDouble outputGridChunk;
                             outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
@@ -1760,8 +1760,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_Grid2DSquareCellDouble Values are either linearly
-     * rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly
+ rescaled into the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -1774,8 +1774,8 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Log rescaling implementation is not brilliant and could be
      * parametrised.
      */
-    public Grids_Grid2DSquareCellDouble rescale(
-            Grids_Grid2DSquareCellInt grid,
+    public Grids_GridDouble rescale(
+            Grids_GridInt grid,
             String type,
             double min,
             double max,
@@ -1793,8 +1793,8 @@ public class Grids_Processor extends Grids_Object {
             double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
             double rangeGrid = maxGrid - minGrid;
             double value = noDataValue;
-            Grids_Grid2DSquareCellDouble outputGrid;
-            outputGrid = (Grids_Grid2DSquareCellDouble) Grid2DSquareCellDoubleFactory.create(grid);
+            Grids_GridDouble outputGrid;
+            outputGrid = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(grid);
             outputGrid.setName(grid.getName(handleOutOfMemoryError), handleOutOfMemoryError);
             ge.getGrids().add(outputGrid);
             int chunkRowIndex;
@@ -1815,10 +1815,10 @@ public class Grids_Processor extends Grids_Object {
                                     chunkColIndex, handleOutOfMemoryError, chunkID);
                             int chunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellIntChunk gridChunk;
+                            Grids_AbstractGridChunkInt gridChunk;
                             gridChunk = grid.getGrid2DSquareCellIntChunk(
                                     chunkID, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk outputGridChunk;
+                            Grids_AbstractGridChunkDouble outputGridChunk;
                             outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
@@ -1887,10 +1887,10 @@ public class Grids_Processor extends Grids_Object {
                                     chunkColIndex, handleOutOfMemoryError, chunkID);
                             int chunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellIntChunk gridChunk;
+                            Grids_AbstractGridChunkInt gridChunk;
                             gridChunk = grid.getGrid2DSquareCellIntChunk(
                                     chunkID, handleOutOfMemoryError);
-                            Grids_AbstractGrid2DSquareCellDoubleChunk outputGridChunk;
+                            Grids_AbstractGridChunkDouble outputGridChunk;
                             outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
@@ -2049,14 +2049,14 @@ public class Grids_Processor extends Grids_Object {
      * Modifies grid so value of cells with CellIDs in _CellIDs are set to a
      * value a little bit larger.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed.
+     * @param grid The Grids_GridDouble to be processed.
      * @param _CellIDs The CellIDs of the cells to be processed.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void setValueALittleBitLarger(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             HashSet _CellIDs,
             boolean handleOutOfMemoryError) {
         try {
@@ -2099,14 +2099,14 @@ public class Grids_Processor extends Grids_Object {
      * Modifies grid so value of cells with CellIDs in _CellIDs are set to a
      * value a little bit smaller.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed.
+     * @param grid The Grids_GridDouble to be processed.
      * @param _CellIDs The CellIDs of the cells to be processed.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void setValueALittleBitSmaller(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             HashSet _CellIDs,
             boolean handleOutOfMemoryError) {
         try {
@@ -2142,7 +2142,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Adds value to grid for cells with CellID in _CellIDs
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed
+     * @param grid The Grids_GridDouble to be processed
      * @param _CellIDs A HashSet containing CellIDs.
      * @param value The value to be added.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -2150,7 +2150,7 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             HashSet _CellIDs,
             double value,
             boolean handleOutOfMemoryError) {
@@ -2189,14 +2189,14 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Adds value to every cell of grid.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed
+     * @param grid The Grids_GridDouble to be processed
      * @param value The value to be added
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             double value,
             boolean handleOutOfMemoryError) {
         try {
@@ -2234,7 +2234,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Adds value to grid for cells with CellID in _CellIDs
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed
+     * @param grid The Grids_GridDouble to be processed
      * @param cellIDs Array of CellIDs.
      * @param value The value to be added.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -2242,7 +2242,7 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             Grids_2D_ID_long[] cellIDs,
             double value,
             boolean handleOutOfMemoryError) {
@@ -2273,16 +2273,16 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Add gridToAdd to grid
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed/modified.
-     * @param gridToAdd The Grids_Grid2DSquareCellDouble from which values are
-     * added.
+     * @param grid The Grids_GridDouble to be processed/modified.
+     * @param gridToAdd The Grids_GridDouble from which values are
+ added.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
-            Grids_Grid2DSquareCellDouble gridToAdd,
+            Grids_GridDouble grid,
+            Grids_GridDouble gridToAdd,
             boolean handleOutOfMemoryError) {
         try {
             ge.getGrids().add(grid);
@@ -2313,17 +2313,17 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Add gridToAdd to grid with values from gridToAdd multiplied by weight.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed/modified.
-     * @param gridToAdd The Grids_Grid2DSquareCellDouble from which values are
-     * added.
+     * @param grid The Grids_GridDouble to be processed/modified.
+     * @param gridToAdd The Grids_GridDouble from which values are
+ added.
      * @param weight The value gridToAdd values are multiplied by.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
-            Grids_Grid2DSquareCellDouble gridToAdd,
+            Grids_GridDouble grid,
+            Grids_GridDouble gridToAdd,
             double weight,
             boolean handleOutOfMemoryError) {
         try {
@@ -2363,9 +2363,9 @@ public class Grids_Processor extends Grids_Object {
      * endRowIndex, and column index between startColIndex and endColIndex are
      * added.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed.
-     * @param gridToAdd The Grids_Grid2DSquareCellDouble from which values are
-     * added.
+     * @param grid The Grids_GridDouble to be processed.
+     * @param gridToAdd The Grids_GridDouble from which values are
+ added.
      * @param startRowIndex The index of the first row from which gridToAdd
      * values are added.
      * @param startColIndex the index of the first column from which gridToAdd
@@ -2380,8 +2380,8 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
-            Grids_Grid2DSquareCellDouble gridToAdd,
+            Grids_GridDouble grid,
+            Grids_GridDouble gridToAdd,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -2437,14 +2437,14 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a Grids_Grid2DSquareCellDouble with values of grid added with
-     * values from gridToAdd (with row index between startRowIndex, endRowIndex
-     * and column index between startColIndex, endColIndex) multiplied by
-     * weight.
+     * Returns a Grids_GridDouble with values of grid added with
+ values from gridToAdd (with row index between startRowIndex, endRowIndex
+ and column index between startColIndex, endColIndex) multiplied by
+ weight.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed.
-     * @param gridToAdd The Grids_Grid2DSquareCellDouble from which values are
-     * added.
+     * @param grid The Grids_GridDouble to be processed.
+     * @param gridToAdd The Grids_GridDouble from which values are
+ added.
      * @param startRowIndex The index of the first row from which gridToAdd
      * values are added.
      * @param startColIndex The index of the first column from which gridToAdd
@@ -2463,8 +2463,8 @@ public class Grids_Processor extends Grids_Object {
      * @todo work needed to handle OutOfMemoryErrors...
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
-            Grids_Grid2DSquareCellDouble gridToAdd,
+            Grids_GridDouble grid,
+            Grids_GridDouble gridToAdd,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
@@ -2488,14 +2488,14 @@ public class Grids_Processor extends Grids_Object {
             double gridToAddNoDataValue = gridToAdd.getNoDataValue(handleOutOfMemoryError);
             Grids_Dimensions gridToAddDimensions = gridToAdd.getDimensions(handleOutOfMemoryError);
 
-            Grids_Grid2DSquareCellDoubleFactory gridFactory = new Grids_Grid2DSquareCellDoubleFactory(ge, handleOutOfMemoryError);
-//            Grids_Grid2DSquareCellDoubleFactory gridFactory = new Grids_Grid2DSquareCellDoubleFactory(
+            Grids_GridDoubleFactory gridFactory = new Grids_GridDoubleFactory(ge, handleOutOfMemoryError);
+//            Grids_GridDoubleFactory gridFactory = new Grids_GridDoubleFactory(
 //                    grid.getDirectory(handleOutOfMemoryError),
 //                    ge.getGrids(),
 //                    handleOutOfMemoryError);
             // TODO:
-            // Implement higher method to pass in a Grids_AbstractGrid2DSquareCellDoubleChunkFactory.
-            //Grid2DSquareCellDoubleFactory gridFactory = new Grids_Grid2DSquareCellDoubleFactory( grid.getDirectory() );
+            // Implement higher method to pass in a Grids_AbstractGridChunkDoubleFactory.
+            //Grid2DSquareCellDoubleFactory gridFactory = new Grids_GridDoubleFactory( grid.getDirectory() );
 
             if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)
                     || (dimensionConstraints[3].compareTo(gridDimensions.getXMin()) == -1)
@@ -2517,7 +2517,7 @@ public class Grids_Processor extends Grids_Object {
                 //            if ( startRowIndex != 0 || startColIndex != 0 || endRowIndex != gridToAdd.getNRows() - 1 || endColIndex != gridToAdd.getNCols() - 1 ) {
                 //                println("Might be aggregating more than necessary!!!");
                 //            }
-                //            Grids_Grid2DSquareCellDouble aggregateGrid2DSquareCellDoubleToAddToAdd = null;
+                //            Grids_GridDouble aggregateGrid2DSquareCellDoubleToAddToAdd = null;
                 //            try {
                 //                aggregateGrid2DSquareCellDoubleToAddToAdd = aggregate( gridToAdd, "sum", gridDimensions, gridFactory );
                 //            } catch ( OutOfMemoryError e ) {
@@ -2565,11 +2565,11 @@ public class Grids_Processor extends Grids_Object {
                     // TODO:
                     // Clip gridToAdd might improve matters here.
                     // Check
-                    Grids_Grid2DSquareCellDouble tempGrid1 = null;
-                    Grids_Grid2DSquareCellDouble tempGrid2 = null;
+                    Grids_GridDouble tempGrid1 = null;
+                    Grids_GridDouble tempGrid2 = null;
                     try {
-                        tempGrid1 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, gridDimensions);
-                        tempGrid2 = (Grids_Grid2DSquareCellDouble) gridFactory.create(nrows, ncols, gridDimensions);
+                        tempGrid1 = (Grids_GridDouble) gridFactory.create(nrows, ncols, gridDimensions);
+                        tempGrid2 = (Grids_GridDouble) gridFactory.create(nrows, ncols, gridDimensions);
                     } catch (OutOfMemoryError e) {
 
                         _Message = "Warning!!! OutOfMemoryError: Unable to create temprorary grids trying another way but may run out of filespace!";
@@ -2748,7 +2748,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Returns grid with values added from a file.
      *
-     * @param grid the Grids_Grid2DSquareCellDouble to be processed
+     * @param grid the Grids_GridDouble to be processed
      * @param file the file contining values to be added.
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
      * )
@@ -2757,7 +2757,7 @@ public class Grids_Processor extends Grids_Object {
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             File file,
             String type,
             boolean handleOutOfMemoryError) {
@@ -2929,11 +2929,11 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns an Grids_Grid2DSquareCellDouble at a lower level of resolution
-     * than grid. The result values are either the sum, mean, max or min of
+     * Returns an Grids_GridDouble at a lower level of resolution
+ than grid. The result values are either the sum, mean, max or min of
      * values in grid depending on statistic.
      *
-     * @param grid the Grids_Grid2DSquareCellDouble to be processed
+     * @param grid the Grids_GridDouble to be processed
      * @param cellFactor the number of times wider/higher the aggregated grid
      * cells are to be
      * @param statistic "sum", "mean", "max", or "min" depending on what
@@ -2959,13 +2959,13 @@ public class Grids_Processor extends Grids_Object {
      * and variance aggregations. @return @param colOffset @param gridFactory
      * @param colOffset @param gridFactory @param handleOutOfMemoryError @return
      */
-    public Grids_Grid2DSquareCellDouble aggregate(
-            Grids_AbstractGrid2DSquareCell grid,
+    public Grids_GridDouble aggregate(
+            Grids_AbstractGridNumber grid,
             int cellFactor,
             String statistic,
             int rowOffset,
             int colOffset,
-            Grids_Grid2DSquareCellDoubleFactory gridFactory,
+            Grids_GridDoubleFactory gridFactory,
             boolean handleOutOfMemoryError) {
         try {
             ge.getGrids().add(grid);
@@ -2988,11 +2988,11 @@ public class Grids_Processor extends Grids_Object {
             BigDecimal xMax = dimensions.getXMax();
             BigDecimal yMax = dimensions.getYMax();
             double noDataValue = Double.NEGATIVE_INFINITY;
-            if (grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-                noDataValue = (double) ((Grids_Grid2DSquareCellInt) grid).getNoDataValue(handleOutOfMemoryError);
+            if (grid.getClass() == Grids_GridInt.class) {
+                noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue(handleOutOfMemoryError);
             } else {
-                if (grid.getClass() == Grids_Grid2DSquareCellDouble.class) {
-                    noDataValue = ((Grids_Grid2DSquareCellDouble) grid).getNoDataValue(handleOutOfMemoryError);
+                if (grid.getClass() == Grids_GridDouble.class) {
+                    noDataValue = ((Grids_GridDouble) grid).getNoDataValue(handleOutOfMemoryError);
                 } else {
                     _Message = ("Grid2DSquareCellAbstract not recognised in aggregate( Grid2DSquareCellAbstract( " + grid.toString(handleOutOfMemoryError) + ", cellFactor( " + cellFactor + " ), statistic( " + statistic + " ), rowOffset( " + rowOffset + " ), colOffset( " + colOffset + " ), gridFactory( " + gridFactory + " ),  handleOutOfMemoryError( " + handleOutOfMemoryError + " ) )");
                     //throw new Exception();
@@ -3041,7 +3041,7 @@ public class Grids_Processor extends Grids_Object {
                     resultCellsize);
             // Initialise result
             gridFactory.set_NoDataValue(noDataValue);
-            Grids_Grid2DSquareCellDouble result = (Grids_Grid2DSquareCellDouble) gridFactory.create(
+            Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
 
             long row;
@@ -3052,8 +3052,8 @@ public class Grids_Processor extends Grids_Object {
 
             // sum
             if (statistic.equalsIgnoreCase("sum")) {
-                Grids_Grid2DSquareCellDouble count = (Grids_Grid2DSquareCellDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
-                Grids_Grid2DSquareCellDouble normaliser = (Grids_Grid2DSquareCellDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
+                Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
+                Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
                         x = grid.getCellXDouble(col, handleOutOfMemoryError);
@@ -3094,8 +3094,8 @@ public class Grids_Processor extends Grids_Object {
 
             // mean
             if (statistic.equalsIgnoreCase("mean")) {
-                Grids_Grid2DSquareCellDouble numerator = (Grids_Grid2DSquareCellDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
-                Grids_Grid2DSquareCellDouble denominator = (Grids_Grid2DSquareCellDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
+                Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
+                Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(resultNrows, resultNcols, resultDimensions);
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
                         x = grid.getCellXDouble(col, handleOutOfMemoryError);
@@ -3186,9 +3186,9 @@ public class Grids_Processor extends Grids_Object {
     }
 
     //    /**
-    //     * Returns an Grids_Grid2DSquareCellDouble at a lower level of resolution than grid.  The result values
+    //     * Returns an Grids_GridDouble at a lower level of resolution than grid.  The result values
     //     * are either the sum, mean, max or min of values in grid depending on statistic.
-    //     * @param grid - the Grids_Grid2DSquareCellDouble to be processed
+    //     * @param grid - the Grids_GridDouble to be processed
     //     * @param resultCellsize - output grid cellsize
     //     * @param statistic - "sum", "mean", "max", or "min" depending on what aggregate of values are wanted
     //     * @param resultXllcorner - the x-coordinate of the aggregate grid lower left corner
@@ -3203,19 +3203,19 @@ public class Grids_Processor extends Grids_Object {
     //     *     Formerly noDataValues were treated as the average of values within a result cell.
     //     * TODO: implement median, mode and variance aggregations.
     //     */
-    //    public Grids_Grid2DSquareCellDouble aggregate( Grids_Grid2DSquareCellDouble grid, double resultCellsize, String statistic, double resultXllcorner, double resultYllcorner ) {
+    //    public Grids_GridDouble aggregate( Grids_GridDouble grid, double resultCellsize, String statistic, double resultXllcorner, double resultYllcorner ) {
     //        try {
-    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_Grid2DSquareCellDoubleFactory() );
+    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_GridDoubleFactory() );
     //        } catch ( OutOfMemoryError e ) {
     //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grid2DSquareCellDoubleFileFactory() );
     //        }
     //    }
     /**
-     * Returns an Grids_Grid2DSquareCellDouble at a lower level of resolution
-     * than grid. The result values are either the sum, mean, max or min of
+     * Returns an Grids_GridDouble at a lower level of resolution
+ than grid. The result values are either the sum, mean, max or min of
      * values in grid depending on statistic.
      *
-     * @param grid The Grids_Grid2DSquareCellDouble to be processed
+     * @param grid The Grids_GridDouble to be processed
      * @param statistic "sum", "mean", "max", or "min" depending on what
      * aggregate of values are wanted
      * @param resultDimensions
@@ -3236,11 +3236,11 @@ public class Grids_Processor extends Grids_Object {
      * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
      * @return
      */
-    public Grids_Grid2DSquareCellDouble aggregate(
-            Grids_AbstractGrid2DSquareCell grid,
+    public Grids_GridDouble aggregate(
+            Grids_AbstractGridNumber grid,
             String statistic,
             Grids_Dimensions resultDimensions,
-            Grids_Grid2DSquareCellDoubleFactory gridFactory,
+            Grids_GridDoubleFactory gridFactory,
             boolean handleOutOfMemoryError) {
         try {
             ge.getGrids().add(grid);
@@ -3253,11 +3253,11 @@ public class Grids_Processor extends Grids_Object {
             long ncols = grid.getNCols(handleOutOfMemoryError);
             Grids_Dimensions dimensions = grid.getDimensions(handleOutOfMemoryError);
             double noDataValue = Double.NEGATIVE_INFINITY;
-            if (grid.getClass() == Grids_Grid2DSquareCellInt.class) {
-                noDataValue = (double) ((Grids_Grid2DSquareCellInt) grid).getNoDataValue(handleOutOfMemoryError);
+            if (grid.getClass() == Grids_GridInt.class) {
+                noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue(handleOutOfMemoryError);
             } else {
-                if (grid.getClass() == Grids_Grid2DSquareCellDouble.class) {
-                    noDataValue = ((Grids_Grid2DSquareCellDouble) grid).getNoDataValue(handleOutOfMemoryError);
+                if (grid.getClass() == Grids_GridDouble.class) {
+                    noDataValue = ((Grids_GridDouble) grid).getNoDataValue(handleOutOfMemoryError);
                 } else {
                     _Message = "Grid2DSquareCellAbstract not recognised in aggregate( Grid2DSquareCellAbstract( " + grid.toString(handleOutOfMemoryError) + ", statistic( " + statistic + " ), resultDimensions( " + resultDimensions + " ), gridFactory( " + gridFactory + " ),  handleOutOfMemoryError( " + handleOutOfMemoryError + " ) )";
                     _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
@@ -3365,8 +3365,8 @@ public class Grids_Processor extends Grids_Object {
 
             // Initialise result
             gridFactory.set_NoDataValue(noDataValue);
-            Grids_Grid2DSquareCellDouble result;
-            result = (Grids_Grid2DSquareCellDouble) gridFactory.create(
+            Grids_GridDouble result;
+            result = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
 
             long row;
@@ -3380,8 +3380,8 @@ public class Grids_Processor extends Grids_Object {
 
             // sum
             if (statistic.equalsIgnoreCase("sum")) {
-                Grids_Grid2DSquareCellDouble totalValueArea;
-                totalValueArea = (Grids_Grid2DSquareCellDouble) gridFactory.create(
+                Grids_GridDouble totalValueArea;
+                totalValueArea = (Grids_GridDouble) gridFactory.create(
                         resultNrows, resultNcols, resultDimensions);
                 double areaProportion;
                 double[] bounds = new double[4];
@@ -3516,7 +3516,7 @@ public class Grids_Processor extends Grids_Object {
             // mean
             if (statistic.equalsIgnoreCase("mean")) {
                 double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
-                Grids_Grid2DSquareCellDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory, handleOutOfMemoryError);
+                Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory, handleOutOfMemoryError);
                 addToGrid(result, sum, 1.0d / denominator, handleOutOfMemoryError);
             }
 
@@ -3650,12 +3650,12 @@ public class Grids_Processor extends Grids_Object {
              //println( "resultNcols " + resultNcols + ", resultNrows " + resultNrows );
              //println( "gridToAddNcols " + ncols + ", gridToAddNrows " + nrows );
              // Initialise result
-             Grids_Grid2DSquareCellDouble result = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue );
+             Grids_GridDouble result = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue );
             
              // sum
              if ( statistic.equalsIgnoreCase( "sum" ) ) {
-             Grids_Grid2DSquareCellDouble tempGrid1 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
-             Grids_Grid2DSquareCellDouble tempGrid2 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
+             Grids_GridDouble tempGrid1 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
+             Grids_GridDouble tempGrid2 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
              double x = 0.0d;
              double y = 0.0d;
              double d1 = noDataValue;
@@ -3752,8 +3752,8 @@ public class Grids_Processor extends Grids_Object {
              // cannot be simply done as it all depends on NODATA. In the
              // implementation below the data is read through twice. First read
              // involves calculating NODATA in each aggregated cell.
-             Grids_Grid2DSquareCellDouble tempGrid1 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
-             Grids_Grid2DSquareCellDouble tempGrid2 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
+             Grids_GridDouble tempGrid1 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
+             Grids_GridDouble tempGrid2 = gridFactory.createGrid2DSquareCellDouble( resultNrows, resultNcols, resultXllcorner, resultYllcorner, resultCellsize, noDataValue, 1 );
              double x;
              double y;
              double d1;
@@ -3991,10 +3991,10 @@ public class Grids_Processor extends Grids_Object {
 
     //    TODO: Move to a Extended Statistics class
     //    /**
-    //     * Returns a double global statistic for an Grids_Grid2DSquareCellDouble grid
+    //     * Returns a double global statistic for an Grids_GridDouble grid
     //     * NB. Only for _AbstractGrid2DSquareCell_HashSet in the same spatial frame.
     //     */
-    //    public double globalBivariateStatistics( Grids_Grid2DSquareCellDouble grid0, Grids_Grid2DSquareCellDouble grid1, String comparator  ) {
+    //    public double globalBivariateStatistics( Grids_GridDouble grid0, Grids_GridDouble grid1, String comparator  ) {
     //        // Initialisation
     //        int grid0Nrows = grid0.getNRows();
     //        int grid0Ncols = grid0.getNCols();
@@ -4116,18 +4116,18 @@ public class Grids_Processor extends Grids_Object {
     //        return grid0NoDataValue;
     //    }
     //    /**
-    //     * Returns a new Grids_Grid2DSquareCellDouble the values of which are the distance to the nearest data value
+    //     * Returns a new Grids_GridDouble the values of which are the distance to the nearest data value
     //     * TODO: Optimise as it is currently very slow and inefficient!!!
     //     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
     //     *   in this method then swap operations are initiated prior to retrying.
     //     *   If false then OutOfMemoryErrors are caught and thrown.
     //     */
-    //    public Grids_Grid2DSquareCellDouble distanceToDataValue( Grids_Grid2DSquareCellDouble grid0, Grids_Grid2DSquareCellDoubleFactory gridFactory, boolean handleOutOfMemoryError ) {
+    //    public Grids_GridDouble distanceToDataValue( Grids_GridDouble grid0, Grids_GridDoubleFactory gridFactory, boolean handleOutOfMemoryError ) {
     //        long nrows = grid0.getNRows();
     //        long ncols = grid0.getNCols();
     //        BigDecimal[] dimensions0 = grid0.getDimensions();
     //        double noDataValue = grid0.getNoDataValue();
-    //        Grids_Grid2DSquareCellDouble result = gridFactory.create( grid0.getChunkNRows(this.handleOutOfMemoryErrorFalse), grid0.getChunkNCols(this.handleOutOfMemoryErrorFalse), nrows, ncols, dimensions0, noDataValue );
+    //        Grids_GridDouble result = gridFactory.create( grid0.getChunkNRows(this.handleOutOfMemoryErrorFalse), grid0.getChunkNCols(this.handleOutOfMemoryErrorFalse), nrows, ncols, dimensions0, noDataValue );
     //        // Calculate distances
     //        long row;
     //        long col;
@@ -4140,22 +4140,22 @@ public class Grids_Processor extends Grids_Object {
     //    }
     //    TODO:
     //    /**
-    //     * Returns a new Grids_Grid2DSquareCellDouble which is a copy of grid0 but
+    //     * Returns a new Grids_GridDouble which is a copy of grid0 but
     //     * with all noDataValues replaced as follows:
     //     * At each iteration we deal with the nearest band of noDataValues.
     //     * (NB. If we dealt only with the nearest noDataValues it may take a very long time to compute!)
     //     * We replace these nearest noDataValues with the average values within distance.
     //     * We then repeat until all cells have a value.
     //     */
-    //    public Grids_Grid2DSquareCellDouble replaceNoDataValues( Grids_Grid2DSquareCellDouble grid0, double distance, Grids_Grid2DSquareCellDoubleFactory gridFactory ) {
+    //    public Grids_GridDouble replaceNoDataValues( Grids_GridDouble grid0, double distance, Grids_GridDoubleFactory gridFactory ) {
     //        long nrows = grid0.getNRows();
     //        long ncols = grid0.getNCols();
     //        BigDecimal[] dimensions = grid0.getDimensions();
     //        double noDataValue = grid0.getNoDataValue();
-    //        Grids_Grid2DSquareCellDouble temp1 = gridFactory.createGrid2DSquareCellDouble( grid0 );
-    //        Grids_Grid2DSquareCellDouble temp2 = gridFactory.createGrid2DSquareCellDouble( grid0 );
+    //        Grids_GridDouble temp1 = gridFactory.createGrid2DSquareCellDouble( grid0 );
+    //        Grids_GridDouble temp2 = gridFactory.createGrid2DSquareCellDouble( grid0 );
     //        // Get distances
-    //        Grids_Grid2DSquareCellDouble distanceGrid = distanceToDataValue( grid0, gridFactory );
+    //        Grids_GridDouble distanceGrid = distanceToDataValue( grid0, gridFactory );
     //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getGridStatistics();
     //        double maxDistance = distanceGridStatistics.getMax();
     //
@@ -4165,8 +4165,8 @@ public class Grids_Processor extends Grids_Object {
     //        /*
     //        int maxCellDistance = ( int ) Math.ceil( maxDistance / cellsize );
     //        boolean alternator = true;
-    //        Grids_Grid2DSquareCellDouble thisGrid = null;
-    //        Grids_Grid2DSquareCellDouble thatGrid = null;
+    //        Grids_GridDouble thisGrid = null;
+    //        Grids_GridDouble thatGrid = null;
     //        double thisValue;
     //        double thatValue;
     //        double thisDistance;
@@ -4212,7 +4212,7 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessInitialData(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             int cellDistance,
             long row) {
         double[][] result = new double[(cellDistance * 2) + 1][(cellDistance * 2) + 1];
@@ -4250,7 +4250,7 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessData(
-            Grids_Grid2DSquareCellDouble grid,
+            Grids_GridDouble grid,
             double[][] previous,
             int cellDistance,
             long row,
@@ -4282,7 +4282,7 @@ public class Grids_Processor extends Grids_Object {
 
     //    // TODO:
     //    // tests
-    //    private double[][] getChunkProcessInitialData( Grids_Grid2DSquareCellDouble grid, int chunkCells, int rowChunk ) {
+    //    private double[][] getChunkProcessInitialData( Grids_GridDouble grid, int chunkCells, int rowChunk ) {
     //        double[][] result = new double[ chunkCells * 3 ][ chunkCells * 3 ];
     //        for ( int i = -chunkCells; i <= ( chunkCells * 2 ) - 1; i ++ ) {
     //            for ( int j = -chunkCells; j <= ( chunkCells * 2 ) - 1; j ++ ) {
@@ -4293,7 +4293,7 @@ public class Grids_Processor extends Grids_Object {
     //    }
     //
     //    // Needs testing!!
-    //    private double[][] getChunkProcessData( Grids_Grid2DSquareCellDouble grid, double[][] previous, int chunkCells, int rowChunk, int colChunk ) {
+    //    private double[][] getChunkProcessData( Grids_GridDouble grid, double[][] previous, int chunkCells, int rowChunk, int colChunk ) {
     //        double[][] result = previous;
     //        if ( colChunk == 0 ) {
     //            return getRowProcessInitialData( grid, chunkCells, rowChunk );
@@ -4328,7 +4328,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException
      */
     public void output(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             File outputDirectory,
             Grids_ImageExporter imageExporter,
             String[] imageTypes,
@@ -4415,7 +4415,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws IOException
      */
     public void outputImage(
-            Grids_AbstractGrid2DSquareCell grid,
+            Grids_AbstractGridNumber grid,
             File outputDirectory,
             Grids_ImageExporter ie,
             String[] imageTypes,
@@ -4482,7 +4482,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws IOException
      */
     public void outputESRIAsciiGrid(
-            Grids_AbstractGrid2DSquareCell g,
+            Grids_AbstractGridNumber g,
             File outputDirectory,
             Grids_ESRIAsciiGridExporter eage,
             boolean handleOutOfMemoryError)
