@@ -682,7 +682,7 @@ public class Grids_ProcessorDEM
                 thisHeightDouble = noDataValueDouble;
                 for (cri = 0; cri < nChunkRows; cri++) {
                     for (cci = 0; cci < nChunkCols; cci++) {
-                        _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
+                        _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk(
                                 cri, cci, handleOutOfMemoryError);
                         chunkNrows = g.getChunkNRows(cri, handleOutOfMemoryError);
                         chunkNcols = g.getChunkNCols(cci, handleOutOfMemoryError);
@@ -2958,7 +2958,7 @@ public class Grids_ProcessorDEM
                 double height = Double.MIN_VALUE;
                 double thisHeight = Double.MIN_VALUE;
                 Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk;
-                grid2DSquareCellDoubleChunk = grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
+                grid2DSquareCellDoubleChunk = grid2DSquareCellDouble.getGridChunk(
                         0, 0, handleOutOfMemoryError);
                 for (chunkRowIndex = _int_0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                     chunkNRows = grid2DSquareCell.getChunkNRows(
@@ -2969,7 +2969,7 @@ public class Grids_ProcessorDEM
                         chunkID = new Grids_2D_ID_int(
                                 chunkRowIndex, chunkColIndex);
                         try {
-                            grid2DSquareCellDoubleChunk = grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
+                            grid2DSquareCellDoubleChunk = grid2DSquareCellDouble.getGridChunk(
                                     chunkRowIndex,
                                     chunkColIndex,
                                     handleOutOfMemoryError);
@@ -3513,7 +3513,7 @@ public class Grids_ProcessorDEM
 //                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue( handleOutOfMemoryError );
 //                double height = Double.MIN_VALUE;
 //                double thisHeight = Double.MIN_VALUE;;
-//                Grids_AbstractGridChunkDouble _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk( 0, 0, handleOutOfMemoryError );
+//                Grids_AbstractGridChunkDouble _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk( 0, 0, handleOutOfMemoryError );
 //                for ( _ChunkRowIndex = _int_0; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex ++ ) {
 //                    chunkNrows = _Grid2DSquareCell.getChunkNRows(
 //                            _ChunkRowIndex,
@@ -3521,7 +3521,7 @@ public class Grids_ProcessorDEM
 //                    for ( _ChunkColIndex = _int_0; _ChunkColIndex < nChunkCols; _ChunkColIndex ++ ) {
 //                        _ChunkID = new ID( _NChunkRows, _ChunkRowIndex, _ChunkColIndex );
 //                        try {
-//                            _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
+//                            _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk(
 //                                    _ChunkRowIndex,
 //                                    _ChunkColIndex,
 //                                    handleOutOfMemoryError );

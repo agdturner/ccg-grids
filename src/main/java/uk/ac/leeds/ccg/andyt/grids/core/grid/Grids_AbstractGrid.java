@@ -3194,6 +3194,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             System.out.println(f); // DEBUGGING CODE
 
             Object o = Generic_StaticIO.readObject(f);
+            
+            if (this instanceof Grids_GridInt)
+            
             if (this.getClass() == Grids_GridInt.class) {
                 Grids_AbstractGridChunkInt chunk = null;
                 if (o.getClass() == Grids_GridChunkInt64CellMap.class) {

@@ -18,38 +18,41 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
- * instance. The values are not returned in any particular order.
+ * A factory for constructing Grid2DSquareCellDoubleChunkArray instances.
  */
-public class Grids_GridChunkDoubleArrayIterator extends Grids_GridChunkDoubleIterator {
-
-    private double[][] data;
-
-    public Grids_GridChunkDoubleArrayIterator() {
-    }
+public class Grids_GridChunkDoubleFactory
+        extends Grids_AbstractGridChunkDoubleFactory {
 
     /**
-     * Creates a new instance of Grid2DSquareDoubleIterator
-     *
-     * @param chunk The Grids_GridChunkDoubleArray to iterate over.
+     * Creates a new Grid2DSquareCellDoubleChunkArrayFactory.
      */
-    public Grids_GridChunkDoubleArrayIterator(Grids_GridChunkDoubleArray chunk) {
-        init(chunk);
-        data = chunk.getData();
-    }
+    protected Grids_GridChunkDoubleFactory() {    }
 
-    /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration.
-     */
     @Override
-    public Object next() {
-        next0();
-        return data[ChunkRowIndex][ChunkColIndex];
+    public Grids_GridChunkDouble createGridChunkDouble() {
+        return new Grids_GridChunkDouble();
+    }
+
+    @Override
+    public Grids_AbstractGridChunkDouble createGridChunkDouble(
+            Grids_GridDouble grid2DSquareCellDouble,
+            Grids_2D_ID_int chunkID) {
+        return new Grids_GridChunkDoubleArray(
+                grid2DSquareCellDouble,
+                chunkID);
+    }
+
+    @Override
+    public Grids_AbstractGridChunkDouble createGridChunkDouble(
+            Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk,
+            Grids_2D_ID_int chunkID) {
+        return new Grids_GridChunkDoubleArray(
+                grid2DSquareCellDoubleChunk,
+                chunkID);
     }
 
 }

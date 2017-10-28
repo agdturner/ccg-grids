@@ -1363,7 +1363,7 @@ public class Grids_Processor extends Grids_Object {
 //                Iterator _Iterator = _ChunkIDs.iterator();
 //                while ( _Iterator.hasNext() ) {
 //                    _ChunkID = ( ID ) _Iterator.next();
-//                    chunk = gridDouble.getGrid2DSquareCellDoubleChunk(
+//                    chunk = gridDouble.getGridChunk(
 //                            _ChunkID,
 //                            handleOutOfMemoryError,
 //                            _Grid2DSquareCell_ChunkIDHashSet_HashMap );

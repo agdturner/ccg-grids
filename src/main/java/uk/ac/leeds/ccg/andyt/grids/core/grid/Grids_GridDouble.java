@@ -1245,12 +1245,12 @@ public class Grids_GridDouble
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_AbstractGridChunkDouble getGrid2DSquareCellDoubleChunk(
+    public Grids_AbstractGridChunkDouble getGridChunk(
             int chunkRowIndex,
             int chunkColIndex,
             boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractGridChunkDouble result = getGrid2DSquareCellDoubleChunk(
+            Grids_AbstractGridChunkDouble result = getGridChunk(
                     chunkRowIndex,
                     chunkColIndex);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -1276,7 +1276,7 @@ public class Grids_GridDouble
      * @param chunkColIndex
      * @return grid2DSquareCellDoubleChunks.
      */
-    protected Grids_AbstractGridChunkDouble getGrid2DSquareCellDoubleChunk(
+    protected Grids_AbstractGridChunkDouble getGridChunk(
             int chunkRowIndex,
             int chunkColIndex) {
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
@@ -1896,7 +1896,7 @@ public class Grids_GridDouble
         int chunkCellRowIndex = getChunkCellRowIndex(cellRowIndex);
         int chunkCellColIndex = getChunkCellColIndex(cellColIndex);
         //if ( inGrid( _CellRowIndex, _CellColIndex ) ) {
-        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGrid2DSquareCellDoubleChunk(
+        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGridChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return setCell(
@@ -1981,7 +1981,7 @@ public class Grids_GridDouble
             int chunkCellColIndex,
             double newValue) {
         //if ( inGrid( _ChunkRowIndex, _ChunkColIndex, chunkCellRowIndex, chunkCellColIndex ) ) {
-        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGrid2DSquareCellDoubleChunk(
+        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGridChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return setCell(

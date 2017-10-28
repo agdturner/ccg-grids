@@ -37,7 +37,7 @@ public class Grids_GridChunkDoubleArray
     /**
      * For storing values arranged in rows and columns.
      */
-    private double[][] data;
+    private double[][] Data;
 
     /**
      * Creates a new Grid2DSquareCellDoubleChunkArray.
@@ -47,85 +47,81 @@ public class Grids_GridChunkDoubleArray
 
     public Grids_GridChunkDoubleArray(Grids_Environment ge) {
         super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new double[1][1];
-        //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
-        this.SwapUpToDate = false;
+        ChunkID = new Grids_2D_ID_int();
+        Data = new double[1][1];
+        SwapUpToDate = false;
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleChunkArray for grid2DSquareCellDouble
-     * containing all no data values.
+     * Creates a new Grids_GridChunkDoubleArray for g containing all no Data
+     * values.
      *
-     * @param grid2DSquareCellDouble The Grid2DSquareCellDouble this is to be a
-     * chunk of.
-     * @param _ChunkID The ID to be this._ChunkID.
+     * @param g The Grid2DSquareCellDouble this is to be a chunk of.
+     * @param chunkID The ID to be _ChunkID.
      */
     protected Grids_GridChunkDoubleArray(
-            Grids_GridDouble grid2DSquareCellDouble,
-            Grids_2D_ID_int _ChunkID) {
-        super(grid2DSquareCellDouble.ge);
-        this.ChunkID = _ChunkID;
-        initGrid(grid2DSquareCellDouble);
-        double _NoDataValue = grid2DSquareCellDouble.getNoDataValue(false);
-        int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
-                _ChunkID,
+            Grids_GridDouble g,
+            Grids_2D_ID_int chunkID) {
+        super(g.ge);
+        ChunkID = chunkID;
+        initGrid(g);
+        double noDataValue = g.getNoDataValue(false);
+        int chunkNrows = g.getChunkNRows(
+                chunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
-        this.data = new double[chunkNrows][grid2DSquareCellDouble.getChunkNCols(
-                _ChunkID,
+        Data = new double[chunkNrows][g.getChunkNCols(
+                chunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse)];
         int row;
         for (row = 0; row < chunkNrows; row++) {
-            Arrays.fill(data[row], _NoDataValue);
+            Arrays.fill(Data[row], noDataValue);
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleChunkArray from
-     * grid2DSquareCellDoubleChunk.
+     * Creates a new Grids_GridChunkDoubleArray from chunk.
      *
      *
-     * @param grid2DSquareCellDoubleChunk The Grids_AbstractGridChunkDouble this
-     * values are taken from.
-     * @param _ChunkID The ID to be this._ChunkID. TODO: A fast toArray() method
-     * in Grid2DSquareCellDoubleChunkMap could be coded then a constructor based
-     * on an double[] or double[][] might be faster?
+     * @param chunk The Grids_AbstractGridChunkDouble this values are taken
+     * from.
+     * @param chunkID The ID to be ChunkID. TODO: A fast toArray() method in
+     * Grid2DSquareCellDoubleChunkMap could be coded then a constructor based on
+     * an double[] or double[][] might be faster?
      */
     protected Grids_GridChunkDoubleArray(
-            Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk,
-            Grids_2D_ID_int _ChunkID) {
-        super(grid2DSquareCellDoubleChunk.ge);
-        this.ChunkID = _ChunkID;
-        Grids_GridDouble grid2DSquareCellDouble
-                = grid2DSquareCellDoubleChunk.getGrid();
-        initGrid(grid2DSquareCellDouble);
-        int chunkNrows = grid2DSquareCellDouble.getChunkNRows(
-                _ChunkID,
+            Grids_AbstractGridChunkDouble chunk,
+            Grids_2D_ID_int chunkID) {
+        super(chunk.ge);
+        ChunkID = chunkID;
+        Grids_GridDouble g = chunk.getGrid();
+        initGrid(g);
+        int chunkNrows = g.getChunkNRows(
+                chunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNcols = grid2DSquareCellDouble.getChunkNCols(
-                _ChunkID,
+        int chunkNcols = g.getChunkNCols(
+                chunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
-        double _NoDataValue = grid2DSquareCellDouble.getNoDataValue(false);
+        double noDataValue = g.getNoDataValue(false);
         initData();
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
         for (row = 0; row < chunkNrows; row++) {
             for (col = 0; col < chunkNcols; col++) {
-                this.data[row][col] = grid2DSquareCellDoubleChunk.getCell(
+                Data[row][col] = chunk.getCell(
                         row,
                         col,
-                        _NoDataValue,
+                        noDataValue,
                         handleOutOfMemoryError);
                 //initCell( row, col, grid2DSquareCellDoubleChunk.getCell( row, col ) );
             }
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
-     * Initialises the data associated with this.
+     * Initialises the Data associated with this.
      */
     @Override
     protected final void initData() {
@@ -133,25 +129,24 @@ public class Grids_GridChunkDoubleArray
         Grids_GridDouble g = getGrid();
         int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
         int chunkNcols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        data = new double[chunkNrows][chunkNcols];
+        Data = new double[chunkNrows][chunkNcols];
     }
 
     /**
-     * Returns this.data. TODO: Should the array be copied and the copy
-     * returned?
+     * Returns Data. TODO: Should the array be copied and the copy returned?
      *
      * @return
      */
     protected double[][] getData() {
-        return this.data;
+        return Data;
     }
 
     /**
-     * Clears the data associated with this.
+     * Clears the Data associated with
      */
     protected @Override
     void clearData() {
-        this.data = null;
+        Data = null;
         System.gc();
     }
 
@@ -163,19 +158,19 @@ public class Grids_GridChunkDoubleArray
      * this chunk
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
-     * @param _NoDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param noDataValue the _NoDataValue of grid2DSquareCellDouble
      * @return
      */
     protected @Override
     double getCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            double _NoDataValue) {
-        try {
-            return this.data[chunkCellRowIndex][chunkCellColIndex];
-        } catch (Exception e0) {
-            return _NoDataValue;
-        }
+            double noDataValue) {
+//        try {
+        return Data[chunkCellRowIndex][chunkCellColIndex];
+//        } catch (Exception e0) {
+//            return noDataValue;
+//        }
     }
 
     /**
@@ -194,7 +189,7 @@ public class Grids_GridChunkDoubleArray
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double valueToInitialise) {
-        this.data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
+        Data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
     }
 
     /**
@@ -206,7 +201,7 @@ public class Grids_GridChunkDoubleArray
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
-     * @param _NoDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param noDataValue the _NoDataValue of grid2DSquareCellDouble
      * @return
      */
     protected @Override
@@ -214,21 +209,21 @@ public class Grids_GridChunkDoubleArray
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double valueToSet,
-            double _NoDataValue) {
-        try {
-            double oldValue = this.data[chunkCellRowIndex][chunkCellColIndex];
-            this.data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
-            if (isSwapUpToDate()) {
-                // Optimisation? Want a setCellFast method closer to initCell? 
-                // What about an unmodifiable readOnly type chunk?
-                if (valueToSet != oldValue) {
-                    setSwapUpToDate(false);
-                }
+            double noDataValue) {
+//        try {
+        double oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
+        Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
+        if (isSwapUpToDate()) {
+            // Optimisation? Want a setCellFast method closer to initCell? 
+            // What about an unmodifiable readOnly type chunk?
+            if (valueToSet != oldValue) {
+                setSwapUpToDate(false);
             }
-            return oldValue;
-        } catch (Exception e0) { // Should not happen! 
-            return _NoDataValue;
         }
+        return oldValue;
+//        } catch (Exception e0) { // Should not happen! 
+//            return noDataValue;
+//        }
     }
 
     /**
@@ -237,8 +232,9 @@ public class Grids_GridChunkDoubleArray
      *
      * @return
      */
-    protected @Override
-    Grids_AbstractIterator iterator() {
+    @Override
+    //protected Grids_AbstractGridChunkIterator iterator() {
+    protected Grids_GridChunkDoubleArrayIterator iterator() {
         return new Grids_GridChunkDoubleArrayIterator(this);
     }
 

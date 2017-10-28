@@ -1906,7 +1906,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
                     Grids_AbstractGridChunkDouble chunk
-                            = grid2DSquareCellDouble.getGrid2DSquareCellDoubleChunk(
+                            = grid2DSquareCellDouble.getGridChunk(
                                     chunkRowIndex,
                                     chunkColIndex,
                                     handleOutOfMemoryError);

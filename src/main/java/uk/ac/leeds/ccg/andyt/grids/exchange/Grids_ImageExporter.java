@@ -214,7 +214,7 @@ public class Grids_ImageExporter implements Serializable {
 ////                        chunkColIndex, handleOutOfMemoryError, chunkID);
 ////                int chunkNRows = grid.getChunkNRows(
 ////                        chunkRowIndex, handleOutOfMemoryError);
-//                grid2DSquareCellChunk = rescaledGrid.getGrid2DSquareCellDoubleChunk(
+//                grid2DSquareCellChunk = rescaledGrid.getGridChunk(
 //                        chunkID, handleOutOfMemoryError);
 //                for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
 //                    row = chunkRowIndex * chunkNrows + chunkCellRowIndex;
@@ -536,7 +536,7 @@ public class Grids_ImageExporter implements Serializable {
 ////                        chunkColIndex, handleOutOfMemoryError, chunkID);
 ////                int chunkNRows = grid.getChunkNRows(
 ////                        chunkRowIndex, handleOutOfMemoryError);
-//                grid2DSquareCellChunk = rescaledGrid.getGrid2DSquareCellDoubleChunk(
+//                grid2DSquareCellChunk = rescaledGrid.getGridChunk(
 //                        chunkID, handleOutOfMemoryError);
 //                for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
 //                    row = chunkRowIndex * chunkNrows + chunkCellRowIndex;
