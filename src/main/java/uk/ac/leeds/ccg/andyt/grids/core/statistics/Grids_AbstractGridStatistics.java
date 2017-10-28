@@ -113,7 +113,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
     public final void init(
             Grids_AbstractGrid g) {
         Grid = g;
-        Grid.setGridStatistics(this);
+        Grid.initGridStatistics(this);
         init();
     }
 

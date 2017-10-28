@@ -394,7 +394,7 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @param gs The AbstractGridStatistics to accompany this.
+     * @param statistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param grid2DSquareCellDoubleChunkFactory The
      * Grids_AbstractGridChunkDoubleFactory prefered for creating chunks.
@@ -414,7 +414,7 @@ public class Grids_GridDouble
      * BigDecimal[], double, HashSet, boolean );
      */
     private void init(
-            Grids_AbstractGridStatistics gs,
+            Grids_AbstractGridStatistics statistics,
             File directory,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
             int chunkNRows,
@@ -425,12 +425,9 @@ public class Grids_GridDouble
             double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
-            this.setDirectory(directory);
-            this.setGridStatistics(gs);
-            // Set the reference to this in the Grid Statistics
-            this.getGridStatistics().init(this);
-            //s.Grid2DSquareCell = this;
-            this.setDirectory(directory);
+            Directory = directory;
+            setGridStatistics(statistics);
+            Directory = directory;
             this.ChunkNRows = chunkNRows;
             this.ChunkNCols = chunkNCols;
             this.NRows = nRows;
@@ -441,7 +438,7 @@ public class Grids_GridDouble
             initNChunkRows();
             initNChunkCols();
             long nChunks = getNChunks();
-            this.setChunkIDChunkMap(new HashMap<>((int) nChunks));
+          ChunkIDChunkMap = new HashMap<>((int) nChunks);
             int chunkRowIndex;
             int chunkColIndex;
             //int loadedChunkCount = 0;
@@ -488,7 +485,7 @@ public class Grids_GridDouble
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(e);
-                init(gs,
+                init(statistics,
                         directory,
                         chunkFactory,
                         chunkNRows,
@@ -564,13 +561,9 @@ public class Grids_GridDouble
             initNChunkRows();
             initNChunkCols();
             long nChunks = getNChunks();
-            this.setChunkIDChunkMap(
-                    new HashMap<>((int) nChunks));
+            ChunkIDChunkMap = new HashMap<>((int) nChunks);
             initDimensions(g, startRowIndex, startColIndex, handleOutOfMemoryError);
-            this.setGridStatistics(gs);
-            // Set the reference to this in the Grid Statistics
-            this.getGridStatistics().init(this);
-            //s.Grid2DSquareCell = this;
+            setGridStatistics(gs);
             int chunkRowIndex;
             int chunkColIndex;
             //int loadedChunkCount = 0;
@@ -803,7 +796,7 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @param gs The AbstractGridStatistics to accompany this.
+     * @param statistics The AbstractGridStatistics to accompany this.
      * @param directory The File _Directory to be used for swapping.
      * @param gridFile Either a _Directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridDouble
@@ -830,7 +823,7 @@ public class Grids_GridDouble
      * long, double, HashSet, boolean )
      */
     private void init(
-            Grids_AbstractGridStatistics gs,
+            Grids_AbstractGridStatistics statistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -844,7 +837,7 @@ public class Grids_GridDouble
             boolean handleOutOfMemoryError) {
         try {
             // Setting _Directory allows for it having being moved.
-            this.setDirectory(directory);
+            Directory = directory;
             String println0 = ge.initString(1000, ge.HandleOutOfMemoryErrorFalse);
             String println = ge.initString(1000, ge.HandleOutOfMemoryErrorFalse);
             // Set to report every 10%
@@ -902,12 +895,8 @@ public class Grids_GridDouble
                 initNChunkRows();
                 initNChunkCols();
                 long nChunks = getNChunks();
-                this.setChunkIDChunkMap(
-                        new HashMap<>((int) nChunks));
-                setGridStatistics(gs);
-                // Set the reference to this in the Grid Statistics
-                this.getGridStatistics().init(this);
-                //this._GridStatistics.Grid2DSquareCell = this;
+                ChunkIDChunkMap =         new HashMap<>((int) nChunks);
+                setGridStatistics(statistics);
                 String filename = gridFile.getName();
                 int loadedChunkCount = 0;
                 boolean isLoadedChunk = false;
@@ -986,7 +975,7 @@ public class Grids_GridDouble
 
                     // Read Data into Chunks
                     if ((int) gridFileNoDataValue == Integer.MIN_VALUE) {
-                        if (gs.getClass() == Grids_GridStatistics0.class) {
+                        if (statistics.getClass() == Grids_GridStatistics0.class) {
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
@@ -1071,7 +1060,7 @@ public class Grids_GridDouble
                             }
                         }
                     } else {
-                        if (gs.getClass() == Grids_GridStatistics0.class) {
+                        if (statistics.getClass() == Grids_GridStatistics0.class) {
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
@@ -1174,11 +1163,7 @@ public class Grids_GridDouble
                     }
                 }
             }
-            setGridStatistics(gs);
-            // Set the reference to this in the Grid Statistics
-            //this._GridStatistics.Grid2DSquareCell = this;
-            this.getGridStatistics().init(this);
-            //this._GridStatistics.Grid2DSquareCell = this;
+            setGridStatistics(statistics);
             ge.addGrid(this);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1188,7 +1173,7 @@ public class Grids_GridDouble
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 init(
-                        gs,
+                        statistics,
                         directory,
                         gridFile,
                         chunkFactory,
