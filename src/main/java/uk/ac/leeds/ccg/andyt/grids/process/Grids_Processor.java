@@ -54,8 +54,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
-import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ImageExporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
@@ -1066,7 +1066,7 @@ public class Grids_Processor extends Grids_Object {
 
 //                    Iterator iterator = maskDouble.iterator(
 //                            handleOutOfMemoryError);
-                    Iterator iterator = maskDouble.getGrid2DSquareCellChunkIDHashSet(
+                    Iterator iterator = maskDouble.getChunkIDs(
                             handleOutOfMemoryError).iterator();
 
                     Grids_AbstractGridChunkDouble maskDoubleChunk;
@@ -1529,10 +1529,10 @@ public class Grids_Processor extends Grids_Object {
                             int thisChunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble gridChunk;
-                            gridChunk = grid.getGrid2DSquareCellDoubleChunk(
+                            gridChunk = grid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble outputGridChunk;
-                            outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
+                            outputGridChunk = outputGrid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
                                 for (chunkCellColIndex = 0; chunkCellColIndex < thisChunkNCols; chunkCellColIndex++) {
@@ -1601,10 +1601,10 @@ public class Grids_Processor extends Grids_Object {
                             int thisChunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble gridChunk;
-                            gridChunk = grid.getGrid2DSquareCellDoubleChunk(
+                            gridChunk = grid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble outputGridChunk;
-                            outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
+                            outputGridChunk = outputGrid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
                                 for (chunkCellColIndex = 0; chunkCellColIndex < thisChunkNCols; chunkCellColIndex++) {
@@ -1816,10 +1816,10 @@ public class Grids_Processor extends Grids_Object {
                             int chunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
                             Grids_AbstractGridChunkInt gridChunk;
-                            gridChunk = grid.getGrid2DSquareCellIntChunk(
+                            gridChunk = grid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble outputGridChunk;
-                            outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
+                            outputGridChunk = outputGrid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
                                 for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
@@ -1888,10 +1888,10 @@ public class Grids_Processor extends Grids_Object {
                             int chunkNRows = grid.getChunkNRows(
                                     chunkRowIndex, handleOutOfMemoryError);
                             Grids_AbstractGridChunkInt gridChunk;
-                            gridChunk = grid.getGrid2DSquareCellIntChunk(
+                            gridChunk = grid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             Grids_AbstractGridChunkDouble outputGridChunk;
-                            outputGridChunk = outputGrid.getGrid2DSquareCellDoubleChunk(
+                            outputGridChunk = outputGrid.getGridChunk(
                                     chunkID, handleOutOfMemoryError);
                             for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
                                 for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {

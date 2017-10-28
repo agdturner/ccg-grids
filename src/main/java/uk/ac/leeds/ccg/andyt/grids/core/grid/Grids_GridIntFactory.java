@@ -28,7 +28,7 @@ import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
 /**
  * A factory for constructing Grid2DSquareCellInt instances.
@@ -51,8 +51,7 @@ public class Grids_GridIntFactory
     public Grids_GridIntFactory(
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        this(
-                Grids_FileCreator.createTempFile(),
+        this(Grids_Files.createTempFile(),
                 ge,
                 handleOutOfMemoryError);
     }

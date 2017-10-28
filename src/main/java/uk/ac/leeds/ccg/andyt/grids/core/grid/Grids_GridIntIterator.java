@@ -18,8 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMap;
@@ -36,133 +34,58 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * determined by the chunks types. If some
  */
 public class Grids_GridIntIterator
-        extends Grids_AbstractIterator {
+        extends Grids_AbstractGridIterator {
 
-    private Iterator<Grids_AbstractGridChunk> _Grid2DSquareCellIntHashMapIterator;
-    private Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk;
-    private Grids_AbstractIterator _Grid2DSquareCellIntChunkIterator;
+    protected Grids_GridIntIterator() {    }
 
     /**
-     * Creates a new instance of Grid2DSquareIntIterator
-     */
-    public Grids_GridIntIterator() {
-    }
-
-    /**
-     * Creates a new instance of Grid2DSquareIntIterator
      *
-     * @param a_Grid2DSquareCellInt The Grid2DSquareCellInt to iterate over.
+     * @param g
      */
     public Grids_GridIntIterator(
-            Grids_GridInt a_Grid2DSquareCellInt) {
-        this._Grid2DSquareCellIntHashMapIterator
-                = a_Grid2DSquareCellInt.getChunkIDChunkMap().values().iterator();
-        if (_Grid2DSquareCellIntHashMapIterator.hasNext()) {
-            this._Grid2DSquareCellIntChunk
-                    = (Grids_AbstractGridChunkInt) this._Grid2DSquareCellIntHashMapIterator.next();
-            init_Grid2DSquareCellIntChunkIterator();
+            Grids_GridInt g) {
+        GridIterator = g.getChunkIDChunkMap().values().iterator();
+        if (GridIterator.hasNext()) {
+            Chunk = (Grids_AbstractGridChunkInt) GridIterator.next();
+            initChunkIterator();
         }
     }
 
     /**
-     * Initialises _Grid2DSquareCellIntChunkIterator
+     * Initialises ChunkIterator.
      */
-    private void init_Grid2DSquareCellIntChunkIterator() {
-        if (this._Grid2DSquareCellIntChunk instanceof Grids_GridChunkInt64CellMap) {
-            this._Grid2DSquareCellIntChunkIterator
-                    = new Grids_GridChunkInt64CellMapIterator(
-                            (Grids_GridChunkInt64CellMap) this._Grid2DSquareCellIntChunk);
+    @Override
+    protected final void initChunkIterator() {
+        if (Chunk instanceof Grids_GridChunkInt64CellMap) {
+            ChunkIterator = new Grids_GridChunkInt64CellMapIterator(
+                    (Grids_GridChunkInt64CellMap) Chunk);
             return;
         }
-        if (this._Grid2DSquareCellIntChunk instanceof Grids_GridChunkIntArray) {
-            this._Grid2DSquareCellIntChunkIterator
-                    = new Grids_GridChunkIntArrayIterator(
-                            (Grids_GridChunkIntArray) this._Grid2DSquareCellIntChunk);
+        if (Chunk instanceof Grids_GridChunkIntArray) {
+            ChunkIterator = new Grids_GridChunkIntArrayIterator(
+                    (Grids_GridChunkIntArray) Chunk);
             return;
         }
-        this._Grid2DSquareCellIntChunkIterator
-                = new Grids_GridChunkIntMapIterator(
-                        (Grids_GridChunkIntMap) this._Grid2DSquareCellIntChunk);
+        ChunkIterator = new Grids_GridChunkIntMapIterator(
+                (Grids_GridChunkIntMap) Chunk);
     }
 
     /**
-     * @param a_Grid2DSquareCellIntChunk
-     * @return Grids_AbstractIterator to iterate over values in
-     * a_Grid2DSquareCellDoubleChunk
+     * @param chunk
+     * @return Grids_AbstractIterator to iterate over values in Chunk.
      */
-    public static Grids_AbstractIterator getGrid2DSquareCellIntChunkIterator(
-            Grids_AbstractGridChunkInt a_Grid2DSquareCellIntChunk) {
-        if (a_Grid2DSquareCellIntChunk instanceof Grids_GridChunkInt64CellMap) {
+    @Override
+    public Grids_AbstractIterator getChunkIterator(
+            Grids_AbstractGridChunk chunk) {
+        if (chunk instanceof Grids_GridChunkInt64CellMap) {
             return new Grids_GridChunkInt64CellMapIterator(
-                    (Grids_GridChunkInt64CellMap) a_Grid2DSquareCellIntChunk);
+                    (Grids_GridChunkInt64CellMap) chunk);
         }
-        if (a_Grid2DSquareCellIntChunk instanceof Grids_GridChunkIntArray) {
+        if (chunk instanceof Grids_GridChunkIntArray) {
             return new Grids_GridChunkIntArrayIterator(
-                    (Grids_GridChunkIntArray) a_Grid2DSquareCellIntChunk);
+                    (Grids_GridChunkIntArray) chunk);
         }
         return new Grids_GridChunkIntMapIterator(
-                (Grids_GridChunkIntMap) a_Grid2DSquareCellIntChunk);
-    }
-
-    /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements.
-     */
-    @Override
-    public boolean hasNext() {
-        if (this._Grid2DSquareCellIntChunkIterator.hasNext()) {
-            return true;
-        } else {
-            while (_Grid2DSquareCellIntHashMapIterator.hasNext()) {
-                Grids_AbstractGridChunkInt grid2DSquareCellIntChunk
-                        = (Grids_AbstractGridChunkInt) this._Grid2DSquareCellIntHashMapIterator.next();
-                Grids_AbstractIterator grid2DSquareCellIntChunkIterator
-                        = getGrid2DSquareCellIntChunkIterator(grid2DSquareCellIntChunk);
-                if (grid2DSquareCellIntChunkIterator.hasNext()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration.
-     * @exception NoSuchElementException iteration has no more elements.
-     */
-    @Override
-    public Object next() {
-        try {
-            if (this._Grid2DSquareCellIntChunkIterator.hasNext()) {
-                return this._Grid2DSquareCellIntChunkIterator.next();
-            } else {
-                while (_Grid2DSquareCellIntHashMapIterator.hasNext()) {
-                    this._Grid2DSquareCellIntChunk
-                            = (Grids_AbstractGridChunkInt) this._Grid2DSquareCellIntHashMapIterator.next();
-                    this._Grid2DSquareCellIntChunkIterator
-                            = getGrid2DSquareCellIntChunkIterator(_Grid2DSquareCellIntChunk);
-                    if (this._Grid2DSquareCellIntChunkIterator.hasNext()) {
-                        return this._Grid2DSquareCellIntChunkIterator.next();
-                    }
-                }
-            }
-        } catch (NoSuchElementException nsee0) {
-            nsee0.printStackTrace();
-            System.out.println(nsee0.toString());
-        }
-        return null;
-    }
-
-    /**
-     * throw new UnsupportedOperationException();
-     */
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
+                (Grids_GridChunkIntMap) chunk);
     }
 }

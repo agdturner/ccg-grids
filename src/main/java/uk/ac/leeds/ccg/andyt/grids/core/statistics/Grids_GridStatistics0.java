@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
@@ -51,7 +52,7 @@ public class Grids_GridStatistics0
      * @param g
      */
     public Grids_GridStatistics0(
-            Grids_AbstractGridNumber g) {
+            Grids_AbstractGrid g) {
         super(g.ge);
         init(g);
     }

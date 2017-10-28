@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
@@ -60,22 +60,7 @@ public class Grids_GridDouble
      */
     protected double NoDataValue = Double.NEGATIVE_INFINITY;
 
-    /**
-     * Creates a new Grid2DSquareCellDouble
-     */
-    protected Grids_GridDouble() {
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDouble
-     *
-     * @param ge
-     */
-    public Grids_GridDouble(
-            Grids_Environment ge) {
-        super(ge);
-        initGrid2DSquareCellDouble();
-    }
+    protected Grids_GridDouble() {}
 
     /**
      * Creates a new Grid2DSquareCellDouble. Warning!! Concurrent modification
@@ -100,7 +85,7 @@ public class Grids_GridDouble
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         super(ge);
-        initGrid2DSquareCellDouble(
+        init(
                 directory,
                 gridFile,
                 ois,
@@ -139,7 +124,7 @@ public class Grids_GridDouble
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         super(ge);
-        initGrid2DSquareCellDouble(
+        init(
                 gs,
                 directory,
                 chunkFactory,
@@ -192,7 +177,7 @@ public class Grids_GridDouble
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         super(ge);
-        initGrid2DSquareCellDouble(
+        init(
                 gs,
                 directory,
                 grid,
@@ -250,7 +235,7 @@ public class Grids_GridDouble
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         super(ge);
-        initGrid2DSquareCellDouble(
+        init(
                 gs,
                 directory,
                 gridFile,
@@ -300,34 +285,19 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @see Grid2DSquareCellDouble()
-     */
-    private void initGrid2DSquareCellDouble() {
-        initGrid2DSquareCell();
-        this.NoDataValue = Double.NEGATIVE_INFINITY;
-    }
-
-    /**
-     * Initialises this.
-     *
      * @param g The Grids_GridDouble from which the fields of this are set.
      * @param initTransientFields Iff true then transient fields of this are set
      * with those of _Grid2DSquareCellDouble.
      */
-    private void initGrid2DSquareCellDouble(
+    private void init(
             Grids_GridDouble g,
             boolean initTransientFields) {
-        this.NoDataValue = g.NoDataValue;
-        super.initGrid2DSquareCell(g);
+        NoDataValue = g.NoDataValue;
+        super.init(g);
         if (initTransientFields) {
-            setChunkIDChunkMap(g.ChunkIDChunkMap);
+            ChunkIDChunkMap = g.ChunkIDChunkMap;
             // Set the reference to this in the Grid Statistics
-            this.getGridStatistics().init(this);
-            //init_Grid2DSquareCells_MemoryReserve(a_Grid2DSquareCellDouble.ge);
-            //this._AbstractGrid2DSquareCell_HashSet =
-            //        _Grid2DSquareCellDouble._AbstractGrid2DSquareCell_HashSet;
-            //this.MemoryReserve =
-            //        _Grid2DSquareCellDouble.MemoryReserve;
+            GridStatistics.init(this);
         }
         ge.addGrid(this);
     }
@@ -347,23 +317,23 @@ public class Grids_GridDouble
      * @see Grid2DSquareCellDouble( File, File, ObjectInputStream, HashSet,
      * boolean)
      */
-    private void initGrid2DSquareCellDouble(
-            File directory_File,
+    private void init(
+            File directory,
             File grid_File,
             ObjectInputStream ois,
             boolean handleOutOfMemoryError) {
         try {
-            this.setDirectory(directory_File);
+            Directory = directory;
             File thisFile = new File(
                     grid_File,
                     "thisFile");
             try {
                 boolean initTransientFields = false;
-                initGrid2DSquareCellDouble((Grids_GridDouble) ois.readObject(),
+                init((Grids_GridDouble) ois.readObject(),
                         initTransientFields);
                 ois.close();
                 // Set the reference to this in the Grid Chunks
-                initGrid2DSquareCellChunks(grid_File);
+                initChunks(grid_File);
                 Iterator<Grids_AbstractGridChunk> chunkIterator;
                 chunkIterator = ChunkIDChunkMap.values().iterator();
                 while (chunkIterator.hasNext()) {
@@ -389,10 +359,10 @@ public class Grids_GridDouble
                             handleOutOfMemoryError);
                     Grids_GridDouble grid2DSquareCellDouble = (Grids_GridDouble) grid2DSquareCellDoubleFactory.create(grid2DSquareCellInt);
                     boolean initTransientFields = false;
-                    initGrid2DSquareCellDouble(
+                    init(
                             grid2DSquareCellDouble,
                             initTransientFields);
-                    initGrid2DSquareCellChunks(grid_File);
+                    initChunks(grid_File);
                 } catch (IOException ioe) {
                     //ioe.printStackTrace();
                     System.err.println(ioe.getLocalizedMessage());
@@ -411,7 +381,7 @@ public class Grids_GridDouble
                 if (ge.swapChunks_Account(false) < 1L) {
                     throw e;
                 }
-                initGrid2DSquareCellDouble(getDirectory(),
+                init(getDirectory(),
                         grid_File,
                         ois,
                         handleOutOfMemoryError);
@@ -443,7 +413,7 @@ public class Grids_GridDouble
      * AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long ,
      * BigDecimal[], double, HashSet, boolean );
      */
-    private void initGrid2DSquareCellDouble(
+    private void init(
             Grids_AbstractGridStatistics gs,
             File directory,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -472,8 +442,8 @@ public class Grids_GridDouble
             initNChunkCols();
             long nChunks = getNChunks();
             this.setChunkIDChunkMap(new HashMap<>((int) nChunks));
-            int chunkRowIndex = Integer.MIN_VALUE;
-            int chunkColIndex = Integer.MIN_VALUE;
+            int chunkRowIndex;
+            int chunkColIndex;
             //int loadedChunkCount = 0;
             boolean isLoadedChunk = false;
             int int_0 = 0;
@@ -510,7 +480,7 @@ public class Grids_GridDouble
                     isLoadedChunk = false;
                     //loadedChunkCount++;
                 }
-                println = "Done chunkRow " + chunkRowIndex + " out of " + getNChunkRows();
+                println = "Done chunkRow " + chunkRowIndex + " out of " + NChunkRows;
                 println = ge.println(println, println0, handleOutOfMemoryError);
             }
             ge.addGrid(this);
@@ -518,7 +488,7 @@ public class Grids_GridDouble
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(e);
-                initGrid2DSquareCellDouble(gs,
+                init(gs,
                         directory,
                         chunkFactory,
                         chunkNRows,
@@ -563,7 +533,7 @@ public class Grids_GridDouble
      * AbstractGrid2DSquareCell, AbstractGrid2DSquareCellDoubleChunkFactory,
      * int, int, long, long, long, long, double, HashSet, boolean );
      */
-    private void initGrid2DSquareCellDouble(
+    private void init(
             Grids_AbstractGridStatistics gs,
             File directory,
             Grids_AbstractGridNumber g,
@@ -577,14 +547,14 @@ public class Grids_GridDouble
             double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
-            this.setDirectory(directory);
-            this.ChunkNRows = chunkNRows;
-            this.ChunkNCols = chunkNCols;
-            this.NRows = endRowIndex - startRowIndex + 1L;
-            this.NCols = endColIndex - startColIndex + 1L;
-            initNoDataValue(noDataValue);
-            //this._AbstractGrid2DSquareCell_HashSet = _AbstractGrid2DSquareCell_HashSet;
-            this.Name = directory.getName();
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(g, handleOutOfMemoryError);
+            Directory = directory;
+            ChunkNRows = chunkNRows;
+            ChunkNCols = chunkNCols;
+            NRows = endRowIndex - startRowIndex + 1L;
+            NCols = endColIndex - startColIndex + 1L;
+            NoDataValue = noDataValue;
+            Name = directory.getName();
             double gridNoDataValue = noDataValue;
             if (g instanceof Grids_GridDouble) {
                 gridNoDataValue = ((Grids_GridDouble) g).getNoDataValue(handleOutOfMemoryError);
@@ -607,8 +577,8 @@ public class Grids_GridDouble
             boolean isLoadedChunk = false;
             int chunkCellRowIndex;
             int chunkCellColIndex;
-            long row = 0;
-            long col = 0;
+            long row;
+            long col;
             //int cci1 = 0;
             double cellDouble;
             String println0 = ge.initString(1000, handleOutOfMemoryError);
@@ -811,7 +781,7 @@ public class Grids_GridDouble
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                initGrid2DSquareCellDouble(
+                init(
                         gs,
                         directory,
                         g,
@@ -859,7 +829,7 @@ public class Grids_GridDouble
      * AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long, long,
      * long, double, HashSet, boolean )
      */
-    private void initGrid2DSquareCellDouble(
+    private void init(
             Grids_AbstractGridStatistics gs,
             File directory,
             File gridFile,
@@ -916,11 +886,11 @@ public class Grids_GridDouble
                             endRowIndex,
                             endColIndex,
                             handleOutOfMemoryError);
-                    initGrid2DSquareCellDouble(
+                    init(
                             g2,
                             false);
                 }
-                initGrid2DSquareCellChunks(gridFile);
+                initChunks(gridFile);
             } else {
                 // Assume ESRI AsciiFile
                 this.ChunkNRows = chunkNRows;
@@ -974,9 +944,8 @@ public class Grids_GridDouble
                             this,
                             chunkID);
                     // Initialise Chunks
-                    for (chunkRowIndex = 0; chunkRowIndex < getNChunkRows(); chunkRowIndex++) {
-                        //for ( _ChunkRowIndex = _NChunkRows - 1; _ChunkRowIndex >= 0; _ChunkRowIndex -- ) {
-                        for (chunkColIndex = 0; chunkColIndex < getNChunkCols(); chunkColIndex++) {
+                    for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
+                        for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
                                     chunkID = new Grids_2D_ID_int(
@@ -1018,8 +987,8 @@ public class Grids_GridDouble
                     // Read Data into Chunks
                     if ((int) gridFileNoDataValue == Integer.MIN_VALUE) {
                         if (gs.getClass() == Grids_GridStatistics0.class) {
-                            for (row = (this.getNRows() - 1); row > -1; row--) {
-                                for (col = 0; col < this.getNCols(); col++) {
+                            for (row = (NRows - 1); row > -1; row--) {
+                                for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
                                     do {
                                         try {
@@ -1059,8 +1028,8 @@ public class Grids_GridDouble
                             }
                         } else {
                             // _GridStatistics.getClass() == Grids_GridStatistics1.class
-                            for (row = (this.getNRows() - 1); row > -1; row--) {
-                                for (col = 0; col < this.getNCols(); col++) {
+                            for (row = (NRows - 1); row > -1; row--) {
+                                for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
 
 //                                    if (value != 0.0d) {
@@ -1103,8 +1072,8 @@ public class Grids_GridDouble
                         }
                     } else {
                         if (gs.getClass() == Grids_GridStatistics0.class) {
-                            for (row = (this.getNRows() - 1); row > -1; row--) {
-                                for (col = 0; col < this.getNCols(); col++) {
+                            for (row = (NRows - 1); row > -1; row--) {
+                                for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
 
 //                                    if (value != 0.0d) {
@@ -1152,8 +1121,8 @@ public class Grids_GridDouble
                             }
                         } else {
                             // _GridStatistics.getClass() == Grids_GridStatistics1.class
-                            for (row = (this.getNRows() - 1); row > -1; row--) {
-                                for (col = 0; col < this.getNCols(); col++) {
+                            for (row = (NRows - 1); row > -1; row--) {
+                                for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
 
                                     if (value != 0.0d) {
@@ -1218,7 +1187,7 @@ public class Grids_GridDouble
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                initGrid2DSquareCellDouble(
+                init(
                         gs,
                         directory,
                         gridFile,
@@ -1262,7 +1231,7 @@ public class Grids_GridDouble
                         chunkRowIndex,
                         chunkColIndex);
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGrid2DSquareCellDoubleChunk(
+                return getGridChunk(
                         chunkID,
                         handleOutOfMemoryError);
             } else {
@@ -1282,7 +1251,7 @@ public class Grids_GridDouble
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                 chunkRowIndex,
                 chunkColIndex);
-        return getGrid2DSquareCellDoubleChunk(chunkID);
+        return getGridChunk(chunkID);
     }
 
     /**
@@ -1292,18 +1261,18 @@ public class Grids_GridDouble
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_AbstractGridChunkDouble getGrid2DSquareCellDoubleChunk(
+    public Grids_AbstractGridChunkDouble getGridChunk(
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractGridChunkDouble result = getGrid2DSquareCellDoubleChunk(chunkID);
+            Grids_AbstractGridChunkDouble result = getGridChunk(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGrid2DSquareCellDoubleChunk(
+                return getGridChunk(
                         chunkID,
                         handleOutOfMemoryError);
             } else {
@@ -1316,9 +1285,9 @@ public class Grids_GridDouble
      * @return grid2DSquareCellDoubleChunksAbstract for the given ID
      * @param chunkID
      */
-    protected Grids_AbstractGridChunkDouble getGrid2DSquareCellDoubleChunk(
+    protected Grids_AbstractGridChunkDouble getGridChunk(
             Grids_2D_ID_int chunkID) {
-        boolean containsKey = false;
+        boolean containsKey;
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {
             containsKey = ChunkIDChunkMap.containsKey(chunkID);
@@ -1563,8 +1532,8 @@ public class Grids_GridDouble
                 cellRowIndex,
                 cellColIndex);
         if (isInGrid) {
-            long chunkNrows = this.getChunkNRows();
-            long chunkNcols = this.getChunkNCols();
+            long chunkNrows = ChunkNRows;
+            long chunkNcols = ChunkNCols;
             int chunkRowIndex = getChunkRowIndex(cellRowIndex);
             int chunkColIndex = getChunkColIndex(cellColIndex);
             long chunkRowIndexLong = chunkRowIndex;
@@ -2160,12 +2129,11 @@ public class Grids_GridDouble
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                     chunkRowIndex,
                     chunkColIndex);
-            //boolean containsKey = this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.containsKey(chunkID); // For debugging
             Grids_AbstractGridChunkDouble chunk
-                    = getGrid2DSquareCellDoubleChunk(chunkID);
+                    = getGridChunk(chunkID);
             chunk.initCell(
-                    (int) (cellRowIndex - ((long) chunkRowIndex * (long) getChunkNRows())),
-                    (int) (cellColIndex - ((long) chunkColIndex * (long) getChunkNCols())),
+                    (int) (cellRowIndex - ((long) chunkRowIndex * (long) ChunkNRows)),
+                    (int) (cellColIndex - ((long) chunkColIndex * (long) ChunkNCols)),
                     valueToInitialise,
                     false);
             // Update Statistics
@@ -2260,13 +2228,13 @@ public class Grids_GridDouble
         if (isInGrid) {
             int chunkRowIndex = getChunkRowIndex(cellRowIndex);
             int chunkColIndex = getChunkColIndex(cellColIndex);
-            int chunkNRows = this.getChunkNRows();
-            int chunkNCols = this.getChunkNCols();
+            int chunkNRows = ChunkNRows;
+            int chunkNCols = ChunkNCols;
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                     chunkRowIndex,
                     chunkColIndex);
             Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk
-                    = getGrid2DSquareCellDoubleChunk(chunkID);
+                    = getGridChunk(chunkID);
             grid2DSquareCellDoubleChunk.initCell(
                     (int) (cellRowIndex - ((long) chunkRowIndex * (long) chunkNRows)),
                     (int) (cellColIndex - ((long) chunkColIndex * (long) chunkNCols)),
@@ -2496,10 +2464,10 @@ public class Grids_GridDouble
         double[] cells;
         int cellDistance = (int) Math.ceil(distance / getCellsizeDouble(true));
         cells = new double[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
-        long row = Long.MIN_VALUE;
-        long col = Long.MIN_VALUE;
-        double thisX = Double.MIN_VALUE;
-        double thisY = Double.MIN_VALUE;
+        long row;
+        long col;
+        double thisX;
+        double thisY;
         int count = 0;
         for (row = cellRowIndex - cellDistance; row <= cellRowIndex + cellDistance; row++) {
             thisY = getCellYDouble(cellRowIndex);
@@ -2727,10 +2695,10 @@ public class Grids_GridDouble
             visitedSet1.add(nearestCellID);
             // Initialise toVisitSet1
             HashSet toVisitSet1 = new HashSet();
-            long row = Long.MIN_VALUE;
-            long col = Long.MIN_VALUE;
-            Grids_2D_ID_long cellID0 = new Grids_2D_ID_long();
-            boolean isInGrid = false;
+            long row;
+            long col;
+            Grids_2D_ID_long cellID0;
+            boolean isInGrid;
             for (row = -1; row < 2; row++) {
                 for (col = -1; col < 2; col++) {
                     if (!(row == 0 && col == 0)) {
@@ -3383,16 +3351,16 @@ public class Grids_GridDouble
                 cellColIndex);
         if (result == noDataValue) {
             // Initialisation
-            long long0 = Long.MIN_VALUE;
-            long long1 = Long.MIN_VALUE;
+            long long0;
+            long long1;
             long longMinus1 = -1;
             long longTwo = 2;
             long longZero = 0;
-            boolean boolean0 = false;
-            boolean boolean1 = false;
-            boolean boolean2 = false;
-            double double0 = Double.NEGATIVE_INFINITY;
-            double double1 = Double.NEGATIVE_INFINITY;
+            boolean boolean0;
+            boolean boolean1;
+            boolean boolean2;
+            double double0;
+            double double1;
             Grids_2D_ID_long nearestCellID = getNearestCellID(
                     x,
                     y,
@@ -3403,17 +3371,17 @@ public class Grids_GridDouble
             visitedSet.add(nearestCellID);
             visitedSet1.add(nearestCellID);
             HashSet toVisitSet1 = new HashSet();
-            long row = Long.MIN_VALUE;
-            long col = Long.MIN_VALUE;
-            boolean isInGrid = false;
-            Grids_2D_ID_long cellID = new Grids_2D_ID_long();
+            long row;
+            long col;
+            boolean isInGrid;
+            Grids_2D_ID_long cellID;
             boolean foundValue = false;
-            double value = Double.NEGATIVE_INFINITY;
+            double value;
             HashSet values = new HashSet();
-            HashSet visitedSet2 = new HashSet();
-            HashSet toVisitSet2 = new HashSet();
-            Iterator iterator = toVisitSet1.iterator();
-            double distance = Double.NEGATIVE_INFINITY;
+            HashSet visitedSet2;
+            HashSet toVisitSet2;
+            Iterator iterator;
+            double distance;
             double minDistance = Double.MAX_VALUE;
             HashSet closest = new HashSet();
             // Find a value Seeking outwards from nearestCellID
@@ -3744,7 +3712,7 @@ public class Grids_GridDouble
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                Grids_GridDouble.this.initCells(
+                initCells(
                         value,
                         handleOutOfMemoryError);
             } else {
@@ -3761,10 +3729,10 @@ public class Grids_GridDouble
         Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
         int nChunks = ChunkIDChunkMap.size();
         Grids_AbstractGridChunkDouble chunk;
-        int chunkNRows = 0;
-        int chunkNCols = 0;
-        int row = 0;
-        int col = 0;
+        int chunkNRows;
+        int chunkNCols;
+        int row;
+        int col;
         Grids_2D_ID_int chunkID;
         int counter = 0;
         boolean handleOutOfMemoryError = true;

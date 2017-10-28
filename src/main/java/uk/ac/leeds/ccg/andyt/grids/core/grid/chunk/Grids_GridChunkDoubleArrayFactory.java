@@ -42,10 +42,10 @@ public class Grids_GridChunkDoubleArrayFactory
 
     @Override
     public Grids_AbstractGridChunkDouble createGridChunkDouble(
-            Grids_GridDouble grid2DSquareCellDouble,
+            Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkDoubleArray(
-                grid2DSquareCellDouble,
+                g,
                 chunkID);
     }
 

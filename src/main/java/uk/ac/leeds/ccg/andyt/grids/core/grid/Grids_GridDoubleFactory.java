@@ -27,7 +27,7 @@ import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
 /**
  * A factory for constructing Grid2DSquareCellDouble instances.
@@ -73,7 +73,7 @@ public class Grids_GridDoubleFactory
             double noDataValue,
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        this(Grids_FileCreator.createTempFile(),
+        this(Grids_Files.createTempFile(),
                 noDataValue,
                 ge,
                 handleOutOfMemoryError);
@@ -296,12 +296,12 @@ public class Grids_GridDoubleFactory
                 gridStatistics,
                 directory,
                 gcf,
-                this.ChunkNRows,
-                this.ChunkNCols,
+                ChunkNRows,
+                ChunkNCols,
                 nRows,
                 nCols,
                 dimensions,
-                this.NoDataValue,
+                NoDataValue,
                 ge,
                 handleOutOfMemoryError);
     }

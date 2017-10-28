@@ -1,7 +1,7 @@
 /**
  * Version 1.0 is to handle single variable 2DSquareCelled raster data.
  * Copyright (C) 2005 Andy Turner, CCG, University of Leeds, UK.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,46 +17,42 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.examples;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridExporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
 
 /**
- * TODO:
- * docs
+ * TODO: docs
  */
 public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 
     public Grids_UtilitiesRuns() throws IOException {
     }
-    
+
     long time;
-    
+
     public static void main(String[] args) {
         try {
             Grids_UtilitiesRuns u = new Grids_UtilitiesRuns();
-        u.run();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            System.out.println( e.toString() );
-        } catch ( Error e ) {
-            e.printStackTrace();
-            System.out.println( e.toString() );
+            u.run();
+        } catch (Exception | Error e) {
+            e.printStackTrace(System.err);
         }
     }
-    
+
     @Override
     public void run() {
-        System.out.println( "Initialising..." );
+        System.out.println("Initialising...");
         time = System.currentTimeMillis();
-        
+
         //kernelVolume();
         //grid2CSV();
         //xyFileToGrid();
@@ -65,21 +61,20 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         //toGainsChartCSV();
         //xyFileToGAM();
         //gamOutputToGrid();
-        
-        System.out.println("Processing complete in " + Grids_Utilities._ReportTime( System.currentTimeMillis() - time ) );
+        System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time));
     }
-    
+
     public void kernelVolume() {
         double weightIntersect = 1.0d;
         double weightFactor = 1.0d;
-        for ( int bw = 100; bw < 1000; bw += 100 ) {
-            double bandwidth = ( double ) bw * 1.0d;
+        for (int bw = 100; bw < 1000; bw += 100) {
+            double bandwidth = (double) bw * 1.0d;
             //for ( int precision = 10; precision < 100; precision ++ ) {
             int precision = 1000;
-            System.out.println(Grids_Kernel.getKernelVolume( bandwidth, precision, weightIntersect, weightFactor ) );
+            System.out.println(Grids_Kernel.getKernelVolume(bandwidth, precision, weightIntersect, weightFactor));
         }
     }
-    
+
     public void GridtoGam() {
 //        String dataDirectory0 = new String( "d:/andyt/projects/phd/data/arc/leeds/grids/20/acc/acc9296/" );
 //        String dataDirectory1 = new String( "d:/andyt/projects/phd/data/arc/leeds/grids/20/acc/acc9701/" );
@@ -125,45 +120,45 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //        pw.flush();
 //        pw.close();
     }
-    
-    public void densityPlot( 
-            boolean _HandleOutOfMemoryError ) 
-    throws Exception {
+
+    public void densityPlot(
+            boolean _HandleOutOfMemoryError)
+            throws Exception {
         String resolution = "100";
         String inDataDirectory = "d:/andyt/projects/phd/data/arc/leeds/grids/" + resolution + "/";
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
         Grids_GridDoubleFactory grid2DSquareCellDoubleFactory = new Grids_GridDoubleFactory(ge, _HandleOutOfMemoryError);
-        Grids_GridDouble xGrid = ( Grids_GridDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + xFilename + ".asc" ) );
-        Grids_GridDouble yGrid = ( Grids_GridDouble ) grid2DSquareCellDoubleFactory.create( new File( inDataDirectory + yFilename + ".asc" ) );
+        Grids_GridDouble xGrid = (Grids_GridDouble) grid2DSquareCellDoubleFactory.create(new File(inDataDirectory + xFilename + ".asc"));
+        Grids_GridDouble yGrid = (Grids_GridDouble) grid2DSquareCellDoubleFactory.create(new File(inDataDirectory + yFilename + ".asc"));
         int divisions = 100;
-        System.out.println( xGrid.toString() );
-        System.out.println( yGrid.toString() );
+        System.out.println(xGrid.toString());
+        System.out.println(yGrid.toString());
         System.out.println("Processing...");
-        Object[] result = Grids_Utilities.densityPlot( xGrid, yGrid, divisions, grid2DSquareCellDoubleFactory );
-        double[] stdevy = ( double[] ) result[ 0 ];
-        double[] meany = ( double[] ) result[ 1 ];
-        double[] numy = ( double[] ) result[ 2 ];
-        Grids_GridDouble densityPlotGrid = ( Grids_GridDouble ) result[ 3 ];
-        System.out.println( densityPlotGrid.toString() );
-        double divx = 
-                ( xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMaxDouble(true, _HandleOutOfMemoryError ) - xGrid.getGridStatistics( _HandleOutOfMemoryError ).getMinDouble(true, _HandleOutOfMemoryError ) ) / divisions;
+        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, grid2DSquareCellDoubleFactory);
+        double[] stdevy = (double[]) result[0];
+        double[] meany = (double[]) result[1];
+        double[] numy = (double[]) result[2];
+        Grids_GridDouble densityPlotGrid = (Grids_GridDouble) result[3];
+        System.out.println(densityPlotGrid.toString());
+        double divx
+                = (xGrid.getGridStatistics(_HandleOutOfMemoryError).getMaxDouble(true, _HandleOutOfMemoryError) - xGrid.getGridStatistics(_HandleOutOfMemoryError).getMinDouble(true, _HandleOutOfMemoryError)) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc" ), _HandleOutOfMemoryError );
+        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), _HandleOutOfMemoryError);
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter( new FileOutputStream( new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv" ) ) );
-        } catch ( java.io.FileNotFoundException e ) {
-            System.out.println( e );
-            System.exit( 0 );
+            pw = new PrintWriter(new FileOutputStream(new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv")));
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println(e);
+            System.exit(0);
         }
-        pw.println( "meanx,meany-stdevy,meany,meany+stdevy,numy" );
-        for ( int i = 0; i < divisions; i ++ ) {
-            if ( numy[ i ] > 0.0d ) {
+        pw.println("meanx,meany-stdevy,meany,meany+stdevy,numy");
+        for (int i = 0; i < divisions; i++) {
+            if (numy[i] > 0.0d) {
                 //if ( numy[ i ] != 0.0d && ( numy[ i ] - 1.0d ) != 0.0d ) {
-                pw.println( ( ( ( double ) i + 0.5 ) * divx ) + "," + ( meany[ i ] - stdevy[ i ] ) + "," + meany[ i ] + "," + ( meany[ i ] + stdevy[ i ] ) + "," + numy[ i ] );
+                pw.println((((double) i + 0.5) * divx) + "," + (meany[i] - stdevy[i]) + "," + meany[i] + "," + (meany[i] + stdevy[i]) + "," + numy[i]);
             }
         }
         pw.flush();
@@ -173,7 +168,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         //xGrid.clear();
         //densityPlotGrid.clear();
     }
-    
+
     public void toGainsChartCSV() {
 //        int divisions = 100;
 //        String inDataDirectory = new String( "d:/andyt/projects/phd/data/arc/leeds/grids/100/" );

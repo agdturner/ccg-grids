@@ -26,8 +26,8 @@ import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.andyt.grids.exchange.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_FileCreator;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
 /**
  * Abstract class to be extended by all Grids_AbstractGridNumber factories.
@@ -315,7 +315,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
             long nRows,
             long nCols,
             Grids_Dimensions dimensions) {
-        return create(Grids_FileCreator.createNewFile(this.Directory),
+        return create(Grids_Files.createNewFile(this.Directory),
                 nRows,
                 nCols,
                 dimensions);
@@ -397,7 +397,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
             long startColIndex,
             long endRowIndex,
             long endColIndex) {
-        File file = Grids_FileCreator.createNewFile(this.Directory,
+        File file = Grids_Files.createNewFile(this.Directory,
                 "" + startRowIndex + "_" + startColIndex + "_" + endRowIndex + "_" + endColIndex);
         return create(
                 file,
@@ -510,7 +510,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
                 + gridName
                 + this.getClass().getName()
                 + "_chunkNrows(" + ChunkNRows + ")_chunkNcols(" + ChunkNCols + ")";
-        //this.Directory = Grids_FileCreator.createNewFile( new File( _DirectoryName ) );
+        //this.Directory = Grids_Files.createNewFile( new File( _DirectoryName ) );
         this.Directory = new File(directoryName);
         this.Directory.mkdirs();
         return create(

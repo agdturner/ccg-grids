@@ -3524,7 +3524,7 @@ public class Grids_Environment
                 combine(result, potentialPartResult);
             } else {
                 HashSet<Grids_2D_ID_int> chunks;
-                chunks = g.getGrid2DSquareCellChunkIDHashSet(false);
+                chunks = g.getChunkIDs(false);
                 Grids_2D_ID_int id;
                 Iterator<Grids_2D_ID_int> ite2;
                 ite2 = chunks.iterator();

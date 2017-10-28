@@ -112,26 +112,26 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      */
     public final void init(
             Grids_AbstractGrid g) {
-        this.Grid = g;
-        this.Grid.setGridStatistics(this);
+        Grid = g;
+        Grid.setGridStatistics(this);
         init();
     }
 
     /**
-     * Updates fields from _GridStatistics except this.Grid
+     * Updates fields from _GridStatistics except Grid
      *
      *
-     * @param _GridStatistics the _GridStatistics instance which fields are used
+     * @param statistics the _GridStatistics instance which fields are used
      * to update this.
      */
     protected void update(
-            Grids_AbstractGridStatistics _GridStatistics) {
-        this.setNonNoDataValueCount(_GridStatistics.NonNoDataValueCount);
-        this.setSum(_GridStatistics.Sum);
-        this.setMin(_GridStatistics.Min);
-        this.setMinCount(_GridStatistics.getMinCount());
-        this.setMax(_GridStatistics.Max);
-        this.setMaxCount(_GridStatistics.getMaxCount());
+            Grids_AbstractGridStatistics statistics) {
+        NonNoDataValueCount = statistics.NonNoDataValueCount;
+        Sum = statistics.Sum;
+        Min = statistics.Min;
+        MinCount = statistics.getMinCount();
+        Max = statistics.Max;
+        MaxCount = statistics.getMaxCount();
     }
 
     /**
@@ -150,31 +150,26 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * distinguish this method from update().
      *
      *
-     * @param _NRows The number of rows in the grid.
-     * @param _NCols The number of columns in the grid.
+     * @param nRows The number of rows in the grid.
+     * @param nCols The number of columns in the grid.
      */
     protected void update(
-            long _NRows,
-            long _NCols) {
+            long nRows,
+            long nCols) {
         long row;
         long col;
-//        //DEBUG code
-//        System.out.println("this.Grid.toString()" + this.Grid.toString() );
         if (this.Grid.getClass() == Grids_GridInt.class) {
             //if ( this.Grid instanceof Grids_GridInt ) {
-            Grids_GridInt grid2DSquareCellInt
-                    = (Grids_GridInt) Grid;
-//            //DEBUG code
-//            System.out.println("grid2DSquareCellInt.toString()" + grid2DSquareCellInt.toString() );
+            Grids_GridInt g                    = (Grids_GridInt) Grid;
             BigDecimal cellBigDecimal;
             int cellInt;
             boolean handleOutOfMemoryError = true;
-            int noDataValueInt = grid2DSquareCellInt.getNoDataValue(
+            int noDataValueInt = g.getNoDataValue(
                     handleOutOfMemoryError);
             //BigDecimal oneBigDecimal = BigDecimal.ONE;
-            for (row = 0; row < _NRows; row++) {
-                for (col = 0; col < _NCols; col++) {
-                    cellInt = grid2DSquareCellInt.getCell(
+            for (row = 0; row < nRows; row++) {
+                for (col = 0; col < nCols; col++) {
+                    cellInt = g.getCell(
                             row,
                             col,
                             handleOutOfMemoryError);
@@ -215,8 +210,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             boolean handleOutOfMemoryError = true;
             double noDataValueDouble = grid2DSquareCellDouble.getNoDataValue(ge.HandleOutOfMemoryError);
             // BigDecimal oneBigDecimal = BigDecimal.ONE;
-            for (row = 0; row < _NRows; row++) {
-                for (col = 0; col < _NCols; col++) {
+            for (row = 0; row < nRows; row++) {
+                for (col = 0; col < nCols; col++) {
                     //System.out.println("row " + row + ", col " + col );
                     cellDouble = grid2DSquareCellDouble.getCell(
                             row,
@@ -255,7 +250,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                                 }
                             }
                         } catch (NumberFormatException e) {
-                            System.err.println(e.getMessage() + " in AbstractGridStatistics.update(" + _NRows + ", " + _NCols + ") value at row " + row + ", col " + col + " = " + cellDouble + ");");
+                            System.err.println(e.getMessage() + " in AbstractGridStatistics.update(" + nRows + ", " + nCols + ") value at row " + row + ", col " + col + " = " + cellDouble + ");");
                         }
                     }
                 }
@@ -1854,7 +1849,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
                     Grids_AbstractGridChunkInt chunk;
-                    chunk = grid2DSquareCellInt.getGrid2DSquareCellIntChunk(
+                    chunk = grid2DSquareCellInt.getGridChunk(
                             chunkRowIndex,
                             chunkColIndex,
                             handleOutOfMemoryError);

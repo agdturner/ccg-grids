@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * Grids_AbstractGridChunkDouble extension that stores cell values in a
@@ -66,14 +65,20 @@ public class Grids_GridChunkDoubleArray
         ChunkID = chunkID;
         initGrid(g);
         double noDataValue = g.getNoDataValue(false);
-        int chunkNrows = g.getChunkNRows(
+        int chunkNRows = g.getChunkNRows(
                 chunkID,
                 Grid.ge.HandleOutOfMemoryErrorFalse);
-        Data = new double[chunkNrows][g.getChunkNCols(
+        int chunkNCols = g.getChunkNCols(
                 chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse)];
+                Grid.ge.HandleOutOfMemoryErrorFalse);
+        
+        if (chunkNRows < 0 || chunkNCols < 0) {
+            int debug = 1;
+        }
+        
+        Data = new double[chunkNRows][chunkNCols];
         int row;
-        for (row = 0; row < chunkNrows; row++) {
+        for (row = 0; row < chunkNRows; row++) {
             Arrays.fill(Data[row], noDataValue);
         }
         SwapUpToDate = false;
@@ -210,20 +215,19 @@ public class Grids_GridChunkDoubleArray
             int chunkCellColIndex,
             double valueToSet,
             double noDataValue) {
-//        try {
-        double oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
-        Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
-        if (isSwapUpToDate()) {
-            // Optimisation? Want a setCellFast method closer to initCell? 
-            // What about an unmodifiable readOnly type chunk?
-            if (valueToSet != oldValue) {
-                setSwapUpToDate(false);
+        if (inChunk(chunkCellRowIndex, chunkCellColIndex)) {
+            double oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
+            Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
+            if (isSwapUpToDate()) {
+                // Optimisation? Want a setCellFast method closer to initCell? 
+                // What about an unmodifiable readOnly type chunk?
+                if (valueToSet != oldValue) {
+                    setSwapUpToDate(false);
+                }
             }
+            return oldValue;
         }
-        return oldValue;
-//        } catch (Exception e0) { // Should not happen! 
-//            return noDataValue;
-//        }
+        return noDataValue;
     }
 
     /**
