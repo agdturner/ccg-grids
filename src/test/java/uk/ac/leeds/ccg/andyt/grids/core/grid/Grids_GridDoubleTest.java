@@ -96,31 +96,31 @@ public class Grids_GridDoubleTest {
 //    }
 //
 //    /**
-//     * Test of getGrid2DSquareCellDoubleChunk method, of class Grids_GridDouble.
+//     * Test of getGridChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGrid2DSquareCellDoubleChunk_Grids_2D_ID_int_boolean() {
-//        System.out.println("getGrid2DSquareCellDoubleChunk");
+//        System.out.println("getGridChunk");
 //        Grids_2D_ID_int chunkID = null;
 //        boolean handleOutOfMemoryError = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGrid2DSquareCellDoubleChunk(chunkID, handleOutOfMemoryError);
+//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkID, handleOutOfMemoryError);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of getGrid2DSquareCellDoubleChunk method, of class Grids_GridDouble.
+//     * Test of getGridChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGrid2DSquareCellDoubleChunk_Grids_2D_ID_int() {
-//        System.out.println("getGrid2DSquareCellDoubleChunk");
+//        System.out.println("getGridChunk");
 //        Grids_2D_ID_int chunkID = null;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGrid2DSquareCellDoubleChunk(chunkID);
+//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkID);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -353,6 +353,13 @@ public class Grids_GridDoubleTest {
               
         cellRowIndex = nRows;
         cellColIndex = nCols - 1;
+        instance.setCell(cellRowIndex, cellColIndex, value);
+        expResult = noDataValue;
+        result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
+        assertEquals(expResult, result, 0.0);
+        
+        cellRowIndex = nRows - 1;
+        cellColIndex = nCols;
         instance.setCell(cellRowIndex, cellColIndex, value);
         expResult = noDataValue;
         result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
