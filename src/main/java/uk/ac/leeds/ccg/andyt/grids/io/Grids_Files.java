@@ -23,15 +23,32 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
-public class Grids_Files {
+public class Grids_Files extends Generic_Files {
     
-    /** Creates a new instance of FileCreator */
-    public Grids_Files() {
+    protected File GeneratedGridsDir;
+    
+    protected Grids_Files() {    }
+    
+    public Grids_Files(File dataDirectory) {
+        DataDir = dataDirectory;
     }
     
+    public File getGeneratedGridsDir() {
+        if (GeneratedGridsDir == null) {
+            GeneratedGridsDir = new File(
+                    getGeneratedDataDir(),
+                    getStrings().getString_Grids());
+        }
+        return GeneratedGridsDir;
+    }
     
-    
+    public Grids_Strings getStrings() {
+        return (Grids_Strings) Strings;
+    }
+        
     /**
      * Returns a newly created temporary file.
      * Default parent directory to System.getProperty( "java.io.tmpdir" ).

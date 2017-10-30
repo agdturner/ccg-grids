@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
@@ -124,19 +125,24 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
     public void densityPlot(
             boolean _HandleOutOfMemoryError)
             throws Exception {
+        Grids_Files files;
+        files = ge.getFiles();
         String resolution = "100";
+        //File dataDir = files.getDataDir();
         String inDataDirectory = "d:/andyt/projects/phd/data/arc/leeds/grids/" + resolution + "/";
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
-        Grids_GridDoubleFactory grid2DSquareCellDoubleFactory = new Grids_GridDoubleFactory(ge, _HandleOutOfMemoryError);
-        Grids_GridDouble xGrid = (Grids_GridDouble) grid2DSquareCellDoubleFactory.create(new File(inDataDirectory + xFilename + ".asc"));
-        Grids_GridDouble yGrid = (Grids_GridDouble) grid2DSquareCellDoubleFactory.create(new File(inDataDirectory + yFilename + ".asc"));
+        Grids_GridDoubleFactory gf;
+        gf = new Grids_GridDoubleFactory(
+                files.getGeneratedGridsDir(), ge, _HandleOutOfMemoryError);
+        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(new File(inDataDirectory + xFilename + ".asc"));
+        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(new File(inDataDirectory + yFilename + ".asc"));
         int divisions = 100;
         System.out.println(xGrid.toString());
         System.out.println(yGrid.toString());
         System.out.println("Processing...");
-        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, grid2DSquareCellDoubleFactory);
+        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gf);
         double[] stdevy = (double[]) result[0];
         double[] meany = (double[]) result[1];
         double[] numy = (double[]) result[2];

@@ -37,8 +37,7 @@ public class Grids_GridChunkDouble
      */
     private double Value;
 
-    protected Grids_GridChunkDouble() {
-    }
+    protected Grids_GridChunkDouble() {}
 
     /**
      * By default value is set to 0d.
@@ -46,10 +45,7 @@ public class Grids_GridChunkDouble
      * @param ge
      */
     public Grids_GridChunkDouble(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.Value = 0d;
-        this.SwapUpToDate = false;
+        this(ge, 0d);
     }
 
     /**

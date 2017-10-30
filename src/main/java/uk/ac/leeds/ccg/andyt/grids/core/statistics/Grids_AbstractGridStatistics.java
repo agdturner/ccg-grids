@@ -1885,7 +1885,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
             Generic_BigDecimal bd
-                    = Grid.ge.getGeneric_BigDecimal();
+                    = Grid.ge.get_Generic_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,
@@ -1936,7 +1936,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     numberOfDecimalPlaces,
                     BigDecimal.ROUND_HALF_EVEN);
             Generic_BigDecimal bg
-                    = Grid.ge.getGeneric_BigDecimal();
+                    = Grid.ge.get_Generic_BigDecimal();
             return Generic_BigDecimal.sqrt(
                     bigDecimal0,
                     numberOfDecimalPlaces,

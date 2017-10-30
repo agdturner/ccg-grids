@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
@@ -28,31 +29,41 @@ public class Grids_Environment
      * reloading, it would be possible to ascertain what it was which might be
      * useful.
      */
-    private transient File Directory;
+    protected transient File Directory;
 
     /**
      * A HashSet of Grids_AbstractGrid objects that may have data that can be
      * swapped to release memory for processing.
      */
-    private transient HashSet<Grids_AbstractGrid> Grids;
+    protected transient HashSet<Grids_AbstractGrid> Grids;
 
     /**
      * For indicating which GridChunks that are not normally to be swapped to
      * release memory for processing.
      */
-    private transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> NotToSwapData;
+    protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> NotToSwapData;
 
     /**
      * Local Directory used for caching. TODO If this were not transient upon
      * reloading, it would be possible to ascertain what it was which might be
      * useful.
      */
-    private transient Generic_BigDecimal Generic_BigDecimal;
+    protected transient Generic_BigDecimal _Generic_BigDecimal;
 
     /**
      * For storing a Grids_Processor.
      */
-    private transient Grids_Processor GridProcessor;
+    protected transient Grids_Processor Processor;
+    
+    /**
+     * For storing an instance of Grids_Files
+     */
+    protected transient Grids_Files Files;
+
+    /**
+     * For storing an instance of Grids_Strings
+     */
+    protected transient Grids_Strings Strings;
 
     protected Grids_Environment() {
     }
@@ -67,44 +78,51 @@ public class Grids_Environment
     }
 
     /**
-     * @return the GridProcessor
+     * @return the Processor initialising first if it is null.
      */
-    public Grids_Processor getGridProcessor() {
-        if (GridProcessor == null) {
-            GridProcessor = new Grids_Processor(this);
+    public Grids_Processor getProcessor() {
+        if (Processor == null) {
+            Processor = new Grids_Processor(this);
         }
-        return GridProcessor;
+        return Processor;
     }
 
     /**
-     * @param gridProcessor
+     * @param processor
      */
-    public void setGridProcessor(Grids_Processor gridProcessor) {
-        this.GridProcessor = gridProcessor;
+    public void setProcessor(Grids_Processor processor) {
+        Processor = processor;
     }
 
     /**
-     * @return the Generic_BigDecimal
+     * @return the Files initialising first if it is null.
      */
-    public Generic_BigDecimal getGeneric_BigDecimal() {
-        if (Generic_BigDecimal == null) {
-            initGeneric_BigDecimal();
+    public Grids_Files getFiles() {
+        if (Files == null) {
+            File dataDirectory = new File(
+                Directory,
+                Strings.getString_data());
+            dataDirectory.mkdirs();
+            Files = new Grids_Files(dataDirectory);
         }
-        return Generic_BigDecimal;
+        return Files;
     }
 
     /**
-     * @param bd
+     * @return the _Generic_BigDecimal
      */
-    public void setGeneric_BigDecimal(Generic_BigDecimal bd) {
-        this.Generic_BigDecimal = bd;
+    public Generic_BigDecimal get_Generic_BigDecimal() {
+        if (_Generic_BigDecimal == null) {
+            init_Generic_BigDecimal();
+        }
+        return _Generic_BigDecimal;
     }
 
     /**
-     * @return the Generic_BigDecimal
+     * @return the _Generic_BigDecimal
      */
-    private void initGeneric_BigDecimal() {
-        Generic_BigDecimal = new Generic_BigDecimal();
+    private void init_Generic_BigDecimal() {
+        _Generic_BigDecimal = new Generic_BigDecimal();
     }
 
     /**
