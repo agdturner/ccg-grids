@@ -25,11 +25,9 @@ public class Grids_Environment
         implements Serializable, Grids_OutOfMemoryErrorHandlerInterface {
 
     /**
-     * Local Directory used for caching. TODO If this were not transient upon
-     * reloading, it would be possible to ascertain what it was which might be
-     * useful.
+     * Local Directory used for caching.
      */
-    protected transient File Directory;
+    protected File Directory;
 
     /**
      * A HashSet of Grids_AbstractGrid objects that may have data that can be
@@ -44,9 +42,7 @@ public class Grids_Environment
     protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> NotToSwapData;
 
     /**
-     * Local Directory used for caching. TODO If this were not transient upon
-     * reloading, it would be possible to ascertain what it was which might be
-     * useful.
+     * For storing an instance of Generic_BigDecimal.
      */
     protected transient Generic_BigDecimal _Generic_BigDecimal;
 
@@ -56,25 +52,25 @@ public class Grids_Environment
     protected transient Grids_Processor Processor;
     
     /**
-     * For storing an instance of Grids_Files
+     * For storing an instance of Grids_Files.
      */
     protected transient Grids_Files Files;
 
     /**
-     * For storing an instance of Grids_Strings
+     * For storing an instance of Grids_Strings.
      */
     protected transient Grids_Strings Strings;
 
     protected Grids_Environment() {
     }
 
-    public Grids_Environment(File Directory) {
+    public Grids_Environment(File directory) {
         initGrids();
         initNotToSwapData();
-        if (!Directory.exists()) {
-            Directory.mkdirs();
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
-        this.Directory = Directory;
+        Directory = directory;
     }
 
     /**
