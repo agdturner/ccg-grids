@@ -1991,8 +1991,8 @@ public class Grids_Environment
             boolean handleOutOfMemoryError) {
         try {
             long result;
-            result = swapChunks_Account(); // Should this really be here and not in the try loop?
             try {
+                result = swapChunks_Account();
                 if (result < 1) {
                     Account account = tryToEnsureThereIsEnoughMemoryToContinue_Account();
                     if (account != null) {
@@ -2036,7 +2036,7 @@ public class Grids_Environment
             long partResult;
             Grids_AbstractGrid g;
             g = ite.next();
-            partResult = g.ge.swapChunks_Account(HandleOutOfMemoryErrorFalse);
+            partResult = swapChunks_Account(HandleOutOfMemoryErrorFalse);
             result += partResult;
         }
         dataToSwap = false;
@@ -2523,7 +2523,7 @@ public class Grids_Environment
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            result += g.ge.swapChunkExcept_Account(chunkID);
+            result += swapChunkExcept_Account(chunkID);
             if (result > 0L) {
                 return result;
             }
@@ -2540,7 +2540,7 @@ public class Grids_Environment
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            if (g.ge.swapChunkExcept_Account(chunkID) > 0) {
+            if (swapChunkExcept_Account(chunkID) > 0) {
                 return;
             }
         }
