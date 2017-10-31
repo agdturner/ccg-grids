@@ -65,6 +65,7 @@ public class Grids_Environment
     }
 
     public Grids_Environment(File directory) {
+        initMemoryReserve(Default_Memory_Threshold);
         initGrids();
         initNotToSwapData();
         if (!directory.exists()) {
@@ -2999,12 +3000,9 @@ public class Grids_Environment
         long result = swapChunkExcept_Account(
                 g);
         if (result < 1L) {
-//            result = g.swapChunkExcept_Account(
-//                    chunkID, 
-//                    HandleOutOfMemoryErrorFalse);
             result = g.swapChunkExcept_Account(
-                    chunkID,
-                    false);
+                    chunkID, 
+                    HandleOutOfMemoryErrorFalse);
         }
         return result;
     }

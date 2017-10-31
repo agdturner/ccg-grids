@@ -19,29 +19,24 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 
 /**
- * A factory for constructing Grid2DSquareCellDoubleChunkArray instances.
+ * A factory for constructing Grids_GridChunkDoubleArray instances.
  */
 public class Grids_GridChunkDoubleArrayFactory
         extends Grids_AbstractGridChunkDoubleFactory {
 
-    /**
-     * Creates a new Grid2DSquareCellDoubleChunkArrayFactory.
-     */
     public Grids_GridChunkDoubleArrayFactory() {
     }
 
     @Override
-    public Grids_AbstractGridChunkDouble createGridChunkDouble() {
+    public Grids_GridChunkDoubleArray createGridChunkDouble() {
         return new Grids_GridChunkDoubleArray();
     }
 
     @Override
-    public Grids_AbstractGridChunkDouble createGridChunkDouble(
+    public Grids_GridChunkDoubleArray createGridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkDoubleArray(
@@ -50,11 +45,11 @@ public class Grids_GridChunkDoubleArrayFactory
     }
 
     @Override
-    public Grids_AbstractGridChunkDouble createGridChunkDouble(
-            Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk,
+    public Grids_GridChunkDoubleArray createGridChunkDouble(
+            Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkDoubleArray(
-                grid2DSquareCellDoubleChunk,
+                chunk,
                 chunkID);
     }
 

@@ -1340,11 +1340,11 @@ public class Grids_Processor extends Grids_Object {
                 // ( grid.getClass() == Grids_GridDouble.class )
                 Grids_GridDouble gridDouble = (Grids_GridDouble) grid;
                 double noDataValue = gridDouble.getNoDataValue(handleOutOfMemoryError);
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
-                HashSet _ChunkIDHashSet = new HashSet();
-                _ChunkIDHashSet.add(chunkID);
-                HashMap _Grid2DSquareCell_ChunkIDHashSet_HashMap = new HashMap();
-                _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(grid, _ChunkIDHashSet);
+                Grids_2D_ID_int chunkID;
+//                HashSet _ChunkIDHashSet = new HashSet();
+//                _ChunkIDHashSet.add(chunkID);
+//                HashMap _Grid2DSquareCell_ChunkIDHashSet_HashMap = new HashMap();
+//                _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(grid, _ChunkIDHashSet);
                 Grids_AbstractGridChunkDouble chunk;
                 double value = 0.0d;
 //                // TODO: Chunk Processing would be better! the following is a start, but need some intersection type method...

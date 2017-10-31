@@ -62,15 +62,6 @@ public class Grids_GridChunkIntMap
     public Grids_GridChunkIntMap() {
     }
 
-    public Grids_GridChunkIntMap(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new TIntObjectHashMap();
-        this.defaultValue = Integer.MIN_VALUE;
-        //this._Grid2DSquareCell = new Grid2DSquareCellInt(_AbstractGrid2DSquareCell_HashSet);
-        this.SwapUpToDate = false;
-    }
-
     /**
      * Creates a new Grid2DSquareCellIntChunkMap
      *

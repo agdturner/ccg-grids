@@ -52,13 +52,6 @@ public class Grids_GridChunkInt64CellMap
     protected Grids_GridChunkInt64CellMap() {
     }
 
-    public Grids_GridChunkInt64CellMap(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new TIntLongHashMap();
-        this.SwapUpToDate = false;
-    }
-
     /**
      * Creates a new Grid2DSquareCellIntChunk64CellMap.
      *

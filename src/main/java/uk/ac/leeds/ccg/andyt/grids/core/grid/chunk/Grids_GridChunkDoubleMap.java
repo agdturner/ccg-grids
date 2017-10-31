@@ -62,44 +62,35 @@ public class Grids_GridChunkDoubleMap
     protected Grids_GridChunkDoubleMap() {
     }
 
-    public Grids_GridChunkDoubleMap(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new TDoubleObjectHashMap();
-        this.defaultValue = Integer.MIN_VALUE;
-        //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
-        this.SwapUpToDate = false;
-    }
-
     /**
      * Creates a new Grid2DSquareCellDoubleChunkMap
      *
-     * @param grid2DSquareCellDouble
-     * @param _ChunkID Default: default value to
+     * @param g
+     * @param chunkID Default: default value to
      * grid2DSquareCellDouble.getNoDataValue()
      */
     protected Grids_GridChunkDoubleMap(
-            Grids_GridDouble grid2DSquareCellDouble,
-            Grids_2D_ID_int _ChunkID) {
+            Grids_GridDouble g,
+            Grids_2D_ID_int chunkID) {
         this(
-                grid2DSquareCellDouble,
-                _ChunkID,
-                grid2DSquareCellDouble.getNoDataValue(false));
+                g,
+                chunkID,
+                g.getNoDataValue(false));
     }
 
     /**
      * Creates a new Grid2DSquareCellDoubleChunkMap
      *
-     * @param grid2DSquareCellDouble
-     * @param _ChunkID
+     * @param g
+     * @param chunkID
      * @param defaultValue
      */
     protected Grids_GridChunkDoubleMap(
-            Grids_GridDouble grid2DSquareCellDouble,
-            Grids_2D_ID_int _ChunkID,
+            Grids_GridDouble g,
+            Grids_2D_ID_int chunkID,
             double defaultValue) {
-        this.ChunkID = _ChunkID;
-        initGrid(grid2DSquareCellDouble);
+        this.ChunkID = chunkID;
+        initGrid(g);
         this.defaultValue = defaultValue;
         initData();
         this.SwapUpToDate = false;
@@ -108,21 +99,21 @@ public class Grids_GridChunkDoubleMap
     /**
      * Creates a new Grid2DSquareCellDoubleChunkMap
      *
-     * @param grid2DSquareCellDoubleChunk
-     * @param _ChunkID Default: default value to
+     * @param gridChunk
+     * @param chunkID Default: default value to
      * grid2DSquareCellDouble.getNoDataValue() TODO: Optimise for different
      * types.
      * @param defaultValue
      */
     protected Grids_GridChunkDoubleMap(
-            Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk,
-            Grids_2D_ID_int _ChunkID,
+            Grids_AbstractGridChunkDouble gridChunk,
+            Grids_2D_ID_int chunkID,
             double defaultValue) {
         boolean handleOutOfMemoryError = false;
-        this.ChunkID = _ChunkID;
+        this.ChunkID = chunkID;
         this.defaultValue = defaultValue;
         Grids_GridDouble g;
-        g = grid2DSquareCellDoubleChunk.getGrid();
+        g = gridChunk.getGrid();
         initGrid(g);
         int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
         int chunkNcols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
@@ -130,7 +121,7 @@ public class Grids_GridChunkDoubleMap
         double value;
         for (int row = 0; row < chunkNrows; row++) {
             for (int col = 0; col < chunkNcols; col++) {
-                value = grid2DSquareCellDoubleChunk.getCell(
+                value = gridChunk.getCell(
                         row,
                         col,
                         defaultValue,

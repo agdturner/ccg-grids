@@ -55,19 +55,6 @@ public class Grids_GridChunkDouble64CellMap
     /**
      * Creates a new Grid2DSquareCellDoubleChunk64CellMap.
      *
-     * @param ge
-     */
-    public Grids_GridChunkDouble64CellMap(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new TDoubleLongHashMap();
-        //this._Grid2DSquareCell = new Grid2DSquareCellDouble(_AbstractGrid2DSquareCell_HashSet, handleOutOfMemoryError);
-        this.SwapUpToDate = false;
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDoubleChunk64CellMap.
-     *
      * @param g The Grid2DSquareCellDouble this is a chunk of.
      * @param chunkID The ID this will have. TODO: deal with case: (
      * grid2DSquareCellDouble.getChunkNrows() *

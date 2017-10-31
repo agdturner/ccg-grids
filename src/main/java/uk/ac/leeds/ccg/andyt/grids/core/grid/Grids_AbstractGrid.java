@@ -2715,11 +2715,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         for (cri = 0; cri < NChunkRows; cri++) {
             for (cci = 0; cci < NChunkCols; cci++) {
                 id2 = new Grids_2D_ID_int(cri, cci);
-                if (chunkID != id2) {
-                    if (isInCache(chunkID)) {
+                if (! chunkID.equals(id2)) {
+                    if (isInCache(id2)) {
                         writeToFileChunk(
-                                chunkID, handleOutOfMemoryError);
-                        clearFromCacheChunk(chunkID);
+                                id2, handleOutOfMemoryError);
+                        clearFromCacheChunk(id2);
                         return 1L;
                     }
                 }
@@ -2985,6 +2985,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * see if it is swapToFiled.
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
+        HashMap m = getChunkIDChunkMap(); //DEBUG
         return getChunkIDChunkMap().containsKey(chunkID);
     }
 

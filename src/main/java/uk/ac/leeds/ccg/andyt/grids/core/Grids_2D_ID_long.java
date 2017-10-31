@@ -26,22 +26,19 @@ import java.io.Serializable;
 public class Grids_2D_ID_long extends Object implements Serializable, Comparable {
 
     /**
-     * For storing the row
+     * For storing the row.
      */
-    protected long _Row;
+    protected long Row;
     /**
-     * For storing the column
+     * For storing the column.
      */
-    protected long _Col;
+    protected long Col;
 
-    public Grids_2D_ID_long() {
-        this._Col = Integer.MIN_VALUE;
-        this._Row = Integer.MIN_VALUE;
-    }
+    protected Grids_2D_ID_long() {}
 
     public Grids_2D_ID_long(Grids_2D_ID_long i) {
-        this._Col = i._Col;
-        this._Row = i._Row;
+        Col = i.Col;
+        Row = i.Row;
     }
 
     /**
@@ -52,22 +49,22 @@ public class Grids_2D_ID_long extends Object implements Serializable, Comparable
     public Grids_2D_ID_long(
             long row,
             long col) {
-        this._Row = row;
-        this._Col = col;
+        Row = row;
+        Col = col;
     }
 
     /**
-     * @return this._Row
+     * @return Row
      */
     public long getRow() {
-        return this._Row;
+        return Row;
     }
 
     /**
-     * @return this._Col
+     * @return Col
      */
     public long getCol() {
-        return this._Col;
+        return Col;
     }
 
     /**
@@ -75,34 +72,35 @@ public class Grids_2D_ID_long extends Object implements Serializable, Comparable
      */
     @Override
     public String toString() {
-        return "Grids_2D_ID_int( "
-                + "Row( " + getRow() + " ), "
-                + "Col( " + getCol() + " ) )";
+        return "Grids_2D_ID_int("
+                + "Row(" + Row + "), "
+                + "Col(" + Col + "))";
     }
 
     /**
      * Overrides equals in Object
      *
      * @param object
+     * @return 
      */
     @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
-        if ((object == null) || (object.getClass() != this.getClass())) {
+        if ((object == null) || (object.getClass() != getClass())) {
             return false;
         }
         Grids_2D_ID_long i = (Grids_2D_ID_long) object;
-        return ((this._Col == i._Col)
-                && (this._Row == i._Row));
+        return ((Col == i.Col)
+                && (Row == i.Row));
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + (int) (this._Row ^ (this._Row >>> 32));
-        hash = 13 * hash + (int) (this._Col ^ (this._Col >>> 32));
+        hash = 13 * hash + (int) (Row ^ (Row >>> 32));
+        hash = 13 * hash + (int) (Col ^ (Col >>> 32));
         return hash;
     }
 
@@ -110,21 +108,22 @@ public class Grids_2D_ID_long extends Object implements Serializable, Comparable
      * Method required by Comparable
      *
      * @param o
+     * @return 
      */
     @Override
     public int compareTo(Object o) {
         if (o instanceof Grids_2D_ID_long) {
             Grids_2D_ID_long i = (Grids_2D_ID_long) o;
-            if (i._Row > this._Row) {
+            if (i.Row > Row) {
                 return 1;
             }
-            if (i._Row < this._Row) {
+            if (i.Row < Row) {
                 return -1;
             }
-            if (i._Col > this._Col) {
+            if (i.Col > Col) {
                 return 1;
             }
-            if (i._Col < this._Col) {
+            if (i.Col < Col) {
                 return -1;
             }
             return 0;

@@ -44,13 +44,6 @@ public class Grids_GridChunkDoubleArray
     protected Grids_GridChunkDoubleArray() {
     }
 
-    public Grids_GridChunkDoubleArray(Grids_Environment ge) {
-        super(ge);
-        ChunkID = new Grids_2D_ID_int();
-        Data = new double[1][1];
-        SwapUpToDate = false;
-    }
-
     /**
      * Creates a new Grids_GridChunkDoubleArray for g containing all no Data
      * values.

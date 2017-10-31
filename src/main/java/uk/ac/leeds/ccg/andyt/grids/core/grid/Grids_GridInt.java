@@ -449,25 +449,27 @@ public class Grids_GridInt
             int cci1 = 0;
             String println0 = ge.initString(1000, handleOutOfMemoryError);
             String println = ge.initString(1000, handleOutOfMemoryError);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
-            Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
-                    this,
-                    chunkID);
+            Grids_2D_ID_int chunkID ;
+            Grids_AbstractGridChunkInt chunk;
             for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                     do {
                         try {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                                
                             // Try to load chunk.
                             chunkID = new Grids_2D_ID_int(
                                     chunkRowIndex,
                                     chunkColIndex);
-                            _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                            chunk = cf.createGridChunkInt(
                                     this,
                                     chunkID);
                             getChunkIDChunkMap().put(
                                     chunkID,
-                                    _Grid2DSquareCellIntChunk);
+                                    chunk);
                             isLoadedChunk = true;
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                                
                         } catch (OutOfMemoryError e) {
                             if (handleOutOfMemoryError) {
                                 ge.clearMemoryReserve();
@@ -589,10 +591,8 @@ public class Grids_GridInt
             int cellInt = Integer.MIN_VALUE;
             String println0 = ge.initString(1000, handleOutOfMemoryError);
             String println = ge.initString(1000, handleOutOfMemoryError);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
-            Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
-                    this,
-                    chunkID);
+            Grids_2D_ID_int chunkID;
+            Grids_AbstractGridChunkInt chunk;
             if (gridStatistics.getClass() == Grids_GridStatistics0.class) {
                 //if ( ( Grid2DSquareCell.getClass() == Grids_GridInt.class ) || ( ( ( int ) Grid2DSquareCell.getNoDataValueDouble( false ) ) == Integer.MIN_VALUE ) ) {
                 if (g.getClass() == Grids_GridInt.class) {
@@ -600,11 +600,12 @@ public class Grids_GridInt
                         for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
-                                    // Try to load chunk.
+                                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                                // Try to load chunk.
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                                    chunk = cf.createGridChunkInt(
                                             this,
                                             chunkID);
                                     chunkID = new Grids_2D_ID_int(
@@ -612,7 +613,7 @@ public class Grids_GridInt
                                             chunkColIndex);
                                     getChunkIDChunkMap().put(
                                             chunkID,
-                                            _Grid2DSquareCellIntChunk);
+                                            chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
                                     for (chunkRow = 0; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
@@ -629,6 +630,7 @@ public class Grids_GridInt
                                         row++;
                                     }
                                     isLoadedChunk = true;
+                                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
                                         ge.clearMemoryReserve();
@@ -667,11 +669,12 @@ public class Grids_GridInt
                         for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
-                                    // Try to load chunk.
+                                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                                // Try to load chunk.
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                                    chunk = cf.createGridChunkInt(
                                             this,
                                             chunkID);
                                     chunkID = new Grids_2D_ID_int(
@@ -679,7 +682,7 @@ public class Grids_GridInt
                                             chunkColIndex);
                                     getChunkIDChunkMap().put(
                                             chunkID,
-                                            _Grid2DSquareCellIntChunk);
+                                            chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
                                     for (chunkRow = 0; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
@@ -709,6 +712,7 @@ public class Grids_GridInt
                                         row++;
                                     }
                                     isLoadedChunk = true;
+                                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
                                         ge.clearMemoryReserve();
@@ -751,7 +755,7 @@ public class Grids_GridInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                                    chunk = cf.createGridChunkInt(
                                             this,
                                             chunkID);
                                     chunkID = new Grids_2D_ID_int(
@@ -759,7 +763,7 @@ public class Grids_GridInt
                                             chunkColIndex);
                                     getChunkIDChunkMap().put(
                                             chunkID,
-                                            _Grid2DSquareCellIntChunk);
+                                            chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
                                     for (chunkRow = _intZero; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
@@ -818,7 +822,7 @@ public class Grids_GridInt
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                                    chunk = cf.createGridChunkInt(
                                             this,
                                             chunkID);
                                     chunkID = new Grids_2D_ID_int(
@@ -826,7 +830,7 @@ public class Grids_GridInt
                                             chunkColIndex);
                                     getChunkIDChunkMap().put(
                                             chunkID,
-                                            _Grid2DSquareCellIntChunk);
+                                            chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
                                     for (chunkRow = _intZero; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
@@ -1024,7 +1028,7 @@ public class Grids_GridInt
                     int cci0 = 0;
                     int cri1 = 0;
                     int cci1 = 0;
-                    Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
+                    Grids_2D_ID_int chunkID;
                     boolean initialisedChunksToClear = true;
                     long row = Long.MIN_VALUE;
                     long col = Long.MIN_VALUE;
@@ -1035,19 +1039,18 @@ public class Grids_GridInt
                     //        _NChunkCols,
                     //        0,
                     //        0 );
-                    Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
-                            this,
-                            chunkID);
+                    Grids_AbstractGridChunkInt chunk;
                     // Initialise Chunks
                     for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                         //for ( _ChunkRowIndex = _NChunkRows - 1; _ChunkRowIndex >= 0; _ChunkRowIndex -- ) {
                         for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
-                                    chunkID = new Grids_2D_ID_int(
+                                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                                chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
-                                    _Grid2DSquareCellIntChunk = cf.createGridChunkInt(
+                                    chunk = cf.createGridChunkInt(
                                             this,
                                             chunkID);
                                     chunkID = new Grids_2D_ID_int(
@@ -1055,8 +1058,9 @@ public class Grids_GridInt
                                             chunkColIndex);
                                     getChunkIDChunkMap().put(
                                             chunkID,
-                                            _Grid2DSquareCellIntChunk);
+                                            chunk);
                                     isLoadedChunk = true;
+                                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
                                         ge.clearMemoryReserve();
@@ -3691,12 +3695,12 @@ public class Grids_GridInt
             visitedSet.add(nearestCellID);
             visitedSet1.add(nearestCellID);
             HashSet toVisitSet1 = new HashSet();
-            long row = Long.MIN_VALUE;
-            long col = Long.MIN_VALUE;
+            long row;
+            long col;
             boolean isInGrid = false;
-            Grids_2D_ID_long cellID = new Grids_2D_ID_long();
+            Grids_2D_ID_long cellID;
             boolean foundValue = false;
-            double value = Double.NEGATIVE_INFINITY;
+            double value;
             HashSet values = new HashSet();
             HashSet visitedSet2 = new HashSet();
             HashSet toVisitSet2 = new HashSet();

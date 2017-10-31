@@ -428,6 +428,7 @@ public class Grids_GridDouble
             double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Directory = directory;
             setGridStatistics(statistics);
             Directory = directory;
@@ -449,14 +450,13 @@ public class Grids_GridDouble
             int int_0 = 0;
             String println0 = ge.initString(1000, handleOutOfMemoryError);
             String println = ge.initString(1000, handleOutOfMemoryError);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
-            Grids_AbstractGridChunkDouble chunk = chunkFactory.createGridChunkDouble(
-                    this,
-                    chunkID);
+            Grids_2D_ID_int chunkID;
+            Grids_AbstractGridChunkDouble chunk;
             for (chunkRowIndex = int_0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = int_0; chunkColIndex < NChunkCols; chunkColIndex++) {
                     do {
                         try {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                             // Try to load chunk.
                             chunkID = new Grids_2D_ID_int(
                                     chunkRowIndex,
@@ -468,6 +468,7 @@ public class Grids_GridDouble
                                     chunkID,
                                     chunk);
                             isLoadedChunk = true;
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                         } catch (OutOfMemoryError e) {
                             if (handleOutOfMemoryError) {
                                 ge.clearMemoryReserve();
@@ -579,15 +580,9 @@ public class Grids_GridDouble
             double cellDouble;
             String println0 = ge.initString(1000, handleOutOfMemoryError);
             String println = ge.initString(1000, handleOutOfMemoryError);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
+            Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkDouble chunk;
-            chunk = chunkFactory.createGridChunkDouble(
-                    this,
-                    chunkID);
-            Grids_AbstractGridChunk gridChunk;
 
-            int gridNChunkRows = g.getNChunkRows(handleOutOfMemoryError);
-            int gridNChunkCols = g.getNChunkCols(handleOutOfMemoryError);
             int gridChunkNRows;
             int gridChunkNCols;
             long rowIndex;
@@ -611,6 +606,7 @@ public class Grids_GridDouble
                     for (chunkColIndex = startChunkColIndex; chunkColIndex <= endChunkColIndex; chunkColIndex++) {
                         do {
                             try {
+                                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 // Try to load chunk.
                                 chunkID = new Grids_2D_ID_int(
                                         chunkRowIndex,
@@ -656,10 +652,12 @@ public class Grids_GridDouble
                                     }
                                 }
                                 isLoadedChunk = true;
+                                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+
                             } catch (OutOfMemoryError e) {
                                 if (handleOutOfMemoryError) {
                                     ge.clearMemoryReserve();
-                                    freeSomeMemoryAndResetReserve(chunkID, e);
+                                    freeSomeMemoryAndResetReserve(e);
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
@@ -821,6 +819,7 @@ public class Grids_GridDouble
             double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             // Setting _Directory allows for it having being moved.
             Directory = directory;
             String println0 = ge.initString(1000, ge.HandleOutOfMemoryErrorFalse);
@@ -867,6 +866,7 @@ public class Grids_GridDouble
                     init(
                             g2,
                             false);
+
                 }
                 initChunks(gridFile);
             } else {
@@ -903,7 +903,7 @@ public class Grids_GridDouble
                     int cci0 = 0;
                     int cri1 = 0;
                     int cci1 = 0;
-                    Grids_2D_ID_int chunkID = new Grids_2D_ID_int();
+                    Grids_2D_ID_int chunkID;
                     boolean initialisedChunksToClear = true;
                     long row = Long.MIN_VALUE;
                     long col = Long.MIN_VALUE;
@@ -914,14 +914,12 @@ public class Grids_GridDouble
                     //        0,
                     //        0 );
                     Grids_AbstractGridChunkDouble chunk;
-                    chunk = chunkFactory.createGridChunkDouble(
-                            this,
-                            chunkID);
                     // Initialise Chunks
                     for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                         for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
+                                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                     chunkID = new Grids_2D_ID_int(
                                             chunkRowIndex,
                                             chunkColIndex);
@@ -932,6 +930,7 @@ public class Grids_GridDouble
                                             chunkID,
                                             chunk);
                                     isLoadedChunk = true;
+                                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 } catch (OutOfMemoryError e) {
                                     if (handleOutOfMemoryError) {
                                         ge.clearMemoryReserve();

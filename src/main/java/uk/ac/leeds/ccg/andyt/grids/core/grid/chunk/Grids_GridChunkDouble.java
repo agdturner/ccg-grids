@@ -21,7 +21,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -38,28 +37,6 @@ public class Grids_GridChunkDouble
     private double Value;
 
     protected Grids_GridChunkDouble() {}
-
-    /**
-     * By default value is set to 0d.
-     *
-     * @param ge
-     */
-    public Grids_GridChunkDouble(Grids_Environment ge) {
-        this(ge, 0d);
-    }
-
-    /**
-     * By default value is set to 0d.
-     *
-     * @param ge
-     * @param value
-     */
-    public Grids_GridChunkDouble(Grids_Environment ge, double value) {
-        super(ge);
-        ChunkID = new Grids_2D_ID_int();
-        Value = value;
-        SwapUpToDate = false;
-    }
 
     /**
      * Creates a new Grids_GridChunkDouble with value set to g.NoDataValue.

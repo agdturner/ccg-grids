@@ -43,14 +43,6 @@ public class Grids_GridChunkIntArray
     public Grids_GridChunkIntArray() {
     }
 
-    public Grids_GridChunkIntArray(Grids_Environment ge) {
-        super(ge);
-        this.ChunkID = new Grids_2D_ID_int();
-        this.data = new int[1][1];
-        //this._Grid2DSquareCell = new Grid2DSquareCellInt(_AbstractGrid2DSquareCell_HashSet);
-        this.SwapUpToDate = false;
-    }
-
     /**
      * Creates a new Grid2DSquareCellInt grid containing all no data values.
      *
