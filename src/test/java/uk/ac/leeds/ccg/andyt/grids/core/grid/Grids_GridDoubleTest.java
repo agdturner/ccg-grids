@@ -270,7 +270,7 @@ public class Grids_GridDoubleTest {
         dimensions = getDimensions(nRows, nCols);
         Grids_GridStatistics0 gridStatistics;
         gridStatistics = new Grids_GridStatistics0(gridFactory.ge);
-        result = gridFactory.create(
+        result = gridFactory.create( 
                 gridStatistics,
                 dir2,
                 gridFactory.ChunkFactory,
