@@ -168,19 +168,17 @@ public class Grids_GridDoubleTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+    File dir;
+
     /**
-     * Get the directory.
-     *
-     * @return
+     * Initialises dir.
      */
-    protected File getDirectory() {
-        File result;
-        result = new File(System.getProperty("user.dir"));
-        result = new File(result, "Grids");
-        result = new File(result, "Test");
-        result.mkdirs();
-        System.out.println("dir " + result);
-        return result;
+    protected void initDir() {
+        dir = new File(System.getProperty("user.dir"));
+        dir = new File(dir, "Grids");
+        dir = new File(dir, "Test");
+        dir.mkdirs();
+        System.out.println("dir " + dir);
     }
 
     /**
@@ -191,7 +189,7 @@ public class Grids_GridDoubleTest {
      * working directory.
      *
      */
-    protected Grids_Environment getGrids_Environment(File dir) {
+    protected Grids_Environment getEnvironment(File dir) {
         Grids_Environment result;
         result = new Grids_Environment(new File(dir, "Grids_Environment"));
         return result;
@@ -209,7 +207,7 @@ public class Grids_GridDoubleTest {
      * @param handleOutOfMemoryError
      * @return
      */
-    protected Grids_GridDoubleFactory getGrids_Factory(
+    protected Grids_GridDoubleFactory getFactory(
             Grids_Environment ge,
             File dir,
             int chunkNRows,
@@ -235,7 +233,7 @@ public class Grids_GridDoubleTest {
      * @param nCols
      * @return
      */
-    protected Grids_Dimensions getGrids_Dimensions(long nRows, long nCols) {
+    protected Grids_Dimensions getDimensions(long nRows, long nCols) {
         BigDecimal cellsize = BigDecimal.ONE;
         Grids_Dimensions result;
         BigDecimal xMin = BigDecimal.ONE;
@@ -257,7 +255,7 @@ public class Grids_GridDoubleTest {
      * @param nCols
      * @return
      */
-    protected Grids_GridDouble getGrids_GridDouble(
+    protected Grids_GridDouble getGridDouble(
             File dir,
             String name,
             Grids_GridDoubleFactory gridFactory,
@@ -269,7 +267,7 @@ public class Grids_GridDoubleTest {
         dir2 = new File(dir2, name);
         dir2.mkdirs();
         Grids_Dimensions dimensions;
-        dimensions = getGrids_Dimensions(nRows, nCols);
+        dimensions = getDimensions(nRows, nCols);
         Grids_GridStatistics0 gridStatistics;
         gridStatistics = new Grids_GridStatistics0(gridFactory.ge);
         result = gridFactory.create(
@@ -283,20 +281,98 @@ public class Grids_GridDoubleTest {
         return result;
     }
 
+    double noDataValue;
+    boolean handleOutOfMemoryError;
+    Grids_GridChunkDoubleArrayFactory chunkFactory;
+    Grids_Environment ge;
+
+    /**
+     * Test create Grids_GridDouble.
+     */
+    @Test
+    public void test1() {
+        noDataValue = -9999.0d;
+        handleOutOfMemoryError = true;
+        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
+        initDir();
+        ge = new Grids_Environment(dir);
+        Grids_GridDoubleFactory gridFactory;
+
+        int chunkNRows;
+        int chunkNCols;
+        long nRows;
+        long nCols;
+        long cellRowIndex;
+        long cellColIndex;
+        String name;
+
+        chunkNRows = 1000;
+        chunkNCols = 1000;
+        nRows = 100000;
+        nCols = 100000;
+        name = "TestGrid2";
+
+        gridFactory = getFactory(
+                ge,
+                dir,
+                chunkNRows,
+                chunkNCols,
+                noDataValue,
+                chunkFactory,
+                handleOutOfMemoryError);
+
+        Grids_GridDouble g = getGridDouble(
+                dir,
+                name,
+                gridFactory,
+                nRows,
+                nCols,
+                handleOutOfMemoryError);
+
+        int nChunkRows;
+        int nChunkCols;
+        nChunkRows = g.getNChunkRows(handleOutOfMemoryError);
+        nChunkCols = g.getNChunkCols(handleOutOfMemoryError);
+        int chunkRowIndex;
+        int chunkColIndex;
+        int row;
+        int col;
+
+                double value;
+        value = 20d;
+
+        for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
+            chunkNRows = g.getChunkNRows(chunkRowIndex, handleOutOfMemoryError);
+            for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                chunkNCols = g.getChunkNCols(chunkColIndex, handleOutOfMemoryError);
+                for (row = 0; row < chunkNRows; row++) {
+                    for (col = 0; col < chunkNCols; col++) {
+                        g.setCell(chunkRowIndex, chunkColIndex, row, col, value);
+                    }
+                }
+            }
+        }
+        double expResult;
+        double result;
+        
+        row = 10000;
+        col = 10000;
+        expResult = value;
+        result = g.getCell(row, col, handleOutOfMemoryError);
+        assertEquals(expResult, result, value);
+
+    }
+
     /**
      * Test of getCell method, of class Grids_GridDouble.
      */
     @Test
     public void testGetCell_3args_1() {
         System.out.println("getCell");
-
-        double noDataValue = -9999.0d;
-        boolean handleOutOfMemoryError = true;
-        Grids_GridChunkDoubleArrayFactory chunkFactory;
+        noDataValue = -9999.0d;
+        handleOutOfMemoryError = true;
         chunkFactory = new Grids_GridChunkDoubleArrayFactory();
-        File dir;
-        dir = getDirectory();
-        Grids_Environment ge;
+        initDir();
         ge = new Grids_Environment(dir);
         Grids_GridDoubleFactory gridFactory;
 
@@ -312,9 +388,9 @@ public class Grids_GridDoubleTest {
         chunkNCols = 49;
         nRows = 101;
         nCols = 100;
-        name = "TestGrid";
+        name = "TestGrid1";
 
-        gridFactory = getGrids_Factory(
+        gridFactory = getFactory(
                 ge,
                 dir,
                 chunkNRows,
@@ -323,48 +399,48 @@ public class Grids_GridDoubleTest {
                 chunkFactory,
                 handleOutOfMemoryError);
 
-        Grids_GridDouble instance = getGrids_GridDouble(
+        Grids_GridDouble instance = getGridDouble(
                 dir,
                 name,
                 gridFactory,
                 nRows,
                 nCols,
                 handleOutOfMemoryError);
-        
+
         double value;
         double expResult;
         double result;
-        
+
         value = 20d;
-        
+
         cellRowIndex = 0L;
         cellColIndex = 0L;
         instance.setCell(cellRowIndex, cellColIndex, value);
         expResult = value;
         result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
         assertEquals(expResult, result, 0.0);
-        
+
         cellRowIndex = nRows - 1;
         cellColIndex = nCols - 1;
         instance.setCell(cellRowIndex, cellColIndex, value);
         expResult = value;
         result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
         assertEquals(expResult, result, 0.0);
-              
+
         cellRowIndex = nRows;
         cellColIndex = nCols - 1;
         instance.setCell(cellRowIndex, cellColIndex, value);
         expResult = noDataValue;
         result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
         assertEquals(expResult, result, 0.0);
-        
+
         cellRowIndex = nRows - 1;
         cellColIndex = nCols;
         instance.setCell(cellRowIndex, cellColIndex, value);
         expResult = noDataValue;
         result = instance.getCell(cellRowIndex, cellColIndex, handleOutOfMemoryError);
         assertEquals(expResult, result, 0.0);
-        
+
     }
 
 //    /**
