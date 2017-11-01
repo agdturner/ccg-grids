@@ -56,20 +56,9 @@ public class Grids_GridChunkDoubleArray
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
         double noDataValue = g.getNoDataValue(false);
-        int chunkNRows = g.getChunkNRows(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNCols = g.getChunkNCols(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        
-        if (chunkNRows < 0 || chunkNCols < 0) {
-            int debug = 1;
-        }
-        
-        Data = new double[chunkNRows][chunkNCols];
+        Data = new double[ChunkNRows][ChunkNCols];
         int row;
-        for (row = 0; row < chunkNRows; row++) {
+        for (row = 0; row < ChunkNRows; row++) {
             Arrays.fill(Data[row], noDataValue);
         }
         SwapUpToDate = false;
@@ -118,73 +107,48 @@ public class Grids_GridChunkDoubleArray
         Data = new double[chunkNrows][chunkNcols];
     }
 
-    /**
-     * Returns Data. TODO: Should the array be copied and the copy returned?
-     *
-     * @return
-     */
     protected double[][] getData() {
         return Data;
     }
 
-    /**
-     * Clears the Data associated with
-     */
     protected @Override
     void clearData() {
         Data = null;
         System.gc();
     }
 
-    /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param noDataValue the _NoDataValue of grid2DSquareCellDouble
-     * @return
-     */
     protected @Override
     double getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double noDataValue) {
-//        try {
-        return Data[chunkCellRowIndex][chunkCellColIndex];
-//        } catch (Exception e0) {
-//            return noDataValue;
-//        }
+        return Data[chunkRow][chunkCol];
     }
-
-    /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
-     * for constructor.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param valueToInitialise the value with which the cell is initialised
-     */
+    
+    protected @Override
+    double getCell(
+            int chunkRow,
+            int chunkCol,
+            Grids_2D_ID_int cellID,
+            double noDataValue) {
+        return Data[chunkRow][chunkCol];
+    }
+    
     protected @Override
     void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double valueToInitialise) {
-        Data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
+        Data[chunkRow][chunkCol] = valueToInitialise;
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the _NoDataValue of grid2DSquareCellDouble
@@ -192,13 +156,13 @@ public class Grids_GridChunkDoubleArray
      */
     protected @Override
     double setCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double valueToSet,
             double noDataValue) {
-        if (inChunk(chunkCellRowIndex, chunkCellColIndex)) {
-            double oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
-            Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
+        if (inChunk(chunkRow, chunkCol)) {
+            double oldValue = Data[chunkRow][chunkCol];
+            Data[chunkRow][chunkCol] = valueToSet;
             if (isSwapUpToDate()) {
                 // Optimisation? Want a setCellFast method closer to initCell? 
                 // What about an unmodifiable readOnly type chunk?

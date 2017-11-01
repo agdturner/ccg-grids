@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * Provides general methods and controls what methods extended classes must
@@ -131,19 +130,31 @@ public abstract class Grids_AbstractGridChunkDouble
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
+     * Returns the value at position given by: chunkRow, chunkCol.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row of this chunk.
+     * @param chunkCol the column of this chunk.
      * @param noDataValue
      * @return
      */
     protected abstract double getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
+            double noDataValue);
+
+    /**
+     * Returns the value at position given by: chunkRow, chunkCol and cellID.
+     *
+     * @param chunkRow the row of this chunk.
+     * @param chunkCol the column of this chunk.
+     * @param cellID the cell ID for chunkRow, chunkCol.
+     * @param noDataValue
+     * @return
+     */
+    protected abstract double getCell(
+            int chunkRow,
+            int chunkCol,
+            Grids_2D_ID_int cellID,
             double noDataValue);
 
     /**
@@ -201,19 +212,19 @@ public abstract class Grids_AbstractGridChunkDouble
      * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
      * Grid.NoDataValue then null is returned!
      *
-     * @param chunkCellRowIndex The row index of the cell w.r.t. the origin of
-     * this chunk.
-     * @param chunkCellColIndex The column index of the cell w.r.t. the origin
-     * of this chunk.
+     * @param chunkRow The row index of the cell w.r.t. the origin of this
+     * chunk.
+     * @param chunkCol The column index of the cell w.r.t. the origin of this
+     * chunk.
      * @param noDataValue The Grid.NoDataValue.
      */
     private BigDecimal getCellBigDecimal(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double noDataValue) {
         double value = getCell(
-                chunkCellRowIndex,
-                chunkCellColIndex,
+                chunkRow,
+                chunkCol,
                 noDataValue);
         try {
             return new BigDecimal(value);
@@ -227,42 +238,40 @@ public abstract class Grids_AbstractGridChunkDouble
      * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
      * for constructors of extending classes.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param valueToInitialise the value with which the cell is initialised
+     * @param noDataValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double valueToInitialise,
+            double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             initCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
-                    valueToInitialise);
+                    chunkRow,
+                    chunkCol,
+                    valueToInitialise,
+                    noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 initCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         valueToInitialise,
+                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -276,11 +285,13 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkRow the row of the chunk.
      * @param chunkCol the column of the chunk.
      * @param valueToInitialise the value to initialise the cell with.
+     * @param noDataValue
      */
     protected abstract void initCell(
             int chunkRow,
             int chunkCol,
-            double valueToInitialise);
+            double valueToInitialise,
+            double noDataValue);
 
     /**
      * Returns the value at position given by: chunkRow, chunkCol. sets it to
@@ -313,15 +324,10 @@ public abstract class Grids_AbstractGridChunkDouble
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return setCell(
                         chunkRow,
                         chunkCol,
@@ -379,15 +385,10 @@ public abstract class Grids_AbstractGridChunkDouble
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return toArrayIncludingNoDataValues(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -416,7 +417,7 @@ public abstract class Grids_AbstractGridChunkDouble
                     + Integer.MAX_VALUE + " instead of "
                     + ((long) nrows * (long) ncols));
         }
-        double _NoDataValue = getGrid().getNoDataValue(handleOutOfMemoryError);
+        double noDataValue = getGrid().getNoDataValue(handleOutOfMemoryError);
         array = new double[nrows * ncols];
         int row;
         int col;
@@ -426,7 +427,7 @@ public abstract class Grids_AbstractGridChunkDouble
                 array[count] = getCell(
                         row,
                         col,
-                        _NoDataValue);
+                        noDataValue);
                 count++;
             }
         }

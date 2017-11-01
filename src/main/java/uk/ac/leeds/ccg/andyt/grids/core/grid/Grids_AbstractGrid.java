@@ -29,10 +29,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
@@ -3107,11 +3105,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (this instanceof Grids_GridInt) {
                 if (this.getClass() == Grids_GridInt.class) {
                     Grids_AbstractGridChunkInt chunk = null;
-                    if (o.getClass() == Grids_GridChunkInt64CellMap.class) {
-                        Grids_GridChunkInt64CellMap c;
-                        c = (Grids_GridChunkInt64CellMap) o;
-                        chunk = c;
-                    }
                     if (o.getClass() == Grids_GridChunkIntArray.class) {
                         Grids_GridChunkIntArray c;
                         c = (Grids_GridChunkIntArray) o;
@@ -3135,11 +3128,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     if (o == null) {
                         int debug = 1;
                         System.out.println("No chunk loading from file " + f);
-                    }
-                    if (o.getClass() == Grids_GridChunkDouble64CellMap.class) {
-                        Grids_GridChunkDouble64CellMap c;
-                        c = (Grids_GridChunkDouble64CellMap) o;
-                        chunk = c;
                     }
                     if (o.getClass() == Grids_GridChunkDoubleArray.class) {
                         Grids_GridChunkDoubleArray c;

@@ -48,7 +48,8 @@ public class Grids_GridChunkDouble
             Grids_2D_ID_int chunkID) {
         this(g, chunkID, g.getNoDataValue(false));
     }
-        /**
+    
+    /**
      * Creates a new Grids_GridChunkDouble with value set to value.
      *
      * @param g The Grids_GridDouble Grids is set to.
@@ -69,46 +70,37 @@ public class Grids_GridChunkDouble
     @Override
     protected final void initData() {}
 
-    /**
-     * Returns Value.
-     * @return 
-     */
     protected double getValue() {
         return Value;
     }
 
-    /**
-     * Clears the data associated with this.
-     */
     @Override
     protected void clearData() {}
 
-    /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
-     * @return
-     */
     protected @Override
     double getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
+            double noDataValue) {
+        return Value;
+    }
+    
+    protected @Override
+    double getCell(
+            int chunkRow,
+            int chunkCol,
+            Grids_2D_ID_int cellID,
             double noDataValue) {
         return Value;
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
@@ -116,8 +108,8 @@ public class Grids_GridChunkDouble
      */
     protected @Override
     double setCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             double valueToSet,
             double noDataValue) {
         if (valueToSet == Value) {

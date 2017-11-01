@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
 
 /**
