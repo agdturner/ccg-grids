@@ -247,7 +247,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     public void setGridStatistics(Grids_AbstractGridStatistics s) {
         GridStatistics = s;
-        GridStatistics.init(this);        
+        GridStatistics.init(this);
     }
 
     public void initGridStatistics(Grids_AbstractGridStatistics s) {
@@ -723,7 +723,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected final long getNChunks() {
         long nChunks = (long) NChunkRows * (long) NChunkCols;
         if (nChunks > Integer.MAX_VALUE) {
-            System.err.println("Error nChunks > Integer.MAX_VALUE in " 
+            System.err.println("Error nChunks > Integer.MAX_VALUE in "
                     + this.getClass().getName() + ".getNChunks()");
             throw new Error();
         }
@@ -866,7 +866,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * AbstractGrid2DSquareCells not to be swapped if possible when an
      * OutOfMemoryError is encountered.
      */
-    public final int getChunkNCols(int chunkColIndex, 
+    public final int getChunkNCols(int chunkColIndex,
             boolean handleOutOfMemoryError, Grids_2D_ID_int chunkID) {
         try {
             int result = getChunkNCols(chunkColIndex);
@@ -2053,38 +2053,44 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grids_AbstractGridChunk attempted to be written is that with a chunk row
      * index of 0, and a chunk column index of 0.
      *
-     * @param handleOutOfMemoryError
      * @return Grids_2D_ID_int of the Grids_AbstractGridChunk which was swapped
      * or null.
      */
-    public final Grids_2D_ID_int writeToFileChunk(boolean handleOutOfMemoryError) {
+    public final Grids_2D_ID_int writeToFileChunk() {
         if (ChunkIDChunkMap.isEmpty()) {
             return null;
         }
-        Grids_2D_ID_int chunkID = ChunkIDChunkMap.keySet().iterator().next();
-        writeToFileChunk(chunkID, handleOutOfMemoryError);
-        return chunkID;
-    }
-
-    /**
-     * Attempts to write to File a seriailized version of the
-     * Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by; chunk row
-     * index _Row, chunk column index _Col.
-     *
-     * @param chunkRowIndex The chunk row index of the Grids_AbstractGridChunk
-     * to be written.
-     * @param chunkColIndex The chunk column index of the
-     * Grids_AbstractGridChunk to be written.
-     * @param handleOutOfMemoryError
-     * @return True if Grids_AbstractGridChunk on file is up to date.
-     */
-    public final boolean writeToFileChunk(
-            int chunkRowIndex,
-            int chunkColIndex,
-            boolean handleOutOfMemoryError) {
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
-        return writeToFileChunk(chunkID, handleOutOfMemoryError);
+        Grids_2D_ID_int chunkID;
+        // First try to swap any chunk not in ge.getNotToSwapData(). 
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToSwapData;
+        notToSwapData = ge.getNotToSwapData();
+        Iterator<Grids_2D_ID_int> ite;
+        ite = ChunkIDChunkMap.keySet().iterator();
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            if (notToSwapData.containsKey(this)) {
+                if (!notToSwapData.get(this).contains(chunkID)) {
+                    writeToFileChunk(chunkID);
+                    return chunkID;
+                }
+            } else {
+                writeToFileChunk(chunkID);
+                return chunkID;
+            }
+        }
+        /**
+         * If not managed to swap any chunk not in ge.getNotToSwapData(), then
+         * issue a warning and swap one that is in ge.getNotToSwapData() or
+         * return null.
+         */
+        System.out.println("Not managed to swap any chunk not in ge.getNotToSwapData()!!!");
+        ite = ChunkIDChunkMap.keySet().iterator();
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            writeToFileChunk(chunkID);
+            return chunkID;
+        }
+        return null;
     }
 
     /**
@@ -2097,14 +2103,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return True if Grids_AbstractGridChunk on file is up to date.
      */
     public final boolean writeToFileChunk(
-            Grids_2D_ID_int chunkID,
-            boolean handleOutOfMemoryError) {
+            Grids_2D_ID_int chunkID) {
         boolean result = true;
         Grids_AbstractGridChunk gridChunk;
         gridChunk = ChunkIDChunkMap.get(chunkID);
         if (gridChunk != null) {
-            if (!gridChunk.isSwapUpToDate(handleOutOfMemoryError)) {
-                File file = new File(this.getDirectory(), chunkID.getRow() + "_" + chunkID.getCol());
+            if (!gridChunk.isSwapUpToDate(ge.HandleOutOfMemoryErrorFalse)) {
+                File file = new File(
+                        getDirectory(),
+                        chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
                 try {
                     file.createNewFile();
@@ -2118,7 +2125,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     System.err.println(ioe0.getMessage());
                 }
                 System.gc();
-                gridChunk.setSwapUpToDate(true, handleOutOfMemoryError);
+                gridChunk.setSwapUpToDate(true, ge.HandleOutOfMemoryErrorFalse);
             }
         } else {
             result = false;
@@ -2127,18 +2134,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to File seriailized versions of all
-     * Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
+     * Attempts to write to File serialised versions of all
+     * Grids_AbstractGridChunk in ChunkIDChunkMap.
      */
     protected final void writeToFileChunks() {
         Iterator ite;
-        ite = getChunkIDChunkMap().keySet().iterator();
-        Grids_2D_ID_int id;
+        ite = ChunkIDChunkMap.keySet().iterator();
+        Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            id = (Grids_2D_ID_int) ite.next();
-            if (isInCache(id)) {
-                writeToFileChunk(id, false);
+            chunkID = (Grids_2D_ID_int) ite.next();
+            if (isInCache(chunkID)) {
+                writeToFileChunk(chunkID);
             }
         }
     }
@@ -2162,7 +2168,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             id = ite.next();
             if (isInCache(id)) {
-                writeToFileChunk(id, handleOutOfMemoryError);
+                writeToFileChunk(id);
             }
         }
     }
@@ -2209,7 +2215,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunk_AccountDetail() {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
-        Grids_2D_ID_int chunkID = writeToFileChunk(false);
+        Grids_2D_ID_int chunkID = writeToFileChunk();
         clearFromCacheChunk(chunkID);
         HashSet<Grids_2D_ID_int> chunks = new HashSet<>(1);
         chunks.add(chunkID);
@@ -2248,7 +2254,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected Grids_2D_ID_int swapChunk_AccountChunk() {
         Grids_2D_ID_int id;
-        id = writeToFileChunk(false);
+        id = writeToFileChunk();
         if (id != null) {
             clearFromCacheChunk(id);
         }
@@ -2263,7 +2269,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         for (cri = 0; cri < NChunkRows; cri++) {
             for (cci = 0; cci < NChunkCols; cci++) {
                 id = new Grids_2D_ID_int(cri, cci);
-                if (writeToFileChunk(id, false)) {
+                if (writeToFileChunk(id)) {
                     clearFromCacheChunk(id);
                     result++;
                 }
@@ -2278,7 +2284,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Grids_2D_ID_int id;
         while (a_Iterator.hasNext()) {
             id = a_Iterator.next();
-            if (writeToFileChunk(id, false)) {
+            if (writeToFileChunk(id)) {
                 clearFromCacheChunk(id);
                 result++;
             }
@@ -2321,7 +2327,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 id = new Grids_2D_ID_int(cri, cci);
                 if (!chunkIDs.contains(id)) {
                     if (isInCache(id)) {
-                        writeToFileChunk(id, false);
+                        writeToFileChunk(id);
                         clearFromCacheChunk(id);
                         return id;
                     }
@@ -2347,7 +2353,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     protected void swapChunk(Grids_2D_ID_int chunkID) {
-        if (writeToFileChunk(chunkID, false)) {
+        if (writeToFileChunk(chunkID)) {
             clearFromCacheChunk(chunkID);
         }
     }
@@ -2378,7 +2384,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected void swapChunk() {
         Grids_2D_ID_int id;
-        id = writeToFileChunk(false);
+        id = writeToFileChunk();
         if (id != null) {
             clearFromCacheChunk(id);
         }
@@ -2408,7 +2414,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected long swapChunk_Account() {
         Grids_2D_ID_int id;
-        id = writeToFileChunk(false);
+        id = writeToFileChunk();
         if (id != null) {
             clearFromCacheChunk(id);
             return 1L;
@@ -2472,7 +2478,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 bid = new Grids_2D_ID_int(cri, cci);
                 if (!bid.equals(chunkID)) {
                     if (isInCache(bid)) {
-                        writeToFileChunk(bid, false);
+                        writeToFileChunk(bid);
                         clearFromCacheChunk(bid);
                         HashSet<Grids_2D_ID_int> chunks;
                         chunks = new HashSet<>(1);
@@ -2521,7 +2527,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 result = new Grids_2D_ID_int(cri, cci);
                 if (!result.equals(chunkID)) {
                     if (isInCache(result)) {
-                        writeToFileChunk(result, false);
+                        writeToFileChunk(result);
                         clearFromCacheChunk(result);
                         return result;
                     }
@@ -2595,7 +2601,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 chunkIDToSwap = new Grids_2D_ID_int(cri, cci);
                 if (!chunkID.equals(chunkIDToSwap)) {
                     if (isInCache(chunkIDToSwap)) {
-                        writeToFileChunk(chunkIDToSwap, false);
+                        writeToFileChunk(chunkIDToSwap);
                         clearFromCacheChunk(chunkIDToSwap);
                         chunksSwapped.add(chunkIDToSwap);
                     }
@@ -2629,7 +2635,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (isInCache(chunkID)) {
-                    writeToFileChunk(chunkID, false);
+                    writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                 }
             }
@@ -2695,7 +2701,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunkIDs.contains(chunkID)) {
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(chunkID, false);
+                        writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         chunkIDs2.add(chunkID);
                     }
@@ -2715,10 +2721,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         for (cri = 0; cri < NChunkRows; cri++) {
             for (cci = 0; cci < NChunkCols; cci++) {
                 id2 = new Grids_2D_ID_int(cri, cci);
-                if (! chunkID.equals(id2)) {
+                if (!chunkID.equals(id2)) {
                     if (isInCache(id2)) {
-                        writeToFileChunk(
-                                id2, handleOutOfMemoryError);
+                        writeToFileChunk(                                id2);
                         clearFromCacheChunk(id2);
                         return 1L;
                     }
@@ -2740,8 +2745,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 id2 = new Grids_2D_ID_int(cri, cci);
                 if (chunkID != id2) {
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(
-                                chunkID, handleOutOfMemoryError);
+                        writeToFileChunk(                                chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
                     }
@@ -2761,7 +2765,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunkIDs.contains(chunkID)) {
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(chunkID, false);
+                        writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
                     }
@@ -2793,7 +2797,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunks.contains(chunkID)) {
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(chunkID, false);
+                        writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         //result_ChunkID_HashSet.add(a_ChunkID);
                         result.put(this, chunks);
@@ -2864,7 +2868,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (isInCache(chunkID)) {
-                    writeToFileChunk(chunkID, false);
+                    writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     chunkIDs.add(chunkID);
                 }
@@ -2942,7 +2946,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (int cci = cci0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri0, cci);
                 if (isInCache(chunkID)) {
-                    writeToFileChunk(chunkID, false);
+                    writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
                 }
@@ -2951,7 +2955,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 for (int cci = 0; cci < NChunkCols; cci++) {
                     chunkID = new Grids_2D_ID_int(cri, cci);
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(chunkID, false);
+                        writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
                     }
@@ -2960,7 +2964,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (int cci = 0; cci < cci1; cci++) {
                 chunkID = new Grids_2D_ID_int(cri1, cci);
                 if (isInCache(chunkID)) {
-                    writeToFileChunk(chunkID, false);
+                    writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
                 }
@@ -2969,7 +2973,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (int cci = cci0; cci < cci1 + 1; cci++) {
                 chunkID = new Grids_2D_ID_int(cri0, cci);
                 if (isInCache(chunkID)) {
-                    writeToFileChunk(chunkID, false);
+                    writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
                 }

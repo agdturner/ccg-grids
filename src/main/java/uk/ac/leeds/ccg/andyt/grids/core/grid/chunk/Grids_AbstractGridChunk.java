@@ -54,7 +54,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid result = getGrid();
-            result.ge.tryToEnsureThereIsEnoughMemoryToContinue(result, handleOutOfMemoryError);
+            result.ge.tryToEnsureThereIsEnoughMemoryToContinue(ChunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -180,7 +180,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      */
     public void setSwapUpToDate(boolean swapUpToDate, boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractGridChunk.this.setSwapUpToDate(swapUpToDate);
+            setSwapUpToDate(swapUpToDate);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -201,7 +201,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @param swapUpToDate
      */
     protected void setSwapUpToDate(boolean swapUpToDate) {
-        this.SwapUpToDate = swapUpToDate;
+        SwapUpToDate = swapUpToDate;
     }
 
     /**

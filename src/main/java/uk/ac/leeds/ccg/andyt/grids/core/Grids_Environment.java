@@ -50,7 +50,7 @@ public class Grids_Environment
      * For storing a Grids_Processor.
      */
     protected transient Grids_Processor Processor;
-    
+
     /**
      * For storing an instance of Grids_Files.
      */
@@ -97,8 +97,8 @@ public class Grids_Environment
     public Grids_Files getFiles() {
         if (Files == null) {
             File dataDirectory = new File(
-                Directory,
-                Strings.getString_data());
+                    Directory,
+                    Strings.getString_data());
             dataDirectory.mkdirs();
             Files = new Grids_Files(dataDirectory);
         }
@@ -132,10 +132,117 @@ public class Grids_Environment
     }
 
     /**
+     * Initialise or re-initialise a store of references to data that would
+     * ideally not be swapped.
      */
-    protected final void initNotToSwapData() {
-        if (NotToSwapData == null) {
-            NotToSwapData = new HashMap<>();
+    public final void initNotToSwapData() {
+        NotToSwapData = new HashMap<>();
+    }
+
+    /**
+     * Adds all the chunkIDs of g to NotToSwapData.
+     *
+     * @param g
+     */
+    public final void addToNotToSwapData(Grids_AbstractGrid g) {
+        HashSet<Grids_2D_ID_int> chunkIDs;
+        chunkIDs = g.getChunkIDs(HandleOutOfMemoryError);
+        NotToSwapData.put(g, chunkIDs);
+    }
+
+    /**
+     * Removes g from the NotToSwapData.
+     *
+     * @param g
+     */
+    public final void removeFromNotToSwapData(Grids_AbstractGrid g) {
+        NotToSwapData.remove(g);
+    }
+
+    /**
+     * Adds the chunkID of g to NotToSwapData.
+     *
+     * @param g
+     * @param chunkID
+     */
+    public final void addToNotToSwapData(
+            Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID) {
+        if (NotToSwapData.containsKey(g)) {
+            NotToSwapData.get(g).add(chunkID);
+        } else {
+            HashSet<Grids_2D_ID_int> chunkIDs;
+            chunkIDs = new HashSet<>();
+            chunkIDs.add(chunkID);
+            NotToSwapData.put(g, chunkIDs);
+        }
+    }
+
+    /**
+     * Adds the chunkID of each grid in g[] to NotToSwapData.
+     *
+     * @param g
+     * @param chunkID
+     */
+    public final void addToNotToSwapData(
+            Grids_AbstractGrid[] g,
+            Grids_2D_ID_int chunkID) {
+        for (Grids_AbstractGrid g1 : g) {
+            addToNotToSwapData(g1, chunkID);
+        }
+    }
+
+    /**
+     * Remove the chunkID of each grid in g[] from NotToSwapData.
+     *
+     * @param g
+     * @param chunkID
+     */
+    public final void removeFromNotToSwapData(
+            Grids_AbstractGrid[] g,
+            Grids_2D_ID_int chunkID) {
+        for (Grids_AbstractGrid g1 : g) {
+            addToNotToSwapData(g1, chunkID);
+        }
+    }
+
+    /**
+     * Adds all the chunkIDs of g to NotToSwapData.
+     *
+     * @param g
+     * @param chunkIDs
+     */
+    public final void addToNotToSwapData(
+            Grids_AbstractGrid g,
+            HashSet<Grids_2D_ID_int> chunkIDs) {
+        if (NotToSwapData.containsKey(g)) {
+            NotToSwapData.get(g).addAll(chunkIDs);
+        } else {
+            NotToSwapData.put(g, chunkIDs);
+        }
+    }
+
+    /**
+     * Remove all the chunkID of g to NotToSwapData.
+     *
+     * @param g
+     * @param chunkID
+     */
+    public final void removeFromNotToSwapData(
+            Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID) {
+        if (NotToSwapData.containsKey(g)) {
+            /**
+             * @TODO Which is best: remove the chunk and don't worry about
+             * removing g if the chunkIDs of g is empty, or remove it?
+             */
+            //NotToSwapData.get(g).remove(chunkID);
+            HashSet<Grids_2D_ID_int> chunkIDs;
+            chunkIDs = NotToSwapData.get(g);
+            chunkIDs.remove(chunkID);
+            if (chunkIDs.isEmpty()) {
+                NotToSwapData.remove(g);
+            }
         }
     }
 
@@ -830,6 +937,19 @@ public class Grids_Environment
 
     @Override
     protected boolean tryToEnsureThereIsEnoughMemoryToContinue() {
+        if (NotToSwapData.isEmpty()) {
+            return tryToEnsureThereIsEnoughMemoryToContinueSwapAny();
+        } else {
+            while (getTotalFreeMemory() < Memory_Threshold) {
+                if (swapChunkExcept_Account(NotToSwapData) < 1) {
+                    return false;
+                }
+            }
+            return tryToEnsureThereIsEnoughMemoryToContinueSwapAny();
+        }
+    }
+
+    protected boolean tryToEnsureThereIsEnoughMemoryToContinueSwapAny() {
         while (getTotalFreeMemory() < Memory_Threshold) {
             if (swapChunk_Account() < 1) {
                 return false;
@@ -1561,8 +1681,7 @@ public class Grids_Environment
      *
      * @param g
      * @param handleOutOfMemoryError
-     * @return HashMap identifying chunks
-     * swapped.
+     * @return HashMap identifying chunks swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -1624,8 +1743,7 @@ public class Grids_Environment
      * @param g
      * @param handleOutOfMemoryError
      * @param chunkID
-     * @return HashMap identifying chunks
-     * swapped.
+     * @return HashMap identifying chunks swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -1702,8 +1820,7 @@ public class Grids_Environment
      *
      * @param chunkID
      * @param handleOutOfMemoryError
-     * @return HashMap identifying chunks
-     * swapped.
+     * @return HashMap identifying chunks swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(
@@ -1776,8 +1893,7 @@ public class Grids_Environment
      *
      * @param m
      * @param handleOutOfMemoryError
-     * @return HashMap identifying chunks
-     * swapped.
+     * @return HashMap identifying chunks swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -1848,8 +1964,7 @@ public class Grids_Environment
      * @param g
      * @param handleOutOfMemoryError
      * @param chunkIDs
-     * @return HashMap identifying chunks
-     * swapped.
+     * @return HashMap identifying chunks swapped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -3001,7 +3116,7 @@ public class Grids_Environment
                 g);
         if (result < 1L) {
             result = g.swapChunkExcept_Account(
-                    chunkID, 
+                    chunkID,
                     HandleOutOfMemoryErrorFalse);
         }
         return result;
