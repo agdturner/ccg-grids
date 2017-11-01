@@ -20,12 +20,13 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
@@ -36,9 +37,20 @@ public class Grids_GridDoubleFactory
         extends Grids_AbstractGridFactory {
 
     /**
-     * The Grid2DSquareCellChunkAbstractFactory for creating chunks.
+     * The Grids_GridChunkDoubleFactory for creating chunks.
+     */
+    protected Grids_GridChunkDoubleFactory ChunkDoubleFactory;
+
+    /**
+     * The Grids_GridChunkDoubleMapFactory for creating chunks.
+     */
+    protected Grids_GridChunkDoubleMapFactory ChunkDoubleMapFactory;
+
+    /**
+     * The default or preferred Grids_AbstractGridChunkDoubleFactory for creating chunks.
      */
     protected Grids_AbstractGridChunkDoubleFactory ChunkFactory;
+
     /**
      * The NoDataValue for creating chunks.
      */
@@ -176,15 +188,6 @@ public class Grids_GridDoubleFactory
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         super(ge);
-        boolean isGrid2DSquareCellDoubleChunk64CellMapFactory
-                = (gcf.getClass()
-                == Grids_GridChunkDouble64CellMapFactory.class);
-        if (isGrid2DSquareCellDoubleChunk64CellMapFactory) {
-            if (chunkNRows * chunkNCols > 64) {
-                chunkNRows = 8;
-                chunkNCols = 8;
-            }
-        }
         this.Directory = directory;
         this.ChunkNRows = chunkNRows;
         this.ChunkNCols = chunkNCols;

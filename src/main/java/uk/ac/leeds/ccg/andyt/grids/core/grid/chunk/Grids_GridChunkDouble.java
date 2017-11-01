@@ -30,14 +30,13 @@ public class Grids_GridChunkDouble
         extends Grids_AbstractGridChunkDouble
         implements Serializable {
 
-    //private static final long serialVersionUID = 1L;
     /**
-     * For storing values arranged in rows and columns.
+     * For storing the value of every cell in this grid.
      */
     private double Value;
 
     protected Grids_GridChunkDouble() {}
-
+        
     /**
      * Creates a new Grids_GridChunkDouble with value set to g.NoDataValue.
      *
@@ -47,22 +46,28 @@ public class Grids_GridChunkDouble
     protected Grids_GridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
-        super(g.ge);
+        this(g, chunkID, g.getNoDataValue(false));
+    }
+        /**
+     * Creates a new Grids_GridChunkDouble with value set to value.
+     *
+     * @param g The Grids_GridDouble Grids is set to.
+     * @param chunkID The Grids_2D_ID_int ChunkID is set to.
+     * @param value To be the value of all cells in this chunk. 
+     */
+    protected Grids_GridChunkDouble(
+            Grids_GridDouble g,
+            Grids_2D_ID_int chunkID,
+            double value) {
+        super(g, chunkID);
         ChunkID = chunkID;
         initGrid(g);
-        Value = g.getNoDataValue(false);
+        Value = value;
         SwapUpToDate = false;
     }
 
-    /**
-     * Initialises the data associated with this.
-     */
     @Override
-    protected final void initData() {
-        boolean handleOutOfMemoryError = false;
-        Grids_GridDouble g = getGrid();
-        Value = g.getNoDataValue(handleOutOfMemoryError);
-    }
+    protected final void initData() {}
 
     /**
      * Returns Value.
@@ -76,8 +81,7 @@ public class Grids_GridChunkDouble
      * Clears the data associated with this.
      */
     @Override
-    protected void clearData() {
-    }
+    protected void clearData() {}
 
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
@@ -119,6 +123,7 @@ public class Grids_GridChunkDouble
         if (valueToSet == Value) {
             return Value;
         } else {
+            // @TODO
             throw new Error("Unable to set value as this chunk is supposed "
                     + "to all contain the same value. What is needed is to "
                     + "transform the chunk to use a richer data structure to "
@@ -138,8 +143,9 @@ public class Grids_GridChunkDouble
     }
 
     @Override
-    protected void initCell(int chunkCellRowIndex, int chunkCellColIndex, double valueToInitialise) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    protected void initCell(
+            int chunkRow, 
+            int chunkCol, 
+            double valueToInitialise) {}
 
 }

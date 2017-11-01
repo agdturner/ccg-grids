@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
 import java.io.File;
@@ -101,13 +100,6 @@ public class Grids_GridIntFactory
             boolean handleOutOfMemoryError) {
         super(ge);
         this.Directory = directory;
-        if (gcf.getClass()
-                == Grids_GridChunkInt64CellMapFactory.class) {
-            if (chunkNRows * chunkNCols > 64) {
-                chunkNRows = 8;
-                chunkNCols = 8;
-            }
-        }
         this.ChunkNRows = chunkNRows;
         this.ChunkNCols = chunkNCols;
         initDimensions(chunkNCols, chunkNRows);

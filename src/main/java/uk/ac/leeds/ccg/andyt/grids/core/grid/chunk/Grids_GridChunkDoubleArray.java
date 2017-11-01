@@ -54,9 +54,7 @@ public class Grids_GridChunkDoubleArray
     protected Grids_GridChunkDoubleArray(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
-        super(g.ge);
-        ChunkID = chunkID;
-        initGrid(g);
+        super(g, chunkID);
         double noDataValue = g.getNoDataValue(false);
         int chunkNRows = g.getChunkNRows(
                 chunkID,
@@ -90,23 +88,13 @@ public class Grids_GridChunkDoubleArray
     protected Grids_GridChunkDoubleArray(
             Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
-        super(chunk.ge);
-        ChunkID = chunkID;
-        Grids_GridDouble g = chunk.getGrid();
-        initGrid(g);
-        int chunkNrows = g.getChunkNRows(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNcols = g.getChunkNCols(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        double noDataValue = g.getNoDataValue(false);
-        initData();
+        super(chunk.getGrid(), chunkID);
+        double noDataValue = getGrid().getNoDataValue(false);
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
-        for (row = 0; row < chunkNrows; row++) {
-            for (col = 0; col < chunkNcols; col++) {
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
                 Data[row][col] = chunk.getCell(
                         row,
                         col,

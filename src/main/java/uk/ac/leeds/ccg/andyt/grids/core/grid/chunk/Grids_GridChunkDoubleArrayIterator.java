@@ -18,8 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-
 /**
  * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
  * instance. The values are not returned in any particular order.
@@ -49,7 +47,7 @@ public class Grids_GridChunkDoubleArrayIterator extends Grids_GridChunkDoubleIte
     @Override
     public Object next() {
         next0();
-        return data[ChunkRowIndex][ChunkColIndex];
+        return data[ChunkRow][ChunkCol];
     }
 
 }

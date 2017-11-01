@@ -25,10 +25,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 
@@ -371,16 +369,6 @@ public abstract class Grids_AbstractGridNumber
             Grids_GridDouble grid2DSquareCellDouble
                     = grid2DSquareCellDoubleChunk.getGrid(false);
             double noDataValue = grid2DSquareCellDouble.NoDataValue;
-            if (chunk.getClass()
-                    == Grids_GridChunkDouble64CellMap.class) {
-                Grids_GridChunkDouble64CellMap grid2DSquareCellDoubleChunk64CellMap
-                        = (Grids_GridChunkDouble64CellMap) grid2DSquareCellDoubleChunk;
-                return grid2DSquareCellDoubleChunk.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false);
-            }
             if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 Grids_GridChunkDoubleArray grid2DSquareCellDoubleChunkArray
                         = (Grids_GridChunkDoubleArray) grid2DSquareCellDoubleChunk;
@@ -407,17 +395,6 @@ public abstract class Grids_AbstractGridNumber
             Grids_GridInt grid2DSquareCellInt
                     = grid2DSquareCellIntChunk.getGrid(false);
             int noDataValue = grid2DSquareCellInt.getNoDataValue(true);
-            if (chunk.getClass()
-                    == Grids_GridChunkInt64CellMap.class) {
-                Grids_GridChunkInt64CellMap grid2DSquareCellIntChunk64CellMap
-                        = (Grids_GridChunkInt64CellMap) grid2DSquareCellIntChunk;
-                return (double) grid2DSquareCellIntChunk.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false,
-                        chunk.getChunkID(false));
-            }
             if (chunk.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray grid2DSquareCellIntChunkArray
                         = (Grids_GridChunkIntArray) grid2DSquareCellIntChunk;
@@ -636,15 +613,6 @@ public abstract class Grids_AbstractGridNumber
             Grids_GridDouble g
                     = grid2DSquareCellDoubleChunk.getGrid(false);
             double noDataValue = g.NoDataValue;
-            if (chunk.getClass() == Grids_GridChunkDouble64CellMap.class) {
-                Grids_GridChunkDouble64CellMap grid2DSquareCellDoubleChunk64CellMap
-                        = (Grids_GridChunkDouble64CellMap) grid2DSquareCellDoubleChunk;
-                return (int) grid2DSquareCellDoubleChunk64CellMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false);
-            }
             if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 Grids_GridChunkDoubleArray grid2DSquareCellDoubleChunkArray
                         = (Grids_GridChunkDoubleArray) grid2DSquareCellDoubleChunk;
@@ -671,16 +639,6 @@ public abstract class Grids_AbstractGridNumber
             Grids_GridInt grid2DSquareCellInt
                     = grid2DSquareCellIntChunk.getGrid(false);
             int noDataValue = grid2DSquareCellInt.getNoDataValue();
-            if (chunk.getClass() == Grids_GridChunkInt64CellMap.class) {
-                Grids_GridChunkInt64CellMap grid2DSquareCellIntChunk64CellMap
-                        = (Grids_GridChunkInt64CellMap) grid2DSquareCellIntChunk;
-                return grid2DSquareCellIntChunk64CellMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false,
-                        chunk.getChunkID(false));
-            }
             if (chunk.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray grid2DSquareCellIntChunkArray
                         = (Grids_GridChunkIntArray) grid2DSquareCellIntChunk;

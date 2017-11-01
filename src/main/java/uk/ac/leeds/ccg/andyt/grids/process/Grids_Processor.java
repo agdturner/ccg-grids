@@ -1541,8 +1541,7 @@ public class Grids_Processor extends Grids_Object {
                                                 chunkCellRowIndex,
                                                 chunkCellColIndex,
                                                 noDataValue,
-                                                handleOutOfMemoryError,
-                                                chunkID);
+                                                handleOutOfMemoryError);
                                     } catch (OutOfMemoryError oome) {
                                         ge.clearMemoryReserve();
                                         long swap = ge.swapChunkExcept_Account(
@@ -1555,8 +1554,7 @@ public class Grids_Processor extends Grids_Object {
                                                 chunkCellRowIndex,
                                                 chunkCellColIndex,
                                                 noDataValue,
-                                                handleOutOfMemoryError,
-                                                chunkID);
+                                                handleOutOfMemoryError);
                                     }
                                     try {
                                         if (value != noDataValue) {
@@ -1613,8 +1611,7 @@ public class Grids_Processor extends Grids_Object {
                                                 chunkCellRowIndex,
                                                 chunkCellColIndex,
                                                 noDataValue,
-                                                handleOutOfMemoryError,
-                                                chunkID);
+                                                handleOutOfMemoryError);
                                     } catch (OutOfMemoryError oome) {
                                         ge.clearMemoryReserve();
                                         long swap = ge.swapChunkExcept_Account(
@@ -1627,8 +1624,7 @@ public class Grids_Processor extends Grids_Object {
                                                 chunkCellRowIndex,
                                                 chunkCellColIndex,
                                                 noDataValue,
-                                                handleOutOfMemoryError,
-                                                chunkID);
+                                                handleOutOfMemoryError);
                                     }
                                     try {
                                         if (value != noDataValue) {

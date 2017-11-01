@@ -26,9 +26,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
 //import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
@@ -54,7 +57,7 @@ public class Grids_GridChunkDoubleMap
      * For storing values mapped to a Grids_2D_ID_int HashSet or an individual
      * Grids_2D_ID_int.
      */
-    private TDoubleObjectHashMap data;
+    private TreeMap<Double, OffsetBitSet> data;
 
     /**
      * Default constructor.
@@ -142,7 +145,7 @@ public class Grids_GridChunkDoubleMap
      */
     @Override
     protected final void initData() {
-        this.data = new TDoubleObjectHashMap();
+        data = new TreeMap<>();
     }
 
     /**
@@ -150,8 +153,8 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-    protected TDoubleObjectHashMap getData() {
-        return this.data;
+    protected TreeMap<Double, OffsetBitSet> getData() {
+        return data;
     }
 
     /**
@@ -159,8 +162,53 @@ public class Grids_GridChunkDoubleMap
      */
     protected @Override
     void clearData() {
-        this.data = null;
+        data = null;
         System.gc();
+    }
+
+    /**
+     * Returns values in row major order as a double[].
+     *
+     * @return
+     */
+    double[][] to2DDoubleArray() {
+        Grids_GridDouble grid = getGrid();
+        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        double[][] result;
+        result = new double[nrows][ncols];
+        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        Iterator<Double> ite = data.keySet().iterator();
+        Double value;
+        OffsetBitSet offsetBitSet;
+        BitSet bitSet;
+        int bitSetLength;
+        int i;
+        int row = 0;
+        int col = 0;
+        while (ite.hasNext()) {
+            value = ite.next();
+            offsetBitSet = data.get(value);
+            bitSetLength = offsetBitSet._BitSet.length();
+            for (i = 0; i < offsetBitSet.Offset; i++) {
+                col++;
+                if (col == ncols - 1) {
+                    row++;
+                    col = 0;
+                }
+            }
+            for (i = offsetBitSet.Offset; i < bitSetLength + offsetBitSet.Offset; i++) {
+                col++;
+                if (col == ncols - 1) {
+                    row++;
+                    col = 0;
+                }
+                if (offsetBitSet._BitSet.get(i)) {
+                    result[row][col] = value;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -170,92 +218,53 @@ public class Grids_GridChunkDoubleMap
      */
     protected @Override
     double[] toArrayIncludingNoDataValues() {
-        boolean handleOutOfMemoryError = false;
-        Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(handleOutOfMemoryError);
-        double[] array;
-        if (((long) nrows * (long) ncols) > Integer.MAX_VALUE) {
-            //throw new PrecisionExcpetion
-            System.out.println("PrecisionException in " + this.getClass().getName() + ".toArray()!");
-            System.out.println("Warning! The returned array size is only " + Integer.MAX_VALUE + " instead of " + ((long) nrows * (long) ncols));
-        }
-        array = new double[nrows * ncols];
-        Arrays.fill(array, this.defaultValue);
-        TDoubleObjectIterator iterator = data.iterator();
-        HashSet set;
-        Grids_2D_ID_int chunkCellID;
-        int ite;
-        int arrayIndex;
-        for (ite = 0; ite < data.size(); ite++) {
-            iterator.advance();
-            try {
-                set = (HashSet) iterator.value();
-                Iterator setIterator = set.iterator();
-                while (setIterator.hasNext()) {
-                    chunkCellID = (Grids_2D_ID_int) setIterator.next();
-                    arrayIndex
-                            = (chunkCellID.getRow() * ncols)
-                            + chunkCellID.getCol();
-                    array[arrayIndex] = iterator.key();
+        Grids_GridDouble grid = getGrid();
+        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        double[] result;
+        result = new double[nrows * ncols];
+        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        Iterator<Double> ite = data.keySet().iterator();
+        Double value;
+        OffsetBitSet offSetBitSet;
+        int bitSetLength;
+        int i;
+        while (ite.hasNext()) {
+            value = ite.next();
+            offSetBitSet = data.get(value);
+            bitSetLength = offSetBitSet._BitSet.length();
+            for (i = offSetBitSet.Offset; i < bitSetLength + offSetBitSet.Offset; i++) {
+                if (offSetBitSet._BitSet.get(i)) {
+                    result[i] = value;
                 }
-            } catch (java.lang.ClassCastException e) {
-                chunkCellID = (Grids_2D_ID_int) iterator.value();
-                arrayIndex
-                        = (chunkCellID.getRow() * ncols)
-                        + chunkCellID.getCol();
-                array[arrayIndex] = iterator.key();
             }
         }
-        return array;
+        return result;
     }
 
     /**
-     * Returns non _NoDataValue in row major order as a double[].
-     *
      * @return
      */
     protected @Override
     double[] toArrayNotIncludingNoDataValues() {
-        double _NoDataValue = getGrid().getNoDataValue(false);
-        BigInteger nonNoDataValueCountBigInteger = getNonNoDataValueCountBigInteger();
-        double[] array;
-        if ((nonNoDataValueCountBigInteger.add(BigInteger.ONE)).compareTo(new BigInteger(Integer.toString(Integer.MAX_VALUE))) > 0) {
-            //throw new PrecisionExcpetion
-            System.out.println("PrecisionExcpetion in " + this.getClass().getName() + ".toArrayNotIncludingNoDataValues()!");
-            System.out.println("Warning! The returned array size is only " + Integer.MAX_VALUE + " instead of " + nonNoDataValueCountBigInteger.toString());
-        }
-        array = new double[nonNoDataValueCountBigInteger.intValue()];
-        Arrays.fill(array, this.defaultValue);
-        TDoubleObjectIterator iterator = data.iterator();
-        HashSet set;
-        int ite;
-        int position = 0;
-        double value;
-        try {
-            for (ite = 0; ite < data.size(); ite++) {
-                iterator.advance();
-                try {
-                    set = (HashSet) iterator.value();
-                    Iterator setIterator = set.iterator();
-                    while (setIterator.hasNext()) {
-                        value = iterator.key();
-                        if (value != _NoDataValue) {
-                            array[position] = iterator.key();
-                        }
-                        position++;
-                    }
-                } catch (java.lang.ClassCastException e) {
-                    value = iterator.key();
-                    if (value != _NoDataValue) {
-                        array[position] = iterator.key();
-                    }
-                    position++;
-                }
+        Grids_GridDouble grid = getGrid();
+        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        double[] result;
+        result = new double[nrows * ncols];
+        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        Iterator<Double> ite = data.keySet().iterator();
+        Double value;
+        OffsetBitSet offSetBitSet;
+        int i;
+        while (ite.hasNext()) {
+            value = ite.next();
+            offSetBitSet = data.get(value);
+            for (i = 0; i < offSetBitSet._BitSet.cardinality(); i++) {
+                result[i] = value;
             }
-        } catch (java.lang.ArrayIndexOutOfBoundsException | java.lang.NegativeArraySizeException e) {
         }
-        return array;
+        return result;
     }
 
     /**
@@ -266,32 +275,42 @@ public class Grids_GridChunkDoubleMap
      * this chunk
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
-     * @param _NoDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
      * @return
      */
     protected @Override
     double getCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            double _NoDataValue) {
+            double noDataValue) {
+        double result = noDataValue;
+        Iterator<Double> ite;
+        ite = data.keySet().iterator();
+        double value;
+        int position = chunkCellRowIndex * Grid.ChunkNCols;
+        while (ite.hasNext()) {
+            value = ite.next();
+            
+        }
         Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(
                 chunkCellRowIndex,
                 chunkCellColIndex);
         return getCell(
                 chunkCellID,
-                _NoDataValue);
+                noDataValue);
     }
 
     /**
      * Returns the value of cell with CellID given by chunkCellID.
      *
      * @param chunkCellID The chunk CellID of cell thats value is returned.
-     * @param _NoDataValue The _NoDataValue of this.grid2DSquareCellDouble.
+     * @param noDataValue The Grid.NoDataValue.
      * @return
      */
     protected double getCell(
             Grids_2D_ID_int chunkCellID,
-            double _NoDataValue) {
+            double noDataValue) {
+        
         TDoubleObjectIterator iterator = this.data.iterator();
         HashSet set;
         Grids_2D_ID_int individual;
@@ -801,6 +820,20 @@ public class Grids_GridChunkDoubleMap
     protected @Override
     Grids_AbstractIterator iterator() {
         return new Grids_GridChunkDoubleMapIterator(this);
+    }
+
+    /**
+     * Simple inner class for wrapping an int and a BitSet.
+     */
+    public class OffsetBitSet {
+
+        public int Offset;
+        public BitSet _BitSet;
+
+        public OffsetBitSet(int offset) {
+            Offset = offset;
+            _BitSet = new BitSet();
+        }
     }
 
 }

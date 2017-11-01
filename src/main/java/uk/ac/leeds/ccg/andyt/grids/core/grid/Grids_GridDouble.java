@@ -38,7 +38,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
@@ -548,7 +547,7 @@ public class Grids_GridDouble
             double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(g, handleOutOfMemoryError);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Directory = directory;
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
@@ -611,6 +610,16 @@ public class Grids_GridDouble
                                 chunkID = new Grids_2D_ID_int(
                                         chunkRowIndex,
                                         chunkColIndex);
+                                // Initialise chunk if it does not exist
+                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
+                                    chunk = chunkFactory.createGridChunkDouble(
+                                            this,
+                                            chunkID);
+                                    ChunkIDChunkMap.put(
+                                            chunkID,
+                                            chunk);
+                                }
+
                                 gridChunkNRows = g.getChunkNRows(chunkRowIndex, handleOutOfMemoryError);
                                 gridChunkNCols = g.getChunkNCols(chunkColIndex, handleOutOfMemoryError);
                                 for (chunkCellRowIndex = 0; chunkCellRowIndex < gridChunkNRows; chunkCellRowIndex++) {
@@ -624,15 +633,6 @@ public class Grids_GridDouble
                                                 cellDouble = g.getCellDouble(
                                                         rowIndex,
                                                         colIndex);
-                                                // Initialise chunk if it does not exist
-                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.createGridChunkDouble(
-                                                            this,
-                                                            chunkID);
-                                                    ChunkIDChunkMap.put(
-                                                            chunkID,
-                                                            chunk);
-                                                }
                                                 // Initialise value
                                                 if (cellDouble == gridNoDataValue) {
                                                     initCell(
@@ -1513,12 +1513,7 @@ public class Grids_GridDouble
             chunk = getChunk(
                     chunkRowIndex,
                     chunkColIndex);
-            if (chunk.getClass() == Grids_GridChunkDouble64CellMap.class) {
-                return ((Grids_GridChunkDouble64CellMap) chunk).getCell(chunkCellRowIndex,
-                        chunkCellColIndex,
-                        NoDataValue,
-                        false);
-            } else if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
+if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 return ((Grids_GridChunkDoubleArray) chunk).getCell(chunkCellRowIndex,
                         chunkCellColIndex,
                         NoDataValue,
@@ -1606,12 +1601,7 @@ public class Grids_GridDouble
             int chunkColIndex,
             int chunkCellRowIndex,
             int chunkCellColIndex) {
-        if (grid2DSquareCellChunk.getClass() == Grids_GridChunkDouble64CellMap.class) {
-            return ((Grids_GridChunkDouble64CellMap) grid2DSquareCellChunk).getCell(chunkCellRowIndex,
-                    chunkCellColIndex,
-                    NoDataValue,
-                    false);
-        } else if (grid2DSquareCellChunk.getClass() == Grids_GridChunkDoubleArray.class) {
+if (grid2DSquareCellChunk.getClass() == Grids_GridChunkDoubleArray.class) {
             return ((Grids_GridChunkDoubleArray) grid2DSquareCellChunk).getCell(chunkCellRowIndex,
                     chunkCellColIndex,
                     NoDataValue,
@@ -2003,14 +1993,7 @@ public class Grids_GridDouble
             double newValue) {
         double result = getNoDataValue(ge.HandleOutOfMemoryErrorFalse);
         if (chunk != null) {
-            if (chunk.getClass() == Grids_GridChunkDouble64CellMap.class) {
-                result = ((Grids_GridChunkDouble64CellMap) chunk).setCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        newValue,
-                        result,
-                        false);
-            } else if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
+if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 result = ((Grids_GridChunkDoubleArray) chunk).setCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,

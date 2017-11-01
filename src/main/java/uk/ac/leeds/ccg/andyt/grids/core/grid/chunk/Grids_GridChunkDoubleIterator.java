@@ -28,10 +28,10 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
 
     protected double Value;
-    protected int ChunkRowIndex;
-    protected int ChunkColIndex;
-    protected int ChunkNrows;
-    protected int ChunkNcols;
+    protected int ChunkRow;
+    protected int ChunkCol;
+    protected int ChunkNRows;
+    protected int ChunkNCols;
 
     protected Grids_GridChunkDoubleIterator() {
     }
@@ -51,11 +51,11 @@ public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
      * @param chunk
      */
     protected final void init(Grids_AbstractGridChunkDouble chunk) {
-        ChunkRowIndex = 0;
-        ChunkColIndex = 0;
+        ChunkRow = 0;
+        ChunkCol = 0;
         Grids_GridDouble g = chunk.getGrid();
-        ChunkNrows = g.getChunkNRows(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
-        ChunkNcols = g.getChunkNCols(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
+        ChunkNRows = g.getChunkNRows(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
+        ChunkNCols = g.getChunkNCols(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
     }
 
     /**
@@ -68,8 +68,8 @@ public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
      */
     @Override
     public boolean hasNext() {
-        if (ChunkColIndex + 1 == ChunkNcols) {
-            if (ChunkRowIndex + 1 == ChunkNrows) {
+        if (ChunkCol + 1 == ChunkNCols) {
+            if (ChunkRow + 1 == ChunkNRows) {
                 return false;
             }
         }
@@ -88,16 +88,16 @@ public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
     }
 
     protected void next0() {
-        if (ChunkColIndex + 1 == ChunkNcols) {
-            if (ChunkRowIndex + 1 == ChunkNrows) {
+        if (ChunkCol + 1 == ChunkNCols) {
+            if (ChunkRow + 1 == ChunkNRows) {
                 //throw NoSuchElementException;
                 //return null;
             } else {
-                ChunkRowIndex++;
-                ChunkColIndex = 0;
+                ChunkRow++;
+                ChunkCol = 0;
             }
         } else {
-            ChunkColIndex++;
+            ChunkCol++;
         }
     }
 

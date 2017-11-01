@@ -37,10 +37,6 @@ public class Grids_GridChunkBinary
     protected Grids_GridChunkBinary() {
     }
 
-    protected Grids_GridChunkBinary(Grids_Environment ge) {
-        super(ge);
-    }
-
     @Override
     protected void initData() {
         boolean handleOutOfMemoryError = false;

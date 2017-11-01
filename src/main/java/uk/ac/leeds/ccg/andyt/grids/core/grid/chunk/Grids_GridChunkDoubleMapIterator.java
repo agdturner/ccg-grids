@@ -20,7 +20,9 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import gnu.trove.TDoubleObjectIterator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
@@ -48,7 +50,15 @@ public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
 
     public Grids_GridChunkDoubleMapIterator(
             Grids_GridChunkDoubleMap chunk) {
-        this.dataIterator = chunk.getData().iterator();
+        HashMap<Double, boolean[][]> data;
+        data = chunk.getData();
+        Iterator<Double> ite = data.keySet().iterator();
+        boolean[][] map;
+        while (ite.hasNext()) {
+            value = ite.next();
+            map = data.get(value);
+        }
+
         iteratorIndex = 0L;
         Grids_GridDouble g = chunk.getGrid();
         this.noDataValue = g.getNoDataValue(false);
@@ -91,7 +101,7 @@ public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
      */
     @Override
     public Object next() {
-        Double next = this.value;
+        Double next = value;
         this.iteratorIndex++;
         try {
             if (this.value != noDataValue) {

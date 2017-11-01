@@ -20,8 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMapIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
@@ -56,11 +54,6 @@ public class Grids_GridIntIterator
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_GridChunkInt64CellMap) {
-            ChunkIterator = new Grids_GridChunkInt64CellMapIterator(
-                    (Grids_GridChunkInt64CellMap) Chunk);
-            return;
-        }
         if (Chunk instanceof Grids_GridChunkIntArray) {
             ChunkIterator = new Grids_GridChunkIntArrayIterator(
                     (Grids_GridChunkIntArray) Chunk);
@@ -77,10 +70,6 @@ public class Grids_GridIntIterator
     @Override
     public Grids_AbstractIterator getChunkIterator(
             Grids_AbstractGridChunk chunk) {
-        if (chunk instanceof Grids_GridChunkInt64CellMap) {
-            return new Grids_GridChunkInt64CellMapIterator(
-                    (Grids_GridChunkInt64CellMap) chunk);
-        }
         if (chunk instanceof Grids_GridChunkIntArray) {
             return new Grids_GridChunkIntArrayIterator(
                     (Grids_GridChunkIntArray) chunk);

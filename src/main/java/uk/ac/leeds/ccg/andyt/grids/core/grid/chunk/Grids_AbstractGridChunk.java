@@ -8,7 +8,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
@@ -22,11 +21,18 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * A reference to the Grid.
      */
     protected transient Grids_AbstractGrid Grid;
+
     /**
      * For storing the Grids_2D_ID_int of this. TODO: Is this transient for
      * caching?
      */
     protected transient Grids_2D_ID_int ChunkID;
+
+    protected int ChunkNRows;
+    
+    protected int ChunkNCols;
+    
+    
     //protected Grids_2D_ID_int _ChunkID;
     /**
      * Indicator for whether the swapped version of this chunk is upToDate.
@@ -36,11 +42,15 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     protected transient boolean SwapUpToDate;
     //protected boolean SwapUpToDate;
 
-    public Grids_AbstractGridChunk() {
+    protected Grids_AbstractGridChunk() {
     }
 
-    protected Grids_AbstractGridChunk(Grids_Environment ge) {
-        super(ge);
+    protected Grids_AbstractGridChunk(Grids_AbstractGrid g, Grids_2D_ID_int chunkID) {
+        super(g.ge);
+        Grid = g;
+        ChunkID = chunkID;
+        ChunkNRows = Grid.getChunkNRows(ChunkID, false);
+        ChunkNCols = Grid.getChunkNCols(ChunkID, false);
     }
 
     /**
@@ -80,12 +90,12 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Initialises _Grid2DSquareCell.
+     * Initialises Grid = g.
      *
      * @param g
      */
     public final void initGrid(Grids_AbstractGrid g) {
-        this.setGrid(g);
+        setGrid(g);
     }
 
     /**
@@ -316,16 +326,19 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
      * chunk cell col index chunkCellColIndex is in this.
      *
-     * @param chunkCellRowIndex
-     * @param chunkCellColIndex
+     * @param chunkRow
+     * @param chunkCol
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public boolean inChunk(int chunkCellRowIndex, int chunkCellColIndex, boolean handleOutOfMemoryError) {
+    public boolean inChunk(
+            int chunkRow, 
+            int chunkCol,
+            boolean handleOutOfMemoryError) {
         try {
-            boolean result = inChunk(chunkCellRowIndex, chunkCellColIndex);
+            boolean result = inChunk(chunkRow, chunkCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -335,7 +348,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return inChunk(chunkCellRowIndex, chunkCellColIndex, handleOutOfMemoryError);
+                return inChunk(chunkRow, chunkCol, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -346,14 +359,17 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
      * chunk cell col index chunkCellColIndex is in this.
      *
-     * @param chunkCellRowIndex
-     * @param chunkCellColIndex
+     * @param chunkRow
+     * @param chunkCol
      * @return
      */
-    protected boolean inChunk(int chunkCellRowIndex, int chunkCellColIndex) {
-        int chunkNrows = Grid.getChunkNRows(ChunkID, false);
-        int chunkNcols = Grid.getChunkNCols(ChunkID, false);
-        return chunkCellRowIndex > -1 && chunkCellRowIndex < chunkNrows && chunkCellColIndex > -1 && chunkCellColIndex < chunkNcols;
+    protected boolean inChunk(int chunkRow, int chunkCol) {
+        if (chunkRow >= 0 && chunkRow < ChunkNRows) {
+            if (chunkCol >= 0 && chunkCol < ChunkNCols) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -370,7 +386,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @param grid the Grid to set
      */
     public void setGrid(Grids_AbstractGrid grid) {
-        this.Grid = grid;
+        Grid = grid;
     }
 
 }

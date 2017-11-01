@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * Provides general methods and controls what methods extended classes must
@@ -37,10 +36,6 @@ public abstract class Grids_AbstractGridChunkInt
 
     //private static final long serialVersionUID = 1L;
     protected Grids_AbstractGridChunkInt() {
-    }
-
-    public Grids_AbstractGridChunkInt(Grids_Environment ge) {
-        super(ge);
     }
 
     /**
@@ -76,7 +71,7 @@ public abstract class Grids_AbstractGridChunkInt
      * @return (Grids_GridInt) Grid;
      */
     @Override
-    protected Grids_GridInt getGrid() {
+    protected final Grids_GridInt getGrid() {
         return (Grids_GridInt) Grid;
     }
 
