@@ -2482,10 +2482,6 @@ public class Grids_ProcessorDEM
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            jkl
-            /**
-             * 
-             */
             ge.getGrids().add(g);
             int _MessageLength = 1000;
             String _Message0 = ge.initString(_MessageLength, handleOutOfMemoryError);
@@ -2515,7 +2511,8 @@ public class Grids_ProcessorDEM
                 do {
                     try {
                         if (isGridInt(i)) {
-                            metrics1[i] = (Grids_GridInt) gridIntFactory.create(file,
+                            metrics1[i] = (Grids_GridInt) gridIntFactory.create(
+                                    file,
                                     nrows,
                                     ncols,
                                     dimensions,
@@ -2525,7 +2522,8 @@ public class Grids_ProcessorDEM
                                         true, handleOutOfMemoryError);
                             }
                         } else {
-                            metrics1[i] = (Grids_GridDouble) gridDoubleFactory.create(file,
+                            metrics1[i] = (Grids_GridDouble) gridDoubleFactory.create(
+                                    file,
                                     nrows,
                                     ncols,
                                     dimensions,
@@ -2917,7 +2915,10 @@ public class Grids_ProcessorDEM
                         chunkID = new Grids_2D_ID_int(
                                 chunkRowIndex, chunkColIndex);
                         ge.initNotToSwapData();
+                        ge.addToNotToSwapData(g, chunkID, chunkRowIndex, chunkColIndex, chunkNRows, chunkNCols, cellDistance);
                         ge.addToNotToSwapData(g, chunkID);
+                        ge.addToNotToSwapData(metrics1, chunkID);
+                        
                         gridChunkDouble = gridDouble.getGridChunk(
                                 chunkRowIndex,
                                 chunkColIndex,

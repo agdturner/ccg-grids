@@ -247,6 +247,31 @@ public class Grids_Environment
     }
 
     /**
+     * Adds all the chunkIDs of g to NotToSwapData.
+     *
+     * @param g
+     * @param chunkIDs
+     */
+    public final void addToNotToSwapData(
+            Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID,
+            int chunkRowIndex,
+            int chunkColIndex,
+            int chunkNRows,
+            int chunkNCols,
+            int cellDistance) {
+        HashSet<Grids_2D_ID_int> chunkIDs;
+        if (NotToSwapData.containsKey(g)) {
+            chunkIDs = NotToSwapData.get(g);
+        } else {
+            chunkIDs = new HashSet<>();
+            NotToSwapData.put(g, chunkIDs);
+        }
+        chunkIDs.add(chunkID);fadfsaf
+        
+    }
+
+    /**
      * Initialises Grids.
      *
      * @param grids
