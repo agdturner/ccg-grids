@@ -19,28 +19,38 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import gnu.trove.TDoubleHashSet;
-import gnu.trove.TDoubleObjectHashMap;
-import gnu.trove.TDoubleObjectIterator;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.HashMap;
-//import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * Grids_AbstractGridChunkDouble extension that stores cell values in a
- * TDoubleObjectHashMap.
+ * Grids_AbstractGridChunkDouble extension that stores cell values in: a TreeMap
+ * with keys as cell values and values as BitSets giving their locations; a
+ * TreeMap with keys as cell values and values as a TreeSet&LTGrids_2D_ID_int&GT
+ * giving the locations of these values. There is a default value for all values
+ * that are not in these maps and that are not no data values. The locations of
+ * no data values are given in a BitSet. The complexity of this data store
+ * allows for some efficiencies in statistical calculations and storage all
+ * depending on the distribution and commonalities in the data values. Until all
+ * the data is read in and processed it is not known how is the best way to
+ * store it for speed and efficiency. If the chunk values are mutable and do not
+ * change it is perhaps worth changing into an efficient data storage in terms
+ * of what is stored in each map and what the default value is. It may also be
+ * worth considering changing to a different chunk altogether. The class might
+ * be improved with the use of more efficient and lightweight collections that
+ * might be available from third parties. In the past GNU Trove has been used.
+ * The Eclipse Collections Framework was considered as a replacement for GNU
+ * Trove as it was retired. GNU Trove still worked fine, but it was decided to
+ * remove this dependency at a time of rationalising the Grids library in 2017
+ * which involved removing other dependencies like a dependency on JAI too which
+ * was at one time used for holding values for a chunk.
  */
 public class Grids_GridChunkDoubleMap
         extends Grids_AbstractGridChunkDouble
@@ -53,7 +63,7 @@ public class Grids_GridChunkDoubleMap
      * The location of all DefaultValues can be calculated from the converse of
      * the intersection of NoData, InDataMapHashSet and InDataMapBitSet.
      */
-    private double DefaultValue;
+    public double DefaultValue;
 
     /**
      * Identifies the locations of all noDataValues.
@@ -86,8 +96,7 @@ public class Grids_GridChunkDoubleMap
      * Creates a new Grid2DSquareCellDoubleChunkMap
      *
      * @param g
-     * @param chunkID Default: default value to
-     * grid2DSquareCellDouble.getNoDataValue()
+     * @param chunkID Default: default value to 0.0d
      */
     protected Grids_GridChunkDoubleMap(
             Grids_GridDouble g,
@@ -95,7 +104,7 @@ public class Grids_GridChunkDoubleMap
         this(
                 g,
                 chunkID,
-                g.getNoDataValue(false));
+                0.0d);
     }
 
     /**
@@ -1001,57 +1010,64 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * For returning the median of all non _NoDataValues as a double
+     * For returning the median of all data values as a double.
      *
      * @return
      */
     @Override
-    protected 
-    double getMedianDouble() {
+    protected double getMedianDouble() {
+        double result;
         int scale = 325;
-        double[] keys = this.Data.keys();
-        sort1(keys, 0, keys.length);
-        long nonNoDataValueCountLong = getNonNoDataValueCountBigInteger().longValue();
-        if (nonNoDataValueCountLong > 0) {
+        TreeMap<Double, Integer> valueCount = new TreeMap<>();
+        int n = ChunkNCols * ChunkNRows;
+        int numberOfDefaultValues = getNumberOfDefaultValues(n);
+        valueCount.put(DefaultValue, numberOfDefaultValues);
+        TreeMap<Double, OffsetBitSet> dataMapBitSet;
+        dataMapBitSet = Data.DataMapBitSet;
+        double value;
+        Iterator<Double> ite;
+        ite = dataMapBitSet.keySet().iterator();
+        while (ite.hasNext()) {
+            value = ite.next();
+            valueCount.put(value, dataMapBitSet.get(value)._BitSet.cardinality());
+        }
+        TreeMap<Double, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+        dataMapHashSet = Data.DataMapHashSet;
+        ite = dataMapHashSet.keySet().iterator();
+        while (ite.hasNext()) {
+            value = ite.next();
+            valueCount.put(value, dataMapHashSet.get(value).size());
+        }
+        long nonNoDataValueCount = getNonNoDataValueCountBigInteger().longValue();
+        if (nonNoDataValueCount > 0) {
             long index = -1L;
-            if (nonNoDataValueCountLong % 2L == 0L) {
+            if (nonNoDataValueCount % 2L == 0L) {
                 // Need arithmetic mean of ( ( nonNoDataValueCount / 2 ) - 1 )th
                 // and ( nonNoDataValueCount / 2 )th values
-                long requiredIndex = (nonNoDataValueCountLong / 2L) - 1L;
-                boolean got = false;
-                BigDecimal medianBigDecimal = null;
-                for (int keyIndex = 0; keyIndex < keys.length; keyIndex++) {
-                    try {
-                        index += (long) ((HashSet) this.Data.get(keys[keyIndex])).size();
-                    } catch (java.lang.ClassCastException e) {
-                        index++;
-                    }
-                    if (!got && index >= requiredIndex) {
-                        medianBigDecimal = new BigDecimal(keys[keyIndex]);
-                        got = true;
-                    }
-                    if (index >= requiredIndex + 1L) {
-                        BigDecimal bigDecimalTwo = new BigDecimal(2.0d);
-                        BigDecimal bigDecimal0 = new BigDecimal(keys[keyIndex]);
-                        BigDecimal bigDecimal1 = medianBigDecimal.add(bigDecimal0);
-                        bigDecimal0 = bigDecimal1.divide(
-                                bigDecimalTwo,
-                                scale,
-                                BigDecimal.ROUND_HALF_EVEN);
-                        return bigDecimal0.doubleValue();
+                long requiredIndex = (nonNoDataValueCount / 2L) - 1L;
+                int i = 0;
+                ite = valueCount.keySet().iterator();
+                while (ite.hasNext()) {
+                    value = ite.next();
+                    i += valueCount.get(value);
+                    if (i > requiredIndex && i > requiredIndex + 1) {
+                        return value;
+                    } else {
+                        double value2;
+                        value2 = ite.next();
+                        return (value + value2) / 2.0d;
                     }
                 }
             } else {
                 // Need ( ( nonNoDataValueCount ) / 2 )th value
-                long requiredIndex = nonNoDataValueCountLong / 2L;
-                for (int keyIndex = 0; keyIndex < keys.length; keyIndex++) {
-                    try {
-                        index += ((HashSet) this.Data.get(keys[keyIndex])).size();
-                    } catch (java.lang.ClassCastException e) {
-                        index++;
-                    }
-                    if (index >= requiredIndex) {
-                        return keys[keyIndex];
+                long requiredIndex = nonNoDataValueCount / 2L;
+                int i = 0;
+                ite = valueCount.keySet().iterator();
+                while (ite.hasNext()) {
+                    value = ite.next();
+                    i += valueCount.get(value);
+                    if (i > requiredIndex) {
+                        return value;
                     }
                 }
             }
@@ -1149,11 +1165,15 @@ public class Grids_GridChunkDoubleMap
      */
     public class GridChunkDoubleMapData {
 
-        // For more common values.
-        private final TreeMap<Double, OffsetBitSet> DataMapBitSet;
+        /**
+         * For more common values.
+         */
+        public final TreeMap<Double, OffsetBitSet> DataMapBitSet;
 
-        // For less common and more distributed values.
-        private final TreeMap<Double, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+        /**
+         * For less common and more distributed values.
+         */
+        public final TreeMap<Double, HashSet<Grids_2D_ID_int>> DataMapHashSet;
 
         public GridChunkDoubleMapData(
                 TreeMap<Double, OffsetBitSet> dataMapBitSet,

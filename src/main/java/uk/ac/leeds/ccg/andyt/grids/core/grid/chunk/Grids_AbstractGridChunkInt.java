@@ -38,6 +38,12 @@ public abstract class Grids_AbstractGridChunkInt
     protected Grids_AbstractGridChunkInt() {
     }
 
+    protected Grids_AbstractGridChunkInt(
+            Grids_GridInt g,
+            Grids_2D_ID_int chunkID) {
+        super(g, chunkID);
+    }
+    
     /**
      *
      *
@@ -76,28 +82,26 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
+     * Returns the value at position given by: chunkRow, chunkCol, as a int.
      *
-     * @param chunkCellRowIndex The row index of the cell w.r.t. the origin of
-     * this chunk.
-     * @param chunkCellColIndex The column index of the cell w.r.t. the origin
-     * of this chunk.
-     * @param noDataValue The noDataValue of this.grid2DSquareCellDouble.
+     * @param chunkRow The row of
+     * the chunk.
+     * @param chunkCol The column of the chunk.
+     * @param noDataValue The noDataValue of the Grid.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     protected int getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             int result = getCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
+                    chunkRow,
+                    chunkCol,
                     noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -109,8 +113,8 @@ public abstract class Grids_AbstractGridChunkInt
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         noDataValue,
                         handleOutOfMemoryError);
             } else {
@@ -120,12 +124,12 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell row chunkCol, as a double.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param noDataValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -137,15 +141,15 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     public int getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int noDataValue,
             boolean handleOutOfMemoryError,
             Grids_2D_ID_int chunkID) {
         try {
             int result = getCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
+                    chunkRow,
+                    chunkCol,
                     noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -157,8 +161,8 @@ public abstract class Grids_AbstractGridChunkInt
                 }
                 ge.initMemoryReserve(ChunkID, handleOutOfMemoryError);
                 return getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         noDataValue,
                         handleOutOfMemoryError,
                         chunkID);
@@ -169,28 +173,28 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell col chunkCellColIndex as a int.
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell col chunkCol as a int.
      *
-     * @param chunkCellRowIndex The row index of the cell w.r.t. the origin of
+     * @param chunkRow The row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex The column index of the cell w.r.t. the origin
+     * @param chunkCol The column index of the cell w.r.t. the origin
      * of this chunk
      * @param noDataValue The noDataValue of this.grid2DSquareCellInt
      * @return
      */
     protected abstract int getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int noDataValue);
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell col chunkCellColIndex as a double.
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell col chunkCol as a double.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param noDataValue the noDataValue of this.grid2DSquareCellInt
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -200,14 +204,14 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     public double getCellDouble(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellDouble(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
+                    chunkRow,
+                    chunkCol,
                     noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -219,8 +223,8 @@ public abstract class Grids_AbstractGridChunkInt
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getCellDouble(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         noDataValue,
                         handleOutOfMemoryError);
             } else {
@@ -230,35 +234,35 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell col chunkCellColIndex as a double.
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell col chunkCol as a double.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param noDataValue the noDataValue of this.grid2DSquareCellInt TODO:
      * Ensure the int can be represented exactly as a double. If not throw
      * Exception of some kind.
      */
     private double getCellDouble(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int noDataValue) {
         return (double) getCell(
-                chunkCellRowIndex,
-                chunkCellColIndex,
+                chunkRow,
+                chunkCol,
                 noDataValue);
     }
 
     /**
      * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
+     * chunkRow; chunk cell column chunkCol. Utility method
      * for constructors of extending classes.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToInitialise the value with which the cell is initialised
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -266,14 +270,14 @@ public abstract class Grids_AbstractGridChunkInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     public void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int valueToInitialise,
             boolean handleOutOfMemoryError) {
         try {
             initCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
+                    chunkRow,
+                    chunkCol,
                     valueToInitialise);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
@@ -284,8 +288,8 @@ public abstract class Grids_AbstractGridChunkInt
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 initCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         valueToInitialise,
                         handleOutOfMemoryError);
             } else {
@@ -296,27 +300,27 @@ public abstract class Grids_AbstractGridChunkInt
 
     /**
      * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
+     * chunkRow; chunk cell column chunkCol. Utility method
      * for constructors of extending classes.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToInitialise the value with which the cell is initialised
      */
     protected abstract void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int valueToInitialise);
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the noDataValue of this.grid2DSquareCellDouble
@@ -326,15 +330,15 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     public int setCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int valueToSet,
             int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             int result = setCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
+                    chunkRow,
+                    chunkCol,
                     valueToSet,
                     noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -347,8 +351,8 @@ public abstract class Grids_AbstractGridChunkInt
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return setCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunkRow,
+                        chunkCol,
                         valueToSet,
                         noDataValue,
                         handleOutOfMemoryError);
@@ -359,20 +363,20 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow;
+     * chunk cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param chunkRow the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the noDataValue of this.grid2DSquareCellDouble
      * @return
      */
     protected abstract int setCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int chunkRow,
+            int chunkCol,
             int valueToSet,
             int noDataValue);
 

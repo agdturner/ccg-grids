@@ -48,7 +48,7 @@ public class Grids_GridChunkIntMap
      * By default the defaultValue is set to
      * this._Grid2DSquareCell.getNoDataValue().
      */
-    private int defaultValue;
+    private int DefaultValue;
 
     /**
      * For storing values mapped to a Grids_2D_ID_int HashSet or an individual
@@ -66,14 +66,12 @@ public class Grids_GridChunkIntMap
      * Creates a new Grid2DSquareCellIntChunkMap
      *
      * @param g
-     * @param chunkID Default: default value to
-     * grid2DSquareCellInt.getNoDataValue()
+     * @param chunkID Default: default value to 0.
      */
     protected Grids_GridChunkIntMap(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        this(g, chunkID,
-                g.getNoDataValue(g.ge.HandleOutOfMemoryErrorFalse));
+        this(g, chunkID, 0);
     }
 
     /**
@@ -87,10 +85,8 @@ public class Grids_GridChunkIntMap
             Grids_GridInt g,
             Grids_2D_ID_int chunkID,
             int defaultValue) {
-        super(g.ge);
-        this.ChunkID = chunkID;
-        initGrid(g);
-        this.defaultValue = defaultValue;
+        super(g, chunkID);
+        DefaultValue = defaultValue;
         initData();
         this.SwapUpToDate = false;
     }
@@ -123,21 +119,16 @@ public class Grids_GridChunkIntMap
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID,
             int defaultValue) {
-        super(chunk.ge);
+        super(chunk.getGrid(), chunkID);
         boolean handleOutOfMemoryError = false;
-        this.ChunkID = chunkID;
-        Grids_GridInt g = chunk.getGrid();
-        initGrid(g);
-        int chunkNrows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
         initData();
         int value;
-        for (int row = 0; row < chunkNrows; row++) {
-            for (int col = 0; col < chunkNcols; col++) {
+        for (int row = 0; row < ChunkNRows; row++) {
+            for (int col = 0; col < ChunkNCols; col++) {
                 value = chunk.getCell(
                         row,
                         col,
-                        this.defaultValue,
+                        DefaultValue,
                         handleOutOfMemoryError);
                 if (value != defaultValue) {
                     initCell(
@@ -147,7 +138,7 @@ public class Grids_GridChunkIntMap
                 }
             }
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
@@ -191,7 +182,7 @@ public class Grids_GridChunkIntMap
      * Sets this.defaultValue to defaultValue.
      */
     private void initDefaultValue(int defaultValue) {
-        this.defaultValue = defaultValue;
+        this.DefaultValue = defaultValue;
     }
 
     /**
@@ -217,7 +208,7 @@ public class Grids_GridChunkIntMap
                     + Integer.MAX_VALUE + " instead of " + ncells);
         }
         array = new int[nrows * ncols];
-        Arrays.fill(array, this.defaultValue);
+        Arrays.fill(array, this.DefaultValue);
         TIntObjectIterator iterator = data.iterator();
         HashSet set;
         Grids_2D_ID_int chunkCellID;
@@ -356,7 +347,7 @@ public class Grids_GridChunkIntMap
                 }
             }
         }
-        return this.defaultValue;
+        return this.DefaultValue;
     }
 
     /**
@@ -444,7 +435,7 @@ public class Grids_GridChunkIntMap
     public int setCell(
             Grids_2D_ID_int chunkCellID,
             int valueToSet) {
-        int result = this.defaultValue;
+        int result = this.DefaultValue;
         TIntObjectIterator iterator = this.data.iterator();
         int value = result;
         boolean gotValue = false;
@@ -561,7 +552,7 @@ public class Grids_GridChunkIntMap
                 getGrid().ge.HandleOutOfMemoryErrorFalse);
         TIntObjectIterator iterator = this.data.iterator();
         BigInteger nonNoDataCountBigInteger = BigInteger.ZERO;
-        if (this.defaultValue == noDataValue) {
+        if (this.DefaultValue == noDataValue) {
             for (int ite = 0; ite < this.data.size(); ite++) {
                 iterator.advance();
                 try {

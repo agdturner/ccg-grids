@@ -19,11 +19,9 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import gnu.trove.TDoubleHashSet;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 

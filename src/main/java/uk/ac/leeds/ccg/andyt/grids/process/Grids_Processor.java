@@ -39,11 +39,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble64CellMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt64CellMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
@@ -92,10 +90,6 @@ public class Grids_Processor extends Grids_Object {
      * Default Grids_AbstractGridChunkIntFactory
      */
     public Grids_AbstractGridChunkIntFactory GridChunkIntFactory;
-    /**
-     * Grids_GridChunkInt64CellMapFactory
-     */
-    public Grids_GridChunkInt64CellMapFactory _Grid2DSquareCellIntChunk64CellMapFactory;
     /**
      * Grids_GridChunkIntArrayFactory
      */
@@ -241,12 +235,10 @@ public class Grids_Processor extends Grids_Object {
      * Initialises Grid2DSquareCellChunk Factories.
      */
     private void initChunkFactories() {
-        this._Grid2DSquareCellIntChunk64CellMapFactory = new Grids_GridChunkInt64CellMapFactory();
         this._Grid2DSquareCellIntChunkArrayFactory = new Grids_GridChunkIntArrayFactory();
         this._Grid2DSquareCellIntChunkMapFactory = new Grids_GridChunkIntMapFactory();
         //this.GridChunkIntFactory = _Grid2DSquareCellIntChunkMapFactory;
         this.GridChunkIntFactory = _Grid2DSquareCellIntChunkArrayFactory;
-        this._Grid2DSquareCellDoubleChunk64CellMapFactory = new Grids_GridChunkDouble64CellMapFactory();
         this._Grid2DSquareCellDoubleChunkArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         this._Grid2DSquareCellDoubleChunkMapFactory = new Grids_GridChunkDoubleMapFactory();
         //this._Grid2DSquareCellDoubleChunkFactory = _Grid2DSquareCellDoubleChunkMapFactory;

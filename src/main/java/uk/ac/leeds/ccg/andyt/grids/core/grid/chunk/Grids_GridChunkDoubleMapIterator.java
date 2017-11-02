@@ -18,12 +18,12 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import gnu.trove.TDoubleObjectIterator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.TreeMap;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap.OffsetBitSet;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -32,53 +32,55 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
 
-    private TDoubleObjectIterator dataIterator;
-    private long iteratorIndex;
-    private long numberOfCells;
-
-    //    private Iterator hashMapIterator;
-    //    private HashSet hashSet;
-    //    private Iterator hashSetIterator;
-    //    private ChunkCellID chunkCellID;
-    private double value;
-    private long size;
-    private long valueCounter;
+    private double Value;
+    private int NumberOfCells;
     private double noDataValue;
+    private double DefaultValue;
+    private int NumberOfDefaultValues;
+    private int DefaultValueIndex;
+    private Grids_GridChunkDoubleMap.GridChunkDoubleMapData Data;
+    private TreeMap<Double, OffsetBitSet> DataMapBitSet;
+    private Iterator<Double> DataMapBitSetIte;
+    private int DataMapBitSetIndex;
+    private int DataMapBitSetNumberOfValues;
+    private double DataMapBitSetValue;
+    private TreeMap<Double, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+    private Iterator<Double> DataMapHashSetIte;
+    private int DataMapHashSetNumberOfValues;
+    private int DataMapHashSetIndex;
+    private double DataMapHashSetValue;
+    private boolean ValuesLeft;
 
-    public Grids_GridChunkDoubleMapIterator() {
+    protected Grids_GridChunkDoubleMapIterator() {
     }
 
     public Grids_GridChunkDoubleMapIterator(
             Grids_GridChunkDoubleMap chunk) {
-        HashMap<Double, boolean[][]> data;
-        data = chunk.getData();
-        Iterator<Double> ite = data.keySet().iterator();
-        boolean[][] map;
-        while (ite.hasNext()) {
-            value = ite.next();
-            map = data.get(value);
+        Data = chunk.getData();
+        DataMapBitSet = Data.DataMapBitSet;
+        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
+        DataMapHashSet = Data.DataMapHashSet;
+        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
+        NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
+        DefaultValue = chunk.DefaultValue;
+        NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
+        DefaultValueIndex = 0;
+        ValuesLeft = false;
+        if (NumberOfDefaultValues > 0) {
+            ValuesLeft = true;
         }
-
-        iteratorIndex = 0L;
-        Grids_GridDouble g = chunk.getGrid();
-        this.noDataValue = g.getNoDataValue(false);
-        this.numberOfCells = ((long) g.getChunkNRows(chunk.ChunkID,
-                ge.HandleOutOfMemoryErrorFalse)
-                * (long) g.getChunkNCols(chunk.ChunkID,
-                        ge.HandleOutOfMemoryErrorFalse));
-        try { // In case empty!
-            this.dataIterator.advance();
-            this.value = dataIterator.key();
-            this.valueCounter = 1L;
-            try {
-                this.size = ((HashSet) dataIterator.value()).size();
-            } catch (java.lang.ClassCastException e) {
-                this.size = 1L;
-            }
-        } catch (NoSuchElementException nsee0) {
-            this.value = this.noDataValue;
-            //this.valueCounter = this.numberOfCells;
+        if (DataMapBitSetIte.hasNext()) {
+            ValuesLeft = true;
+            DataMapBitSetValue = DataMapBitSetIte.next();
+            DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
         }
+        DataMapBitSetIndex = 0;
+        if (DataMapHashSetIte.hasNext()) {
+            ValuesLeft = true;
+            DataMapHashSetValue = DataMapHashSetIte.next();
+            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+        }
+        DataMapHashSetIndex = 0;
     }
 
     /**
@@ -90,50 +92,61 @@ public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
      */
     @Override
     public boolean hasNext() {
-        return iteratorIndex + 2L < numberOfCells;
+        return ValuesLeft;
     }
 
     /**
-     * Returns the next element in the iteration.
+     * Returns the next element in the iteration. First all the default values
+     * are returned then all the values in DataMapBitSet, then all the values in
+     * DataMapHashSet. 
      *
-     * @return the next element in the iteration.
+     * @return the next element in the iteration or null.
      * @exception NoSuchElementException iteration has no more elements.
      */
     @Override
     public Object next() {
-        Double next = value;
-        this.iteratorIndex++;
-        try {
-            if (this.value != noDataValue) {
-                if (this.valueCounter == this.size) {
-                    try { // In case no more!
-                        this.dataIterator.advance();
-                        this.value = dataIterator.key();
-                        this.valueCounter = 1;
-                        try {
-                            this.size = ((HashSet) dataIterator.value()).size();
-                        } catch (java.lang.ClassCastException e) {
-                            this.size = 1;
-                        }
-                    } catch (NoSuchElementException nsee0) {
-                        this.value = noDataValue;
-                    }
+        if (ValuesLeft) {
+        if (DefaultValueIndex == NumberOfDefaultValues - 1) {
+            if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
+                if (DataMapBitSetIte.hasNext()) {
+                    DataMapBitSetValue = DataMapBitSetIte.next();
+                    DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+                    DataMapBitSetIndex = 0;
+                    return DataMapBitSetValue;
                 } else {
-                    this.valueCounter++;
+                    if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
+                        if (DataMapHashSetIte.hasNext()) {
+                            DataMapHashSetValue = DataMapHashSetIte.next();
+                            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+                            DataMapHashSetIndex = 0;
+                            return DataMapHashSetValue;
+                        } else {
+                            ValuesLeft = false;
+                            return null;
+                        }
+                    } else {
+                        DataMapHashSetIndex++;
+                        return DataMapHashSetValue;
+                    }
                 }
+            } else {
+                DataMapBitSetIndex++;
+                return DataMapBitSetValue;
             }
-        } catch (Exception e0) {
-            // Should be last element!
-            //e0.printStackTrace();
+        } else {
+            DefaultValueIndex++;
+            return DefaultValue;
         }
-        return next;
+        } else {
+            return null;
+        }
     }
 
     /**
      *
      * Removes from the underlying collection the last element returned by the
      * iterator (optional operation). This method can be called only once per
-     * call to <tt>next</tt>. The behavior of an iterator is unspecified if the
+     * call to <tt>next</tt>. The behaviour of an iterator is unspecified if the
      * underlying collection is modified while the iteration is in progress in
      * any way other than by calling this method.
      *

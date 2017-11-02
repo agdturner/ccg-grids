@@ -52,19 +52,11 @@ public class Grids_GridChunkIntArray
     protected Grids_GridChunkIntArray(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        super(g.ge);
-        this.ChunkID = chunkID;
-        initGrid(g);
+        super(g, chunkID);
         int noDataValue = g.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNrows = g.getChunkNRows(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNcols = g.getChunkNCols(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        this.data = new int[chunkNrows][chunkNcols];
+        this.data = new int[ChunkNRows][ChunkNCols];
         int row;
-        for (row = 0; row < chunkNrows; row++) {
+        for (row = 0; row < ChunkNRows; row++) {
             Arrays.fill(data[row], noDataValue);
         }
         this.SwapUpToDate = false;
@@ -81,7 +73,7 @@ public class Grids_GridChunkIntArray
     protected Grids_GridChunkIntArray(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        super(chunk.ge);
+        super(chunk.getGrid(), chunkID);
         this.ChunkID = chunkID;
         Grids_GridInt g = chunk.getGrid();
         initGrid(g);

@@ -49,8 +49,8 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
         super(g.ge);
         Grid = g;
         ChunkID = chunkID;
-        ChunkNRows = Grid.getChunkNRows(ChunkID, false);
-        ChunkNCols = Grid.getChunkNCols(ChunkID, false);
+        ChunkNRows = Grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryErrorFalse);
+        ChunkNCols = Grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryErrorFalse);
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns Grid.
+     * Returns Grid. Make abstract?
      *
      * @return
      */
