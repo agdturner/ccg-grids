@@ -270,30 +270,25 @@ public abstract class Grids_AbstractGridNumber
             if (this instanceof Grids_GridDouble) {
                 return ((Grids_GridDouble) this).NoDataValue;
             } else {
-                //this instanceof Grids_GridInt
-                return ((Grids_GridInt) this).getNoDataValue();
+                return ((Grids_GridInt) this).NoDataValue;
             }
         }
-        Grids_AbstractGridChunk grid2DSquareCellChunk
-                = getChunk(
-                        chunkRowIndex,
-                        chunkColIndex);
-        if (grid2DSquareCellChunk == null) {
-            return this.getNoDataValueBigDecimal(false).doubleValue();
+        Grids_AbstractGridChunk gridChunk;
+        gridChunk = getChunk(chunkRowIndex, chunkColIndex);
+        if (gridChunk == null) {
+            if (this instanceof Grids_GridDouble) {
+                return ((Grids_GridDouble) this).NoDataValue;
+            } else {
+                return ((Grids_GridInt) this).NoDataValue;
+            }
         }
         return getCellDouble(
-                grid2DSquareCellChunk,
+                gridChunk,
                 chunkRowIndex,
                 chunkColIndex,
                 chunkCellRowIndex,
                 chunkCellColIndex);
     }
-
-    /**
-     * @param handleOutOfMemoryError
-     * @return the _NoDataValue of this as a BigDecimal.
-     */
-    public abstract BigDecimal getNoDataValueBigDecimal(boolean handleOutOfMemoryError);
 
     /**
      * @param chunkColIndex

@@ -1406,36 +1406,6 @@ public class Grids_GridDouble
     }
 
     /**
-     * @return the NoDataValue of this as a BigDecimal.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    @Override
-    public BigDecimal getNoDataValueBigDecimal(
-            boolean handleOutOfMemoryError) {
-        try {
-            if (Double.isInfinite(NoDataValue)) {
-                // Cannot convert to a BigDecimal!
-                return null;
-            }
-            BigDecimal result = new BigDecimal(NoDataValue);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getNoDataValueBigDecimal(
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Initialises NoDataValue.
      *
      * @param noDataValue The value NoDataValue is initialised to.

@@ -57,9 +57,9 @@ import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
- * A class holding methods for processing an individual
- Grids_AbstractGridNumber or multiple Grid2DSquareCellAbstracts. TODO:
- * Implement a general replace method ( deprecate/replace mask methods ).
+ * A class holding methods for processing an individual Grids_AbstractGridNumber
+ * or multiple Grid2DSquareCellAbstracts. TODO: Implement a general replace
+ * method ( deprecate/replace mask methods ).
  */
 public class Grids_Processor extends Grids_Object {
 
@@ -320,7 +320,7 @@ public class Grids_Processor extends Grids_Object {
 //    }
     /**
      * Returns a Grids_AbstractGridNumber from
- this._AbstractGrid2DSquareCell_HashSet.
+     * this._AbstractGrid2DSquareCell_HashSet.
      *
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
@@ -350,7 +350,7 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * Returns a Grids_AbstractGridNumber from
- this._AbstractGrid2DSquareCell_HashSet.
+     * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @return
      */
@@ -908,8 +908,8 @@ public class Grids_Processor extends Grids_Object {
         try {
             ge.getGrids().add(grid);
             ge.getGrids().add(mask);
-            int chunkNrows = grid.getChunkNRows(                    handleOutOfMemoryError);
-            int chunkNcols = grid.getChunkNCols(                    handleOutOfMemoryError);
+            int chunkNrows = grid.getChunkNRows(handleOutOfMemoryError);
+            int chunkNcols = grid.getChunkNCols(handleOutOfMemoryError);
             Grids_2D_ID_int chunkID;
             int thisChunkNrows;
             int thisChunkNcols;
@@ -921,7 +921,7 @@ public class Grids_Processor extends Grids_Object {
                 int noDataValue = ((Grids_GridInt) grid).getNoDataValue(handleOutOfMemoryError);
                 if (mask.getClass() == Grids_GridInt.class) {
                     Grids_GridInt maskInt;
-                           maskInt = (Grids_GridInt) mask;
+                    maskInt = (Grids_GridInt) mask;
                     int maskNoDataValue = maskInt.getNoDataValue(
                             handleOutOfMemoryError);
                     int value;
@@ -1411,8 +1411,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_GridDouble Values are either linearly
- rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly rescaled into
+     * the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -1449,8 +1449,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_GridDouble Values are either linearly
- rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly rescaled into
+     * the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -1744,8 +1744,8 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param grid
-     * @return a new Grids_GridDouble Values are either linearly
- rescaled into the range [min,max]. Or some log rescaling is done
+     * @return a new Grids_GridDouble Values are either linearly rescaled into
+     * the range [min,max]. Or some log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
      * "log" then a log rescale is done.
      * @param min The minimum value in the rescaled range.
@@ -2258,8 +2258,7 @@ public class Grids_Processor extends Grids_Object {
      * Add gridToAdd to grid
      *
      * @param grid The Grids_GridDouble to be processed/modified.
-     * @param gridToAdd The Grids_GridDouble from which values are
- added.
+     * @param gridToAdd The Grids_GridDouble from which values are added.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
@@ -2298,8 +2297,7 @@ public class Grids_Processor extends Grids_Object {
      * Add gridToAdd to grid with values from gridToAdd multiplied by weight.
      *
      * @param grid The Grids_GridDouble to be processed/modified.
-     * @param gridToAdd The Grids_GridDouble from which values are
- added.
+     * @param gridToAdd The Grids_GridDouble from which values are added.
      * @param weight The value gridToAdd values are multiplied by.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
@@ -2348,8 +2346,7 @@ public class Grids_Processor extends Grids_Object {
      * added.
      *
      * @param grid The Grids_GridDouble to be processed.
-     * @param gridToAdd The Grids_GridDouble from which values are
- added.
+     * @param gridToAdd The Grids_GridDouble from which values are added.
      * @param startRowIndex The index of the first row from which gridToAdd
      * values are added.
      * @param startColIndex the index of the first column from which gridToAdd
@@ -2377,7 +2374,7 @@ public class Grids_Processor extends Grids_Object {
             ge.getGrids().add(gridToAdd);
             Grids_Dimensions dimensions = gridToAdd.getDimensions(handleOutOfMemoryError);
             BigDecimal xMin;
-            BigDecimal yMin;            
+            BigDecimal yMin;
             BigDecimal cellsize;
             cellsize = dimensions.getCellsize();
             xMin = dimensions.getXMin();
@@ -2421,14 +2418,12 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a Grids_GridDouble with values of grid added with
- values from gridToAdd (with row index between startRowIndex, endRowIndex
- and column index between startColIndex, endColIndex) multiplied by
- weight.
+     * Returns a Grids_GridDouble with values of grid added with values from
+     * gridToAdd (with row index between startRowIndex, endRowIndex and column
+     * index between startColIndex, endColIndex) multiplied by weight.
      *
      * @param grid The Grids_GridDouble to be processed.
-     * @param gridToAdd The Grids_GridDouble from which values are
- added.
+     * @param gridToAdd The Grids_GridDouble from which values are added.
      * @param startRowIndex The index of the first row from which gridToAdd
      * values are added.
      * @param startColIndex The index of the first column from which gridToAdd
@@ -2766,15 +2761,19 @@ public class Grids_Processor extends Grids_Object {
                     while (tokenType != StreamTokenizer.TT_EOF) {
                         switch (tokenType) {
                             case StreamTokenizer.TT_NUMBER:
-                                if (alternator.equals("x")) {
-                                    x = st.nval;
-                                    alternator = "y";
-                                } else if (alternator.equals("y")) {
-                                    y = st.nval;
-                                    alternator = "value";
-                                } else {
-                                    grid.addToCell(x, y, st.nval, handleOutOfMemoryError);
-                                    alternator = "x";
+                                switch (alternator) {
+                                    case "x":
+                                        x = st.nval;
+                                        alternator = "y";
+                                        break;
+                                    case "y":
+                                        y = st.nval;
+                                        alternator = "value";
+                                        break;
+                                    default:
+                                        grid.addToCell(x, y, st.nval, handleOutOfMemoryError);
+                                        alternator = "x";
+                                        break;
                                 }
                                 break;
                             default:
@@ -2913,9 +2912,9 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns an Grids_GridDouble at a lower level of resolution
- than grid. The result values are either the sum, mean, max or min of
-     * values in grid depending on statistic.
+     * Returns an Grids_GridDouble at a lower level of resolution than grid. The
+     * result values are either the sum, mean, max or min of values in grid
+     * depending on statistic.
      *
      * @param grid the Grids_GridDouble to be processed
      * @param cellFactor the number of times wider/higher the aggregated grid
@@ -3195,9 +3194,9 @@ public class Grids_Processor extends Grids_Object {
     //        }
     //    }
     /**
-     * Returns an Grids_GridDouble at a lower level of resolution
- than grid. The result values are either the sum, mean, max or min of
-     * values in grid depending on statistic.
+     * Returns an Grids_GridDouble at a lower level of resolution than grid. The
+     * result values are either the sum, mean, max or min of values in grid
+     * depending on statistic.
      *
      * @param grid The Grids_GridDouble to be processed
      * @param statistic "sum", "mean", "max", or "min" depending on what
@@ -4333,7 +4332,7 @@ public class Grids_Processor extends Grids_Object {
             }
             //int _StringLength = 1000;
             String dotASC = ".asc";
-            BigDecimal _BigDecimal_Minus9999Point0 = new BigDecimal("-9999.0");
+            String noDataValue = "-9999.0";
             String s;
             File file;
             int i;
@@ -4365,7 +4364,7 @@ public class Grids_Processor extends Grids_Object {
             eSRIAsciiGridExporter.toAsciiFile(
                     grid,
                     file,
-                    _BigDecimal_Minus9999Point0,
+                    noDataValue,
                     handleOutOfMemoryError);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
@@ -4472,12 +4471,17 @@ public class Grids_Processor extends Grids_Object {
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            System.out.println("_Output " + g.toString(handleOutOfMemoryError));
+            String methodName = "outputESRIAsciiGrid("
+                    + g.getClass().getName() + "(" + g.toString(handleOutOfMemoryError) + "),"
+                    + outputDirectory.getClass().getName() + "(" + outputDirectory + "),"
+                    + eage.getClass().getName() + "(" + eage.toString() + "),"
+                    + "boolean(" + handleOutOfMemoryError + "))";
+            System.out.println(methodName);
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(ge);
             }
             String string_DotASC = ".asc";
-            BigDecimal bigDecimal_Minus9999Point0 = new BigDecimal("-9999.0");
+            String noDataValue = "-9999.0";
             String string;
             File file;
             string = ge.initString(
@@ -4491,7 +4495,7 @@ public class Grids_Processor extends Grids_Object {
             eage.toAsciiFile(
                     g,
                     file,
-                    bigDecimal_Minus9999Point0,
+                    noDataValue,
                     handleOutOfMemoryError);
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {

@@ -743,8 +743,7 @@ public class Grids_GridInt
                 // _GridStatistics.getClass() == Grids_GridStatistics1.class
                 // initCellFast(long,long,int) is to be used inplace of
                 // initCell(long,long,int).
-                if ((g.getClass() == Grids_GridInt.class)
-                        || (((int) g.getNoDataValueBigDecimal(handleOutOfMemoryError).intValue()) == Integer.MIN_VALUE)) {
+                if ((g.getClass() == Grids_GridInt.class)) {
                     NoDataValue = ((Grids_GridInt) g).NoDataValue;
                     for (chunkRowIndex = _intZero; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                         for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
@@ -1550,35 +1549,6 @@ public class Grids_GridInt
      */
     protected final int getNoDataValue() {
         return Integer.MIN_VALUE;
-    }
-
-    /**
-     * @return the NoDataValue converted to a BigDecimal.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    @Override
-    public BigDecimal getNoDataValueBigDecimal(
-            boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = BigDecimal.valueOf(getNoDataValue());
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(handleOutOfMemoryError);
-                return getNoDataValueBigDecimal(
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
