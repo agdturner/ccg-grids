@@ -2900,6 +2900,8 @@ public class Grids_ProcessorDEM
             int chunkCellColIndex = 0;
             int i = 0;
             String[] names = getMetrics1Names();
+            int normalChunkNRows = g.getChunkNRows(0, handleOutOfMemoryError);
+            int normalChunkNCols = g.getChunkNCols(0, handleOutOfMemoryError);
             if (g.getClass() == Grids_GridDouble.class) {
                 System.out.println("Grid2DSquareCellDouble");
                 Grids_GridDouble gridDouble;
@@ -2915,10 +2917,9 @@ public class Grids_ProcessorDEM
                         chunkID = new Grids_2D_ID_int(
                                 chunkRowIndex, chunkColIndex);
                         ge.initNotToSwapData();
-                        ge.addToNotToSwapData(g, chunkID, chunkRowIndex, chunkColIndex, chunkNRows, chunkNCols, cellDistance);
+                        ge.addToNotToSwapData(g, chunkID, chunkRowIndex, chunkColIndex, normalChunkNRows, normalChunkNCols, cellDistance);
                         ge.addToNotToSwapData(g, chunkID);
-                        ge.addToNotToSwapData(metrics1, chunkID);
-                        
+                        ge.addToNotToSwapData(metrics1, chunkID);                        
                         gridChunkDouble = gridDouble.getGridChunk(
                                 chunkRowIndex,
                                 chunkColIndex,
@@ -3018,8 +3019,14 @@ public class Grids_ProcessorDEM
                 for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                     chunkNRows = g.getChunkNRows(chunkRowIndex, handleOutOfMemoryError);
                     for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        System.out.println("chunkRowIndex, chunkColIndex " + chunkRowIndex + ", " + chunkColIndex);
                         chunkID = new Grids_2D_ID_int(
                                 chunkRowIndex, chunkColIndex);
+                        ge.initNotToSwapData();
+                        ge.addToNotToSwapData(g, chunkID, chunkRowIndex, chunkColIndex, normalChunkNRows, normalChunkNCols, cellDistance);
+                        ge.addToNotToSwapData(g, chunkID);
+                        ge.addToNotToSwapData(metrics1, chunkID);
                         gridChunkInt = gridInt.getGridChunk(
                                 chunkRowIndex,
                                 chunkColIndex,
@@ -3825,11 +3832,11 @@ public class Grids_ProcessorDEM
      * @param colIndex the column index of the cell being classified
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
-     * @param _ChunkID This is a ID for those AbstractGrid2DSquareCells not to
+     * @param chunkID This is a ID for those AbstractGrid2DSquareCells not to
      * be swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
-            Grids_GridDouble _Grid2DSquareCellDouble,
+            Grids_GridDouble g,
             double cellsize,
             long rowIndex,
             long colIndex,
@@ -3843,7 +3850,7 @@ public class Grids_ProcessorDEM
             double[] diff,
             double[] dummyDiff,
             boolean handleOutOfMemoryError,
-            Grids_2D_ID_int _ChunkID) {
+            Grids_2D_ID_int chunkID) {
         try {
             for (int i = 0; i
                     < metrics1.length; i++) {
@@ -3864,27 +3871,26 @@ public class Grids_ProcessorDEM
             double sumWeight = 0.0d;
             int p = 0;
             int q = 0;
-            double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(
+            double noDataValue = g.getNoDataValue(
                     ge.HandleOutOfMemoryErrorTrue);
-            double cellHeight = _Grid2DSquareCellDouble.getCell(
+            double cellHeight = g.getCell(
                     rowIndex,
                     colIndex,
                     ge.HandleOutOfMemoryErrorTrue);
             for (p = 0; p <= cellDistance; p++) {
-                thisCellY = _Grid2DSquareCellDouble.getCellYDouble(
+                thisCellY = g.getCellYDouble(
                         rowIndex + p,
                         ge.HandleOutOfMemoryErrorTrue);
                 yDiff = thisCellY - cellY;
                 for (q = 1; q <= cellDistance; q++) {
                     //if ( p == 2 && q == 2 ) { int debug2 = 0; }
                     noDataCount = 0.0d;
-                    thisCellX = _Grid2DSquareCellDouble.getCellXDouble(
+                    thisCellX = g.getCellXDouble(
                             colIndex + q,
                             ge.HandleOutOfMemoryErrorTrue);
                     weight = weights[p][q];
                     xDiff = thisCellX - cellX;
-                    yDiff = thisCellY - cellY;
-                    heights[0] = _Grid2DSquareCellDouble.getCell(
+                    heights[0] = g.getCell(
                             thisCellX,
                             thisCellY,
                             ge.HandleOutOfMemoryErrorTrue);
@@ -3892,7 +3898,7 @@ public class Grids_ProcessorDEM
                         heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[1] = _Grid2DSquareCellDouble.getCell(
+                    heights[1] = g.getCell(
                             cellX + yDiff,
                             cellY - xDiff,
                             ge.HandleOutOfMemoryErrorTrue);
@@ -3900,7 +3906,7 @@ public class Grids_ProcessorDEM
                         heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[2] = _Grid2DSquareCellDouble.getCell(
+                    heights[2] = g.getCell(
                             cellX - xDiff,
                             cellY - yDiff,
                             ge.HandleOutOfMemoryErrorTrue);
@@ -3908,7 +3914,7 @@ public class Grids_ProcessorDEM
                         heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[3] = _Grid2DSquareCellDouble.getCell(
+                    heights[3] = g.getCell(
                             cellX - yDiff,
                             cellY + xDiff,
                             ge.HandleOutOfMemoryErrorTrue);
@@ -3977,48 +3983,47 @@ public class Grids_ProcessorDEM
                     }
                 }
             }
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 try {
-                    HashSet _ChunkIDs = new HashSet();
+                    HashSet chunkIDs = new HashSet();
                     long p;
                     long q;
                     double thisCellX;
                     double thisCellY;
                     double thisDistance;
-                    for (p = -cellDistance; p
-                            <= cellDistance; p++) {
-                        thisCellY = _Grid2DSquareCellDouble.getCellYDouble(
+                    for (p = -cellDistance; p                            <= cellDistance; p++) {
+                        thisCellY = g.getCellYDouble(
                                 rowIndex + p,
                                 ge.HandleOutOfMemoryErrorFalse);
                         for (q = -cellDistance; q
                                 <= cellDistance; q++) {
-                            thisCellX = _Grid2DSquareCellDouble.getCellXDouble(
+                            thisCellX = g.getCellXDouble(
                                     colIndex + q,
                                     ge.HandleOutOfMemoryErrorFalse);
                             thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                             if (thisDistance < distance) {
                                 Grids_2D_ID_int _ChunkID2 = new Grids_2D_ID_int(
-                                        _Grid2DSquareCellDouble.getChunkRowIndex((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
-                                        _Grid2DSquareCellDouble.getChunkColIndex((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
-                                _ChunkIDs.add(_ChunkID2);
+                                        g.getChunkRowIndex((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
+                                        g.getChunkColIndex((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
+                                chunkIDs.add(_ChunkID2);
                             }
                         }
                     }
-                    HashMap _Grid2DSquareCell_ChunkIDHashSet_HashMap = new HashMap();
-                    Iterator _Iterator = ge.getGrids().iterator();
-                    while (_Iterator.hasNext()) {
-                        HashSet _ChunkIDHashSet = new HashSet();
-                        _ChunkIDHashSet.add(_ChunkID);
-                        _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(_Iterator.next(), _ChunkIDHashSet);
+                    HashMap gridChunkMap = new HashMap();
+                    Iterator ite = ge.getGrids().iterator();
+                    while (ite.hasNext()) {
+                        HashSet chunkIDs2 = new HashSet();
+                        chunkIDs2.add(chunkID);
+                        gridChunkMap.put(ite.next(), chunkIDs2);
                     }
-                    _Grid2DSquareCell_ChunkIDHashSet_HashMap.put(_Grid2DSquareCellDouble, _ChunkIDs);
+                    gridChunkMap.put(g, chunkIDs);
                 } catch (OutOfMemoryError _OutOfMemoryError2) {
                     System.err.println("Unexpected OutOfMemoryError trying to handle OutOfMemoryError in metrics1Calculate_All(Grid2DSquareCellDouble,double,long,long,double,double,double,int,double[][],double[],double[],double[],double[],boolean,ChunkID )");
                     throw _OutOfMemoryError2;
                 }
                 metrics1Calculate_All(
-                        _Grid2DSquareCellDouble,
+                        g,
                         cellsize,
                         rowIndex,
                         colIndex,
@@ -4032,9 +4037,9 @@ public class Grids_ProcessorDEM
                         diff,
                         dummyDiff,
                         handleOutOfMemoryError,
-                        _ChunkID);
+                        chunkID);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
 
             }
         }

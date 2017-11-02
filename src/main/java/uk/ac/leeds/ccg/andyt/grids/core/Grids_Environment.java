@@ -247,10 +247,21 @@ public class Grids_Environment
     }
 
     /**
-     * Adds all the chunkIDs of g to NotToSwapData.
+     * Adds all the ChunkIDs of g that are within cellDistance of the chunk with
+     * ChunkID to NotToSwapData.
      *
-     * @param g
-     * @param chunkIDs
+     * @param g The Grid.
+     * @param chunkID Central ChunkID.
+     * @param chunkRowIndex The chunkRowIndex of chunkID - provided for
+     * convenience.
+     * @param chunkColIndex The chunkColIndex of chunkID - provided for
+     * convenience.
+     * @param chunkNRows The normal number of rows in a chunk. (Sometimes the
+     * last row has fewer.)
+     * @param chunkNCols The normal number of columns in a chunk. (Sometimes the
+     * last column has fewer.)
+     * @param cellDistance The distance over which we want to be sure to include
+     * all chunks in NotToSwapData.
      */
     public final void addToNotToSwapData(
             Grids_AbstractGrid g,
@@ -267,8 +278,34 @@ public class Grids_Environment
             chunkIDs = new HashSet<>();
             NotToSwapData.put(g, chunkIDs);
         }
-        chunkIDs.add(chunkID);fadfsaf
-        
+        chunkIDs.add(chunkID);
+        // Over how many chunkRows and how many chunkCols does cellDistance cover
+        int t;
+        int i = 0;
+        t = 0;
+        while (t < cellDistance) {
+            t += chunkNRows;
+            i++;
+        }
+        int j = 0;
+        t = 0;
+        while (t < cellDistance) {
+            t += chunkNCols;
+            j++;
+        }
+        int chunkRow;
+        int chunkCol;
+        int k;
+        int l;
+        for (k = -i; k <= i; k++) {
+            chunkRow = chunkRowIndex + k;
+            for (l = -j; l <= j; j++) {
+                chunkCol = chunkRowIndex + k;
+                if (g.isInGrid(chunkRow, chunkCol, HandleOutOfMemoryError)) {
+                    chunkIDs.add(new Grids_2D_ID_int(chunkRow, chunkCol));
+                }
+            }
+        }
     }
 
     /**
