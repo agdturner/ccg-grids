@@ -18,24 +18,24 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * Grids_AbstractGridChunkDouble extension for which all values are the same.
  */
-public class Grids_GridChunkDouble
-        extends Grids_AbstractGridChunkDouble
+public class Grids_GridChunkInt
+        extends Grids_AbstractGridChunkInt
         implements Serializable {
 
     /**
      * For storing the value of every cell in this grid.
      */
-    private double Value;
+    private int Value;
 
-    protected Grids_GridChunkDouble() {
+    protected Grids_GridChunkInt() {
     }
 
     /**
@@ -44,8 +44,8 @@ public class Grids_GridChunkDouble
      * @param g The Grids_GridDouble Grids is set to.
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      */
-    protected Grids_GridChunkDouble(
-            Grids_GridDouble g,
+    protected Grids_GridChunkInt(
+            Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
         this(g, chunkID, g.getNoDataValue(false));
     }
@@ -57,11 +57,12 @@ public class Grids_GridChunkDouble
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      * @param value To be the value of all cells in this chunk.
      */
-    protected Grids_GridChunkDouble(
-            Grids_GridDouble g,
+    protected Grids_GridChunkInt(
+            Grids_GridInt g,
             Grids_2D_ID_int chunkID,
-            double value) {
+            int value) {
         super(g, chunkID);
+        initGrid(g);
         Value = value;
     }
 
@@ -69,7 +70,7 @@ public class Grids_GridChunkDouble
     protected final void initData() {
     }
 
-    protected double getValue() {
+    protected int getValue() {
         return Value;
     }
 
@@ -78,22 +79,22 @@ public class Grids_GridChunkDouble
     }
 
     @Override
-    protected double getCell(
+    protected int getCell(
             int chunkRow,
             int chunkCol,
-            double noDataValue) {
+            int noDataValue) {
         return Value;
     }
 
     @Override
-    protected double getCell(
+    protected int getCell(
             int chunkRow,
             int chunkCol,
             Grids_2D_ID_int cellID,
-            double noDataValue) {
+            int noDataValue) {
         return Value;
     }
-
+    
     /**
      * Returns the value at position given by: chunk cell row chunkRow; chunk
      * cell row chunkCol and sets it to valueToSet
@@ -106,11 +107,11 @@ public class Grids_GridChunkDouble
      * @return
      */
     @Override
-    protected double setCell(
+    protected int setCell(
             int chunkRow,
             int chunkCol,
-            double valueToSet,
-            double noDataValue) {
+            int valueToSet,
+            int noDataValue) {
         if (valueToSet == Value) {
             return Value;
         } else {
@@ -130,15 +131,15 @@ public class Grids_GridChunkDouble
      */
     @Override
     protected Grids_AbstractIterator iterator() {
-        return new Grids_GridChunkDoubleIterator(this);
+        return new Grids_GridChunkIntIterator(this);
     }
 
     @Override
     protected void initCell(
             int chunkRow,
             int chunkCol,
-            double noDataValue,
-            double valueToInitialise) {
+            int noDataValue,
+            int valueToInitialise) {
     }
 
 }

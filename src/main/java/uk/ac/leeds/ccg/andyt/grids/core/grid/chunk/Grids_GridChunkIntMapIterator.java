@@ -18,70 +18,67 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
-import gnu.trove.TIntObjectIterator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.TreeMap;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap.OffsetBitSet;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * For iterating through the values in a Grid2DSquareCellIntChunkMap instance.
- * The values are not returned in any particular order.
+ * For iterating through the values in a Grid2DSquareCellIntChunkMap
+ * instance. The values are not returned in any particular order.
  */
-public class Grids_GridChunkIntMapIterator
-        extends Grids_AbstractIterator {
+public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
 
-    private TIntObjectIterator dataIterator;
-    private long iteratorIndex;
-    private long numberOfCells;
+    private int NumberOfCells;
+    private int DefaultValue;
+    private int NumberOfDefaultValues;
+    private int DefaultValueIndex;
+    private Grids_GridChunkIntMap.GridChunkIntMapData Data;
+    private TreeMap<Integer, OffsetBitSet> DataMapBitSet;
+    private Iterator<Integer> DataMapBitSetIte;
+    private int DataMapBitSetIndex;
+    private int DataMapBitSetNumberOfValues;
+    private int DataMapBitSetValue;
+    private TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+    private Iterator<Integer> DataMapHashSetIte;
+    private int DataMapHashSetNumberOfValues;
+    private int DataMapHashSetIndex;
+    private int DataMapHashSetValue;
+    private boolean ValuesLeft;
 
-    //    private Iterator hashMapIterator;
-    //    private HashSet hashSet;
-    //    private Iterator hashSetIterator;
-    //    private ChunkCellID chunkCellID;
-    private int value;
-    private long size;
-    private long valueCounter;
-    private int noDataValue;
-
-    /**
-     * Creates a new instance of Grid2DSquareIntIterator
-     */
-    public Grids_GridChunkIntMapIterator() {
+    protected Grids_GridChunkIntMapIterator() {
     }
 
-    /**
-     * Creates a new instance of Grid2DSquareIntIterator
-     *
-     * @param grid2DSquareCellIntChunkMap The Grid2DSquareCellIntChunkMap to
-     * iterate over
-     */
     public Grids_GridChunkIntMapIterator(
-            Grids_GridChunkIntMap grid2DSquareCellIntChunkMap) {
-        this.dataIterator = grid2DSquareCellIntChunkMap.getData().iterator();
-        iteratorIndex = 0L;
-        Grids_GridInt grid2DSquareCellInt
-                = grid2DSquareCellIntChunkMap.getGrid();
-        this.noDataValue = grid2DSquareCellInt.getNoDataValue(
-                ge.HandleOutOfMemoryErrorFalse);
-        long chunkNrows = (long) grid2DSquareCellInt.getChunkNRows(grid2DSquareCellIntChunkMap.ChunkID,
-                ge.HandleOutOfMemoryErrorFalse);
-        long chunkNcols = (long) grid2DSquareCellInt.getChunkNCols(grid2DSquareCellIntChunkMap.ChunkID,
-                ge.HandleOutOfMemoryErrorFalse);
-        this.numberOfCells = chunkNrows * chunkNcols;
-        try { // In case empty!
-            this.dataIterator.advance();
-            this.value = dataIterator.key();
-            this.valueCounter = 1L;
-            try {
-                this.size = ((HashSet) dataIterator.value()).size();
-            } catch (java.lang.ClassCastException e) {
-                this.size = 1L;
-            }
-        } catch (NoSuchElementException nsee0) {
-            this.value = this.noDataValue;
-            //this.valueCounter = this.numberOfCells;
+            Grids_GridChunkIntMap chunk) {
+        Data = chunk.getData();
+        DataMapBitSet = Data.DataMapBitSet;
+        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
+        DataMapHashSet = Data.DataMapHashSet;
+        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
+        NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
+        DefaultValue = chunk.DefaultValue;
+        NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
+        DefaultValueIndex = 0;
+        ValuesLeft = false;
+        if (NumberOfDefaultValues > 0) {
+            ValuesLeft = true;
         }
+        if (DataMapBitSetIte.hasNext()) {
+            ValuesLeft = true;
+            DataMapBitSetValue = DataMapBitSetIte.next();
+            DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+        }
+        DataMapBitSetIndex = 0;
+        if (DataMapHashSetIte.hasNext()) {
+            ValuesLeft = true;
+            DataMapHashSetValue = DataMapHashSetIte.next();
+            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+        }
+        DataMapHashSetIndex = 0;
     }
 
     /**
@@ -93,46 +90,72 @@ public class Grids_GridChunkIntMapIterator
      */
     @Override
     public boolean hasNext() {
-        return iteratorIndex + 2L < numberOfCells;
+        return ValuesLeft;
     }
 
     /**
-     * Returns the next element in the iteration.
+     * Returns the next element in the iteration. First all the default values
+     * are returned then all the values in DataMapBitSet, then all the values in
+     * DataMapHashSet. 
      *
-     * @return the next element in the iteration.
+     * @return the next element in the iteration or null.
      * @exception NoSuchElementException iteration has no more elements.
      */
     @Override
     public Object next() {
-        Integer next = this.value;
-        this.iteratorIndex++;
-        try {
-            if (this.value != noDataValue) {
-                if (this.valueCounter == this.size) {
-                    try { // In case no more!
-                        this.dataIterator.advance();
-                        this.value = dataIterator.key();
-                        this.valueCounter = 1;
-                        try {
-                            this.size
-                                    = ((HashSet) dataIterator.value()).size();
-                        } catch (java.lang.ClassCastException e) {
-                            this.size = 1;
-                        }
-                    } catch (NoSuchElementException nsee0) {
-                        this.value = noDataValue;
-                    }
+        if (ValuesLeft) {
+        if (DefaultValueIndex == NumberOfDefaultValues - 1) {
+            if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
+                if (DataMapBitSetIte.hasNext()) {
+                    DataMapBitSetValue = DataMapBitSetIte.next();
+                    DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+                    DataMapBitSetIndex = 0;
+                    return DataMapBitSetValue;
                 } else {
-                    this.valueCounter++;
+                    if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
+                        if (DataMapHashSetIte.hasNext()) {
+                            DataMapHashSetValue = DataMapHashSetIte.next();
+                            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+                            DataMapHashSetIndex = 0;
+                            return DataMapHashSetValue;
+                        } else {
+                            ValuesLeft = false;
+                            return null;
+                        }
+                    } else {
+                        DataMapHashSetIndex++;
+                        return DataMapHashSetValue;
+                    }
                 }
+            } else {
+                DataMapBitSetIndex++;
+                return DataMapBitSetValue;
             }
-        } catch (Exception e0) {
-            // Should be last element!
-            //e0.printStackTrace();
+        } else {
+            DefaultValueIndex++;
+            return DefaultValue;
         }
-        return next;
+        } else {
+            return null;
+        }
     }
 
+    /**
+     *
+     * Removes from the underlying collection the last element returned by the
+     * iterator (optional operation). This method can be called only once per
+     * call to <tt>next</tt>. The behaviour of an iterator is unspecified if the
+     * underlying collection is modified while the iteration is in progress in
+     * any way other than by calling this method.
+     *
+     * @exception UnsupportedOperationException if the <tt>remove</tt>
+     * operation is not supported by this Iterator.
+     *
+     * @exception IllegalStateException if the <tt>next</tt> method has not yet
+     * been called, or the <tt>remove</tt> method has already been called after
+     * the last call to the <tt>next</tt>
+     * method.
+     */
     @Override
     public void remove() {
         throw new UnsupportedOperationException();

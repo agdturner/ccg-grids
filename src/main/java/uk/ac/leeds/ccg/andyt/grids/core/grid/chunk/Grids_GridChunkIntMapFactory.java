@@ -22,7 +22,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 
 /**
- * A factory for constructing Grid2DSquareCellIntChunkMap instances.
+ * A factory for constructing Grids_GridChunkIntMap instances.
  */
 public class Grids_GridChunkIntMapFactory
         extends Grids_AbstractGridChunkIntFactory {
@@ -39,14 +39,29 @@ public class Grids_GridChunkIntMapFactory
     public Grids_GridChunkIntMap createGridChunkInt(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntMap(g, chunkID);
+        return new Grids_GridChunkIntMap(
+                g,
+                chunkID);
     }
 
     @Override
     public Grids_GridChunkIntMap createGridChunkInt(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntMap(chunk, chunkID);
+        return new Grids_GridChunkIntMap(
+                chunk,
+                chunkID,
+                chunk.getGrid().getNoDataValue(false));
+    }
+
+    public Grids_GridChunkIntMap createGridChunkInt(
+            Grids_AbstractGridChunkInt chunk,
+            Grids_2D_ID_int chunkID,
+            int defaultValue) {
+        return new Grids_GridChunkIntMap(
+                chunk,
+                chunkID,
+                defaultValue);
     }
 
 }

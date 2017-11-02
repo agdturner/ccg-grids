@@ -50,6 +50,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
         ChunkID = chunkID;
         ChunkNRows = Grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryErrorFalse);
         ChunkNCols = Grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryErrorFalse);
+        SwapUpToDate = false;
     }
 
     /**

@@ -258,13 +258,11 @@ public class Grids_GridDouble
      * then OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public String toString(
-            boolean handleOutOfMemoryError) {
+    public String toString(boolean handleOutOfMemoryError) {
         try {
-            String result = "Grid2DSquareCellDouble( "
-                    + //"NoDataValue( " + getNoDataValue( handleOutOfMemoryError) + " ), " +
-                    "_NoDataValue( " + this.NoDataValue + " ), "
-                    + super.toString(0, handleOutOfMemoryError) + " )";
+            String result = getClass().getName() 
+                    + "(NoDataValue(" + NoDataValue + "), "
+                    + super.toString(0, handleOutOfMemoryError) + ")";
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1482,12 +1480,14 @@ public class Grids_GridDouble
                     chunkRowIndex,
                     chunkColIndex);
             if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
-                return ((Grids_GridChunkDoubleArray) chunk).getCell(chunkCellRowIndex,
+                return ((Grids_GridChunkDoubleArray) chunk).getCell(
+                        chunkCellRowIndex,
                         chunkCellColIndex,
                         NoDataValue,
                         false);
             } else if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
-                return ((Grids_GridChunkDoubleMap) chunk).getCell(chunkCellRowIndex,
+                return ((Grids_GridChunkDoubleMap) chunk).getCell(
+                        chunkCellRowIndex,
                         chunkCellColIndex,
                         NoDataValue,
                         false);

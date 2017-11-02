@@ -32,9 +32,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
 
-    private double Value;
     private int NumberOfCells;
-    private double noDataValue;
     private double DefaultValue;
     private int NumberOfDefaultValues;
     private int DefaultValueIndex;

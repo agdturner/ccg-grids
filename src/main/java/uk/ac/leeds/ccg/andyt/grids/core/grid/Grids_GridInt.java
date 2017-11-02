@@ -250,9 +250,9 @@ public class Grids_GridInt
     public String toString(
             boolean handleOutOfMemoryError) {
         try {
-            String result = "Grid2DSquareCellInt( "
-                    + "_NoDataValue( " + getNoDataValue(handleOutOfMemoryError) + " ), "
-                    + super.toString(0, ge.HandleOutOfMemoryErrorFalse) + " )";
+            String result = getClass().getName() 
+                    + "(NoDataValue(" + NoDataValue + "), "
+                    + super.toString(0, handleOutOfMemoryError) + ")";
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -293,8 +293,7 @@ public class Grids_GridInt
             if (ge.swapChunk_Account(false) < 1L) {
                 throw e;
             }
-            ge.initMemoryReserve(
-                    ge.HandleOutOfMemoryErrorTrue);
+            ge.initMemoryReserve(                    ge.HandleOutOfMemoryErrorTrue);
             init(g, initTransientFields);
         }
     }
@@ -772,6 +771,7 @@ public class Grids_GridInt
                                             initCellFast(
                                                     row,
                                                     col,
+                                                    NoDataValue,
                                                     cellInt);
                                             col++;
                                         }
@@ -846,11 +846,13 @@ public class Grids_GridInt
                                                 initCellFast(
                                                         row,
                                                         col,
+                                                        NoDataValue,
                                                         cellInt);
                                             } else {
                                                 initCellFast(
                                                         row,
                                                         col,
+                                                        NoDataValue,
                                                         NoDataValue);
                                             }
                                             col++;
@@ -1138,6 +1140,7 @@ public class Grids_GridInt
                                             initCellFast(
                                                     row,
                                                     col,
+                                                    NoDataValue,
                                                     value);
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
@@ -1168,7 +1171,6 @@ public class Grids_GridInt
                             }
                         }
                     } else {
-                        int _NoDataValue = getNoDataValue(handleOutOfMemoryError);
                         if (gridStatistics.getClass() == Grids_GridStatistics0.class) {
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
@@ -1184,7 +1186,7 @@ public class Grids_GridInt
                                                 initCell(
                                                         row,
                                                         col,
-                                                        _NoDataValue);
+                                                        NoDataValue);
                                             }
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
@@ -1224,12 +1226,14 @@ public class Grids_GridInt
                                                 initCellFast(
                                                         row,
                                                         col,
+                                                        NoDataValue,
                                                         value);
                                             } else {
                                                 initCellFast(
                                                         row,
                                                         col,
-                                                        _NoDataValue);
+                                                        NoDataValue,
+                                                        NoDataValue);
                                             }
                                             isInitCellDone = true;
                                         } catch (OutOfMemoryError e) {
@@ -1603,7 +1607,6 @@ public class Grids_GridInt
     protected int getCell(
             long cellRowIndex,
             long cellColIndex) {
-        int _NoDataValue = getNoDataValue();
         boolean isInGrid = isInGrid(
                 cellRowIndex,
                 cellColIndex);
@@ -1623,17 +1626,18 @@ public class Grids_GridInt
                 return ((Grids_GridChunkIntArray) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        _NoDataValue,
+                        NoDataValue,
                         false,
                         chunk.getChunkID(false));
             } else {
                 return ((Grids_GridChunkIntMap) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        _NoDataValue);
+                        NoDataValue,
+                        false);
             }
         }
-        return _NoDataValue;
+        return NoDataValue;
     }
 
     /**
@@ -2249,7 +2253,8 @@ public class Grids_GridInt
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
-                    result);
+                    result,
+                    false);
         } else {
             System.err.println(
                     "Error in "
@@ -2337,6 +2342,7 @@ public class Grids_GridInt
                     (int) (cellRowIndex - ((long) chunkRowIndex * (long) ChunkNRows)),
                     (int) (cellColIndex - ((long) chunkColIndex * (long) ChunkNCols)),
                     valueToInitialise,
+                    NoDataValue,
                     false);
             // Update Statistics
             int noDataValue = getNoDataValue(
@@ -2390,6 +2396,7 @@ public class Grids_GridInt
             initCellFast(
                     cellRowIndex,
                     cellColIndex,
+                    NoDataValue,
                     valueToInitialise);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2429,6 +2436,7 @@ public class Grids_GridInt
     protected void initCellFast(
             long cellRowIndex,
             long cellColIndex,
+            int noDataValue,
             int valueToInitialise) {
         boolean isInGrid = isInGrid(
                 cellRowIndex,
@@ -2439,11 +2447,12 @@ public class Grids_GridInt
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                     chunkRowIndex,
                     chunkColIndex);
-            Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk = getGridChunk(chunkID);
-            _Grid2DSquareCellIntChunk.initCell(
+            Grids_AbstractGridChunkInt g = getGridChunk(chunkID);
+            g.initCell(
                     (int) (cellRowIndex - ((long) chunkRowIndex * (long) ChunkNRows)),
                     (int) (cellColIndex - ((long) chunkColIndex * (long) ChunkNCols)),
                     valueToInitialise,
+                    noDataValue,
                     false);
         }
     }

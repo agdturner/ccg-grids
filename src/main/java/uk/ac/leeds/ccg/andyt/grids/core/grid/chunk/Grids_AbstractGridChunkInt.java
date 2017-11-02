@@ -19,10 +19,10 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
-import gnu.trove.TIntHashSet;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashSet;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 
 /**
@@ -93,7 +93,7 @@ public abstract class Grids_AbstractGridChunkInt
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    protected int getCell(
+    public int getCell(
             int chunkRow,
             int chunkCol,
             int noDataValue,
@@ -189,6 +189,21 @@ public abstract class Grids_AbstractGridChunkInt
             int noDataValue);
 
     /**
+     * Returns the value at position given by: chunkRow, chunkCol and cellID.
+     *
+     * @param chunkRow the row of this chunk.
+     * @param chunkCol the column of this chunk.
+     * @param cellID the cell ID for chunkRow, chunkCol.
+     * @param noDataValue
+     * @return
+     */
+    protected abstract int getCell(
+            int chunkRow,
+            int chunkCol,
+            Grids_2D_ID_int cellID,
+            int noDataValue);
+    
+    /**
      * Returns the value at position given by: chunk cell row chunkRow;
      * chunk cell col chunkCol as a double.
      *
@@ -264,6 +279,7 @@ public abstract class Grids_AbstractGridChunkInt
      * this chunk
      * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
+     * @param noDataValue
      * @param valueToInitialise the value with which the cell is initialised
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -272,12 +288,14 @@ public abstract class Grids_AbstractGridChunkInt
     public void initCell(
             int chunkRow,
             int chunkCol,
+            int noDataValue,
             int valueToInitialise,
             boolean handleOutOfMemoryError) {
         try {
             initCell(
                     chunkRow,
                     chunkCol,
+                    noDataValue,
                     valueToInitialise);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
@@ -290,6 +308,7 @@ public abstract class Grids_AbstractGridChunkInt
                 initCell(
                         chunkRow,
                         chunkCol,
+                        noDataValue,
                         valueToInitialise,
                         handleOutOfMemoryError);
             } else {
@@ -307,11 +326,13 @@ public abstract class Grids_AbstractGridChunkInt
      * this chunk
      * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
+     * @param noDataValue
      * @param valueToInitialise the value with which the cell is initialised
      */
     protected abstract void initCell(
             int chunkRow,
             int chunkCol,
+            int noDataValue,
             int valueToInitialise);
 
     /**
@@ -946,10 +967,10 @@ public abstract class Grids_AbstractGridChunkInt
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public TIntHashSet getModeTIntHashSet(
+    public HashSet<Integer> getMode(
             boolean handleOutOfMemoryError) {
         try {
-            TIntHashSet result = getModeTIntHashSet();
+            HashSet<Integer> result = getMode();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -959,7 +980,7 @@ public abstract class Grids_AbstractGridChunkInt
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getModeTIntHashSet(handleOutOfMemoryError);
+                return getMode(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -972,12 +993,11 @@ public abstract class Grids_AbstractGridChunkInt
      *
      * @return
      */
-    protected TIntHashSet getModeTIntHashSet() {
+    protected HashSet<Integer> getMode() {
         boolean handleOutOfMemoryError = false;
-        TIntHashSet mode = new TIntHashSet();
+        HashSet<Integer> mode = new HashSet<>();
         BigInteger nonNoDataValueCount = getNonNoDataValueCountBigInteger();
         if (nonNoDataValueCount.compareTo(BigInteger.ZERO) == 1) {
-            //TDoubleObjectHashMap modes = new TDoubleObjectHashMap();
             Grids_GridInt g = getGrid();
             int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
             int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);

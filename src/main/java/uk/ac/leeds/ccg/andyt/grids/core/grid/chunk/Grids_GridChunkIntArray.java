@@ -22,7 +22,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import java.io.Serializable;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * Grids_AbstractGridChunkInt extension that stores cell values in a int[][].
@@ -152,11 +151,16 @@ public class Grids_GridChunkIntArray
             int chunkCellRowIndex,
             int chunkCellColIndex,
             int noDataValue) {
-        try {
             return this.data[chunkCellRowIndex][chunkCellColIndex];
-        } catch (Exception e0) {
-            return noDataValue;
-        }
+    }
+    
+    protected @Override
+    int getCell(
+            int chunkCellRowIndex,
+            int chunkCellColIndex,
+            Grids_2D_ID_int cellID,
+            int noDataValue) {
+            return this.data[chunkCellRowIndex][chunkCellColIndex];
     }
 
     /**
@@ -174,6 +178,7 @@ public class Grids_GridChunkIntArray
     void initCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
+            int noDataValue,
             int valueToInitialise) {
         this.data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
     }

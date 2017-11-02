@@ -93,7 +93,7 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleChunkMap
+     * Creates a new Grids_GridChunkDoubleMap.
      *
      * @param g
      * @param chunkID Default: default value to 0.0d
@@ -108,7 +108,7 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleChunkMap
+     * Creates a new Grids_GridChunkDoubleMap.
      *
      * @param g
      * @param chunkID
@@ -125,7 +125,7 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleChunkMap
+     * Creates a new Grids_GridChunkDoubleMap.
      *
      * @param gridChunk
      * @param chunkID Default: default value to
