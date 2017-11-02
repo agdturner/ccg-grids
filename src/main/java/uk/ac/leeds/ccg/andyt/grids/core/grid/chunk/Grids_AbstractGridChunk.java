@@ -29,10 +29,9 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     protected transient Grids_2D_ID_int ChunkID;
 
     protected int ChunkNRows;
-    
+
     protected int ChunkNCols;
-    
-    
+
     //protected Grids_2D_ID_int _ChunkID;
     /**
      * Indicator for whether the swapped version of this chunk is upToDate.
@@ -164,7 +163,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return Grids_AbstractGridChunk.this.isSwapUpToDate(handleOutOfMemoryError);
+                return isSwapUpToDate(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -172,12 +171,13 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns this.SwapUpToDate
+     * Returns SwapUpToDate. This method is public so that it can be accessed in
+     * memory management without checking there is enough memory to continue.
      *
      * @return
      */
-    protected boolean isSwapUpToDate() {
-        return this.SwapUpToDate;
+    public boolean isSwapUpToDate() {
+        return SwapUpToDate;
     }
 
     /**
@@ -334,7 +334,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @return
      */
     public boolean inChunk(
-            int chunkRow, 
+            int chunkRow,
             int chunkCol,
             boolean handleOutOfMemoryError) {
         try {

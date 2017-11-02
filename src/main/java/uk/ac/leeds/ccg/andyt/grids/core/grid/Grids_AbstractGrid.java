@@ -2097,7 +2097,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by _ChunkID.
      *
      * @param chunkID The ID of the Chunk. to be written.
-     * @param handleOutOfMemoryError
      * @return True if Grids_AbstractGridChunk on file is up to date.
      */
     public final boolean writeToFileChunk(
