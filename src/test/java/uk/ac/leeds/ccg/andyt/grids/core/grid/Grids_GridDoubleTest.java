@@ -306,10 +306,10 @@ public class Grids_GridDoubleTest {
         long cellColIndex;
         String name;
 
-        chunkNRows = 1000;
-        chunkNCols = 1000;
-        nRows = 100000;
-        nCols = 100000;
+        chunkNRows = 10;
+        chunkNCols = 10;
+        nRows = 1000;
+        nCols = 1000;
         name = "TestGrid2";
 
         gridFactory = getFactory(
@@ -355,8 +355,8 @@ public class Grids_GridDoubleTest {
         double expResult;
         double result;
         
-        row = 10000;
-        col = 10000;
+        row = 100;
+        col = 100;
         expResult = value;
         result = g.getCell(row, col, handleOutOfMemoryError);
         assertEquals(expResult, result, value);
