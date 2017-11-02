@@ -107,10 +107,6 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_AbstractGridChunkDoubleFactory _Grid2DSquareCellDoubleChunkFactory;
     /**
-     * Grids_GridChunkDouble64CellMapFactory
-     */
-    public Grids_GridChunkDouble64CellMapFactory _Grid2DSquareCellDoubleChunk64CellMapFactory;
-    /**
      * Grids_GridChunkDoubleArrayFactory
      */
     public Grids_GridChunkDoubleArrayFactory _Grid2DSquareCellDoubleChunkArrayFactory;
