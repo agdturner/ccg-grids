@@ -23,6 +23,8 @@ import gnu.trove.TDoubleHashSet;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 
 /**
@@ -873,10 +875,10 @@ public abstract class Grids_AbstractGridChunkDouble
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public TDoubleHashSet getModeTDoubleHashSet(
+    public HashSet<Double> getMode(
             boolean handleOutOfMemoryError) {
         try {
-            TDoubleHashSet result = getModeTDoubleHashSet();
+            HashSet<Double> result = getMode();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -886,7 +888,7 @@ public abstract class Grids_AbstractGridChunkDouble
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getModeTDoubleHashSet(handleOutOfMemoryError);
+                return getMode(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -899,9 +901,9 @@ public abstract class Grids_AbstractGridChunkDouble
      *
      * @return
      */
-    protected TDoubleHashSet getModeTDoubleHashSet() {
+    protected HashSet<Double> getMode() {
         boolean handleOutOfMemoryError = false;
-        TDoubleHashSet mode = new TDoubleHashSet();
+        HashSet<Double> mode = new HashSet<>();
         BigInteger nonNoDataValueCountBigInteger
                 = getNonNoDataValueCountBigInteger();
         if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
@@ -967,7 +969,7 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Initialises the mode.
      *
-     * @see getModeTDoubleHashSet()
+     * @see #getMode()
      */
     private Object[] initMode(
             int nrows,

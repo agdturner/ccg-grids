@@ -2087,6 +2087,7 @@ if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                     (int) (cellRowIndex - ((long) chunkRowIndex * (long) ChunkNRows)),
                     (int) (cellColIndex - ((long) chunkColIndex * (long) ChunkNCols)),
                     valueToInitialise,
+                    NoDataValue,
                     false);
             // Update Statistics
             if (valueToInitialise != NoDataValue) {
@@ -2191,6 +2192,7 @@ if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                     (int) (cellRowIndex - ((long) chunkRowIndex * (long) chunkNRows)),
                     (int) (cellColIndex - ((long) chunkColIndex * (long) chunkNCols)),
                     valueToInitialise,
+                    NoDataValue,
                     false);
         }
     }

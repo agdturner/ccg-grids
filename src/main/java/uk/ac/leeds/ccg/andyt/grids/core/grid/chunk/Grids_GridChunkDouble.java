@@ -137,7 +137,8 @@ public class Grids_GridChunkDouble
     @Override
     protected void initCell(
             int chunkRow, 
-            int chunkCol, 
+            int chunkCol,
+            double noDataValue,
             double valueToInitialise) {}
 
 }

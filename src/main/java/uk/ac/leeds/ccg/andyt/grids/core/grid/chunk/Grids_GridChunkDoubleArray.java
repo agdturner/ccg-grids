@@ -22,7 +22,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * Grids_AbstractGridChunkDouble extension that stores cell values in a
@@ -138,6 +137,7 @@ public class Grids_GridChunkDoubleArray
     void initCell(
             int chunkRow,
             int chunkCol,
+            double noDataValue,
             double valueToInitialise) {
         Data[chunkRow][chunkCol] = valueToInitialise;
     }
