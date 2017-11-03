@@ -76,7 +76,6 @@ public abstract class Grids_AbstractGridIterator
      */
     @Override
     public Object next() {
-        try {
             if (ChunkIterator.hasNext()) {
                 return ChunkIterator.next();
             } else {
@@ -88,9 +87,6 @@ public abstract class Grids_AbstractGridIterator
                     }
                 }
             }
-        } catch (NoSuchElementException e) {
-            e.printStackTrace(System.err);
-        }
         return null;
     }
 

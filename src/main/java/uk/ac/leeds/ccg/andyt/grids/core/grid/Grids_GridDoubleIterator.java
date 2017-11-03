@@ -36,16 +36,11 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 public class Grids_GridDoubleIterator
         extends Grids_AbstractGridIterator {
 
-    /**
-     * Creates a new instance of Grid2DSquareDoubleIterator
-     */
-    public Grids_GridDoubleIterator() {
+    protected Grids_GridDoubleIterator() {
     }
 
     /**
-     * Creates a new instance of Grid2DSquareDoubleIterator
-     *
-     * @param g The Grid2DSquareCellDouble to iterate over.
+     * @param g The Grids_GridDouble to iterate over.
      */
     public Grids_GridDoubleIterator(
             Grids_GridDouble g) {
@@ -57,7 +52,7 @@ public class Grids_GridDoubleIterator
     }
 
     /**
-     * Initialises ChunkIterator
+     * Initialises ChunkIterator.
      */
     @Override
     protected final void initChunkIterator() {
@@ -72,8 +67,7 @@ public class Grids_GridDoubleIterator
 
     /**
      * @param chunk
-     * @return Grids_AbstractIterator to iterate over values in
-     * a_Grid2DSquareCellDoubleChunk
+     * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
     public Grids_AbstractIterator getChunkIterator(

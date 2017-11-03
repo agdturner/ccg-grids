@@ -39,12 +39,6 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
     }
 
     /**
-     * For clearing the data associated with this.
-     */
-    @Override
-    protected abstract void clearData();
-
-    /**
      * Returns Grid.
      *
      * @return

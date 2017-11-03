@@ -121,8 +121,8 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
      * Updates fields from _GridStatistics except Grid
      *
      *
-     * @param statistics the _GridStatistics instance which fields are used
-     * to update this.
+     * @param statistics the _GridStatistics instance which fields are used to
+     * update this.
      */
     protected void update(
             Grids_AbstractGridStatistics statistics) {
@@ -160,7 +160,7 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         long col;
         if (this.Grid.getClass() == Grids_GridInt.class) {
             //if ( this.Grid instanceof Grids_GridInt ) {
-            Grids_GridInt g                    = (Grids_GridInt) Grid;
+            Grids_GridInt g = (Grids_GridInt) Grid;
             BigDecimal cellBigDecimal;
             int cellInt;
             boolean handleOutOfMemoryError = true;
@@ -1261,11 +1261,11 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
 
     /**
      * For returning the mode of all non noDataValues either as a TDoubleHashSet
- or as a TIntHashSet respectively depending on if ( this.Grid.getClass()
- == Grids_GridInt.class ) or if ( this.Grid.getClass() ==
- Grids_GridDouble.class ). TODO: Change for loops so as to
-     * look through each chunk in turn. Is it better to use toArray and go
-     * through a sorted version?
+     * or as a TIntHashSet respectively depending on if ( this.Grid.getClass()
+     * == Grids_GridInt.class ) or if ( this.Grid.getClass() ==
+     * Grids_GridDouble.class ). TODO: Change for loops so as to look through
+     * each chunk in turn. Is it better to use toArray and go through a sorted
+     * version?
      *
      * @return
      */
@@ -1839,23 +1839,23 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
         int chunkCol;
         boolean isInGrid;
         if (this.Grid.getClass() == Grids_GridInt.class) {
-            Grids_GridInt grid2DSquareCellInt
+            Grids_GridInt g
                     = (Grids_GridInt) this.Grid;
             int value;
-            int noDataValue = grid2DSquareCellInt.getNoDataValue(
+            int noDataValue = g.getNoDataValue(
                     handleOutOfMemoryError);
             BigDecimal nonNoDataValueCountBigDecimal = new BigDecimal("-1");
             BigDecimal differenceFromMean;
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
                     Grids_AbstractGridChunkInt chunk;
-                    chunk = grid2DSquareCellInt.getGridChunk(
+                    chunk = (Grids_AbstractGridChunkInt) g.getGridChunk(
                             chunkRowIndex,
                             chunkColIndex,
                             handleOutOfMemoryError);
                     for (chunkRow = 0; chunkRow < chunkNrows; chunkRow++) {
                         for (chunkCol = 0; chunkCol < chunkNcols; chunkCol++) {
-                            isInGrid = grid2DSquareCellInt.isInGrid(
+                            isInGrid = g.isInGrid(
                                     ((long) chunkRowIndex * (long) chunkNrows) + (long) chunkRow,
                                     ((long) chunkColIndex * (long) chunkNcols) + (long) chunkCol,
                                     handleOutOfMemoryError);
@@ -1892,22 +1892,22 @@ public abstract class Grids_AbstractGridStatistics extends Grids_Object
                     bd.get_RoundingMode());
         } else {
             //this.Grid.getClass() == Grids_GridDouble.class
-            Grids_GridDouble grid2DSquareCellDouble
+            Grids_GridDouble g
                     = (Grids_GridDouble) this.Grid;
             double value;
-            double noDataValue = grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
+            double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
             BigDecimal nonNoDataValueCountBigDecimal = new BigDecimal("-1");
             BigDecimal differenceFromMean;
             for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
                 for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                    Grids_AbstractGridChunkDouble chunk
-                            = grid2DSquareCellDouble.getGridChunk(
-                                    chunkRowIndex,
-                                    chunkColIndex,
-                                    handleOutOfMemoryError);
+                    Grids_AbstractGridChunkDouble chunk;
+                    chunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
+                            chunkRowIndex,
+                            chunkColIndex,
+                            handleOutOfMemoryError);
                     for (chunkRow = 0; chunkRow < chunkNrows; chunkRow++) {
                         for (chunkCol = 0; chunkCol < chunkNcols; chunkCol++) {
-                            isInGrid = grid2DSquareCellDouble.isInGrid(
+                            isInGrid = g.isInGrid(
                                     ((long) chunkRowIndex * (long) chunkNrows) + (long) chunkRow,
                                     ((long) chunkColIndex * (long) chunkNcols) + (long) chunkCol,
                                     handleOutOfMemoryError);

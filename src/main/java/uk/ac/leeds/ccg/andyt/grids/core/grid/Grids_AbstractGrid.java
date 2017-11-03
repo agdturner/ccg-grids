@@ -4906,4 +4906,69 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
+    /**
+     * @return Grids_AbstractGridChunk for the given chunkID.
+     * @param chunkID
+     */
+    protected abstract Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID);
+
+    /**
+     * @return Grids_AbstractGridChunk for the given chunkID.
+     * @param chunkID
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+        try {
+            Grids_AbstractGridChunk result = getGridChunk(chunkID);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(chunkID, e);
+                return getGridChunk(chunkID, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * @param chunkRowIndex
+     * @param chunkColIndex
+     * @return Grids_AbstractGridChunk.
+     */
+    protected final Grids_AbstractGridChunk getGridChunk(int chunkRowIndex, int chunkColIndex) {
+        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+                chunkRowIndex,
+                chunkColIndex);
+        return getGridChunk(chunkID);
+    }
+
+    /**
+     * @param chunkRowIndex
+     * @param chunkColIndex
+     * @return Grids_AbstractGridChunk.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public final Grids_AbstractGridChunk getGridChunk(int chunkRowIndex, int chunkColIndex, boolean handleOutOfMemoryError) {
+        try {
+            Grids_AbstractGridChunk result = getGridChunk(chunkRowIndex, chunkColIndex);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
+                freeSomeMemoryAndResetReserve(chunkID, e);
+                return getGridChunk(chunkID, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
 }

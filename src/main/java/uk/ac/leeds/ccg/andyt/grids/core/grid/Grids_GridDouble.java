@@ -1174,84 +1174,10 @@ public class Grids_GridDouble
     }
 
     /**
-     * @param chunkRowIndex
-     * @param chunkColIndex
-     * @return grid2DSquareCellDoubleChunks.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_AbstractGridChunkDouble getGridChunk(
-            int chunkRowIndex,
-            int chunkColIndex,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_AbstractGridChunkDouble result = getGridChunk(
-                    chunkRowIndex,
-                    chunkColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRowIndex,
-                        chunkColIndex);
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(
-                        chunkID,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkRowIndex
-     * @param chunkColIndex
-     * @return grid2DSquareCellDoubleChunks.
-     */
-    protected Grids_AbstractGridChunkDouble getGridChunk(
-            int chunkRowIndex,
-            int chunkColIndex) {
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                chunkRowIndex,
-                chunkColIndex);
-        return getGridChunk(chunkID);
-    }
-
-    /**
-     * @return grid2DSquareCellDoubleChunksAbstract for the given ID
-     * @param chunkID
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_AbstractGridChunkDouble getGridChunk(
-            Grids_2D_ID_int chunkID,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_AbstractGridChunkDouble result = getGridChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(
-                        chunkID,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return grid2DSquareCellDoubleChunksAbstract for the given ID
+     * @return Grids_AbstractGridChunkDouble for the given chunkID.
      * @param chunkID
      */
+    @Override
     protected Grids_AbstractGridChunkDouble getGridChunk(
             Grids_2D_ID_int chunkID) {
         boolean containsKey;
@@ -1786,20 +1712,16 @@ public class Grids_GridDouble
         int chunkColIndex = getChunkColIndex(cellColIndex);
         int chunkCellRowIndex = getChunkCellRowIndex(cellRowIndex);
         int chunkCellColIndex = getChunkCellColIndex(cellColIndex);
-        //if ( inGrid( _CellRowIndex, _CellColIndex ) ) {
-        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGridChunk(
+        Grids_AbstractGridChunkDouble chunk = (Grids_AbstractGridChunkDouble) getGridChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return setCell(
-                grid2DSquareCellDoubleChunk,
+                chunk,
                 chunkRowIndex,
                 chunkColIndex,
                 chunkCellRowIndex,
                 chunkCellColIndex,
                 newValue);
-        //} else {
-        //    return getNoDataValue();
-        //}
     }
 
     /**
@@ -1871,12 +1793,12 @@ public class Grids_GridDouble
             int chunkCellRowIndex,
             int chunkCellColIndex,
             double newValue) {
-        //if ( inGrid( _ChunkRowIndex, _ChunkColIndex, chunkCellRowIndex, chunkCellColIndex ) ) {
-        Grids_AbstractGridChunkDouble grid2DSquareCellDoubleChunk = getGridChunk(
+        Grids_AbstractGridChunkDouble chunk;
+        chunk = (Grids_AbstractGridChunkDouble) getGridChunk(
                 chunkRowIndex,
                 chunkColIndex);
         return setCell(
-                grid2DSquareCellDoubleChunk,
+                chunk,
                 chunkRowIndex,
                 chunkColIndex,
                 chunkCellRowIndex,
@@ -2733,66 +2655,21 @@ public class Grids_GridDouble
         }
         return nearestValue;
     }
-
+    
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to point given by x-coordinate x, y-coordinate y.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(
-            double x,
-            double y,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(
-                    x,
-                    y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(y),
-                        getChunkColIndex(x));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValuesCellIDs(
-                        x,
-                        y,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
      * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      */
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
-            double x,
-            double y) {
-        double value = getCell(
-                x,
-                y);
+    @Override
+    protected Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y) {
+        double value = getCell(x, y);
         if (value == NoDataValue) {
-            return getNearestValuesCellIDs(x,
-                    y,
-                    getCellRowIndex(y),
-                    getCellColIndex(x),
-                    NoDataValue);
+            return getNearestValuesCellIDs(x, y, getCellRowIndex(y), getCellColIndex(x), NoDataValue);
         }
         Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
-        cellIDs[0] = getCellID(
-                x,
-                y);
+        cellIDs[0] = getCellID(x, y);
         return cellIDs;
     }
 
@@ -2803,64 +2680,7 @@ public class Grids_GridDouble
      * cells with data values are returned.
      * @param cellColIndex The column index from which the cell IDs of the
      * nearest cells with data values are returned.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(
-            long cellRowIndex,
-            long cellColIndex,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(
-                    cellRowIndex,
-                    cellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValuesCellIDs(
-                        cellRowIndex,
-                        cellColIndex,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to position given by row index rowIndex, column index colIndex.
-     * @param cellRowIndex The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
-     * @param cellColIndex The column index from which the cell IDs of the
-     * nearest cells with data values are returned.
-     */
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
-            long cellRowIndex,
-            long cellColIndex) {
-        double value = getCell(
-                cellRowIndex,
-                cellColIndex);
-        if (value == NoDataValue) {
-            return getNearestValuesCellIDs(getCellXDouble(cellColIndex),
-                    getCellYDouble(cellRowIndex),
-                    cellRowIndex,
-                    cellColIndex,
-                    NoDataValue);
-        }
-        Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
-        cellIDs[0] = getCellID(
-                cellRowIndex,
-                cellColIndex);
-        return cellIDs;
-    }
 
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data

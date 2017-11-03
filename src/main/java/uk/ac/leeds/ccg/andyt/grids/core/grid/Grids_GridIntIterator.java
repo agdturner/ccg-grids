@@ -34,11 +34,11 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 public class Grids_GridIntIterator
         extends Grids_AbstractGridIterator {
 
-    protected Grids_GridIntIterator() {    }
+    protected Grids_GridIntIterator() {}
 
     /**
-     *
-     * @param g
+     * 
+     * @param g The Grids_GridInt to iterate over.
      */
     public Grids_GridIntIterator(
             Grids_GridInt g) {
@@ -65,7 +65,7 @@ public class Grids_GridIntIterator
 
     /**
      * @param chunk
-     * @return Grids_AbstractIterator to iterate over values in Chunk.
+     * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
     public Grids_AbstractIterator getChunkIterator(

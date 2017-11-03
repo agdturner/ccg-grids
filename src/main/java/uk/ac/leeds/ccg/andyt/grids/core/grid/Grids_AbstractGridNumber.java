@@ -19,8 +19,8 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.awt.geom.Point2D;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
@@ -696,4 +696,37 @@ public abstract class Grids_AbstractGridNumber
      */
     protected abstract double setCell(long cellRowIndex, long cellColIndex, double valueToSet);
 
+    /**
+     * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
+     * values to point given by x-coordinate x, y-coordinate y.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     */
+    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y);
+
+    /**
+     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
+     * values to point given by x-coordinate x, y-coordinate y.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, boolean handleOutOfMemoryError) {
+        try {
+            Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(y), getChunkColIndex(x));
+                freeSomeMemoryAndResetReserve(chunkID, e);
+                return getNearestValuesCellIDs(x, y, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
 }
