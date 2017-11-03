@@ -2639,137 +2639,42 @@ public class Grids_GridInt
      * x-coordinate x, y-coordinate y as a double.
      * @param x The x-coordinate of the point
      * @param y The y-coordinate of the point
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public double getNearestValueDouble(
-            double x,
-            double y,
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getNearestValueDouble(
-                    x,
-                    y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(y),
-                        getChunkColIndex(x));
-                if (ge.swapChunkExcept_Account(
-                        this,
-                        chunkID,
-                        false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(
-                        this,
-                        chunkID,
-                        handleOutOfMemoryError);
-                return getNearestValueDouble(
-                        x,
-                        y,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return the average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y as a double.
-     * @param x The x-coordinate of the point
-     * @param y The y-coordinate of the point
-     */
+    @Override
     protected double getNearestValueDouble(
             double x,
             double y) {
-        int _NoDataValue = getNoDataValue();
-        double result = getCell(
-                x,
-                y);
-        if (result == _NoDataValue) {
+        double result = getCell(x, y);
+        if (result == NoDataValue) {
             result = getNearestValueDouble(
                     x,
                     y,
                     getCellRowIndex(y),
-                    getCellColIndex(x),
-                    _NoDataValue);
+                    getCellColIndex(x));
         }
         return result;
     }
 
     /**
-     * @param _CellColIndex
+     * @param cellColIndex
      * @return the average of the nearest data values to position given by row
      * index rowIndex, column index colIndex as a double.
-     * @param _CellRowIndex The row index from which average of the nearest data
-     * values is returned.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public double getNearestValueDouble(
-            long _CellRowIndex,
-            long _CellColIndex,
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getNearestValueDouble(
-                    _CellRowIndex,
-                    _CellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(_CellRowIndex),
-                        getChunkColIndex(_CellColIndex));
-                if (ge.swapChunkExcept_Account(
-                        this,
-                        chunkID,
-                        false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(
-                        this,
-                        chunkID,
-                        handleOutOfMemoryError);
-                return getNearestValueDouble(
-                        _CellRowIndex,
-                        _CellColIndex,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param _CellColIndex
-     * @return the average of the nearest data values to position given by row
-     * index rowIndex, column index colIndex as a double.
-     * @param _CellRowIndex The row index from which average of the nearest data
+     * @param cellRowIndex The row index from which average of the nearest data
      * values is returned.
      */
+    @Override
     protected double getNearestValueDouble(
-            long _CellRowIndex,
-            long _CellColIndex) {
-        int _NoDataValue = getNoDataValue();
+            long cellRowIndex,
+            long cellColIndex) {
         double result = getCell(
-                _CellRowIndex,
-                _CellColIndex);
-        if (result == _NoDataValue) {
+                cellRowIndex,
+                cellColIndex);
+        if (result == NoDataValue) {
             result = getNearestValueDouble(
-                    getCellXDouble(_CellColIndex),
-                    getCellYDouble(_CellRowIndex),
-                    _CellRowIndex,
-                    _CellColIndex,
-                    _NoDataValue);
+                    getCellXDouble(cellColIndex),
+                    getCellYDouble(cellRowIndex),
+                    cellRowIndex,
+                    cellColIndex);
         }
         return result;
     }
@@ -2783,62 +2688,13 @@ public class Grids_GridInt
      * @param y The y-coordinate of the point
      * @param cellRowIndex The row index from which average of the nearest data
      * values is returned.
-     * @param _NoDataValue
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public double getNearestValueDouble(
-            double x,
-            double y,
-            long cellRowIndex,
-            long cellColIndex,
-            int _NoDataValue,
-            boolean handleOutOfMemoryError) {
-        try {
-            return getNearestValueDouble(
-                    x,
-                    y,
-                    cellRowIndex,
-                    cellColIndex,
-                    _NoDataValue);
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValueDouble(
-                        x,
-                        y,
-                        cellRowIndex,
-                        cellColIndex,
-                        _NoDataValue,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param cellColIndex
-     * @return the average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex as a double.
-     * @param x The x-coordinate of the point
-     * @param y The y-coordinate of the point
-     * @param cellRowIndex The row index from which average of the nearest data
-     * values is returned.
-     * @param _NoDataValue
-     */
+    @Override
     protected double getNearestValueDouble(
             double x,
             double y,
             long cellRowIndex,
-            long cellColIndex,
-            int _NoDataValue) {
+            long cellColIndex) {
         Grids_2D_ID_long nearestCellID = getNearestCellID(
                 x,
                 y,
@@ -2847,7 +2703,7 @@ public class Grids_GridInt
         double nearestValue = getCell(
                 cellRowIndex,
                 cellColIndex);
-        if (nearestValue == _NoDataValue) {
+        if (nearestValue == NoDataValue) {
             // Find a value Seeking outwards from nearestCellID
             // Initialise visitedSet1
             HashSet visitedSet = new HashSet();
@@ -2892,7 +2748,7 @@ public class Grids_GridInt
                     visitedSet2.add(cellID0);
                     value = getCell(cellID0,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (value != _NoDataValue) {
+                    if (value != NoDataValue) {
                         foundValue = true;
                         values.add(cellID0);
                     } else {
@@ -2955,7 +2811,7 @@ public class Grids_GridInt
                     if (getCell(
                             cellIDs[i],
                             ge.HandleOutOfMemoryErrorTrue)
-                            != _NoDataValue) {
+                            != NoDataValue) {
                         distance = Grids_Utilities.distance(
                                 x,
                                 y,
@@ -3001,7 +2857,7 @@ public class Grids_GridInt
             double y) {
         int value = getCell(x, y);
         if (value == NoDataValue) {
-            return getNearestValuesCellIDs(x, y, getCellRowIndex(y), getCellColIndex(x), NoDataValue);
+            return getNearestValuesCellIDs(x, y, getCellRowIndex(y), getCellColIndex(x));
         }
         Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
         cellIDs[0] = getCellID(x, y);
@@ -3009,68 +2865,30 @@ public class Grids_GridInt
     }
 
     /**
-     * @param cellColIndex
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
      * @param cellRowIndex The row index from which the cell IDs of the nearest
      * cells with data values are returned.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param cellColIndex
      */
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(
+    @Override
+    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
             long cellRowIndex,
-            long cellColIndex,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(
+            long cellColIndex) {
+        int value = getCell(
+                cellRowIndex,
+                cellColIndex);
+        if (value == NoDataValue) {
+            return getNearestValuesCellIDs(
+                    getCellXDouble(cellColIndex),
+                    getCellYDouble(cellRowIndex),
                     cellRowIndex,
                     cellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValuesCellIDs(
-                        cellRowIndex,
-                        cellColIndex,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to position given by row index rowIndex, column index colIndex.
-     * @param _CellRowIndex The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
-     * @param _CellColIndex
-     */
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
-            long _CellRowIndex,
-            long _CellColIndex) {
-        int _NoDataValue = getNoDataValue();
-        int value = getCell(
-                _CellRowIndex,
-                _CellColIndex);
-        if (value == _NoDataValue) {
-            return getNearestValuesCellIDs(
-                    getCellXDouble(_CellColIndex),
-                    getCellYDouble(_CellRowIndex),
-                    _CellRowIndex,
-                    _CellColIndex,
-                    _NoDataValue);
         }
         Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
         cellIDs[0] = getCellID(
-                _CellRowIndex,
-                _CellColIndex);
+                cellRowIndex,
+                cellColIndex);
         return cellIDs;
     }
 
@@ -3084,65 +2902,13 @@ public class Grids_GridInt
      * @param cellRowIndex The row index from which the cell IDs of the nearest
      * cells with data values are returned.
      * @param cellColIndex
-     * @param noDataValue The no data value of the this.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(
-            double x,
-            double y,
-            long cellRowIndex,
-            long cellColIndex,
-            int noDataValue,
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(
-                    x,
-                    y,
-                    cellRowIndex,
-                    cellColIndex,
-                    noDataValue);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValuesCellIDs(
-                        x,
-                        y,
-                        cellRowIndex,
-                        cellColIndex,
-                        noDataValue,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values nearest to point with position given by: x-coordinate x,
-     * y-coordinate y; and, cell row index _CellRowIndex, cell column index
-     * _CellColIndex.
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param cellRowIndex The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
-     * @param cellColIndex
-     * @param noDataValue The no data value of the this.
-     */
+    @Override
     protected Grids_2D_ID_long[] getNearestValuesCellIDs(
             double x,
             double y,
             long cellRowIndex,
-            long cellColIndex,
-            int noDataValue) {
+            long cellColIndex) {
         Grids_2D_ID_long[] nearestCellIDs = new Grids_2D_ID_long[1];
         nearestCellIDs[0] = getNearestCellID(
                 x,
@@ -3152,7 +2918,7 @@ public class Grids_GridInt
         int nearestCellValue = getCell(
                 cellRowIndex,
                 cellColIndex);
-        if (nearestCellValue == noDataValue) {
+        if (nearestCellValue == NoDataValue) {
             // Find a value Seeking outwards from nearestCellID
             // Initialise visitedSet1
             HashSet visitedSet = new HashSet();
@@ -3197,7 +2963,7 @@ public class Grids_GridInt
                     value = getCell(
                             cellID,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (value != noDataValue) {
+                    if (value != NoDataValue) {
                         foundValue = true;
                         values.add(cellID);
                     } else {
@@ -3259,7 +3025,7 @@ public class Grids_GridInt
                 if (!visitedSet.contains(cellIDs[i])) {
                     if (getCell(cellIDs[i],
                             ge.HandleOutOfMemoryErrorTrue)
-                            != noDataValue) {
+                            != NoDataValue) {
                         distance = Grids_Utilities.distance(
                                 x,
                                 y,
@@ -3276,6 +3042,7 @@ public class Grids_GridInt
                         minDistance = Math.min(
                                 minDistance,
                                 distance);
+                    } else {
                     }
                 }
             }
@@ -3296,96 +3063,22 @@ public class Grids_GridInt
      * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public double getNearestValueDoubleDistance(
-            double x,
-            double y,
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getNearestValueDoubleDistance(
-                    x,
-                    y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(y),
-                        getChunkColIndex(x));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValueDoubleDistance(
-                        x,
-                        y,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return the distance to the nearest data value from point given by
-     * x-coordinate x, y-coordinate y.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     */
+    @Override
     protected double getNearestValueDoubleDistance(
             double x,
             double y) {
-        int _NoDataValue = getNoDataValue();
         double result = getCell(
                 x,
                 y);
-        if (result == _NoDataValue) {
+        if (result == NoDataValue) {
             result = getNearestValueDoubleDistance(
                     x,
                     y,
                     getCellRowIndex(y),
-                    getCellColIndex(x),
-                    _NoDataValue);
+                    getCellColIndex(x));
         }
         return result;
-    }
-
-    /**
-     * @return the distance to the nearest data value from position given by row
-     * index rowIndex, column index colIndex.
-     * @param cellRowIndex The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param cellColIndex
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public double getNearestValueDoubleDistance(
-            long cellRowIndex,
-            long cellColIndex,
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getNearestValueDoubleDistance(
-                    cellRowIndex,
-                    cellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValueDoubleDistance(
-                        cellRowIndex,
-                        cellColIndex,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3398,17 +3091,15 @@ public class Grids_GridInt
     protected double getNearestValueDoubleDistance(
             long cellRowIndex,
             long cellColIndex) {
-        int _NoDataValue = getNoDataValue();
         double result = getCell(
                 cellRowIndex,
                 cellColIndex);
-        if (result == _NoDataValue) {
+        if (result == NoDataValue) {
             result = getNearestValueDoubleDistance(
                     getCellXDouble(cellColIndex),
                     getCellYDouble(cellRowIndex),
                     cellRowIndex,
-                    cellColIndex,
-                    _NoDataValue);
+                    cellColIndex);
         }
         return result;
     }
@@ -3423,72 +3114,17 @@ public class Grids_GridInt
      * distance nearest to the nearest cell value is returned.
      * @param cellColIndex The cell column index of the cell from which the
      * distance nearest to the nearest cell value is returned.
-     * @param _NoDataValue
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
-    public double getNearestValueDoubleDistance(
-            double x,
-            double y,
-            long cellRowIndex,
-            long cellColIndex,
-            int _NoDataValue,
-            boolean handleOutOfMemoryError) {
-        try {
-            return getNearestValueDoubleDistance(
-                    x,
-                    y,
-                    cellRowIndex,
-                    cellColIndex,
-                    _NoDataValue);
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValueDoubleDistance(
-                        x,
-                        y,
-                        cellRowIndex,
-                        cellColIndex,
-                        _NoDataValue,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param _NoDataValue
-     * @return the distance to the nearest data value from point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param _CellRowIndex The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param _CellColIndex The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     */
+    @Override
     protected double getNearestValueDoubleDistance(
             double x,
             double y,
-            long _CellRowIndex,
-            long _CellColIndex,
-            int _NoDataValue) {
-        //            Grids_2D_ID_long nearestCellID = getNearestCellID(
-        //                    x,
-        //                    y,
-        //                    _CellRowIndex,
-        //                    _CellColIndexe );
+            long cellRowIndex,
+            long cellColIndex) {
         double result = getCell(
-                _CellRowIndex,
-                _CellColIndex);
-        if (result == _NoDataValue) {
+                cellRowIndex,
+                cellColIndex);
+        if (result == NoDataValue) {
             // Initialisation
             long long0;
             long long1;
@@ -3503,8 +3139,8 @@ public class Grids_GridInt
             Grids_2D_ID_long nearestCellID = getNearestCellID(
                     x,
                     y,
-                    _CellRowIndex,
-                    _CellColIndex);
+                    cellRowIndex,
+                    cellColIndex);
             HashSet visitedSet = new HashSet();
             HashSet visitedSet1 = new HashSet();
             visitedSet.add(nearestCellID);
@@ -3531,8 +3167,8 @@ public class Grids_GridInt
                     boolean1 = (col == longZero);
                     boolean2 = !(boolean0 && boolean1);
                     if (boolean2) {
-                        long0 = _CellRowIndex + row;
-                        long1 = _CellColIndex + col;
+                        long0 = cellRowIndex + row;
+                        long1 = cellColIndex + col;
                         isInGrid = isInGrid(
                                 long0,
                                 long1,
@@ -3558,7 +3194,7 @@ public class Grids_GridInt
                     value = getCell(
                             cellID,
                             ge.HandleOutOfMemoryErrorTrue);
-                    if (value != _NoDataValue) {
+                    if (value != NoDataValue) {
                         foundValue = true;
                         values.add(cellID);
                     } else {
@@ -3630,7 +3266,7 @@ public class Grids_GridInt
                 if (!visitedSet.contains(cellIDs[i])) {
                     if (getCell(cellIDs[i],
                             ge.HandleOutOfMemoryErrorTrue)
-                            != _NoDataValue) {
+                            != NoDataValue) {
                         distance = Grids_Utilities.distance(
                                 x,
                                 y,
@@ -3842,29 +3478,9 @@ public class Grids_GridInt
 
     /**
      * @return an iterator over the cell value in this.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public Iterator iterator(
-            boolean handleOutOfMemoryError) {
-        try {
-            Iterator result = new Grids_GridIntIterator(this);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(handleOutOfMemoryError);
-                return iterator(
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
+    public Grids_GridIntIterator iterator() {
+        return new Grids_GridIntIterator(this);
     }
 }

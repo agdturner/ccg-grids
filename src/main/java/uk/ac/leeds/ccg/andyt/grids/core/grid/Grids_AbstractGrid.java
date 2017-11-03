@@ -4834,10 +4834,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     *
-     * @param g Grid not to have chunks with chunkIDs swapped.
-     * @param chunkIDs Chunks not to be swapped from g.
-     * @param handleOurOfMemoryError
      * @return the ChunkIDChunkMap
      */
     public HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> getChunkIDChunkMap() {
