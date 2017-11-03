@@ -27,8 +27,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap.Offs
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkMap
- * instance. The values are not returned in any particular order.
+ * For iterating through the values in a Grids_GridChunkDoubleMap
+ * instance. The values are not returned in any particular spatial order.
  */
 public class Grids_GridChunkDoubleMapIterator extends Grids_AbstractIterator {
 

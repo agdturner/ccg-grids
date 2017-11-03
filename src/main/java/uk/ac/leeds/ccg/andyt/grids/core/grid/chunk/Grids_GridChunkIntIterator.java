@@ -20,61 +20,29 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
+import java.util.NoSuchElementException;
 
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
+ * For iterating through the values in a Grids_GridChunkInt
  * instance. The values are not returned in any particular order.
  */
-public class Grids_GridChunkIntIterator extends Grids_AbstractIterator {
+public class Grids_GridChunkIntIterator extends Grids_GridChunkNumberIterator {
 
     protected int Value;
-    protected int ChunkRow;
-    protected int ChunkCol;
-    protected int ChunkNRows;
-    protected int ChunkNCols;
 
     protected Grids_GridChunkIntIterator() {
     }
 
     /**
-     * Creates a new instance of Grid2DSquareDoubleIterator
+     * Creates a new instance of Grids_GridChunkIntIterator
      *
-     * @param chunk The Grid2DSquareCellDoubleChunkArray to iterate over.
+     * @param chunk The Grids_GridChunkInt to iterate over.
      */
     public Grids_GridChunkIntIterator(Grids_GridChunkInt chunk) {
         init(chunk);
         Value = chunk.getValue();
     }
 
-    /**
-     *
-     * @param chunk
-     */
-    protected final void init(Grids_AbstractGridChunkInt chunk) {
-        ChunkRow = 0;
-        ChunkCol = 0;
-        Grids_GridInt g = chunk.getGrid();
-        ChunkNRows = g.getChunkNRows(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
-        ChunkNCols = g.getChunkNCols(chunk.ChunkID, ge.HandleOutOfMemoryErrorFalse);
-    }
-
-    /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
-     * catch ArrayOutOfboundsException should be faster
-     */
-    @Override
-    public boolean hasNext() {
-        if (ChunkCol + 1 == ChunkNCols) {
-            if (ChunkRow + 1 == ChunkNRows) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Returns the next element in the iteration.
@@ -87,19 +55,6 @@ public class Grids_GridChunkIntIterator extends Grids_AbstractIterator {
         return Value;
     }
 
-    protected void next0() {
-        if (ChunkCol + 1 == ChunkNCols) {
-            if (ChunkRow + 1 == ChunkNRows) {
-                //throw NoSuchElementException;
-                //return null;
-            } else {
-                ChunkRow++;
-                ChunkCol = 0;
-            }
-        } else {
-            ChunkCol++;
-        }
-    }
 
     @Override
     public void remove() {

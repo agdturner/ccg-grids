@@ -27,8 +27,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap.OffsetB
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * For iterating through the values in a Grid2DSquareCellIntChunkMap
- * instance. The values are not returned in any particular order.
+ * For iterating through the values in a Grids_GridChunkIntMap instance. The
+ * values are not returned in any particular spatial order.
  */
 public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
 
@@ -96,7 +96,7 @@ public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
     /**
      * Returns the next element in the iteration. First all the default values
      * are returned then all the values in DataMapBitSet, then all the values in
-     * DataMapHashSet. 
+     * DataMapHashSet.
      *
      * @return the next element in the iteration or null.
      * @exception NoSuchElementException iteration has no more elements.
@@ -104,37 +104,37 @@ public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
     @Override
     public Object next() {
         if (ValuesLeft) {
-        if (DefaultValueIndex == NumberOfDefaultValues - 1) {
-            if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
-                if (DataMapBitSetIte.hasNext()) {
-                    DataMapBitSetValue = DataMapBitSetIte.next();
-                    DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
-                    DataMapBitSetIndex = 0;
-                    return DataMapBitSetValue;
-                } else {
-                    if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
-                        if (DataMapHashSetIte.hasNext()) {
-                            DataMapHashSetValue = DataMapHashSetIte.next();
-                            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
-                            DataMapHashSetIndex = 0;
-                            return DataMapHashSetValue;
-                        } else {
-                            ValuesLeft = false;
-                            return null;
-                        }
+            if (DefaultValueIndex == NumberOfDefaultValues - 1) {
+                if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
+                    if (DataMapBitSetIte.hasNext()) {
+                        DataMapBitSetValue = DataMapBitSetIte.next();
+                        DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+                        DataMapBitSetIndex = 0;
+                        return DataMapBitSetValue;
                     } else {
-                        DataMapHashSetIndex++;
-                        return DataMapHashSetValue;
+                        if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
+                            if (DataMapHashSetIte.hasNext()) {
+                                DataMapHashSetValue = DataMapHashSetIte.next();
+                                DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+                                DataMapHashSetIndex = 0;
+                                return DataMapHashSetValue;
+                            } else {
+                                ValuesLeft = false;
+                                return null;
+                            }
+                        } else {
+                            DataMapHashSetIndex++;
+                            return DataMapHashSetValue;
+                        }
                     }
+                } else {
+                    DataMapBitSetIndex++;
+                    return DataMapBitSetValue;
                 }
             } else {
-                DataMapBitSetIndex++;
-                return DataMapBitSetValue;
+                DefaultValueIndex++;
+                return DefaultValue;
             }
-        } else {
-            DefaultValueIndex++;
-            return DefaultValue;
-        }
         } else {
             return null;
         }

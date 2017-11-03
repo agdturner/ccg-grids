@@ -30,8 +30,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * implement acting as an interface.
  */
 public abstract class Grids_AbstractGridChunkDouble
-        extends Grids_AbstractGridChunk
-        implements Serializable {
+        extends Grids_AbstractGridChunkNumber {
     //implements Serializable, GridDoubleStatisticsInterface {
 
     //private static final long serialVersionUID = 1L;
@@ -156,7 +155,37 @@ public abstract class Grids_AbstractGridChunkDouble
             int chunkCol,
             Grids_2D_ID_int cellID,
             double noDataValue);
-
+    
+    /**
+     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
+     * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
+     * Grid.NoDataValue then null is returned!
+     *
+     * @param chunkRow The row index of the cell w.r.t. the origin of this
+     * chunk.
+     * @param chunkCol The column index of the cell w.r.t. the origin of this
+     * chunk.
+     * @param noDataValue The Grid.NoDataValue.
+     * @return 
+     */
+    protected BigDecimal getCellBigDecimal(int chunkRow, int chunkCol, double noDataValue) {
+        double value = getCell(chunkRow, chunkCol, noDataValue);
+        try {
+            return new BigDecimal(value);
+        } catch (ArithmeticException ae0) {
+            return null;
+        }
+    }
+    
+    /**
+     * Returns the number of cells with no data values as an int.
+     *
+     * @return
+     */
+    protected int getNonNoDataValueCountInt() {
+        return getNonNoDataValueCountBigInteger().intValue();
+    }
+    
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
@@ -172,67 +201,167 @@ public abstract class Grids_AbstractGridChunkDouble
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public BigDecimal getCellBigDecimal(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            double noDataValue,
-            boolean handleOutOfMemoryError) {
+    public BigDecimal getCellBigDecimal(int chunkCellRowIndex, int chunkCellColIndex, double noDataValue, boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getCellBigDecimal(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
-                    noDataValue);
+            BigDecimal result = getCellBigDecimal(chunkCellRowIndex, chunkCellColIndex, noDataValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
-                return getCellBigDecimal(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+                return getCellBigDecimal(chunkCellRowIndex, chunkCellColIndex, noDataValue, handleOutOfMemoryError);
             } else {
                 throw e;
             }
         }
     }
-
+    
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
-     * Grid.NoDataValue then null is returned!
+     * Returns the number of cells with no data values as a BigInteger.
      *
-     * @param chunkRow The row index of the cell w.r.t. the origin of this
-     * chunk.
-     * @param chunkCol The column index of the cell w.r.t. the origin of this
-     * chunk.
-     * @param noDataValue The Grid.NoDataValue.
+     * @return
      */
-    private BigDecimal getCellBigDecimal(
-            int chunkRow,
-            int chunkCol,
-            double noDataValue) {
-        double value = getCell(
-                chunkRow,
-                chunkCol,
-                noDataValue);
-        try {
-            return new BigDecimal(value);
-        } catch (ArithmeticException ae0) {
-            return null;
+    @Override
+    protected BigInteger getNonNoDataValueCountBigInteger() {
+        boolean handleOutOfMemoryError = false;
+        BigInteger nonNoDataValueCount = BigInteger.ZERO;
+        Grids_GridDouble g = getGrid();
+        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        double noDataValue = g.getNoDataValue(false);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                if (getCell(row, col, noDataValue) != noDataValue) {
+                    nonNoDataValueCount = nonNoDataValueCount.add(BigInteger.ONE);
+                }
+            }
         }
+        return nonNoDataValueCount;
+    }
+    
+    /**
+     * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
+     * all cells are _NoDataValues, then null is returned.
+     *
+     * @param numberOfDecimalPlaces The number of decimal places to which the
+     * result is precise.
+     * @return
+     */
+    @Override
+    protected BigDecimal getArithmeticMeanBigDecimal(int numberOfDecimalPlaces) {
+        boolean handleOutOfMemoryError = false;
+        BigDecimal mean = BigDecimal.ZERO;
+        BigDecimal count = BigDecimal.ZERO;
+        BigDecimal one = BigDecimal.ONE;
+        Grids_GridDouble g = getGrid();
+        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        double value;
+        int row;
+        int col;
+        for (row = 0; row < nrows; row++) {
+            for (col = 0; col < ncols; col++) {
+                value = getCell(row, col, _NoDataValue);
+                if (value != _NoDataValue) {
+                    mean = mean.add(new BigDecimal(value));
+                    count = count.add(one);
+                }
+            }
+        }
+        if (count.compareTo(BigDecimal.ZERO) != 0) {
+            return mean.divide(count, numberOfDecimalPlaces, BigDecimal.ROUND_HALF_EVEN);
+        }
+        return null;
     }
 
+    /**
+     * Returns the Arithmetic Mean of all data values as a double. If all
+     * cells are NoDataValues, then Grid.NoDataValue is returned. Using
+     * BigDecimal this should be as precise as is possible with doubles.
+     *
+     * @return
+     */
+    @Override
+    protected double getArithmeticMeanDouble() {
+        BigDecimal arithmeticMeanBigDecimal = getArithmeticMeanBigDecimal(324); //Why 324???
+        try {
+            return arithmeticMeanBigDecimal.doubleValue();
+        } catch (NullPointerException npe0) {
+            return getGrid().getNoDataValue(false);
+        }
+    }
+    
+    /**
+     * Returns the median of all data values as a double. This method
+     * requires that all data in chunk can be stored as a new array.
+     *
+     * @return
+     */
+    @Override
+    protected double getMedianDouble() {
+        Grids_GridDouble g = getGrid();
+        int scale = 20;
+        double median = g.getNoDataValue(false);
+        BigInteger nonNoDataValueCountBigInteger = getNonNoDataValueCountBigInteger();
+        if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
+            double[] array = toArrayNotIncludingNoDataValues();
+            sort1(array, 0, array.length);
+            BigInteger[] nonNoDataValueCountBigIntegerDivideAndRemainder2 = nonNoDataValueCountBigInteger.divideAndRemainder(new BigInteger("2"));
+            if (nonNoDataValueCountBigIntegerDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
+                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+                //median = array[ index ];
+                //median += array[ index - 1 ];
+                //median /= 2.0d;
+                //return median;
+                BigDecimal medianBigDecimal = new BigDecimal(array[index - 1]);
+                return (medianBigDecimal.add(new BigDecimal(array[index]))).divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                //return ( medianBigDecimal.add( new BigDecimal( array[ index ] ) ) ).divide( new BigDecimal( 2.0d ), scale, BigDecimal.ROUND_HALF_EVEN ).doubleValue();
+            } else {
+                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+                return array[index];
+            }
+        } else {
+            return median;
+        }
+    }
+    
+    /**
+     * Returns the standard deviation of all data values as a double.
+     *
+     * @return
+     */
+    @Override
+    protected double getStandardDeviationDouble() {
+        boolean handleOutOfMemoryError = false;
+        double standardDeviation = 0.0d;
+        double mean = getArithmeticMeanDouble();
+        Grids_GridDouble g = getGrid();
+        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        double value;
+        double count = 0.0d;
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                value = getCell(row, col, noDataValue);
+                if (value != noDataValue) {
+                    standardDeviation += (value - mean) * (value - mean);
+                    count += 1.0d;
+                }
+            }
+        }
+        if ((count - 1.0d) > 0.0d) {
+            return Math.sqrt(standardDeviation / (count - 1.0d));
+        } else {
+            return standardDeviation;
+        }
+    }
+    
     /**
      * Initialises the value at position given by: chunk cell row
      * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
@@ -356,11 +485,6 @@ public abstract class Grids_AbstractGridChunkDouble
             double valueToSet,
             double noDataValue);
 
-    /**
-     * For clearing the data associated with this.
-     */
-    protected @Override
-    abstract void clearData();
 
     /**
      * For initialising the data associated with this.
@@ -396,6 +520,33 @@ public abstract class Grids_AbstractGridChunkDouble
         }
     }
 
+    /**
+     * Returns the sum of all non _NoDataValues as a BigDecimal.
+     *
+     * @return
+     */
+    @Override
+    protected BigDecimal getSumBigDecimal() {
+        boolean handleOutOfMemoryError = false;
+        BigDecimal sum = BigDecimal.ZERO;
+        Grids_GridDouble g = getGrid();
+        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        double noDataValue = g.getNoDataValue(false);
+        double value;
+        int row;
+        int col;
+        for (row = 0; row < nrows; row++) {
+            for (col = 0; col < ncols; col++) {
+                value = getCell(row, col, noDataValue);
+                if (value != noDataValue) {
+                    sum = sum.add(new BigDecimal(value));
+                }
+            }
+        }
+        return sum;
+    }
+    
     /**
      * Returns all the values in row major order as a double[].
      *
@@ -494,145 +645,6 @@ public abstract class Grids_AbstractGridChunkDouble
         return array;
     }
 
-    /**
-     * Returns the number of cells with _NoDataValues as a BigInteger.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigInteger getNonNoDataValueCountBigInteger(
-            boolean handleOutOfMemoryError) {
-        try {
-            BigInteger result = getNonNoDataValueCountBigInteger();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the number of cells with _NoDataValues as a BigInteger.
-     *
-     * @return
-     */
-    protected BigInteger getNonNoDataValueCountBigInteger() {
-        boolean handleOutOfMemoryError = false;
-        BigInteger nonNoDataValueCount = BigInteger.ZERO;
-        Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        double _NoDataValue = g.getNoDataValue(false);
-        for (int row = 0; row < nrows; row++) {
-            for (int col = 0; col < ncols; col++) {
-                if (getCell(row, col, _NoDataValue) != _NoDataValue) {
-                    nonNoDataValueCount = nonNoDataValueCount.add(BigInteger.ONE);
-                }
-            }
-        }
-        return nonNoDataValueCount;
-    }
-
-    /**
-     * Returns the number of cells with _NoDataValues as an int.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public int getNonNoDataValueCountInt(
-            boolean handleOutOfMemoryError) {
-        try {
-            int result = getNonNoDataValueCountInt();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountInt(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the number of cells with _NoDataValues as an int.
-     *
-     * @return
-     */
-    protected int getNonNoDataValueCountInt() {
-        return getNonNoDataValueCountBigInteger().intValue();
-    }
-
-    /**
-     * Returns the sum of all non _NoDataValues as a BigDecimal.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigDecimal getSumBigDecimal(boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = getSumBigDecimal();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getSumBigDecimal(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the sum of all non _NoDataValues as a BigDecimal.
-     *
-     * @return
-     */
-    protected BigDecimal getSumBigDecimal() {
-        boolean handleOutOfMemoryError = false;
-        BigDecimal sum = BigDecimal.ZERO;
-        Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        double noDataValue = g.getNoDataValue(false);
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col, noDataValue);
-                if (value != noDataValue) {
-                    sum = sum.add(new BigDecimal(value));
-                }
-            }
-        }
-        return sum;
-    }
 
     /**
      * Returns the minimum of all non _NoDataValues as a double.
@@ -747,123 +759,6 @@ public abstract class Grids_AbstractGridChunkDouble
         return max;
     }
 
-    /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
-     * all cells are _NoDataValues, then null is returned.
-     *
-     * @param numberOfDecimalPlaces The number of decimal places to which the
-     * result is precise.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigDecimal getArithmeticMeanBigDecimal(
-            int numberOfDecimalPlaces,
-            boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getArithmeticMeanBigDecimal(
-                        numberOfDecimalPlaces,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
-     * all cells are _NoDataValues, then null is returned.
-     *
-     * @param numberOfDecimalPlaces The number of decimal places to which the
-     * result is precise.
-     * @return
-     */
-    protected BigDecimal getArithmeticMeanBigDecimal(
-            int numberOfDecimalPlaces) {
-        boolean handleOutOfMemoryError = false;
-        BigDecimal mean = BigDecimal.ZERO;
-        BigDecimal count = BigDecimal.ZERO;
-        BigDecimal one = BigDecimal.ONE;
-        Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col, _NoDataValue);
-                if (value != _NoDataValue) {
-                    mean = mean.add(new BigDecimal(value));
-                    count = count.add(one);
-                }
-            }
-        }
-        if (count.compareTo(BigDecimal.ZERO) != 0) {
-            return mean.divide(
-                    count,
-                    numberOfDecimalPlaces,
-                    BigDecimal.ROUND_HALF_EVEN);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a double. If all
-     * cells are _NoDataValues, then Grid.NoDataValue is returned.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getArithmeticMeanDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getArithmeticMeanDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getArithmeticMeanDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a double. If all
-     * cells are _NoDataValues, then Grid.NoDataValue is returned. Using
-     * BigDecimal this should be as precise as possible with doubles.
-     *
-     * @return
-     */
-    protected double getArithmeticMeanDouble() {
-        BigDecimal arithmeticMeanBigDecimal = getArithmeticMeanBigDecimal(324); //Why 324???
-        try {
-            return arithmeticMeanBigDecimal.doubleValue();
-        } catch (NullPointerException npe0) {
-            return getGrid().getNoDataValue(false);
-        }
-    }
 
     /**
      * Returns the mode of all non _NoDataValues as a TDoubleHashSet.
@@ -1041,68 +936,6 @@ public abstract class Grids_AbstractGridChunkDouble
         return count;
     }
 
-    /**
-     * Returns the median of all non _NoDataValues as a double.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getMedianDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getMedianDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMedianDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the median of all non _NoDataValues as a double. This method
-     * requires that all data in chunk can be stored as a new array.
-     *
-     * @return
-     */
-    protected double getMedianDouble() {
-        Grids_GridDouble g = getGrid();
-        int scale = 20;
-        double median = g.getNoDataValue(false);
-        BigInteger nonNoDataValueCountBigInteger
-                = getNonNoDataValueCountBigInteger();
-        if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
-            double[] array = toArrayNotIncludingNoDataValues();
-            sort1(array, 0, array.length);
-            BigInteger[] nonNoDataValueCountBigIntegerDivideAndRemainder2
-                    = nonNoDataValueCountBigInteger.divideAndRemainder(new BigInteger("2"));
-            if (nonNoDataValueCountBigIntegerDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
-                //median = array[ index ];
-                //median += array[ index - 1 ];
-                //median /= 2.0d;
-                //return median;
-                BigDecimal medianBigDecimal = new BigDecimal(array[index - 1]);
-                return (medianBigDecimal.add(new BigDecimal(array[index]))).divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                //return ( medianBigDecimal.add( new BigDecimal( array[ index ] ) ) ).divide( new BigDecimal( 2.0d ), scale, BigDecimal.ROUND_HALF_EVEN ).doubleValue();
-            } else {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
-                return array[index];
-            }
-        } else {
-            return median;
-        }
-    }
 
     /**
      * Sorts the specified sub-array of doubles into ascending order. Source
@@ -1208,71 +1041,5 @@ public abstract class Grids_AbstractGridChunkDouble
                 : (x[b] > x[c] ? b : x[a] > x[c] ? c : a));
     }
 
-    /**
-     * Returns the standard deviation of all non _NoDataValues as a double.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getStandardDeviationDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getStandardDeviationDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        handleOutOfMemoryError) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
-                return getStandardDeviationDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the standard deviation of all non _NoDataValues as a double.
-     *
-     * @return
-     */
-    protected double getStandardDeviationDouble() {
-        boolean handleOutOfMemoryError = false;
-        double standardDeviation = 0.0d;
-        double mean = getArithmeticMeanDouble();
-        Grids_GridDouble g
-                = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
-        double value;
-        double count = 0.0d;
-        for (int row = 0; row < nrows; row++) {
-            for (int col = 0; col < ncols; col++) {
-                value = getCell(row, col, noDataValue);
-                if (value != noDataValue) {
-                    standardDeviation
-                            += (value - mean)
-                            * (value - mean);
-                    count += 1.0d;
-                }
-            }
-        }
-        if ((count - 1.0d) > 0.0d) {
-            return Math.sqrt(standardDeviation / (count - 1.0d));
-        } else {
-            return standardDeviation;
-        }
-    }
 
 }

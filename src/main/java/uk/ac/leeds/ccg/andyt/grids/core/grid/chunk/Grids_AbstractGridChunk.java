@@ -9,6 +9,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -81,13 +82,11 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns Grid. Make abstract?
+     * Returns Grid.
      *
      * @return
      */
-    protected Grids_AbstractGrid getGrid() {
-        return Grid;
-    }
+    protected abstract Grids_AbstractGrid getGrid();
 
     /**
      * Initialises Grid = g.

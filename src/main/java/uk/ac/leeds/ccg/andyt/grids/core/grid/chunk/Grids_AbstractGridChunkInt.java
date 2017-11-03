@@ -30,9 +30,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * implement acting as an interface.
  */
 public abstract class Grids_AbstractGridChunkInt
-        extends Grids_AbstractGridChunk
+        extends Grids_AbstractGridChunkNumber
         implements Serializable {
-    //implements Serializable, GridIntStatisticsInterface {
 
     //private static final long serialVersionUID = 1L;
     protected Grids_AbstractGridChunkInt() {
@@ -43,7 +42,7 @@ public abstract class Grids_AbstractGridChunkInt
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
-    
+
     /**
      *
      *
@@ -84,8 +83,7 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * Returns the value at position given by: chunkRow, chunkCol, as a int.
      *
-     * @param chunkRow The row of
-     * the chunk.
+     * @param chunkRow The row of the chunk.
      * @param chunkCol The column of the chunk.
      * @param noDataValue The noDataValue of the Grid.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -124,13 +122,12 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell row chunkCol, as a double.
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell row chunkCol, as a double.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -173,13 +170,12 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell col chunkCol as a int.
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell col chunkCol as a int.
      *
-     * @param chunkRow The row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol The column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow The row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol The column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue The noDataValue of this.grid2DSquareCellInt
      * @return
      */
@@ -202,15 +198,14 @@ public abstract class Grids_AbstractGridChunkInt
             int chunkCol,
             Grids_2D_ID_int cellID,
             int noDataValue);
-    
+
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell col chunkCol as a double.
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell col chunkCol as a double.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue the noDataValue of this.grid2DSquareCellInt
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -249,13 +244,12 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell col chunkCol as a double.
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell col chunkCol as a double.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue the noDataValue of this.grid2DSquareCellInt TODO:
      * Ensure the int can be represented exactly as a double. If not throw
      * Exception of some kind.
@@ -271,14 +265,13 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkRow; chunk cell column chunkCol. Utility method
-     * for constructors of extending classes.
+     * Initialises the value at position given by: chunk cell row chunkRow;
+     * chunk cell column chunkCol. Utility method for constructors of extending
+     * classes.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue
      * @param valueToInitialise the value with which the cell is initialised
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -318,14 +311,13 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkRow; chunk cell column chunkCol. Utility method
-     * for constructors of extending classes.
+     * Initialises the value at position given by: chunk cell row chunkRow;
+     * chunk cell column chunkCol. Utility method for constructors of extending
+     * classes.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param noDataValue
      * @param valueToInitialise the value with which the cell is initialised
      */
@@ -336,13 +328,12 @@ public abstract class Grids_AbstractGridChunkInt
             int valueToInitialise);
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell row chunkCol and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the noDataValue of this.grid2DSquareCellDouble
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -384,13 +375,12 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow;
-     * chunk cell row chunkCol and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell row chunkCol and sets it to valueToSet
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
      * @param valueToSet the value the cell is to be set to
      * @param noDataValue the noDataValue of this.grid2DSquareCellDouble
      * @return
@@ -550,36 +540,9 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * For returning the number of cells with noDataValues as a BigInteger.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public BigInteger getNonNoDataValueCountBigInteger(
-            boolean handleOutOfMemoryError) {
-        try {
-            BigInteger result = getNonNoDataValueCountBigInteger();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * For returning the number of cells with noDataValues as a BigInteger.
-     *
-     * @return
-     */
+    @Override
     protected BigInteger getNonNoDataValueCountBigInteger() {
         boolean handleOutOfMemoryError = false;
         BigInteger nonNoDataValueCount = BigInteger.ZERO;
@@ -600,36 +563,9 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * Returns the number of cells with noDataValues as an int.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public int getNonNoDataValueCountInt(
-            boolean handleOutOfMemoryError) {
-        try {
-            int result = getNonNoDataValueCountInt();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountInt(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the number of cells with noDataValues as an int.
-     *
-     * @return
-     */
+    @Override
     protected int getNonNoDataValueCountInt() {
         boolean handleOutOfMemoryError = false;
         int nonNoDataCount = 0;
@@ -653,36 +589,9 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * For returning the sum of all non noDataValues as a BigDecimal.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public BigDecimal getSumBigDecimal(
-            boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = getSumBigDecimal();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getSumBigDecimal(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * For returning the sum of all non noDataValues as a BigDecimal.
-     *
-     * @return
-     */
+    @Override
     protected BigDecimal getSumBigDecimal() {
         boolean handleOutOfMemoryError = false;
         BigDecimal sum = new BigDecimal(0.0d);
@@ -816,50 +725,14 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the Arithmetic Mean of all non noDataValues as a BigDecimal. If
-     * all cells are noDataValues, then null is returned.
-     *
-     * @param numberOfDecimalPlaces The number of decimal places to which the
-     * result is precise.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigDecimal getArithmeticMeanBigDecimal(
-            int numberOfDecimalPlaces,
-            boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getArithmeticMeanBigDecimal(
-                        numberOfDecimalPlaces,
-                        handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the Arithmetic Mean of all non noDataValues as a BigDecimal. If
-     * all cells are noDataValues, then null is returned.
+     * Returns the Arithmetic Mean of all data values as a BigDecimal. If all
+     * cells are noDataValues, then null is returned.
      *
      * @param numberOfDecimalPlaces The number of decimal places to which the
      * result is precise.
      * @return
      */
+    @Override
     protected BigDecimal getArithmeticMeanBigDecimal(
             int numberOfDecimalPlaces) {
         boolean handleOutOfMemoryError = false;
@@ -895,37 +768,9 @@ public abstract class Grids_AbstractGridChunkInt
      * For returning the Arithmetic Mean of all non noDataValues as a double.
      * Using BigDecimal this should be as precise as possible with doubles.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double getArithmeticMeanDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getArithmeticMeanDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getArithmeticMeanDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * For returning the Arithmetic Mean of all non noDataValues as a double.
-     * Using BigDecimal this should be as precise as possible with doubles.
-     *
-     * @return
-     */
+    @Override
     protected double getArithmeticMeanDouble() {
         boolean handleOutOfMemoryError = false;
         BigDecimal mean = new BigDecimal(0.0d);
@@ -953,14 +798,13 @@ public abstract class Grids_AbstractGridChunkInt
                     325,
                     BigDecimal.ROUND_HALF_EVEN);
             return bigDecimal0.doubleValue();
-            //return mean.divide( count, mean.scale() + 10, BigDecimal.ROUND_HALF_EVEN ).doubleValue();
         } else {
             return noDataValue;
         }
     }
 
     /**
-     * For returning the mode of all non noDataValues as a TDoubleHashSet.
+     * For returning the mode of all data values as a HashSet&LT;Integer&GT;.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -988,8 +832,9 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * For returning the mode of all non noDataValues as a TDoubleHashSet. TODO:
-     * Better to use toArray and go through a sorted version?
+     * For returning the mode of all non noDataValues as a
+     * HashSet&LT;Integer&GT;. TODO: Better to use toArray and go through a
+     * sorted version?
      *
      * @return
      */
@@ -1002,9 +847,6 @@ public abstract class Grids_AbstractGridChunkInt
             int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
             int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
             int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
-            boolean calculated = false;
-            int row = 0;
-            int col = 0;
             int p;
             int q;
             Object[] tmode = initMode(nrows, ncols, noDataValue);
@@ -1116,7 +958,6 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * TODO: docs
      *
      * @param p the row index of the cell from which counting starts
      * @param q the column index of the cell from which counting starts
@@ -1159,61 +1000,34 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the median of all non noDataValues as a double.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getMedianDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getMedianDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMedianDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Returns the median of all non noDataValues as a double. This method
      * requires that all data in chunk can be stored as a new array.
      *
      * @return
      */
+    @Override
     protected double getMedianDouble() {
         Grids_GridInt g = getGrid();
         int scale = 20;
         double median = Double.NEGATIVE_INFINITY;
-        BigInteger nonNoDataValueCountBigInteger
-                = getNonNoDataValueCountBigInteger();
-        if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
+        BigInteger dataCount = getNonNoDataValueCountBigInteger();
+        if (dataCount.compareTo(BigInteger.ZERO) == 1) {
             int[] array = toArrayNotIncludingNoDataValues();
             sort1(array, 0, array.length);
-            BigInteger[] nonNoDataValueCountBigIntegerDivideAndRemainder2
-                    = nonNoDataValueCountBigInteger.divideAndRemainder(new BigInteger("2"));
-            if (nonNoDataValueCountBigIntegerDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+            BigInteger[] dataCountDivideAndRemainder2
+                    = dataCount.divideAndRemainder(new BigInteger("2"));
+            if (dataCountDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
+                int index = dataCountDivideAndRemainder2[0].intValue();
                 //median = array[ index ];
                 //median += array[ index - 1 ];
                 //median /= 2.0d;
                 //return median;
                 BigDecimal medianBigDecimal = new BigDecimal(array[index - 1]);
-                return (medianBigDecimal.add(new BigDecimal(array[index]))).divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                //return ( medianBigDecimal.add( new BigDecimal( array[ index ] ) ) ).divide( new BigDecimal( 2.0d ), scale, BigDecimal.ROUND_HALF_EVEN ).doubleValue();
+                return (medianBigDecimal.add(new BigDecimal(array[index])))
+                        .divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN)
+                        .doubleValue();
             } else {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+                int index = dataCountDivideAndRemainder2[0].intValue();
                 return array[index];
             }
         } else {
@@ -1326,46 +1140,18 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the standard deviation of all non noDataValues as a double.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getStandardDeviationDouble(
-            boolean handleOutOfMemoryError) {
-        try {
-            double result = getStandardDeviationDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getStandardDeviationDouble(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the standard deviation of all non noDataValues as a double.
+     * Returns the standard deviation of all data values as a double.
      *
      * @return
      */
+    @Override
     protected double getStandardDeviationDouble() {
         boolean handleOutOfMemoryError = false;
         double standardDeviation = 0.0d;
         double mean = getArithmeticMeanDouble();
-        Grids_GridInt grid2DSquareCellInt
-                = getGrid();
-        int nrows = grid2DSquareCellInt.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = grid2DSquareCellInt.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        Grids_GridInt g = getGrid();
+        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
+        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
         int noDataValue = Integer.MIN_VALUE;
         int value;
         double count = 0.0d;

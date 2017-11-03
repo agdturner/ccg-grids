@@ -18,21 +18,17 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
+import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
  * instance. The values are not returned in any particular order.
  */
-public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
+public class Grids_GridChunkDoubleIterator extends Grids_GridChunkNumberIterator {
 
     protected double Value;
-    protected int ChunkRow;
-    protected int ChunkCol;
-    protected int ChunkNRows;
-    protected int ChunkNCols;
-
+    
     protected Grids_GridChunkDoubleIterator() {
     }
 
@@ -90,8 +86,7 @@ public class Grids_GridChunkDoubleIterator extends Grids_AbstractIterator {
     protected void next0() {
         if (ChunkCol + 1 == ChunkNCols) {
             if (ChunkRow + 1 == ChunkNRows) {
-                //throw NoSuchElementException;
-                //return null;
+                                throw new NoSuchElementException();
             } else {
                 ChunkRow++;
                 ChunkCol = 0;
