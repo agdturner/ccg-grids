@@ -2105,7 +2105,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Grids_AbstractGridChunk gridChunk;
         gridChunk = ChunkIDChunkMap.get(chunkID);
         if (gridChunk != null) {
-            if (!gridChunk.isSwapUpToDate(ge.HandleOutOfMemoryErrorFalse)) {
+            if (!gridChunk.isSwapUpToDate()) {
                 File file = new File(
                         getDirectory(),
                         chunkID.getRow() + "_" + chunkID.getCol());
@@ -2147,7 +2147,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to File seriailized versions of those
+     * Attempts to write to File serialized versions of those
      * Grids_AbstractGridChunk in
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that have ID equal to
      * those in _ChunkIDs.
@@ -2409,7 +2409,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
-    protected long swapChunk_Account() {
+    public long swapChunk_Account() {
         Grids_2D_ID_int id;
         id = writeToFileChunk();
         if (id != null) {

@@ -2427,7 +2427,7 @@ public class Grids_Environment
     protected long swapChunk_Account() {
         Iterator<Grids_AbstractGrid> ite = Grids.iterator();
         while (ite.hasNext()) {
-            if (ite.next().swapChunk_Account(HandleOutOfMemoryErrorFalse) > 0) {
+            if (ite.next().swapChunk_Account() > 0) {
                 return 1L;
             }
         }
