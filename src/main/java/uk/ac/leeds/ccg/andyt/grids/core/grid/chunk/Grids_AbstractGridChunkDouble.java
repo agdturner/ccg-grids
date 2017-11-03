@@ -44,40 +44,6 @@ public abstract class Grids_AbstractGridChunkDouble
     }
 
     /**
-     *
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return (Grids_GridDouble) Grid.
-     */
-    @Override
-    public Grids_GridDouble getGrid(
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_GridDouble result = getGrid();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid,
-                        ChunkID,
-                        handleOutOfMemoryError);
-                return getGrid(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return (Grids_GridDouble) Grid;
      */
     @Override

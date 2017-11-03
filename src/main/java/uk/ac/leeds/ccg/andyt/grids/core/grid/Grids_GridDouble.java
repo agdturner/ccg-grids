@@ -53,12 +53,12 @@ public class Grids_GridDouble
         implements Serializable {
 
     /**
-     * For storing the NODATA value of the grid, which by default is
-     * Double.MIN_VALUE. N.B. Double.NaN or Double.NEGATIVE_INFINITY or
-     * Double.POSITIVE_INFINITY should not be used. N.B. Care should be taken so
+     * For storing the NODATA value of the grid, which by default is (Double)
+     * Integer.MIN_VALUE. N.B. Double.NaN, Double.POSITIVE_INFINITY or
+     * Double.NEGATIVE_INFINITY should not be used. N.B. Care should be taken so
      * that NoDataValue is not a data value.
      */
-    protected double NoDataValue = Double.MIN_VALUE;
+    protected double NoDataValue = Integer.MIN_VALUE;
 
     protected Grids_GridDouble() {
     }
@@ -158,7 +158,6 @@ public class Grids_GridDouble
      * @param endColIndex The Grid2DSquareCell column index which is the right
      * most column of this.
      * @param noDataValue The NoDataValue for this.
-     * @param ge
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -175,9 +174,8 @@ public class Grids_GridDouble
             long endRowIndex,
             long endColIndex,
             double noDataValue,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
+        super(grid.ge);
         init(
                 gs,
                 directory,
@@ -2353,7 +2351,6 @@ public class Grids_GridDouble
         return result;
     }
 
-
     /**
      * @param cellRowIndex The row index from which average of the nearest data
      * values is returned.
@@ -2550,7 +2547,7 @@ public class Grids_GridDouble
         cellIDs[0] = getCellID(x, y);
         return cellIDs;
     }
-    
+
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
@@ -2738,7 +2735,6 @@ public class Grids_GridDouble
         return nearestCellIDs;
     }
 
-
     /**
      * @return the distance to the nearest data value from point given by
      * x-coordinate x, y-coordinate y as a double.
@@ -2760,7 +2756,6 @@ public class Grids_GridDouble
         }
         return result;
     }
-
 
     /**
      * @return the distance to the nearest data value from position given by row
@@ -2784,7 +2779,6 @@ public class Grids_GridDouble
         }
         return result;
     }
-
 
     /**
      * @return the distance to the nearest data value from: point given by
@@ -3224,5 +3218,5 @@ public class Grids_GridDouble
     public Grids_GridDoubleIterator iterator() {
         return new Grids_GridDoubleIterator(this);
     }
-    
+
 }

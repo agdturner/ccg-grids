@@ -62,7 +62,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
+    public final Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid result = getGrid();
             result.ge.tryToEnsureThereIsEnoughMemoryToContinue(ChunkID, handleOutOfMemoryError);
@@ -114,7 +114,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Grids_2D_ID_int getChunkID(boolean handleOutOfMemoryError) {
+    public final Grids_2D_ID_int getChunkID(boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getChunkID();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -151,7 +151,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public boolean isSwapUpToDate(boolean handleOutOfMemoryError) {
+    public final boolean isSwapUpToDate(boolean handleOutOfMemoryError) {
         try {
             boolean result = isSwapUpToDate();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -188,7 +188,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public void setSwapUpToDate(boolean swapUpToDate, boolean handleOutOfMemoryError) {
+    public final void setSwapUpToDate(boolean swapUpToDate, boolean handleOutOfMemoryError) {
         try {
             setSwapUpToDate(swapUpToDate);
         } catch (OutOfMemoryError e) {
@@ -222,7 +222,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public String toString(boolean handleOutOfMemoryError) {
+    public final String toString(boolean handleOutOfMemoryError) {
         try {
             String result = getDescription();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -258,7 +258,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public String getName(boolean handleOutOfMemoryError) {
+    public final String getName(boolean handleOutOfMemoryError) {
         try {
             String result = getName();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -295,7 +295,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Grids_AbstractIterator iterator(boolean handleOutOfMemoryError) {
+    public final Grids_AbstractIterator iterator(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractIterator result = iterator();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -333,7 +333,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public boolean inChunk(
+    public final boolean inChunk(
             int chunkRow,
             int chunkCol,
             boolean handleOutOfMemoryError) {

@@ -270,7 +270,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         double thisCellY;
         double value;
 
-        gridFactory.set_NoDataValue(noDataValue);
+        gridFactory.setNoDataValue(noDataValue);
 
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doSum || doWSum || doNWSum || doWSumN || doMean || doWMean1 || doWMean2 || doNWMean || doWMeanN) {
@@ -1028,7 +1028,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         double thisCellX;
         double thisCellY;
         double value;
-        gridFactory.set_NoDataValue(noDataValue);
+        gridFactory.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
             if (doMean) {
@@ -1692,7 +1692,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             //    with each iteration. Using alternative data structures and
             //    processing strategies this step can probably be speeded up a lot.
             //density = gridFactory.createGrid2DSquareCellDouble( nrows, ncols, 0.0d, 0.0d, cellsize, 0.0d );
-            gridFactory.set_NoDataValue(noDataValue);
+            gridFactory.setNoDataValue(noDataValue);
             density = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
             for (row = 0; row < nrows; row += doubler) {
                 for (int p = 0; p < doubler; p++) {
@@ -2012,7 +2012,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Difference
         if (dodiff) {
-            gridFactory.set_NoDataValue(grid0NoDataValue);
+            gridFactory.setNoDataValue(grid0NoDataValue);
 
             diffGrid = (Grids_GridDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             weightedDiffGrid = (Grids_GridDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
@@ -2116,7 +2116,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         // Correlation and Zscore difference
         // temporarily fix range
         if (docorr || dozdiff) {
-            gridFactory.set_NoDataValue(grid0NoDataValue);
+            gridFactory.setNoDataValue(grid0NoDataValue);
             weightedCorrelationGrid = (Grids_GridDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             correlationGrid = (Grids_GridDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             weightedZdiffGrid = (Grids_GridDouble) gridFactory.create(grid0Nrows, grid0Ncols, grid0Dimensions);

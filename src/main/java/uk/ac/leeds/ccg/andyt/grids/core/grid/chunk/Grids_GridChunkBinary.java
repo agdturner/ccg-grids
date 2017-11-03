@@ -45,27 +45,6 @@ public class Grids_GridChunkBinary
         data = new boolean[chunkNrows][chunkNcols];
     }
 
-    @Override
-    public Grids_GridBinary getGrid(
-            boolean handleOutOfMemoryError) {
-        try {
-            Grids_GridBinary result = getGrid();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getGrid(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
     /**
      * @return (Grids_GridBinary) Grid;
      */

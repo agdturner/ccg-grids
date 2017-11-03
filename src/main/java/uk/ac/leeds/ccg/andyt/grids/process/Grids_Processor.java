@@ -3022,7 +3022,7 @@ public class Grids_Processor extends Grids_Object {
                     resultYMax,
                     resultCellsize);
             // Initialise result
-            gridFactory.set_NoDataValue(noDataValue);
+            gridFactory.setNoDataValue(noDataValue);
             Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
 
@@ -3346,7 +3346,7 @@ public class Grids_Processor extends Grids_Object {
             resultYMax = dimensionsYMin.add(resultHeight);
 
             // Initialise result
-            gridFactory.set_NoDataValue(noDataValue);
+            gridFactory.setNoDataValue(noDataValue);
             Grids_GridDouble result;
             result = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
