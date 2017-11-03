@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 /**
  * Grids_AbstractGridChunkInt extension that stores cell values in: a TreeMap
  * with keys as cell values and values as BitSets giving their locations; a
- * TreeMap with keys as cell values and values as a TreeSet&LTGrids_2D_ID_int&GT
+ * TreeMap with keys as cell values and values as a HashSet&LTGrids_2D_ID_int&GT
  * giving the locations of these values. There is a default value for all values
  * that are not in these maps and that are not no data values. The locations of
  * no data values are given in a BitSet. The complexity of this data store
@@ -45,12 +45,16 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * of what is stored in each map and what the default value is. It may also be
  * worth considering changing to a different chunk altogether. The class might
  * be improved with the use of more efficient and lightweight collections that
- * might be available from third parties. In the past GNU Trove has been used.
- * The Eclipse Collections Framework was considered as a replacement for GNU
- * Trove as it was retired. GNU Trove still worked fine, but it was decided to
- * remove this dependency at a time of rationalising the Grids library in 2017
- * which involved removing other dependencies like a dependency on JAI too which
- * was at one time used for holding values for a chunk.
+ * might be available from third parties.
+ *
+ * In the past GNU Trove was used as it provided a stable lightweight
+ * collections framework that was appropriate for storing primitive maps in this
+ * and associated classes. The Eclipse Collections Framework was considered as a
+ * replacement for GNU Trove. GNU Trove worked well, but I decided to remove
+ * this dependency at a time of rationalising the Grids library in 2017. The
+ * rationalisation involved reducing dependencies generally. This
+ * rationalisation also removed a dependency on JAI which was used to provide an
+ * alternative storage for chunks.
  */
 public class Grids_GridChunkIntMap
         extends Grids_AbstractGridChunkInt
@@ -81,8 +85,7 @@ public class Grids_GridChunkIntMap
     private BitSet InDataMapBitSet;
 
     /**
-     * For storing values mapped to a Grids_2D_ID_int HashSet or an individual
-     * Grids_2D_ID_int.
+     * For storing the data of this chunk.
      */
     private GridChunkIntMapData Data;
 
@@ -93,10 +96,10 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Creates a new Grids_GridChunkIntMap.
+     * Creates a new Grids_GridChunkIntMap with DefaultValue set to 0.
      *
      * @param g
-     * @param chunkID Default: default value to 0.
+     * @param chunkID
      */
     protected Grids_GridChunkIntMap(
             Grids_GridInt g,
@@ -105,7 +108,9 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Creates a new Grids_GridChunkIntMap.
+     * Creates a new Grids_GridChunkIntMap with DefaultValue set to
+     * defaultValue. Usually it is best if the defaultValue is the most common
+     * value.
      *
      * @param g
      * @param chunkID
@@ -122,7 +127,10 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Creates a new Grids_GridChunkIntMap.
+     * Creates a new Grids_GridChunkIntMap with DefaultValue set to
+     * defaultValue. Usually it is best if the defaultValue is the most common
+     * value. The chunk created will have the same number of rows and columns as
+     * gridChunk.
      *
      * @param gridChunk
      * @param chunkID

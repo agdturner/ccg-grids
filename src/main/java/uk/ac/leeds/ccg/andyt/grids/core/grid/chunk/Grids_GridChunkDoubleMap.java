@@ -45,12 +45,16 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * of what is stored in each map and what the default value is. It may also be
  * worth considering changing to a different chunk altogether. The class might
  * be improved with the use of more efficient and lightweight collections that
- * might be available from third parties. In the past GNU Trove has been used.
- * The Eclipse Collections Framework was considered as a replacement for GNU
- * Trove as it was retired. GNU Trove still worked fine, but it was decided to
- * remove this dependency at a time of rationalising the Grids library in 2017
- * which involved removing other dependencies like a dependency on JAI too which
- * was at one time used for holding values for a chunk.
+ * might be available from third parties.
+ *
+ * In the past GNU Trove was used as it provided a stable lightweight
+ * collections framework that was appropriate for storing primitive maps in this
+ * and associated classes. The Eclipse Collections Framework was considered as a
+ * replacement for GNU Trove. GNU Trove worked well, but I decided to remove
+ * this dependency at a time of rationalising the Grids library in 2017. The
+ * rationalisation involved reducing dependencies generally. This
+ * rationalisation also removed a dependency on JAI which was used to provide an
+ * alternative storage for chunks.
  */
 public class Grids_GridChunkDoubleMap
         extends Grids_AbstractGridChunkDouble
@@ -81,8 +85,7 @@ public class Grids_GridChunkDoubleMap
     private BitSet InDataMapBitSet;
 
     /**
-     * For storing values mapped to a Grids_2D_ID_int HashSet or an individual
-     * Grids_2D_ID_int.
+     * For storing the data of this chunk.
      */
     private GridChunkDoubleMapData Data;
 
@@ -93,10 +96,10 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grids_GridChunkDoubleMap.
+     * Creates a new Grids_GridChunkDoubleMap  with DefaultValue set to 0.0d.
      *
      * @param g
-     * @param chunkID Default: default value to 0.0d
+     * @param chunkID
      */
     protected Grids_GridChunkDoubleMap(
             Grids_GridDouble g,
@@ -108,7 +111,9 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grids_GridChunkDoubleMap.
+     * Creates a new Grids_GridChunkDoubleMap with DefaultValue set to
+     * defaultValue. Usually it is best if the defaultValue is the most common
+     * value.
      *
      * @param g
      * @param chunkID
@@ -125,12 +130,13 @@ public class Grids_GridChunkDoubleMap
     }
 
     /**
-     * Creates a new Grids_GridChunkDoubleMap.
+     * Creates a new Grids_GridChunkDoubleMap with DefaultValue set to
+     * defaultValue. Usually it is best if the defaultValue is the most common
+     * value. The chunk created will have the same number of rows and columns as
+     * gridChunk.
      *
      * @param gridChunk
-     * @param chunkID Default: default value to
-     * grid2DSquareCellDouble.getNoDataValue() TODO: Optimise for different
-     * types.
+     * @param chunkID
      * @param defaultValue
      */
     protected Grids_GridChunkDoubleMap(
@@ -160,7 +166,7 @@ public class Grids_GridChunkDoubleMap
                         value);
             }
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
