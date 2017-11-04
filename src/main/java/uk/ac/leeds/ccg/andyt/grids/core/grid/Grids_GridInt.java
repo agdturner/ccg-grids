@@ -343,19 +343,22 @@ public class Grids_GridInt
                     // If the object is a Grid2DSquareCellDouble
                     Grids_GridDoubleFactory gdf;
                     gdf = new Grids_GridDoubleFactory(
-                            directory,
                             ge,
-                            handleOutOfMemoryError);
+                            directory,
+                            NoDataValue, ChunkNRows, ChunkNCols, Dimensions,
+                            GridStatistics, null);
                     Grids_GridDouble g;
                     g = (Grids_GridDouble) gdf.create(
                             directory,
                             gridFile,
-                            ois);
+                            ois,
+                            handleOutOfMemoryError);
                     Grids_GridIntFactory gif;
                     gif = new Grids_GridIntFactory(
-                            directory,
                             ge,
-                            handleOutOfMemoryError);
+                            directory,
+                            NoDataValue, ChunkNRows, ChunkNCols, Dimensions,
+                            GridStatistics, null);
                     Grids_GridInt g2;
                     g2 = (Grids_GridInt) gif.create(g);
                     init(
@@ -967,12 +970,14 @@ public class Grids_GridInt
                 if (true) {
                     Grids_GridIntFactory gf;
                     gf = new Grids_GridIntFactory(
-                            directory,
-                            chunkNRows,
-                            chunkNCols,
-                            cf,
                             ge,
-                            handleOutOfMemoryError);
+                            directory,
+                            NoDataValue, 
+                            chunkNRows, 
+                            chunkNCols,
+                            Dimensions,
+                            gridStatistics,
+                            cf)
                     File thisFile = new File(
                             gridFile,
                             "thisFile");
