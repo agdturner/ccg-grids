@@ -19,202 +19,68 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMapFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
 /**
- * A factory for constructing Grid2DSquareCellDouble instances.
+ * A factory for constructing Grids_GridDouble instances.
  */
 public class Grids_GridDoubleFactory
         extends Grids_AbstractGridFactory {
-
-    /**
-     * The Grids_GridChunkDoubleFactory for creating chunks.
-     */
-    protected Grids_GridChunkDoubleFactory ChunkDoubleFactory;
-
-    /**
-     * The Grids_GridChunkDoubleMapFactory for creating chunks.
-     */
-    protected Grids_GridChunkDoubleMapFactory ChunkDoubleMapFactory;
-
-    /**
-     * The default or preferred Grids_AbstractGridChunkDoubleFactory for creating chunks.
-     */
-    protected Grids_AbstractGridChunkDoubleFactory ChunkFactory;
 
     /**
      * The NoDataValue for creating chunks.
      */
     protected double NoDataValue;
 
-    /**
-     * Creates a new Grid2DSquareCellDoubleFactory. Default: NoDataValue to
-     * Double.NEGATIVE_INFINITY
-     *
-     * @param ge
-     * @param handleOutOfMemoryError
-     */
-    public Grids_GridDoubleFactory(
-            Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        this(Double.NEGATIVE_INFINITY,
-                ge,
-                handleOutOfMemoryError);
+    public Grids_GridChunkDoubleFactory GridChunkDoubleFactory;
+//    public Grids_GridChunkDoubleMapFactory ChunkDoubleMapFactory;
+//    public Grids_GridChunkDoubleArrayFactory ChunkDoubleArrayFactory;
+    public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkFactory;
+
+    protected Grids_GridDoubleFactory() {
     }
 
     /**
-     * Creates a new Grid2DSquareCellDoubleFactory.
+     * Creates a new Grids_GridDoubleFactory.
      *
-     *
-     * @param noDataValue The NoDataValue initially set for construction.
-     * Defaults: Directory to a new one in System.getProperties(
-     * "java.io.tmpdir" );
-     * @param ge
-     * @param handleOutOfMemoryError
-     */
-    public Grids_GridDoubleFactory(
-            double noDataValue,
-            Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        this(Grids_Files.createTempFile(),
-                noDataValue,
-                ge,
-                handleOutOfMemoryError);
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDoubleFactory.
-     *
-     * @param directory A "workspace Directory" for storing temporary files and
-     * swapping Grid2DSquareCellDouble data to. Defaults: ChunkNRows to 64
-     * _ChunkNColss to 64 Grids_AbstractGridChunkDoubleFactory to
-     * _Grid2DSquareCellDoubleChunkArray
-     * @param ge
-     * @param handleOutOfMemoryError
-     */
-    public Grids_GridDoubleFactory(
-            File directory,
-            Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        this(directory,
-                Double.NEGATIVE_INFINITY,
-                ge,
-                handleOutOfMemoryError);
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDoubleFactory.
-     *
-     * @param directory A "workspace Directory" for storing temporary files and
-     * swapping Grid2DSquareCellDouble data to.
-     * @param noDataValue The NoDataValue initially set for construction.
-     * Default: ChunkNRows to 64; ChunkNCols to 64;
-     * Grids_AbstractGridChunkDoubleFactory to
-     * _Grid2DSquareCellDoubleChunkArray.
-     * @param ge
-     * @param handleOutOfMemoryError
-     */
-    public Grids_GridDoubleFactory(
-            File directory,
-            double noDataValue,
-            Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        this(directory,
-                64,
-                64,
-                new Grids_GridChunkDoubleArrayFactory(),
-                noDataValue,
-                ge,
-                handleOutOfMemoryError);
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDoubleFactory.
-     *
-     * @param directory A "workspace Directory" for storing temporary files and
-     * caching Grid2DSquareCellDoubleAbstract data.
+     * @param directory A directory for storing temporary files and caching Grid
+     * data.
      * @param chunkNRows The number of rows chunks have by default.
-     * @param gcf TheGrid2DSquareCellDoubleChunkFactoryy for creating
-     * Grid2DSquareCellDoubleChunks Default: NoDataValue to
-     * Double.NEGATIVE_INFINITY.
+     * @param noDataValue
+     * @param defaultGridChunkFactory
+     * @param dimensions
+     * @param gridStatistics
      * @param chunkNCols The number of columns chunks have by default.
      * @param ge
-     * @param handleOutOfMemoryError
      */
     public Grids_GridDoubleFactory(
-            File directory,
-            int chunkNRows,
-            int chunkNCols,
-            Grids_AbstractGridChunkDoubleFactory gcf,
             Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        this(directory,
-                chunkNRows,
-                chunkNCols,
-                gcf,
-                Double.NEGATIVE_INFINITY,
-                ge,
-                handleOutOfMemoryError);
-    }
-
-    /**
-     * Creates a new Grid2DSquareCellDoubleFactory.
-     *
-     * @param directory A "workspace Directory" for storing temporary files and
-     * caching Grid2DSquareCellDoubleAbstract data.
-     * @param chunkNRows The number of rows chunks have by default.
-     * @param gcf TheGrid2DSquareCellDoubleChunkFactoryy for creating
-     * Grid2DSquareCellDoubleChunks
-     * @param noDataValue The NoDataValue initially set for construction.
-     * @param chunkNCols The number of columns chunks have by default.
-     * @param ge
-     * @param handleOutOfMemoryError
-     */
-    public Grids_GridDoubleFactory(
             File directory,
-            int chunkNRows,
-            int chunkNCols,
-            Grids_AbstractGridChunkDoubleFactory gcf,
             double noDataValue,
-            Grids_Environment ge,
-            boolean handleOutOfMemoryError) {
-        super(ge);
-        this.Directory = directory;
-        this.ChunkNRows = chunkNRows;
-        this.ChunkNCols = chunkNCols;
-        initDimensions(chunkNCols, chunkNRows);
-        this.ChunkFactory = gcf;
-        this.setGridStatistics(new Grids_GridStatistics0(ge));
-        this.HandleOutOfMemoryError = handleOutOfMemoryError;
-        this.NoDataValue = noDataValue;
+            int chunkNRows,
+            int chunkNCols,
+            Grids_Dimensions dimensions,
+            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractGridChunkDoubleFactory defaultGridChunkFactory) {
+        super(ge, directory, chunkNRows, chunkNCols, dimensions, gridStatistics);
+        NoDataValue = noDataValue;
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory();
+        DefaultGridChunkFactory = defaultGridChunkFactory;
     }
 
     /**
-     * Returns a reference to this.ChunkFactory.
+     * Set DefaultGridChunkFactory to defaultChunkFactory.
      *
-     * @return
+     * @param defaultChunkFactory
      */
-    public Grids_AbstractGridChunkDoubleFactory getChunkFactory() {
-        return this.ChunkFactory;
-    }
-
-    /**
-     * Sets this.ChunkFactory to gcf.
-     *
-     * @param gcf
-     */
-    public void setChunkFactory(
-            Grids_AbstractGridChunkDoubleFactory gcf) {
-        this.ChunkFactory = gcf;
+    public void setDefaultChunkFactory(
+            Grids_AbstractGridChunkDoubleFactory defaultChunkFactory) {
+        DefaultGridChunkFactory = defaultChunkFactory;
     }
 
     /**
@@ -223,11 +89,11 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public double getNoDataValue() {
-        return this.NoDataValue;
+        return NoDataValue;
     }
 
     /**
-     * Sets this.NoDataValue.
+     * Sets NoDataValue to noDataValue.
      *
      * @param noDataValue
      */
@@ -240,8 +106,7 @@ public class Grids_GridDoubleFactory
     // Create from scratch //
     /////////////////////////
     /**
-     * Returns a new Grids_GridDouble with all values as
-     * NoDataValues.
+     * Returns a new Grids_GridDouble with all values as NoDataValues.
      *
      * @param directory The Directory to be used for storing cached data.
      * @param nRows The NRows.
@@ -261,7 +126,7 @@ public class Grids_GridDoubleFactory
             boolean handleOutOfMemoryError) {
         return create(getGridStatistics(),
                 directory,
-                ChunkFactory,
+                DefaultGridChunkFactory,
                 nRows,
                 nCols,
                 dimensions,
@@ -269,15 +134,13 @@ public class Grids_GridDoubleFactory
     }
 
     /**
-     * Returns a new Grids_GridDouble grid with all values as
-     * NoDataValues.
+     * Returns a new Grids_GridDouble grid with all values as NoDataValues.
      *
-     * @param gridStatistics The AbstractGridStatistics to accompany the
-     * returned grid.
-     * @param directory The Directory to be used for storing cached
-     * Grid2DSquareCellDouble information.
-     * @param gcf The preferred Grids_AbstractGridChunkDoubleFactory for creating
-     * chunks that the constructed Grid is to be made of.
+     * @param gridStatistics The GridStatistics to accompany the returned grid.
+     * @param directory The directory to be used for storing cached grid
+     * information.
+     * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
+     * for creating chunks that the constructed Grid is to be made of.
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
@@ -289,7 +152,7 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(
             Grids_AbstractGridStatistics gridStatistics,
             File directory,
-            Grids_AbstractGridChunkDoubleFactory gcf,
+            Grids_AbstractGridChunkDoubleFactory chunkFactory,
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
@@ -297,7 +160,7 @@ public class Grids_GridDoubleFactory
         return new Grids_GridDouble(
                 gridStatistics,
                 directory,
-                gcf,
+                chunkFactory,
                 ChunkNRows,
                 ChunkNCols,
                 nRows,
@@ -312,11 +175,10 @@ public class Grids_GridDoubleFactory
     // Create from an existing Grids_AbstractGridNumber //
     //////////////////////////////////////////////////////
     /**
-     * Returns a new Grid2DSquareCellDouble with all values taken from
-     * _Grid2DSquareCell.
+     * Returns a new Grids_GridDouble with all values taken from g.
      *
      * @param directory The Directory to be used for storing cached data.
-     * @param g The Grid from which values are used.
+     * @param g The Grids_AbstractGridNumber from which values are used.
      * @param startRowIndex The topmost row index of g.
      * @param startColIndex The leftmost column index of g.
      * @param endRowIndex The bottom row index of g.
@@ -335,7 +197,7 @@ public class Grids_GridDoubleFactory
         return create(getGridStatistics(),
                 directory,
                 g,
-                ChunkFactory,
+                DefaultGridChunkFactory,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
@@ -344,21 +206,18 @@ public class Grids_GridDoubleFactory
     }
 
     /**
-     * Returns a new Grids_GridDouble with all values taken from
-     * g.
+     * Returns a new Grids_GridDouble with all values taken from g.
      *
-     * @param gridStatistics The AbstractGridStatistics to accompany the
-     * returned grid.
-     * @param directory The Directory to be used for storing cached
+     * @param gridStatistics The GridStatistics to accompany the returned grid.
+     * @param directory The directory to be used for storing cached
      * Grid2DSquareCellDouble information.
-     * @param chunkFactory The preferred Grid2DSquareCellDoubleChunkFactoryy for
-     * creating chunks that the constructed Grid2DSquareCellDouble is to be made
-     * of.
-     * @param g TheGrid2DSquareCellt from which grid values are used.
-     * @param startRowIndex The topmost row index of _Grid2DSquareCell.
-     * @param startColIndex The leftmost column index of _Grid2DSquareCell.
-     * @param endRowIndex The bottom row index of _Grid2DSquareCell.
-     * @param endColIndex The rightmost column index of _Grid2DSquareCell.
+     * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
+     * for creating chunks that the constructed Grid is to be made of.
+     * @param g The Grids_AbstractGridNumber from which grid values are used.
+     * @param startRowIndex The topmost row index of g.
+     * @param startColIndex The leftmost column index of g.
+     * @param endRowIndex The bottom row index of g.
+     * @param endColIndex The rightmost column index of g.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -393,13 +252,13 @@ public class Grids_GridDoubleFactory
     // Create from a File //
     ////////////////////////
     /**
-     * Returns a new Grid2DSquareCellDouble with values obtained from gridFile.
+     * Returns a new Grids_GridDouble with values obtained from gridFile.
      *
-     * @param directory The Directory to be used for storing cached
-     * Grid2DSquareCellDouble information.
-     * @param gridFile Either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grid2DSquareCellDouble to be returned.
+     * @param directory The Directory to be used for storing cached Grid
+     * information.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be
+     * returned.
      * @param startRowIndex The topmost row index of the grid stored as
      * gridFile.
      * @param startColIndex The leftmost column index of the grid stored as
@@ -421,27 +280,25 @@ public class Grids_GridDoubleFactory
         return create(getGridStatistics(),
                 directory,
                 gridFile,
-                ChunkFactory,
+                DefaultGridChunkFactory,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                ge,
                 handleOutOfMemoryError);
     }
 
     /**
-     * Returns a new Grid2DSquareCellDouble with values obtained from gridFile.
+     * Returns a new Grids_GridDouble with values obtained from gridFile.
      *
-     * @param gridStatistics The AbstractGridStatistics to accompany the
-     * returned grid.
-     * @param directory The Directory to be used for storing cached
-     * Grid2DSquareCellDouble information.
+     * @param gridStatistics The GridStatistics to accompany the returned grid.
+     * @param directory The Directory to be used for storing cached Grid
+     * information.
      * @param gridFile Either a Directory, or a formatted File with a specific
      * extension containing the data and information about the
      * Grid2DSquareCellDouble to be returned.
-     * @param gcf The prefered Grid2DSquareCellDoubleChunkFactoryy for creating
-     * chunks that the constructed Grid2DSquareCellDouble is to be made of.
+     * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
+     * for creating chunks that the constructed Grid is to be made of.
      * @param startRowIndex The topmost row index of the grid stored as
      * gridFile.
      * @param startColIndex The leftmost column index of the grid stored as
@@ -449,7 +306,6 @@ public class Grids_GridDoubleFactory
      * @param endRowIndex The bottom row index of the grid stored as gridFile.
      * @param endColIndex The rightmost column index of the grid stored as
      * gridFile.
-     * @param ge
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
@@ -459,18 +315,17 @@ public class Grids_GridDoubleFactory
             Grids_AbstractGridStatistics gridStatistics,
             File directory,
             File gridFile,
-            Grids_AbstractGridChunkDoubleFactory gcf,
+            Grids_AbstractGridChunkDoubleFactory chunkFactory,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError) {
         return new Grids_GridDouble(
                 gridStatistics,
                 directory,
                 gridFile,
-                gcf,
+                chunkFactory,
                 ChunkNRows,
                 ChunkNCols,
                 startRowIndex,
@@ -486,9 +341,10 @@ public class Grids_GridDoubleFactory
     // Create from a cache //
     /////////////////////////
     /**
-     * Returns a new Grid2DSquareCellDouble with values obtained from gridFile.
+     * Returns a new Grids_GridDouble with values obtained from gridFile.
      *
-     * @param directory The Directory for swapping to file.
+     * @param directory The Directory to be used for storing cached Grid
+     * information.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
      * @return

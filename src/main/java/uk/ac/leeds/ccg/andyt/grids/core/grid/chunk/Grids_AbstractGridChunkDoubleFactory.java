@@ -31,7 +31,7 @@ public abstract class Grids_AbstractGridChunkDoubleFactory
         extends Grids_AbstractGridChunkFactory {
 
     /**
-     * For creating a new default AbstractGrid2DSquareCellDoubleChunk.
+     * For creating a new default Grids_AbstractGridChunkDouble.
      *
      * @return
      */
@@ -39,7 +39,7 @@ public abstract class Grids_AbstractGridChunkDoubleFactory
 
     /**
      * For creating a new Grids_AbstractGridChunkDouble containing all
-     * noDataValues that is linked to Grid via chunkID.
+     * noDataValues that is linked to g via chunkID.
      *
      * @param g
      * @param chunkID
@@ -50,14 +50,14 @@ public abstract class Grids_AbstractGridChunkDoubleFactory
             Grids_2D_ID_int chunkID);
 
     /**
-     * Creates a new Grids_AbstractGridChunkDouble with values taken from g.
+     * Creates a new Grids_AbstractGridChunkDouble with values taken from chunk.
      *
-     * @param g
+     * @param chunk
      * @param chunkID
      * @return
      */
     public abstract Grids_AbstractGridChunkDouble createGridChunkDouble(
-            Grids_AbstractGridChunkDouble g,
+            Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID);
 
 }

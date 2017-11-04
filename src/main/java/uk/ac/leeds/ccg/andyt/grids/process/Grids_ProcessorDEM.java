@@ -46,11 +46,6 @@ public class Grids_ProcessorDEM
         extends Grids_Processor {
 
     /**
-     * A HashSet for storing Grids_AbstractGridNumber.CellIDs
-     */
-    private HashSet _CellIDs;
-
-    /**
      * Creates a new Grids_ProcessorDEM
      */
     protected Grids_ProcessorDEM() {
@@ -58,8 +53,8 @@ public class Grids_ProcessorDEM
 
     /**
      * Creates a new instance of Grids_ProcessorDEM. By default the logs are
-     * appended to the end of the log _File if it exists. To overwrite the log
-     * _File use: Grids_ProcessorDEM( Directory, false );
+ appended to the end of the Log _File if it exists. To overwrite the Log
+ _File use: Grids_ProcessorDEM( Directory, false );
      *
      * @param ge
      */
@@ -71,7 +66,7 @@ public class Grids_ProcessorDEM
      * Calculates and returns measures of the slope and aspect for the
      * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGridNumber to be processed.
+     * @param g The Grids_AbstractGridNumber to be processed.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then caching operations are initiated prior to retrying.
      * If false then OutOfMemoryErrors are caught and thrown. Defaults: kernel
@@ -82,25 +77,24 @@ public class Grids_ProcessorDEM
      * @throws java.io.IOException
      */
     public Grids_GridDouble[] getSlopeAspect(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            ge.getGrids().add(_Grid2DSquareCell);
-            return getSlopeAspect(_Grid2DSquareCell);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+            ge.getGrids().add(g);
+            return getSlopeAspect(g);
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(
-                        handleOutOfMemoryError) < 1L) {
-                    throw a_OutOfMemoryError;
+                if (ge.swapChunk_Account(                        handleOutOfMemoryError) < 1L) {
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return getSlopeAspect(
-                        _Grid2DSquareCell,
+                        g,
                         handleOutOfMemoryError);
             }
-            throw a_OutOfMemoryError;
+            throw e;
         }
     }
 
@@ -108,7 +102,7 @@ public class Grids_ProcessorDEM
      * Calculates and returns measures of the slope and aspect for the
      * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGridNumber to be processed.
+     * @param g The Grids_AbstractGridNumber to be processed.
      * Defaults: kernel to have distance = ( _Grid2DSquareCell.getDimensions(
      * handleOutOfMemoryError )[ 0 ].doubleValue() ) * ( 3.0d / 2.0d );
      * weightIntersect = 1.0d; weightFactor = 0.0d;
@@ -116,17 +110,17 @@ public class Grids_ProcessorDEM
      * @throws java.io.IOException
      */
     protected Grids_GridDouble[] getSlopeAspect(
-            Grids_AbstractGridNumber _Grid2DSquareCell)
+            Grids_AbstractGridNumber g)
             throws IOException {
         boolean handleOutOfMemoryError = true;
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
-        Grids_Dimensions dimensions = _Grid2DSquareCell.getDimensions(handleOutOfMemoryError);
+        Grids_Dimensions dimensions = g.getDimensions(handleOutOfMemoryError);
         double distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
         double weightIntersect = 1.0d;
         double weightFactor = 0.0d;
         return getSlopeAspect(
-                _Grid2DSquareCell,
+                g,
                 distance,
                 weightIntersect,
                 weightFactor,
@@ -134,27 +128,27 @@ public class Grids_ProcessorDEM
     }
 
     public double[][] getNormalDistributionKernelWeights(
-            Grids_AbstractGridNumber a_Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             double distance,
             boolean handleOutOfMemoryError) {
         try {
-            return uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel.getNormalDistributionKernelWeights(
-                    a_Grid2DSquareCell,
+            return Grids_Kernel.getNormalDistributionKernelWeights(
+                    g,
                     distance);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunk_Account(ge.HandleOutOfMemoryErrorFalse) < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(
                         handleOutOfMemoryError);
                 return getNormalDistributionKernelWeights(
-                        a_Grid2DSquareCell,
+                        g,
                         distance,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -206,7 +200,7 @@ public class Grids_ProcessorDEM
             Grids_GridInt gridInt;
             int slopeAndAspectSize = 10;
             Grids_GridDouble[] slopeAndAspect = new Grids_GridDouble[slopeAndAspectSize];
-            boolean _ShortName = true; // Because too long filenames can be problematic (how long too long is probably operating systems specific).
+            boolean shortName = true; // Filenames that are too long are problematic!
             boolean swapToFileCache = true;
             // Initialisation
             long ncols = g.getNCols(handleOutOfMemoryError);
@@ -214,45 +208,39 @@ public class Grids_ProcessorDEM
             Grids_Dimensions dimensions = g.getDimensions(handleOutOfMemoryError);
             double cellsize = g.getCellsizeDouble(handleOutOfMemoryError);
             long cellDistance = (long) Math.ceil(distance / cellsize);
-            double thisDistance = 0.0d;
+            double thisDistance;
             double x = 0.0d;
             double y = 0.0d;
-            double thisX = 0.0d;
-            double thisY = 0.0d;
-            double diffX = 0.0d;
-            double diffY = 0.0d;
-            double diffHeight = Double.NEGATIVE_INFINITY;
-            double angle = Double.NEGATIVE_INFINITY;
-            double sinAngle = Double.NEGATIVE_INFINITY;
-            double cosAngle = Double.NEGATIVE_INFINITY;
-            double slope = Double.NEGATIVE_INFINITY;
-            double aspect = Double.NEGATIVE_INFINITY;
-//            double[][] weights = Grids_Kernel.getKernelWeights(
-//                    _Grid2DSquareCell,
-//                    distance,
-//                    weightIntersect,
-//                    weightFactor );
+            double thisX;
+            double thisY;
+            double diffX;
+            double diffY;
+            double diffHeight;
+            double angle;
+            double sinAngle;
+            double cosAngle;
+            double slope;
+            double aspect;
             double[][] weights = getNormalDistributionKernelWeights(
                     g,
                     distance,
                     handleOutOfMemoryError);
-            double weight = Double.NEGATIVE_INFINITY;
-            long cellRowIndex = 0L;
-            long cellColIndex = 0L;
-            long p = 0L;
-            long q = 0L;
-            int chunkCellRowIndex = 0;
-            int chunkCellColIndex = 0;
-            int cri = Integer.MIN_VALUE;
-            int cci = Integer.MIN_VALUE;
-            int nChunkRows = g.getNChunkRows(handleOutOfMemoryError);
-            int nChunkCols = g.getNChunkCols(handleOutOfMemoryError);
-            int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
-            int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
-            double double0 = Double.NEGATIVE_INFINITY;
-            double double1 = Double.NEGATIVE_INFINITY;
-            //double double2 = Double.NEGATIVE_INFINITY;
-            double double3 = Double.NEGATIVE_INFINITY;
+            double weight;
+            long cellRowIndex;
+            long cellColIndex;
+            long p;
+            long q;
+            int chunkCellRowIndex;
+            int chunkCellColIndex;
+            int cri;
+            int cci;
+            int chunkRows = g.getNChunkRows(handleOutOfMemoryError);
+            int chunkCols = g.getNChunkCols(handleOutOfMemoryError);
+            int chunkNrows;
+            int chunkNcols;
+            double double0;
+            double double1;
+            double double3;
             double PI = Math.PI;
             double doubleOne = 1.0d;
             double doubleTwo = 2.0d;
@@ -266,14 +254,10 @@ public class Grids_ProcessorDEM
             double weightSum = 0.0d;
             double distanceSum = 0.0d;
             double numberObservations = 0.0d;
-            double averageDistance = 0.0d;
-            long long0 = Long.MIN_VALUE;
-            long long1 = Long.MIN_VALUE;
-            long long2 = Long.MIN_VALUE;
-            long long3 = Long.MIN_VALUE;
-            int int0 = Integer.MIN_VALUE;
-            int int1 = Integer.MIN_VALUE;
-            boolean boolean0 = false;
+            double averageDistance;
+            long long0;
+            int int0;
+            int int1;
             for (p = -cellDistance; p <= cellDistance; p++) {
                 thisY = p * cellsize;
                 for (q = -cellDistance; q <= cellDistance; q++) {
@@ -304,12 +288,12 @@ public class Grids_ProcessorDEM
             String _Filename;
             File _File;
             //Grid2DSquareCellDouble _Grid2DSquareCellDouble = new Grids_GridDouble( _AbstractGrid2DSquareCell_HashSet );
-            double noDataValueDouble = Double.MIN_VALUE;
-            double heightDouble = Double.MIN_VALUE;
-            double thisHeightDouble = Double.MIN_VALUE;
+            double noDataValueDoubleInt;
+            double heightDoubleInt;
+            double thisHeightDoubleInt;
             int noDataValueInt = Integer.MIN_VALUE;
-            int heightInt = Integer.MIN_VALUE;
-            int thisHeightInt = Integer.MIN_VALUE;
+            int heightInt;
+            int thisHeightInt;
             int _MessageLength = 1000;
             String _Message0 = ge.initString(_MessageLength, handleOutOfMemoryError);
             String _Message = ge.initString(_MessageLength, handleOutOfMemoryError);
@@ -319,7 +303,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 0 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "slope_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -329,8 +313,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            this.Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[0] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            this.GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[0] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -353,7 +337,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 1 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "aspect_N_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -363,8 +347,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[1] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[1] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -387,7 +371,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 2 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_N_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -397,8 +381,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[2] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -422,7 +406,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 3 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_NNE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -432,8 +416,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[3] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -457,7 +441,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 4 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_NE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -467,8 +451,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[4] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -492,7 +476,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 5 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_ENE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -502,8 +486,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[5] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -526,7 +510,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 6 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_E_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -536,8 +520,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[6] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -560,7 +544,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 7 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_ESE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -570,8 +554,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[7] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -594,7 +578,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 8 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_SE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -604,8 +588,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[8] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -628,7 +612,7 @@ public class Grids_ProcessorDEM
             _Message = "Initialising _SlopeAndAspect[ 9 ]";
             _Message = ge.println(_Message, _Message0, handleOutOfMemoryError);
             _Filename = ge.initString(_FilenameLength, handleOutOfMemoryError);
-            if (_ShortName) {
+            if (shortName) {
                 _Filename = "sin_aspect_SSE_" + averageDistance;
             } else {
                 _Filename = _Grid2DSquareCellName
@@ -638,8 +622,8 @@ public class Grids_ProcessorDEM
                         + "weightFactor(" + weightFactor + ")]";
             }
             _File = ge.initFileDirectory(directory, _Filename, handleOutOfMemoryError);
-            Grid2DSquareCellDoubleFactory.setDirectory(_File);
-            slopeAndAspect[9] = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(_File,
+            GridDoubleFactory.setDirectory(_File);
+            slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(_File,
                     nrows,
                     ncols,
                     dimensions,
@@ -667,11 +651,11 @@ public class Grids_ProcessorDEM
 
             if (g.getClass() == Grids_GridDouble.class) {
                 gridDouble = (Grids_GridDouble) g;
-                noDataValueDouble = gridDouble.getNoDataValue(handleOutOfMemoryError);
-                heightDouble = noDataValueDouble;
-                thisHeightDouble = noDataValueDouble;
-                for (cri = 0; cri < nChunkRows; cri++) {
-                    for (cci = 0; cci < nChunkCols; cci++) {
+                double noDataValue = gridDouble.getNoDataValue(handleOutOfMemoryError);
+                double h;
+                double h2;
+                for (cri = 0; cri < chunkRows; cri++) {
+                    for (cci = 0; cci < chunkCols; cci++) {
                         chunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getGridChunk(
                                 cri, cci, handleOutOfMemoryError);
                         chunkNrows = g.getChunkNRows(cri, handleOutOfMemoryError);
@@ -682,13 +666,12 @@ public class Grids_ProcessorDEM
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
                                 cellColIndex = g.getCellColIndex(cci, chunkCellColIndex, handleOutOfMemoryError);
                                 x = g.getCellXDouble(cellColIndex, handleOutOfMemoryError);
-                                heightDouble = chunkDouble.getCell(
+                                h = chunkDouble.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValueDouble,
+                                        noDataValue,
                                         handleOutOfMemoryError);
-                                boolean0 = heightDouble != noDataValueDouble;
-                                if (boolean0) {
+                                if(h != noDataValue) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
                                     slope = 0.0d;
@@ -702,14 +685,13 @@ public class Grids_ProcessorDEM
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = cellColIndex + q;
                                                 thisX = g.getCellXDouble(long0, handleOutOfMemoryError);
-                                                thisDistance = distance(x, y, thisX, thisY, nChunkCols, cri, cci, handleOutOfMemoryError);
+                                                thisDistance = distance(x, y, thisX, thisY, chunkCols, cri, cci, handleOutOfMemoryError);
                                                 if (thisDistance <= distance) {
-                                                    thisHeightDouble = gridDouble.getCell(
+                                                    h2 = gridDouble.getCell(
                                                             thisX,
                                                             thisY,
                                                             handleOutOfMemoryError);
-                                                    boolean0 = thisHeightDouble != noDataValueDouble;
-                                                    if (boolean0) {
+                                                    if (h2 != noDataValue) {
                                                         long0 = p + cellDistance;
                                                         int0 = (int) long0;
                                                         long0 = q + cellDistance;
@@ -718,7 +700,7 @@ public class Grids_ProcessorDEM
                                                         weightSum += weight;
                                                         distanceSum += thisDistance;
                                                         numberObservations++;
-                                                        double0 = heightDouble - thisHeightDouble;
+                                                        double0 = h - h2;
                                                         diffHeight = double0 * weight;
                                                         double0 = x - thisX;
                                                         diffX += double0 * diffHeight;
@@ -743,7 +725,7 @@ public class Grids_ProcessorDEM
                                         double0 = x + diffX;
                                         double1 = y + diffY;
                                         angle = angle(x, y, double0, double1,
-                                                nChunkCols, cri,
+                                                chunkCols, cri,
                                                 cci, handleOutOfMemoryError);
                                         slopeAndAspect[1].setCell(
                                                 cellRowIndex,
@@ -819,9 +801,9 @@ public class Grids_ProcessorDEM
                 noDataValueInt = gridInt.getNoDataValue(handleOutOfMemoryError);
                 heightInt = Integer.MIN_VALUE;
                 thisHeightInt = Integer.MIN_VALUE;
-                for (cri = 0; cri < nChunkRows; cri++) {
+                for (cri = 0; cri < chunkRows; cri++) {
                     chunkNrows = g.getChunkNRows(cri, handleOutOfMemoryError);
-                    for (cci = 0; cci < nChunkCols; cci++) {
+                    for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci, handleOutOfMemoryError);
                         chunk = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
                                 cri, cci, handleOutOfMemoryError);
@@ -835,8 +817,7 @@ public class Grids_ProcessorDEM
                                         chunkCellRowIndex, chunkCellColIndex,
                                         noDataValueInt, handleOutOfMemoryError,
                                         chunk.getChunkID(handleOutOfMemoryError));
-                                boolean0 = heightInt != noDataValueInt;
-                                if (boolean0) {
+                                if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
                                     slope = 0.0d;
@@ -851,7 +832,7 @@ public class Grids_ProcessorDEM
                                                 long0 = cellColIndex + q;
                                                 thisX = g.getCellXDouble(long0, handleOutOfMemoryError);
                                                 thisDistance = distance(x, y, thisX,
-                                                        thisY, nChunkCols, cri,
+                                                        thisY, chunkCols, cri,
                                                         cci, handleOutOfMemoryError);
                                                 if (thisDistance <= distance) {
                                                     thisHeightInt = gridInt.getCell(
@@ -890,7 +871,7 @@ public class Grids_ProcessorDEM
                                         double0 = x + diffX;
                                         double1 = y + diffY;
                                         angle = angle(x, y, double0, double1,
-                                                nChunkCols, cri, cci, handleOutOfMemoryError);
+                                                chunkCols, cri, cci, handleOutOfMemoryError);
                                         slopeAndAspect[1].setCell(
                                                 cellRowIndex,
                                                 cellColIndex,
@@ -2584,8 +2565,8 @@ public class Grids_ProcessorDEM
 //            double distance,
 //            double weightIntersect,
 //            double weightFactor,
-//            Grids_GridDoubleFactory Grid2DSquareCellDoubleFactory,
-//            Grids_GridIntFactory Grid2DSquareCellIntFactory,
+//            Grids_GridDoubleFactory GridDoubleFactory,
+//            Grids_GridIntFactory GridIntFactory,
 //            boolean handleOutOfMemoryError )
 //            throws IOException {
 //        try {
@@ -2593,9 +2574,9 @@ public class Grids_ProcessorDEM
 //            int _MessageLength = 1000;
 //            String _Message0 = ge.initString( _MessageLength, handleOutOfMemoryError );
 //            String _Message = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            if ( Grid2DSquareCellDoubleFactory.getChunkNCols() != Grid2DSquareCellIntFactory.getChunkNCols() ||
-//                    Grid2DSquareCellDoubleFactory.getChunkNRows() != Grid2DSquareCellIntFactory.getChunkNRows() ) {
-//                log( "Warning! ( Grid2DSquareCellDoubleFactory.getChunkNcols() != Grid2DSquareCellIntFactory.getChunkNcols() || Grid2DSquareCellDoubleFactory.getChunkNrows() != Grid2DSquareCellIntFactory.getChunkNrows() )", handleOutOfMemoryError );
+//            if ( GridDoubleFactory.getChunkNCols() != GridIntFactory.getChunkNCols() ||
+//                    GridDoubleFactory.getChunkNRows() != GridIntFactory.getChunkNRows() ) {
+//                Log( "Warning! ( GridDoubleFactory.getChunkNcols() != GridIntFactory.getChunkNcols() || GridDoubleFactory.getChunkNrows() != GridIntFactory.getChunkNrows() )", handleOutOfMemoryError );
 //            }
 //            Grids_GridDouble _Roughness;
 //            long ncols = _Grid2DSquareCell.getNCols( handleOutOfMemoryError );
@@ -2618,7 +2599,7 @@ public class Grids_ProcessorDEM
 //                do {
 //                    try {
 //                        isInitialised = false;
-//                        _Roughness = ( Grids_GridDouble ) Grid2DSquareCellDoubleFactory.create(
+//                        _Roughness = ( Grids_GridDouble ) GridDoubleFactory.create(
 //                                    _File,
 //                                    nrows,
 //                                    ncols,
@@ -2657,8 +2638,8 @@ public class Grids_ProcessorDEM
 //                        distance,
 //                        weightIntersect,
 //                        weightFactor,
-//                        Grid2DSquareCellDoubleFactory,
-//                        Grid2DSquareCellIntFactory,
+//                        GridDoubleFactory,
+//                        GridIntFactory,
 //                        handleOutOfMemoryError );
 //            } else {
 //                //_OutOfMemoryError0.printStackTrace();
@@ -3183,8 +3164,8 @@ public class Grids_ProcessorDEM
 //            if ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class ) {
 //                Grids_GridDouble _Grid2DSquareCellDouble = ( Grids_GridDouble ) _Grid2DSquareCell;
 //                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue( handleOutOfMemoryError );
-//                double height = Double.MIN_VALUE;
-//                double thisHeight = Double.MIN_VALUE;;
+//                double heightInt;
+//                double thisHeightInt;;
 //                Grids_AbstractGridChunkDouble _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk( 0, 0, handleOutOfMemoryError );
 //                for ( _ChunkRowIndex = _int_0; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex ++ ) {
 //                    chunkNrows = _Grid2DSquareCell.getChunkNRows(
@@ -5718,14 +5699,10 @@ public class Grids_ProcessorDEM
 
             double gridNoDataValue = grid.getNoDataValue(handleOutOfMemoryError);
 
-            double noDataValue = Double.MIN_VALUE;
-            //double noDataValue = gridNoDataValue;
-            //double noDataValue = 0.0d;
-            //double noDataValue = Double.NaN;
-            Grids_GridDouble[] _SlopeAndAspect = null;
+            Grids_GridDouble[] slopeAndAspect = null;
             //Grid2DSquareCellDouble[] _SlopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
-            result[0] = _SlopeAndAspect[0];
-            result[1] = _SlopeAndAspect[1];
+            result[0] = slopeAndAspect[0];
+            result[1] = slopeAndAspect[1];
 
             for (int i = 0; i
                     < result.length; i++) {
@@ -5752,9 +5729,9 @@ public class Grids_ProcessorDEM
                     if (grid.getCell(row, col, handleOutOfMemoryError) != gridNoDataValue) {
                         slope = result[0].getCell(row, col, handleOutOfMemoryError);
                         aspect = result[1].getCell(row, col, handleOutOfMemoryError);
-                        metrics2Points = getMetrics2Points(_SlopeAndAspect, distance, samplingDensity);
+                        metrics2Points = getMetrics2Points(slopeAndAspect, distance, samplingDensity);
                         weights = Grids_Kernel.getKernelWeights(grid, row, col, distance, weightIntersect, weightFactor, metrics2Points);
-                        metrics2 = getMetrics2(grid, row, col, _SlopeAndAspect, distance, weights);
+                        metrics2 = getMetrics2(grid, row, col, slopeAndAspect, distance, weights);
 
                         for (int i = 0; i
                                 < result.length; i++) {

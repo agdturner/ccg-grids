@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 
 /**
@@ -32,34 +31,34 @@ public abstract class Grids_AbstractGridChunkIntFactory
         extends Grids_AbstractGridChunkFactory {
 
     /**
-     * For creating a new default AbstractGrid2DSquareCellIntChunk.
+     * For creating a new default Grids_AbstractGridChunkInt.
      *
      * @return
      */
     public abstract Grids_AbstractGridChunkInt createGridChunkInt();
 
     /**
-     * Creates a new AbstractGrid2DSquareCellIntChunk containing all
-     * noDataValues that is linked to grid2DSquareCellInt via chunkID.
+     * Creates a new Grids_AbstractGridChunkInt containing all
+     * noDataValues that is linked to g via chunkID.
      *
-     * @param grid2DSquareCellInt
+     * @param g
      * @param chunkID
      * @return
      */
     public abstract Grids_AbstractGridChunkInt createGridChunkInt(
-            Grids_GridInt grid2DSquareCellInt,
+            Grids_GridInt g,
             Grids_2D_ID_int chunkID);
 
     /**
-     * Creates a new AbstractGrid2DSquareCellIntChunk with values taken from
-     * grid2DSquareCellIntChunk.
+     * Creates a new Grids_AbstractGridChunkInt with values taken from
+     * chunk.
      *
-     * @param grid2DSquareCellIntChunk
+     * @param chunk
      * @param chunkID
      * @return
      */
     public abstract Grids_AbstractGridChunkInt createGridChunkInt(
-            Grids_AbstractGridChunkInt grid2DSquareCellIntChunk,
+            Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID);
 
 }

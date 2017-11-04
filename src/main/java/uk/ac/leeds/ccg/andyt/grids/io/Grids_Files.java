@@ -17,25 +17,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.io;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
 public class Grids_Files extends Generic_Files {
-    
+
     protected File GeneratedGridsDir;
-    
-    protected Grids_Files() {    }
-    
+
+    protected Grids_Files() {
+    }
+
     public Grids_Files(File dataDirectory) {
         DataDir = dataDirectory;
     }
-    
+
     public File getGeneratedGridsDir() {
         if (GeneratedGridsDir == null) {
             GeneratedGridsDir = new File(
@@ -44,144 +42,148 @@ public class Grids_Files extends Generic_Files {
         }
         return GeneratedGridsDir;
     }
-    
+
     public Grids_Strings getStrings() {
         return (Grids_Strings) Strings;
     }
-        
+
     /**
-     * Returns a newly created temporary file.
-     * Default parent directory to System.getProperty( "java.io.tmpdir" ).
-     * //Default parent directory to System.getProperty( "user.dir" ).
-     * //Default parent directory to System.getProperty( "user.home" ).
-     * @return 
+     * Returns a newly created temporary file. Default parent directory to
+     * System.getProperty( "java.io.tmpdir" ). //Default parent directory to
+     * System.getProperty( "user.dir" ). //Default parent directory to
+     * System.getProperty( "user.home" ).
+     *
+     * @return
      */
-    public static File createTempFile() {
-        return createTempFile( new File( System.getProperty( "java.io.tmpdir" ) ) );
+    public File createTempFile() {
+        return createTempFile(new File(System.getProperty("java.io.tmpdir")));
         //return createTempFile( null );
     }
-    
+
     /**
      * Returns a newly created temporary file.
-     * @param parentDirectory .
-     * Default extension to nothing.
-     * @return 
+     *
+     * @param parentDirectory . Default extension to nothing.
+     * @return
      */
-    public static File createTempFile(
-            File parentDirectory ) {
+    public File createTempFile(
+            File parentDirectory) {
         return createTempFile(
                 parentDirectory,
                 "",
-                "" );
+                "");
     }
-    
+
     /**
      * Returns a newly created temporary file.
+     *
      * @param parentDirectory .
      * @param prefix If not 3 characters long, this will be padded with "x"
      * characters.
-     * @param suffix If null the file is appended with ".tmp".
-     * Default extension to nothing.
-     * @return 
+     * @param suffix If null the file is appended with ".tmp". Default extension
+     * to nothing.
+     * @return
      */
-    public static File createTempFile(
+    public File createTempFile(
             File parentDirectory,
             String prefix,
-            String suffix ) {
+            String suffix) {
         File file = null;
-        while ( prefix.length() < 3 ) {
+        while (prefix.length() < 3) {
             prefix = prefix + "x";
         }
         boolean abstractFileCreated = false;
         do {
             try {
                 file = File.createTempFile(
-                        prefix + Long.toString( System.currentTimeMillis() ),
+                        prefix + Long.toString(System.currentTimeMillis()),
                         suffix,
-                        parentDirectory );
+                        parentDirectory);
                 abstractFileCreated = true;
-            } catch ( IOException e ) {
+            } catch (IOException e) {
                 // File must have already existed or disc space full or something.
             }
-        } while ( ! abstractFileCreated );
+        } while (!abstractFileCreated);
         file.deleteOnExit();
-        return createNewFile( parentDirectory, file.getName() );
+        return createNewFile(parentDirectory, file.getName());
     }
-    
+
     /**
-     * Returns a newly created file.
-     * //Default parent directory to System.getProperty( "java.io.tmpdir" ).
-     * Default parent directory to System.getProperty( "user.dir" ).
-     * //Default parent directory to System.getProperty( "user.home" ).
-     * @return 
+     * Returns a newly created file. //Default parent directory to
+     * System.getProperty( "java.io.tmpdir" ). Default parent directory to
+     * System.getProperty( "user.dir" ). //Default parent directory to
+     * System.getProperty( "user.home" ).
+     *
+     * @return
      */
-    public static File createNewFile() {
+    public File createNewFile() {
         //return createNewFile( new File( System.getProperty( "java.io.tmpdir" ) ) );
-        return createNewFile( new File( System.getProperty( "user.dir" ) ) );
+        return createNewFile(new File(System.getProperty("user.dir")));
     }
-    
+
     /**
      * Returns a newly created File.
-     * @param parentDirectory
-     * Default extension prefix and suffix nothing.
-     * @return 
+     *
+     * @param parentDirectory Default extension prefix and suffix nothing.
+     * @return
      */
-    public static File createNewFile( File parentDirectory ) {
+    public File createNewFile(File parentDirectory) {
         return createNewFile(
                 parentDirectory, "", "");
     }
-    
+
     /**
      * Returns a newly created File.
+     *
      * @param parentDirectory
      * @param prefix
      * @param suffix
-     * @return 
+     * @return
      */
-    public static File createNewFile(
+    public File createNewFile(
             File parentDirectory,
             String prefix,
-            String suffix ) {
+            String suffix) {
         File file;
         do {
             file = new File(
                     parentDirectory,
-                    prefix + Long.toString( System.currentTimeMillis() ) + suffix );
-        } while ( file.exists() );
+                    prefix + Long.toString(System.currentTimeMillis()) + suffix);
+        } while (file.exists());
         try {
-            if ( (prefix + suffix).equalsIgnoreCase( "" ) ) {
+            if ((prefix + suffix).equalsIgnoreCase("")) {
                 file.mkdir();
             } else {
                 file.createNewFile();
             }
-        } catch ( IOException ioe0 ) {
-            System.out.println( "File " + file.toString() );
-            ioe0.toString();
-            ioe0.printStackTrace();
+        } catch (IOException ioe0) {
+            System.out.println("File " + file.toString());
+            ioe0.printStackTrace(System.err);
         }
         return file;
     }
-    
+
     /**
-     * Returns a newly created File which is a file if the filename. or a directory.
+     * Returns a newly created File which is a file if the filename. or a
+     * directory.
+     *
      * @param parentDirectory
      * @param filename
-     * @return 
+     * @return
      */
-    public static File createNewFile(
+    public File createNewFile(
             File parentDirectory,
-            String filename ) {
-        File file = new File( parentDirectory, filename );
+            String filename) {
+        File file = new File(parentDirectory, filename);
         try {
-            if ( filename.charAt( filename.length() - 4 ) != '.' ) {
+            if (filename.charAt(filename.length() - 4) != '.') {
                 file.mkdir();
             } else {
                 file.createNewFile();
             }
-        } catch ( IOException ioe0 ) {
-            System.out.println( "File " + file.toString() );
-            ioe0.toString();
-            ioe0.printStackTrace();
+        } catch (IOException ioe0) {
+            System.out.println("File " + file.toString());
+            ioe0.printStackTrace(System.err);
         }
         return file;
     }

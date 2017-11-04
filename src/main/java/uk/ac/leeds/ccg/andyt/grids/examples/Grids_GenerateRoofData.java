@@ -112,7 +112,7 @@ public class Grids_GenerateRoofData
 //        long _RowEndRidgeProportion;
 //        long _RowEndRidge;
 //        Grids_GridDouble _ResizedGrid2DSquareCellDouble;
-//        _ResizedGrid2DSquareCellDouble = this.Grid2DSquareCellDoubleFactory.create(
+//        _ResizedGrid2DSquareCellDouble = this.GridDoubleFactory.create(
 //                Directory, _ResizedNRows, _ResizedNCols, _Dimensions, HandleOutOfMemoryError);
 //        //for (nrows = 10; nrows <= 80; nrows *= 2) {
 //        //for ( nrows = 5; nrows <= 80; nrows *= 2 ) {
@@ -431,7 +431,7 @@ public class Grids_GenerateRoofData
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
         double _RowStartRidgeTanAngle = _ColRidgeHeight / (double) (_RowStartRidge - _CellsizeDivideTwo);
         double _RowEndRidgeTanAngle = _ColRidgeHeight / (double) ((nrows - _RowEndRidge) - _CellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -552,7 +552,7 @@ public class Grids_GenerateRoofData
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
         double _RowStartRidgeTanAngle = _ColRidgeHeight / (double) (_RowStartRidge - _CellsizeDivideTwo);
         double _RowEndRidgeTanAngle = _ColRidgeHeight / (double) ((nrows - _RowEndRidge) - _CellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -661,7 +661,7 @@ public class Grids_GenerateRoofData
         double _TopRowRidgeTanAngle = _RowRidgeHeight / (double) ((nrows - _RowWithRidge) - _CellsizeDivideTwo);
         double _LeftColRidgeTanAngle = _ColRidgeHeight / (double) (_ColWithRidge - _CellsizeDivideTwo);
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -740,14 +740,14 @@ public class Grids_GenerateRoofData
 //                    _Grid2DSquareCellDouble,
 //                    "SUM",
 //                    _Dimensions,
-//                    this.Grid2DSquareCellDoubleFactory,
+//                    this.GridDoubleFactory,
 //                    HandleOutOfMemoryError);
 //            // If not aggregation, then disaggregation
 //            if (_ResizedGrid2DSquareCellDouble == null) {
 //                _ResizedGrid2DSquareCellDouble = disaggregate(
 //                        _Dimensions,
 //                        _Grid2DSquareCellDouble,
-//                        this.Grid2DSquareCellDoubleFactory,
+//                        this.GridDoubleFactory,
 //                        HandleOutOfMemoryError);
 //            }
             ge.getGrids().add(_ResizedGrid2DSquareCellDouble);
@@ -812,7 +812,7 @@ public class Grids_GenerateRoofData
         double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - _CellsizeDivideTwo);
         double _LeftColRidgeTanAngle = _ColRidgeHeight / (double) (_ColWithRidge - _CellsizeDivideTwo);
         double _RightColRidgeTanAngle = _ColRidgeHeight / (double) ((ncols - _ColWithRidge) - _CellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) Grid2DSquareCellDoubleFactory.create(nrows, ncols);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
         long row;
         long col;
         // Row ridged roofs

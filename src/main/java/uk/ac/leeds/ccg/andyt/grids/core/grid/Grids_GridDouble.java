@@ -53,7 +53,7 @@ public class Grids_GridDouble
         implements Serializable {
 
     /**
-     * For storing the NODATA value of the grid, which by default is (Double)
+     * For storing the NODATA value of the grid, which by default is
      * Integer.MIN_VALUE. N.B. Double.NaN, Double.POSITIVE_INFINITY or
      * Double.NEGATIVE_INFINITY should not be used. N.B. Care should be taken so
      * that NoDataValue is not a data value.
@@ -444,8 +444,6 @@ public class Grids_GridDouble
             //int loadedChunkCount = 0;
             boolean isLoadedChunk = false;
             int int_0 = 0;
-            String println0 = ge.initString(1000, handleOutOfMemoryError);
-            String println = ge.initString(1000, handleOutOfMemoryError);
             Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkDouble chunk;
             for (chunkRowIndex = int_0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
@@ -477,8 +475,7 @@ public class Grids_GridDouble
                     isLoadedChunk = false;
                     //loadedChunkCount++;
                 }
-                println = "Done chunkRow " + chunkRowIndex + " out of " + NChunkRows;
-                println = ge.println(println, println0, handleOutOfMemoryError);
+                System.out.println("Done chunkRow " + chunkRowIndex + " out of " + NChunkRows);
             }
             ge.addGrid(this);
         } catch (OutOfMemoryError e) {
@@ -521,8 +518,6 @@ public class Grids_GridDouble
      * @param endColIndex The Grid2DSquareCell column index which is the right
      * most column of this.
      * @param noDataValue The NoDataValue for this.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGridNumber instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -574,8 +569,6 @@ public class Grids_GridDouble
             long col;
             //int cci1 = 0;
             double cellDouble;
-            String println0 = ge.initString(1000, handleOutOfMemoryError);
-            String println = ge.initString(1000, handleOutOfMemoryError);
             Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkDouble chunk;
 
@@ -674,8 +667,7 @@ public class Grids_GridDouble
                         //loadedChunkCount++;
                         //cci1 = _ChunkColIndex;
                     }
-                    println = "Done chunkRow " + chunkRow + " out of " + nChunkRows;
-                    println = ge.println(println, println0, handleOutOfMemoryError);
+                    System.out.println("Done chunkRow " + chunkRow + " out of " + nChunkRows);
                     chunkRow++;
                 }
             } else {
@@ -741,8 +733,7 @@ public class Grids_GridDouble
                         //loadedChunkCount++;
                         //cci1 = _ChunkColIndex;
                     }
-                    println = "Done chunkRow " + chunkRow + " out of " + nChunkRows;
-                    println = ge.println(println, println0, handleOutOfMemoryError);
+                    System.out.println("Done chunkRow " + chunkRow + " out of " + nChunkRows);
                     chunkRow++;
                 }
             }
@@ -781,7 +772,7 @@ public class Grids_GridDouble
      * @param gridFile Either a _Directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridDouble
      * to be returned.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory prefered to
+     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory preferred to
      * construct chunks of this.
      * @param chunkNRows The Grids_GridDouble _ChunkNRows.
      * @param chunkNCols The Grids_GridDouble _ChunkNCols.
@@ -793,8 +784,6 @@ public class Grids_GridDouble
      * @param endColIndex The rightmost column index of the grid stored as
      * gridFile.
      * @param noDataValue The NoDataValue for this.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGridNumber instances.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -819,8 +808,6 @@ public class Grids_GridDouble
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             // Setting _Directory allows for it having being moved.
             Directory = directory;
-            String println0 = ge.initString(1000, ge.HandleOutOfMemoryErrorFalse);
-            String println = ge.initString(1000, ge.HandleOutOfMemoryErrorFalse);
             // Set to report every 10%
             int reportN;
             reportN = (int) (endRowIndex - startRowIndex) / 10;
@@ -843,9 +830,8 @@ public class Grids_GridDouble
                     File thisFile = new File(
                             gridFile,
                             "thisFile");
-                    ObjectInputStream ois = null;
-                    ois = Generic_StaticIO.getObjectInputStream(thisFile); //ioe0.printStackTrace();
-                    //throw ioe0;
+                    ObjectInputStream ois;
+                    ois = Generic_StaticIO.getObjectInputStream(thisFile);
                     Grids_GridDouble g;
                     g = (Grids_GridDouble) gf.create(
                             directory,
@@ -880,9 +866,8 @@ public class Grids_GridDouble
                 ChunkIDChunkMap = new HashMap<>((int) nChunks);
                 setGridStatistics(statistics);
                 String filename = gridFile.getName();
-                int loadedChunkCount = 0;
                 boolean isLoadedChunk = false;
-                double value = NoDataValue;
+                double value;
                 if (filename.endsWith("asc") || filename.endsWith("txt")) {
                     Grids_ESRIAsciiGridImporter eagi;
                     eagi = new Grids_ESRIAsciiGridImporter(
@@ -893,25 +878,15 @@ public class Grids_GridDouble
                     //long inputNrows = ( Long ) header[ 1 ];
                     initDimensions(header, startRowIndex, startColIndex);
                     double gridFileNoDataValue = (Double) header[5];
-                    int chunkRowIndex = Integer.MIN_VALUE;
-                    int chunkColIndex = Integer.MIN_VALUE;
-                    int cachedAndClearedChunkCount = 0;
-                    int cri0 = 0;
-                    int cci0 = 0;
-                    int cri1 = 0;
-                    int cci1 = 0;
+                    int chunkRowIndex;
+                    int chunkColIndex;
                     Grids_2D_ID_int chunkID;
-                    boolean initialisedChunksToClear = true;
-                    long row = Long.MIN_VALUE;
-                    long col = Long.MIN_VALUE;
+                    long row;
+                    long col;
                     boolean isInitCellDone = false;
-                    //boolean cacheRowMinor = true;
-                    //ChunkID nextChunkToSwap = new Grids_2D_ID_int(
-                    //        _NChunkCols,
-                    //        0,
-                    //        0 );
                     Grids_AbstractGridChunkDouble chunk;
-                    // Initialise Chunks
+
+// Initialise Chunks
                     for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
                         for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
@@ -947,49 +922,69 @@ public class Grids_GridDouble
                                 }
                             } while (!isLoadedChunk);
                             isLoadedChunk = false;
-                            loadedChunkCount++;
-                            cci1 = chunkColIndex;
                         }
                         System.out.println("Done chunkRow " + chunkRowIndex + " out of " + NChunkRows);
                     }
                     System.out.println("First stage of initialisation complete. Reading data into initialised Chunks");
 
-                    // Read Data into Chunks
-                    if ((int) gridFileNoDataValue == Integer.MIN_VALUE) {
+                    // Read Data into Chunks. This starts with the last row and ends with the first.
+                    if ((int) gridFileNoDataValue == NoDataValue) {
                         if (statistics.getClass() == Grids_GridStatistics0.class) {
                             for (row = (NRows - 1); row > -1; row--) {
+                                ge.initNotToSwapData();
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readDouble();
-                                    do {
-                                        try {
-                                            initCell(
-                                                    row,
-                                                    col,
-                                                    value,
-                                                    handleOutOfMemoryError);
+                                    /**
+                                     * Ensure this chunkID is not swapped and
+                                     * initialise it if it does not already
+                                     * exist.
+                                     */
+                                    chunkID = new Grids_2D_ID_int(
+                                            getChunkRowIndex(row),
+                                            getChunkColIndex(row));
+                                    ge.addToNotToSwapData(this, chunkID);
+                                    if (!ChunkIDChunkMap.containsKey(chunkID)) {
+                                        /**
+                                         * If the value is NoDataValue or the
+                                         * DefaultValue and the chunkFactory is
+                                         * set to Array type then try first
+                                         * initialising as a single value grid.
+                                         */
+                                        if (value == gridFileNoDataValue 
+                                                || value = ge.getProcessor().GridDoubleFactory.GDefaultValue)
+                                    }
+                                    if () {
+                                        do {
+                                            try {
+                                                initCell(
+                                                        row,
+                                                        col,
+                                                        value,
+                                                        handleOutOfMemoryError);
 
 //                                            if (value != 0.0d) {
 //                                                int debug = 1;
 //                                            }
-                                            isInitCellDone = true;
-                                        } catch (OutOfMemoryError e) {
-                                            if (handleOutOfMemoryError) {
-                                                ge.clearMemoryReserve();
-                                                chunkID = new Grids_2D_ID_int(
-                                                        chunkRowIndex,
-                                                        chunkColIndex);
-                                                if (ge.swapChunksExcept_Account(
-                                                        this,
-                                                        chunkID,
-                                                        false) < 1L) {
+                                                isInitCellDone = true;
+                                            } catch (OutOfMemoryError e) {
+                                                if (handleOutOfMemoryError) {
+                                                    ge.clearMemoryReserve();
+                                                    chunkID = new Grids_2D_ID_int(
+                                                            chunkRowIndex,
+                                                            chunkColIndex);
+                                                    if (ge.swapChunksExcept_Account(
+                                                            this,
+                                                            chunkID,
+                                                            false) < 1L) {
+                                                        throw e;
+                                                    }
+                                                    ge.initMemoryReserve(handleOutOfMemoryError);
+                                                } else {
                                                     throw e;
                                                 }
-                                                ge.initMemoryReserve(handleOutOfMemoryError);
-                                            } else {
-                                                throw e;
                                             }
-                                        }
-                                    } while (!isInitCellDone);
+                                        } while (!isInitCellDone);
+                                    }
                                     isInitCellDone = false;
                                 }
                                 if (row % reportN == 0) {
@@ -1145,7 +1140,6 @@ public class Grids_GridDouble
                 }
             }
             setGridStatistics(statistics);
-            ge.addGrid(this);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -1329,18 +1323,19 @@ public class Grids_GridDouble
     }
 
     /**
-     * Initialises NoDataValue.
+     * Initialises NoDataValue as noDataValue with the following exceptions. If
+     * noDataValue is NaN or if noDataValue is Double.NEGATIVE_INFINITY or
+     * Double.POSITIVE_INFINITY then NoDataValue is left as the default of
+     * Integer.MIN_VALUE and a warning message is written to std.out.
      *
      * @param noDataValue The value NoDataValue is initialised to.
      */
     protected final void initNoDataValue(
             double noDataValue) {
-        // This method is called before _ChunkID_AbstractGrid2DSquareCellChunk_HashMap are
-        // constructed so no OutOfMemoryError handling is needed.
         if (Double.isNaN(noDataValue)) {
-            NoDataValue = Double.NEGATIVE_INFINITY;
-            System.out.println("_NoDataValue cannot be set to NaN! Initialised _NoDataValue as " + NoDataValue);
-            //throw new Exception( "NoDataValue cannot be set to NaN" );
+            System.out.println("NoDataValue cannot be set to NaN! NoDataValue remains as " + NoDataValue);
+        } else if (Double.isInfinite(noDataValue)) {
+            System.out.println("NoDataValue cannot be infinite! NoDataValue remains as " + NoDataValue);
         } else {
             NoDataValue = noDataValue;
         }

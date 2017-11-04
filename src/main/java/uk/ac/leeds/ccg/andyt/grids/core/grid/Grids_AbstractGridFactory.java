@@ -27,7 +27,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 
 /**
  * Abstract class to be extended by all Grids_AbstractGridNumber factories.
@@ -50,24 +49,28 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * The Dimensions
      */
     protected Grids_Dimensions Dimensions;
-//    /**
-//     * A container of other Grids_AbstractGridNumber references.
-//     */
-//    protected HashSet _AbstractGrid2DSquareCell_HashSet;
+
     /**
      * The Grids_AbstractGridStatistics
      */
     protected Grids_AbstractGridStatistics GridStatistics;
-    /**
-     * _HandleOutOfMemoryError
-     */
-    protected boolean HandleOutOfMemoryError;
 
     protected Grids_AbstractGridFactory() {
     }
 
-    public Grids_AbstractGridFactory(Grids_Environment ge) {
+    public Grids_AbstractGridFactory(
+            Grids_Environment ge,
+            File directory,
+            int chunkNRows,
+            int chunkNCols,
+            Grids_Dimensions dimensions,
+            Grids_AbstractGridStatistics gridStatistics) {
         super(ge);
+        Directory = directory;
+        ChunkNRows = chunkNRows;
+        ChunkNCols = chunkNCols;
+        Dimensions = dimensions;
+        GridStatistics = gridStatistics;
     }
 
     /**
@@ -75,32 +78,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      *
      * @return
      */
-    protected final File getDirectory() {
+    public final File getDirectory() {
         return Directory;
-    }
-
-    /**
-     * Returns a copy of this.Directory.
-     *
-     * @param handleOutOfMemoryError
-     * @return
-     */
-    public final File getDirectory(
-            boolean handleOutOfMemoryError) {
-        try {
-            return getDirectory();
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(handleOutOfMemoryError);
-                return getDirectory(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -153,13 +132,14 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
 
     /**
      * Initialise Dimensions. Defaulting the origin to 0,0 and cellsize to 1.
+     *
      * @param chunkNCols
-     * @param chunkNRows 
+     * @param chunkNRows
      */
-    protected final void initDimensions(
+    protected final void getDimensions(
             int chunkNCols,
             int chunkNRows) {
-        this.Dimensions = new Grids_Dimensions(
+        Dimensions = new Grids_Dimensions(
                 new BigDecimal(0L),
                 new BigDecimal(0L),
                 new BigDecimal(chunkNCols),
@@ -205,25 +185,6 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
         GridStatistics = gridStatistics;
     }
 
-    /**
-     * Returns HandleOutOfMemoryError
-     *
-     * @return
-     */
-    protected boolean getHandleOutOfMemoryError() {
-        return HandleOutOfMemoryError;
-    }
-
-    /**
-     * Sets HandleOutOfMemoryError to handleOutOfMemoryError.
-     *
-     * @param handleOutOfMemoryError
-     */
-    public void setHandleOutOfMemoryError(
-            boolean handleOutOfMemoryError) {
-        HandleOutOfMemoryError = handleOutOfMemoryError;
-    }
-
     /////////////////////////
     // Create from scratch //
     /////////////////////////
@@ -235,13 +196,10 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
     public Grids_AbstractGridNumber create(
             long nRows,
             long nCols) {
-        // Correct the ymax and xmax of the grid just in case...
-        Grids_Dimensions dimensions;
-        dimensions = getDimensions(nRows, nCols);
         return create(
                 nRows,
                 nCols,
-                dimensions);
+                getDimensions(nRows, nCols));
     }
 
     protected Grids_Dimensions getDimensions(
@@ -260,26 +218,6 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
     }
 
     /**
-     * @param directory
-     * @return Grids_AbstractGridNumber with all values as _NoDataValues.
-     * @param nRows The NumberRows for the construct.
-     * @param nCols The _NCols for the construct.
-     */
-    public Grids_AbstractGridNumber create(
-            File directory,
-            long nRows,
-            long nCols) {
-        // Correct the ymax and xmax of the grid just in case...
-        Grids_Dimensions dimensions;
-        dimensions = getDimensions(nRows, nCols);
-        directory.mkdirs();
-        return create(Directory,
-                nRows,
-                nCols,
-                dimensions);
-    }
-
-    /**
      * @return Grids_AbstractGridNumber with all values as _NoDataValues.
      * @param nRows The NRows for the construct.
      * @param nCols The NCols for the construct.
@@ -291,31 +229,12 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
             long nCols,
             Grids_Dimensions dimensions) {
         return create(
-                Grids_Files.createNewFile(Directory),
-                nRows,
-                nCols,
-                dimensions);
-    }
-
-    /**
-     * @return Grids_AbstractGridNumber with all values as _NoDataValues.
-     * @param directory The Directory for swapping to file.
-     * @param nRows The NRows for the construct.
-     * @param nCols The NCols for the construct.
-     * @param dimensions The cellsize and bounding box details for the
-     * construct.
-     */
-    public Grids_AbstractGridNumber create(
-            File directory,
-            long nRows,
-            long nCols,
-            Grids_Dimensions dimensions) {
-        return create(
-                directory,
+                ge.getFiles().createNewFile(
+                        Directory),
                 nRows,
                 nCols,
                 dimensions,
-                HandleOutOfMemoryError);
+                ge.HandleOutOfMemoryError);
     }
 
     /**
@@ -350,15 +269,15 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
                 g,
                 0L,
                 0L,
-                g.getNRows(HandleOutOfMemoryError) - 1L,
-                g.getNCols(HandleOutOfMemoryError) - 1L);
+                g.getNRows(ge.HandleOutOfMemoryErrorTrue) - 1L,
+                g.getNCols(ge.HandleOutOfMemoryErrorTrue) - 1L,
+                ge.HandleOutOfMemoryError);
     }
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from
      * grid2DSquareCell.
-     * @param g The Grids_AbstractGridNumber from which values
-     * are obtained.
+     * @param g The Grids_AbstractGridNumber from which values are obtained.
      * @param startRowIndex The topmost row index of grid2DSquareCell thats
      * values are used.
      * @param startColIndex The leftmost column index of grid2DSquareCell thats
@@ -374,52 +293,18 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
             long startColIndex,
             long endRowIndex,
             long endColIndex) {
-        File file = Grids_Files.createNewFile(
-                Directory,
-                "" + startRowIndex + "_" + startColIndex + "_" + endRowIndex + "_" + endColIndex);
+        File file = ge.getFiles().createNewFile(Directory);
         return create(
                 file,
                 g,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
-                endColIndex);
-    }
-
-    /**
-     * @return Grids_AbstractGridNumber with values obtained from
-     * grid2DSquareCell.
-     * @param directory The Directory to be used for storing data in files.
-     * Grid2DSquareCellInt information.
-     * @param g The Grids_AbstractGridNumber from which values are obtained.
-     * @param startRowIndex The topmost row index of grid2DSquareCell thats
-     * values are used.
-     * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     * values are used.
-     * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     * values are used.
-     * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     * values are used.
-     */
-    public Grids_AbstractGridNumber create(
-            File directory,
-            Grids_AbstractGridNumber g,
-            long startRowIndex,
-            long startColIndex,
-            long endRowIndex,
-            long endColIndex) {
-        return create(
-                directory,
-                g,
-                startRowIndex,
-                startColIndex,
-                endRowIndex,
                 endColIndex,
-                HandleOutOfMemoryError);
+                ge.HandleOutOfMemoryError);
     }
 
     /**
-     * @param handleOutOfMemoryError
      * @return Grids_AbstractGridNumber with values obtained from
      * grid2DSquareCell.
      * @param directory The Directory to be used for storing data in files.
@@ -432,6 +317,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
      * values are used.
+     * @param handleOutOfMemoryError
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
@@ -467,7 +353,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
                 return create(
                         Directory,
                         gridFile,
-                        ois);
+                        ois,
+                        ge.HandleOutOfMemoryError);
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace(System.err);
@@ -498,7 +385,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
                 0L,
                 0L,
                 nRows - 1L,
-                nCols - 1L);
+                nCols - 1L,
+                ge.HandleOutOfMemoryError);
     }
 
     /**
@@ -515,43 +403,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param endRowIndex The bottom row index of the grid represented in
      * gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
-     * gridFile thats values are used. Default:
-     * _AbstractGrid2DSquareCell_HashSet to null; _HandleOutOfMemoryError to
-     * true.
-     */
-    public Grids_AbstractGridNumber create(
-            File directory,
-            File gridFile,
-            long startRowIndex,
-            long startColIndex,
-            long endRowIndex,
-            long endColIndex) {
-        return create(
-                directory,
-                gridFile,
-                startRowIndex,
-                startColIndex,
-                endRowIndex,
-                endColIndex,
-                HandleOutOfMemoryError);
-    }
-
-    /**
+     * gridFile thats values are used.
      * @param handleOutOfMemoryError
-     * @return Grids_AbstractGridNumber with values obtained from gridFile.
-     * @param directory The Directory to be used for storing cached
-     * Grid2DSquareCellInt information.
-     * @param gridFile either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grids_AbstractGridNumber to be returned.
-     * @param startRowIndex The topmost row index of the grid represented in
-     * gridFile thats values are used.
-     * @param startColIndex The leftmost column index of the grid represented in
-     * gridFile thats values are used.
-     * @param endRowIndex The bottom row index of the grid represented in
-     * gridFile thats values are used.
-     * @param endColIndex The rightmost column index of the grid represented in
-     * gridFile thats values are used.
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
@@ -562,32 +415,12 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
             long endColIndex,
             boolean handleOutOfMemoryError);
 
-    /////////////////////////
-    // Create from a cache //
-    /////////////////////////
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
      * @param directory The Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     */
-    public Grids_AbstractGridNumber create(
-            File directory,
-            File gridFile,
-            ObjectInputStream ois) {
-        return create(
-                directory,
-                gridFile,
-                ois,
-                HandleOutOfMemoryError);
-    }
-
-    /**
      * @param handleOutOfMemoryError
-     * @return Grids_AbstractGridNumber with values obtained from gridFile.
-     * @param directory The Directory for swapping to file.
-     * @param gridFile A file containing the data to be used in construction.
-     * @param ois The ObjectInputStream to construct from.
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
