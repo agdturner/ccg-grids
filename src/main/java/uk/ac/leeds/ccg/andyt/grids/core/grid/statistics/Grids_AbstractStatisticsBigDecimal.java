@@ -49,7 +49,7 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
     /**
      * A reference to the Grids_AbstractGrid2DSquareCell this is for.
      */
-    protected Grids_AbstractGridNumber Grid;
+    public Grids_AbstractGridNumber Grid;
 
     /**
      * For storing the number of cells with non noDataValues.
@@ -98,21 +98,20 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
 
     public Grids_AbstractStatisticsBigDecimal(Grids_Environment ge) {
         super(ge);
-        NumberOfDecimalPlacesForArithmeticMean = 12;
-        NumberOfDecimalPlacesForStandardDeviation = 8;
+        init();
     }
 
     public Grids_AbstractStatisticsBigDecimal(Grids_AbstractGridNumber g) {
         super(g.ge);
         init(g);
-        NumberOfDecimalPlacesForArithmeticMean = 12;
-        NumberOfDecimalPlacesForStandardDeviation = 8;
     }
 
     /**
      * For initialisation
      */
-    protected void init() {
+    protected final void init() {
+        NumberOfDecimalPlacesForArithmeticMean = 12;
+        NumberOfDecimalPlacesForStandardDeviation = 8;
         NonNoDataValueCount = BigInteger.ZERO;
         Sum = BigDecimal.ZERO;
         Min = new BigDecimal(Double.MAX_VALUE);
@@ -136,10 +135,10 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
     /**
      * Updates fields from statistics except Grid.
      *
-     * @param statistics the Grids_AbstractStatisticsBigDecimal instance which fields are
- used to update this.
+     * @param statistics the Grids_AbstractStatisticsBigDecimal instance which
+     * fields are used to update this.
      */
-    protected void update(
+    public void update(
             Grids_AbstractStatisticsBigDecimal statistics) {
         NonNoDataValueCount = statistics.NonNoDataValueCount;
         Sum = statistics.Sum;
@@ -154,29 +153,20 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
      * might not be up to date. (NB. After calling this it is inexpensive to
      * convert a GridStatistics1 to a GridStatistics0.)
      */
-    protected void update() {
+    public void update() {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(ge.HandleOutOfMemoryError);
         if (Grid instanceof Grids_GridInt) {
             Grids_GridInt g = (Grids_GridInt) Grid;
             BigDecimal valueBigDecimal;
             int value;
             int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-            Grids_GridChunkInt chunk;
             Grids_GridIntIterator ite;
-            Grids_GridChunkIntIterator ite2;
-            Grids_2D_ID_int chunkID;
             ite = new Grids_GridIntIterator(g);
             while (ite.hasNext()) {
-                chunk = (Grids_GridChunkInt) ite.next();
-                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-                ge.addToNotToSwapData(g, chunkID);
-                ite2 = new Grids_GridChunkIntIterator(chunk);
-                while (ite2.hasNext()) {
-                    value = (Integer) ite2.next();
-                    if (value != noDataValue) {
-                        valueBigDecimal = new BigDecimal(value);
-                        update(valueBigDecimal);
-                    }
+                value = (Integer) ite.next();
+                if (value != noDataValue) {
+                    valueBigDecimal = new BigDecimal(value);
+                    update(valueBigDecimal);
                 }
             }
         } else {
@@ -184,22 +174,13 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
             BigDecimal valueBigDecimal;
             double value;
             double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-            Grids_GridChunkDouble chunk;
             Grids_GridDoubleIterator ite;
-            Grids_GridChunkDoubleIterator ite2;
-            Grids_2D_ID_int chunkID;
             ite = new Grids_GridDoubleIterator(g);
             while (ite.hasNext()) {
-                chunk = (Grids_GridChunkDouble) ite.next();
-                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-                ge.addToNotToSwapData(g, chunkID);
-                ite2 = new Grids_GridChunkDoubleIterator(chunk);
-                while (ite2.hasNext()) {
-                    value = (Integer) ite2.next();
-                    if (value != noDataValue) {
-                        valueBigDecimal = new BigDecimal(value);
-                        update(valueBigDecimal);
-                    }
+                value = (Double) ite.next();
+                if (value != noDataValue) {
+                    valueBigDecimal = new BigDecimal(value);
+                    update(valueBigDecimal);
                 }
             }
         }
@@ -738,7 +719,6 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
 //        }
 //        return initMode;
 //    }
-
     /**
      * Counts the remaining number of values in grid2DSquareCellInt equal to
      * value from cell given by row p and column q counting in row major order.
@@ -1522,42 +1502,42 @@ public abstract class Grids_AbstractStatisticsBigDecimal extends Grids_Object
     /**
      * @param nonNoDataValueCount to set nonNoDataValueCount to.
      */
-    void setNonNoDataValueCount(BigInteger nonNoDataValueCount) {
+    public void setNonNoDataValueCount(BigInteger nonNoDataValueCount) {
         NonNoDataValueCount = nonNoDataValueCount;
     }
 
     /**
      * @param sum to set Sum to.
      */
-    void setSum(BigDecimal sum) {
+    public void setSum(BigDecimal sum) {
         Sum = sum;
     }
 
     /**
      * @param min to set Min to.
      */
-    void setMin(BigDecimal min) {
+    public void setMin(BigDecimal min) {
         Min = min;
     }
 
     /**
      * @param minCount to set MinCount to.
      */
-    void setMinCount(BigInteger minCount) {
+    public void setMinCount(BigInteger minCount) {
         MinCount = minCount;
     }
 
     /**
      * @param max to set Max to.
      */
-    void setMax(BigDecimal max) {
+    public void setMax(BigDecimal max) {
         Max = max;
     }
 
     /**
      * @param maxCount to set MaxCount to.
      */
-    void setMaxCount(BigInteger maxCount) {
+    public void setMaxCount(BigInteger maxCount) {
         MaxCount = maxCount;
     }
 

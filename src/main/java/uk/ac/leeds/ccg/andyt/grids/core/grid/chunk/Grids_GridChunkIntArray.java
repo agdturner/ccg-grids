@@ -52,7 +52,7 @@ public class Grids_GridChunkIntArray
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
-        Data = new int[ChunkNRows][ChunkNCols];
+        initData();
         int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         int row;
         for (row = 0; row < ChunkNRows; row++) {
@@ -73,18 +73,14 @@ public class Grids_GridChunkIntArray
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
-        ChunkID = chunkID;
-        Grids_GridInt g = chunk.getGrid();
-        initGrid(g);
-        int chunkNrows = g.getChunkNRows(chunkID, ge.HandleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(chunkID, ge.HandleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         initData();
+        Grids_GridInt g = chunk.getGrid();
+        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
-        for (row = 0; row < chunkNrows; row++) {
-            for (col = 0; col < chunkNcols; col++) {
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
                 Data[row][col] = chunk.getCell(
                         row,
                         col,
@@ -104,11 +100,7 @@ public class Grids_GridChunkIntArray
      */
     @Override
     protected final void initData() {
-        boolean handleOutOfMemoryError = false;
-        Grids_GridInt g = getGrid();
-        int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
-        int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        Data = new int[chunkNrows][chunkNcols];
+        Data = new int[ChunkNRows][ChunkNCols];
     }
 
     /**

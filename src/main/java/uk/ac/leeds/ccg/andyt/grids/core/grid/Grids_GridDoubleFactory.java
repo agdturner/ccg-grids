@@ -68,7 +68,7 @@ public class Grids_GridDoubleFactory
                 new Grids_Dimensions(chunkNRows, chunkNCols),
                 new Grids_GridStatisticsNotUpdatedAsDataChanged(ge));
         NoDataValue = -Double.MAX_VALUE;
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory();
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = GridChunkDoubleFactory;
     }
 
@@ -96,7 +96,7 @@ public class Grids_GridDoubleFactory
             Grids_AbstractGridChunkDoubleFactory defaultGridChunkFactory) {
         super(ge, directory, chunkNRows, chunkNCols, dimensions, gridStatistics);
         NoDataValue = noDataValue;
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory();
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = defaultGridChunkFactory;
     }
 

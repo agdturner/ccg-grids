@@ -33,21 +33,9 @@ public class Grids_GridChunkDouble
     /**
      * For storing the value of every cell in this grid.
      */
-    private double Value;
+    public double Value;
 
     protected Grids_GridChunkDouble() {
-    }
-
-    /**
-     * Creates a new Grids_GridChunkDouble with value set to g.NoDataValue.
-     *
-     * @param g The Grids_GridDouble Grids is set to.
-     * @param chunkID The Grids_2D_ID_int ChunkID is set to.
-     */
-    protected Grids_GridChunkDouble(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID) {
-        this(g, chunkID, g.getNoDataValue(false));
     }
 
     /**
@@ -57,7 +45,7 @@ public class Grids_GridChunkDouble
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      * @param value To be the value of all cells in this chunk.
      */
-    protected Grids_GridChunkDouble(
+    public Grids_GridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID,
             double value) {

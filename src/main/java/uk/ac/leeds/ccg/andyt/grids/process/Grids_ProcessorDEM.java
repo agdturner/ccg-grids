@@ -2955,11 +2955,19 @@ public class Grids_ProcessorDEM
                                             chunkID);
                                     for (i = 0; i < metrics1.length; i++) {
                                         try {
-                                            metrics1[i].setCell(
+                                            if (metrics1[i] instanceof Grids_GridInt) {
+                                            ((Grids_GridInt) metrics1[i]).setCell(
+                                                    cellRowIndex,
+                                                    cellColIndex,
+                                                    (int) metrics1ForCell[i],
+                                                    handleOutOfMemoryError);
+                                            } else {
+                                            ((Grids_GridDouble) metrics1[i]).setCell(
                                                     cellRowIndex,
                                                     cellColIndex,
                                                     metrics1ForCell[i],
                                                     handleOutOfMemoryError);
+                                            }
                                         } catch (OutOfMemoryError _OutOfMemoryError) {
                                             ge.clearMemoryReserve();
                                             Grids_2D_ID_int aChunkID = new Grids_2D_ID_int(
@@ -2973,11 +2981,19 @@ public class Grids_ProcessorDEM
                                                 throw _OutOfMemoryError;
                                             }
                                             ge.initMemoryReserve(handleOutOfMemoryError);
-                                            metrics1[i].setCell(
+                                            if (metrics1[i] instanceof Grids_GridInt) {
+                                            ((Grids_GridInt) metrics1[i]).setCell(
+                                                    cellRowIndex,
+                                                    cellColIndex,
+                                                    (int) metrics1ForCell[i],
+                                                    handleOutOfMemoryError);
+                                            } else {
+                                            ((Grids_GridDouble) metrics1[i]).setCell(
                                                     cellRowIndex,
                                                     cellColIndex,
                                                     metrics1ForCell[i],
                                                     handleOutOfMemoryError);
+                                            }
                                         }
                                     }
                                 }
@@ -3060,11 +3076,19 @@ public class Grids_ProcessorDEM
                                             handleOutOfMemoryError,
                                             chunkID);
                                     for (i = 0; i < metrics1.length; i++) {
-                                        metrics1[i].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                metrics1ForCell[i],
-                                                handleOutOfMemoryError);
+                                            if (metrics1[i] instanceof Grids_GridInt) {
+                                            ((Grids_GridInt) metrics1[i]).setCell(
+                                                    cellRowIndex,
+                                                    cellColIndex,
+                                                    (int) metrics1ForCell[i],
+                                                    handleOutOfMemoryError);
+                                            } else {
+                                            ((Grids_GridDouble) metrics1[i]).setCell(
+                                                    cellRowIndex,
+                                                    cellColIndex,
+                                                    metrics1ForCell[i],
+                                                    handleOutOfMemoryError);
+                                            }
                                     }
                                 }
                             }

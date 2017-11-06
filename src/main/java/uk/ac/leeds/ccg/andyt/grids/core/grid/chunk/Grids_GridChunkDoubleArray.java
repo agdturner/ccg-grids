@@ -77,6 +77,7 @@ public class Grids_GridChunkDoubleArray
             Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
+        initData();
         double noDataValue = getGrid().getNoDataValue(false);
         int row;
         int col;
@@ -99,11 +100,7 @@ public class Grids_GridChunkDoubleArray
      */
     @Override
     protected final void initData() {
-        boolean handleOutOfMemoryError = false;
-        Grids_GridDouble g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        Data = new double[chunkNrows][chunkNcols];
+        Data = new double[ChunkNRows][ChunkNCols];
     }
 
     protected double[][] getData() {
@@ -176,15 +173,15 @@ public class Grids_GridChunkDoubleArray
     }
 
     /**
-     * Returns a Grids_GridChunkDoubleArrayorMapIterator for iterating over the cells
+     * Returns a Grids_GridChunkDoubleArrayOrMapIterator for iterating over the cells
  in this.
      *
      * @return
      */
     @Override
     //protected Grids_AbstractGridChunkIterator iterator() {
-    protected Grids_GridChunkDoubleArrayorMapIterator iterator() {
-        return new Grids_GridChunkDoubleArrayorMapIterator(this);
+    protected Grids_GridChunkDoubleArrayOrMapIterator iterator() {
+        return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }
 
 }

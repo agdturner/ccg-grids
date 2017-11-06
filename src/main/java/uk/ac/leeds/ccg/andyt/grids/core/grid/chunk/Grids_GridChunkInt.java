@@ -33,7 +33,7 @@ public class Grids_GridChunkInt
     /**
      * For storing the value of every cell in this grid.
      */
-    private int Value;
+    public int Value;
 
     protected Grids_GridChunkInt() {
     }
@@ -45,7 +45,7 @@ public class Grids_GridChunkInt
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      * @param value To be the value of all cells in this chunk.
      */
-    protected Grids_GridChunkInt(
+    public Grids_GridChunkInt(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID,
             int value) {

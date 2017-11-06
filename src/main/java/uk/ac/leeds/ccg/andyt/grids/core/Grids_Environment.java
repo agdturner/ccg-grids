@@ -98,11 +98,22 @@ public class Grids_Environment
         if (Files == null) {
             File dataDirectory = new File(
                     Directory,
-                    Strings.getString_data());
+                    getStrings().getString_data());
             dataDirectory.mkdirs();
             Files = new Grids_Files(dataDirectory);
+            Files.Strings = Strings;
         }
         return Files;
+    }
+
+    /**
+     * @return Strings initialising first if it is null.
+     */
+    public Grids_Strings getStrings() {
+        if (Strings == null) {
+            Strings = new Grids_Strings();
+        }
+        return Strings;
     }
 
     /**

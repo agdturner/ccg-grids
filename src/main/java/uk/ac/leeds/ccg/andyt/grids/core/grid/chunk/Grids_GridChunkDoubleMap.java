@@ -1162,7 +1162,7 @@ public class Grids_GridChunkDoubleMap
      */
     protected @Override
     Grids_AbstractIterator iterator() {
-        return new Grids_GridChunkDoubleArrayorMapIterator(this);
+        return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }
 
     /**

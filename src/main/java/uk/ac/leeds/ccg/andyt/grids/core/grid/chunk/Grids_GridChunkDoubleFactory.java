@@ -28,11 +28,11 @@ public class Grids_GridChunkDoubleFactory
         extends Grids_AbstractGridChunkDoubleFactory {
 
     double DefaultValue;
-    
+
     protected Grids_GridChunkDoubleFactory() {
     }
 
-    protected Grids_GridChunkDoubleFactory(double defaultValue) {
+    public Grids_GridChunkDoubleFactory(double defaultValue) {
         DefaultValue = defaultValue;
     }
 
@@ -42,7 +42,8 @@ public class Grids_GridChunkDoubleFactory
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkDouble(
                 g,
-                chunkID);
+                chunkID,
+                DefaultValue);
     }
 
     @Override
@@ -51,7 +52,8 @@ public class Grids_GridChunkDoubleFactory
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkDouble(
                 chunk.getGrid(),
-                chunkID);
+                chunkID,
+                DefaultValue);
     }
 
 }

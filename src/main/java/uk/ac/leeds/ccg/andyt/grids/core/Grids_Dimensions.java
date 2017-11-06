@@ -37,11 +37,11 @@ public class Grids_Dimensions implements Serializable {
     private final BigDecimal Height;
     private final BigDecimal Area;
 
-    public Grids_Dimensions(int NChunkRows, int NChunkCols) {
+    public Grids_Dimensions(int NRows, int NCols) {
         this(BigDecimal.ZERO,
-                new BigDecimal(NChunkRows),
+                new BigDecimal(NRows),
                 BigDecimal.ZERO,
-                new BigDecimal(NChunkCols),
+                new BigDecimal(NCols),
                 BigDecimal.ONE);
     }
 

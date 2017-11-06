@@ -21,6 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
@@ -35,7 +36,7 @@ public abstract class Grids_AbstractGridNumberIterator
 
     protected Grids_AbstractGridNumber Grid;
     protected Grids_AbstractGridChunkNumber Chunk;
-    protected Iterator<Grids_AbstractGridChunkNumber> GridIterator;
+    protected Iterator<Grids_AbstractGridChunk> GridIterator;
     protected Grids_AbstractGridChunkNumberRowMajorOrderIterator ChunkIterator;
 
     protected Grids_AbstractGridNumberIterator() {
@@ -48,10 +49,22 @@ public abstract class Grids_AbstractGridNumberIterator
 
     protected abstract void initChunkIterator();
 
+    /**
+     * ChunkIterator
+     * @return 
+     */
     public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
         return ChunkIterator;
     }
 
+    /**
+     * ChunkIterator
+     * @param chunk
+     * @return 
+     */
+    public abstract Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
+            Grids_AbstractGridChunkNumber chunk);
+    
     /**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
      * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -82,11 +95,11 @@ public abstract class Grids_AbstractGridNumberIterator
         if (ChunkIterator.hasNext()) {
             return ChunkIterator.next();
         } else {
-            while (GridIterator.hasNext()) {
+            if (GridIterator.hasNext()) {
                 ge.removeFromNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
                 Chunk = (Grids_AbstractGridChunkNumber) GridIterator.next();
                 ge.addToNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
-                ChunkIterator = getChunkIterator();
+                ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {
                     return ChunkIterator.next();
                 }

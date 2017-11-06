@@ -19,14 +19,13 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayOrMapIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grid2DSquareCellInt instance. The
@@ -67,15 +66,19 @@ public class Grids_GridIntIterator
     }
 
     /**
+     * @param chunk
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
-        return ChunkIterator;
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
+            Grids_AbstractGridChunkNumber chunk) {
+        if (chunk instanceof Grids_GridChunkIntArray || chunk instanceof Grids_GridChunkIntMap) {
+            return new Grids_GridChunkIntArrayOrMapIterator(
+                    (Grids_GridChunkIntArray) chunk);
+        } else {
+            return new Grids_GridChunkIntIterator(
+                    (Grids_GridChunkInt) chunk);
+        }
     }
 
-    @Override
-    public Grids_AbstractIterator getChunkIterator(Grids_AbstractGridChunk chunk) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

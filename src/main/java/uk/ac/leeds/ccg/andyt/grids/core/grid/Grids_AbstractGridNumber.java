@@ -666,9 +666,9 @@ public abstract class Grids_AbstractGridNumber
             //if ( grid2DSquareCellChunk instanceof Grids_AbstractGridChunkInt ) {
             Grids_AbstractGridChunkInt gridChunk
                     = (Grids_AbstractGridChunkInt) chunk;
-            Grids_GridInt gridInt;
-            gridInt = (Grids_GridInt) gridChunk.getGrid(false);
-            int noDataValue = gridInt.getNoDataValue();
+            Grids_GridInt g;
+            g = (Grids_GridInt) gridChunk.getGrid(false);
+            int noDataValue = g.NoDataValue;
             if (chunk.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray gridChunkArray;
                 gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
@@ -692,44 +692,6 @@ public abstract class Grids_AbstractGridNumber
             return noDataValue;
         }
     }
-
-    /**
-     * @param valueToSet
-     * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
-     * to valueToSet.
-     * @param cellRowIndex The cell row index.
-     * @param cellColIndex The cell column index.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public final double setCell(long cellRowIndex, long cellColIndex, double valueToSet, boolean handleOutOfMemoryError) {
-        try {
-            double result = setCell(cellRowIndex, cellColIndex, valueToSet);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return setCell(cellRowIndex, cellColIndex, valueToSet, handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Sets the value at _CellRowIndex, _CellColIndex to valueToSet.
-     *
-     * @param cellRowIndex The cell row index.
-     * @param cellColIndex The cell column index.
-     * @param valueToSet The value set.
-     * @return
-     */
-    protected abstract double setCell(long cellRowIndex, long cellColIndex, double valueToSet);
 
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
@@ -862,7 +824,8 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(y), getChunkColIndex(x));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+                        getChunkRowIndex(y), getChunkColIndex(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(x, y, handleOutOfMemoryError);
             } else {

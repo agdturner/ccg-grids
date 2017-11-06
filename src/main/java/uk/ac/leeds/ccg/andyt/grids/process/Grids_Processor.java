@@ -49,9 +49,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
@@ -88,6 +88,11 @@ public class Grids_Processor extends Grids_Object {
     protected File Directory;
 
     /**
+     * Grids_AbstractGridChunkIntFactory
+     */
+    public Grids_AbstractGridChunkIntFactory DefaultGridChunkIntFactory;
+
+    /**
      * Grids_GridChunkIntFactory
      */
     public Grids_GridChunkIntFactory GridChunkIntFactory;
@@ -106,6 +111,11 @@ public class Grids_Processor extends Grids_Object {
      * Grids_GridIntFactory
      */
     public Grids_GridIntFactory GridIntFactory;
+
+    /**
+     * Grids_AbstractGridChunkDoubleFactory
+     */
+    public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkDoubleFactory;
 
     /**
      * Grids_GridChunkDoubleFactory
@@ -169,6 +179,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_Environment ge,
             File directory,
             boolean appendToLogFile) {
+        super(ge);
         StartTime = System.currentTimeMillis();
         File logFile;
         Directory = directory;
@@ -232,9 +243,11 @@ public class Grids_Processor extends Grids_Object {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
         GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
         GridChunkIntFactory = new Grids_GridChunkIntFactory(0);
+        DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(0.0d);
+        DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
     }
 
     /**
@@ -513,18 +526,18 @@ public class Grids_Processor extends Grids_Object {
             log(logIndentation,
                     string);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
-                    throw _OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 log(logIndentation,
                         string,
                         handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -829,9 +842,10 @@ public class Grids_Processor extends Grids_Object {
             int chunkCol;
             int chunkCellRow;
             int chunkCellCol;
-            if (g.getClass() == Grids_GridInt.class) {
-                int noDataValue = ((Grids_GridInt) g).getNoDataValue(handleOutOfMemoryError);
-                if (mask.getClass() == Grids_GridInt.class) {
+            if (g instanceof Grids_GridInt) {
+                Grids_GridInt grid = (Grids_GridInt) g;
+                int noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
+                if (mask instanceof Grids_GridInt) {
                     Grids_GridInt maskInt;
                     maskInt = (Grids_GridInt) mask;
                     int maskNoDataValue = maskInt.getNoDataValue(handleOutOfMemoryError);
@@ -861,7 +875,7 @@ public class Grids_Processor extends Grids_Object {
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value == maskNoDataValue) {
-                                    g.setCell(
+                                    grid.setCell(
                                             ((long) chunkRow * (long) chunkNRows) + (long) chunkCellRow,
                                             ((long) chunkCol * (long) chunkNCols) + (long) chunkCellCol,
                                             noDataValue,
@@ -902,7 +916,7 @@ public class Grids_Processor extends Grids_Object {
                                         maskNoDataValue,
                                         handleOutOfMemoryError);
                                 if (value == maskNoDataValue) {
-                                    g.setCell(
+                                    grid.setCell(
                                             ((long) chunkRow * (long) chunkNRows) + (long) chunkCellRow,
                                             ((long) chunkCol * (long) chunkNCols) + (long) chunkCellCol,
                                             noDataValue,
@@ -915,10 +929,9 @@ public class Grids_Processor extends Grids_Object {
                     }
                 }
             } else {
-                //( grid.getClass() == Grids_GridDouble.class ) {
+                Grids_GridDouble grid = (Grids_GridDouble) g;
                 double resultNoDataValue;
-                resultNoDataValue = ((Grids_GridDouble) g).getNoDataValue(
-                        handleOutOfMemoryError);
+                resultNoDataValue = grid.getNoDataValue(                        handleOutOfMemoryError);
                 if (mask.getClass() == Grids_GridInt.class) {
                     Grids_GridInt maskInt = (Grids_GridInt) mask;
                     int maskNoDataValue = maskInt.getNoDataValue(handleOutOfMemoryError);
@@ -948,7 +961,7 @@ public class Grids_Processor extends Grids_Object {
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value == maskNoDataValue) {
-                                    g.setCell(
+                                    grid.setCell(
                                             ((long) chunkRow * (long) chunkNRows) + (long) chunkCellRow,
                                             ((long) chunkCol * (long) chunkNCols) + (long) chunkCellCol,
                                             resultNoDataValue, handleOutOfMemoryError);
@@ -990,7 +1003,7 @@ public class Grids_Processor extends Grids_Object {
                                         maskNoDataValue,
                                         handleOutOfMemoryError);
                                 if (value == maskNoDataValue) {
-                                    g.setCell(
+                                    grid.setCell(
                                             ((long) chunkRow * (long) chunkNRows) + (long) chunkCellRow,
                                             ((long) chunkCol * (long) chunkNCols) + (long) chunkCellCol,
                                             resultNoDataValue,

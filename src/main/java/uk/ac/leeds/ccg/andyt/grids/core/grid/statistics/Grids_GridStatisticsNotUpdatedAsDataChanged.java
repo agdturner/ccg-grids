@@ -67,7 +67,7 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
      *
      * @return
      */
-    protected boolean getIsUpToDate() {
+    public boolean isUpToDate() {
         return UpToDate;
     }
 
@@ -76,7 +76,7 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
      *
      * @param upToDate
      */
-    void setIsUpToDate(
+    public void setUpToDate(
             boolean upToDate) {
         UpToDate = upToDate;
     }
@@ -86,12 +86,12 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
      * might not be up to date. (NB. After calling this it is inexpensive to
      * convert to Grids_GridStatistics.)
      */
-    public @Override
-    void update() {
-        if (!getIsUpToDate()) {
+    @Override
+    public void update() {
+        if (!isUpToDate()) {
             init();
             super.update();
-            setIsUpToDate(true);
+            setUpToDate(true);
         }
     }
 

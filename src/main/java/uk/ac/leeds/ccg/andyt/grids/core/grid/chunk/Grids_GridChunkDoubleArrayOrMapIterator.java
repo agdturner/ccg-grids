@@ -24,21 +24,21 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
  * For iterating through the values in a Grid2DSquareCellDoubleChunkArray instance.
  * The values are not returned in any particular order.
  */
-public class Grids_GridChunkDoubleArrayorMapIterator
+public class Grids_GridChunkDoubleArrayOrMapIterator
         extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
 
     protected double[][] Data;
 
-    public Grids_GridChunkDoubleArrayorMapIterator() {
+    public Grids_GridChunkDoubleArrayOrMapIterator() {
     }
 
-    public Grids_GridChunkDoubleArrayorMapIterator(
+    public Grids_GridChunkDoubleArrayOrMapIterator(
             Grids_GridChunkDoubleArray chunk) {
         super(chunk);
         Data = chunk.getData();
     }
 
-    public Grids_GridChunkDoubleArrayorMapIterator(
+    public Grids_GridChunkDoubleArrayOrMapIterator(
             Grids_GridChunkDoubleMap chunk) {
         super(chunk);
         Data = chunk.to2DDoubleArray();
