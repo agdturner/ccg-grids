@@ -39,18 +39,6 @@ public class Grids_GridChunkInt
     }
 
     /**
-     * Creates a new Grids_GridChunkDouble with value set to g.NoDataValue.
-     *
-     * @param g The Grids_GridDouble Grids is set to.
-     * @param chunkID The Grids_2D_ID_int ChunkID is set to.
-     */
-    protected Grids_GridChunkInt(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID) {
-        this(g, chunkID, g.getNoDataValue(false));
-    }
-
-    /**
      * Creates a new Grids_GridChunkDouble with value set to value.
      *
      * @param g The Grids_GridDouble Grids is set to.

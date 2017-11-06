@@ -231,10 +231,10 @@ public class Grids_Processor extends Grids_Object {
     private void initChunkFactories() {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
         GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
-        GridChunkIntFactory = new Grids_GridChunkIntFactory();
+        GridChunkIntFactory = new Grids_GridChunkIntFactory(0);
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory();
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(0.0d);
     }
 
     /**

@@ -27,32 +27,36 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 public class Grids_GridChunkIntFactory
         extends Grids_AbstractGridChunkIntFactory {
 
+    int DefaultValue;
+
     /**
      * Creates a new Grids_GridChunkIntFactory.
      */
-    public Grids_GridChunkIntFactory() {    }
+    protected Grids_GridChunkIntFactory() {
+    }
 
-    @Override
-    public Grids_GridChunkInt createGridChunkInt() {
-        return new Grids_GridChunkInt();
+    public Grids_GridChunkIntFactory(int defaultValue) {
+        DefaultValue = defaultValue;
     }
 
     @Override
     public Grids_AbstractGridChunkInt createGridChunkInt(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntArray(
+        return new Grids_GridChunkInt(
                 g,
-                chunkID);
+                chunkID,
+                DefaultValue);
     }
 
     @Override
     public Grids_AbstractGridChunkInt createGridChunkInt(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntArray(
-                chunk,
-                chunkID);
+        return new Grids_GridChunkInt(
+                chunk.getGrid(),
+                chunkID,
+                DefaultValue);
     }
 
 }

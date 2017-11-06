@@ -31,11 +31,6 @@ public class Grids_GridChunkIntMapFactory
     }
 
     @Override
-    public Grids_GridChunkIntMap createGridChunkInt() {
-        return new Grids_GridChunkIntMap();
-    }
-
-    @Override
     public Grids_GridChunkIntMap createGridChunkInt(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {

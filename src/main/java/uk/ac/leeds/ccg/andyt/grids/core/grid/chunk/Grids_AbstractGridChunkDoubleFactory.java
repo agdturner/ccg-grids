@@ -31,13 +31,6 @@ public abstract class Grids_AbstractGridChunkDoubleFactory
         extends Grids_AbstractGridChunkFactory {
 
     /**
-     * For creating a new default Grids_AbstractGridChunkDouble.
-     *
-     * @return
-     */
-    public abstract Grids_AbstractGridChunkDouble createGridChunkDouble();
-
-    /**
      * For creating a new Grids_AbstractGridChunkDouble containing all
      * noDataValues that is linked to g via chunkID.
      *

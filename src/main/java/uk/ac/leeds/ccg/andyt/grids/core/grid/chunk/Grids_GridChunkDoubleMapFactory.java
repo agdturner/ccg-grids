@@ -31,11 +31,6 @@ public class Grids_GridChunkDoubleMapFactory
     }
 
     @Override
-    public Grids_GridChunkDoubleMap createGridChunkDouble() {
-        return new Grids_GridChunkDoubleMap();
-    }
-
-    @Override
     public Grids_GridChunkDoubleMap createGridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {

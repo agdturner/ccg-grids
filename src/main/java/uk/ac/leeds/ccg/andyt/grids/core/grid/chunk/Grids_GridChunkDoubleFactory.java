@@ -27,22 +27,20 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 public class Grids_GridChunkDoubleFactory
         extends Grids_AbstractGridChunkDoubleFactory {
 
-    /**
-     * Creates a new Grids_GridChunkDoubleFactory.
-     */
-    public Grids_GridChunkDoubleFactory() {
+    double DefaultValue;
+    
+    protected Grids_GridChunkDoubleFactory() {
     }
 
-    @Override
-    public Grids_GridChunkDouble createGridChunkDouble() {
-        return new Grids_GridChunkDouble();
+    protected Grids_GridChunkDoubleFactory(double defaultValue) {
+        DefaultValue = defaultValue;
     }
 
     @Override
     public Grids_AbstractGridChunkDouble createGridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDoubleArray(
+        return new Grids_GridChunkDouble(
                 g,
                 chunkID);
     }
@@ -51,8 +49,8 @@ public class Grids_GridChunkDoubleFactory
     public Grids_AbstractGridChunkDouble createGridChunkDouble(
             Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDoubleArray(
-                chunk,
+        return new Grids_GridChunkDouble(
+                chunk.getGrid(),
                 chunkID);
     }
 

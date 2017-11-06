@@ -3836,17 +3836,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         BigDecimal offSetFromOrigin;
         offSetFromOrigin = Dimensions.getXMin().add(
                 Dimensions.getCellsize().multiply(BigDecimal.valueOf(cellColIndex)));
-        BigDecimal halfCellsize = getHalfCellsize();
+        BigDecimal halfCellsize = Dimensions.getHalfCellsize();
         return offSetFromOrigin.add(halfCellsize);
-    }
-
-    public BigDecimal getHalfCellsize() {
-        BigDecimal result;
-        result = Dimensions.getCellsize().divide(
-                new BigDecimal("2"),
-                Dimensions.getDimensionsScale() + 1,
-                BigDecimal.ROUND_UNNECESSARY);
-        return result;
     }
 
     /**
@@ -4128,7 +4119,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         BigDecimal offSetFromOrigin;
         offSetFromOrigin = Dimensions.getYMin().add(
                 Dimensions.getCellsize().multiply(BigDecimal.valueOf(cellRowIndex)));
-        BigDecimal halfCellsize = getHalfCellsize();
+        BigDecimal halfCellsize = Dimensions.getHalfCellsize();
         return offSetFromOrigin.add(halfCellsize);
     }
 

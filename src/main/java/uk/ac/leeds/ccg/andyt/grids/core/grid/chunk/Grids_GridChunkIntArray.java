@@ -34,16 +34,16 @@ public class Grids_GridChunkIntArray
     /**
      * For storing values arranged in rows and columns.
      */
-    private int[][] data;
+    private int[][] Data;
 
     /**
      * Default constructor
      */
-    public Grids_GridChunkIntArray() {
+    protected Grids_GridChunkIntArray() {
     }
 
     /**
-     * Creates a new Grid2DSquareCellInt grid containing all no data values.
+     * Creates a new Grid2DSquareCellInt grid containing all no Data values.
      *
      * @param g
      * @param chunkID
@@ -52,13 +52,13 @@ public class Grids_GridChunkIntArray
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
-        int noDataValue = g.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse);
-        this.data = new int[ChunkNRows][ChunkNCols];
+        Data = new int[ChunkNRows][ChunkNCols];
+        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         int row;
         for (row = 0; row < ChunkNRows; row++) {
-            Arrays.fill(data[row], noDataValue);
+            Arrays.fill(Data[row], noDataValue);
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
@@ -73,24 +73,19 @@ public class Grids_GridChunkIntArray
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
-        this.ChunkID = chunkID;
+        ChunkID = chunkID;
         Grids_GridInt g = chunk.getGrid();
         initGrid(g);
-        int chunkNrows = g.getChunkNRows(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        int chunkNcols = g.getChunkNCols(
-                chunkID,
-                Grid.ge.HandleOutOfMemoryErrorFalse);
-        int noDataValue = g.getNoDataValue(
-                Grid.ge.HandleOutOfMemoryErrorFalse);
+        int chunkNrows = g.getChunkNRows(chunkID, ge.HandleOutOfMemoryError);
+        int chunkNcols = g.getChunkNCols(chunkID, ge.HandleOutOfMemoryError);
+        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         initData();
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
         for (row = 0; row < chunkNrows; row++) {
             for (col = 0; col < chunkNcols; col++) {
-                this.data[row][col] = chunk.getCell(
+                Data[row][col] = chunk.getCell(
                         row,
                         col,
                         noDataValue,
@@ -101,11 +96,11 @@ public class Grids_GridChunkIntArray
 //        grid2DSquareCellIntChunk.getCell( row, col ) );
             }
         }
-        this.SwapUpToDate = false;
+        SwapUpToDate = false;
     }
 
     /**
-     * Initialises the data associated with this.
+     * Initialises the Data associated with this.
      */
     @Override
     protected final void initData() {
@@ -113,25 +108,25 @@ public class Grids_GridChunkIntArray
         Grids_GridInt g = getGrid();
         int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
         int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        this.data = new int[chunkNrows][chunkNcols];
+        Data = new int[chunkNrows][chunkNcols];
     }
 
     /**
-     * Returns this.data. TODO: Should the array be copied and the copy
+     * Returns Data. TODO: Should the array be copied and the copy
      * returned?
      *
      * @return
      */
     protected int[][] getData() {
-        return this.data;
+        return Data;
     }
 
     /**
-     * Clears the data associated with this.
+     * Clears the Data associated with 
      */
     protected @Override
     void clearData() {
-        this.data = null;
+        Data = null;
         System.gc();
     }
 
@@ -151,16 +146,16 @@ public class Grids_GridChunkIntArray
             int chunkCellRowIndex,
             int chunkCellColIndex,
             int noDataValue) {
-            return this.data[chunkCellRowIndex][chunkCellColIndex];
+        return Data[chunkCellRowIndex][chunkCellColIndex];
     }
-    
+
     protected @Override
     int getCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
             Grids_2D_ID_int cellID,
             int noDataValue) {
-            return this.data[chunkCellRowIndex][chunkCellColIndex];
+        return Data[chunkCellRowIndex][chunkCellColIndex];
     }
 
     /**
@@ -180,7 +175,7 @@ public class Grids_GridChunkIntArray
             int chunkCellColIndex,
             int noDataValue,
             int valueToInitialise) {
-        this.data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
+        Data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
     }
 
     /**
@@ -192,7 +187,7 @@ public class Grids_GridChunkIntArray
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the noDataValue of this.grid2DSquareCellInt
+     * @param noDataValue the noDataValue of grid2DSquareCellInt
      * @return
      */
     protected @Override
@@ -202,8 +197,8 @@ public class Grids_GridChunkIntArray
             int valueToSet,
             int noDataValue) {
         try {
-            int oldValue = this.data[chunkCellRowIndex][chunkCellColIndex];
-            this.data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
+            int oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
+            Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
             if (isSwapUpToDate()) {
                 // Optimisation? Want a setCellFast method closer to initCell? 
                 // What about an unmodifiable readOnly type chunk?
@@ -218,8 +213,8 @@ public class Grids_GridChunkIntArray
     }
 
     /**
-     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the cells in
- this.
+     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
+     * cells in this.
      *
      * @return
      */

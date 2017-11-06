@@ -346,21 +346,25 @@ public class Grids_GridDouble
                             ChunkNCols,
                             Dimensions,
                             Statistics,
-                            new Grids_GridChunkDoubleArray());
+                            ge.getProcessor().GridChunkIntArrayFactory);
                     Grids_GridInt gridInt;
                     gridInt = (Grids_GridInt) gif.create(
                             Directory,
                             file,
-                            ois);
-                    Grids_GridDoubleFactory gdf = new Grids_GridDoubleFactory(
-                            getDirectory(),
-                            ge,
+                            ois,
                             handleOutOfMemoryError);
+                    Grids_GridDoubleFactory gdf = new Grids_GridDoubleFactory(
+                            ge,
+                            Directory,
+                            gridInt.NoDataValue,
+                            gridInt.ChunkNRows,
+                            gridInt.ChunkNCols,
+                            gridInt.Dimensions,
+                            Statistics,
+                            ge.getProcessor().GridChunkDoubleArrayFactory);
                     Grids_GridDouble gridDouble = (Grids_GridDouble) gdf.create(gridInt);
                     boolean initTransientFields = false;
-                    init(
-                            gridDouble,
-                            initTransientFields);
+                    init(gridDouble, initTransientFields);
                     initChunks(file);
                 } catch (IOException ioe) {
                     //ioe.printStackTrace();
@@ -380,8 +384,7 @@ public class Grids_GridDouble
                 if (ge.swapChunks_Account(false) < 1L) {
                     throw e;
                 }
-                init(getDirectory(),
-                        file,
+                init(   file,
                         ois,
                         handleOutOfMemoryError);
             } else {
@@ -426,7 +429,7 @@ public class Grids_GridDouble
         try {
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Directory = directory;
-            setGridStatistics(statistics);
+            Statistics = statistics;
             Directory = directory;
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
@@ -501,7 +504,7 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @param gs The AbstractGridStatistics to accompany this.
+     * @param statistics The AbstractGridStatistics to accompany this.
      * @param directory gridStatistics File _Directory to be used for swapping.
      * @param g The Grids_AbstractGridNumber from which this is to be
      * constructed.
@@ -526,7 +529,7 @@ public class Grids_GridDouble
      * int, int, long, long, long, long, double, HashSet, boolean );
      */
     private void init(
-            Grids_AbstractStatisticsBigDecimal gs,
+            Grids_AbstractStatisticsBigDecimal statistics,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
             int chunkNRows,
@@ -556,7 +559,7 @@ public class Grids_GridDouble
             long nChunks = getNChunks();
             ChunkIDChunkMap = new HashMap<>((int) nChunks);
             initDimensions(g, startRowIndex, startColIndex, handleOutOfMemoryError);
-            setGridStatistics(gs);
+            Statistics = statistics;
             int chunkRowIndex;
             int chunkColIndex;
             //int loadedChunkCount = 0;
@@ -588,7 +591,7 @@ public class Grids_GridDouble
             int endChunkColIndex;
             endChunkColIndex = g.getChunkColIndex(endColIndex);
 
-            if (gs.getClass() == Grids_GridStatistics.class) {
+            if (statistics.getClass() == Grids_GridStatistics.class) {
                 for (chunkRowIndex = startChunkRowIndex; chunkRowIndex <= endChunkRowIndex; chunkRowIndex++) {
                     for (chunkColIndex = startChunkColIndex; chunkColIndex <= endChunkColIndex; chunkColIndex++) {
                         do {
@@ -743,9 +746,7 @@ public class Grids_GridDouble
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                init(
-                        gs,
-                        directory,
+                init(statistics,
                         g,
                         chunkFactory,
                         chunkNRows,
@@ -831,12 +832,13 @@ public class Grids_GridDouble
                     ois = Generic_StaticIO.getObjectInputStream(thisFile);
                     Grids_GridDouble g;
                     g = (Grids_GridDouble) gf.create(
-                            directory,
+                            Directory,
                             thisFile,
-                            ois);
+                            ois,
+                            handleOutOfMemoryError);
                     Grids_GridDouble g2;
                     g2 = gf.create(
-                            directory,
+                            Directory,
                             g,
                             startRowIndex,
                             startColIndex,
@@ -856,12 +858,12 @@ public class Grids_GridDouble
                 NRows = endRowIndex - startRowIndex + 1L;
                 NCols = endColIndex - startColIndex + 1L;
                 initNoDataValue(noDataValue);
-                Name = directory.getName();
+                Name = Directory.getName();
                 initNChunkRows();
                 initNChunkCols();
                 long nChunks = getNChunks();
                 ChunkIDChunkMap = new HashMap<>((int) nChunks);
-                setGridStatistics(statistics);
+                Statistics = statistics;
                 String filename = gridFile.getName();
                 boolean isLoadedChunk = false;
                 double value;
@@ -948,7 +950,7 @@ public class Grids_GridDouble
                                          * initialising as a single value grid.
                                          */
                                         if (value == gridFileNoDataValue
-                                                || value = ge.getProcessor().GridDoubleFactory.GDefaultValue) {
+                                                || value = ge.getProcessor().GridDoubleFactory.GridChunkDoubleFactory.DefaultValue) {
 
                                         }
                                     }
@@ -1230,21 +1232,21 @@ public class Grids_GridDouble
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
-     * @param _NoDataValue NoDataValue
+     * @param noDataValue NoDataValue
      */
     private void upDateGridStatistics(
             double newValue,
             double oldValue,
-            double _NoDataValue) {
+            double noDataValue) {
         Grids_AbstractStatisticsBigDecimal s;
         s = getStatistics();
         if (getStatistics() instanceof Grids_GridStatistics) {
             boolean handleOutOfMemoryError;
             handleOutOfMemoryError = ge.HandleOutOfMemoryError;
-            if (oldValue != _NoDataValue) {
+            if (oldValue != noDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
-                s.setNonNoDataValueCount(
-                        s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).subtract(BigInteger.ONE));
+                s.NonNoDataValueCount(
+                        s.getNonNoDataValueCount(handleOutOfMemoryError).subtract(BigInteger.ONE));
                 s.setSum(
                         s.getSumBigDecimal(handleOutOfMemoryError).subtract(oldValueBigDecimal));
                 if (oldValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
@@ -1254,7 +1256,7 @@ public class Grids_GridDouble
                     s.setMaxCount(s.getMaxCount().subtract(BigInteger.ONE));
                 }
             }
-            if (newValue != _NoDataValue) {
+            if (newValue != noDataValue) {
                 BigDecimal newValueBigDecimal = new BigDecimal(newValue);
                 s.setNonNoDataValueCount(
                         s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).add(BigInteger.ONE));

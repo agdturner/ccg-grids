@@ -31,11 +31,6 @@ public class Grids_GridChunkDoubleArrayFactory
     }
 
     @Override
-    public Grids_GridChunkDoubleArray createGridChunkDouble() {
-        return new Grids_GridChunkDoubleArray();
-    }
-
-    @Override
     public Grids_GridChunkDoubleArray createGridChunkDouble(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {

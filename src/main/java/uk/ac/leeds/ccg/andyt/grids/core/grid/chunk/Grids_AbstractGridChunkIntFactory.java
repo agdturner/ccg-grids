@@ -31,13 +31,6 @@ public abstract class Grids_AbstractGridChunkIntFactory
         extends Grids_AbstractGridChunkFactory {
 
     /**
-     * For creating a new default Grids_AbstractGridChunkInt.
-     *
-     * @return
-     */
-    public abstract Grids_AbstractGridChunkInt createGridChunkInt();
-
-    /**
      * Creates a new Grids_AbstractGridChunkInt containing all
      * noDataValues that is linked to g via chunkID.
      *
