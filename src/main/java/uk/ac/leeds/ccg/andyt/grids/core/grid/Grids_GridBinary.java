@@ -18,31 +18,13 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
 import java.io.File;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 
 /**
  * A class for representing grids of double precision values.
@@ -54,32 +36,28 @@ public abstract class Grids_GridBinary
         implements Serializable {
 
     BitSet data;
+    /**
+     * A reference to the grid Statistics Object.
+     */
+    protected Grids_AbstractStatisticsBigDecimal GridStatistics;
 
     protected Grids_GridBinary() {
     }
 
     /**
-     * Creates a new Grid2DSquareCellDouble
+     * Creates a new Grids_GridBinary.
      *
      * @param ge
+     * @param directory
      */
-    public Grids_GridBinary(
-            Grids_Environment ge) {
-        super(ge);
-        init();
+    public Grids_GridBinary(Grids_Environment ge, File directory) {
+        super(ge, directory);
     }
 
     /**
-     * Creates a new Grid2DSquareCellDouble. Warning!! Concurrent modification
-     * may occur if _Directory is in use. If a completely new instance is wanted
-     * then use: Grid2DSquareCellDouble( File, Grid2DSquareCellDoubleAbstract,
-     * Grids_AbstractGridChunkDoubleFactory, int, int, long, long, long, long,
-     * double, HashSet) which can be accessed via a
-     * Grids_Grid2DSquareCellDoubleFactory.
-     *
-     * @param directory The File _Directory to be used for swapping.
-     * @param gridFile The File _Directory containing the File names thisFile
-     * that the ois was constructed from.
+     * @param directory The directory to be used for swapping.
+     * @param gridFile The directory containing the file "thisFile"
+     * from which the ois was constructed.
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param ge
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -92,12 +70,8 @@ public abstract class Grids_GridBinary
             ObjectInputStream ois,
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
-//        init(
-//                directory,
-//                gridFile,
-//                ois,
-//                handleOutOfMemoryError);
+        super(ge, directory);
+        // @TODO Code
     }
 
     /**
@@ -112,7 +86,7 @@ public abstract class Grids_GridBinary
             boolean handleOutOfMemoryError) {
         try {
             String result = "GridBinary( "
-                    + super.toString(0, handleOutOfMemoryError) + " )";
+                    + super.toString(handleOutOfMemoryError) + " )";
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -128,14 +102,6 @@ public abstract class Grids_GridBinary
                 throw e;
             }
         }
-    }
-
-    /**
-     * Initialises this.
-     *
-     * @see Grid2DSquareCellDouble()
-     */
-    private void init() {
     }
 
     /**

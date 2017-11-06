@@ -176,15 +176,15 @@ public class Grids_GridChunkDoubleArray
     }
 
     /**
-     * Returns a Grids_GridChunkDoubleArrayIterator for iterating over the cells
-     * in this.
+     * Returns a Grids_GridChunkDoubleArrayorMapIterator for iterating over the cells
+ in this.
      *
      * @return
      */
     @Override
     //protected Grids_AbstractGridChunkIterator iterator() {
-    protected Grids_GridChunkDoubleArrayIterator iterator() {
-        return new Grids_GridChunkDoubleArrayIterator(this);
+    protected Grids_GridChunkDoubleArrayorMapIterator iterator() {
+        return new Grids_GridChunkDoubleArrayorMapIterator(this);
     }
 
 }

@@ -20,10 +20,12 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayOrMapIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -32,12 +34,13 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * determined by the chunks types. If some
  */
 public class Grids_GridIntIterator
-        extends Grids_AbstractGridIterator {
+        extends Grids_AbstractGridNumberIterator {
 
-    protected Grids_GridIntIterator() {}
+    protected Grids_GridIntIterator() {
+    }
 
     /**
-     * 
+     *
      * @param g The Grids_GridInt to iterate over.
      */
     public Grids_GridIntIterator(
@@ -54,27 +57,25 @@ public class Grids_GridIntIterator
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_GridChunkIntArray) {
-            ChunkIterator = new Grids_GridChunkIntArrayIterator(
+        if (Chunk instanceof Grids_GridChunkIntArray || Chunk instanceof Grids_GridChunkIntMap) {
+            ChunkIterator = new Grids_GridChunkIntArrayOrMapIterator(
                     (Grids_GridChunkIntArray) Chunk);
-            return;
+        } else {
+            ChunkIterator = new Grids_GridChunkIntIterator(
+                    (Grids_GridChunkInt) Chunk);
         }
-        ChunkIterator = new Grids_GridChunkIntMapIterator(
-                (Grids_GridChunkIntMap) Chunk);
     }
 
     /**
-     * @param chunk
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractIterator getChunkIterator(
-            Grids_AbstractGridChunk chunk) {
-        if (chunk instanceof Grids_GridChunkIntArray) {
-            return new Grids_GridChunkIntArrayIterator(
-                    (Grids_GridChunkIntArray) chunk);
-        }
-        return new Grids_GridChunkIntMapIterator(
-                (Grids_GridChunkIntMap) chunk);
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
+        return ChunkIterator;
+    }
+
+    @Override
+    public Grids_AbstractIterator getChunkIterator(Grids_AbstractGridChunk chunk) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

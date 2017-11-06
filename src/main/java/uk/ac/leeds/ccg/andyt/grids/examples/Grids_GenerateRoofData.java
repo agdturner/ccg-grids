@@ -20,7 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 import java.io.File;
 import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumberFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
@@ -873,7 +873,7 @@ public class Grids_GenerateRoofData
     public Grids_GridDouble disaggregate(
             Grids_Dimensions dimensions,
             Grids_GridDouble g,
-            Grids_AbstractGridFactory gridFactory,
+            Grids_AbstractGridNumberFactory gridFactory,
             boolean handleOutOfMemoryError) {
         long nRows = g.getNRows(handleOutOfMemoryError);
         long nCols = g.getNCols(handleOutOfMemoryError);

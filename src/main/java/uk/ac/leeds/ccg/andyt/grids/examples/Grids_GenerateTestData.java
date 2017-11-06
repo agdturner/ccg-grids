@@ -21,7 +21,6 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -104,7 +103,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge, handleOutOfMemoryError).create(nrows, ncols);
+            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge,
+                    nrows,
+                    ncols).create(nrows, ncols);
             addToGrid(grids[i], 0.0d, handleOutOfMemoryError);
             grids[i].setName("Grid" + i, handleOutOfMemoryError);
         }
@@ -470,7 +471,10 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge, handleOutOfMemoryError).create(nrows, ncols);
+            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(
+                    ge,
+                    nrows,
+                    ncols).create(nrows, ncols);
         }
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
@@ -510,7 +514,8 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDouble[] catchment = new Grids_GridDouble[1];
         catchment[0] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge,
-                 handleOutOfMemoryError).create(nrows, ncols);
+                    nrows,
+                    ncols).create(nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );
         for (int iterations = 0; iterations < 100; iterations++) {
             for (int row = 0; row < nrows; row++) {

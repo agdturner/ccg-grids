@@ -218,14 +218,14 @@ public class Grids_GridChunkIntArray
     }
 
     /**
-     * Returns a Grids_GridChunkIntArrayIterator for iterating over the cells in
-     * this.
+     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the cells in
+ this.
      *
      * @return
      */
     @Override
-    protected Grids_GridChunkIntArrayIterator iterator() {
-        return new Grids_GridChunkIntArrayIterator(this);
+    protected Grids_GridChunkIntArrayOrMapIterator iterator() {
+        return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 
 }

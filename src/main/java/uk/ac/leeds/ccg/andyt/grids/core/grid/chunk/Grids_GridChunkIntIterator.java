@@ -18,15 +18,11 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
-import java.util.NoSuchElementException;
-
 /**
  * For iterating through the values in a Grids_GridChunkInt
  * instance. The values are not returned in any particular order.
  */
-public class Grids_GridChunkIntIterator extends Grids_GridChunkNumberIterator {
+public class Grids_GridChunkIntIterator extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
 
     protected int Value;
 
@@ -39,10 +35,9 @@ public class Grids_GridChunkIntIterator extends Grids_GridChunkNumberIterator {
      * @param chunk The Grids_GridChunkInt to iterate over.
      */
     public Grids_GridChunkIntIterator(Grids_GridChunkInt chunk) {
-        init(chunk);
+        super(chunk);
         Value = chunk.getValue();
     }
-
 
     /**
      * Returns the next element in the iteration.
@@ -55,9 +50,8 @@ public class Grids_GridChunkIntIterator extends Grids_GridChunkNumberIterator {
         return Value;
     }
 
-
     @Override
     public void remove() {
+        throw new UnsupportedOperationException();
     }
-
 }

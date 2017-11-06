@@ -19,11 +19,12 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayorMapIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMapIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -34,7 +35,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  *
  */
 public class Grids_GridDoubleIterator
-        extends Grids_AbstractGridIterator {
+        extends Grids_AbstractGridNumberIterator {
 
     protected Grids_GridDoubleIterator() {
     }
@@ -44,6 +45,7 @@ public class Grids_GridDoubleIterator
      */
     public Grids_GridDoubleIterator(
             Grids_GridDouble g) {
+        super(g);
         GridIterator = g.getChunkIDChunkMap().values().iterator();
         if (GridIterator.hasNext()) {
             Chunk = (Grids_AbstractGridChunkDouble) GridIterator.next();
@@ -56,13 +58,13 @@ public class Grids_GridDoubleIterator
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_GridChunkDoubleArray) {
-            ChunkIterator = new Grids_GridChunkDoubleArrayIterator(
+        if (Chunk instanceof Grids_GridChunkDoubleArray || Chunk instanceof Grids_GridChunkDoubleMap) {
+            ChunkIterator = new Grids_GridChunkDoubleArrayorMapIterator(
                     (Grids_GridChunkDoubleArray) Chunk);
-            return;
+        } else {
+            ChunkIterator = new Grids_GridChunkDoubleIterator(
+                    (Grids_GridChunkDouble) Chunk);
         }
-        ChunkIterator = new Grids_GridChunkDoubleMapIterator(
-                (Grids_GridChunkDoubleMap) Chunk);
     }
 
     /**
@@ -73,7 +75,7 @@ public class Grids_GridDoubleIterator
     public Grids_AbstractIterator getChunkIterator(
             Grids_AbstractGridChunk chunk) {
         if (chunk instanceof Grids_GridChunkDoubleArray) {
-            return new Grids_GridChunkDoubleArrayIterator(
+            return new Grids_GridChunkDoubleArrayorMapIterator(
                     (Grids_GridChunkDoubleArray) chunk);
         }
         return new Grids_GridChunkDoubleMapIterator(

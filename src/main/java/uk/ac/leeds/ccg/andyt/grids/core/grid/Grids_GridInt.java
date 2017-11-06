@@ -18,9 +18,9 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,6 +53,10 @@ public class Grids_GridInt
 
     //private static final long serialVersionUID = 1L;
     protected int NoDataValue = Integer.MIN_VALUE;
+    /**
+     * A reference to the grid Statistics Object.
+     */
+    protected Grids_AbstractStatisticsBigDecimal GridStatistics;
 
     /**
      * Creates a new Grid2DSquareCellInt. Warning!! Concurrent modification may
@@ -71,17 +75,13 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridInt(
+            Grids_Environment ge,
             File directory,
             File gridFile,
             ObjectInputStream ois,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
-        init(
-                directory,
-                gridFile,
-                ois,
-                handleOutOfMemoryError);
+        super(ge, directory);
+        init(gridFile, ois, handleOutOfMemoryError);
     }
 
     /**
@@ -101,13 +101,14 @@ public class Grids_GridInt
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
+     * @param noDataValue
      * @param ge
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridInt(
-            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             File directory,
             Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows,
@@ -115,18 +116,18 @@ public class Grids_GridInt
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
+            int noDataValue,
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
-        init(
-                gridStatistics,
-                directory,
+        super(ge, directory, gridStatistics);
+        init(                gridStatistics,
                 cf,
                 chunkNRows,
                 chunkNCols,
                 nRows,
                 nCols,
                 dimensions,
+                noDataValue,
                 handleOutOfMemoryError);
     }
 
@@ -155,19 +156,19 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridInt(
-            Grids_AbstractGridStatistics GridStatistics,
+            Grids_Environment ge,
             File directory,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows,
             int chunkNCols,
+            Grids_AbstractStatisticsBigDecimal GridStatistics,
             long startRowIndex,
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
+        super(ge, directory);
         init(
                 GridStatistics,
                 directory,
@@ -212,7 +213,7 @@ public class Grids_GridInt
      * @param ge
      */
     protected Grids_GridInt(
-            Grids_AbstractGridStatistics GridStatistics,
+            Grids_AbstractStatisticsBigDecimal GridStatistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkIntFactory cf,
@@ -222,12 +223,11 @@ public class Grids_GridInt
             long startColIndex,
             long endRowIndex,
             long endColIndex,
+            int noDataValue,
             Grids_Environment ge,
             boolean handleOutOfMemoryError) {
-        super(ge);
-        init(
-                GridStatistics,
-                directory,
+        super(ge, directory);
+        init(   GridStatistics,
                 gridFile,
                 cf,
                 chunkNRows,
@@ -285,7 +285,7 @@ public class Grids_GridInt
                 ChunkIDChunkMap = g.ChunkIDChunkMap;
                 //this._AbstractGrid2DSquareCell_HashSet = _Grid2DSquareCellInt._AbstractGrid2DSquareCell_HashSet;
                 // Set the reference to this in the Grid Statistics
-                this.getGridStatistics().init(this);
+                this.getStatistics().init(this);
                 //this._GridStatistics.Grid2DSquareCell = this;
             }
         } catch (OutOfMemoryError e) {
@@ -301,7 +301,6 @@ public class Grids_GridInt
     /**
      * Initialises this.
      *
-     * @param directory The File _Directory to be used for swapping.
      * @param gridFile The File _Directory containing the File named thisFile
      * that the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
@@ -314,12 +313,10 @@ public class Grids_GridInt
      * )
      */
     private void init(
-            File directory,
             File gridFile,
             ObjectInputStream ois,
             boolean handleOutOfMemoryError) {
         try {
-            Directory = directory;
             File thisFile = new File(
                     gridFile,
                     "thisFile");
@@ -330,11 +327,11 @@ public class Grids_GridInt
                 ois.close();
                 // Set the refernce to this in the Grid Chunks
                 initChunks(gridFile);
-                for (Grids_AbstractGridChunk chunk : this.getChunkIDChunkMap().values()) {
+                this.getChunkIDChunkMap().values().forEach((chunk) -> {
                     chunk.setGrid(this);
-                }
+                });
                 // Set the reference to this in the Grid Statistics
-                this.getGridStatistics().init(this);
+                this.getStatistics().init(this);
                 //this._GridStatistics.Grid2DSquareCell = this;
             } catch (ClassCastException cce) {
                 try {
@@ -366,7 +363,7 @@ public class Grids_GridInt
                             false);
                     initChunks(gridFile);
                     // Set the reference to this in the Grid Statistics
-                    this.getGridStatistics().init(this);
+                    this.getStatistics().init(this);
                     //this._GridStatistics.Grid2DSquareCell = this;
                 } catch (IOException ioe) {
                     System.err.println(ioe.getMessage());
@@ -418,14 +415,14 @@ public class Grids_GridInt
      * BigDecimal[], HashSet, boolean );
      */
     private void init(
-            Grids_AbstractGridStatistics gridsStatistics,
-            File directory,
+            Grids_AbstractStatisticsBigDecimal gridsStatistics,
             Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows,
             int chunkNCols,
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
+            int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             Directory = directory;
@@ -435,6 +432,7 @@ public class Grids_GridInt
             NRows = nRows;
             NCols = nCols;
             Dimensions = dimensions;
+            NoDataValue = noDataValue;
             ge.addGrid(this);
             Name = directory.getName();
             initNChunkRows();
@@ -518,6 +516,7 @@ public class Grids_GridInt
                         nRows,
                         nCols,
                         dimensions,
+                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -552,8 +551,7 @@ public class Grids_GridInt
      * int, long, long, long, long, HashSet, boolean)
      */
     protected final void init(
-            Grids_AbstractGridStatistics gridStatistics,
-            File directory,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows,
@@ -562,6 +560,7 @@ public class Grids_GridInt
             long startColIndex,
             long endRowIndex,
             long endColIndex,
+            int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             Directory = directory;
@@ -577,28 +576,22 @@ public class Grids_GridInt
             ChunkIDChunkMap = new HashMap<>((int) nChunks);
             initDimensions(g, startRowIndex, startColIndex, handleOutOfMemoryError);
             setGridStatistics(gridStatistics);
-            int chunkRowIndex = Integer.MIN_VALUE;
-            int chunkColIndex = Integer.MIN_VALUE;
+            int chunkRowIndex;
+            int chunkColIndex;
             int loadedChunkCount = 0;
             boolean isLoadedChunk = false;
-            int chunkRow = Integer.MIN_VALUE;
-            int chunkCol = Integer.MIN_VALUE;
-            long row = Long.MIN_VALUE;
-            long col = Long.MIN_VALUE;
-            int cri0 = 0;
-            int cci0 = 0;
-            int cci1 = 0;
-            int _intZero = 0;
-            int cellInt = Integer.MIN_VALUE;
-            String println0 = ge.initString(1000, handleOutOfMemoryError);
-            String println = ge.initString(1000, handleOutOfMemoryError);
+            int chunkRow;
+            int chunkCol;
+            long row;
+            long col;
+            int cellInt;
             Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkInt chunk;
-            if (gridStatistics.getClass() == Grids_GridStatistics0.class) {
+            if (gridStatistics.getClass() == Grids_GridStatistics.class) {
                 //if ( ( Grid2DSquareCell.getClass() == Grids_GridInt.class ) || ( ( ( int ) Grid2DSquareCell.getNoDataValueDouble( false ) ) == Integer.MIN_VALUE ) ) {
                 if (g.getClass() == Grids_GridInt.class) {
-                    for (chunkRowIndex = _intZero; chunkRowIndex < NChunkRows; chunkRowIndex++) {
-                        for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
+                    for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
+                        for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
                                     ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -652,22 +645,19 @@ public class Grids_GridInt
                             } while (!isLoadedChunk);
                             isLoadedChunk = false;
                             loadedChunkCount++;
-                            cci1 = chunkColIndex;
                         }
-                        println = null;
-                        println = "Done chunkRow " + chunkRowIndex;
-                        println = ge.println(println, println0, handleOutOfMemoryError);
+                        System.out.println("Done chunkRow " + chunkRowIndex);
                     }
                 } else {
                     //( Grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class )
-                    Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-                    double _Grid2DSquareCellNoDataValue = _Grid2DSquareCellDouble.NoDataValue; //getNoDataValue( handleOutOfMemoryError );
-                    if (_Grid2DSquareCellNoDataValue == (int) _Grid2DSquareCellNoDataValue) {
-                        NoDataValue = (int) _Grid2DSquareCellNoDataValue;
+                    Grids_GridDouble gridDouble = (Grids_GridDouble) g;
+                    double gridNoDataValue = gridDouble.NoDataValue; //getNoDataValue( handleOutOfMemoryError );
+                    if (gridNoDataValue == (int) gridNoDataValue) {
+                        NoDataValue = (int) gridNoDataValue;
                     }
                     double _Grid2DSquareCellValue;
-                    for (chunkRowIndex = _intZero; chunkRowIndex < NChunkRows; chunkRowIndex++) {
-                        for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
+                    for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
+                        for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
                                     ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -689,10 +679,10 @@ public class Grids_GridInt
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
                                         for (chunkCol = 0; chunkCol < ChunkNCols; chunkCol++) {
                                             //initCellFast( row, col, Grid2DSquareCell.getCellInt( row, col ) );
-                                            _Grid2DSquareCellValue = _Grid2DSquareCellDouble.getCell(
+                                            _Grid2DSquareCellValue = gridDouble.getCell(
                                                     row,
                                                     col);
-                                            if (_Grid2DSquareCellValue != _Grid2DSquareCellNoDataValue) {
+                                            if (_Grid2DSquareCellValue != gridNoDataValue) {
                                                 // TODO:
                                                 // For robustness should test that
                                                 // ( int ) _Grid2DSquareCellValue != Integer.MIN_VALUE
@@ -734,21 +724,18 @@ public class Grids_GridInt
                             } while (!isLoadedChunk);
                             isLoadedChunk = false;
                             loadedChunkCount++;
-                            cci1 = chunkColIndex;
                         }
-                        println = null;
-                        println = "Done chunkRow " + chunkRowIndex;
-                        println = ge.println(println, println0, handleOutOfMemoryError);
+                        System.out.println("Done chunkRow " + chunkRowIndex);
                     }
                 }
             } else {
-                // _GridStatistics.getClass() == Grids_GridStatistics1.class
+                // _GridStatistics.getClass() == Grids_GridStatisticsNotUpdatedAsDataChanged.class
                 // initCellFast(long,long,int) is to be used inplace of
                 // initCell(long,long,int).
                 if ((g.getClass() == Grids_GridInt.class)) {
                     NoDataValue = ((Grids_GridInt) g).NoDataValue;
-                    for (chunkRowIndex = _intZero; chunkRowIndex < NChunkRows; chunkRowIndex++) {
-                        for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
+                    for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
+                        for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
                                     // Try to load chunk.
@@ -765,9 +752,9 @@ public class Grids_GridInt
                                             chunkID,
                                             chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
-                                    for (chunkRow = _intZero; chunkRow < ChunkNRows; chunkRow++) {
+                                    for (chunkRow = 0; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
-                                        for (chunkCol = _intZero; chunkCol < ChunkNCols; chunkCol++) {
+                                        for (chunkCol = 0; chunkCol < ChunkNCols; chunkCol++) {
                                             cellInt = g.getCellInt(
                                                     row,
                                                     col);
@@ -801,22 +788,19 @@ public class Grids_GridInt
                             } while (!isLoadedChunk);
                             isLoadedChunk = false;
                             loadedChunkCount++;
-                            cci1 = chunkColIndex;
                         }
-                        println = null;
-                        println = "Done chunkRow " + chunkRowIndex;
-                        println = ge.println(println, println0, handleOutOfMemoryError);
+                        System.out.println("Done chunkRow " + chunkRowIndex);
                     }
                 } else {
                     //( Grid2DSquareCell.getClass() == Grid2DSquareCellDouble.class )
-                    Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-                    double _Grid2DSquareCellNoDataValue = _Grid2DSquareCellDouble.NoDataValue; //getNoDataValue( handleOutOfMemoryError );
-                    if (_Grid2DSquareCellNoDataValue == (int) _Grid2DSquareCellNoDataValue) {
-                        NoDataValue = (int) _Grid2DSquareCellNoDataValue;
+                    Grids_GridDouble gridDouble = (Grids_GridDouble) g;
+                    double gridNoDataValue = gridDouble.NoDataValue; //getNoDataValue( handleOutOfMemoryError );
+                    if (gridNoDataValue == (int) gridNoDataValue) {
+                        NoDataValue = (int) gridNoDataValue;
                     }
-                    double _Grid2DSquareCellValue;
-                    for (chunkRowIndex = _intZero; chunkRowIndex < NChunkRows; chunkRowIndex++) {
-                        for (chunkColIndex = _intZero; chunkColIndex < NChunkCols; chunkColIndex++) {
+                    double value;
+                    for (chunkRowIndex = 0; chunkRowIndex < NChunkRows; chunkRowIndex++) {
+                        for (chunkColIndex = 0; chunkColIndex < NChunkCols; chunkColIndex++) {
                             do {
                                 try {
                                     // Try to load chunk.
@@ -833,19 +817,19 @@ public class Grids_GridInt
                                             chunkID,
                                             chunk);
                                     row = ((long) chunkRowIndex * (long) ChunkNRows);
-                                    for (chunkRow = _intZero; chunkRow < ChunkNRows; chunkRow++) {
+                                    for (chunkRow = 0; chunkRow < ChunkNRows; chunkRow++) {
                                         col = ((long) chunkColIndex * (long) ChunkNCols);
-                                        for (chunkCol = _intZero; chunkCol < ChunkNCols; chunkCol++) {
+                                        for (chunkCol = 0; chunkCol < ChunkNCols; chunkCol++) {
                                             //initCellFast( row, col, Grid2DSquareCell.getCellInt( row, col ) );
-                                            _Grid2DSquareCellValue = _Grid2DSquareCellDouble.getCell(
+                                            value = gridDouble.getCell(
                                                     row,
                                                     col);
-                                            if (_Grid2DSquareCellValue != _Grid2DSquareCellNoDataValue) {
+                                            if (value != gridNoDataValue) {
                                                 // TODO:
                                                 // For robustness should test that
-                                                // ( int ) _Grid2DSquareCellValue != Integer.MIN_VALUE
-                                                // or indeed if it is out of range etc...
-                                                cellInt = (int) _Grid2DSquareCellValue;
+                                                // ( int ) value != NoDataValue
+                                                // and if it is out of range for storage as an int.
+                                                cellInt = (int) value;
                                                 initCellFast(
                                                         row,
                                                         col,
@@ -883,11 +867,8 @@ public class Grids_GridInt
                             } while (!isLoadedChunk);
                             isLoadedChunk = false;
                             loadedChunkCount++;
-                            cci1 = chunkColIndex;
                         }
-                        println = null;
-                        println = "Done chunkRow " + chunkRowIndex;
-                        println = ge.println(println, println0, handleOutOfMemoryError);
+                        System.out.println("Done chunkRow " + chunkRowIndex);
                     }
                 }
             }
@@ -910,6 +891,7 @@ public class Grids_GridInt
                         startColIndex,
                         endRowIndex,
                         endColIndex,
+                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -946,8 +928,7 @@ public class Grids_GridInt
      * long, long, HashSet, boolean)
      */
     protected final void init(
-            Grids_AbstractGridStatistics gridStatistics,
-            File directory,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             File gridFile,
             Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows,
@@ -956,11 +937,10 @@ public class Grids_GridInt
             long startColIndex,
             long endRowIndex,
             long endColIndex,
+            int noDataValue,
             boolean handleOutOfMemoryError) {
         try {
-            Directory = directory;
-            String println0 = ge.initString(1000, handleOutOfMemoryError);
-            String println = ge.initString(1000, handleOutOfMemoryError);
+            NoDataValue = noDataValue;
             if (gridFile.isDirectory()) {
                 /* Initialise from
                  * new File(
@@ -972,12 +952,12 @@ public class Grids_GridInt
                     gf = new Grids_GridIntFactory(
                             ge,
                             directory,
-                            NoDataValue, 
-                            chunkNRows, 
+                            NoDataValue,
+                            chunkNRows,
                             chunkNCols,
                             Dimensions,
                             gridStatistics,
-                            cf)
+                            cf);
                     File thisFile = new File(
                             gridFile,
                             "thisFile");
@@ -988,7 +968,8 @@ public class Grids_GridInt
                     g = (Grids_GridInt) gf.create(
                             directory,
                             thisFile,
-                            ois);
+                            ois,
+                            handleOutOfMemoryError);
                     Grids_GridInt g2;
                     g2 = gf.create(
                             directory,
@@ -1098,7 +1079,7 @@ public class Grids_GridInt
 
                     // Read Data into Chunks
                     if ((int) gridFileNoDataValue == Integer.MIN_VALUE) {
-                        if (gridStatistics.getClass() == Grids_GridStatistics0.class) {
+                        if (gridStatistics.getClass() == Grids_GridStatistics.class) {
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readInt();
@@ -1136,7 +1117,7 @@ public class Grids_GridInt
                                 }
                             }
                         } else {
-                            // _GridStatistics.getClass() == Grids_GridStatistics1.class
+                            // _GridStatistics.getClass() == Grids_GridStatisticsNotUpdatedAsDataChanged.class
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readInt();
@@ -1176,7 +1157,7 @@ public class Grids_GridInt
                             }
                         }
                     } else {
-                        if (gridStatistics.getClass() == Grids_GridStatistics0.class) {
+                        if (gridStatistics.getClass() == Grids_GridStatistics.class) {
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readInt();
@@ -1221,7 +1202,7 @@ public class Grids_GridInt
                                 }
                             }
                         } else {
-                            // _GridStatistics.getClass() == Grids_GridStatistics1.class
+                            // _GridStatistics.getClass() == Grids_GridStatisticsNotUpdatedAsDataChanged.class
                             for (row = (NRows - 1); row > -1; row--) {
                                 for (col = 0; col < NCols; col++) {
                                     value = eagi.readInt();
@@ -1320,9 +1301,9 @@ public class Grids_GridInt
 
     /**
      * If newValue and oldValue are the same then statistics won't change. A
-     * test might be appropriate in set cell so that this method is not called.
-     * Also want to keep track if underlying data has changed for getting
-     * statistics of Grids_GridStatistics1 type.
+ test might be appropriate in set cell so that this method is not called.
+ Also want to keep track if underlying data has changed for getting
+ statistics of Grids_GridStatisticsNotUpdatedAsDataChanged type.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
@@ -1361,9 +1342,9 @@ public class Grids_GridInt
 
     /**
      * If newValue and oldValue are the same then statistics won't change. A
-     * test might be appropriate in set cell so that this method is not called.
-     * Also want to keep track if underlying data has changed for getting
-     * statistics of Grids_GridStatistics1 type.
+ test might be appropriate in set cell so that this method is not called.
+ Also want to keep track if underlying data has changed for getting
+ statistics of Grids_GridStatisticsNotUpdatedAsDataChanged type.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
@@ -1376,14 +1357,14 @@ public class Grids_GridInt
             int newValue,
             int oldValue,
             int _NoDataValue) {
-        Grids_AbstractGridStatistics s;
-        s = getGridStatistics();
+        Grids_AbstractStatisticsBigDecimal s;
+        s = getStatistics();
         boolean handleOutOfMemoryError;
         handleOutOfMemoryError = ge.HandleOutOfMemoryError;
-        if (s instanceof Grids_GridStatistics0) {
+        if (s instanceof Grids_GridStatistics) {
             if (oldValue != _NoDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
-                getGridStatistics().setNonNoDataValueCount(
+                getStatistics().setNonNoDataValueCount(
                         s.getNonNoDataValueCountBigInteger(handleOutOfMemoryError).subtract(BigInteger.ONE));
                 s.setSum(s.getSumBigDecimal(handleOutOfMemoryError).subtract(oldValueBigDecimal));
                 if (oldValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
@@ -1426,7 +1407,7 @@ public class Grids_GridInt
             }
         } else {
             if (newValue != oldValue) {
-                ((Grids_GridStatistics1) s).setIsUpToDate(false);
+                ((Grids_GridStatisticsNotUpdatedAsDataChanged) s).setIsUpToDate(false);
             }
         }
     }
@@ -2256,8 +2237,8 @@ public class Grids_GridInt
             // Update Statistics
             int noDataValue = getNoDataValue(
                     ge.HandleOutOfMemoryErrorFalse);
-            Grids_AbstractGridStatistics s;
-            s = getGridStatistics();
+            Grids_AbstractStatisticsBigDecimal s;
+            s = getStatistics();
             boolean handleOutOfMemoryError;
             handleOutOfMemoryError = ge.HandleOutOfMemoryError;
 
@@ -3487,5 +3468,49 @@ public class Grids_GridInt
     @Override
     public Grids_GridIntIterator iterator() {
         return new Grids_GridIntIterator(this);
+    }
+
+    /**
+     * @param handleOutOfMemoryError
+     * @return this._GridStatistics TODO: For safety, this method should either
+     * be removed and this class be made implement GridStatisticsInterface. This
+     * done the methods introduced would be made to call the relevant ones in
+     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
+     * only copies of fields are passed.
+     */
+    public Grids_AbstractStatisticsBigDecimal getStatistics(boolean handleOutOfMemoryError) {
+        try {
+            Grids_AbstractStatisticsBigDecimal result = getStatistics();
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
+                return getStatistics(handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * @return this._GridStatistics TODO: For safety, this method should either
+     * be removed and this class be made implement GridStatisticsInterface. This
+     * done the methods introduced would be made to call the relevant ones in
+     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
+     * only copies of fields are passed.
+     */
+    public Grids_AbstractStatisticsBigDecimal getStatistics() {
+        return GridStatistics;
+    }
+
+    public void setGridStatistics(Grids_AbstractStatisticsBigDecimal s) {
+        GridStatistics = s;
+        GridStatistics.init(this);
+    }
+
+    public void initGridStatistics(Grids_AbstractStatisticsBigDecimal s) {
+        GridStatistics = s;
     }
 }

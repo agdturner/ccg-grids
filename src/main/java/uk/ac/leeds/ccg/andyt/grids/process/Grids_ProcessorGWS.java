@@ -1559,9 +1559,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             Grids_GridDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
-        BigInteger nonNoDataValueCount =
-                grid.getGridStatistics(handleOutOfMemoryError).getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
-        //double sparseness = grid.getGridStatistics().getSparseness();
+        BigInteger nonNoDataValueCount;
+        nonNoDataValueCount =                grid.getStatistics(handleOutOfMemoryError).getNonNoDataValueCount(handleOutOfMemoryError);
+        //double sparseness = grid.getStatistics().getSparseness();
         long nrows = grid.getNRows(handleOutOfMemoryError);
         long ncols = grid.getNCols(handleOutOfMemoryError);
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );

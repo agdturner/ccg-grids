@@ -207,11 +207,26 @@ public class Grids_GridChunkDoubleMap
      */
     double[][] to2DDoubleArray() {
         Grids_GridDouble grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
-        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        int nrows = grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryError);
+        int ncols = grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryError);
+        double noDataValue = grid.getNoDataValue(ge.HandleOutOfMemoryError);
         double[][] result;
         result = new double[nrows][ncols];
-        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        Arrays.fill(result, DefaultValue);
+        /**
+         * Mask
+         */
+        int row;
+        int col;
+        int i = 0;
+        for (row = 0; row < nrows; row ++) {
+            for (col = 0; col < ncols; col ++) {
+                if(NoData.get(i)){
+                    result[row][col] = noDataValue;
+                }
+                 i ++;
+            }
+        }
         Iterator<Double> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
@@ -224,9 +239,7 @@ public class Grids_GridChunkDoubleMap
         BitSet bitSet;
         int offset;
         int bitSetLength;
-        int i;
-        int row = 0;
-        int col = 0;
+        col = 0;
         while (ite.hasNext()) {
             value = ite.next();
             offsetBitSet = dataMapBitSet.get(value);
@@ -1149,7 +1162,7 @@ public class Grids_GridChunkDoubleMap
      */
     protected @Override
     Grids_AbstractIterator iterator() {
-        return new Grids_GridChunkDoubleMapIterator(this);
+        return new Grids_GridChunkDoubleArrayorMapIterator(this);
     }
 
     /**

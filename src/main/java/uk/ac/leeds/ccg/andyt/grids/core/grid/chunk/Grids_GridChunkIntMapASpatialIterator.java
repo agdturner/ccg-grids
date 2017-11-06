@@ -24,60 +24,50 @@ import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap.OffsetBitSet;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grids_GridChunkIntMap instance. The
- * values are not returned in any particular spatial order.
+ * values are returned in no particular spatial order.
  */
-public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
+public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumberMapASpatialIterator {
 
-    private int NumberOfCells;
     private int DefaultValue;
-    private int NumberOfDefaultValues;
-    private int DefaultValueIndex;
     private Grids_GridChunkIntMap.GridChunkIntMapData Data;
     private TreeMap<Integer, OffsetBitSet> DataMapBitSet;
     private Iterator<Integer> DataMapBitSetIte;
-    private int DataMapBitSetIndex;
-    private int DataMapBitSetNumberOfValues;
     private int DataMapBitSetValue;
     private TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
     private Iterator<Integer> DataMapHashSetIte;
-    private int DataMapHashSetNumberOfValues;
-    private int DataMapHashSetIndex;
     private int DataMapHashSetValue;
-    private boolean ValuesLeft;
 
-    protected Grids_GridChunkIntMapIterator() {
+    protected Grids_GridChunkIntMapASpatialIterator() {
     }
 
-    public Grids_GridChunkIntMapIterator(
+    public Grids_GridChunkIntMapASpatialIterator(
             Grids_GridChunkIntMap chunk) {
+        super(chunk);
         Data = chunk.getData();
         DataMapBitSet = Data.DataMapBitSet;
-        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
         DataMapHashSet = Data.DataMapHashSet;
-        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
-        NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
-        DefaultValue = chunk.DefaultValue;
-        NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
-        DefaultValueIndex = 0;
-        ValuesLeft = false;
-        if (NumberOfDefaultValues > 0) {
-            ValuesLeft = true;
-        }
+        DataMapBitSetNumberOfValues = 0;
+        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
         if (DataMapBitSetIte.hasNext()) {
             ValuesLeft = true;
             DataMapBitSetValue = DataMapBitSetIte.next();
-            DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
         }
+        NumberOfNoDataValues -= DataMapBitSetNumberOfValues;
+        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
         DataMapBitSetIndex = 0;
+        DataMapHashSetNumberOfValues = 0;
+        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
         if (DataMapHashSetIte.hasNext()) {
             ValuesLeft = true;
             DataMapHashSetValue = DataMapHashSetIte.next();
-            DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+            DataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
         }
+        NumberOfNoDataValues -= DataMapHashSetNumberOfValues;
+        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
         DataMapHashSetIndex = 0;
     }
 
@@ -138,27 +128,6 @@ public class Grids_GridChunkIntMapIterator extends Grids_AbstractIterator {
         } else {
             return null;
         }
-    }
-
-    /**
-     *
-     * Removes from the underlying collection the last element returned by the
-     * iterator (optional operation). This method can be called only once per
-     * call to <tt>next</tt>. The behaviour of an iterator is unspecified if the
-     * underlying collection is modified while the iteration is in progress in
-     * any way other than by calling this method.
-     *
-     * @exception UnsupportedOperationException if the <tt>remove</tt>
-     * operation is not supported by this Iterator.
-     *
-     * @exception IllegalStateException if the <tt>next</tt> method has not yet
-     * been called, or the <tt>remove</tt> method has already been called after
-     * the last call to the <tt>next</tt>
-     * method.
-     */
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 
 }

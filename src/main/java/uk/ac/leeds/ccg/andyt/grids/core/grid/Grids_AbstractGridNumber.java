@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
@@ -30,6 +31,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 
 /**
  * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and
@@ -47,11 +51,41 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 public abstract class Grids_AbstractGridNumber
         extends Grids_AbstractGrid {
 
+    /**
+     * A reference to the grid Statistics Object.
+     */
+    protected Grids_AbstractStatisticsBigDecimal Statistics;
+
     protected Grids_AbstractGridNumber() {
     }
 
-    public Grids_AbstractGridNumber(Grids_Environment ge) {
-        super(ge);
+    public Grids_AbstractGridNumber(Grids_Environment ge, File directory) {
+        super(ge, directory);
+    }
+
+    @Override
+    public String toString() {
+        String result;
+        result = super.toString();
+        result += "," + Statistics.toString(true);
+        return result;
+    }
+
+    /**
+     * Initialises non transient Grids_AbstractGrid fields from g.
+     *
+     * @param g The Grids_AbstractGrid from which the non transient
+     * Grids_AbstractGrid fields of this are set.
+     */
+    protected void init(Grids_AbstractGridNumber g) {
+        super.init(g);
+        Grids_AbstractStatisticsBigDecimal s;
+        s = g.getStatistics();
+        if (s instanceof Grids_GridStatistics) {
+            Statistics = new Grids_GridStatistics(this);
+        } else {
+            Statistics = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
+        }
     }
 
     /**
@@ -1059,5 +1093,50 @@ public abstract class Grids_AbstractGridNumber
      * @return An iterator for iterating over the cell values in this.
      */
     public abstract Iterator iterator();
+
+    /**
+     * @param handleOutOfMemoryError
+     * @return this._GridStatistics TODO: For safety, this method should either
+     * be removed and this class be made implement GridStatisticsInterface. This
+     * done the methods introduced would be made to call the relevant ones in
+     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
+     * only copies of fields are passed.
+     */
+    public Grids_AbstractStatisticsBigDecimal getStatistics(boolean handleOutOfMemoryError) {
+        try {
+            Grids_AbstractStatisticsBigDecimal result;
+            result = getStatistics();
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
+                return getStatistics(handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * @return this._GridStatistics TODO: For safety, this method should either
+     * be removed and this class be made implement GridStatisticsInterface. This
+     * done the methods introduced would be made to call the relevant ones in
+     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
+     * only copies of fields are passed.
+     */
+    public Grids_AbstractStatisticsBigDecimal getStatistics() {
+        return Statistics;
+    }
+
+    public void setStatistics(Grids_AbstractStatisticsBigDecimal s) {
+        Statistics = s;
+        Statistics.init(this);
+    }
+
+    public void initGridStatistics(Grids_AbstractStatisticsBigDecimal s) {
+        Statistics = s;
+    }
 
 }

@@ -19,18 +19,19 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 import java.io.File;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
  */
 public class Grids_GridDoubleFactory
-        extends Grids_AbstractGridFactory {
+        extends Grids_AbstractGridNumberFactory {
 
     /**
      * The NoDataValue for creating chunks.
@@ -43,6 +44,32 @@ public class Grids_GridDoubleFactory
     public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkFactory;
 
     protected Grids_GridDoubleFactory() {
+    }
+
+    /**
+     * Creates a new Grids_GridDoubleFactory. Directory is defaulted to
+     * ge.getFiles().getGeneratedGridDoubleFactoryDir(). Dimensions is defaulted
+     * to new Grids_Dimensions(chunkNRows, chunkNCols). Statistics is defaulted
+     * to new Grids_GridStatisticsNotUpdatedAsDataChanged(ge). NoDataValue is
+     * defaulted to -Double.MAX_VALUE. GridChunkDoubleFactory is defaulted to new
+     * Grids_GridChunkDoubleFactory(). DefaultGridChunkFactory is defaulted to
+     * GridChunkDoubleFactory.
+     *
+     * @param chunkNRows The number of rows chunks have by default.
+     * @param chunkNCols The number of columns chunks have by default.
+     * @param ge
+     */
+    public Grids_GridDoubleFactory(
+            Grids_Environment ge,
+            int chunkNRows,
+            int chunkNCols) {
+        super(ge, ge.getFiles().getGeneratedGridDoubleFactoryDir(),
+                chunkNRows, chunkNCols,
+                new Grids_Dimensions(chunkNRows, chunkNCols),
+                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge));
+        NoDataValue = -Double.MAX_VALUE;
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory();
+        DefaultGridChunkFactory = GridChunkDoubleFactory;
     }
 
     /**
@@ -65,7 +92,7 @@ public class Grids_GridDoubleFactory
             int chunkNRows,
             int chunkNCols,
             Grids_Dimensions dimensions,
-            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             Grids_AbstractGridChunkDoubleFactory defaultGridChunkFactory) {
         super(ge, directory, chunkNRows, chunkNCols, dimensions, gridStatistics);
         NoDataValue = noDataValue;
@@ -150,7 +177,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             File directory,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
             long nRows,
@@ -224,7 +251,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             File directory,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -312,7 +339,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractGridStatistics gridStatistics,
+            Grids_AbstractStatisticsBigDecimal gridStatistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,

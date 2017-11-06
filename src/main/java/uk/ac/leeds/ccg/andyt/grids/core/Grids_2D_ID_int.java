@@ -23,7 +23,7 @@ import java.io.Serializable;
 /**
  * A simple ID class for distinguishing chunks or cells within chunks.
  */
-public class Grids_2D_ID_int extends Object implements Serializable, Comparable {
+public class Grids_2D_ID_int extends Object implements Serializable, Comparable<Grids_2D_ID_int> {
 
     /**
      * For storing the row.
@@ -34,7 +34,8 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable 
      */
     protected int Col;
 
-    protected Grids_2D_ID_int() {}
+    protected Grids_2D_ID_int() {
+    }
 
     public Grids_2D_ID_int(Grids_2D_ID_int i) {
         Col = i.Col;
@@ -89,7 +90,7 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable 
      * Overrides equals in Object
      *
      * @param object
-     * @return 
+     * @return
      */
     @Override
     public boolean equals(Object object) {
@@ -105,28 +106,25 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable 
     }
 
     /**
-     * Method required by Comparable
+     * Method required by Comparable.
      *
-     * @param o
+     * @param t
+     * @return 
      */
     @Override
-    public int compareTo(Object o) {
-        if (o instanceof Grids_2D_ID_int) {
-            Grids_2D_ID_int i = (Grids_2D_ID_int) o;
-            if (i.Row > Row) {
-                return 1;
-            }
-            if (i.Row < Row) {
-                return -1;
-            }
-            if (i.Col > Col) {
-                return 1;
-            }
-            if (i.Col < Col) {
-                return -1;
-            }
-            return 0;
+    public int compareTo(Grids_2D_ID_int t) {
+        if (t.Row > Row) {
+            return 1;
         }
-        return -1;
+        if (t.Row < Row) {
+            return -1;
+        }
+        if (t.Col > Col) {
+            return 1;
+        }
+        if (t.Col < Col) {
+            return -1;
+        }
+        return 0;
     }
 }

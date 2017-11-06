@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
@@ -25,10 +25,10 @@ import java.math.BigDecimal;
  * An interface to be implemented by classes that provide statistics about
  * raster data.
  */
-public interface Grids_GridStatisticsInterface {
+public interface Grids_StatisticsInterface {
 
     /**
-     * For returning the number of cells with noDataValues as a BigInteger
+     * For returning the number of cells with noDataValues as a BigInteger.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false

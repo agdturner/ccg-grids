@@ -16,33 +16,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
  * Used by Grids_AbstractGridNumber instances to access statistics. This class
- * is to be instantiated for Grids_AbstractGridNumber that keep all statistic
- * fields up to date as the underlying data is changed. (Keeping statistic
- * fields up to date as the underlying data is changed can be expensive!)
+ * is to be instantiated for Grids_AbstractGridNumber that keep statistic fields
+ * up to date as the underlying data is changed. (Keeping statistic fields up to
+ * date as the underlying data is changed can be expensive! Second order
+ * statistics like the standard deviation would always require going through all
+ * the data again if the values have changed.)
  */
-public class Grids_GridStatistics0
-        extends Grids_AbstractGridStatistics
+public class Grids_GridStatistics
+        extends Grids_AbstractStatisticsBigDecimal
         implements Serializable {
 
     //private static final long serialVersionUID = 1L; 
     /**
      * Creates a new instance of GridStatistics0
      */
-    protected Grids_GridStatistics0() {
+    protected Grids_GridStatistics() {
     }
 
-    public Grids_GridStatistics0(Grids_Environment ge) {
+    public Grids_GridStatistics(Grids_Environment ge) {
         super(ge);
     }
 
@@ -51,23 +52,19 @@ public class Grids_GridStatistics0
      *
      * @param g
      */
-    public Grids_GridStatistics0(
-            Grids_AbstractGrid g) {
-        super(g.ge);
-        init(g);
+    public Grids_GridStatistics(
+            Grids_AbstractGridNumber g) {
+        super(g);
     }
 
     /**
-     * Updates fields (statistics) by going through all values in
-     * this.grid2DSquareCellAbstract if they might not be up to date. (NB. After
-     * calling this it is inexpensive to convert to Grids_GridStatistics0.)
+     * Updates fields (statistics) by going through all values in Grid if they
+     * might not be up to date.
      */
     public @Override
     void update() {
         init();
-        super.update(
-                this.Grid.getNRows(this.ge.HandleOutOfMemoryError),
-                this.Grid.getNCols(this.ge.HandleOutOfMemoryError));
+        super.update();
     }
 
     /**
@@ -77,7 +74,7 @@ public class Grids_GridStatistics0
      */
     @Override
     protected BigInteger getNonNoDataValueCount() {
-        return this.NonNoDataValueCount;
+        return NonNoDataValueCount;
     }
 
     /**
@@ -87,7 +84,7 @@ public class Grids_GridStatistics0
      */
     @Override
     protected BigDecimal getSum() {
-        return this.Sum;
+        return Sum;
     }
 
     /**
@@ -97,12 +94,12 @@ public class Grids_GridStatistics0
      */
     @Override
     protected BigDecimal getMin(boolean update) {
-        if (this.getMinCount().compareTo(BigInteger.ONE) == -1) {
+        if (getMinCount().compareTo(BigInteger.ONE) == -1) {
             if (update) {
                 update();
             }
         }
-        return this.Min;
+        return Min;
     }
 
     /**
@@ -112,12 +109,12 @@ public class Grids_GridStatistics0
      */
     @Override
     protected BigDecimal getMax(boolean update) {
-        if (this.getMaxCount().compareTo(BigInteger.ONE) == -1) {
+        if (getMaxCount().compareTo(BigInteger.ONE) == -1) {
             if (update) {
                 update();
             }
         }
-        return this.Max;
+        return Max;
     }
 
     /**
@@ -127,10 +124,9 @@ public class Grids_GridStatistics0
      * @return
      */
     protected @Override
-    BigDecimal getArithmeticMeanBigDecimal(
-            int numberOfDecimalPlaces) {
-        return this.Sum.divide(new BigDecimal(this.NonNoDataValueCount),
-                numberOfDecimalPlaces,
+    BigDecimal getArithmeticMean() {
+        return Sum.divide(new BigDecimal(NonNoDataValueCount),
+                NumberOfDecimalPlacesForArithmeticMean,
                 BigDecimal.ROUND_HALF_EVEN);
     }
 

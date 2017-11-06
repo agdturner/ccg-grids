@@ -18,6 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.utilities;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 
 /**
@@ -27,6 +28,12 @@ public abstract class Grids_AbstractIterator
         extends Grids_Object
         implements Iterator {
 
+    protected Grids_AbstractIterator(){}
+    
+    public Grids_AbstractIterator(Grids_Environment ge) {
+        super(ge);
+    }
+    
     /**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
      * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -48,7 +55,7 @@ public abstract class Grids_AbstractIterator
     /**
      * Removes from the underlying collection the last element returned by the
      * iterator (optional operation).  This method can be called only once per
-     * call to <tt>next</tt>.  The behavior of an iterator is unspecified if
+     * call to <tt>next</tt>.  The behaviour of an iterator is unspecified if
      * the underlying collection is modified while the iteration is in
      * progress in any way other than by calling this method.
      *

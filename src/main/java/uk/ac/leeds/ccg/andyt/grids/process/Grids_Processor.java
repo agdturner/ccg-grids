@@ -47,13 +47,14 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics1;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -127,19 +128,19 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDoubleFactory GridDoubleFactory;
 
     /**
-     * Grids_GridStatistics0
+     * Grids_GridStatistics
      */
-    public Grids_GridStatistics0 GridStatistics0;
+    public Grids_GridStatistics GridStatistics0;
 
     /**
-     * Grids_GridStatistics1
+     * Grids_GridStatisticsNotUpdatedAsDataChanged
      */
-    public Grids_GridStatistics1 GridStatistics1;
+    public Grids_GridStatisticsNotUpdatedAsDataChanged GridStatistics1;
 
     /**
-     * Default GridStatistics.
+     * Default Statistics.
      */
-    public Grids_AbstractGridStatistics GridStatistics;
+    public Grids_AbstractStatisticsBigDecimal Statistics;
 
     protected Grids_Processor() {
         StartTime = System.currentTimeMillis();
@@ -215,13 +216,13 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories(File directory) {
         GridIntFactory = new Grids_GridIntFactory(
-                new File(directory, "GridIntFactory"),
                 ge,
-                ge.HandleOutOfMemoryErrorTrue);
+                512,
+                512);
         GridDoubleFactory = new Grids_GridDoubleFactory(
-                new File(directory, "GridDoubleFactory"),
                 ge,
-                ge.HandleOutOfMemoryErrorTrue);
+                512,
+                512);
     }
 
     /**
@@ -237,12 +238,12 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Initialises GridStatistics.
+     * Initialises Statistics.
      */
     private void initGridStatistics() {
-        GridStatistics0 = new Grids_GridStatistics0(ge);
-        GridStatistics1 = new Grids_GridStatistics1(ge);
-        GridStatistics = GridStatistics0;
+        GridStatistics0 = new Grids_GridStatistics(ge);
+        GridStatistics1 = new Grids_GridStatisticsNotUpdatedAsDataChanged(ge);
+        Statistics = GridStatistics0;
     }
 
     /**
@@ -1223,9 +1224,9 @@ public class Grids_Processor extends Grids_Object {
         GridDoubleFactory.setChunkNCols(chunkNCols);
         double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double range = max - min;
-        Grids_AbstractGridStatistics stats = g.getGridStatistics(handleOutOfMemoryError);
-        double minGrid = stats.getMinDouble(true, handleOutOfMemoryError);
-        double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
+        Grids_AbstractStatisticsBigDecimal stats = g.getStatistics(handleOutOfMemoryError);
+        double minGrid = stats.getMin(true, handleOutOfMemoryError).doubleValue();
+        double maxGrid = stats.getMax(true, handleOutOfMemoryError).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
         Grids_GridDouble outputGrid;
@@ -1391,9 +1392,9 @@ public class Grids_Processor extends Grids_Object {
         int nChunkRows = g.getNChunkCols(handleOutOfMemoryError);
         int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double range = max - min;
-        Grids_AbstractGridStatistics stats = g.getGridStatistics(handleOutOfMemoryError);
-        double minGrid = stats.getMinDouble(true, handleOutOfMemoryError);
-        double maxGrid = stats.getMaxDouble(true, handleOutOfMemoryError);
+        Grids_AbstractStatisticsBigDecimal stats = g.getStatistics(handleOutOfMemoryError);
+        double minGrid = stats.getMin(true, handleOutOfMemoryError).doubleValue();
+        double maxGrid = stats.getMax(true, handleOutOfMemoryError).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
         Grids_GridDouble outputGrid;
@@ -1968,7 +1969,11 @@ public class Grids_Processor extends Grids_Object {
             Grids_Dimensions gridDimensions = grid.getDimensions(handleOutOfMemoryError);
             double gridToAddNoDataValue = gridToAdd.getNoDataValue(handleOutOfMemoryError);
             Grids_Dimensions gridToAddDimensions = gridToAdd.getDimensions(handleOutOfMemoryError);
-            Grids_GridDoubleFactory gridFactory = new Grids_GridDoubleFactory(ge, handleOutOfMemoryError);
+            Grids_GridDoubleFactory gridFactory;
+            gridFactory = new Grids_GridDoubleFactory(
+                    ge,
+                    grid.getChunkNCols(handleOutOfMemoryError),
+                    grid.getChunkNRows(handleOutOfMemoryError));
             if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)
                     || (dimensionConstraints[3].compareTo(gridDimensions.getXMin()) == -1)
                     || (dimensionConstraints[2].compareTo(gridDimensions.getYMax()) == 1)
@@ -2024,8 +2029,10 @@ public class Grids_Processor extends Grids_Object {
                     // Check
                     Grids_GridDouble tempGrid1;
                     Grids_GridDouble tempGrid2;
-                    tempGrid1 = (Grids_GridDouble) gridFactory.create(nrows, ncols, gridDimensions);
-                    tempGrid2 = (Grids_GridDouble) gridFactory.create(nrows, ncols, gridDimensions);
+                    tempGrid1 = (Grids_GridDouble) gridFactory.create(
+                            nrows, ncols, gridDimensions);
+                    tempGrid2 = (Grids_GridDouble) gridFactory.create(
+                            nrows, ncols, gridDimensions);
                     // TODO:
                     // Check scale and rounding appropriate
                     int scale = 324;
@@ -3425,8 +3432,8 @@ public class Grids_Processor extends Grids_Object {
     //        double grid1Yllcorner = grid1.getYllcorner();
     //        double grid1Cellsize = grid1.getCellsize();
     //        double grid1NoDataValue = grid1.getNoDataValue();
-    //        AbstractGridStatistics grid0Statistics = grid0.getGridStatistics();
-    //        AbstractGridStatistics grid1Statistics = grid1.getGridStatistics();
+    //        AbstractGridStatistics grid0Statistics = grid0.getStatistics();
+    //        AbstractGridStatistics grid1Statistics = grid1.getStatistics();
     //        // TODO: Check spatial frame
     //
     //        // Calculation
@@ -3573,7 +3580,7 @@ public class Grids_Processor extends Grids_Object {
     //        Grids_GridDouble temp2 = gridFactory.createGrid2DSquareCellDouble( grid0 );
     //        // Get distances
     //        Grids_GridDouble distanceGrid = distanceToDataValue( grid0, gridFactory );
-    //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getGridStatistics();
+    //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getStatistics();
     //        double maxDistance = distanceGridStatistics.getMax();
     //
     //        AbstractGrid2DSquareCellDouble[] geometricDensity = Grids_ProcessorGWS.geometricDensity( grid0, maxDistance, gridFactory );

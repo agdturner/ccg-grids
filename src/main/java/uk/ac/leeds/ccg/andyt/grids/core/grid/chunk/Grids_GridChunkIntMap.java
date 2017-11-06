@@ -202,13 +202,28 @@ public class Grids_GridChunkIntMap
      *
      * @return
      */
-    double[][] to2DIntArray() {
+    int[][] to2DIntArray() {
         Grids_GridInt grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
-        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
-        double[][] result;
-        result = new double[nrows][ncols];
-        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        int nrows = grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryError);
+        int ncols = grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryError);
+        int noDataValue = grid.getNoDataValue(ge.HandleOutOfMemoryError);
+        int[][] result;
+        result = new int[nrows][ncols];
+        Arrays.fill(result, DefaultValue);
+        /**
+         * Mask
+         */
+        int row;
+        int col;
+        int i = 0;
+        for (row = 0; row < nrows; row ++) {
+            for (col = 0; col < ncols; col ++) {
+                if(NoData.get(i)){
+                    result[row][col] = noDataValue;
+                }
+                 i ++;
+            }
+        }
         Iterator<Integer> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
@@ -221,9 +236,7 @@ public class Grids_GridChunkIntMap
         BitSet bitSet;
         int offset;
         int bitSetLength;
-        int i;
-        int row = 0;
-        int col = 0;
+        col = 0;
         while (ite.hasNext()) {
             value = ite.next();
             offsetBitSet = dataMapBitSet.get(value);
@@ -1144,7 +1157,7 @@ public class Grids_GridChunkIntMap
      */
     protected @Override
     Grids_AbstractIterator iterator() {
-        return new Grids_GridChunkIntMapIterator(this);
+        return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 
     /**

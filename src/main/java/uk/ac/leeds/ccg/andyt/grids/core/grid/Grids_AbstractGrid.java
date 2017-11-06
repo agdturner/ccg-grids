@@ -5,7 +5,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_AbstractGridStatistics;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -68,10 +67,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected transient HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
     /**
-     * A reference to the grid Statistics Object.
-     */
-    protected Grids_AbstractGridStatistics GridStatistics;
-    /**
      * For storing the number of chunk rows.
      */
     protected int NChunkRows;
@@ -109,8 +104,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     Grids_AbstractGrid() {
     }
 
-    Grids_AbstractGrid(Grids_Environment ge) {
+    Grids_AbstractGrid(Grids_Environment ge, File directory) {
         super(ge);
+        Directory = directory;
     }
 
     /**
@@ -163,7 +159,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Initialises non transient Grids_AbstractGrid fields from
-     * _Grid2DSquareCell.
+     * g.
      *
      * @param g The Grids_AbstractGrid from which the non transient
      * Grids_AbstractGrid fields of this are set.
@@ -172,25 +168,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ChunkNCols = g.ChunkNCols;
         ChunkNRows = g.ChunkNRows;
         Dimensions = g.Dimensions;
-        //this._Directory = _Grid2DSquareCell._Directory;
-        this.GridStatistics = g.getGridStatistics();
-        // Set the reference to this in the Grid Statistics
-        this.getGridStatistics().init(this);
-        //this._GridStatistics._Grid2DSquareCell = this;
-        this.Name = g.Name;
-        this.NChunkCols = g.NChunkCols;
-        this.NChunkRows = g.NChunkRows;
-        this.NCols = g.NCols;
-        this.NRows = g.NRows;
-        //this._UnsignedLongPowersOf2 = _Grid2DSquareCell._UnsignedLongPowersOf2;
-        //init_AbstractGrid2DSquareCell_HashSet( _Grid2DSquareCell._AbstractGrid2DSquareCell_HashSet );
-        //this._AbstractGrid2DSquareCell_HashSet = _Grid2DSquareCell._AbstractGrid2DSquareCell_HashSet;
+        Name = g.Name;
+        NChunkCols = g.NChunkCols;
+        NChunkRows = g.NChunkRows;
+        NCols = g.NCols;
+        NRows = g.NRows;
         ge.getGrids().add(this);
     }
 
     /**
      * @param handleOutOfMemoryError
-     * @return a reference to this._AbstractGrid2DSquareCell_HashSet
+     * @return Grids.
      */
     public HashSet<Grids_AbstractGrid> getGrids(boolean handleOutOfMemoryError) {
         try {
@@ -209,54 +197,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param handleOutOfMemoryError
-     * @return this._GridStatistics TODO: For safety, this method should either
-     * be removed and this class be made implement GridStatisticsInterface. This
-     * done the methods introduced would be made to call the relevant ones in
-     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
-     * only copies of fields are passed.
-     */
-    public Grids_AbstractGridStatistics getGridStatistics(boolean handleOutOfMemoryError) {
-        try {
-            Grids_AbstractGridStatistics result = getGridStatistics();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getGridStatistics(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return this._GridStatistics TODO: For safety, this method should either
-     * be removed and this class be made implement GridStatisticsInterface. This
-     * done the methods introduced would be made to call the relevant ones in
-     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
-     * only copies of fields are passed.
-     */
-    public Grids_AbstractGridStatistics getGridStatistics() {
-        return GridStatistics;
-    }
-
-    public void setGridStatistics(Grids_AbstractGridStatistics s) {
-        GridStatistics = s;
-        GridStatistics.init(this);
-    }
-
-    public void initGridStatistics(Grids_AbstractGridStatistics s) {
-        GridStatistics = s;
-    }
-
-    /**
-     * @return the Grids_AbstractGridChunk with ID._Row equal to chunkRowIndex
-     * and ID._Col equal to chunkColIndex.
-     * @param chunkRowIndex The ID._Row of the returned Grids_AbstractGridChunk.
-     * @param chunkColIndex The ID._Col of the returned Grids_AbstractGridChunk.
+     * @return the Grids_AbstractGridChunk with ChunkID.Row equal to chunkRowIndex
+     * and ChunkID.Col equal to chunkColIndex.
+     * @param chunkRowIndex The ChunkID.Row of the returned Grids_AbstractGridChunk.
+     * @param chunkColIndex The ChunkID.Col of the returned Grids_AbstractGridChunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -292,10 +236,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with Grids_2D_ID_int equal to
-     * _ChunkID.
-     * @param chunkID The Grids_2D_ID_int of the returned
-     * Grids_AbstractGridChunk.
+     * @return the Grids_AbstractGridChunk with ChunkID equal to
+     * chunkID.
+     * @param chunkID The Grids_2D_ID_int of the
+     * Grids_AbstractGridChunk to be returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -318,12 +262,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with Grids_2D_ID_int equal to
-     * _ChunkID.
+     * @return the Grids_AbstractGridChunk with ChunkID equal to
+     * chunkID.
      *
-     *
-     * @param chunkID The Grids_2D_ID_int of the returned
-     * Grids_AbstractGridChunk.
+     * @param chunkID The ChunkID of the Grids_AbstractGridChunk returned.
      */
     protected Grids_AbstractGridChunk getChunk(Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
@@ -339,8 +281,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return HashSet containing all
-     * _ChunkID_AbstractGrid2DSquareCellChunk_HashMap.ID's.
+     * @return HashSet containing all ChunkIDs.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -362,7 +303,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return HashSet containing all Chunk IDs.
+     * @return HashSet containing all ChunkIDs.
      */
     protected HashSet<Grids_2D_ID_int> getChunkIDs() {
         HashSet<Grids_2D_ID_int> result = new HashSet<>();
@@ -377,29 +318,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public abstract Iterator iterator(boolean handleOutOfMemoryError);
 
     /**
-     * @param handleOutOfMemoryError
      * @return String description of this.
-     */
-    public abstract String toString(boolean handleOutOfMemoryError);
-
-    /**
-     * @return String description of this.
-     * @param flag This is ignored. It is simply to distinguish this method from
-     * the abstract method toString(boolean).
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public String toString(int flag, boolean handleOutOfMemoryError) {
+    public String toString(boolean handleOutOfMemoryError) {
         try {
-            String result = toString(flag);
+            String result = toString();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return toString(flag, handleOutOfMemoryError);
+                return toString(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -408,10 +341,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return a string description of the Abstract fields of this instance.
-     * @param flag This is ignored. It is simply to distinguish this method from
-     * the abstract method toString(boolean).
      */
-    protected String toString(int flag) {
+    @Override
+    public String toString() {
         String result;
         result = "Grid(ChunkNcols(" + ChunkNCols + "),"
                 + "ChunkNrows(" + ChunkNRows + "),"
@@ -432,7 +364,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         } else {
             result += ",UnsignedLongPowersOf2(" + UnsignedLongPowersOf2.toString() + ")";
         }
-        result += "," + GridStatistics.toString(true);
         HashSet<Grids_AbstractGrid> grids;
         grids = ge.getGrids();
         if (grids == null) {
@@ -445,7 +376,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of _Directory.
+     * @return Directory.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -468,14 +399,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of Directory.
+     * @return Directory.
      */
     protected File getDirectory() {
         return new File(Directory.getPath());
     }
 
     /**
-     * @return a copy of this._Name.
+     * @return Name.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -498,7 +429,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Sets this._Name to _Name.
+     * Sets Name to be name.
      *
      * @param name The String this.Name is set to.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -526,7 +457,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param name The String Name is set to.
      */
     protected void setName(String name) {
-        this.Name = name;
+        Name = name;
     }
 
     /**
@@ -537,7 +468,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public String getBasicDescription(boolean handleOutOfMemoryError) {
         try {
-            //return getBasicDescription();
             String result = getBasicDescription();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -566,15 +496,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Sets the Grids_AbstractGridChunk with Grids_2D_ID_int equal to _ChunkID
-     * to _Grid2DSquareCellChunk.
+     * to chunk.
      *
      * @param chunk
-     * @param chunkID The Grids_2D_ID_int of the chunk. that is set.
+     * @param chunkID The Grids_2D_ID_int of the chunk that is set.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public void setChunk(Grids_AbstractGridChunk chunk, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public void setChunk(Grids_AbstractGridChunk chunk, Grids_2D_ID_int chunkID, 
+            boolean handleOutOfMemoryError) {
         try {
             ChunkIDChunkMap.put(chunkID, chunk);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -590,7 +521,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of this._NCols.
+     * @return NCols.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -613,7 +544,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of this._NRows.
+     * @return NRows.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -635,7 +566,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of this._NChunkRows.
+     * @return NChunkRows.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -658,7 +589,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Initialises this._NChunkRows.
+     * Initialises NChunkRows.
      */
     protected final void initNChunkRows() {
         long chunkNrows = (long) ChunkNRows;
@@ -670,7 +601,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return a copy of NChunkCols.
+     * @return NChunkCols.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -695,7 +626,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @return The number of Grid2DSquareCellDoubleChunkAbstracts in this as a
+     * @return The number of chunks in this as a
      * long.
      */
     public final long getNChunks(boolean handleOutOfMemoryError) {
@@ -768,8 +699,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRowIndex
-     * @return ChunkNRows, the number of rows in Grids_AbstractGridChunk with
-     * ID._Row equal to _Row.
+     * @return The number of rows in the chunks in the chunk row chunkRowIndex.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -792,8 +722,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRowIndex
-     * @return _ChunkNRows, the number of rows in Grids_AbstractGridChunk with
-     * ID._Row equal to _Row.
+     * @return The number of rows in the chunks in the chunk row chunkRowIndex.
      */
     protected final int getChunkNRows(int chunkRowIndex) {
         if (chunkRowIndex > -1 && chunkRowIndex < NChunkRows) {
@@ -831,8 +760,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in Grids_AbstractGridChunk
-     * with ID._Col equal to _Col.
+     * @return The number of columns in the chunks in the chunk column chunkColIndex.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -855,8 +783,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in Grids_AbstractGridChunk
-     * with ID._Col equal to _Col.
+     * @return The number of columns in the chunks in the chunk column chunkColIndex.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -883,8 +810,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkColIndex
-     * @return _ChunkNCols, the number of columns in Grids_AbstractGridChunk
-     * with ID._Col equal to _Col.
+          * @return The number of columns in the chunks in the chunk column chunkColIndex.
      */
     protected final int getChunkNCols(int chunkColIndex) {
         if (chunkColIndex > -1 && chunkColIndex < NChunkCols) {
@@ -919,7 +845,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of rows in the final row Chunk.
+     * @return the number of rows in the chunks in the final row.
      */
     protected final int getChunkNRowsFinalRowChunks() {
         long nChunkRowsMinusOne = (long) (NChunkRows - 1);
@@ -928,7 +854,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of cols in the final col Chunk
+     * @return the number of columns in the chunks in the final column.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -948,7 +874,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of cols in the final col Chunk
+     * @return the number of columns in the chunks in the final column.
      */
     protected final int getChunkNColsFinalColChunks() {
         long nChunkColsMinusOne = (long) (NChunkCols - 1);

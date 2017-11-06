@@ -16,7 +16,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,18 +31,18 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
  * statistic fields up to date as the underlying data is changed can be
  * expensive, but also it can be expensive to calculate statistics often!)
  */
-public class Grids_GridStatistics1
-        extends Grids_AbstractGridStatistics
+public class Grids_GridStatisticsNotUpdatedAsDataChanged
+        extends Grids_AbstractStatisticsBigDecimal
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
     /**
      * Creates a new instance of GridStatistics1
      */
-    protected Grids_GridStatistics1() {
+    protected Grids_GridStatisticsNotUpdatedAsDataChanged() {
     }
 
-    public Grids_GridStatistics1(Grids_Environment ge) {
+    public Grids_GridStatisticsNotUpdatedAsDataChanged(Grids_Environment ge) {
         super(ge);
     }
 
@@ -51,7 +51,7 @@ public class Grids_GridStatistics1
      *
      * @param g
      */
-    public Grids_GridStatistics1(
+    public Grids_GridStatisticsNotUpdatedAsDataChanged(
             Grids_AbstractGridNumber g) {
         super(g.ge);
         init(g);
@@ -60,7 +60,7 @@ public class Grids_GridStatistics1
     /**
      * Is true iff fields are upToDate else is false.
      */
-    protected boolean isUpToDate;
+    protected boolean UpToDate;
 
     /**
      * Returns upToDate
@@ -68,31 +68,29 @@ public class Grids_GridStatistics1
      * @return
      */
     protected boolean getIsUpToDate() {
-        return isUpToDate;
+        return UpToDate;
     }
 
     /**
-     * Sets this.isUpToDate to isUpToDate
+     * Sets UpToDate to UpToDate
      *
-     * @param isUpToDate
+     * @param upToDate
      */
-    public void setIsUpToDate(
-            boolean isUpToDate) {
-        this.isUpToDate = isUpToDate;
+    void setIsUpToDate(
+            boolean upToDate) {
+        UpToDate = upToDate;
     }
 
     /**
-     * Updates fields (statistics) by going through all values in
-     * this.grid2DSquareCellAbstract if they might not be up to date. (NB. After
-     * calling this it is inexpensive to convert to GridStatistics0.)
+     * Updates fields (statistics) by going through all values in Grid if they
+     * might not be up to date. (NB. After calling this it is inexpensive to
+     * convert to Grids_GridStatistics.)
      */
     public @Override
     void update() {
         if (!getIsUpToDate()) {
             init();
-            super.update(
-                    this.Grid.getNRows(this.ge.HandleOutOfMemoryError),
-                    this.Grid.getNCols(this.ge.HandleOutOfMemoryError));
+            super.update();
             setIsUpToDate(true);
         }
     }
@@ -122,6 +120,7 @@ public class Grids_GridStatistics1
     /**
      * For returning the minimum of all non noDataValues as a BigDecimal
      *
+     * @param update If true then an update of the statistics is made.
      * @return
      */
     @Override
@@ -129,12 +128,13 @@ public class Grids_GridStatistics1
         if (update) {
             update();
         }
-        return this.Min;
+        return Min;
     }
 
     /**
      * For returning the maximum of all non noDataValues as a BigDecimal
      *
+     * @param update If true then an update of the statistics is made.
      * @return
      */
     @Override
@@ -142,7 +142,7 @@ public class Grids_GridStatistics1
         if (update) {
             update();
         }
-        return this.Max;
+        return Max;
     }
 
     /**
@@ -151,12 +151,11 @@ public class Grids_GridStatistics1
      *
      * @return
      */
-    protected @Override
-    BigDecimal getArithmeticMeanBigDecimal(
-            int numberOfDecimalPlaces) {
+    @Override
+    protected BigDecimal getArithmeticMean() {
         update();
-        return this.Sum.divide(new BigDecimal(this.NonNoDataValueCount),
-                numberOfDecimalPlaces,
+        return Sum.divide(new BigDecimal(NonNoDataValueCount),
+                NumberOfDecimalPlacesForArithmeticMean,
                 BigDecimal.ROUND_HALF_EVEN);
     }
 

@@ -27,92 +27,60 @@ import java.math.BigDecimal;
  */
 public class Grids_Dimensions implements Serializable {
 
-    private BigDecimal XMin;
-    private BigDecimal XMax;
-    private BigDecimal YMin;
-    private BigDecimal YMax;
-    private BigDecimal Cellsize;
-    private BigDecimal HalfCellsize;
-    private BigDecimal Width;
-    private BigDecimal Height;
-    private BigDecimal Area;
-    /**
-     * Stores the minimum number of decimal places used to store Dimensions.
-     */
-    private int DimensionsScale;
-    
-    protected Grids_Dimensions() {
+    private final BigDecimal XMin;
+    private final BigDecimal XMax;
+    private final BigDecimal YMin;
+    private final BigDecimal YMax;
+    private final BigDecimal Cellsize;
+    private final BigDecimal HalfCellsize;
+    private final BigDecimal Width;
+    private final BigDecimal Height;
+    private final BigDecimal Area;
+
+    public Grids_Dimensions(int NChunkRows, int NChunkCols) {
+        this(BigDecimal.ZERO,
+                new BigDecimal(NChunkRows),
+                BigDecimal.ZERO,
+                new BigDecimal(NChunkCols),
+                BigDecimal.ONE);
     }
-    
+
     /**
-     * DimensionsScale will default to the maximum scale in any of the BigDecimal inputs. 
+     * DimensionsScale will default to the maximum scale in any of the
+     * BigDecimal inputs.
+     *
      * @param xMin The minimum x coordinate.
      * @param xMax The maximum x coordinate.
      * @param yMin The minimum y coordinate.
      * @param yMax The maximum y coordinate.
      * @param cellsize The cellsize.
-     */ 
+     */
     public Grids_Dimensions(
-            BigDecimal xMin,
-            BigDecimal xMax,
-            BigDecimal yMin,
-            BigDecimal yMax,
-            BigDecimal cellsize){
-        this.XMax = xMax;
-        this.XMin = xMin;
-        this.YMax = yMax;
-        this.YMin = yMin;
-        this.Cellsize = cellsize;
-        this.DimensionsScale = getScale(xMin, xMax, yMin, yMax, cellsize);
-    }
-    
-    private int getScale(
             BigDecimal xMin,
             BigDecimal xMax,
             BigDecimal yMin,
             BigDecimal yMax,
             BigDecimal cellsize) {
-        int scale;
-        scale = cellsize.scale();
-        scale = Math.max(scale, xMin.scale());
-        scale = Math.max(scale, yMin.scale());
-        scale = Math.max(scale, xMax.scale());
-        scale = Math.max(scale, yMax.scale());
-        return scale;
-    }
-    
-    /**
-     * @param xMin The minimum x coordinate.
-     * @param xMax The maximum x coordinate.
-     * @param yMin The minimum y coordinate.
-     * @param yMax The maximum y coordinate.
-     * @param cellsize The cellsize. 
-     * @param dimensionsScale The maximum number of decimal places used to store XMin, XMax, YMin, YMax.
-     */
-    
-    public Grids_Dimensions(
-            BigDecimal xMin,
-            BigDecimal xMax,
-            BigDecimal yMin,
-            BigDecimal yMax,
-            BigDecimal cellsize,
-            int dimensionsScale) {
         this.XMax = xMax;
         this.XMin = xMin;
         this.YMax = yMax;
         this.YMin = yMin;
-        this.DimensionsScale = dimensionsScale;
+        Cellsize = cellsize;
+        Width = XMax.subtract(XMin);
+        Height = YMax.subtract(YMin);
+        Area = Width.multiply(Height);
+        HalfCellsize = Cellsize.divide(BigDecimal.valueOf(2L));
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         String result;
-        result = "Dimensions(XMin " + XMin + ", "
-                + "XMax " + XMax + ", "
-                + "YMin " + YMin +  ", "
-                + "YMax " + YMax +  ", "
-                + "Cellsize " + Cellsize + ", "
-                + "DimensionsScale " + DimensionsScale + ")";
+        result = "Dimensions("
+                + "XMin(" + XMin + "),"
+                + "XMax(" + XMax + "),"
+                + "YMin(" + YMin + "),"
+                + "YMax(" + YMax + "),"
+                + "Cellsize(" + Cellsize + "))";
         return result;
     }
 
@@ -151,38 +119,19 @@ public class Grids_Dimensions implements Serializable {
         return Cellsize;
     }
 
-    /**
-     * @return the DimensionsScale
-     */
-    public int getDimensionsScale() {
-        return DimensionsScale;
-    }
-    
     public BigDecimal getWidth() {
-        if (Width == null) {
-            Width = XMax.subtract(XMin);
-        }
         return Width;
     }
-    
+
     public BigDecimal getHeight() {
-        if (Height == null) {
-            Height = YMax.subtract(YMin);
-        }
         return Height;
     }
-    
+
     public BigDecimal getArea() {
-        if (Area == null) {
-            Area = getWidth().multiply(getHeight());
-        }
         return Area;
     }
-    
+
     public BigDecimal getHalfCellsize() {
-        if (HalfCellsize == null) {
-            HalfCellsize = Cellsize.divide(BigDecimal.valueOf(2L));
-        }
         return HalfCellsize;
     }
 

@@ -18,6 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
+import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
@@ -27,24 +28,23 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
 
-    private boolean[][] data;
-    private int chunkRowIndex;
-    private int chunkColIndex;
-    private int chunkNrows;
-    private int chunkNcols;
+    protected boolean[][] Data;
+    protected int Row;
+    protected int Col;
+    protected int NRows;
+    protected int NCols;
 
-    public Grids_GridChunkBinaryIterator() {
+    protected Grids_GridChunkBinaryIterator() {
     }
 
     public Grids_GridChunkBinaryIterator(Grids_GridChunkBinary chunk) {
-        this.data = chunk.getData();
-        this.chunkRowIndex = 0;
-        this.chunkColIndex = 0;
+        super(chunk.ge);
+        Data = chunk.getData();
+        Row = 0;
+        Col = 0;
         Grids_GridBinary g = chunk.getGrid();
-        this.chunkNrows = g.getChunkNRows(chunk.ChunkID,
-                ge.HandleOutOfMemoryErrorFalse);
-        this.chunkNcols = g.getChunkNCols(chunk.ChunkID,
-                ge.HandleOutOfMemoryErrorFalse);
+        NRows = g.getChunkNRows(chunk.ChunkID,                ge.HandleOutOfMemoryError);
+        NCols = g.getChunkNCols(chunk.ChunkID,                ge.HandleOutOfMemoryError);
     }
 
     /**
@@ -57,8 +57,8 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
      */
     @Override
     public boolean hasNext() {
-        if (chunkColIndex + 1 == this.chunkNcols) {
-            if (chunkRowIndex + 1 == this.chunkNrows) {
+        if (Col + 1 == NCols) {
+            if (Row + 1 == NRows) {
                 return false;
             }
         }
@@ -72,18 +72,17 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
      */
     @Override
     public Object next() {
-        if (chunkColIndex + 1 == this.chunkNcols) {
-            if (chunkRowIndex + 1 == this.chunkNrows) {
-                //throw NoSuchElementException;
-                //return null;
+        if (Col + 1 == NCols) {
+            if (Row + 1 == NRows) {
+                throw new NoSuchElementException();
             } else {
-                this.chunkRowIndex++;
-                this.chunkColIndex = 0;
+                Row++;
+                Col = 0;
             }
         } else {
-            this.chunkColIndex++;
+            Col++;
         }
-        return this.data[this.chunkRowIndex][this.chunkColIndex];
+        return Data[Row][Col];
     }
 
     /**
@@ -104,6 +103,7 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
      */
     @Override
     public void remove() {
+        throw new UnsupportedOperationException();
     }
 
 }

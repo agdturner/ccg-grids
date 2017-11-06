@@ -20,8 +20,9 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -29,19 +30,27 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * chunk. The order of values within each chunk is determined by each chunk's
  * type.
  */
-public abstract class Grids_AbstractGridIterator
+public abstract class Grids_AbstractGridNumberIterator
         extends Grids_AbstractIterator {
 
-    protected Iterator<Grids_AbstractGridChunk> GridIterator;
-    protected Grids_AbstractGridChunk Chunk;
-    protected Grids_AbstractIterator ChunkIterator;
+    protected Grids_AbstractGridNumber Grid;
+    protected Grids_AbstractGridChunkNumber Chunk;
+    protected Iterator<Grids_AbstractGridChunkNumber> GridIterator;
+    protected Grids_AbstractGridChunkNumberRowMajorOrderIterator ChunkIterator;
 
-    protected Grids_AbstractGridIterator() {
+    protected Grids_AbstractGridNumberIterator() {
+    }
+
+    public Grids_AbstractGridNumberIterator(Grids_AbstractGridNumber grid) {
+        super(grid.ge);
+        Grid = grid;
     }
 
     protected abstract void initChunkIterator();
 
-    public abstract Grids_AbstractIterator getChunkIterator(Grids_AbstractGridChunk chunk);
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
+        return ChunkIterator;
+    }
 
     /**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
@@ -55,14 +64,8 @@ public abstract class Grids_AbstractGridIterator
         if (ChunkIterator.hasNext()) {
             return true;
         } else {
-            while (GridIterator.hasNext()) {
-                Grids_AbstractGridChunkInt chunk
-                        = (Grids_AbstractGridChunkInt) GridIterator.next();
-                Grids_AbstractIterator chunkIterator
-                        = getChunkIterator(chunk);
-                if (chunkIterator.hasNext()) {
-                    return true;
-                }
+            if (GridIterator.hasNext()) {
+                return true;
             }
         }
         return false;
@@ -76,18 +79,36 @@ public abstract class Grids_AbstractGridIterator
      */
     @Override
     public Object next() {
-            if (ChunkIterator.hasNext()) {
-                return ChunkIterator.next();
-            } else {
-                while (GridIterator.hasNext()) {
-                    Chunk = GridIterator.next();
-                    ChunkIterator = getChunkIterator(Chunk);
-                    if (ChunkIterator.hasNext()) {
-                        return ChunkIterator.next();
-                    }
+        if (ChunkIterator.hasNext()) {
+            return ChunkIterator.next();
+        } else {
+            while (GridIterator.hasNext()) {
+                ge.removeFromNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
+                Chunk = (Grids_AbstractGridChunkNumber) GridIterator.next();
+                ge.addToNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
+                ChunkIterator = getChunkIterator();
+                if (ChunkIterator.hasNext()) {
+                    return ChunkIterator.next();
                 }
             }
-        return null;
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
+     *
+     * @return Chunk.ChunkID
+     */
+    public Grids_2D_ID_int getChunkID() {
+        return Chunk.getChunkID(ge.HandleOutOfMemoryError);
+    }
+
+    /**
+     *
+     * @return Chunk.ChunkID
+     */
+    public Grids_2D_ID_int getCellID() {
+        return Chunk.getChunkID(ge.HandleOutOfMemoryError);
     }
 
     /**

@@ -18,25 +18,30 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
+
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
- * instance. The values are not returned in any particular order.
+ * For iterating through the values in a Grid2DSquareCellIntChunkArray instance.
+ * The values are not returned in any particular order.
  */
-public class Grids_GridChunkDoubleArrayIterator extends Grids_GridChunkDoubleIterator {
+public class Grids_GridChunkIntArrayOrMapIterator
+        extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
 
-    private double[][] data;
+    protected int[][] Data;
 
-    public Grids_GridChunkDoubleArrayIterator() {
+    public Grids_GridChunkIntArrayOrMapIterator() {
     }
 
-    /**
-     * Creates a new instance of Grid2DSquareDoubleIterator
-     *
-     * @param chunk The Grids_GridChunkDoubleArray to iterate over.
-     */
-    public Grids_GridChunkDoubleArrayIterator(Grids_GridChunkDoubleArray chunk) {
-        init(chunk);
-        data = chunk.getData();
+    public Grids_GridChunkIntArrayOrMapIterator(
+            Grids_GridChunkIntArray chunk) {
+        super(chunk);
+        Data = chunk.getData();
+    }
+    
+    public Grids_GridChunkIntArrayOrMapIterator(
+            Grids_GridChunkIntMap chunk) {
+        super(chunk);
+        Data = chunk.to2DIntArray();
     }
 
     /**
@@ -47,7 +52,12 @@ public class Grids_GridChunkDoubleArrayIterator extends Grids_GridChunkDoubleIte
     @Override
     public Object next() {
         next0();
-        return data[ChunkRow][ChunkCol];
+        return Data[Row][Col];
     }
 
+    @Override
+    public void remove() {
+        Data[Row][Col] = ((Grids_GridInt) Grid).getNoDataValue(ge.HandleOutOfMemoryError);
+//        throw new UnsupportedOperationException();
+    }
 }

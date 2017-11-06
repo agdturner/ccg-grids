@@ -26,12 +26,20 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 public class Grids_Files extends Generic_Files {
 
     protected File GeneratedGridsDir;
+    protected File GeneratedGridIntDir;
+    protected File GeneratedGridDoubleDir;
+    protected File GeneratedGridIntFactoryDir;
+    protected File GeneratedGridDoubleFactoryDir;
 
     protected Grids_Files() {
     }
 
     public Grids_Files(File dataDirectory) {
         DataDir = dataDirectory;
+    }
+
+    public Grids_Strings getStrings() {
+        return (Grids_Strings) Strings;
     }
 
     public File getGeneratedGridsDir() {
@@ -43,8 +51,40 @@ public class Grids_Files extends Generic_Files {
         return GeneratedGridsDir;
     }
 
-    public Grids_Strings getStrings() {
-        return (Grids_Strings) Strings;
+    public File getGeneratedGridIntDir() {
+        if (GeneratedGridIntDir == null) {
+            GeneratedGridIntDir = new File(
+                    getGeneratedGridsDir(),
+                    getStrings().getString_GridInt());
+        }
+        return GeneratedGridIntDir;
+    }
+
+    public File getGeneratedGridDoubleDir() {
+        if (GeneratedGridDoubleDir == null) {
+            GeneratedGridDoubleDir = new File(
+                    getGeneratedGridsDir(),
+                    getStrings().getString_GridDouble());
+        }
+        return GeneratedGridDoubleDir;
+    }
+
+    public File getGeneratedGridIntFactoryDir() {
+        if (GeneratedGridIntFactoryDir == null) {
+            GeneratedGridIntFactoryDir = new File(
+                    getGeneratedGridsDir(),
+                    getStrings().getString_GridIntFactory());
+        }
+        return GeneratedGridIntFactoryDir;
+    }
+
+    public File getGeneratedGridDoubleFactoryDir() {
+        if (GeneratedGridDoubleFactoryDir == null) {
+            GeneratedGridDoubleFactoryDir = new File(
+                    getGeneratedGridsDir(),
+                    getStrings().getString_GridDoubleFactory());
+        }
+        return GeneratedGridDoubleFactoryDir;
     }
 
     /**

@@ -22,8 +22,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -123,11 +127,12 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
     }
 
     public void densityPlot(
-            boolean _HandleOutOfMemoryError)
+            boolean handleOutOfMemoryError)
             throws Exception {
         Grids_Files files;
         files = ge.getFiles();
-        String resolution = "100";
+        int divisions = 100;
+        String resolution = "" + divisions;
         //File dataDir = files.getDataDir();
         String inDataDirectory = "d:/andyt/projects/phd/data/arc/leeds/grids/" + resolution + "/";
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
@@ -135,10 +140,18 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         String yFilename = "casnullm";
         Grids_GridDoubleFactory gf;
         gf = new Grids_GridDoubleFactory(
-                files.getGeneratedGridsDir(), ge, _HandleOutOfMemoryError);
-        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(new File(inDataDirectory + xFilename + ".asc"));
-        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(new File(inDataDirectory + yFilename + ".asc"));
-        int divisions = 100;
+                ge,
+                files.getGeneratedGridDoubleFactoryDir(),
+                -Double.MAX_VALUE,
+                divisions,
+                divisions,
+                new Grids_Dimensions(divisions, divisions),
+                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge),
+                new Grids_GridChunkDoubleArrayFactory());
+        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(
+                new File(inDataDirectory + xFilename + ".asc"));
+        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
+                new File(inDataDirectory + yFilename + ".asc"));
         System.out.println(xGrid.toString());
         System.out.println(yGrid.toString());
         System.out.println("Processing...");
@@ -148,11 +161,14 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         double[] numy = (double[]) result[2];
         Grids_GridDouble densityPlotGrid = (Grids_GridDouble) result[3];
         System.out.println(densityPlotGrid.toString());
-        double divx
-                = (xGrid.getGridStatistics(_HandleOutOfMemoryError).getMaxDouble(true, _HandleOutOfMemoryError) - xGrid.getGridStatistics(_HandleOutOfMemoryError).getMinDouble(true, _HandleOutOfMemoryError)) / divisions;
+        Grids_AbstractStatisticsBigDecimal statistics;
+        statistics = xGrid.getStatistics(handleOutOfMemoryError);
+        double divx;
+        divx = (statistics.getMax(true, handleOutOfMemoryError).doubleValue()
+                - statistics.getMin(true, handleOutOfMemoryError).doubleValue()) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), _HandleOutOfMemoryError);
+        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), handleOutOfMemoryError);
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new FileOutputStream(new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv")));

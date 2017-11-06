@@ -1285,8 +1285,8 @@ public class Grids_ProcessorDEM
             result.setName(resultName, handleOutOfMemoryError);
             _NRows = result.getNRows(handleOutOfMemoryError);
             _NCols = result.getNCols(handleOutOfMemoryError);
-            double minHeight = result.getGridStatistics(handleOutOfMemoryError).getMinDouble(
-                    true, handleOutOfMemoryError);
+            double minHeight = result.getStatistics(handleOutOfMemoryError).getMin(
+                    true, handleOutOfMemoryError).doubleValue();
             if (outflowHeight < minHeight) {
                 outflowHeight = minHeight;
             }
