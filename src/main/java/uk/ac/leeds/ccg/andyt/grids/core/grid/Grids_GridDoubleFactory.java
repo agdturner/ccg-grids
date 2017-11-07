@@ -19,13 +19,12 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
 import java.io.File;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
@@ -66,7 +65,7 @@ public class Grids_GridDoubleFactory
         super(ge, ge.getFiles().getGeneratedGridDoubleFactoryDir(),
                 chunkNRows, chunkNCols,
                 new Grids_Dimensions(chunkNRows, chunkNCols),
-                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge));
+                new Grids_GridDoubleStatistics(ge));
         NoDataValue = -Double.MAX_VALUE;
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = GridChunkDoubleFactory;
@@ -81,7 +80,7 @@ public class Grids_GridDoubleFactory
      * @param noDataValue
      * @param defaultGridChunkFactory
      * @param dimensions
-     * @param gridStatistics
+     * @param statistics
      * @param chunkNCols The number of columns chunks have by default.
      * @param ge
      */
@@ -92,9 +91,9 @@ public class Grids_GridDoubleFactory
             int chunkNRows,
             int chunkNCols,
             Grids_Dimensions dimensions,
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_GridDoubleStatistics statistics,
             Grids_AbstractGridChunkDoubleFactory defaultGridChunkFactory) {
-        super(ge, directory, chunkNRows, chunkNCols, dimensions, gridStatistics);
+        super(ge, directory, chunkNRows, chunkNCols, dimensions, statistics);
         NoDataValue = noDataValue;
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = defaultGridChunkFactory;
@@ -163,7 +162,7 @@ public class Grids_GridDoubleFactory
     /**
      * Returns a new Grids_GridDouble grid with all values as NoDataValues.
      *
-     * @param gridStatistics The GridStatistics to accompany the returned grid.
+     * @param statistics The GridStatistics to accompany the returned grid.
      * @param directory The directory to be used for storing cached grid
      * information.
      * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
@@ -177,7 +176,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_GridDoubleStatistics statistics,
             File directory,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
             long nRows,
@@ -185,7 +184,7 @@ public class Grids_GridDoubleFactory
             Grids_Dimensions dimensions,
             boolean handleOutOfMemoryError) {
         return new Grids_GridDouble(
-                gridStatistics,
+                statistics,
                 directory,
                 chunkFactory,
                 ChunkNRows,
@@ -251,7 +250,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractStatisticsNumber gridStatistics,
             File directory,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -339,7 +338,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractStatisticsNumber gridStatistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,

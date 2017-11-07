@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
@@ -161,7 +161,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         double[] numy = (double[]) result[2];
         Grids_GridDouble densityPlotGrid = (Grids_GridDouble) result[3];
         System.out.println(densityPlotGrid.toString());
-        Grids_AbstractStatisticsBigDecimal statistics;
+        Grids_AbstractGridNumberStatistics statistics;
         statistics = xGrid.getStatistics(handleOutOfMemoryError);
         double divx;
         divx = (statistics.getMax(true, handleOutOfMemoryError).doubleValue()

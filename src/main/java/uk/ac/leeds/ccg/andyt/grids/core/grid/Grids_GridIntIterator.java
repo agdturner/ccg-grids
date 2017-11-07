@@ -70,6 +70,22 @@ public class Grids_GridIntIterator
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getGridIterator(
+            Grids_AbstractGridChunkNumber chunk) {
+        if (chunk instanceof Grids_GridChunkIntArray || chunk instanceof Grids_GridChunkIntMap) {
+            return new Grids_GridChunkIntArrayOrMapIterator(
+                    (Grids_GridChunkIntArray) chunk);
+        } else {
+            return new Grids_GridChunkIntIterator(
+                    (Grids_GridChunkInt) chunk);
+        }
+    }
+
+    /**
+     * @param chunk
+     * @return Grids_AbstractIterator to iterate over values in chunk.
+     */
+    @Override
     public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
             Grids_AbstractGridChunkNumber chunk) {
         if (chunk instanceof Grids_GridChunkIntArray || chunk instanceof Grids_GridChunkIntMap) {

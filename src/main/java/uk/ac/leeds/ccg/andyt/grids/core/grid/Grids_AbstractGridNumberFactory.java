@@ -18,7 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
@@ -33,23 +33,10 @@ import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
  */
 public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGridFactory {
 
-
-/**
-     * A Directory for swapping.
-     */
     /**
-     * The number of rows in a chunk.
+     * The Grids_AbstractGridNumberStatistics
      */
-    /**
-     * The number of columns in a chunk.
-     */
-    /**
-     * The Dimensions
-     */
-        /**
-     * The Grids_AbstractStatisticsBigDecimal
-     */
-    protected Grids_AbstractStatisticsBigDecimal GridStatistics;
+    protected Grids_AbstractGridNumberStatistics GridStatistics;
 
     protected Grids_AbstractGridNumberFactory() {
     }
@@ -60,7 +47,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             int chunkNRows,
             int chunkNCols,
             Grids_Dimensions dimensions,
-            Grids_AbstractStatisticsBigDecimal gridStatistics) {
+            Grids_AbstractGridNumberStatistics gridStatistics) {
         super(ge);
         Directory = directory;
         ChunkNRows = chunkNRows;
@@ -68,7 +55,6 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
         Dimensions = dimensions;
         GridStatistics = gridStatistics;
     }
-
 
     /**
      * Sets Dimensions to dimensions.
@@ -85,7 +71,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      *
      * @return
      */
-    public Grids_AbstractStatisticsBigDecimal getGridStatistics() {
+    public Grids_AbstractGridNumberStatistics getGridStatistics() {
         return GridStatistics;
     }
 
@@ -95,7 +81,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * @param gridStatistics
      */
     public final void setGridStatistics(
-            Grids_AbstractStatisticsBigDecimal gridStatistics) {
+            Grids_AbstractGridNumberStatistics gridStatistics) {
         GridStatistics = gridStatistics;
     }
 
@@ -115,7 +101,6 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
                 nCols,
                 getDimensions(nRows, nCols));
     }
-
 
     /**
      * @return Grids_AbstractGridNumber with all values as _NoDataValues.

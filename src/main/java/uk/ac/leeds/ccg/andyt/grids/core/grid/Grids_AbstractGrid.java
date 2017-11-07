@@ -101,10 +101,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected Grids_Dimensions Dimensions;
 
-    Grids_AbstractGrid() {
+    protected Grids_AbstractGrid() {
     }
 
-    Grids_AbstractGrid(Grids_Environment ge, File directory) {
+    protected Grids_AbstractGrid(Grids_Environment ge, File directory) {
         super(ge);
         Directory = directory;
     }

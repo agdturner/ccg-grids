@@ -32,7 +32,7 @@ public interface Grids_InterfaceStatistics {
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getNonNoDataValueCount(boolean handleOutOfMemoryError);
+    public Number getN(boolean handleOutOfMemoryError);
 
     /**
      * For returning the sum of all data values.

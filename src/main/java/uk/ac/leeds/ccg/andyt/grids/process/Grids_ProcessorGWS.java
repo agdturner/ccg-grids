@@ -1560,7 +1560,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_GridDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
         BigInteger nonNoDataValueCount;
-        nonNoDataValueCount =                grid.getStatistics(handleOutOfMemoryError).getNonNoDataValueCount(handleOutOfMemoryError);
+        nonNoDataValueCount =                grid.getStatistics(handleOutOfMemoryError).getN(handleOutOfMemoryError);
         //double sparseness = grid.getStatistics().getSparseness();
         long nrows = grid.getNRows(handleOutOfMemoryError);
         long ncols = grid.getNCols(handleOutOfMemoryError);

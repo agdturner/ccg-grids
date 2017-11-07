@@ -18,7 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
 import java.io.File;
@@ -106,7 +106,7 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridInt(
-            Grids_AbstractStatisticsBigDecimal gs,
+            Grids_AbstractGridNumberStatistics gs,
             File directory,
             Grids_AbstractGridChunkIntFactory chunkFactory,
             int chunkNRows,
@@ -147,7 +147,7 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridInt(
-            Grids_AbstractStatisticsBigDecimal gs,
+            Grids_AbstractGridNumberStatistics gs,
             File directory,
             Grids_AbstractGridNumber grid,
             Grids_AbstractGridChunkIntFactory chunkFactory,
@@ -194,7 +194,7 @@ public class Grids_GridInt
      * @param ge
      */
     protected Grids_GridInt(
-            Grids_AbstractStatisticsBigDecimal gs,
+            Grids_AbstractGridNumberStatistics gs,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkIntFactory chunkFactory,
@@ -386,7 +386,7 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     private void init(
-            Grids_AbstractStatisticsBigDecimal statistics,
+            Grids_AbstractGridNumberStatistics statistics,
             File directory,
             Grids_AbstractGridChunkIntFactory chunkFactory,
             int chunkNRows,
@@ -497,7 +497,7 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     private void init(
-            Grids_AbstractStatisticsBigDecimal statistics,
+            Grids_AbstractGridNumberStatistics statistics,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkIntFactory chunkFactory,
             int chunkNRows,
@@ -756,7 +756,7 @@ public class Grids_GridInt
      * then OutOfMemoryErrors are caught and thrown.
      */
     private void init(
-            Grids_AbstractStatisticsBigDecimal statistics,
+            Grids_AbstractGridNumberStatistics statistics,
             File gridFile,
             Grids_AbstractGridChunkIntFactory chunkFactory,
             int chunkNRows,
@@ -1031,37 +1031,37 @@ public class Grids_GridInt
             int newValue,
             int oldValue,
             int noDataValue) {
-        Grids_AbstractStatisticsBigDecimal s;
+        Grids_AbstractGridNumberStatistics s;
         s = getStatistics();
         if (getStatistics() instanceof Grids_GridStatistics) {
             boolean handleOutOfMemoryError;
             handleOutOfMemoryError = ge.HandleOutOfMemoryError;
             if (oldValue != noDataValue) {
                 BigDecimal oldValueBigDecimal = new BigDecimal(oldValue);
-                s.setNonNoDataValueCount(
-                        s.getNonNoDataValueCount(handleOutOfMemoryError).subtract(BigInteger.ONE));
+                s.setN(
+                        s.getN(handleOutOfMemoryError).subtract(BigInteger.ONE));
                 s.setSum(
                         s.getSum(handleOutOfMemoryError).subtract(oldValueBigDecimal));
                 if (oldValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
-                    s.setMinCount(s.getMinCount().subtract(BigInteger.ONE));
+                    s.setNMin(s.getNMin().subtract(BigInteger.ONE));
                 }
                 if (oldValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 0) {
-                    s.setMaxCount(s.getMaxCount().subtract(BigInteger.ONE));
+                    s.setNMax(s.getNMax().subtract(BigInteger.ONE));
                 }
             }
             if (newValue != noDataValue) {
                 BigDecimal newValueBigDecimal = new BigDecimal(newValue);
-                s.setNonNoDataValueCount(
-                        s.getNonNoDataValueCount(handleOutOfMemoryError).add(BigInteger.ONE));
+                s.setN(
+                        s.getN(handleOutOfMemoryError).add(BigInteger.ONE));
                 s.setSum(s.getSum(handleOutOfMemoryError).add(newValueBigDecimal));
                 if (newValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == -1) {
                     s.setMin(newValueBigDecimal);
-                    s.setMinCount(BigInteger.ONE);
+                    s.setNMin(BigInteger.ONE);
                 } else {
                     if (newValueBigDecimal.compareTo(s.getMin(true, handleOutOfMemoryError)) == 0) {
-                        s.setMinCount(s.getMinCount().add(BigInteger.ONE));
+                        s.setNMin(s.getNMin().add(BigInteger.ONE));
                     } else {
-                        if (s.getMinCount().compareTo(BigInteger.ONE) == -1) {
+                        if (s.getNMin().compareTo(BigInteger.ONE) == -1) {
                             // The Statistics need recalculating
                             s.update();
                         }
@@ -1069,12 +1069,12 @@ public class Grids_GridInt
                 }
                 if (newValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 1) {
                     s.setMax(newValueBigDecimal);
-                    s.setMaxCount(BigInteger.ONE);
+                    s.setNMax(BigInteger.ONE);
                 } else {
                     if (newValueBigDecimal.compareTo(s.getMax(true, handleOutOfMemoryError)) == 0) {
-                        s.setMaxCount(s.getMaxCount().add(BigInteger.ONE));
+                        s.setNMax(s.getNMax().add(BigInteger.ONE));
                     } else {
-                        if (s.getMaxCount().compareTo(BigInteger.ONE) == -1) {
+                        if (s.getNMax().compareTo(BigInteger.ONE) == -1) {
                             // The Statistics need recalculating
                             s.update();
                         }
@@ -1750,27 +1750,27 @@ public class Grids_GridInt
         if (valueToInitialise != NoDataValue) {
             try {
                 BigDecimal cellBigDecimal = new BigDecimal(valueToInitialise);
-                Grids_AbstractStatisticsBigDecimal s;
+                Grids_AbstractGridNumberStatistics s;
                 s = getStatistics();
                 boolean handleOutOfMemoryError;
                 handleOutOfMemoryError = ge.HandleOutOfMemoryError;
-                s.setNonNoDataValueCount(
-                        s.getNonNoDataValueCount(handleOutOfMemoryError).add(BigInteger.ONE));
+                s.setN(
+                        s.getN(handleOutOfMemoryError).add(BigInteger.ONE));
                 s.setSum(s.getSum(handleOutOfMemoryError).add(cellBigDecimal));
                 if (cellBigDecimal.compareTo(s.getMin(false, handleOutOfMemoryError)) == -1) {
-                    s.setMinCount(BigInteger.ONE);
+                    s.setNMin(BigInteger.ONE);
                     s.setMin(cellBigDecimal);
                 } else {
                     if (cellBigDecimal.compareTo(s.getMin(false, handleOutOfMemoryError)) == 0) {
-                        s.setMinCount(s.getMinCount().add(BigInteger.ONE));
+                        s.setNMin(s.getNMin().add(BigInteger.ONE));
                     }
                 }
                 if (cellBigDecimal.compareTo(s.getMax(false, handleOutOfMemoryError)) == 1) {
-                    s.setMaxCount(BigInteger.ONE);
+                    s.setNMax(BigInteger.ONE);
                     s.setMax(cellBigDecimal);
                 } else {
                     if (cellBigDecimal.compareTo(s.getMax(false, handleOutOfMemoryError)) == 0) {
-                        s.setMaxCount(s.getMaxCount().add(BigInteger.ONE));
+                        s.setNMax(s.getNMax().add(BigInteger.ONE));
                     }
                 }
             } catch (NumberFormatException e) {

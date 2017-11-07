@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.BitSet;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 
 /**
  * A class for representing grids of double precision values.
@@ -39,7 +39,7 @@ public abstract class Grids_GridBinary
     /**
      * A reference to the grid Statistics Object.
      */
-    protected Grids_AbstractStatisticsBigDecimal GridStatistics;
+    protected Grids_AbstractGridNumberStatistics GridStatistics;
 
     protected Grids_GridBinary() {
     }

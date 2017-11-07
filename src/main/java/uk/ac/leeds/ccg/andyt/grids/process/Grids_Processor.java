@@ -54,7 +54,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -150,7 +150,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Default Statistics.
      */
-    public Grids_AbstractStatisticsBigDecimal Statistics;
+    public Grids_AbstractGridNumberStatistics Statistics;
 
     protected Grids_Processor() {
         StartTime = System.currentTimeMillis();
@@ -1237,7 +1237,7 @@ public class Grids_Processor extends Grids_Object {
         GridDoubleFactory.setChunkNCols(chunkNCols);
         double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double range = max - min;
-        Grids_AbstractStatisticsBigDecimal stats = g.getStatistics(handleOutOfMemoryError);
+        Grids_AbstractGridNumberStatistics stats = g.getStatistics(handleOutOfMemoryError);
         double minGrid = stats.getMin(true, handleOutOfMemoryError).doubleValue();
         double maxGrid = stats.getMax(true, handleOutOfMemoryError).doubleValue();
         double rangeGrid = maxGrid - minGrid;
@@ -1405,7 +1405,7 @@ public class Grids_Processor extends Grids_Object {
         int nChunkRows = g.getNChunkCols(handleOutOfMemoryError);
         int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
         double range = max - min;
-        Grids_AbstractStatisticsBigDecimal stats = g.getStatistics(handleOutOfMemoryError);
+        Grids_AbstractGridNumberStatistics stats = g.getStatistics(handleOutOfMemoryError);
         double minGrid = stats.getMin(true, handleOutOfMemoryError).doubleValue();
         double maxGrid = stats.getMax(true, handleOutOfMemoryError).doubleValue();
         double rangeGrid = maxGrid - minGrid;

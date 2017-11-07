@@ -31,9 +31,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 
 /**
  * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and
@@ -51,11 +49,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotU
 public abstract class Grids_AbstractGridNumber
         extends Grids_AbstractGrid {
 
-    /**
-     * A reference to the grid Statistics Object.
-     */
-    protected Grids_AbstractStatisticsBigDecimal Statistics;
-
     protected Grids_AbstractGridNumber() {
     }
 
@@ -67,7 +60,7 @@ public abstract class Grids_AbstractGridNumber
     public String toString() {
         String result;
         result = super.toString();
-        result += "," + Statistics.toString(true);
+//        result += "," + Statistics.toString(true);
         return result;
     }
 
@@ -79,13 +72,13 @@ public abstract class Grids_AbstractGridNumber
      */
     protected void init(Grids_AbstractGridNumber g) {
         super.init(g);
-        Grids_AbstractStatisticsBigDecimal s;
+        Grids_AbstractGridNumberStatistics s;
         s = g.getStatistics();
-        if (s instanceof Grids_GridStatistics) {
-            Statistics = new Grids_GridStatistics(this);
-        } else {
-            Statistics = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
-        }
+//        if (s instanceof Grids_GridStatistics) {
+//            Statistics = new Grids_GridStatistics(this);
+//        } else {
+//            Statistics = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
+//        }
     }
 
     /**
@@ -1065,9 +1058,9 @@ public abstract class Grids_AbstractGridNumber
      * this._GridStatistics. Or the _GridStatistics need to be made safe in that
      * only copies of fields are passed.
      */
-    public Grids_AbstractStatisticsBigDecimal getStatistics(boolean handleOutOfMemoryError) {
+    public Grids_AbstractGridNumberStatistics getStatistics(boolean handleOutOfMemoryError) {
         try {
-            Grids_AbstractStatisticsBigDecimal result;
+            Grids_AbstractGridNumberStatistics result;
             result = getStatistics();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
@@ -1089,17 +1082,20 @@ public abstract class Grids_AbstractGridNumber
      * this._GridStatistics. Or the _GridStatistics need to be made safe in that
      * only copies of fields are passed.
      */
-    public Grids_AbstractStatisticsBigDecimal getStatistics() {
-        return Statistics;
-    }
+    public abstract Grids_AbstractGridNumberStatistics getStatistics();
+//    {
+//        return Statistics;
+//    }
 
-    public void setStatistics(Grids_AbstractStatisticsBigDecimal s) {
-        Statistics = s;
-        Statistics.init(this);
-    }
+//    public abstract void setStatistics(Grids_AbstractGridNumberStatistics s);
+//    {
+//        Statistics = s;
+//        Statistics.init(this);
+//    }
 
-    public void initGridStatistics(Grids_AbstractStatisticsBigDecimal s) {
-        Statistics = s;
-    }
+//    public abstract void initGridStatistics(Grids_AbstractGridNumberStatistics s);
+//    {
+//        Statistics = s;
+//    }
 
 }

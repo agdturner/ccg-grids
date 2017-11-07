@@ -19,7 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractStatisticsBigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -92,7 +92,7 @@ public class Grids_GridIntFactory
             int chunkNRows,
             int chunkNCols,
             Grids_Dimensions dimensions,
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractGridNumberStatistics gridStatistics,
             Grids_AbstractGridChunkIntFactory defaultGridChunkFactory) {
         super(ge, directory, chunkNRows, chunkNCols, dimensions, gridStatistics);
         NoDataValue = noDataValue;
@@ -177,7 +177,7 @@ public class Grids_GridIntFactory
      * @return
      */
     public Grids_GridInt create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractGridNumberStatistics gridStatistics,
             File directory,
             Grids_AbstractGridChunkIntFactory chunkFactory,
             long nRows,
@@ -251,7 +251,7 @@ public class Grids_GridIntFactory
      * @return
      */
     public Grids_GridInt create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractGridNumberStatistics gridStatistics,
             File directory,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkIntFactory chunkFactory,
@@ -339,7 +339,7 @@ public class Grids_GridIntFactory
      * @return
      */
     public Grids_GridInt create(
-            Grids_AbstractStatisticsBigDecimal gridStatistics,
+            Grids_AbstractGridNumberStatistics gridStatistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkIntFactory chunkFactory,

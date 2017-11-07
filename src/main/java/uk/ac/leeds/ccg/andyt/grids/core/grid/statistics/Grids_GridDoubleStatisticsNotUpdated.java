@@ -31,31 +31,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
  * statistic fields up to date as the underlying data is changed can be
  * expensive, but also it can be expensive to calculate statistics often!)
  */
-public class Grids_GridStatisticsNotUpdatedAsDataChanged
-        extends Grids_AbstractStatisticsBigDecimal
+public class Grids_GridDoubleStatisticsNotUpdated
+        extends Grids_GridDoubleStatistics
         implements Serializable {
-
-    //private static final long serialVersionUID = 1L;
-    /**
-     * Creates a new instance of GridStatistics1
-     */
-    protected Grids_GridStatisticsNotUpdatedAsDataChanged() {
-    }
-
-    public Grids_GridStatisticsNotUpdatedAsDataChanged(Grids_Environment ge) {
-        super(ge);
-    }
-
-    /**
-     * Creates a new instance of GridStatistics1
-     *
-     * @param g
-     */
-    public Grids_GridStatisticsNotUpdatedAsDataChanged(
-            Grids_AbstractGridNumber g) {
-        super(g.ge);
-        init(g);
-    }
 
     /**
      * Is true iff fields are upToDate else is false.
@@ -63,7 +41,32 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
     protected boolean UpToDate;
 
     /**
-     * Returns upToDate
+     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     */
+    protected Grids_GridDoubleStatisticsNotUpdated() {
+    }
+
+    /**
+     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     *
+     * @param ge
+     */
+    public Grids_GridDoubleStatisticsNotUpdated(Grids_Environment ge) {
+        super(ge);
+    }
+
+    /**
+     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     *
+     * @param g
+     */
+    public Grids_GridDoubleStatisticsNotUpdated(
+            Grids_AbstractGridNumber g) {
+        super(g.ge);
+    }
+
+    /**
+     * Returns upToDate.
      *
      * @return
      */
@@ -72,7 +75,7 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
     }
 
     /**
-     * Sets UpToDate to UpToDate
+     * Sets UpToDate to upToDate.
      *
      * @param upToDate
      */
@@ -84,47 +87,46 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
     /**
      * Updates fields (statistics) by going through all values in Grid if they
      * might not be up to date. (NB. After calling this it is inexpensive to
-     * convert to Grids_GridStatistics.)
+     * convert to Grids_GridIntStatistics.)
      */
     @Override
     public void update() {
         if (!isUpToDate()) {
-            init();
             super.update();
             setUpToDate(true);
         }
     }
 
     /**
-     * For returning the number of cells with noDataValues as a BigInteger
+     * For returning the number of cells with data values.
      *
      * @return
      */
-    protected @Override
-    BigInteger getNonNoDataValueCount() {
+    @Override
+    protected BigInteger getN() {
         update();
-        return this.NonNoDataValueCount;
+        return N;
     }
 
     /**
-     * For returning the sum of all non noDataValues as a BigDecimal
+     * For returning the sum of all data values.
      *
      * @return
      */
-    protected @Override
-    BigDecimal getSum() {
+    @Override
+    protected BigDecimal getSum() {
         update();
-        return this.Sum;
+        return Sum;
     }
 
     /**
-     * For returning the minimum of all non noDataValues as a BigDecimal
+     * For returning the minimum of all data values.
      *
      * @param update If true then an update of the statistics is made.
      * @return
      */
     @Override
-    protected BigDecimal getMin(boolean update) {
+    protected Double getMin(boolean update) {
         if (update) {
             update();
         }
@@ -132,31 +134,32 @@ public class Grids_GridStatisticsNotUpdatedAsDataChanged
     }
 
     /**
-     * For returning the maximum of all non noDataValues as a BigDecimal
+     * For returning the maximum of all data values.
      *
      * @param update If true then an update of the statistics is made.
      * @return
      */
     @Override
-    protected BigDecimal getMax(boolean update) {
+    protected Double getMax(boolean update) {
         if (update) {
             update();
         }
         return Max;
     }
 
-    /**
-     * For returning the arithmetic mean of all non noDataValues as a BigDecimal
-     * Throws an ArithmeticException if NonNoDataValueCount is equal to zero.
-     *
-     * @return
-     */
     @Override
-    protected BigDecimal getArithmeticMean() {
-        update();
-        return Sum.divide(new BigDecimal(NonNoDataValueCount),
-                NumberOfDecimalPlacesForArithmeticMean,
-                BigDecimal.ROUND_HALF_EVEN);
+    protected String getName() {
+        return getClass().getName();
+    }
+
+    @Override
+    protected BigInteger getNonZeroN() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected BigDecimal getStandardDeviation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

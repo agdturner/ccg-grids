@@ -46,16 +46,17 @@ public abstract class Grids_AbstractGridNumberIterator
         super(grid.ge);
         Grid = grid;
     }
-
+    
     protected abstract void initChunkIterator();
 
-    /**
-     * ChunkIterator
-     * @return 
-     */
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
-        return ChunkIterator;
-    }
+    public abstract Grids_AbstractGridNumber getGrid();
+
+    public abstract Iterator<Grids_AbstractGridChunk> getGridIterator();
+
+    public abstract Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator();
+//    {
+//        return ChunkIterator;
+//    }
 
     /**
      * ChunkIterator
