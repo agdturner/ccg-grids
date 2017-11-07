@@ -25,6 +25,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
@@ -42,6 +43,8 @@ public class Grids_GridDoubleFactory
 //    public Grids_GridChunkDoubleArrayFactory ChunkDoubleArrayFactory;
     public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkFactory;
 
+    public Grids_GridDoubleStatistics Statistics;
+
     protected Grids_GridDoubleFactory() {
     }
 
@@ -49,9 +52,9 @@ public class Grids_GridDoubleFactory
      * Creates a new Grids_GridDoubleFactory. Directory is defaulted to
      * ge.getFiles().getGeneratedGridDoubleFactoryDir(). Dimensions is defaulted
      * to new Grids_Dimensions(chunkNRows, chunkNCols). Statistics is defaulted
-     * to new Grids_GridStatisticsNotUpdatedAsDataChanged(ge). NoDataValue is
-     * defaulted to -Double.MAX_VALUE. GridChunkDoubleFactory is defaulted to new
-     * Grids_GridChunkDoubleFactory(). DefaultGridChunkFactory is defaulted to
+     * to new Grids_GridStatisticsNotUpdated(ge). NoDataValue is defaulted to
+     * -Double.MAX_VALUE. GridChunkDoubleFactory is defaulted to new
+     * Grids_GridChunkDoubleFactory. DefaultGridChunkFactory is defaulted to
      * GridChunkDoubleFactory.
      *
      * @param chunkNRows The number of rows chunks have by default.
@@ -64,8 +67,8 @@ public class Grids_GridDoubleFactory
             int chunkNCols) {
         super(ge, ge.getFiles().getGeneratedGridDoubleFactoryDir(),
                 chunkNRows, chunkNCols,
-                new Grids_Dimensions(chunkNRows, chunkNCols),
-                new Grids_GridDoubleStatistics(ge));
+                new Grids_Dimensions(chunkNRows, chunkNCols));
+        Statistics = new Grids_GridDoubleStatisticsNotUpdated(ge);
         NoDataValue = -Double.MAX_VALUE;
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = GridChunkDoubleFactory;
@@ -93,7 +96,8 @@ public class Grids_GridDoubleFactory
             Grids_Dimensions dimensions,
             Grids_GridDoubleStatistics statistics,
             Grids_AbstractGridChunkDoubleFactory defaultGridChunkFactory) {
-        super(ge, directory, chunkNRows, chunkNCols, dimensions, statistics);
+        super(ge, directory, chunkNRows, chunkNCols, dimensions);
+        Statistics = statistics;
         NoDataValue = noDataValue;
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(NoDataValue);
         DefaultGridChunkFactory = defaultGridChunkFactory;
@@ -150,7 +154,8 @@ public class Grids_GridDoubleFactory
             long nCols,
             Grids_Dimensions dimensions,
             boolean handleOutOfMemoryError) {
-        return create(getGridStatistics(),
+        return create(
+                new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 DefaultGridChunkFactory,
                 nRows,
@@ -162,9 +167,9 @@ public class Grids_GridDoubleFactory
     /**
      * Returns a new Grids_GridDouble grid with all values as NoDataValues.
      *
-     * @param statistics The GridStatistics to accompany the returned grid.
-     * @param directory The directory to be used for storing cached grid
-     * information.
+     * @param statistics The type of Grids_GridDoubleStatistics to accompany the
+     * returned grid.
+     * @param directory The directory to be used for caching grid data.
      * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
      * for creating chunks that the constructed Grid is to be made of.
      * @param nRows The NRows.
@@ -184,7 +189,7 @@ public class Grids_GridDoubleFactory
             Grids_Dimensions dimensions,
             boolean handleOutOfMemoryError) {
         return new Grids_GridDouble(
-                statistics,
+                getStatistics(statistics),
                 directory,
                 chunkFactory,
                 ChunkNRows,
@@ -203,7 +208,7 @@ public class Grids_GridDoubleFactory
     /**
      * Returns a new Grids_GridDouble with all values taken from g.
      *
-     * @param directory The Directory to be used for storing cached data.
+     * @param directory The Directory to be used for caching data.
      * @param g The Grids_AbstractGridNumber from which values are used.
      * @param startRowIndex The topmost row index of g.
      * @param startColIndex The leftmost column index of g.
@@ -220,7 +225,8 @@ public class Grids_GridDoubleFactory
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
-        return create(getGridStatistics(),
+        return create(
+                new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 g,
                 DefaultGridChunkFactory,
@@ -234,9 +240,9 @@ public class Grids_GridDoubleFactory
     /**
      * Returns a new Grids_GridDouble with all values taken from g.
      *
-     * @param gridStatistics The GridStatistics to accompany the returned grid.
-     * @param directory The directory to be used for storing cached
-     * Grid2DSquareCellDouble information.
+     * @param statistics The type of Grids_GridDoubleStatistics to accompany the
+     * returned grid.
+     * @param directory The directory to be used for caching data.
      * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
      * for creating chunks that the constructed Grid is to be made of.
      * @param g The Grids_AbstractGridNumber from which grid values are used.
@@ -250,7 +256,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractStatisticsNumber gridStatistics,
+            Grids_GridDoubleStatistics statistics,
             File directory,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -260,7 +266,7 @@ public class Grids_GridDoubleFactory
             long endColIndex,
             boolean handleOutOfMemoryError) {
         return new Grids_GridDouble(
-                gridStatistics,
+                getStatistics(statistics),
                 directory,
                 g,
                 chunkFactory,
@@ -303,7 +309,8 @@ public class Grids_GridDoubleFactory
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
-        return create(getGridStatistics(),
+        return create(
+                new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 gridFile,
                 DefaultGridChunkFactory,
@@ -317,7 +324,8 @@ public class Grids_GridDoubleFactory
     /**
      * Returns a new Grids_GridDouble with values obtained from gridFile.
      *
-     * @param gridStatistics The GridStatistics to accompany the returned grid.
+     * @param statistics The type of Grids_GridDoubleStatistics to accompany the
+     * returned grid.
      * @param directory The Directory to be used for storing cached Grid
      * information.
      * @param gridFile Either a Directory, or a formatted File with a specific
@@ -338,7 +346,7 @@ public class Grids_GridDoubleFactory
      * @return
      */
     public Grids_GridDouble create(
-            Grids_AbstractStatisticsNumber gridStatistics,
+            Grids_GridDoubleStatistics statistics,
             File directory,
             File gridFile,
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
@@ -348,7 +356,7 @@ public class Grids_GridDoubleFactory
             long endColIndex,
             boolean handleOutOfMemoryError) {
         return new Grids_GridDouble(
-                gridStatistics,
+                getStatistics(statistics),
                 directory,
                 gridFile,
                 chunkFactory,
@@ -361,6 +369,19 @@ public class Grids_GridDoubleFactory
                 NoDataValue,
                 ge,
                 handleOutOfMemoryError);
+    }
+
+    /**
+     *
+     * @param statistics
+     * @return a new statistics of the same type for use.
+     */
+    private Grids_GridDoubleStatistics getStatistics(Grids_GridDoubleStatistics statistics) {
+        if (statistics instanceof Grids_GridDoubleStatisticsNotUpdated) {
+            return new Grids_GridDoubleStatisticsNotUpdated(ge);
+        } else {
+            return new Grids_GridDoubleStatistics(ge);
+        }
     }
 
     /////////////////////////

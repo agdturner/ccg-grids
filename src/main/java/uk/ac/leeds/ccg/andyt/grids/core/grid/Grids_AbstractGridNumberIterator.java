@@ -51,12 +51,13 @@ public abstract class Grids_AbstractGridNumberIterator
 
     public abstract Grids_AbstractGridNumber getGrid();
 
-    public abstract Iterator<Grids_AbstractGridChunk> getGridIterator();
+    public Iterator<Grids_AbstractGridChunk> getGridIterator() {
+        return GridIterator;
+    }
 
-    public abstract Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator();
-//    {
-//        return ChunkIterator;
-//    }
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
+          return ChunkIterator;
+    }
 
     /**
      * ChunkIterator

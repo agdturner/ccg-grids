@@ -47,14 +47,16 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -138,19 +140,26 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDoubleFactory GridDoubleFactory;
 
     /**
-     * Grids_GridStatistics
+     * Grids_GridDoubleStatistics
      */
-    public Grids_GridStatistics GridStatistics0;
+    public Grids_GridDoubleStatistics GridDoubleStatistics;
 
     /**
-     * Grids_GridStatisticsNotUpdatedAsDataChanged
+     * Grids_GridDoubleStatisticsNotUpdated
      */
-    public Grids_GridStatisticsNotUpdatedAsDataChanged GridStatistics1;
+    public Grids_GridDoubleStatisticsNotUpdated GridDoubleStatisticsNotUpdated;
 
     /**
-     * Default Statistics.
+     * Grids_GridIntStatistics
      */
-    public Grids_AbstractGridNumberStatistics Statistics;
+    public Grids_GridIntStatistics GridIntStatistics;
+
+    /**
+     * Grids_GridIntStatisticsNotUpdated
+     */
+    public Grids_GridIntStatisticsNotUpdated GridIntStatisticsNotUpdated;
+
+    
 
     protected Grids_Processor() {
         StartTime = System.currentTimeMillis();
@@ -254,9 +263,10 @@ public class Grids_Processor extends Grids_Object {
      * Initialises Statistics.
      */
     private void initGridStatistics() {
-        GridStatistics0 = new Grids_GridStatistics(ge);
-        GridStatistics1 = new Grids_GridStatisticsNotUpdatedAsDataChanged(ge);
-        Statistics = GridStatistics0;
+        GridDoubleStatistics = new Grids_GridDoubleStatistics(ge);
+        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatisticsNotUpdated(ge);
+        GridIntStatistics = new Grids_GridIntStatistics(ge);
+        GridIntStatisticsNotUpdated = new Grids_GridIntStatisticsNotUpdated(ge);
     }
 
     /**
@@ -612,8 +622,8 @@ public class Grids_Processor extends Grids_Object {
      * @param x2 The x coordinate of another point.
      * @param y2 The y coordinate of another point.
      * @param chunkCols The number of Grid2DSquareCellChunkAbstract columns in
-     * theAbstractGrid2DSquareCelll that's Grid2DSquareCellChunkAbstract could
-     * be swapped if an OutOfMemoryError is thrown.
+ theAbstractGrid2DSquareCelll that'Statistics Grid2DSquareCellChunkAbstract could
+ be swapped if an OutOfMemoryError is thrown.
      * @param chunkRowIndex The chunk row index of the
      * Grid2DSquareCellChunkAbstract not to be swapped if an OutOfMemoryError is
      * thrown.

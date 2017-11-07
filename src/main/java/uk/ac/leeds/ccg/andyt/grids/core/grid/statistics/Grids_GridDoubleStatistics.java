@@ -23,9 +23,10 @@ import java.math.BigInteger;
 import java.io.Serializable;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 
 /**
  * Used by Grids_GridDouble instances to access statistics. This class is to be
@@ -36,20 +37,24 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
  * the values have changed.)
  */
 public class Grids_GridDoubleStatistics
-        extends Grids_AbstractGridDoubleStatistics
+        extends Grids_AbstractGridNumberStatistics
         implements Serializable {
 
     /**
      * For storing the minimum value.
      */
+    protected double Min;
     /**
      * For storing the maximum value.
      */
+    protected double Max;
+
     protected Grids_GridDoubleStatistics() {
     }
 
     public Grids_GridDoubleStatistics(Grids_Environment ge) {
         super(ge);
+        init();
     }
 
     /**
@@ -57,11 +62,29 @@ public class Grids_GridDoubleStatistics
      *
      * @param g
      */
-    public Grids_GridDoubleStatistics(
-            Grids_AbstractGridNumber g) {
+    public Grids_GridDoubleStatistics(Grids_GridDouble g) {
         super(g);
+        init();
     }
 
+    /**
+     * For initialisation.
+     */
+    private void init() {
+        //getGrid().initStatistics(this);
+        Min = Double.MAX_VALUE;
+        Max = -Double.MAX_VALUE;
+    }
+
+    /**
+     *
+     * @return (Grids_GridDouble) Grid
+     */
+    @Override
+    public Grids_GridDouble getGrid() {
+        return (Grids_GridDouble) Grid;
+    }
+    
     /**
      * Updates fields (statistics) by going through all values in Grid if they
      * might not be up to date.
@@ -123,6 +146,10 @@ public class Grids_GridDoubleStatistics
         }
         return Min;
     }
+    
+    public void setMin(double min) {
+        Min = min;
+    }
 
     /**
      * For returning the maximum of all data values.
@@ -137,6 +164,10 @@ public class Grids_GridDoubleStatistics
             }
         }
         return Max;
+    }
+
+    public void setMax(double max) {
+        Max = max;
     }
 
     @Override
@@ -154,27 +185,26 @@ public class Grids_GridDoubleStatistics
     protected BigInteger getN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
-        double noDataValue;
-        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-//        
-//        g.getChunkIDChunkMap();
-//        
-//        
-//        Grids_GridIntIterator ite;
-//        ite = g.iterator();
-//        ite.GridIterator.
-//        
-//        ite.getChunkIterator()
-//        
-//        
-        Iterator<Integer> ite;
-        ite = g.iterator(ge.HandleOutOfMemoryError);
+        Grids_GridDoubleIterator gridDoubleIterator;
+        gridDoubleIterator = new Grids_GridDoubleIterator(g);
+        Iterator<Grids_AbstractGridChunk> ite;
+        ite = gridDoubleIterator.getGridIterator();
+        Grids_AbstractGridChunkDouble chunk;
         while (ite.hasNext()) {
-            int value = ite.next();
-            if (value != noDataValue) {
-                result = result.add(BigInteger.ONE);
-            }
+            chunk = (Grids_AbstractGridChunkDouble) ite.next();
+            result = result.add(
+                    chunk.getNonNoDataValueCountBigInteger(ge.HandleOutOfMemoryError));
         }
+//        double noDataValue;
+//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        Iterator<Double> ite;
+//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        while (ite.hasNext()) {
+//            double value = ite.next();
+//            if (value != noDataValue) {
+//                result = result.add(BigInteger.ONE);
+//            }
+//        }
         return result;
     }
 
@@ -207,7 +237,31 @@ public class Grids_GridDoubleStatistics
 
     @Override
     protected BigDecimal getSum() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BigDecimal result = BigDecimal.ZERO;
+        Grids_GridDouble g = getGrid();
+        Grids_GridDoubleIterator gridDoubleIterator;
+        gridDoubleIterator = new Grids_GridDoubleIterator(g);
+        Iterator<Grids_AbstractGridChunk> ite;
+        ite = gridDoubleIterator.getGridIterator();
+        Grids_AbstractGridChunkDouble chunk;
+        while (ite.hasNext()) {
+            chunk = (Grids_AbstractGridChunkDouble) ite.next();
+            result = result.add(
+                    chunk.getSumBigDecimal(ge.HandleOutOfMemoryError));
+            //System.out.println(result);
+        }
+//        double noDataValue;
+//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        Iterator<Double> ite;
+//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        while (ite.hasNext()) {
+//            double value = ite.next();
+//            if (value != noDataValue) {
+//                result = result.add(new BigDecimal(value));
+//                //System.out.println(result);
+//            }
+//        }
+        return result;
     }
 
     @Override

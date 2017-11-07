@@ -18,25 +18,17 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 import java.io.File;
 import java.io.ObjectInputStream;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 
 /**
  * Abstract class to be extended by all Grids_AbstractGridNumber factories.
  */
 public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGridFactory {
-
-    /**
-     * The Grids_AbstractGridNumberStatistics
-     */
-    protected Grids_AbstractGridNumberStatistics GridStatistics;
 
     protected Grids_AbstractGridNumberFactory() {
     }
@@ -46,14 +38,12 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             File directory,
             int chunkNRows,
             int chunkNCols,
-            Grids_Dimensions dimensions,
-            Grids_AbstractGridNumberStatistics gridStatistics) {
+            Grids_Dimensions dimensions) {
         super(ge);
         Directory = directory;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         Dimensions = dimensions;
-        GridStatistics = gridStatistics;
     }
 
     /**
@@ -64,25 +54,6 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
     public void setDimensions(
             Grids_Dimensions dimensions) {
         Dimensions = dimensions;
-    }
-
-    /**
-     * Returns GridStatistics.
-     *
-     * @return
-     */
-    public Grids_AbstractGridNumberStatistics getGridStatistics() {
-        return GridStatistics;
-    }
-
-    /**
-     * Sets GridStatistics to gridStatistics.
-     *
-     * @param gridStatistics
-     */
-    public final void setGridStatistics(
-            Grids_AbstractGridNumberStatistics gridStatistics) {
-        GridStatistics = gridStatistics;
     }
 
     /////////////////////////

@@ -23,9 +23,11 @@ import java.math.BigInteger;
 import java.io.Serializable;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 
 /**
  * Used by Grids_GridInt instances to access statistics. This class is to be
@@ -36,24 +38,47 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
  * the values have changed.)
  */
 public class Grids_GridIntStatistics
-        extends Grids_AbstractGridIntStatistics
+        extends Grids_AbstractGridNumberStatistics
         implements Serializable {
+
+    /**
+     * For storing the minimum value.
+     */
+    protected int Min;
+    /**
+     * For storing the maximum value.
+     */
+    protected int Max;
 
     protected Grids_GridIntStatistics() {
     }
 
     public Grids_GridIntStatistics(Grids_Environment ge) {
         super(ge);
+        init();
+    }
+
+    public Grids_GridIntStatistics(Grids_GridInt g) {
+        super(g);
+        init();
     }
 
     /**
-     * Creates a new instance of Grids_GridIntStatistics.
-     *
-     * @param g
+     * For initialisation.
      */
-    public Grids_GridIntStatistics(
-            Grids_AbstractGridNumber g) {
-        super(g);
+    private void init() {
+        //getGrid().initStatistics(this);
+        Min = Integer.MIN_VALUE;
+        Max = Integer.MAX_VALUE;
+    }
+
+    /**
+     *
+     * @return (Grids_GridInt) Grid
+     */
+    @Override
+    public Grids_GridInt getGrid() {
+        return (Grids_GridInt) Grid;
     }
 
     /**
@@ -113,7 +138,11 @@ public class Grids_GridIntStatistics
         }
         return Min;
     }
-
+    
+    public void setMin(int min) {
+        Min = min;
+    }
+    
     /**
      * For returning the maximum of all data values.
      *
@@ -129,55 +158,62 @@ public class Grids_GridIntStatistics
         return Max;
     }
 
+    public void setMax(int max) {
+        Max = max;
+    }
+    
     @Override
     protected String getName() {
         return getClass().getName();
     }
 
     /**
-     * @TODO Take advantage of the data structures of some types of chunk to
-     * optimise this. Probably the best way to do this is to iterate over the
-     * chunks and sum all the N from each chunk.
      * @return
      */
     @Override
     protected BigInteger getN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
-        int noDataValue;
-        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-//        
-//        g.getChunkIDChunkMap();
-//        
-//        
-//        Grids_GridIntIterator ite;
-//        ite = g.iterator();
-//        ite.GridIterator.
-//        
-//        ite.getChunkIterator()
-//        
-//        
-        Iterator<Integer> ite;
-        ite = g.iterator(ge.HandleOutOfMemoryError);
+        Grids_GridIntIterator gridIntIterator;
+        gridIntIterator = new Grids_GridIntIterator(g);
+        Iterator<Grids_AbstractGridChunk> ite;
+        ite = gridIntIterator.getGridIterator();
+        Grids_AbstractGridChunkInt chunk;
         while (ite.hasNext()) {
-            int value = ite.next();
-            if (value != noDataValue) {
-                result = result.add(BigInteger.ONE);
-            }
+            chunk = (Grids_AbstractGridChunkInt) ite.next();
+            result = result.add(
+                    chunk.getNonNoDataValueCountBigInteger(ge.HandleOutOfMemoryError));
         }
+//        int noDataValue;
+//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        Iterator<Integer> ite;
+//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        while (ite.hasNext()) {
+//            int value = ite.next();
+//            if (value != noDataValue) {
+//                result = result.add(BigInteger.ONE);
+//            }
+//        }
         return result;
     }
 
     /**
-     * @TODO Take advantage of the data structures of some types of chunk to
-     * optimise this. Probably the best way to do this is to iterate over the
-     * chunks and sum all the N from each chunk.
      * @return
      */
     @Override
     protected BigInteger getNonZeroN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
+//        Grids_GridIntIterator gridIntIterator;
+//        gridIntIterator = new Grids_GridIntIterator(g);
+//        Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIterator;
+//        chunkIterator = gridIntIterator.getChunkIterator();
+//        Grids_AbstractGridChunkInt chunkDouble;
+//        while (chunkIterator.hasNext()) {
+//            chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
+//            result = result.add(
+//                    chunkDouble.getNonZeroN(ge.HandleOutOfMemoryError));
+//        }
         int noDataValue;
         noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         Iterator<Integer> ite;
@@ -193,7 +229,29 @@ public class Grids_GridIntStatistics
 
     @Override
     protected BigDecimal getSum() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BigDecimal result = BigDecimal.ZERO;
+        Grids_GridInt g = getGrid();
+        Grids_GridIntIterator gridIntIterator;
+        gridIntIterator = new Grids_GridIntIterator(g);
+        Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIterator;
+        chunkIterator = gridIntIterator.getChunkIterator();
+        Grids_AbstractGridChunkInt chunkDouble;
+        while (chunkIterator.hasNext()) {
+            chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
+            result = result.add(
+                    chunkDouble.getSumBigDecimal(ge.HandleOutOfMemoryError));
+        }
+//        int noDataValue;
+//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        Iterator<Integer> ite;
+//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        while (ite.hasNext()) {
+//            int value = ite.next();
+//            if (value != noDataValue) {
+//                result = result.add(BigDecimal.valueof(value));
+//            }
+//        }
+        return result;
     }
 
     @Override

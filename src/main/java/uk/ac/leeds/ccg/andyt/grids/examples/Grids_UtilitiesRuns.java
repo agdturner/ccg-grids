@@ -26,8 +26,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -146,7 +146,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
                 divisions,
                 divisions,
                 new Grids_Dimensions(divisions, divisions),
-                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge),
+                new Grids_GridDoubleStatisticsNotUpdated(ge),
                 new Grids_GridChunkDoubleArrayFactory());
         Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(
                 new File(inDataDirectory + xFilename + ".asc"));
@@ -161,8 +161,8 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         double[] numy = (double[]) result[2];
         Grids_GridDouble densityPlotGrid = (Grids_GridDouble) result[3];
         System.out.println(densityPlotGrid.toString());
-        Grids_AbstractGridNumberStatistics statistics;
-        statistics = xGrid.getStatistics(handleOutOfMemoryError);
+        Grids_GridDoubleStatistics statistics;
+        statistics = (Grids_GridDoubleStatistics) xGrid.getStatistics(handleOutOfMemoryError);
         double divx;
         divx = (statistics.getMax(true, handleOutOfMemoryError).doubleValue()
                 - statistics.getMin(true, handleOutOfMemoryError).doubleValue()) / divisions;

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -3084,7 +3085,7 @@ public class Grids_Environment
         Iterator<Grids_AbstractGrid> ite;
         ite = getGrids().iterator();
         Grids_AbstractGrid gb;
-        HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> m;
+        TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> m;
         Set<Grids_2D_ID_int> chunkIDsb;
         Iterator<Grids_2D_ID_int> iteb;
         Grids_2D_ID_int chunkID;

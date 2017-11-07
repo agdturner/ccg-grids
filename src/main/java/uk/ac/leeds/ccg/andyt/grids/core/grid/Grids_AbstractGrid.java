@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
@@ -60,12 +61,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected transient File Directory;
     /**
-     * The Grids_AbstractGridChunk data cache. A collection is used rather than
-     * an array because an element of a collection set to null is available for
-     * garbage collection whereas an element of an array set to null seems not
-     * to be.
+     * The Grids_AbstractGridChunk data cache.
      */
-    protected transient HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
+    protected transient TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
     /**
      * For storing the number of chunk rows.
      */
@@ -147,13 +145,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             ois = Generic_StaticIO.getObjectInputStream(cache);
             try {
                 ChunkIDChunkMap
-                        = (HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) ois.readObject();
+                        = (TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) ois.readObject();
                 ois.close();
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            ChunkIDChunkMap = new HashMap<>();
+            ChunkIDChunkMap = new TreeMap<>();
         }
     }
 
@@ -2912,7 +2910,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * see if it is swapToFiled.
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
-        HashMap m = getChunkIDChunkMap(); //DEBUG
         return getChunkIDChunkMap().containsKey(chunkID);
     }
 
@@ -2982,7 +2979,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
      */
     protected final void clearFromCacheChunks() {
-        ChunkIDChunkMap = new HashMap<>();
+        ChunkIDChunkMap = new TreeMap<>();
         System.gc();
     }
 
@@ -4753,7 +4750,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return the ChunkIDChunkMap
      */
-    public HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> getChunkIDChunkMap() {
+    public TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> getChunkIDChunkMap() {
         return ChunkIDChunkMap;
     }
 

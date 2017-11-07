@@ -28,7 +28,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 
 /**
- * For iterating through the values in a Grid2DSquareCellInt instance. The
+ * For iterating through the values in a Grids_GridInt instance. The
  * values are returned chunk by chunk, but the order within each chunk is
  * determined by the chunks types. If some
  */
@@ -70,7 +70,7 @@ public class Grids_GridIntIterator
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getGridIterator(
+    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
             Grids_AbstractGridChunkNumber chunk) {
         if (chunk instanceof Grids_GridChunkIntArray || chunk instanceof Grids_GridChunkIntMap) {
             return new Grids_GridChunkIntArrayOrMapIterator(
@@ -81,20 +81,9 @@ public class Grids_GridIntIterator
         }
     }
 
-    /**
-     * @param chunk
-     * @return Grids_AbstractIterator to iterate over values in chunk.
-     */
     @Override
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
-            Grids_AbstractGridChunkNumber chunk) {
-        if (chunk instanceof Grids_GridChunkIntArray || chunk instanceof Grids_GridChunkIntMap) {
-            return new Grids_GridChunkIntArrayOrMapIterator(
-                    (Grids_GridChunkIntArray) chunk);
-        } else {
-            return new Grids_GridChunkIntIterator(
-                    (Grids_GridChunkInt) chunk);
-        }
+    public Grids_GridInt getGrid() {
+        return (Grids_GridInt) Grid;
     }
 
 }

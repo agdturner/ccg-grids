@@ -116,7 +116,6 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     public final void init(
             Grids_AbstractGridNumber g) {
         Grid = g;
-        Grid.initGridStatistics(this);
         init();
     }
 
@@ -228,6 +227,12 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
         return result;
     }
 
+    
+    /**
+     * @return The number of cells with finite data values as a BigInteger.
+     */
+    protected abstract BigInteger getN();
+    
     /**
      * For returning the number of cells with data values as a BigInteger.
      *
@@ -257,6 +262,11 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             }
         }
     }
+
+    /**
+     * @return The number of cells with finite data values as a BigInteger.
+     */
+    protected abstract Grids_AbstractGridNumber getGrid();
 
     /**
      * For returning the number of cells with non zero data values as a
@@ -290,13 +300,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * @return The number of cells with finite data values as a BigInteger.
-     */
-    protected abstract BigInteger getN();
-
-    /**
-     * @return The number of cells with finite non zero data values as a
-     * BigInteger.
+     * @return The number of cells with finite non zero data values.
      */
     protected abstract BigInteger getNonZeroN();
 //    {
@@ -351,7 +355,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //    }
 
     /**
-     * For returning the sum of all non noDataValues as a BigDecimal.
+     * For returning the sum of all finite data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -381,14 +385,14 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * For returning the sum of all non noDataValues as a BigDecimal.
+     * For returning the sum of all finite data values.
      *
      * @return
      */
     protected abstract BigDecimal getSum();
 
     /**
-     * For returning the minimum of all non noDataValues as a BigDecimal.
+     * For returning the minimum of all data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -420,7 +424,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * For returning the minimum of all non noDataValues as a BigInteger.
+     * For returning the minimum of all data values.
      *
      * @param update If true then an update of the statistics is made.
      * @return
@@ -868,7 +872,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        return count;
 //    }
     /**
-     * For returning the arithmetic mean of all data values as a BigDecimal.
+     * For returning the arithmetic mean of all data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -899,7 +903,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * For returning the arithmetic mean of all data values as a BigDecimal
+     * For returning the arithmetic mean of all data values.
      * Throws an ArithmeticException if N is equal to zero.
      *
      * @return
@@ -911,7 +915,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
     
     /**
-     * Returns the standard deviation of all data values as a BigDecimal.
+     * Returns the standard deviation of all data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -942,7 +946,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * Returns the standard deviation of all data values as a BigDecimal.
+     * Returns the standard deviation of all data values.
      *
      * @return
      */

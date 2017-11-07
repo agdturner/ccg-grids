@@ -47,7 +47,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumber
  * calculations
  */
 public abstract class Grids_AbstractGridNumber
-        extends Grids_AbstractGrid {
+        extends Grids_AbstractGrid implements Grids_InterfaceGridNumber {
 
     protected Grids_AbstractGridNumber() {
     }
@@ -74,7 +74,7 @@ public abstract class Grids_AbstractGridNumber
         super.init(g);
         Grids_AbstractGridNumberStatistics s;
         s = g.getStatistics();
-//        if (s instanceof Grids_GridStatistics) {
+//        if (Statistics instanceof Grids_GridStatistics) {
 //            Statistics = new Grids_GridStatistics(this);
 //        } else {
 //            Statistics = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
@@ -1046,11 +1046,6 @@ public abstract class Grids_AbstractGridNumber
     }
 
     /**
-     * @return An iterator for iterating over the cell values in this.
-     */
-    public abstract Iterator iterator();
-
-    /**
      * @param handleOutOfMemoryError
      * @return this._GridStatistics TODO: For safety, this method should either
      * be removed and this class be made implement GridStatisticsInterface. This
@@ -1075,27 +1070,6 @@ public abstract class Grids_AbstractGridNumber
         }
     }
 
-    /**
-     * @return this._GridStatistics TODO: For safety, this method should either
-     * be removed and this class be made implement GridStatisticsInterface. This
-     * done the methods introduced would be made to call the relevant ones in
-     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
-     * only copies of fields are passed.
-     */
     public abstract Grids_AbstractGridNumberStatistics getStatistics();
-//    {
-//        return Statistics;
-//    }
-
-//    public abstract void setStatistics(Grids_AbstractGridNumberStatistics s);
-//    {
-//        Statistics = s;
-//        Statistics.init(this);
-//    }
-
-//    public abstract void initGridStatistics(Grids_AbstractGridNumberStatistics s);
-//    {
-//        Statistics = s;
-//    }
 
 }
