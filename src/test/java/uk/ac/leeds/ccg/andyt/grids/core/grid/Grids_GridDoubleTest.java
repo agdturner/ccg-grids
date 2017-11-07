@@ -7,20 +7,17 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.statistics.Grids_GridStatistics0;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
 
 /**
  *
@@ -217,13 +214,14 @@ public class Grids_GridDoubleTest {
             boolean handleOutOfMemoryError) {
         Grids_GridDoubleFactory result;
         result = new Grids_GridDoubleFactory(
-                new File(dir, "Grids_GridDoubleFactory"),
+                ge,
+                ge.getFiles().getGeneratedGridDoubleFactoryDir(),
+                noDataValue,
                 chunkNRows,
                 chunkNCols,
-                chunkFactory,
-                noDataValue,
-                ge,
-                handleOutOfMemoryError);
+                new Grids_Dimensions(chunkNRows, chunkNCols),
+                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge),
+                chunkFactory);
         return result;
     }
 
@@ -263,17 +261,14 @@ public class Grids_GridDoubleTest {
             long nCols,
             boolean handleOutOfMemoryError) {
         Grids_GridDouble result;
-        File dir2 = new File(dir, "Grids_GridDouble");
-        dir2 = new File(dir2, name);
-        dir2.mkdirs();
         Grids_Dimensions dimensions;
         dimensions = getDimensions(nRows, nCols);
-        Grids_GridStatistics0 gridStatistics;
-        gridStatistics = new Grids_GridStatistics0(gridFactory.ge);
+        Grids_GridStatistics gridStatistics;
+        gridStatistics = new Grids_GridStatistics(gridFactory.ge);
         result = gridFactory.create( 
                 gridStatistics,
-                dir2,
-                gridFactory.ChunkFactory,
+                gridFactory.ge.getFiles().getGeneratedGridDoubleDir(),
+                gridFactory.GridChunkDoubleFactory,
                 nRows,
                 nCols,
                 dimensions,
