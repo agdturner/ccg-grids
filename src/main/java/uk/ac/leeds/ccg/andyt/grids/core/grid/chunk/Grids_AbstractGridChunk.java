@@ -325,19 +325,19 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
      * chunk cell col index chunkCellColIndex is in this.
      *
-     * @param chunkRow
-     * @param chunkCol
+     * @param row
+     * @param col
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final boolean inChunk(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             boolean handleOutOfMemoryError) {
         try {
-            boolean result = inChunk(chunkRow, chunkCol);
+            boolean result = inChunk(row, col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -347,7 +347,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return inChunk(chunkRow, chunkCol, handleOutOfMemoryError);
+                return inChunk(row, col, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -358,13 +358,13 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
      * chunk cell col index chunkCellColIndex is in this.
      *
-     * @param chunkRow
-     * @param chunkCol
+     * @param row
+     * @param col
      * @return
      */
-    protected boolean inChunk(int chunkRow, int chunkCol) {
-        if (chunkRow >= 0 && chunkRow < ChunkNRows) {
-            if (chunkCol >= 0 && chunkCol < ChunkNCols) {
+    protected boolean inChunk(int row, int col) {
+        if (row >= 0 && row < ChunkNRows) {
+            if (col >= 0 && col < ChunkNCols) {
                 return true;
             }
         }

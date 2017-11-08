@@ -108,24 +108,24 @@ public abstract class Grids_GridBinary
      * @param valueToSet
      * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
      * to valueToSet.
-     * @param cellRowIndex The cell row index.
-     * @param cellColIndex The cell column index.
+     * @param row The cell row index.
+     * @param col The cell column index.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public double setCell(long cellRowIndex, long cellColIndex, double valueToSet, boolean handleOutOfMemoryError) {
+    public double setCell(long row, long col, double valueToSet, boolean handleOutOfMemoryError) {
         try {
-            double result = setCell(cellRowIndex, cellColIndex, valueToSet);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
+            double result = setCell(row, col, valueToSet);
+            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
             ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return setCell(cellRowIndex, cellColIndex, valueToSet, handleOutOfMemoryError);
+                return setCell(row, col, valueToSet, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -135,11 +135,11 @@ public abstract class Grids_GridBinary
     /**
      * Sets the value at _CellRowIndex, _CellColIndex to valueToSet.
      *
-     * @param cellRowIndex The cell row index.
-     * @param cellColIndex The cell column index.
+     * @param row The cell row index.
+     * @param col The cell column index.
      * @param valueToSet The value set.
      * @return
      */
-    protected abstract double setCell(long cellRowIndex, long cellColIndex, double valueToSet);
+    protected abstract double setCell(long row, long col, double valueToSet);
 
 }

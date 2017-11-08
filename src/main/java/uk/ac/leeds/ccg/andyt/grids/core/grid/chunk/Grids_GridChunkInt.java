@@ -69,26 +69,25 @@ public class Grids_GridChunkInt
 
     @Override
     protected int getCell(
-            int chunkRow,
-            int chunkCol) {
+            int row,
+            int col) {
         return Value;
     }
     
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol and sets it to valueToSet
+     * Returns the value at position given by: row, col and sets it to 
+     * valueToSet.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this
      * chunk
-     * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param valueToSet the value the cell is to be set to.
      * @return
      */
     @Override
     protected int setCell(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             int valueToSet) {
         if (valueToSet == Value) {
             return Value;
@@ -113,9 +112,9 @@ public class Grids_GridChunkInt
     }
 
     @Override
-    protected void initCell(
-            int chunkRow,
-            int chunkCol,
+    public void initCell(
+            int row,
+            int col,
             int valueToInitialise) {
         if (valueToInitialise != Value) {
             throw new Error("valueToInitialise != Value in " + 

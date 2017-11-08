@@ -135,42 +135,41 @@ public class Grids_GridChunkIntArray
     }
 
     /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
-     * for constructor.
+     * Initialises the value at position given by: row, col.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param row the row index of the cell w.r.t. the origin of
+     * this chunk.
+     * @param col the column index of the cell w.r.t. the origin
+     * of this chunk.
      * @param valueToInitialise the value with which the cell is initialised
      */
-    protected @Override
+     @Override
+    public
     void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int row,
+            int col,
             int valueToInitialise) {
-        Data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
+        Data[row][col] = valueToInitialise;
     }
 
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex and sets it to valueToSet
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param row the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param col the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
      * @return
      */
     protected @Override
     int setCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            int row,
+            int col,
             int valueToSet) {
-            int oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
-            Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
+            int oldValue = Data[row][col];
+            Data[row][col] = valueToSet;
             if (isSwapUpToDate()) {
                 // Optimisation? Want a setCellFast method closer to initCell? 
                 // What about an unmodifiable readOnly type chunk?

@@ -414,19 +414,19 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol.
+     * Returns the value at position given by: chunk cell row row; chunk
+     * cell row col.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this
      * chunk
      * @return
      */
     @Override
     protected int getCell(
-            int chunkRow,
-            int chunkCol) {
-        int position = (chunkRow * ChunkNCols) + chunkCol;
+            int row,
+            int col) {
+        int position = (row * ChunkNCols) + col;
         if (NoData.get(position)) {
             return NoDataValue;
         } else if (InDataMapBitSet.get(position)) {
@@ -435,7 +435,7 @@ public class Grids_GridChunkIntMap
                 return result;
             }
         } else if (InDataMapHashSet.get(position)) {
-            Grids_2D_ID_int cellID = new Grids_2D_ID_int(chunkRow, chunkCol);
+            Grids_2D_ID_int cellID = new Grids_2D_ID_int(row, col);
             int result = getCell(cellID);
             if (result != NoDataValue) {
                 return result;
@@ -445,20 +445,20 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol.
+     * Returns the value at position given by: chunk cell row row; chunk
+     * cell row col.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this
      * chunk
      * @param cellID
      * @return
      */
     protected int getCell(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             Grids_2D_ID_int cellID) {
-        int position = (chunkRow * ChunkNCols) + chunkCol;
+        int position = (row * ChunkNCols) + col;
         if (NoData.get(position)) {
             return NoDataValue;
         } else if (InDataMapBitSet.get(position)) {
@@ -522,25 +522,25 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Initialises the value at position given by: chunk cell row chunkRow;
-     * chunk cell column chunkCol. Utility method for constructor.
+     * Initialises the value at position given by: chunk cell row row;
+     * chunk cell column col. Utility method for constructor.
      *
-     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this
      * chunk
      * @param valueToInitialise the value with which the cell is initialised
      */
     @Override
-    protected final void initCell(
-            int chunkRow,
-            int chunkCol,
+    public final void initCell(
+            int row,
+            int col,
             int valueToInitialise) {
         Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(
-                chunkRow,
-                chunkCol);
+                row,
+                col);
         initCell(
-                chunkRow,
-                chunkCol,
+                row,
+                col,
                 chunkCellID,
                 valueToInitialise);
     }
@@ -549,19 +549,19 @@ public class Grids_GridChunkIntMap
      * Initialises the value of the chunk referred to by chunkCellID to
      * valueToInitialise. Utility method for constructor.
      *
-     * @param chunkRow
-     * @param chunkCol
+     * @param row
+     * @param col
      * @param chunkCellID the cell ID of the cell to be initialised
      * @param valueToInitialise the value with which the cell is initialised
      */
     protected void initCell(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             Grids_2D_ID_int chunkCellID,
             int valueToInitialise) {
         if (valueToInitialise != DefaultValue) {
             int noDataValue = getGrid().getNoDataValue(Grid.ge.HandleOutOfMemoryError);
-            int position = (chunkRow * ChunkNCols) + chunkCol;
+            int position = (row * ChunkNCols) + col;
             if (valueToInitialise == noDataValue) {
                 NoData.set(position);
             } else {
@@ -606,50 +606,49 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunkRow, chunkCol and sets it to
+     * Returns the value at position given by: row, col and sets it to
      * valueToSet.
      *
-     * @param chunkRow the chunk row.
-     * @param chunkCol the chunk column.
+     * @param row the chunk row.
+     * @param col the chunk column.
      * @param valueToSet the value the cell is to be set to
      * @return
      */
     protected @Override
     int setCell(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             int valueToSet) {
-        Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(chunkRow, chunkCol);
+        Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(row, col);
         return setCell(
-                chunkRow,
-                chunkCol,
+                row,
+                col,
                 chunkCellID,
                 valueToSet);
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell column chunkCol and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row row; chunk
+     * cell column col and sets it to valueToSet
      *
-     * @param chunkRow the chunk row.
-     * @param chunkCol the chunk column.
-     * @param noDataValue
+     * @param row the chunk row.
+     * @param col the chunk column.
      * @param chunkCellID the chunkCellID of the cell to be initialised.
      * @param valueToSet the value the cell is to be set to
      * @return
      */
     protected int setCell(
-            int chunkRow,
-            int chunkCol,
+            int row,
+            int col,
             Grids_2D_ID_int chunkCellID,
             int valueToSet) {
         int result;
-        result = getCell(chunkRow, chunkCol, chunkCellID);
+        result = getCell(row, col, chunkCellID);
         if (result == valueToSet) {
             return result;
         }
         if (valueToSet != DefaultValue) {
-            int position = (chunkRow * ChunkNCols) + chunkCol;
+            int position = (row * ChunkNCols) + col;
             if (valueToSet == NoDataValue) {
                 NoData.set(position);
                 if (result == DefaultValue) {
