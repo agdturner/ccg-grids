@@ -92,7 +92,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_AbstractGridChunkIntFactory
      */
-    public Grids_AbstractGridChunkIntFactory DefaultGridChunkIntFactory;
+    public Grids_AbstractGridChunkIntFactory GridChunkIntDefaultFactory;
 
     /**
      * Grids_GridChunkIntFactory
@@ -117,7 +117,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_AbstractGridChunkDoubleFactory
      */
-    public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkDoubleFactory;
+    public Grids_AbstractGridChunkDoubleFactory GridChunkDoubleDefaultFactory;
 
     /**
      * Grids_GridChunkDoubleFactory
@@ -252,11 +252,11 @@ public class Grids_Processor extends Grids_Object {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
         GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
         GridChunkIntFactory = new Grids_GridChunkIntFactory(0);
-        DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
+        GridChunkIntDefaultFactory = GridChunkIntArrayFactory;
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(0.0d);
-        DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
+        GridChunkDoubleDefaultFactory = GridChunkDoubleArrayFactory;
     }
 
     /**

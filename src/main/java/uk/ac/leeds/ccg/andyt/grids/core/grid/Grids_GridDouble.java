@@ -978,7 +978,7 @@ public class Grids_GridDouble
                 gridChunk = (Grids_GridChunkDouble) chunk;
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().GridChunkDoubleFactory.createGridChunkDouble(
+                    chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                             chunk,
                             chunkID);
                     chunk.setCell(chunkRow, chunkCol, value, NoDataValue, ge.HandleOutOfMemoryError);
@@ -1594,9 +1594,6 @@ public class Grids_GridDouble
                 chunkCellRowIndex,
                 chunkCellColIndex,
                 newValue);
-        //} else {
-        //    return getNoDataValue();
-        //}
     }
 
     /**
@@ -1688,7 +1685,7 @@ public class Grids_GridDouble
                 // Convert chunk to another type
                 Grids_2D_ID_int chunkID;
                 chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-                chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.createGridChunkDouble(
+                chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                         chunk,
                         chunkID);
                 chunk.setCell(chunkRowIndex, chunkColIndex, newValue, NoDataValue, ge.HandleOutOfMemoryError);
