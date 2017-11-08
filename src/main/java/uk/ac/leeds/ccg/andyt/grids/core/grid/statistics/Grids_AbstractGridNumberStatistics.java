@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
@@ -1007,92 +1008,9 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                ge.get_Generic_BigDecimal().get_RoundingMode());
 //    }
 
-//    public abstract Object[] getQuantileClassMap(int nClasses);
-//    {
-//        Object[] result;
-//        result = new Object[3];
-//        if (Grid instanceof Grids_GridDouble) {
-//            Grids_GridDouble g;
-//            g = (Grids_GridDouble) Grid;
-//            TreeMap<Integer, Double> minDouble;
-//            TreeMap<Integer, Double> maxDouble;
-//            minDouble = new TreeMap<>();
-//            maxDouble = new TreeMap<>();
-//            for (int i = 1; i < nClasses; i++) {
-//                minDouble.put(i, Double.MAX_VALUE);
-//                maxDouble.put(i, -Double.MAX_VALUE);
-//            }
-//            result[0] = minDouble;
-//            result[1] = maxDouble;
-//            BigInteger nonZeroAndNonNoDataValueCount;
-//            nonZeroAndNonNoDataValueCount = Grids_AbstractGridNumberStatistics.this.getNonZeroN(
-//                    ge.HandleOutOfMemoryError);
-//            long nonZeroAndNonNoDataValueCountLong = nonZeroAndNonNoDataValueCount.longValueExact();
-//            System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroAndNonNoDataValueCount);
-//            long numberOfValuesInEachClass;
-//            numberOfValuesInEachClass = nonZeroAndNonNoDataValueCountLong / nClasses;
-//            if (nonZeroAndNonNoDataValueCountLong % nClasses != 0) {
-//                numberOfValuesInEachClass += 1;
-//            }
-//            double noDataValue;
-//            noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-//            TreeMap<Integer, Long> classCounts;
-//            classCounts = new TreeMap<>();
-//            for (int i = 1; i < nClasses; i++) {
-//                classCounts.put(i, 0L);
-//            }
-//            int classToFill = 0;
-//            boolean firstValue = true;
-//            TreeMap<Integer, TreeMap<Double, Long>> classMap;
-//            classMap = new TreeMap<>();
-//            for (int i = 0; i < nClasses; i++) {
-//                classMap.put(i, new TreeMap<>());
-//            }
-//            result[2] = classMap;
-//            int count = 0;
-//            //long valueID = 0;
-//            Iterator<Double> ite;
-//            ite = g.iterator(ge.HandleOutOfMemoryError);
-//            while (ite.hasNext()) {
-//                double value;
-//                value = ite.next();
-//                if (!(value == 0.0d || value == noDataValue)) {
-//                    if (count % numberOfValuesInEachClass == 0) {
-//                        System.out.println(count + " out of " + nonZeroAndNonNoDataValueCount);
-//                    }
-//                    count++;
-//                    if (firstValue) {
-//                        minDouble.put(0, value);
-//                        maxDouble.put(0, value);
-//                        classCounts.put(0, 1L);
-//                        classMap.get(0).put(value, 1L);
-//                        if (numberOfValuesInEachClass < 2) {
-//                            classToFill = 1;
-//                        }
-//                        firstValue = false;
-//                    } else {
-//                        int[] valueClass;
-//                        if (classToFill == nClasses) {
-//                            classToFill--;
-//                        }
-//                        valueClass = getValueClass(
-//                                value,
-//                                classMap,
-//                                minDouble,
-//                                maxDouble,
-//                                classCounts,
-//                                numberOfValuesInEachClass,
-//                                classToFill);
-//                        classToFill = valueClass[1];
-//                    }
-//                }
-//            }
-//            return result;
-//        } else {
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
+    public abstract Object[] getQuantileClassMap(int nClasses);
+
+
 //    private boolean checkMaps(
 //            TreeMap<Integer, TreeMap<Double, Long>> classMap,
 //            TreeMap<Integer, Double> minDouble,
@@ -1163,309 +1081,311 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
         return result;
     }
 
-//    /**
-//     * @param value
-//     * @param minDouble
-//     * @param maxDouble
-//     * @param classCounts
-//     * @param desiredNumberOfValuesInEachClass
-//     * @param classToFill
-//     * @return result[0] is the class, result[1] is the classToFill which may or
-//     * may not change from what is passed in.
-//     */
-//    private int[] getValueClass(
-//            double value,
-//            TreeMap<Integer, TreeMap<Double, Long>> classMap,
-//            TreeMap<Integer, Double> minDouble,
-//            TreeMap<Integer, Double> maxDouble,
-//            TreeMap<Integer, Long> classCounts,
-//            long desiredNumberOfValuesInEachClass,
-//            int classToFill) {
-//        int[] result;
-//        result = new int[2];
-//        long classToFillCount;
-//        classToFillCount = classCounts.get(classToFill);
-//        double maxValueOfClassToFill;
-//        maxValueOfClassToFill = maxDouble.get(classToFill);
-////        if (maxDouble.get(classToFill) != null) {
-////            maxValueOfClassToFill = maxDouble.get(classToFill);
-////        } else {
-////            maxValueOfClassToFill = Double.NEGATIVE_INFINITY;
-////        }
-//        // Special cases
-//        // Case 1:
-//        if (value > maxValueOfClassToFill) {
-//            maxDouble.put(classToFill, value);
-//            classToFillCount += 1;
-//            addToMapCounts(value, classToFill, classMap);
-//            addToCount(classToFill, classCounts);
-//            result[0] = classToFill;
-//            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-//            result[1] = checkClassToFillAndPropagation(
-//                    result,
-//                    classToFill,
-//                    classToFillCount,
-//                    classMap,
-//                    minDouble,
-//                    maxDouble,
-//                    classCounts,
-//                    desiredNumberOfValuesInEachClass,
-//                    classToFill);
-////            } else {
-////                result[1] = classToFill;
-////            }
-//            return result;
+    /**
+     * @param value
+     * @param classMap
+     * @param minDouble
+     * @param maxDouble
+     * @param classCounts
+     * @param desiredNumberOfValuesInEachClass
+     * @param classToFill
+     * @return result[0] is the class, result[1] is the classToFill which may or
+     * may not change from what is passed in.
+     */
+    protected int[] getValueClass(
+            double value,
+            TreeMap<Integer, TreeMap<Double, Long>> classMap,
+            TreeMap<Integer, Double> minDouble,
+            TreeMap<Integer, Double> maxDouble,
+            TreeMap<Integer, Long> classCounts,
+            long desiredNumberOfValuesInEachClass,
+            int classToFill) {
+        int[] result;
+        result = new int[2];
+        long classToFillCount;
+        classToFillCount = classCounts.get(classToFill);
+        double maxValueOfClassToFill;
+        maxValueOfClassToFill = maxDouble.get(classToFill);
+//        if (maxDouble.get(classToFill) != null) {
+//            maxValueOfClassToFill = maxDouble.get(classToFill);
+//        } else {
+//            maxValueOfClassToFill = Double.NEGATIVE_INFINITY;
 //        }
-//        // Case 2:
-//        if (value == maxValueOfClassToFill) {
-//            classToFillCount += 1;
-//            addToMapCounts(value, classToFill, classMap);
-//            addToCount(classToFill, classCounts);
-//            result[0] = classToFill;
-//            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-//            result[1] = checkClassToFillAndPropagation(
-//                    result,
-//                    classToFill,
-//                    classToFillCount,
-//                    classMap,
-//                    minDouble,
-//                    maxDouble,
-//                    classCounts,
-//                    desiredNumberOfValuesInEachClass,
-//                    classToFill);
-////            } else {
-////                result[1] = classToFill;
-////            }
-//            return result;
-//        }
-////        // Case 3:
-////        double minValueOfClass0;
-////        minValueOfClass0 = minDouble.get(0);
-////        if (value < minValueOfClass0) {
-////            minDouble.put(0, value);
-////            long class0Count;
-////            class0Count = classCounts.get(0);
-////            if (class0Count < desiredNumberOfValuesInEachClass) {
-////                result[0] = classToFill; // Which should be 0
-////                addToMapCounts(value, classToFill, classMap);
-////                addToCount(classToFill, classCounts);
-////                classToFillCount += 1;
-////                if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-////                    result[1] = classToFill + 1;
-////                } else {
-////                    result[1] = classToFill;
-////                }
-////                return result;
-////            } else {
-////                classToFillCount += 1;
-////                result[0] = 0;
-////                checkValueCounts(
-////                        result,
-////                        0,
-////                        classToFillCount,
-////                        classMap,
-////                        minDouble,
-////                        maxDouble,
-////                        classCounts,
-////                        desiredNumberOfValuesInEachClass,
-////                        classToFill);
-////                return result;
-////            }
-////        }
-//        // General Case
-//        // 1. Find which class the value sits in.
-//        // 2. If the value already exists, add to the count, else add to the map
-//        // 3. Check the top of the class value counts. If by moving these up the 
-//        //    class would not contain enough values finish, otherwise do the following:
-//        //    a) move the top values up to the bottom of the next class.
-//        //      Modify the max value in this class
-//        //      Modify the min value in the next class
-//        //      Repeat Step 3 for the next class
-//
-//        // General Case
-//        // 1. Find which class the value sits in.
-//        int classToCheck = classToFill;
-////        double maxToCheck0;
-////        double minToCheck0;
-////        maxToCheck0 = maxDouble.get(classToCheck);
-////        minToCheck0 = minDouble.get(classToCheck);
-//        double maxToCheck;
-//        double minToCheck;
-//        maxToCheck = maxDouble.get(classToCheck);
-//        minToCheck = minDouble.get(classToCheck);
-//        boolean foundClass = false;
-//        while (!foundClass) {
-//            if (value >= minToCheck && value <= maxToCheck) {
-//                result[0] = classToCheck;
-//                foundClass = true;
+        // Special cases
+        // Case 1:
+        if (value > maxValueOfClassToFill) {
+            maxDouble.put(classToFill, value);
+            classToFillCount += 1;
+            addToMapCounts(value, classToFill, classMap);
+            addToCount(classToFill, classCounts);
+            result[0] = classToFill;
+            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    classToFill,
+                    classToFillCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
 //            } else {
-//                classToCheck--;
-//                if (classToCheck < 1) {
-//                    if (classToCheck < 0) {
-//                        // This means that value is less than min value so set min.
-//                        minDouble.put(0, value);
-//                    }
-//                    result[0] = 0;
-//                    classToCheck = 0;
-//                    foundClass = true;
+//                result[1] = classToFill;
+//            }
+            return result;
+        }
+        // Case 2:
+        if (value == maxValueOfClassToFill) {
+            classToFillCount += 1;
+            addToMapCounts(value, classToFill, classMap);
+            addToCount(classToFill, classCounts);
+            result[0] = classToFill;
+            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    classToFill,
+                    classToFillCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
+//            } else {
+//                result[1] = classToFill;
+//            }
+            return result;
+        }
+//        // Case 3:
+//        double minValueOfClass0;
+//        minValueOfClass0 = minDouble.get(0);
+//        if (value < minValueOfClass0) {
+//            minDouble.put(0, value);
+//            long class0Count;
+//            class0Count = classCounts.get(0);
+//            if (class0Count < desiredNumberOfValuesInEachClass) {
+//                result[0] = classToFill; // Which should be 0
+//                addToMapCounts(value, classToFill, classMap);
+//                addToCount(classToFill, classCounts);
+//                classToFillCount += 1;
+//                if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+//                    result[1] = classToFill + 1;
 //                } else {
-//                    maxToCheck = minToCheck; // This way ensures there are no gaps.
-//                    minToCheck = minDouble.get(classToCheck);
+//                    result[1] = classToFill;
 //                }
+//                return result;
+//            } else {
+//                classToFillCount += 1;
+//                result[0] = 0;
+//                checkValueCounts(
+//                        result,
+//                        0,
+//                        classToFillCount,
+//                        classMap,
+//                        minDouble,
+//                        maxDouble,
+//                        classCounts,
+//                        desiredNumberOfValuesInEachClass,
+//                        classToFill);
+//                return result;
 //            }
 //        }
-//        long classToCheckCount;
-//        // 2. If the value already exists, add to the count, else add to the map
-//        // and counts and ensure maxDouble and minDouble are correct (which has 
-//        // to be done first)
-//        maxToCheck = maxDouble.get(classToCheck);
-//        if (value > maxToCheck) {
-//            maxDouble.put(classToCheck, value);
-//        }
-//        minToCheck = minDouble.get(classToCheck);
-//        if (value < minToCheck) {
-//            minDouble.put(classToCheck, value);
-//        }
-//        addToMapCounts(value, classToCheck, classMap);
-//        addToCount(classToCheck, classCounts);
-//        classToCheckCount = classCounts.get(classToCheck);
-//        // 3. Check the top of the class value counts. If by moving these up the 
-//        //    class would not contain enough values finish, otherwise do the following:
-//        //    a) move the top values up to the bottom of the next class.
-//        //      Modify the max value in this class
-//        //      Modify the min value in the next class
-//        //      Repeat Step 3 for the next class
-//        //result[1] = checkValueCounts(
-//        checkClassToFillAndPropagation(
-//                result,
-//                classToCheck,
-//                classToCheckCount,
-//                classMap,
-//                minDouble,
-//                maxDouble,
-//                classCounts,
-//                desiredNumberOfValuesInEachClass,
-//                classToFill);
-//        //classCounts.put(classToCheck, classToFillCount + 1);
-//        return result;
-//    }
-//
-//    private void addToCount(
-//            int index,
-//            TreeMap<Integer, Long> classCounts) {
-//        long count;
-//        count = classCounts.get(index);
-//        count++;
-//        classCounts.put(index, count);
-//    }
-//
-//    private void addToMapCounts(
-//            double value,
-//            int classToCount,
-//            TreeMap<Integer, TreeMap<Double, Long>> classMap) {
-//        TreeMap<Double, Long> classToCheckMap;
-//        classToCheckMap = classMap.get(classToCount);
-//        if (classToCheckMap.containsKey(value)) {
-//            long count;
-//            count = classToCheckMap.get(value);
-//            count++;
-//            classToCheckMap.put(value, count);
-//        } else {
-//            classToCheckMap.put(value, 1L);
-//        }
-//    }
-//
-//    /**
-//     *
-//     * @param result
-//     * @param classToCheck
-//     * @param classToCheckCount
-//     * @param classMap
-//     * @param minDouble
-//     * @param maxDouble
-//     * @param classCounts
-//     * @param desiredNumberOfValuesInEachClass
-//     * @param classToFill
-//     * @return Value for classToFill (may be the same as what is passed in).
-//     */
-//    private int checkClassToFillAndPropagation(
-//            int[] result,
-//            int classToCheck,
-//            long classToCheckCount,
-//            TreeMap<Integer, TreeMap<Double, Long>> classMap,
-//            TreeMap<Integer, Double> minDouble,
-//            TreeMap<Integer, Double> maxDouble,
-//            TreeMap<Integer, Long> classCounts,
-//            long desiredNumberOfValuesInEachClass,
-//            int classToFill) {
-//        long classToCheckCountOfMaxValue;
-//        double classToCheckMaxValue;
-//        classToCheckMaxValue = maxDouble.get(classToCheck);
-//        TreeMap<Double, Long> classToCheckMap;
-//        classToCheckMap = classMap.get(classToCheck);
-//        classToCheckCountOfMaxValue = classToCheckMap.get(classToCheckMaxValue);
-//        if (classToCheckCount - classToCheckCountOfMaxValue < desiredNumberOfValuesInEachClass) {
-//            result[1] = classToFill;
-//        } else {
-//            int nextClassToCheck;
-//            nextClassToCheck = classToCheck + 1;
-//            // Push the values up into the next class, adjust the min and max values, checkValueCounts again.
-//            // Push the values up into the next class
-//            // --------------------------------------
-//            // 1. Remove
-//            classCounts.put(classToCheck, classToCheckCount - classToCheckCountOfMaxValue);
-//            classToCheckMap.remove(classToCheckMaxValue);
-//            // 2. Add
-//            TreeMap<Double, Long> nextClassToCheckMap;
-//            nextClassToCheckMap = classMap.get(nextClassToCheck);
-//            nextClassToCheckMap.put(classToCheckMaxValue, classToCheckCountOfMaxValue);
-//            // 2.1 Adjust min and max values
+        // General Case
+        // 1. Find which class the value sits in.
+        // 2. If the value already exists, add to the count, else add to the map
+        // 3. Check the top of the class value counts. If by moving these up the 
+        //    class would not contain enough values finish, otherwise do the following:
+        //    a) move the top values up to the bottom of the next class.
+        //      Modify the max value in this class
+        //      Modify the min value in the next class
+        //      Repeat Step 3 for the next class
+
+        // General Case
+        // 1. Find which class the value sits in.
+        int classToCheck = classToFill;
+//        double maxToCheck0;
+//        double minToCheck0;
+//        maxToCheck0 = maxDouble.get(classToCheck);
+//        minToCheck0 = minDouble.get(classToCheck);
+        double maxToCheck;
+        double minToCheck;
+        maxToCheck = maxDouble.get(classToCheck);
+        minToCheck = minDouble.get(classToCheck);
+        boolean foundClass = false;
+        while (!foundClass) {
+            if (value >= minToCheck && value <= maxToCheck) {
+                result[0] = classToCheck;
+                foundClass = true;
+            } else {
+                classToCheck--;
+                if (classToCheck < 1) {
+                    if (classToCheck < 0) {
+                        // This means that value is less than min value so set min.
+                        minDouble.put(0, value);
+                    }
+                    result[0] = 0;
+                    classToCheck = 0;
+                    foundClass = true;
+                } else {
+                    maxToCheck = minToCheck; // This way ensures there are no gaps.
+                    minToCheck = minDouble.get(classToCheck);
+                }
+            }
+        }
+        long classToCheckCount;
+        // 2. If the value already exists, add to the count, else add to the map
+        // and counts and ensure maxDouble and minDouble are correct (which has 
+        // to be done first)
+        maxToCheck = maxDouble.get(classToCheck);
+        if (value > maxToCheck) {
+            maxDouble.put(classToCheck, value);
+        }
+        minToCheck = minDouble.get(classToCheck);
+        if (value < minToCheck) {
+            minDouble.put(classToCheck, value);
+        }
+        addToMapCounts(value, classToCheck, classMap);
+        addToCount(classToCheck, classCounts);
+        classToCheckCount = classCounts.get(classToCheck);
+        // 3. Check the top of the class value counts. If by moving these up the 
+        //    class would not contain enough values finish, otherwise do the following:
+        //    a) move the top values up to the bottom of the next class.
+        //      Modify the max value in this class
+        //      Modify the min value in the next class
+        //      Repeat Step 3 for the next class
+        //result[1] = checkValueCounts(
+        checkClassToFillAndPropagation(
+                result,
+                classToCheck,
+                classToCheckCount,
+                classMap,
+                minDouble,
+                maxDouble,
+                classCounts,
+                desiredNumberOfValuesInEachClass,
+                classToFill);
+        //classCounts.put(classToCheck, classToFillCount + 1);
+        return result;
+    }
+
+    private void addToCount(
+            int index,
+            TreeMap<Integer, Long> classCounts) {
+        long count;
+        count = classCounts.get(index);
+        count++;
+        classCounts.put(index, count);
+    }
+
+    private void addToMapCounts(
+            double value,
+            int classToCount,
+            TreeMap<Integer, TreeMap<Double, Long>> classMap) {
+        TreeMap<Double, Long> classToCheckMap;
+        classToCheckMap = classMap.get(classToCount);
+        if (classToCheckMap.containsKey(value)) {
+            long count;
+            count = classToCheckMap.get(value);
+            count++;
+            classToCheckMap.put(value, count);
+        } else {
+            classToCheckMap.put(value, 1L);
+        }
+    }
+
+    /**
+     *
+     * @param result
+     * @param classToCheck
+     * @param classToCheckCount
+     * @param classMap
+     * @param minDouble
+     * @param maxDouble
+     * @param classCounts
+     * @param desiredNumberOfValuesInEachClass
+     * @param classToFill
+     * @return Value for classToFill (may be the same as what is passed in).
+     */
+    private int checkClassToFillAndPropagation(
+            int[] result,
+            int classToCheck,
+            long classToCheckCount,
+            TreeMap<Integer, TreeMap<Double, Long>> classMap,
+            TreeMap<Integer, Double> minDouble,
+            TreeMap<Integer, Double> maxDouble,
+            TreeMap<Integer, Long> classCounts,
+            long desiredNumberOfValuesInEachClass,
+            int classToFill) {
+        long classToCheckCountOfMaxValue;
+        double classToCheckMaxValue;
+        classToCheckMaxValue = maxDouble.get(classToCheck);
+        TreeMap<Double, Long> classToCheckMap;
+        classToCheckMap = classMap.get(classToCheck);
+        classToCheckCountOfMaxValue = classToCheckMap.get(classToCheckMaxValue);
+        if (classToCheckCount - classToCheckCountOfMaxValue < desiredNumberOfValuesInEachClass) {
+            result[1] = classToFill;
+        } else {
+            int nextClassToCheck;
+            nextClassToCheck = classToCheck + 1;
+            // Push the values up into the next class, adjust the min and max values, checkValueCounts again.
+            // Push the values up into the next class
+            // --------------------------------------
+            // 1. Remove
+            classCounts.put(classToCheck, classToCheckCount - classToCheckCountOfMaxValue);
+            classToCheckMap.remove(classToCheckMaxValue);
+            // 2. Add
+            TreeMap<Double, Long> nextClassToCheckMap;
+            nextClassToCheckMap = classMap.get(nextClassToCheck);
+            nextClassToCheckMap.put(classToCheckMaxValue, classToCheckCountOfMaxValue);
+            // 2.1 Adjust min and max values
+            maxDouble.put(classToCheck, classToCheckMap.lastKey());
+//            try {
 //            maxDouble.put(classToCheck, classToCheckMap.lastKey());
-////            try {
-////            maxDouble.put(classToCheck, classToCheckMap.lastKey());
-////            } catch (NoSuchElementException e) {
-////                int debug = 1;
-////            }
-//            minDouble.put(nextClassToCheck, classToCheckMaxValue);
-//            long nextClassToCheckCount;
-//            nextClassToCheckCount = classCounts.get(nextClassToCheck);
-//            if (nextClassToCheckCount == 0) {
-//                maxDouble.put(nextClassToCheck, classToCheckMaxValue);
-//                // There should not be any value bigger in nextClasstoCheck.
+//            } catch (NoSuchElementException e) {
+//                int debug = 1;
 //            }
-//            // 2.2 Add to classCounts
-//            nextClassToCheckCount += classToCheckCountOfMaxValue;
-//            classCounts.put(nextClassToCheck, nextClassToCheckCount);
-//            if (classToFill < nextClassToCheck) {
-//                classToFill = nextClassToCheck;
-//            }
-//            // 2.3. Check this class again then check the next class
-//            classToCheckCount = classCounts.get(classToCheck);
-//            result[1] = checkClassToFillAndPropagation(
-//                    result,
-//                    classToCheck,
-//                    classToCheckCount,
-//                    classMap,
-//                    minDouble,
-//                    maxDouble,
-//                    classCounts,
-//                    desiredNumberOfValuesInEachClass,
-//                    classToFill);
-//            // nextClassToCheckCount needs to be got again as it may have changed!
-//            nextClassToCheckCount = classCounts.get(nextClassToCheck);
-//            result[1] = checkClassToFillAndPropagation(
-//                    result,
-//                    nextClassToCheck,
-//                    nextClassToCheckCount,
-//                    classMap,
-//                    minDouble,
-//                    maxDouble,
-//                    classCounts,
-//                    desiredNumberOfValuesInEachClass,
-//                    classToFill);
-//        }
-//        return result[1];
-//    }
+            minDouble.put(nextClassToCheck, classToCheckMaxValue);
+            long nextClassToCheckCount;
+            nextClassToCheckCount = classCounts.get(nextClassToCheck);
+            if (nextClassToCheckCount == 0) {
+                maxDouble.put(nextClassToCheck, classToCheckMaxValue);
+                // There should not be any value bigger in nextClasstoCheck.
+            }
+            // 2.2 Add to classCounts
+            nextClassToCheckCount += classToCheckCountOfMaxValue;
+            classCounts.put(nextClassToCheck, nextClassToCheckCount);
+            if (classToFill < nextClassToCheck) {
+                classToFill = nextClassToCheck;
+            }
+            // 2.3. Check this class again then check the next class
+            classToCheckCount = classCounts.get(classToCheck);
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    classToCheck,
+                    classToCheckCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
+            // nextClassToCheckCount needs to be got again as it may have changed!
+            nextClassToCheckCount = classCounts.get(nextClassToCheck);
+            result[1] = checkClassToFillAndPropagation(
+                    result,
+                    nextClassToCheck,
+                    nextClassToCheckCount,
+                    classMap,
+                    minDouble,
+                    maxDouble,
+                    classCounts,
+                    desiredNumberOfValuesInEachClass,
+                    classToFill);
+        }
+        return result[1];
+    }
+    
     /**
      * @param n to set N to.
      */

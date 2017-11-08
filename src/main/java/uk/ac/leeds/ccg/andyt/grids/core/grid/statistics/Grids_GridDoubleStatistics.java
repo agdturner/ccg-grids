@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
@@ -84,7 +85,7 @@ public class Grids_GridDoubleStatistics
     public Grids_GridDouble getGrid() {
         return (Grids_GridDouble) Grid;
     }
-    
+
     /**
      * Updates fields (statistics) by going through all values in Grid if they
      * might not be up to date.
@@ -146,7 +147,7 @@ public class Grids_GridDoubleStatistics
         }
         return Min;
     }
-    
+
     public void setMin(double min) {
         Min = min;
     }
@@ -269,8 +270,84 @@ public class Grids_GridDoubleStatistics
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    @Override
-//    public Object[] getQuantileClassMap(int nClasses) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+    @Override
+    public Object[] getQuantileClassMap(int nClasses) {
+        Object[] result;
+        result = new Object[3];
+        Grids_GridDouble g = getGrid();
+        TreeMap<Integer, Double> minDouble;
+        TreeMap<Integer, Double> maxDouble;
+        minDouble = new TreeMap<>();
+        maxDouble = new TreeMap<>();
+        for (int i = 1; i < nClasses; i++) {
+            minDouble.put(i, Double.MAX_VALUE);
+            maxDouble.put(i, -Double.MAX_VALUE);
+        }
+        result[0] = minDouble;
+        result[1] = maxDouble;
+        BigInteger nonZeroN;
+        nonZeroN = getNonZeroN(
+                ge.HandleOutOfMemoryError);
+        long nonZeroNLong = nonZeroN.longValueExact();
+        System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroN);
+        long numberOfValuesInEachClass;
+        numberOfValuesInEachClass = nonZeroNLong / nClasses;
+        if (nonZeroNLong % nClasses != 0) {
+            numberOfValuesInEachClass += 1;
+        }
+        double noDataValue;
+        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        TreeMap<Integer, Long> classCounts;
+        classCounts = new TreeMap<>();
+        for (int i = 1; i < nClasses; i++) {
+            classCounts.put(i, 0L);
+        }
+        int classToFill = 0;
+        boolean firstValue = true;
+        TreeMap<Integer, TreeMap<Double, Long>> classMap;
+        classMap = new TreeMap<>();
+        for (int i = 0; i < nClasses; i++) {
+            classMap.put(i, new TreeMap<>());
+        }
+        result[2] = classMap;
+        int count = 0;
+        //long valueID = 0;
+        Iterator<Double> ite;
+        ite = g.iterator(ge.HandleOutOfMemoryError);
+        while (ite.hasNext()) {
+            double value;
+            value = ite.next();
+            if (!(value == 0.0d || value == noDataValue)) {
+                if (count % numberOfValuesInEachClass == 0) {
+                    System.out.println(count + " out of " + nonZeroN);
+                }
+                count++;
+                if (firstValue) {
+                    minDouble.put(0, value);
+                    maxDouble.put(0, value);
+                    classCounts.put(0, 1L);
+                    classMap.get(0).put(value, 1L);
+                    if (numberOfValuesInEachClass < 2) {
+                        classToFill = 1;
+                    }
+                    firstValue = false;
+                } else {
+                    int[] valueClass;
+                    if (classToFill == nClasses) {
+                        classToFill--;
+                    }
+                    valueClass = getValueClass(
+                            value,
+                            classMap,
+                            minDouble,
+                            maxDouble,
+                            classCounts,
+                            numberOfValuesInEachClass,
+                            classToFill);
+                    classToFill = valueClass[1];
+                }
+            }
+        }
+        return result;
+    }
 }
