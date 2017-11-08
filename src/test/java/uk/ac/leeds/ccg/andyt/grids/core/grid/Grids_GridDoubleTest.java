@@ -331,8 +331,10 @@ public class Grids_GridDoubleTest {
         int nChunkCols;
         nChunkRows = g.getNChunkRows(handleOutOfMemoryError);
         nChunkCols = g.getNChunkCols(handleOutOfMemoryError);
-        int chunkRowIndex;
-        int chunkColIndex;
+        
+        
+        int chunkRow;
+        int chunkCol;
         int row;
         int col;
 
@@ -340,18 +342,18 @@ public class Grids_GridDoubleTest {
         double value;
         value = 20d;
 
-        for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
-            chunkNRows = g.getChunkNRows(chunkRowIndex, handleOutOfMemoryError);
+        for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+            chunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
             System.out.println("chunkNRows " + chunkNRows);
-            for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-                System.out.println("chunkColIndex " + chunkColIndex);
+            for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
+                System.out.println("chunkColIndex " + chunkCol);
                 Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
-                chunkNCols = g.getChunkNCols(chunkColIndex, handleOutOfMemoryError);
+                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                chunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
                 System.out.println("chunkNCols " + chunkNCols);
                 for (row = 0; row < chunkNRows; row++) {
                     for (col = 0; col < chunkNCols; col++) {
-                        g.setCell(chunkRowIndex, chunkColIndex, row, col, value);
+                        g.setCell(chunkRow, chunkCol, row, col, value);
                     }
                 }
                 System.out.println("Done " + chunkID.toString());
