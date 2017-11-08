@@ -20,6 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
@@ -68,17 +69,7 @@ public class Grids_GridChunkDouble
     @Override
     protected double getCell(
             int chunkRow,
-            int chunkCol,
-            double noDataValue) {
-        return Value;
-    }
-
-    @Override
-    protected double getCell(
-            int chunkRow,
-            int chunkCol,
-            Grids_2D_ID_int cellID,
-            double noDataValue) {
+            int chunkCol) {
         return Value;
     }
 
@@ -89,16 +80,14 @@ public class Grids_GridChunkDouble
      * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
      * @param chunkCol the column index of the cell w.r.t. the origin of this
      * chunk
-     * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the _NoDataValue of this.grid2DSquareCellDouble
+     * @param valueToSet the value the cell is to be set to.
      * @return
      */
     @Override
     protected double setCell(
             int chunkRow,
             int chunkCol,
-            double valueToSet,
-            double noDataValue) {
+            double valueToSet) {
         if (valueToSet == Value) {
             return Value;
         } else {
@@ -125,8 +114,35 @@ public class Grids_GridChunkDouble
     protected void initCell(
             int chunkRow,
             int chunkCol,
-            double noDataValue,
             double valueToInitialise) {
+        if (valueToInitialise != Value) {
+            throw new Error("valueToInitialise != Value in " + 
+                    this.getClass().getName() + ".initCell(int,int,double)");
+        }
+    }
+
+    public double getSumDouble() {
+        return getN() * Value;
+    }
+    
+    @Override
+    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+        return Value;
+    }
+
+    @Override
+    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+        return Value;
+    }
+
+    @Override
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
+        return BigDecimal.valueOf(Value);
+    }
+
+    @Override
+    public double getArithmeticMeanDouble() {
+        return Value;
     }
 
 }

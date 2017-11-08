@@ -24,12 +24,15 @@ import java.math.BigInteger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_InterfaceStatistics;
 
 /**
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridChunk implements Serializable {
+public abstract class Grids_AbstractGridChunkNumber 
+        extends Grids_AbstractGridChunk 
+        implements Serializable, Grids_InterfaceStatistics {
     
     protected Grids_AbstractGridChunkNumber() {
     }
@@ -47,16 +50,17 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
     protected abstract Grids_AbstractGridNumber getGrid();
     
     /**
-     * Returns the number of cells with _NoDataValues as an int.
+     * Returns the number of cells with data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public int getNonNoDataValueCountInt(boolean handleOutOfMemoryError) {
+    @Override
+    public Long getN(boolean handleOutOfMemoryError) {
         try {
-            int result = getNonNoDataValueCountInt();
+            long result = getN();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -66,31 +70,32 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountInt(handleOutOfMemoryError);
+                return Grids_AbstractGridChunkNumber.this.getN(handleOutOfMemoryError);
             } else {
                 throw e;
             }
         }
     }
-
+    
     /**
-     * Returns the number of cells with no data values as an int.
+     * Returns the number of cells with data values.
      *
      * @return
      */
-    protected abstract int getNonNoDataValueCountInt();
-
+    protected abstract long getN();
+    
     /**
-     * Returns the number of cells with no data values as a BigInteger.
+     * Returns the sum of all data values.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public BigInteger getNonNoDataValueCountBigInteger(boolean handleOutOfMemoryError) {
+    @Override
+    public BigDecimal getSum(boolean handleOutOfMemoryError) {
         try {
-            BigInteger result = getNonNoDataValueCountBigInteger();
+            BigDecimal result = getSum();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -100,41 +105,7 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getNonNoDataValueCountBigInteger(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-    
-    /**
-     * Returns the number of cells with no data values as a BigInteger.
-     *
-     * @return
-     */
-    protected abstract BigInteger getNonNoDataValueCountBigInteger();
-    
-    /**
-     * Returns the sum of all non _NoDataValues as a BigDecimal.
-     *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigDecimal getSumBigDecimal(boolean handleOutOfMemoryError) {
-        try {
-            BigDecimal result = getSumBigDecimal();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getSumBigDecimal(handleOutOfMemoryError);
+                return Grids_AbstractGridChunkNumber.this.getSum(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -142,15 +113,15 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
     }
 
     /**
-     * Returns the sum of all data values as a BigDecimal.
+     * Returns the sum of all data values.
      *
      * @return
      */
-    protected abstract BigDecimal getSumBigDecimal();
+    protected abstract BigDecimal getSum();
     
     /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
-     * all cells are _NoDataValues, then null is returned.
+     * Returns the Arithmetic Mean of all data values. If
+     * all cells are NoDataValues, then null is returned.
      *
      * @param numberOfDecimalPlaces The number of decimal places to which the
      * result is precise.
@@ -159,9 +130,11 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public BigDecimal getArithmeticMeanBigDecimal(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
+    @Override
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces,
+            boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getArithmeticMeanBigDecimal(numberOfDecimalPlaces);
+            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -171,7 +144,7 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getArithmeticMeanBigDecimal(numberOfDecimalPlaces, handleOutOfMemoryError);
+                return getArithmeticMean(numberOfDecimalPlaces, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -186,11 +159,11 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
      * result is precise.
      * @return
      */
-    protected abstract BigDecimal getArithmeticMeanBigDecimal(int numberOfDecimalPlaces);
+    protected abstract BigDecimal getArithmeticMean(int numberOfDecimalPlaces);
 
     /**
      * Returns the Arithmetic Mean of all data values as a double. If all
-     * cells are _NoDataValues, then Grid.NoDataValue is returned.
+     * cells are NoDataValues, then Grid.NoDataValue is returned.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -217,7 +190,8 @@ public abstract class Grids_AbstractGridChunkNumber extends Grids_AbstractGridCh
     }
 
     /**
-     * Returns the Arithmetic Mean of all data values as a double. If all
+     * Returns the Arithmetic Mean of all data values as a double calculated using double
+     * precision rounding. If all
      * cells are NoDataValues, then Grid.NoDataValue is returned. Using
      * BigDecimal this should be as precise as is possible with doubles.
      *

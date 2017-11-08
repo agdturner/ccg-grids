@@ -1559,8 +1559,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             Grids_GridDoubleFactory gridFactory) {
         boolean handleOutOfMemoryError = true;
-        BigInteger nonNoDataValueCount;
-        nonNoDataValueCount =                grid.getStatistics(handleOutOfMemoryError).getN(handleOutOfMemoryError);
+        long n;
+        n = grid.getStatistics(handleOutOfMemoryError).getN(handleOutOfMemoryError);
         //double sparseness = grid.getStatistics().getSparseness();
         long nrows = grid.getNRows(handleOutOfMemoryError);
         long ncols = grid.getNCols(handleOutOfMemoryError);
@@ -1594,7 +1594,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         }
         Grids_GridDouble[] result = new Grids_GridDouble[numberOfIterations];
         // If all values are noDataValues return noDataValue density results
-        if (nonNoDataValueCount.compareTo(BigInteger.ONE) > -1) {
+        if (n == 0) {
             for (int i = 0; i < numberOfIterations; i++) {
                 result[ i] = (Grids_GridDouble) gridFactory.create(grid);
             }

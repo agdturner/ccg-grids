@@ -20,6 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 
@@ -75,7 +76,6 @@ public class Grids_GridChunkIntArray
         super(chunk.getGrid(), chunkID);
         initData();
         Grids_GridInt g = chunk.getGrid();
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
@@ -84,12 +84,7 @@ public class Grids_GridChunkIntArray
                 Data[row][col] = chunk.getCell(
                         row,
                         col,
-                        noDataValue,
                         handleOutOfMemoryError);
-//initCell( 
-//        row, 
-//        col, 
-//        grid2DSquareCellIntChunk.getCell( row, col ) );
             }
         }
         SwapUpToDate = false;
@@ -126,28 +121,17 @@ public class Grids_GridChunkIntArray
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
+     * @param row the row index of the cell w.r.t. the origin of
      * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
+     * @param col the column index of the cell w.r.t. the origin
      * of this chunk
-     * @param noDataValue the noDataValue of this.grid2DSquareCellInt
      * @return
      */
     protected @Override
     int getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            int noDataValue) {
-        return Data[chunkCellRowIndex][chunkCellColIndex];
-    }
-
-    protected @Override
-    int getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            Grids_2D_ID_int cellID,
-            int noDataValue) {
-        return Data[chunkCellRowIndex][chunkCellColIndex];
+            int row,
+            int col) {
+        return Data[row][col];
     }
 
     /**
@@ -165,7 +149,6 @@ public class Grids_GridChunkIntArray
     void initCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            int noDataValue,
             int valueToInitialise) {
         Data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
     }
@@ -179,16 +162,13 @@ public class Grids_GridChunkIntArray
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the noDataValue of grid2DSquareCellInt
      * @return
      */
     protected @Override
     int setCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            int valueToSet,
-            int noDataValue) {
-        try {
+            int valueToSet) {
             int oldValue = Data[chunkCellRowIndex][chunkCellColIndex];
             Data[chunkCellRowIndex][chunkCellColIndex] = valueToSet;
             if (isSwapUpToDate()) {
@@ -199,9 +179,6 @@ public class Grids_GridChunkIntArray
                 }
             }
             return oldValue;
-        } catch (Exception e0) {
-            return noDataValue;
-        }
     }
 
     /**
@@ -213,6 +190,22 @@ public class Grids_GridChunkIntArray
     @Override
     protected Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
+    }
+
+    @Override
+    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

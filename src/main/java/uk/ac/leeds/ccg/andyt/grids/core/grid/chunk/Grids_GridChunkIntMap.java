@@ -70,6 +70,11 @@ public class Grids_GridChunkIntMap
     public int DefaultValue;
 
     /**
+     * This is a copy of getGrid().getNoDataValue(boolean) for convenience.
+     */
+    private final int NoDataValue;
+
+    /**
      * Identifies the locations of all noDataValues.
      */
     private BitSet NoData;
@@ -93,6 +98,7 @@ public class Grids_GridChunkIntMap
      * Default constructor.
      */
     protected Grids_GridChunkIntMap() {
+        NoDataValue = Integer.MIN_VALUE;
     }
 
     /**
@@ -122,6 +128,7 @@ public class Grids_GridChunkIntMap
             int defaultValue) {
         super(g, chunkID);
         DefaultValue = defaultValue;
+        NoDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         initData();
         SwapUpToDate = false;
     }
@@ -143,23 +150,18 @@ public class Grids_GridChunkIntMap
         super(gridChunk.getGrid(), chunkID);
         boolean handleOutOfMemoryError = gridChunk.ge.HandleOutOfMemoryErrorFalse;
         DefaultValue = defaultValue;
+        NoDataValue = getGrid().getNoDataValue(ge.HandleOutOfMemoryError);
         initData();
-        int gridChunkNoDataValue;
-        gridChunkNoDataValue = gridChunk.getGrid().getNoDataValue(handleOutOfMemoryError);
-        int noDataValue;
-        noDataValue = gridChunk.getGrid().getNoDataValue(handleOutOfMemoryError);
         int value;
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
                 value = gridChunk.getCell(
                         row,
                         col,
-                        gridChunkNoDataValue,
                         handleOutOfMemoryError);
                 initCell(
                         row,
                         col,
-                        noDataValue,
                         value);
             }
         }
@@ -216,12 +218,12 @@ public class Grids_GridChunkIntMap
         int row;
         int col;
         int i = 0;
-        for (row = 0; row < nrows; row ++) {
-            for (col = 0; col < ncols; col ++) {
-                if(NoData.get(i)){
+        for (row = 0; row < nrows; row++) {
+            for (col = 0; col < ncols; col++) {
+                if (NoData.get(i)) {
                     result[row][col] = noDataValue;
                 }
-                 i ++;
+                i++;
             }
         }
         Iterator<Integer> ite;
@@ -418,23 +420,70 @@ public class Grids_GridChunkIntMap
      * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
      * @param chunkCol the column index of the cell w.r.t. the origin of this
      * chunk
-     * @param noDataValue the Grid.NoDataValue.
      * @return
      */
-    protected @Override
-    int getCell(
+    @Override
+    protected int getCell(
+            int chunkRow,
+            int chunkCol) {
+        int position = (chunkRow * ChunkNCols) + chunkCol;
+        if (NoData.get(position)) {
+            return NoDataValue;
+        } else if (InDataMapBitSet.get(position)) {
+            int result = getCell(position);
+            if (result != NoDataValue) {
+                return result;
+            }
+        } else if (InDataMapHashSet.get(position)) {
+            Grids_2D_ID_int cellID = new Grids_2D_ID_int(chunkRow, chunkCol);
+            int result = getCell(cellID);
+            if (result != NoDataValue) {
+                return result;
+            }
+        }
+        return DefaultValue;
+    }
+
+    /**
+     * Returns the value at position given by: chunk cell row chunkRow; chunk
+     * cell row chunkCol.
+     *
+     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
+     * @param chunkCol the column index of the cell w.r.t. the origin of this
+     * chunk
+     * @param cellID
+     * @return
+     */
+    protected int getCell(
             int chunkRow,
             int chunkCol,
-            int noDataValue) {
-        Iterator<Integer> ite;
-        /**
-         * Look in data.DataMapBitSet;
-         */
+            Grids_2D_ID_int cellID) {
+        int position = (chunkRow * ChunkNCols) + chunkCol;
+        if (NoData.get(position)) {
+            return NoDataValue;
+        } else if (InDataMapBitSet.get(position)) {
+            int result = getCell(position);
+            if (result != NoDataValue) {
+                return result;
+            }
+        } else if (InDataMapHashSet.get(position)) {
+            int result = getCell(cellID);
+            if (result != NoDataValue) {
+                return result;
+            }
+        }
+        return DefaultValue;
+    }
+
+    /**
+     * Look in data.DataMapBitSet;
+     */
+    private int getCell(int position) {
+        int value;
         TreeMap<Integer, OffsetBitSet> dataMapBitSet;
         dataMapBitSet = Data.DataMapBitSet;
+        Iterator<Integer> ite;
         ite = dataMapBitSet.keySet().iterator();
-        int value;
-        int position = (chunkRow * ChunkNCols) + chunkCol;
         OffsetBitSet offsetBitSet;
         BitSet bitSet;
         int positionMinusOffset;
@@ -449,129 +498,27 @@ public class Grids_GridChunkIntMap
                 }
             }
         }
-        /**
-         * Look in data.DataMapHashSet.
-         */
+        return NoDataValue;
+    }
+
+    /**
+     * Look in data.DataMapHashSet.
+     */
+    private int getCell(Grids_2D_ID_int cellID) {
+        int value;
         TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         dataMapHashSet = Data.DataMapHashSet;
         HashSet<Grids_2D_ID_int> cellIDs;
-//        Iterator<Grids_2D_ID_int> ite2;
-        Grids_2D_ID_int inputCellID;
-        inputCellID = new Grids_2D_ID_int(chunkRow, chunkCol);
-//        Grids_2D_ID_int cellID;
-//        int row;
-//        int col;
+        Iterator<Integer> ite;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             value = ite.next();
             cellIDs = dataMapHashSet.get(value);
-            if (cellIDs.contains(inputCellID)) {
+            if (cellIDs.contains(cellID)) {
                 return value;
             }
-//            ite2 = cellIDs.iterator();
-//            while (ite2.hasNext()) {
-//                cellID = ite2.next();
-//                row = cellID.getRow();
-//                if (row == chunkRow) {
-//                    col = cellID.getCol();
-//                   if (col == chunkCol) {
-//                       return value;
-//                   }
-//                }
-//            }
         }
-        return noDataValue;
-    }
-
-    /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol.
-     *
-     * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
-     * @param chunkCol the column index of the cell w.r.t. the origin of this
-     * chunk
-     * @param cellID
-     * @param noDataValue the Grid.NoDataValue.
-     * @return
-     */
-    @Override
-    protected int getCell(
-            int chunkRow,
-            int chunkCol,
-            Grids_2D_ID_int cellID,
-            int noDataValue) {
-        Iterator<Integer> ite;
-        int position = (chunkRow * ChunkNCols) + chunkCol;
-        int value;
-        if (NoData.get(position)) {
-            return noDataValue;
-        } else if (InDataMapBitSet.get(position)) {
-            /**
-             * Look in data.DataMapBitSet;
-             */
-            TreeMap<Integer, OffsetBitSet> dataMapBitSet;
-            dataMapBitSet = Data.DataMapBitSet;
-            ite = dataMapBitSet.keySet().iterator();
-            OffsetBitSet offsetBitSet;
-            BitSet bitSet;
-            int positionMinusOffset;
-            while (ite.hasNext()) {
-                value = ite.next();
-                offsetBitSet = dataMapBitSet.get(value);
-                bitSet = offsetBitSet._BitSet;
-                positionMinusOffset = position - offsetBitSet.Offset;
-                if (positionMinusOffset > 0 && positionMinusOffset < bitSet.length()) {
-                    if (bitSet.get(positionMinusOffset)) {
-                        return value;
-                    }
-                }
-            }
-        } else if (InDataMapHashSet.get(position)) {
-            /**
-             * Look in data.DataMapHashSet.
-             */
-            TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
-            dataMapHashSet = Data.DataMapHashSet;
-            HashSet<Grids_2D_ID_int> cellIDs;
-//           Iterator<Grids_2D_ID_int> ite2;
-            cellID = new Grids_2D_ID_int(chunkRow, chunkCol);
-//           Grids_2D_ID_int cellID;
-//           int row;
-//           int col;
-            ite = dataMapHashSet.keySet().iterator();
-            while (ite.hasNext()) {
-                value = ite.next();
-                cellIDs = dataMapHashSet.get(value);
-                if (cellIDs.contains(cellID)) {
-                    return value;
-                }
-//                ite2 = cellIDs.iterator();
-//                while (ite2.hasNext()) {
-//                    cellID = ite2.next();
-//                    row = cellID.getRow();
-//                    if (row == chunkRow) {
-//                        col = cellID.getCol();
-//                        if (col == chunkCol) {
-//                            return value;
-//                        }
-//                    }
-//                }
-            }
-        }
-        return DefaultValue;
-    }
-
-    /**
-     * Returns the value of cell with CellID given by chunkCellID.
-     *
-     * @param chunkCellID The chunk CellID of cell thats value is returned.
-     * @param noDataValue The Grid.NoDataValue.
-     * @return
-     */
-    protected int getCell(
-            Grids_2D_ID_int chunkCellID,
-            int noDataValue) {
-        return getCell(chunkCellID.getRow(), chunkCellID.getCol(), noDataValue);
+        return NoDataValue;
     }
 
     /**
@@ -587,7 +534,6 @@ public class Grids_GridChunkIntMap
     protected final void initCell(
             int chunkRow,
             int chunkCol,
-            int noDataValue,
             int valueToInitialise) {
         Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(
                 chunkRow,
@@ -596,7 +542,6 @@ public class Grids_GridChunkIntMap
                 chunkRow,
                 chunkCol,
                 chunkCellID,
-                noDataValue,
                 valueToInitialise);
     }
 
@@ -608,15 +553,14 @@ public class Grids_GridChunkIntMap
      * @param chunkCol
      * @param chunkCellID the cell ID of the cell to be initialised
      * @param valueToInitialise the value with which the cell is initialised
-     * @param noDataValue
      */
     protected void initCell(
             int chunkRow,
             int chunkCol,
             Grids_2D_ID_int chunkCellID,
-            int valueToInitialise,
-            int noDataValue) {
+            int valueToInitialise) {
         if (valueToInitialise != DefaultValue) {
+            int noDataValue = getGrid().getNoDataValue(Grid.ge.HandleOutOfMemoryError);
             int position = (chunkRow * ChunkNCols) + chunkCol;
             if (valueToInitialise == noDataValue) {
                 NoData.set(position);
@@ -668,22 +612,19 @@ public class Grids_GridChunkIntMap
      * @param chunkRow the chunk row.
      * @param chunkCol the chunk column.
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the Grid.NoDataValue
      * @return
      */
     protected @Override
     int setCell(
             int chunkRow,
             int chunkCol,
-            int valueToSet,
-            int noDataValue) {
+            int valueToSet) {
         Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(chunkRow, chunkCol);
         return setCell(
                 chunkRow,
                 chunkCol,
                 chunkCellID,
-                valueToSet,
-                noDataValue);
+                valueToSet);
     }
 
     /**
@@ -692,25 +633,24 @@ public class Grids_GridChunkIntMap
      *
      * @param chunkRow the chunk row.
      * @param chunkCol the chunk column.
+     * @param noDataValue
      * @param chunkCellID the chunkCellID of the cell to be initialised.
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the Grid.NoDataValue.
      * @return
      */
     protected int setCell(
             int chunkRow,
             int chunkCol,
             Grids_2D_ID_int chunkCellID,
-            int valueToSet,
-            int noDataValue) {
+            int valueToSet) {
         int result;
-        result = getCell(chunkRow, chunkCol, chunkCellID, noDataValue);
+        result = getCell(chunkRow, chunkCol, chunkCellID);
         if (result == valueToSet) {
             return result;
         }
         if (valueToSet != DefaultValue) {
             int position = (chunkRow * ChunkNCols) + chunkCol;
-            if (valueToSet == noDataValue) {
+            if (valueToSet == NoDataValue) {
                 NoData.set(position);
                 if (result == DefaultValue) {
                     return DefaultValue;
@@ -844,8 +784,8 @@ public class Grids_GridChunkIntMap
      * @return
      */
     protected @Override
-    BigInteger getNonNoDataValueCountBigInteger() {
-        return BigInteger.valueOf((ChunkNRows * ChunkNCols) - NoData.cardinality());
+    long getN() {
+        return ((long) ChunkNRows * (long) ChunkNCols) - NoData.cardinality();
     }
 
     /**
@@ -869,7 +809,7 @@ public class Grids_GridChunkIntMap
      * @return
      */
     @Override
-    protected BigDecimal getSumBigDecimal() {
+    protected BigDecimal getSum() {
         int n = ChunkNRows * ChunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         return getSumBigDecimal(n, numberOfDefaultValues);
@@ -960,8 +900,7 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the Arithmetic Mean of all data values as a double. Using
-     * BigDecimal this should be as precise as possible with ints.
+     * Returns the Arithmetic Mean of all data values as a double.
      *
      * @return
      */
@@ -1052,7 +991,7 @@ public class Grids_GridChunkIntMap
             value = ite.next();
             valueCount.put(value, dataMapHashSet.get(value).size());
         }
-        long nonNoDataValueCount = getNonNoDataValueCountBigInteger().longValue();
+        long nonNoDataValueCount = getN();
         if (nonNoDataValueCount > 0) {
             long index = -1L;
             if (nonNoDataValueCount % 2L == 0L) {
@@ -1158,6 +1097,28 @@ public class Grids_GridChunkIntMap
     protected @Override
     Grids_AbstractIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
+    }
+
+    @Override
+    public Integer getMin(boolean update, boolean handleOutOfMemoryError) {
+        int min = Integer.MIN_VALUE;
+        if (DefaultValue != NoDataValue) {
+            min = Math.min(min, DefaultValue);
+        }
+        min = Math.min(min, Data.DataMapBitSet.firstKey());
+        min = Math.min(min, Data.DataMapHashSet.firstKey());
+        return min;
+    }
+
+    @Override
+    public Integer getMax(boolean update, boolean handleOutOfMemoryError) {
+        int max = Integer.MIN_VALUE;
+        if (DefaultValue != NoDataValue) {
+            max = Math.max(max, DefaultValue);
+        }
+        max = Math.max(max, Data.DataMapBitSet.lastKey());
+        max = Math.max(max, Data.DataMapHashSet.lastKey());
+        return max;
     }
 
     /**

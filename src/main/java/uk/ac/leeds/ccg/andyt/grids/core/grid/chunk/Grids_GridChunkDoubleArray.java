@@ -78,7 +78,6 @@ public class Grids_GridChunkDoubleArray
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
         initData();
-        double noDataValue = getGrid().getNoDataValue(false);
         int row;
         int col;
         boolean handleOutOfMemoryError = true;
@@ -87,9 +86,7 @@ public class Grids_GridChunkDoubleArray
                 Data[row][col] = chunk.getCell(
                         row,
                         col,
-                        noDataValue,
                         handleOutOfMemoryError);
-                //initCell( row, col, grid2DSquareCellDoubleChunk.getCell( row, col ) );
             }
         }
         SwapUpToDate = false;
@@ -116,25 +113,14 @@ public class Grids_GridChunkDoubleArray
     protected @Override
     double getCell(
             int chunkRow,
-            int chunkCol,
-            double noDataValue) {
+            int chunkCol) {
         return Data[chunkRow][chunkCol];
     }
     
-    protected @Override
-    double getCell(
-            int chunkRow,
-            int chunkCol,
-            Grids_2D_ID_int cellID,
-            double noDataValue) {
-        return Data[chunkRow][chunkCol];
-    }
-    
-    protected @Override
+   @Override protected 
     void initCell(
             int chunkRow,
             int chunkCol,
-            double noDataValue,
             double valueToInitialise) {
         Data[chunkRow][chunkCol] = valueToInitialise;
     }
@@ -148,16 +134,13 @@ public class Grids_GridChunkDoubleArray
      * @param chunkCol the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the _NoDataValue of grid2DSquareCellDouble
      * @return
      */
     protected @Override
     double setCell(
             int chunkRow,
             int chunkCol,
-            double valueToSet,
-            double noDataValue) {
-        if (inChunk(chunkRow, chunkCol)) {
+            double valueToSet) {
             double oldValue = Data[chunkRow][chunkCol];
             Data[chunkRow][chunkCol] = valueToSet;
             if (isSwapUpToDate()) {
@@ -168,8 +151,6 @@ public class Grids_GridChunkDoubleArray
                 }
             }
             return oldValue;
-        }
-        return noDataValue;
     }
 
     /**
@@ -182,6 +163,21 @@ public class Grids_GridChunkDoubleArray
     //protected Grids_AbstractGridChunkIterator iterator() {
     protected Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
+    }
+
+    @Override
+    protected double getArithmeticMeanDouble() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

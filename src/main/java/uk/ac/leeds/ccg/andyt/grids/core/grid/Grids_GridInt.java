@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -785,8 +784,8 @@ public class Grids_GridInt
             int noDataValue,
             boolean handleOutOfMemoryError) {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            Statistics = statistics;
-            statistics.init(this);
+        Statistics = statistics;
+        statistics.init(this);
         // Set to report every 10%
         int reportN;
         reportN = (int) (endRowIndex - startRowIndex) / 10;
@@ -963,7 +962,7 @@ public class Grids_GridInt
                     chunk = ge.getProcessor().GridChunkIntFactory.createGridChunkInt(
                             chunk,
                             chunkID);
-                    chunk.setCell(chunkRow, chunkCol, value, NoDataValue, ge.HandleOutOfMemoryError);
+                    chunk.setCell(chunkRow, chunkCol, value, ge.HandleOutOfMemoryError);
                     ChunkIDChunkMap.put(chunkID, chunk);
                 }
             } else {
@@ -1014,27 +1013,27 @@ public class Grids_GridInt
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError).subtract(BigInteger.ONE));
+                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) - 1);
                     Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).subtract(oldValueBD));
                     int min = Statistics.getMin(false, handleOutOfMemoryError).intValue();
                     if (oldValue == min) {
-                        Statistics.setNMin(Statistics.getNMin().subtract(BigInteger.ONE));
+                        Statistics.setNMin(Statistics.getNMin() - 1);
                     }
                     int max = Statistics.getMax(false, handleOutOfMemoryError).intValue();
                     if (oldValue == max) {
-                        Statistics.setNMax(Statistics.getNMax().subtract(BigInteger.ONE));
+                        Statistics.setNMax(Statistics.getNMax() - 1);
                     }
                 }
                 if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError).add(BigInteger.ONE));
+                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) + 1);
                     Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).add(newValueBD));
-                    updateMinMax(newValue);
-                    if (Statistics.getNMin().compareTo(BigInteger.ONE) == -1) {
+                    updateStatistics(newValue);
+                    if (Statistics.getNMin() < 1) {
                         // The Statistics need recalculating
                         Statistics.update();
                     }
-                    if (Statistics.getNMax().compareTo(BigInteger.ONE) == -1) {
+                    if (Statistics.getNMax() < 1) {
                         // The Statistics need recalculating
                         Statistics.update();
                     }
@@ -1147,13 +1146,11 @@ public class Grids_GridInt
                 return ((Grids_GridChunkIntArray) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        NoDataValue,
                         false);
             } else if (chunk.getClass() == Grids_GridChunkIntMap.class) {
                 return ((Grids_GridChunkIntMap) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        NoDataValue,
                         false);
             }
         }
@@ -1236,12 +1233,10 @@ public class Grids_GridInt
         if (chunk.getClass() == Grids_GridChunkIntArray.class) {
             return ((Grids_GridChunkIntArray) chunk).getCell(chunkCellRowIndex,
                     chunkCellColIndex,
-                    NoDataValue,
                     false);
         } else if (chunk.getClass() == Grids_GridChunkIntMap.class) {
             return ((Grids_GridChunkIntMap) chunk).getCell(chunkCellRowIndex,
                     chunkCellColIndex,
-                    NoDataValue,
                     false);
         } else {
             return NoDataValue;
@@ -1647,14 +1642,12 @@ public class Grids_GridInt
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
-                    result,
                     ge.HandleOutOfMemoryError);
         } else if (chunk instanceof Grids_GridChunkIntMap) {
             result = ((Grids_GridChunkIntMap) chunk).setCell(
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
-                    result,
                     ge.HandleOutOfMemoryError);
         } else {
             Grids_GridChunkInt c;
@@ -1666,13 +1659,13 @@ public class Grids_GridInt
                 chunk = ge.getProcessor().GridChunkIntFactory.createGridChunkInt(
                         chunk,
                         chunkID);
-                chunk.setCell(chunkRowIndex, chunkColIndex, newValue, NoDataValue, ge.HandleOutOfMemoryError);
+                chunk.setCell(chunkRowIndex, chunkColIndex, newValue, ge.HandleOutOfMemoryError);
                 ChunkIDChunkMap.put(chunkID, chunk);
             }
             return result;
         }
         // Update Statistics
-        upDateGridStatistics(newValue,result);
+        upDateGridStatistics(newValue, result);
         return result;
     }
 
@@ -1692,42 +1685,41 @@ public class Grids_GridInt
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                 chunkRow,
                 chunkCol);
-        Grids_AbstractGridChunkInt chunk                = getGridChunk(chunkID);
+        Grids_AbstractGridChunkInt chunk = getGridChunk(chunkID);
         chunk.initCell(
                 (int) (row - ((long) chunkRow * (long) ChunkNRows)),
                 (int) (col - ((long) chunkCol * (long) ChunkNCols)),
                 value,
-                NoDataValue,
                 false);
         // Update Statistics
         if (value != NoDataValue) {
-            updateMinMax(value);
+            updateStatistics(value);
         }
     }
 
-    private void updateMinMax(int value) {
-            boolean h = ge.HandleOutOfMemoryError;
-            BigDecimal valueBD = new BigDecimal(value);
-            Statistics.setN(Statistics.getN(h).add(BigInteger.ONE));
-            Statistics.setSum(Statistics.getSum(h).add(valueBD));
-            int min = Statistics.getMin(false, h).intValue();
-            if (value < min) {
-                Statistics.setNMin(BigInteger.ONE);
-                Statistics.setMin(value);
-            } else {
-                if (value == min) {
-                    Statistics.setNMin(Statistics.getNMin().add(BigInteger.ONE));
-                }
+    private void updateStatistics(int value) {
+        boolean h = ge.HandleOutOfMemoryError;
+        BigDecimal valueBD = new BigDecimal(value);
+        Statistics.setN(Statistics.getN(h) + 1);
+        Statistics.setSum(Statistics.getSum(h).add(valueBD));
+        int min = Statistics.getMin(false, h).intValue();
+        if (value < min) {
+            Statistics.setNMin(1);
+            Statistics.setMin(value);
+        } else {
+            if (value == min) {
+                Statistics.setNMin(Statistics.getNMin() + 1);
             }
-            int max = Statistics.getMax(false, h).intValue();
-            if (value > max) {
-                Statistics.setNMax(BigInteger.ONE);
-                Statistics.setMax(value);
-            } else {
-                if (value == max) {
-                    Statistics.setNMax(Statistics.getNMax().add(BigInteger.ONE));
-                }
+        }
+        int max = Statistics.getMax(false, h).intValue();
+        if (value > max) {
+            Statistics.setNMax(1);
+            Statistics.setMax(value);
+        } else {
+            if (value == max) {
+                Statistics.setNMax(Statistics.getNMax() + 1);
             }
+        }
     }
 
     /**
@@ -1757,7 +1749,6 @@ public class Grids_GridInt
                 (int) (cellRowIndex - ((long) chunkRowIndex * (long) chunkNRows)),
                 (int) (cellColIndex - ((long) chunkColIndex * (long) chunkNCols)),
                 valueToInitialise,
-                NoDataValue,
                 false);
     }
 
@@ -2642,10 +2633,10 @@ public class Grids_GridInt
     public double addToCell(
             double x,
             double y,
-            double valueToAdd,
+            int valueToAdd,
             boolean handleOutOfMemoryError) {
         try {
-            double result = addToCell(
+            int result = addToCell(
                     x,
                     y,
                     valueToAdd);
@@ -2676,10 +2667,10 @@ public class Grids_GridInt
      * @param y the y-coordinate of the point
      * @param valueToAdd the value to be added to the cell containing the point
      */
-    protected double addToCell(
+    protected int addToCell(
             double x,
             double y,
-            double valueToAdd) {
+            int valueToAdd) {
         return addToCell(
                 getCellRowIndex(y),
                 getCellColIndex(x),
@@ -2695,12 +2686,12 @@ public class Grids_GridInt
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public double addToCell(
+    public int addToCell(
             Grids_2D_ID_long cellID,
-            double valueToAdd,
+            int valueToAdd,
             boolean handleOutOfMemoryError) {
         try {
-            double result = addToCell(
+            int result = addToCell(
                     cellID,
                     valueToAdd);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -2728,9 +2719,9 @@ public class Grids_GridInt
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param valueToAdd the value to be added to the cell containing the point
      */
-    protected double addToCell(
+    protected int addToCell(
             Grids_2D_ID_long cellID,
-            double valueToAdd) {
+            int valueToAdd) {
         return addToCell(
                 cellID.getRow(),
                 cellID.getCol(),
@@ -2753,7 +2744,7 @@ public class Grids_GridInt
     public double addToCell(
             long cellRowIndex,
             long cellColIndex,
-            double valueToAdd,
+            int valueToAdd,
             boolean handleOutOfMemoryError) {
         try {
             double result = addToCell(
@@ -2826,7 +2817,7 @@ public class Grids_GridInt
      * @param handleOutOfMemoryError
      */
     public void initCells(
-            double value,
+            int value,
             boolean handleOutOfMemoryError) {
         try {
             initCells(value);
@@ -2851,7 +2842,7 @@ public class Grids_GridInt
      *
      * @param value
      */
-    protected void initCells(double value) {
+    protected void initCells(int value) {
         Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
         int nChunks = ChunkIDChunkMap.size();
         Grids_AbstractGridChunkInt chunk;
@@ -2877,8 +2868,7 @@ public class Grids_GridInt
                     chunk.setCell(
                             chunkNRows,
                             chunkNCols,
-                            col,
-                            col,
+                            value,
                             handleOutOfMemoryError);
                 }
             }
@@ -2901,6 +2891,34 @@ public class Grids_GridInt
 
     public void initStatistics(Grids_GridIntStatistics statistics) {
         Statistics = statistics;
+    }
+
+    @Override
+    protected double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, int chunkCol, int cellRow, int cellCol) {
+        Grids_AbstractGridChunkInt gridChunk
+                = (Grids_AbstractGridChunkInt) chunk;
+        Grids_GridInt gridInt;
+        gridInt = (Grids_GridInt) gridChunk.getGrid(false);
+        int noDataValue = gridInt.getNoDataValue(true);
+        if (chunk.getClass() == Grids_GridChunkIntArray.class) {
+            Grids_GridChunkIntArray gridChunkArray;
+            gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
+            return (double) gridChunkArray.getCell(
+                    cellRow,
+                    cellCol,
+                    false,
+                    chunk.getChunkID(false));
+        }
+        if (chunk.getClass() == Grids_GridChunkIntMap.class) {
+            Grids_GridChunkIntMap gridChunkMap
+                    = (Grids_GridChunkIntMap) gridChunk;
+            return (double) gridChunkMap.getCell(
+                    cellRow,
+                    cellCol,
+                    false,
+                    chunk.getChunkID(false));
+        }
+        return (double) noDataValue;
     }
 
 }

@@ -669,7 +669,6 @@ public class Grids_ProcessorDEM
                                 h = chunkDouble.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError);
                                 if(h != noDataValue) {
                                     diffX = 0.0d;
@@ -814,8 +813,9 @@ public class Grids_ProcessorDEM
                                 cellColIndex = g.getCellColIndex(cci, chunkCellColIndex, handleOutOfMemoryError);
                                 x = g.getCellXDouble(cellColIndex, handleOutOfMemoryError);
                                 heightInt = chunk.getCell(
-                                        chunkCellRowIndex, chunkCellColIndex,
-                                        noDataValueInt, handleOutOfMemoryError,
+                                        chunkCellRowIndex, 
+                                        chunkCellColIndex,
+                                        handleOutOfMemoryError,
                                         chunk.getChunkID(handleOutOfMemoryError));
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
@@ -2934,7 +2934,6 @@ public class Grids_ProcessorDEM
                                 height = gridChunkDouble.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError);
                                 if (height != noDataValue) {
                                     metrics1Calculate_All(
@@ -3055,7 +3054,6 @@ public class Grids_ProcessorDEM
                                 height = gridChunkInt.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (height != noDataValue) {

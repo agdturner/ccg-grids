@@ -319,48 +319,48 @@ public abstract class Grids_AbstractGridNumber
     }
 
     /**
-     * @param chunkColIndex
-     * @param chunkRowIndex
+     * @param chunkCol
+     * @param chunkRow
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
      * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
      * index _Row, chunk col index _Col as a double.
-     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk containing the
+     * @param chunk The Grids_AbstractGridChunk containing the
      * cell.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
+     * @param cellRow The cell row index of the chunk.
+     * @param cellCol The cell column index of the chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(
-            Grids_AbstractGridChunk grid2DSquareCellChunk,
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
+            Grids_AbstractGridChunk chunk,
+            int chunkRow,
+            int chunkCol,
+            int cellRow,
+            int cellCol,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellDouble(
-                    grid2DSquareCellChunk,
-                    chunkRowIndex,
-                    chunkColIndex,
-                    chunkCellRowIndex,
-                    chunkCellColIndex);
+                    chunk,
+                    chunkRow,
+                    chunkCol,
+                    cellRow,
+                    cellCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRowIndex,
-                        chunkColIndex);
+                        chunkRow,
+                        chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(
-                        grid2DSquareCellChunk,
-                        chunkRowIndex,
-                        chunkColIndex,
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
+                        chunk,
+                        chunkRow,
+                        chunkCol,
+                        cellRow,
+                        cellCol,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -369,78 +369,21 @@ public abstract class Grids_AbstractGridNumber
     }
 
     /**
-     * TODO
-     *
-     * @param chunkColIndex
-     * @param chunkRowIndex
+     * @param chunkCol
+     * @param chunkRow
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
      * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
      * index _Row, chunk col index _Col as a double.
      * @param chunk The Grids_AbstractGridChunk containing the cell.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
+     * @param cellRow The cell row index of the chunk.
+     * @param cellCol The cell column index of the chunk.
      */
-    protected double getCellDouble(
+    protected abstract double getCellDouble(
             Grids_AbstractGridChunk chunk,
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex) {
-        if (chunk instanceof Grids_AbstractGridChunkDouble) {
-            Grids_AbstractGridChunkDouble gridChunk;
-            gridChunk = (Grids_AbstractGridChunkDouble) chunk;
-            Grids_GridDouble g;
-            g = (Grids_GridDouble) gridChunk.getGrid(false);
-            double noDataValue = g.NoDataValue;
-            if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
-                Grids_GridChunkDoubleArray gridChunkArray;
-                gridChunkArray = (Grids_GridChunkDoubleArray) gridChunk;
-                return gridChunkArray.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false);
-            }
-            if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
-                Grids_GridChunkDoubleMap gridChunkMap;
-                gridChunkMap = (Grids_GridChunkDoubleMap) gridChunk;
-                return gridChunkMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false);
-            }
-            return noDataValue;
-        } else {
-            //( grid2DSquareCellChunk instanceof Grids_AbstractGridChunkInt )
-            Grids_AbstractGridChunkInt gridChunk
-                    = (Grids_AbstractGridChunkInt) chunk;
-            Grids_GridInt gridInt;
-            gridInt = (Grids_GridInt) gridChunk.getGrid(false);
-            int noDataValue = gridInt.getNoDataValue(true);
-            if (chunk.getClass() == Grids_GridChunkIntArray.class) {
-                Grids_GridChunkIntArray gridChunkArray;
-                gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
-                return (double) gridChunkArray.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false,
-                        chunk.getChunkID(false));
-            }
-            if (chunk.getClass() == Grids_GridChunkIntMap.class) {
-                Grids_GridChunkIntMap gridChunkMap
-                        = (Grids_GridChunkIntMap) gridChunk;
-                return (double) gridChunkMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        noDataValue,
-                        false,
-                        chunk.getChunkID(false));
-            }
-            return (double) noDataValue;
-        }
-    }
+            int chunkRow,
+            int chunkCol,
+            int cellRow,
+            int cellCol);
 
     /**
      * @param cellRowIndex
@@ -635,14 +578,12 @@ public abstract class Grids_AbstractGridNumber
             gridChunk = (Grids_AbstractGridChunkDouble) chunk;
             Grids_GridDouble g;
             g = (Grids_GridDouble) gridChunk.getGrid(false);
-            double noDataValue = g.NoDataValue;
             if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 Grids_GridChunkDoubleArray gridChunkArray;
                 gridChunkArray = (Grids_GridChunkDoubleArray) gridChunk;
                 return (int) gridChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        noDataValue,
                         false);
             }
             if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
@@ -651,9 +592,9 @@ public abstract class Grids_AbstractGridNumber
                 return (int) gridChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        noDataValue,
                         false);
             }
+            double noDataValue = g.NoDataValue;
             return (int) noDataValue;
         } else {
             //if ( grid2DSquareCellChunk instanceof Grids_AbstractGridChunkInt ) {
@@ -661,14 +602,12 @@ public abstract class Grids_AbstractGridNumber
                     = (Grids_AbstractGridChunkInt) chunk;
             Grids_GridInt g;
             g = (Grids_GridInt) gridChunk.getGrid(false);
-            int noDataValue = g.NoDataValue;
             if (chunk.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray gridChunkArray;
                 gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
                 return gridChunkArray.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        noDataValue,
                         false,
                         chunk.getChunkID(false));
             }
@@ -678,10 +617,10 @@ public abstract class Grids_AbstractGridNumber
                 return gridChunkMap.getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        noDataValue,
                         false,
                         chunk.getChunkID(false));
             }
+            int noDataValue = g.NoDataValue;
             return noDataValue;
         }
     }

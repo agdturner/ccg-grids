@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
@@ -69,17 +70,7 @@ public class Grids_GridChunkInt
     @Override
     protected int getCell(
             int chunkRow,
-            int chunkCol,
-            int noDataValue) {
-        return Value;
-    }
-
-    @Override
-    protected int getCell(
-            int chunkRow,
-            int chunkCol,
-            Grids_2D_ID_int cellID,
-            int noDataValue) {
+            int chunkCol) {
         return Value;
     }
     
@@ -98,8 +89,7 @@ public class Grids_GridChunkInt
     protected int setCell(
             int chunkRow,
             int chunkCol,
-            int valueToSet,
-            int noDataValue) {
+            int valueToSet) {
         if (valueToSet == Value) {
             return Value;
         } else {
@@ -126,8 +116,30 @@ public class Grids_GridChunkInt
     protected void initCell(
             int chunkRow,
             int chunkCol,
-            int noDataValue,
             int valueToInitialise) {
+        if (valueToInitialise != Value) {
+            throw new Error("valueToInitialise != Value in " + 
+                    this.getClass().getName() + ".initCell(int,int,int)");
+        }
     }
 
+    @Override
+    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+        return Value;
+    }
+
+    @Override
+    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+        return Value;
+    }
+
+    @Override
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
+        return BigDecimal.valueOf(Value);
+    }
+
+    @Override
+    public double getArithmeticMeanDouble() {
+        return Value;
+    }
 }

@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
@@ -103,7 +102,7 @@ public class Grids_GridIntStatisticsNotUpdated
      * @return
      */
     @Override
-    protected BigInteger getN() {
+    protected long getN() {
         update();
         return N;
     }
@@ -152,14 +151,14 @@ public class Grids_GridIntStatisticsNotUpdated
         return getClass().getName();
     }
 
-    @Override
-    protected BigInteger getNonZeroN() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected BigDecimal getStandardDeviation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    protected BigInteger getNonZeroN() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    protected BigDecimal getStandardDeviation() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
 }

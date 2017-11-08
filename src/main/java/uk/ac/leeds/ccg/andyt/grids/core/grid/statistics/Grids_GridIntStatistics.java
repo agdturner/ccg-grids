@@ -22,12 +22,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 
 /**
  * Used by Grids_GridInt instances to access statistics. This class is to be
@@ -104,22 +108,22 @@ public class Grids_GridIntStatistics
     }
 
     protected void update(int value, BigDecimal valueBD) {
-        setN(N.add(BigInteger.ONE));
+        N++;
         setSum(Sum.add(valueBD));
         if (value < Min) {
-            setNMin(BigInteger.ONE);
+            NMin++;
             Min = value;
         } else {
             if (value == Min) {
-                setNMin(getNMin().add(BigInteger.ONE));
+                NMin = 1;
             }
         }
         if (value > Max) {
-            setNMax(BigInteger.ONE);
+            NMax++;
             Max = value;
         } else {
             if (value == Max) {
-                setNMax(getNMax().add(BigInteger.ONE));
+                NMax++;
             }
         }
     }
@@ -131,7 +135,7 @@ public class Grids_GridIntStatistics
      */
     @Override
     protected Integer getMin(boolean update) {
-        if (getNMin().compareTo(BigInteger.ONE) == -1) {
+        if (getNMin() < 1) {
             if (update) {
                 update();
             }
@@ -150,7 +154,7 @@ public class Grids_GridIntStatistics
      */
     @Override
     protected Integer getMax(boolean update) {
-        if (getNMax().compareTo(BigInteger.ONE) == -1) {
+        if (getNMax() < 1) {
             if (update) {
                 update();
             }
@@ -171,8 +175,8 @@ public class Grids_GridIntStatistics
      * @return
      */
     @Override
-    protected BigInteger getN() {
-        BigInteger result = BigInteger.ZERO;
+    protected long getN() {
+        long result = 0;
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gridIntIterator;
         gridIntIterator = new Grids_GridIntIterator(g);
@@ -181,8 +185,7 @@ public class Grids_GridIntStatistics
         Grids_AbstractGridChunkInt chunk;
         while (ite.hasNext()) {
             chunk = (Grids_AbstractGridChunkInt) ite.next();
-            result = result.add(
-                    chunk.getNonNoDataValueCountBigInteger(ge.HandleOutOfMemoryError));
+            result += chunk.getN(ge.HandleOutOfMemoryError);
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
@@ -191,7 +194,7 @@ public class Grids_GridIntStatistics
 //        while (ite.hasNext()) {
 //            int value = ite.next();
 //            if (value != noDataValue) {
-//                result = result.add(BigInteger.ONE);
+//                result += 1;
 //            }
 //        }
         return result;
@@ -239,7 +242,7 @@ public class Grids_GridIntStatistics
         while (chunkIterator.hasNext()) {
             chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
             result = result.add(
-                    chunkDouble.getSumBigDecimal(ge.HandleOutOfMemoryError));
+                    chunkDouble.getSum(ge.HandleOutOfMemoryError));
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
@@ -255,8 +258,44 @@ public class Grids_GridIntStatistics
     }
 
     @Override
-    protected BigDecimal getStandardDeviation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
+                BigDecimal stdev = BigDecimal.ZERO;
+        BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
+        BigDecimal dataValueCount = BigDecimal.ZERO;
+        BigDecimal differenceFromMean;
+            Grids_GridInt g = (Grids_GridInt) Grid;
+            int value;
+            int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+            Grids_GridChunkInt chunk;
+            Grids_GridIntIterator ite;
+            Grids_GridChunkIntIterator ite2;
+            Grids_2D_ID_int chunkID;
+            ite = new Grids_GridIntIterator(g);
+            while (ite.hasNext()) {
+                chunk = (Grids_GridChunkInt) ite.next();
+                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
+                ge.addToNotToSwapData(g, chunkID);
+                ite2 = new Grids_GridChunkIntIterator(chunk);
+                while (ite2.hasNext()) {
+                    value = (Integer) ite2.next();
+                    if (value != noDataValue) {
+                        differenceFromMean = new BigDecimal(value).subtract(mean);
+                        stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
+                        dataValueCount = dataValueCount.add(BigDecimal.ONE);
+                    }
+                }
+            }
+        if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
+            return stdev;
+        }
+        stdev = stdev.divide(
+                dataValueCount,
+                numberOfDecimalPlaces,
+                BigDecimal.ROUND_HALF_EVEN);
+        return Generic_BigDecimal.sqrt(
+                stdev,
+                numberOfDecimalPlaces,
+                ge.get_Generic_BigDecimal().get_RoundingMode());
     }
 
     @Override

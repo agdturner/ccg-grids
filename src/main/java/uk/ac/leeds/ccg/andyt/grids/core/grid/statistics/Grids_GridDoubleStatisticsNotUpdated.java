@@ -103,7 +103,7 @@ public class Grids_GridDoubleStatisticsNotUpdated
      * @return
      */
     @Override
-    protected BigInteger getN() {
+    protected long getN() {
         update();
         return N;
     }
@@ -152,14 +152,14 @@ public class Grids_GridDoubleStatisticsNotUpdated
         return getClass().getName();
     }
 
-    @Override
-    protected BigInteger getNonZeroN() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected BigDecimal getStandardDeviation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    protected BigInteger getNonZeroN() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
 }

@@ -35,7 +35,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
         implements Serializable, Grids_InterfaceStatistics {
 
-    //private static final long serialVersionUID = 1L;
+    //private long final long serialVersionUID = 1L;
     /**
      * A reference to the Grids_AbstractGridNumber this is for.
      */
@@ -44,7 +44,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For storing the number of cells with data values.
      */
-    protected BigInteger N;
+    protected long N;
 
     /**
      * For storing the sum of all non data values.
@@ -54,24 +54,12 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For storing the number of minimum data values.
      */
-    protected BigInteger NMin;
+    protected long NMin;
 
     /**
      * For storing the number of maximum data values.
      */
-    protected BigInteger NMax;
-
-    /**
-     * For controlling the accuracy and precision of the arithmetic mean value
-     * calculation.
-     */
-    public int NumberOfDecimalPlacesForArithmeticMean;
-
-    /**
-     * For controlling how accuracy and precision of the standard deviation
-     * calculation.
-     */
-    public int NumberOfDecimalPlacesForStandardDeviation;
+    protected long NMax;
 
     protected Grids_AbstractGridNumberStatistics() {
     }
@@ -90,12 +78,10 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * For initialisation.
      */
     private void init() {
-        NumberOfDecimalPlacesForArithmeticMean = 12;
-        NumberOfDecimalPlacesForStandardDeviation = 8;
-        N = BigInteger.ZERO;
+        N = 0;
         Sum = BigDecimal.ZERO;
-        NMin = BigInteger.ZERO;
-        NMax = BigInteger.ZERO;
+        NMin = 0;
+        NMax = 0;
     }
 
     /**
@@ -210,19 +196,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     @Override
     public String toString() {
         String result = getName();
-        result += "N(" + N.toString() + " ),"
-                + "NMax(" + getNMax().toString() + " ),"
-                + "NMin(" + getNMin().toString() + " ),"
+        result += "N(" + N + " ),"
+                + "NMax(" + NMax + " ),"
+                + "NMin(" + NMin + " ),"
                 + "Sum(" + Sum.toString() + ")";
         return result;
     }
 
-    
-    /**
-     * @return The number of cells with finite data values as a BigInteger.
-     */
-    protected abstract BigInteger getN();
-    
     /**
      * For returning the number of cells with data values as a BigInteger.
      *
@@ -232,9 +212,9 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * @return
      */
     @Override
-    public final BigInteger getN(boolean handleOutOfMemoryError) {
+    public final Long getN(boolean handleOutOfMemoryError) {
         try {
-            BigInteger result = getN();
+            long result = getN();
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -252,7 +232,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             }
         }
     }
+    
+    /**
+     * @return The number of cells with finite data values as a BigInteger.
+     */
+    protected abstract long getN();
 
+    
     /**
      * @return The number of cells with finite data values as a BigInteger.
      */
@@ -864,6 +850,9 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For returning the arithmetic mean of all data values.
      *
+     * @param numberOfDecimalPlaces The result returned uses BigDecimal
+     * arithmetic to ensure the result is correct given a round scheme to this
+     * many decimal places.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -871,9 +860,10 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      */
     @Override
     public BigDecimal getArithmeticMean(
+            int numberOfDecimalPlaces,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getArithmeticMean();
+            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -885,7 +875,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
                     }
                 }
                 ge.initMemoryReserve(ge.HandleOutOfMemoryErrorFalse);
-                return getArithmeticMean(handleOutOfMemoryError);
+                return getArithmeticMean(numberOfDecimalPlaces, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -893,29 +883,35 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     }
 
     /**
-     * For returning the arithmetic mean of all data values.
-     * Throws an ArithmeticException if N is equal to zero.
+     * For returning the arithmetic mean of all data values. Throws an
+     * ArithmeticException if N is equal to zero.
+     *
+     * @param numberOfDecimalPlaces The result returned uses BigDecimal
+     * arithmetic to ensure the result is correct given a round scheme to this
+     * many decimal places.
      *
      * @return
      */
-    protected BigDecimal getArithmeticMean() {
+    protected BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
         return Sum.divide(new BigDecimal(N),
-                NumberOfDecimalPlacesForArithmeticMean,
+                numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
     }
-    
+
     /**
      * Returns the standard deviation of all data values.
      *
+     * @param numberOfDecimalPlaces
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public BigDecimal getStandardDeviation(
+            int numberOfDecimalPlaces,
             boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getStandardDeviation();
+            BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -928,6 +924,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
                 }
                 ge.initMemoryReserve(ge.HandleOutOfMemoryErrorFalse);
                 return getStandardDeviation(
+                        numberOfDecimalPlaces,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -938,78 +935,12 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * Returns the standard deviation of all data values.
      *
+     * @param numberOfDecimalPlaces
      * @return
      */
-    protected abstract BigDecimal getStandardDeviation();
-//    {
-//        BigDecimal stdev = BigDecimal.ZERO;
-//        BigDecimal mean = getArithmeticMean();
-//        BigDecimal dataValueCount = BigDecimal.ZERO;
-//        BigDecimal differenceFromMean;
-//        if (Grid instanceof Grids_GridInt) {
-//            Grids_GridInt g = (Grids_GridInt) Grid;
-//            int value;
-//            int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-//            Grids_GridChunkInt chunk;
-//            Grids_GridIntIterator ite;
-//            Grids_GridChunkIntIterator ite2;
-//            Grids_2D_ID_int chunkID;
-//            ite = new Grids_GridIntIterator(g);
-//            while (ite.hasNext()) {
-//                chunk = (Grids_GridChunkInt) ite.next();
-//                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-//                ge.addToNotToSwapData(g, chunkID);
-//                ite2 = new Grids_GridChunkIntIterator(chunk);
-//                while (ite2.hasNext()) {
-//                    value = (Integer) ite2.next();
-//                    if (value != noDataValue) {
-//                        differenceFromMean = new BigDecimal(value).subtract(mean);
-//                        stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
-//                        dataValueCount = dataValueCount.add(BigDecimal.ONE);
-//                    }
-//                }
-//            }
-//        } else {
-//            Grids_GridDouble g = (Grids_GridDouble) Grid;
-//            BigDecimal valueBigDecimal;
-//            double value;
-//            double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-//            Grids_GridChunkDouble chunk;
-//            Grids_GridDoubleIterator ite;
-//            Grids_GridChunkDoubleIterator ite2;
-//            Grids_2D_ID_int chunkID;
-//            ite = new Grids_GridDoubleIterator(g);
-//            while (ite.hasNext()) {
-//                chunk = (Grids_GridChunkDouble) ite.next();
-//                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-//                ge.addToNotToSwapData(g, chunkID);
-//                ite2 = new Grids_GridChunkDoubleIterator(chunk);
-//                while (ite2.hasNext()) {
-//                    value = (Integer) ite2.next();
-//                    if (value != noDataValue) {
-//                        valueBigDecimal = new BigDecimal(value);
-//                        differenceFromMean = new BigDecimal(value).subtract(mean);
-//                        stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
-//                        dataValueCount = dataValueCount.add(BigDecimal.ONE);
-//                    }
-//                }
-//            }
-//        }
-//        if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
-//            return stdev;
-//        }
-//        stdev = stdev.divide(
-//                dataValueCount,
-//                NumberOfDecimalPlacesForStandardDeviation * NumberOfDecimalPlacesForStandardDeviation,
-//                BigDecimal.ROUND_HALF_EVEN);
-//        return Generic_BigDecimal.sqrt(
-//                stdev,
-//                NumberOfDecimalPlacesForStandardDeviation,
-//                ge.get_Generic_BigDecimal().get_RoundingMode());
-//    }
+    protected abstract BigDecimal getStandardDeviation(int numberOfDecimalPlaces);
 
     public abstract Object[] getQuantileClassMap(int nClasses);
-
 
 //    private boolean checkMaps(
 //            TreeMap<Integer, TreeMap<Double, Long>> classMap,
@@ -1063,7 +994,6 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        }
 //        return result;
 //    }
-
     /**
      * Move this to generic utilities.
      *
@@ -1385,11 +1315,11 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
         }
         return result[1];
     }
-    
+
     /**
      * @param n to set N to.
      */
-    public void setN(BigInteger n) {
+    public void setN(long n) {
         N = n;
     }
 
@@ -1403,28 +1333,28 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * @param nMin to set NMin to.
      */
-    public void setNMin(BigInteger nMin) {
+    public void setNMin(long nMin) {
         NMin = nMin;
     }
 
     /**
      * @param nMax to set NMax to.
      */
-    public void setNMax(BigInteger nMax) {
+    public void setNMax(long nMax) {
         NMax = nMax;
     }
 
     /**
      * @return the NMin
      */
-    public BigInteger getNMin() {
+    public long getNMin() {
         return NMin;
     }
 
     /**
      * @return the NMax
      */
-    public BigInteger getNMax() {
+    public long getNMax() {
         return NMax;
     }
 }

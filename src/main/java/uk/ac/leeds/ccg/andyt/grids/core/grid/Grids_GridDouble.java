@@ -981,7 +981,7 @@ public class Grids_GridDouble
                     chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                             chunk,
                             chunkID);
-                    chunk.setCell(chunkRow, chunkCol, value, NoDataValue, ge.HandleOutOfMemoryError);
+                    chunk.setCell(chunkRow, chunkCol, value, ge.HandleOutOfMemoryError);
                     ChunkIDChunkMap.put(chunkID, chunk);
                 }
             } else {
@@ -1030,27 +1030,27 @@ public class Grids_GridDouble
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError).subtract(BigInteger.ONE));
+                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) - 1);
                     Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).subtract(oldValueBD));
                     double min = Statistics.getMin(false, handleOutOfMemoryError).doubleValue();
                     if (oldValue == min) {
-                        Statistics.setNMin(Statistics.getNMin().subtract(BigInteger.ONE));
+                        Statistics.setNMin(Statistics.getNMin() - 1);
                     }
                     double max = Statistics.getMax(false, handleOutOfMemoryError).doubleValue();
                     if (oldValue == max) {
-                        Statistics.setNMax(Statistics.getNMax().subtract(BigInteger.ONE));
+                        Statistics.setNMax(Statistics.getNMax() - 1);
                     }
                 }
                 if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError).add(BigInteger.ONE));
+                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) + 1);
                     Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).add(newValueBD));
-                    updateMinMax(newValue);
-                    if (Statistics.getNMin().compareTo(BigInteger.ONE) == -1) {
+                    updateStatistics(newValue);
+                    if (Statistics.getNMin() < 1) {
                         // The Statistics need recalculating
                         Statistics.update();
                     }
-                    if (Statistics.getNMax().compareTo(BigInteger.ONE) == -1) {
+                    if (Statistics.getNMax() < 1) {
                         // The Statistics need recalculating
                         Statistics.update();
                     }
@@ -1172,13 +1172,11 @@ public class Grids_GridDouble
                 return ((Grids_GridChunkDoubleArray) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        NoDataValue,
                         false);
             } else if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
                 return ((Grids_GridChunkDoubleMap) chunk).getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        NoDataValue,
                         false);
             }
         }
@@ -1261,12 +1259,10 @@ public class Grids_GridDouble
         if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
             return ((Grids_GridChunkDoubleArray) chunk).getCell(chunkCellRowIndex,
                     chunkCellColIndex,
-                    NoDataValue,
                     false);
         } else if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
             return ((Grids_GridChunkDoubleMap) chunk).getCell(chunkCellRowIndex,
                     chunkCellColIndex,
-                    NoDataValue,
                     false);
         } else {
             return NoDataValue;
@@ -1669,14 +1665,12 @@ public class Grids_GridDouble
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
-                    result,
                     ge.HandleOutOfMemoryError);
         } else if (chunk instanceof Grids_GridChunkDoubleMap) {
             result = ((Grids_GridChunkDoubleMap) chunk).setCell(
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     newValue,
-                    result,
                     ge.HandleOutOfMemoryError);
         } else {
             Grids_GridChunkDouble c;
@@ -1688,7 +1682,7 @@ public class Grids_GridDouble
                 chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                         chunk,
                         chunkID);
-                chunk.setCell(chunkRowIndex, chunkColIndex, newValue, NoDataValue, ge.HandleOutOfMemoryError);
+                chunk.setCell(chunkRowIndex, chunkColIndex, newValue, ge.HandleOutOfMemoryError);
                 ChunkIDChunkMap.put(chunkID, chunk);
             }
             return result;
@@ -1719,36 +1713,35 @@ public class Grids_GridDouble
                 (int) (row - ((long) chunkRow * (long) ChunkNRows)),
                 (int) (col - ((long) chunkCol * (long) ChunkNCols)),
                 value,
-                NoDataValue,
                 false);
         // Update Statistics
         if (value != NoDataValue) {
-            updateMinMax(value);
+            updateStatistics(value);
         }
     }
 
-    private void updateMinMax(double value) {
+    private void updateStatistics(double value) {
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             boolean h = ge.HandleOutOfMemoryError;
             BigDecimal valueBD = new BigDecimal(value);
-            Statistics.setN(Statistics.getN(h).add(BigInteger.ONE));
+            Statistics.setN(Statistics.getN(h) + 1);
             Statistics.setSum(Statistics.getSum(h).add(valueBD));
             double min = Statistics.getMin(false, h).doubleValue();
             if (value < min) {
-                Statistics.setNMin(BigInteger.ONE);
+                Statistics.setNMin(1);
                 Statistics.setMin(value);
             } else {
                 if (value == min) {
-                    Statistics.setNMin(Statistics.getNMin().add(BigInteger.ONE));
+                    Statistics.setNMin(Statistics.getNMin() + 1);
                 }
             }
             double max = Statistics.getMax(false, h).doubleValue();
             if (value > max) {
-                Statistics.setNMax(BigInteger.ONE);
+                Statistics.setNMax(1);
                 Statistics.setMax(value);
             } else {
                 if (value == max) {
-                    Statistics.setNMax(Statistics.getNMax().add(BigInteger.ONE));
+                    Statistics.setNMax(Statistics.getNMax() + 1);
                 }
             }
         }
@@ -1766,9 +1759,6 @@ public class Grids_GridDouble
             long cellRowIndex,
             long cellColIndex,
             double valueToInitialise) {
-        boolean isInGrid = isInGrid(
-                cellRowIndex,
-                cellColIndex);
         int chunkRowIndex = getChunkRowIndex(cellRowIndex);
         int chunkColIndex = getChunkColIndex(cellColIndex);
         int chunkNRows = ChunkNRows;
@@ -1781,7 +1771,6 @@ public class Grids_GridDouble
                 (int) (cellRowIndex - ((long) chunkRowIndex * (long) chunkNRows)),
                 (int) (cellColIndex - ((long) chunkColIndex * (long) chunkNCols)),
                 valueToInitialise,
-                NoDataValue,
                 false);
     }
 
@@ -2903,10 +2892,9 @@ public class Grids_GridDouble
             for (row = 0; row <= chunkNRows; row++) {
                 for (col = 0; col <= chunkNCols; col++) {
                     chunk.setCell(
-                            chunkNRows,
-                            chunkNCols,
+                            row,
                             col,
-                            col,
+                            value,
                             handleOutOfMemoryError);
                 }
             }
@@ -2929,6 +2917,32 @@ public class Grids_GridDouble
 
     public void initStatistics(Grids_GridDoubleStatistics statistics) {
         Statistics = statistics;
+    }
+
+    @Override
+    protected double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, int chunkCol, int cellRow, int cellCol) {
+        Grids_AbstractGridChunkDouble gridChunk;
+        gridChunk = (Grids_AbstractGridChunkDouble) chunk;
+        Grids_GridDouble g;
+        g = (Grids_GridDouble) gridChunk.getGrid(false);
+        if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
+            Grids_GridChunkDoubleArray gridChunkArray;
+            gridChunkArray = (Grids_GridChunkDoubleArray) gridChunk;
+            return gridChunkArray.getCell(
+                    cellRow,
+                    cellCol,
+                    false);
+        }
+        if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
+            Grids_GridChunkDoubleMap gridChunkMap;
+            gridChunkMap = (Grids_GridChunkDoubleMap) gridChunk;
+            return gridChunkMap.getCell(
+                    cellRow,
+                    cellCol,
+                    false);
+        }
+        double noDataValue = g.NoDataValue;
+        return noDataValue;
     }
 
 }

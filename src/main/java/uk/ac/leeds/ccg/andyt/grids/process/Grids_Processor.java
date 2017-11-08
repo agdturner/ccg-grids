@@ -881,7 +881,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = maskIntChunk.getCell(
                                         chunkCellRow,
                                         chunkCellCol,
-                                        maskNoDataValue,
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value == maskNoDataValue) {
@@ -923,7 +922,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = maskChunk.getCell(
                                         chunkCellRow,
                                         chunkCellCol,
-                                        maskNoDataValue,
                                         handleOutOfMemoryError);
                                 if (value == maskNoDataValue) {
                                     grid.setCell(
@@ -967,7 +965,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = maskChunk.getCell(
                                         chunkCellRow,
                                         chunkCellCol,
-                                        maskNoDataValue,
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value == maskNoDataValue) {
@@ -1010,7 +1007,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = maskChunk.getCell(
                                         chunkCellRow,
                                         chunkCellCol,
-                                        maskNoDataValue,
                                         handleOutOfMemoryError);
                                 if (value == maskNoDataValue) {
                                     grid.setCell(
@@ -1292,14 +1288,12 @@ public class Grids_Processor extends Grids_Object {
                                 value = gridChunk.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
                                     outputGridChunk.setCell(
                                             chunkCellRowIndex,
                                             chunkCellColIndex,
                                             min,
-                                            noDataValue,
                                             handleOutOfMemoryError);
                                 }
                             }
@@ -1332,14 +1326,12 @@ public class Grids_Processor extends Grids_Object {
                                 value = gridChunk.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
                                     outputGridChunk.setCell(
                                             chunkCellRowIndex,
                                             chunkCellColIndex,
                                             (((value - minGrid) / rangeGrid) * range) + min,
-                                            noDataValue,
                                             handleOutOfMemoryError);
                                 }
                             }
@@ -1456,7 +1448,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = gridChunk.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value != noDataValue) {
@@ -1464,7 +1455,6 @@ public class Grids_Processor extends Grids_Object {
                                             chunkCellRowIndex,
                                             chunkCellColIndex,
                                             min,
-                                            noDataValue,
                                             handleOutOfMemoryError);
                                 }
                             }
@@ -1500,7 +1490,6 @@ public class Grids_Processor extends Grids_Object {
                                 value = gridChunk.getCell(
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
-                                        noDataValue,
                                         handleOutOfMemoryError,
                                         chunkID);
                                 if (value != noDataValue) {
@@ -1508,7 +1497,6 @@ public class Grids_Processor extends Grids_Object {
                                             chunkCellRowIndex,
                                             chunkCellColIndex,
                                             (((value - minGrid) / rangeGrid) * range) + min,
-                                            noDataValue,
                                             handleOutOfMemoryError);
                                 }
                             }

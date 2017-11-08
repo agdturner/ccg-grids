@@ -69,12 +69,15 @@ public interface Grids_InterfaceStatistics {
     /**
      * For returning the arithmetic mean of all data values.
      *
+     * @param numberOfDecimalPlaces The result returned uses BigDecimal 
+     * arithmetic to ensure the result is correct given a round scheme to this
+     * many decimal places.  
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getArithmeticMean(boolean handleOutOfMemoryError);
+    public Number getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError);
 
 //    @TODO
 //    StandardDeviation

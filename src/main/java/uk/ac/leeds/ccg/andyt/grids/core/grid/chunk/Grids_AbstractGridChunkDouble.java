@@ -22,7 +22,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.HashSet;
+import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 
 /**
@@ -30,8 +32,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * implement acting as an interface.
  */
 public abstract class Grids_AbstractGridChunkDouble
-        extends Grids_AbstractGridChunkNumber {
-    //implements Serializable, GridDoubleStatisticsInterface {
+        extends Grids_AbstractGridChunkNumber
+        implements Serializable {
 
     //private static final long serialVersionUID = 1L;
     protected Grids_AbstractGridChunkDouble() {
@@ -58,7 +60,6 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkRow the row index of the cell w.r.t. the origin of this chunk
      * @param chunkCol the column index of the cell w.r.t. the origin of this
      * chunk
-     * @param noDataValue Grid.NoDataValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -67,13 +68,11 @@ public abstract class Grids_AbstractGridChunkDouble
     public double getCell(
             int chunkRow,
             int chunkCol,
-            double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCell(
                     chunkRow,
-                    chunkCol,
-                    noDataValue);
+                    chunkCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -86,7 +85,6 @@ public abstract class Grids_AbstractGridChunkDouble
                 return getCell(
                         chunkRow,
                         chunkCol,
-                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -99,29 +97,12 @@ public abstract class Grids_AbstractGridChunkDouble
      *
      * @param chunkRow the row of this chunk.
      * @param chunkCol the column of this chunk.
-     * @param noDataValue
      * @return
      */
     protected abstract double getCell(
             int chunkRow,
-            int chunkCol,
-            double noDataValue);
+            int chunkCol);
 
-    /**
-     * Returns the value at position given by: chunkRow, chunkCol and cellID.
-     *
-     * @param chunkRow the row of this chunk.
-     * @param chunkCol the column of this chunk.
-     * @param cellID the cell ID for chunkRow, chunkCol.
-     * @param noDataValue
-     * @return
-     */
-    protected abstract double getCell(
-            int chunkRow,
-            int chunkCol,
-            Grids_2D_ID_int cellID,
-            double noDataValue);
-    
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
@@ -132,26 +113,17 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkCol The column index of the cell w.r.t. the origin of this
      * chunk.
      * @param noDataValue The Grid.NoDataValue.
-     * @return 
+     * @return
      */
     protected BigDecimal getCellBigDecimal(int chunkRow, int chunkCol, double noDataValue) {
-        double value = getCell(chunkRow, chunkCol, noDataValue);
+        double value = getCell(chunkRow, chunkCol);
         try {
             return new BigDecimal(value);
         } catch (ArithmeticException ae0) {
             return null;
         }
     }
-    
-    /**
-     * Returns the number of cells with no data values as an int.
-     *
-     * @return
-     */
-    protected int getNonNoDataValueCountInt() {
-        return getNonNoDataValueCountBigInteger().intValue();
-    }
-    
+
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex, as a BigDecimal. If the value is
@@ -185,30 +157,33 @@ public abstract class Grids_AbstractGridChunkDouble
             }
         }
     }
-    
+
     /**
-     * Returns the number of cells with no data values as a BigInteger.
+     * Returns the number of cells with data values.
      *
      * @return
      */
     @Override
-    protected BigInteger getNonNoDataValueCountBigInteger() {
+    protected long getN() {
         boolean handleOutOfMemoryError = false;
-        BigInteger nonNoDataValueCount = BigInteger.ZERO;
+        long n = 0;
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
         int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
         double noDataValue = g.getNoDataValue(false);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                if (getCell(row, col, noDataValue) != noDataValue) {
-                    nonNoDataValueCount = nonNoDataValueCount.add(BigInteger.ONE);
+                double value = getCell(row, col);
+                if (Double.isNaN(value) && Double.isFinite(value)) {
+                    if (value != noDataValue) {
+                        n++;
+                    }
                 }
             }
         }
-        return nonNoDataValueCount;
+        return n;
     }
-    
+
     /**
      * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
      * all cells are _NoDataValues, then null is returned.
@@ -218,53 +193,20 @@ public abstract class Grids_AbstractGridChunkDouble
      * @return
      */
     @Override
-    protected BigDecimal getArithmeticMeanBigDecimal(int numberOfDecimalPlaces) {
-        boolean handleOutOfMemoryError = false;
-        BigDecimal mean = BigDecimal.ZERO;
-        BigDecimal count = BigDecimal.ZERO;
-        BigDecimal one = BigDecimal.ONE;
-        Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        double _NoDataValue = g.getNoDataValue(handleOutOfMemoryError);
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col, _NoDataValue);
-                if (value != _NoDataValue) {
-                    mean = mean.add(new BigDecimal(value));
-                    count = count.add(one);
-                }
-            }
-        }
-        if (count.compareTo(BigDecimal.ZERO) != 0) {
-            return mean.divide(count, numberOfDecimalPlaces, BigDecimal.ROUND_HALF_EVEN);
+    protected BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
+        BigDecimal sum = getSum();
+        long n = getN();
+        BigInteger nBI = BigInteger.valueOf(n);
+        if (n != 0) {
+            return Generic_BigDecimal.divideRoundIfNecessary(sum, nBI,
+                    numberOfDecimalPlaces, RoundingMode.HALF_EVEN);
         }
         return null;
     }
 
     /**
-     * Returns the Arithmetic Mean of all data values as a double. If all
-     * cells are NoDataValues, then Grid.NoDataValue is returned. Using
-     * BigDecimal this should be as precise as is possible with doubles.
-     *
-     * @return
-     */
-    @Override
-    protected double getArithmeticMeanDouble() {
-        BigDecimal arithmeticMeanBigDecimal = getArithmeticMeanBigDecimal(324); //Why 324???
-        try {
-            return arithmeticMeanBigDecimal.doubleValue();
-        } catch (NullPointerException npe0) {
-            return getGrid().getNoDataValue(false);
-        }
-    }
-    
-    /**
-     * Returns the median of all data values as a double. This method
-     * requires that all data in chunk can be stored as a new array.
+     * Returns the median of all data values as a double. This method requires
+     * that all data in chunk can be stored as a new array.
      *
      * @return
      */
@@ -273,29 +215,32 @@ public abstract class Grids_AbstractGridChunkDouble
         Grids_GridDouble g = getGrid();
         int scale = 20;
         double median = g.getNoDataValue(false);
-        BigInteger nonNoDataValueCountBigInteger = getNonNoDataValueCountBigInteger();
-        if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
+        long n = getN();
+        BigInteger nBI = BigInteger.valueOf(n);
+        if (n > 0) {
             double[] array = toArrayNotIncludingNoDataValues();
             sort1(array, 0, array.length);
-            BigInteger[] nonNoDataValueCountBigIntegerDivideAndRemainder2 = nonNoDataValueCountBigInteger.divideAndRemainder(new BigInteger("2"));
-            if (nonNoDataValueCountBigIntegerDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+            BigInteger[] nDivideAndRemainder2 = nBI.divideAndRemainder(
+                    new BigInteger("2"));
+            if (nDivideAndRemainder2[1].compareTo(BigInteger.ZERO) == 0) {
+                int index = nDivideAndRemainder2[0].intValue();
                 //median = array[ index ];
                 //median += array[ index - 1 ];
                 //median /= 2.0d;
                 //return median;
                 BigDecimal medianBigDecimal = new BigDecimal(array[index - 1]);
-                return (medianBigDecimal.add(new BigDecimal(array[index]))).divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                return (medianBigDecimal.add(new BigDecimal(array[index]))).
+                        divide(new BigDecimal(2.0d), scale, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                 //return ( medianBigDecimal.add( new BigDecimal( array[ index ] ) ) ).divide( new BigDecimal( 2.0d ), scale, BigDecimal.ROUND_HALF_EVEN ).doubleValue();
             } else {
-                int index = nonNoDataValueCountBigIntegerDivideAndRemainder2[0].intValue();
+                int index = nDivideAndRemainder2[0].intValue();
                 return array[index];
             }
         } else {
             return median;
         }
     }
-    
+
     /**
      * Returns the standard deviation of all data values as a double.
      *
@@ -314,7 +259,7 @@ public abstract class Grids_AbstractGridChunkDouble
         double count = 0.0d;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                value = getCell(row, col, noDataValue);
+                value = getCell(row, col);
                 if (value != noDataValue) {
                     standardDeviation += (value - mean) * (value - mean);
                     count += 1.0d;
@@ -327,7 +272,7 @@ public abstract class Grids_AbstractGridChunkDouble
             return standardDeviation;
         }
     }
-    
+
     /**
      * Initialises the value at position given by: chunk cell row
      * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
@@ -337,7 +282,6 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkCol the column index of the cell w.r.t. the origin of this
      * chunk
      * @param valueToInitialise the value with which the cell is initialised
-     * @param noDataValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -346,14 +290,12 @@ public abstract class Grids_AbstractGridChunkDouble
             int chunkRow,
             int chunkCol,
             double valueToInitialise,
-            double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             initCell(
                     chunkRow,
                     chunkCol,
-                    valueToInitialise,
-                    noDataValue);
+                    valueToInitialise);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -366,7 +308,6 @@ public abstract class Grids_AbstractGridChunkDouble
                         chunkRow,
                         chunkCol,
                         valueToInitialise,
-                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -380,13 +321,11 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkRow the row of the chunk.
      * @param chunkCol the column of the chunk.
      * @param valueToInitialise the value to initialise the cell with.
-     * @param noDataValue
      */
     protected abstract void initCell(
             int chunkRow,
             int chunkCol,
-            double valueToInitialise,
-            double noDataValue);
+            double valueToInitialise);
 
     /**
      * Returns the value at position given by: chunkRow, chunkCol. sets it to
@@ -395,7 +334,6 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkRow the row of the chunk.
      * @param chunkCol the column of the chunk.
      * @param valueToSet the value the cell is to be set to.
-     * @param noDataValue
      * @param handleOutOfMemoryError If true then if OutOfMemoryError is thrown
      * then there is an attempt to manage memory. If false then if an
      * OutOfMemoryError is thrown then there is no attempt to manage memory and
@@ -406,14 +344,12 @@ public abstract class Grids_AbstractGridChunkDouble
             int chunkRow,
             int chunkCol,
             double valueToSet,
-            double noDataValue,
             boolean handleOutOfMemoryError) {
         try {
             double result = setCell(
                     chunkRow,
                     chunkCol,
-                    valueToSet,
-                    noDataValue);
+                    valueToSet);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -427,7 +363,6 @@ public abstract class Grids_AbstractGridChunkDouble
                         chunkRow,
                         chunkCol,
                         valueToSet,
-                        noDataValue,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -442,15 +377,12 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param chunkRow the row of the chunk.
      * @param chunkCol the column of the chunk.
      * @param valueToSet the value the cell is to be set to
-     * @param noDataValue the Grid.NoDataValue.
      * @return
      */
     protected abstract double setCell(
             int chunkRow,
             int chunkCol,
-            double valueToSet,
-            double noDataValue);
-
+            double valueToSet);
 
     /**
      * For initialising the data associated with this.
@@ -492,7 +424,7 @@ public abstract class Grids_AbstractGridChunkDouble
      * @return
      */
     @Override
-    protected BigDecimal getSumBigDecimal() {
+    protected BigDecimal getSum() {
         boolean handleOutOfMemoryError = false;
         BigDecimal sum = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
@@ -504,15 +436,17 @@ public abstract class Grids_AbstractGridChunkDouble
         int col;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                value = getCell(row, col, noDataValue);
+                value = getCell(row, col);
+                if (Double.isNaN(value) && Double.isFinite(value)) {
                 if (value != noDataValue) {
                     sum = sum.add(new BigDecimal(value));
+                }
                 }
             }
         }
         return sum;
     }
-    
+
     /**
      * Returns all the values in row major order as a double[].
      *
@@ -534,17 +468,13 @@ public abstract class Grids_AbstractGridChunkDouble
                     + Integer.MAX_VALUE + " instead of "
                     + ((long) nrows * (long) ncols));
         }
-        double noDataValue = getGrid().getNoDataValue(handleOutOfMemoryError);
         array = new double[nrows * ncols];
         int row;
         int col;
         int count = 0;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                array[count] = getCell(
-                        row,
-                        col,
-                        noDataValue);
+                array[count] = getCell(                        row,                        col);
                 count++;
             }
         }
@@ -591,17 +521,18 @@ public abstract class Grids_AbstractGridChunkDouble
         int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
         int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
         double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
-        double[] array = new double[getNonNoDataValueCountInt()];
+        long n = getN();
+        if (n != (int) n) {
+            throw new Error("Error n != (int) n ");
+        }
+        double[] array = new double[(int) getN()];
         int row;
         int col;
         int count = 0;
         double value;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                value = getCell(
-                        row,
-                        col,
-                        noDataValue);
+                value = getCell(                        row,                        col);
                 if (value != noDataValue) {
                     array[count] = value;
                     count++;
@@ -610,7 +541,6 @@ public abstract class Grids_AbstractGridChunkDouble
         }
         return array;
     }
-
 
     /**
      * Returns the minimum of all non _NoDataValues as a double.
@@ -659,8 +589,7 @@ public abstract class Grids_AbstractGridChunkDouble
             for (col = 0; col < ncols; col++) {
                 value = getCell(
                         row,
-                        col,
-                        noDataValue);
+                        col);
                 if (value != noDataValue) {
                     min = Math.min(
                             min,
@@ -716,7 +645,7 @@ public abstract class Grids_AbstractGridChunkDouble
         int col;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                value = getCell(row, col, noDataValue);
+                value = getCell(row, col);
                 if (value != noDataValue) {
                     max = Math.max(max, value);
                 }
@@ -724,7 +653,6 @@ public abstract class Grids_AbstractGridChunkDouble
         }
         return max;
     }
-
 
     /**
      * Returns the mode of all non _NoDataValues as a TDoubleHashSet.
@@ -763,20 +691,19 @@ public abstract class Grids_AbstractGridChunkDouble
     protected HashSet<Double> getMode() {
         boolean handleOutOfMemoryError = false;
         HashSet<Double> mode = new HashSet<>();
-        BigInteger nonNoDataValueCountBigInteger
-                = getNonNoDataValueCountBigInteger();
-        if (nonNoDataValueCountBigInteger.compareTo(BigInteger.ZERO) == 1) {
+        long n = getN();
+        if (n > 0) {
             //TDoubleObjectHashMap modes = new TDoubleObjectHashMap();
             Grids_GridDouble g = getGrid();
             int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
             int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-            double _noDataValue = g.getNoDataValue(false);
+            double noDataValue = g.getNoDataValue(false);
             boolean calculated = false;
             int row = 0;
             int col = 0;
             int p;
             int q;
-            Object[] tmode = initMode(nrows, ncols, _noDataValue);
+            Object[] tmode = initMode(nrows, ncols, noDataValue);
             if (tmode[0] == null) {
                 return mode;
             } else {
@@ -788,8 +715,8 @@ public abstract class Grids_AbstractGridChunkDouble
                 // Do remainder of the row
                 p = chunkCellID.getRow();
                 for (q = chunkCellID.getCol() + 1; q < ncols; q++) {
-                    value = getCell(p, q, _noDataValue);
-                    if (value != _noDataValue) {
+                    value = getCell(p, q);
+                    if (value != noDataValue) {
                         count = count(p, q, nrows, ncols, value);
                         if (count > modeCount) {
                             mode.clear();
@@ -805,8 +732,8 @@ public abstract class Grids_AbstractGridChunkDouble
                 // Do remainder of the grid
                 for (p++; p < nrows; p++) {
                     for (q = 0; q < ncols; q++) {
-                        value = getCell(p, q, _noDataValue);
-                        if (value != _noDataValue) {
+                        value = getCell(p, q);
+                        if (value != noDataValue) {
                             count = count(p, q, nrows, ncols, value);
                             if (count > modeCount) {
                                 mode.clear();
@@ -844,12 +771,12 @@ public abstract class Grids_AbstractGridChunkDouble
         double thisValue;
         for (p = 0; p < nrows; p++) {
             for (q = 0; q < ncols; q++) {
-                value = getCell(p, q, noDataValue);
+                value = getCell(p, q);
                 if (value != noDataValue) {
                     modeCount = 0L;
                     for (row = 0; row < nrows; row++) {
                         for (col = 0; col < ncols; col++) {
-                            thisValue = getCell(row, col, noDataValue);
+                            thisValue = getCell(row, col);
                             if (thisValue == value) {
                                 modeCount++;
                             }
@@ -882,10 +809,9 @@ public abstract class Grids_AbstractGridChunkDouble
             double value) {
         long count = 1L;
         double thisValue;
-        double noDataValue = getGrid().getNoDataValue(false);
         // Do remainder of the row
         for (q++; q < ncols; q++) {
-            thisValue = getCell(p, q, noDataValue);
+            thisValue = getCell(p, q);
             if (thisValue == value) {
                 count++;
             }
@@ -893,7 +819,7 @@ public abstract class Grids_AbstractGridChunkDouble
         // Do remainder of the grid
         for (p++; p < nrows; p++) {
             for (q = 0; q < ncols; q++) {
-                thisValue = getCell(p, q, noDataValue);
+                thisValue = getCell(p, q);
                 if (thisValue == value) {
                     count++;
                 }
@@ -901,7 +827,6 @@ public abstract class Grids_AbstractGridChunkDouble
         }
         return count;
     }
-
 
     /**
      * Sorts the specified sub-array of doubles into ascending order. Source
@@ -1006,6 +931,5 @@ public abstract class Grids_AbstractGridChunkDouble
                 ? (x[b] < x[c] ? b : x[a] < x[c] ? c : a)
                 : (x[b] > x[c] ? b : x[a] > x[c] ? c : a));
     }
-
 
 }
