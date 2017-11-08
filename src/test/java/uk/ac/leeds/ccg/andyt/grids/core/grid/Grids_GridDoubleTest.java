@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
@@ -333,18 +334,22 @@ public class Grids_GridDoubleTest {
         int row;
         int col;
 
+        // Set all values to 20.
                 double value;
         value = 20d;
 
         for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
             chunkNRows = g.getChunkNRows(chunkRowIndex, handleOutOfMemoryError);
             for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                Grids_2D_ID_int chunkID;
+                chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
                 chunkNCols = g.getChunkNCols(chunkColIndex, handleOutOfMemoryError);
                 for (row = 0; row < chunkNRows; row++) {
                     for (col = 0; col < chunkNCols; col++) {
                         g.setCell(chunkRowIndex, chunkColIndex, row, col, value);
                     }
                 }
+                System.out.println("Done " + chunkID.toString());
             }
         }
         double expResult;
