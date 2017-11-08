@@ -37,14 +37,30 @@ public class Grids_Dimensions implements Serializable {
     private final BigDecimal Height;
     private final BigDecimal Area;
 
-    public Grids_Dimensions(int NRows, int NCols) {
+    public Grids_Dimensions(int nRows, int nCols) {
         this(BigDecimal.ZERO,
-                new BigDecimal(NRows),
+                new BigDecimal(nRows),
                 BigDecimal.ZERO,
-                new BigDecimal(NCols),
+                new BigDecimal(nCols),
+                BigDecimal.ONE);
+    }
+    
+    public Grids_Dimensions(long nRows, long nCols) {
+        this(BigDecimal.ZERO,
+                BigDecimal.valueOf(nRows),
+                BigDecimal.ZERO,
+                BigDecimal.valueOf(nCols),
                 BigDecimal.ONE);
     }
 
+    public Grids_Dimensions(BigDecimal width, BigDecimal height) {
+        this(BigDecimal.ZERO,
+                height,
+                BigDecimal.ZERO,
+                width,
+                BigDecimal.ONE);
+    }
+    
     /**
      * DimensionsScale will default to the maximum scale in any of the
      * BigDecimal inputs.

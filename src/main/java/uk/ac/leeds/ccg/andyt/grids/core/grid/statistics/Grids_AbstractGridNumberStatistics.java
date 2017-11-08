@@ -23,20 +23,9 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
