@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridStatisticsNotUpdatedAsDataChanged;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
 
 /**
  *
@@ -220,7 +220,7 @@ public class Grids_GridDoubleTest {
                 chunkNRows,
                 chunkNCols,
                 new Grids_Dimensions(chunkNRows, chunkNCols),
-                new Grids_GridStatisticsNotUpdatedAsDataChanged(ge),
+                new Grids_GridDoubleStatisticsNotUpdated(ge),
                 chunkFactory);
         return result;
     }
@@ -247,7 +247,7 @@ public class Grids_GridDoubleTest {
      *
      * @param dir
      * @param name
-     * @param gridFactory
+     * @param gridDoubleFactory
      * @param nRows
      * @param handleOutOfMemoryError
      * @param nCols
@@ -256,19 +256,19 @@ public class Grids_GridDoubleTest {
     protected Grids_GridDouble getGridDouble(
             File dir,
             String name,
-            Grids_GridDoubleFactory gridFactory,
+            Grids_GridDoubleFactory gridDoubleFactory,
             long nRows,
             long nCols,
             boolean handleOutOfMemoryError) {
         Grids_GridDouble result;
         Grids_Dimensions dimensions;
         dimensions = getDimensions(nRows, nCols);
-        Grids_GridStatistics gridStatistics;
-        gridStatistics = new Grids_GridStatistics(gridFactory.ge);
-        result = gridFactory.create( 
+        Grids_GridDoubleStatistics gridStatistics;
+        gridStatistics = new Grids_GridDoubleStatistics(gridDoubleFactory.ge);
+        result = gridDoubleFactory.create( 
                 gridStatistics,
-                gridFactory.ge.getFiles().getGeneratedGridDoubleDir(),
-                gridFactory.GridChunkDoubleFactory,
+                gridDoubleFactory.ge.getFiles().getGeneratedGridDoubleDir(),
+                gridDoubleFactory.GridChunkDoubleFactory,
                 nRows,
                 nCols,
                 dimensions,
