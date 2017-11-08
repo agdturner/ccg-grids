@@ -117,13 +117,13 @@ public abstract class Grids_GridBinary
     public double setCell(long cellRowIndex, long cellColIndex, double valueToSet, boolean handleOutOfMemoryError) {
         try {
             double result = setCell(cellRowIndex, cellColIndex, valueToSet);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
             ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return setCell(cellRowIndex, cellColIndex, valueToSet, handleOutOfMemoryError);
             } else {

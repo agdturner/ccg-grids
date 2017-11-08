@@ -1055,7 +1055,7 @@ public class Grids_ProcessorDEM
             ge.getGrids().add(_Grid2DSquareCell);
             return getSlopeAspect(
                     _Grid2DSquareCell,
-                    _Grid2DSquareCell.getCellRowIndex(y, handleOutOfMemoryError),
+                    _Grid2DSquareCell.getRow(y, handleOutOfMemoryError),
                     _Grid2DSquareCell.getCellColIndex(x, handleOutOfMemoryError),
                     x,
                     y,
@@ -2911,7 +2911,7 @@ public class Grids_ProcessorDEM
                                 chunkID);
                         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                         for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getCellRowIndex(
+                            cellRowIndex = g.getRow(
                                     chunkRowIndex,
                                     chunkCellRowIndex,
                                     chunkID,
@@ -2921,7 +2921,7 @@ public class Grids_ProcessorDEM
                                     handleOutOfMemoryError,
                                     chunkID);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellColIndex(
+                                cellColIndex = g.getCellCol(
                                         chunkColIndex,
                                         chunkCellColIndex,
                                         chunkID,
@@ -3031,7 +3031,7 @@ public class Grids_ProcessorDEM
                                 chunkColIndex,
                                 handleOutOfMemoryError);
                         for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNRows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getCellRowIndex(
+                            cellRowIndex = g.getRow(
                                     chunkRowIndex,
                                     chunkCellRowIndex,
                                     chunkID,
@@ -3041,7 +3041,7 @@ public class Grids_ProcessorDEM
                                     handleOutOfMemoryError,
                                     chunkID);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellColIndex(
+                                cellColIndex = g.getCellCol(
                                         chunkColIndex,
                                         chunkCellColIndex,
                                         chunkID,
@@ -3210,7 +3210,7 @@ public class Grids_ProcessorDEM
 //                        try {
 //                            for ( chunkCellRowIndex = _int_0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex ++ ) {
 //                                try {
-//                                    cellRowIndex = _Grid2DSquareCell.getCellRowIndex(
+//                                    cellRowIndex = _Grid2DSquareCell.getRow(
 //                                            _ChunkRowIndex,
 //                                            chunkCellRowIndex,
 //                                            handleOutOfMemoryError,
@@ -3224,20 +3224,20 @@ public class Grids_ProcessorDEM
 //                                    System.out.println("Problem!!!");
 //                                    ID _chunkID2 = new ID(
 //                                            _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                            _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
-//                                            _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
+//                                            _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
+//                                            _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
 //                                    _Roughness.swapToFileGrid2DSquareCellChunkExcept(
 //                                            _chunkID2,
 //                                            handleOutOfMemoryError );
 //                                    initMemoryReserve( handleOutOfMemoryError );
-//                                    cellRowIndex = _Grid2DSquareCell.getCellRowIndex( _ChunkRowIndex, chunkCellRowIndex, handleOutOfMemoryError );
+//                                    cellRowIndex = _Grid2DSquareCell.getRow( _ChunkRowIndex, chunkCellRowIndex, handleOutOfMemoryError );
 //                                    y = _Grid2DSquareCell.getCellYDouble( cellRowIndex, handleOutOfMemoryError );
 //                                }
 //                                try {
 //                                    for ( chunkCellColIndex = _int_0; chunkCellColIndex < chunkNcols; chunkCellColIndex ++ ) {
 //                                        try {
 //                                            try {
-//                                                cellColIndex = _Grid2DSquareCell.getCellColIndex(
+//                                                cellColIndex = _Grid2DSquareCell.getCellCol(
 //                                                        _ChunkColIndex,
 //                                                        chunkCellColIndex,
 //                                                        handleOutOfMemoryError,
@@ -3257,8 +3257,8 @@ public class Grids_ProcessorDEM
 //                                                clearMemoryReserve();
 //                                                ID _chunkID2 = new ID(
 //                                                        _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                                        _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
-//                                                        _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
+//                                                        _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
+//                                                        _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
 //                                                _Roughness.swapToFileGrid2DSquareCellChunkExcept(
 //                                                        _chunkID2, handleOutOfMemoryError );
 //                                                initMemoryReserve( handleOutOfMemoryError );
@@ -3267,7 +3267,7 @@ public class Grids_ProcessorDEM
 //                                                        chunkCellColIndex,
 //                                                        noDataValue,
 //                                                        handleOutOfMemoryError );
-//                                                cellColIndex = _Grid2DSquareCell.getCellColIndex( _ChunkColIndex, chunkCellColIndex, handleOutOfMemoryError );
+//                                                cellColIndex = _Grid2DSquareCell.getCellCol( _ChunkColIndex, chunkCellColIndex, handleOutOfMemoryError );
 //                                                x = _Grid2DSquareCellDouble.getCellXDouble( cellColIndex, handleOutOfMemoryError );
 //                                            }
 //                                            _boolean1 = height != noDataValue;
@@ -3308,8 +3308,8 @@ public class Grids_ProcessorDEM
 //                                                            clearMemoryReserve();
 //                                                            ID _chunkID2 = new ID(
 //                                                                    _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                                                    _Roughness.getChunkRowIndex( cellRowIndex, handleOutOfMemoryError ),
-//                                                                    _Roughness.getChunkColIndex( cellColIndex, handleOutOfMemoryError ) );
+//                                                                    _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
+//                                                                    _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
 //                                                            _Roughness.swapToFileGrid2DSquareCellChunkExcept(
 //                                                                    _chunkID2,
 //                                                                    handleOutOfMemoryError );
@@ -3365,7 +3365,7 @@ public class Grids_ProcessorDEM
 //                                _ChunkColIndex,
 //                                handleOutOfMemoryError );
 //                        for ( chunkCellRowIndex = _int_0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex ++ ) {
-//                            cellRowIndex = _Grid2DSquareCell.getCellRowIndex(
+//                            cellRowIndex = _Grid2DSquareCell.getRow(
 //                                    _ChunkRowIndex,
 //                                    chunkCellRowIndex,
 //                                    handleOutOfMemoryError );
@@ -3373,7 +3373,7 @@ public class Grids_ProcessorDEM
 //                                    cellRowIndex,
 //                                    handleOutOfMemoryError );
 //                            for ( chunkCellColIndex = _int_0; chunkCellColIndex < chunkNcols; chunkCellColIndex ++ ) {
-//                                cellColIndex = _Grid2DSquareCell.getCellColIndex(
+//                                cellColIndex = _Grid2DSquareCell.getCellCol(
 //                                        _ChunkColIndex,
 //                                        chunkCellColIndex,
 //                                        handleOutOfMemoryError );
@@ -6241,8 +6241,8 @@ public class Grids_ProcessorDEM
 //        CellID cellID;
 //        while ( ite.hasNext() ) {
 //            cellID = ( CellID ) ite.next();
-//            row = cellID.getCellRowIndex();
-//            col = cellID.getCellColIndex();
+//            row = cellID.getRow();
+//            col = cellID.getCellCol();
 //            waterDepth = tempFlowAccumulation.getCell( row, col, handleOutOfMemoryError );
 //            flowAccumulation.addToCell( row, col, - waterDepth / 2.0d, handleOutOfMemoryError );
 //        }

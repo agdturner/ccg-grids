@@ -205,8 +205,8 @@ public abstract class Grids_AbstractGridNumber
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
+                        getChunkRow(cellRowIndex),
+                        getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(
                         cellRowIndex,
@@ -229,10 +229,10 @@ public abstract class Grids_AbstractGridNumber
             long cellRowIndex,
             long cellColIndex) {
         return getCellDouble(
-                getChunkRowIndex(cellRowIndex),
-                getChunkColIndex(cellColIndex),
-                getChunkCellRowIndex(cellRowIndex),
-                getChunkCellColIndex(cellColIndex));
+                getChunkRow(cellRowIndex),
+                getChunkCol(cellColIndex),
+                getCellRow(cellRowIndex),
+                getCellCol(cellColIndex));
     }
 
     /**
@@ -408,8 +408,8 @@ public abstract class Grids_AbstractGridNumber
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRowIndex(cellRowIndex),
-                        getChunkColIndex(cellColIndex));
+                        getChunkRow(cellRowIndex),
+                        getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellInt(
                         cellRowIndex,
@@ -431,10 +431,10 @@ public abstract class Grids_AbstractGridNumber
             long cellRowIndex,
             long cellColIndex) {
         return getCellInt(
-                getChunkRowIndex(cellRowIndex),
-                getChunkColIndex(cellColIndex),
-                getChunkCellRowIndex(cellRowIndex),
-                getChunkCellColIndex(cellColIndex));
+                getChunkRow(cellRowIndex),
+                getChunkCol(cellColIndex),
+                getCellRow(cellRowIndex),
+                getCellCol(cellColIndex));
     }
 
     /**
@@ -686,7 +686,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValuesCellIDs(x, y, cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
@@ -722,7 +722,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValuesCellIDs(cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
@@ -794,7 +794,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(x, y, cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
@@ -835,7 +835,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
@@ -910,7 +910,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDoubleDistance(x, y, cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
@@ -951,7 +951,7 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRowIndex(cellRowIndex), getChunkColIndex(cellColIndex));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(cellRowIndex), getChunkCol(cellColIndex));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDoubleDistance(cellRowIndex, cellColIndex, handleOutOfMemoryError);
             } else {
