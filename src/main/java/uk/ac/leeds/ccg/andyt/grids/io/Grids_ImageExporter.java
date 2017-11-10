@@ -265,8 +265,8 @@ public class Grids_ImageExporter implements Serializable {
                             handleOutOfMemoryError);
                 } catch (OutOfMemoryError e) {
                     _Grids_Environment.clearMemoryReserve();
-                    chunkRowIndex = rescaledGrid.getChunkRowIndex(row, handleOutOfMemoryError);
-                    chunkColIndex = rescaledGrid.getChunkColIndex(col, handleOutOfMemoryError);
+                    chunkRowIndex = rescaledGrid.getChunkRow(row, handleOutOfMemoryError);
+                    chunkColIndex = rescaledGrid.getChunkCol(col, handleOutOfMemoryError);
                     chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
                     _Grids_Environment.swapChunkExcept_Account(
                             grid, chunkID, handleOutOfMemoryError);
@@ -587,8 +587,8 @@ public class Grids_ImageExporter implements Serializable {
                             handleOutOfMemoryError);
                 } catch (OutOfMemoryError e) {
                     _Grids_Environment.clearMemoryReserve();
-                    chunkRowIndex = grid.getChunkRowIndex(row, handleOutOfMemoryError);
-                    chunkColIndex = grid.getChunkColIndex(col, handleOutOfMemoryError);
+                    chunkRowIndex = grid.getChunkRow(row, handleOutOfMemoryError);
+                    chunkColIndex = grid.getChunkCol(col, handleOutOfMemoryError);
                     chunkID = new Grids_2D_ID_int(chunkRowIndex, chunkColIndex);
                     _Grids_Environment.swapChunkExcept_Account(
                             grid, chunkID, handleOutOfMemoryError);

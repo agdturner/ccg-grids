@@ -719,7 +719,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected final int getChunkNRows(int chunkRow) {
         if (chunkRow > -1 && chunkRow < NChunkRows) {
             if (chunkRow == (NChunkRows - 1)) {
-                return getChunkNRowsFinalRowChunks();
+                return getChunkNRowsFinalRowChunk();
             } else {
                 return ChunkNRows;
             }
@@ -807,7 +807,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected final int getChunkNCols(int chunkCol) {
         if (chunkCol > -1 && chunkCol < NChunkCols) {
             if (chunkCol == (NChunkCols - 1)) {
-                return getChunkNColsFinalColChunks();
+                return getChunkNColsFinalColChunk();
             } else {
                 return ChunkNCols;
             }
@@ -822,14 +822,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    protected final int getChunkNrowsFinalRowChunks(boolean handleOutOfMemoryError) {
+    protected final int getChunkNRowsFinalRowChunk(boolean handleOutOfMemoryError) {
         try {
-            return getChunkNRowsFinalRowChunks();
+            return getChunkNRowsFinalRowChunk();
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkNrowsFinalRowChunks(handleOutOfMemoryError);
+                return getChunkNRowsFinalRowChunk(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -839,7 +839,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return the number of rows in the chunks in the final row.
      */
-    protected final int getChunkNRowsFinalRowChunks() {
+    protected final int getChunkNRowsFinalRowChunk() {
         long nChunkRowsMinusOne = (long) (NChunkRows - 1);
         long chunkNRows = (long) ChunkNRows;
         return (int) (NRows - (nChunkRowsMinusOne * chunkNRows));
@@ -851,14 +851,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    protected final int getChunkNColsFinalColChunks(boolean handleOutOfMemoryError) {
+    protected final int getChunkNColsFinalColChunk(boolean handleOutOfMemoryError) {
         try {
-            return getChunkNColsFinalColChunks();
+            return getChunkNColsFinalColChunk();
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return Grids_AbstractGrid.this.getChunkNColsFinalColChunks(handleOutOfMemoryError);
+                return getChunkNColsFinalColChunk(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -868,7 +868,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return the number of columns in the chunks in the final column.
      */
-    protected final int getChunkNColsFinalColChunks() {
+    protected final int getChunkNColsFinalColChunk() {
         long nChunkColsMinusOne = (long) (NChunkCols - 1);
         long chunkNCols = (long) ChunkNCols;
         return (int) (NCols - (nChunkColsMinusOne * chunkNCols));
@@ -909,7 +909,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         if (chunkID.getRow() < (NChunkRows - 1)) {
             return ChunkNRows;
         } else {
-            return getChunkNRowsFinalRowChunks();
+            return getChunkNRowsFinalRowChunk();
         }
     }
 
@@ -948,7 +948,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         if (chunkID.getCol() < (NChunkCols - 1)) {
             return ChunkNCols;
         } else {
-            return getChunkNColsFinalColChunks();
+            return getChunkNColsFinalColChunk();
         }
     }
 
@@ -1060,8 +1060,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, x, y);
                 if (thisDistance < distance) {
                     Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                            Grids_AbstractGrid.this.getChunkRow((long) row + p),
-                            Grids_AbstractGrid.this.getChunkCol((long) col + q));
+                            getChunkRow((long) row + p),
+                            getChunkCol((long) col + q));
                     result.add(chunkID);
                 }
             }
@@ -1079,7 +1079,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkColIndex(double x, boolean handleOutOfMemoryError) {
+    public final int getChunkCol(double x, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkCol(x);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -1088,7 +1088,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkColIndex(x, handleOutOfMemoryError);
+                return getChunkCol(x, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1102,7 +1102,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * returned.
      */
     protected final int getChunkCol(double x) {
-        return Grids_AbstractGrid.this.getChunkCol(getCol(x));
+        return getChunkCol(getCol(x));
     }
 
     /**
@@ -1113,16 +1113,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkColIndex(long col, boolean handleOutOfMemoryError) {
+    public final int getChunkCol(long col, boolean handleOutOfMemoryError) {
         try {
-            int result = Grids_AbstractGrid.this.getChunkCol(col);
+            int result = getChunkCol(col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkColIndex(col, handleOutOfMemoryError);
+                return getChunkCol(col, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1148,7 +1148,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final long getCellColIndex(double x, boolean handleOutOfMemoryError) {
+    public final long getCol(double x, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(x);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -1157,7 +1157,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellColIndex(x, handleOutOfMemoryError);
+                return getCol(x, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1171,28 +1171,28 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * returned.
      */
     protected final long getCol(double x) {
-        return getCellColIndex(BigDecimal.valueOf(x));
+        return getCol(BigDecimal.valueOf(x));
     }
 
     /**
      * @return Cell column Index for the cell column that intersect the
      * x-coordinate xBigDecimal.
-     * @param xBigDecimal The x-coordinate of the line intersecting the cell
-     * column index returned.
+     * @param x The x-coordinate of the line intersecting the cell column index
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final long getCellColIndex(BigDecimal xBigDecimal, boolean handleOutOfMemoryError) {
+    public final long getCol(BigDecimal x, boolean handleOutOfMemoryError) {
         try {
-            long result = getCellColIndex(xBigDecimal);
+            long result = getCol(x);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellColIndex(xBigDecimal, handleOutOfMemoryError);
+                return getCol(x, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1200,15 +1200,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param x_BigDecimal
+     * @param x
      * @return Cell column Index for the cell column that intersect the
      * x-coordinate xBigDecimal.
      */
-    protected final long getCellColIndex(BigDecimal x_BigDecimal) {
+    protected final long getCol(BigDecimal x) {
         Grids_Dimensions gd;
         gd = getDimensions();
         BigDecimal xMinusXMin;
-        xMinusXMin = x_BigDecimal.subtract(gd.getXMin());
+        xMinusXMin = x.subtract(gd.getXMin());
         BigDecimal div;
         div = Generic_BigDecimal.divideRoundIfNecessary(
                 xMinusXMin,
@@ -1224,21 +1224,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Cell column index for the cells in chunk column index _Col chunk
      * cell column index chunkCellColIndex.
-     * @param chunkCellColIndex
+     * @param cellCol
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final long getCellColIndex(int chunkCol, int chunkCellColIndex, boolean handleOutOfMemoryError) {
+    public final long getCol(int chunkCol, int cellCol, boolean handleOutOfMemoryError) {
         try {
-            long result = getCellColIndex(chunkCol, chunkCellColIndex);
+            long result = getCol(chunkCol, cellCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellColIndex(chunkCol, chunkCellColIndex, handleOutOfMemoryError);
+                return getCol(chunkCol, cellCol, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1249,7 +1249,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Cell column index for the cells in chunk column index _Col chunk
      * cell column index chunkCellColIndex.
-     * @param chunkCellColIndex
+     * @param cellCol
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1257,16 +1257,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * AbstractGrid2DSquareCells not to be swapped if possible when an
      * OutOfMemoryError is encountered.
      */
-    public final long getCellCol(int chunkCol, int chunkCellColIndex, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public final long getCol(int chunkCol, int cellCol, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
-            long result = getCellColIndex(chunkCol, chunkCellColIndex);
+            long result = getCol(chunkCol, cellCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellCol(chunkCol, chunkCellColIndex, chunkID, handleOutOfMemoryError);
+                return getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1277,10 +1277,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Cell column index for the cells in chunk column index _Col chunk
      * cell column index chunkCellColIndex.
-     * @param chunkCellColIndex
+     * @param cellCol
      */
-    protected final long getCellColIndex(int chunkCol, int chunkCellColIndex) {
-        return ((long) chunkCol * (long) ChunkNCols) + (long) chunkCellColIndex;
+    protected final long getCol(int chunkCol, int cellCol) {
+        return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol;
     }
 
     /**
@@ -1292,16 +1292,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkCellColIndex(double x, boolean handleOutOfMemoryError) {
+    public final int getCellCol(double x, boolean handleOutOfMemoryError) {
         try {
-            int result = getChunkCellColIndex(x);
+            int result = getCellCol(x);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkCellColIndex(x, handleOutOfMemoryError);
+                return getCellCol(x, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1314,8 +1314,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param x The x-coordinate of the line intersecting the chunk cell column
      * index returned.
      */
-    protected final int getChunkCellColIndex(double x) {
-        return Grids_AbstractGrid.this.getCellCol(getCol(x));
+    protected final int getCellCol(double x) {
+        return getCellCol(getCol(x));
     }
 
     /**
@@ -1327,16 +1327,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkCellColIndex(long col, boolean handleOutOfMemoryError) {
+    public final int getCellCol(long col, boolean handleOutOfMemoryError) {
         try {
-            int result = Grids_AbstractGrid.this.getCellCol(col);
+            int result = getCellCol(col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkCellColIndex(col, handleOutOfMemoryError);
+                return getCellCol(col, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1350,24 +1350,25 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * index is returned.
      */
     protected final int getCellCol(long col) {
-        return (int) (col - ((col / ChunkNCols) * ChunkNCols));
+        long chunkCol = getChunkCol(col);
+        return (int) (col - (chunkCol * ChunkNCols));
     }
 
     /**
-     * @param a_Random
+     * @param random
      * @param handleOutOfMemoryError
      * @return A Random CellColIndex.
      */
-    public final long getCellColIndex(Random a_Random, boolean handleOutOfMemoryError) {
+    public final long getCol(Random random, boolean handleOutOfMemoryError) {
         try {
-            long result = getCellColIndex(a_Random);
+            long result = getCol(random);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellColIndex(a_Random, handleOutOfMemoryError);
+                return getCol(random, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1375,23 +1376,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param a_Random
+     * @param random
      * @return A Random CellColIndex.
      */
-    protected final long getCellColIndex(Random a_Random) {
+    protected final long getCol(Random random) {
         if (NCols < Integer.MAX_VALUE) {
-            return a_Random.nextInt((int) NCols);
+            return random.nextInt((int) NCols);
         } else {
             long col = 0;
             long colMax = 0;
             while (colMax < NCols) {
                 colMax += Integer.MAX_VALUE;
                 if (colMax < NCols) {
-                    col += a_Random.nextInt();
+                    col += random.nextInt();
                 } else {
                     int colInt = (int) (colMax - NCols);
                     if (colInt > 0) {
-                        col += a_Random.nextInt();
+                        col += random.nextInt();
                     }
                 }
             }
@@ -1408,7 +1409,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkRowIndex(double y, boolean handleOutOfMemoryError) {
+    public final int getChunkRow(double y, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkRow(y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -1417,7 +1418,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkRowIndex(y, handleOutOfMemoryError);
+                return getChunkRow(y, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1431,7 +1432,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * returned.
      */
     protected final int getChunkRow(double y) {
-        return Grids_AbstractGrid.this.getChunkRow(getRow(y));
+        return getChunkRow(getRow(y));
     }
 
     /**
@@ -1443,16 +1444,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkRowIndex(long row, boolean handleOutOfMemoryError) {
+    public final int getChunkRow(long row, boolean handleOutOfMemoryError) {
         try {
-            int result = Grids_AbstractGrid.this.getChunkRow(row);
+            int result = getChunkRow(row);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkRowIndex(row, handleOutOfMemoryError);
+                return getChunkRow(row, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1486,7 +1487,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return Grids_AbstractGrid.this.getRow(y, handleOutOfMemoryError);
+                return getRow(y, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1499,28 +1500,28 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param y The y-coordinate of the line thats cell row index is returned.
      */
     protected final long getRow(double y) {
-        return getCellRowIndex(BigDecimal.valueOf(y));
+        return getRow(BigDecimal.valueOf(y));
     }
 
     /**
      * @return Cell row Index for the cells that intersect the line with
      * y-coordinate yBigDecimal.
-     * @param yBigDecimal The y-coordinate of the line for which the cell row
-     * index is returned.
+     * @param y The y-coordinate of the line for which the cell row index is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final long getCellRowIndex(BigDecimal yBigDecimal, boolean handleOutOfMemoryError) {
+    public final long getRow(BigDecimal y, boolean handleOutOfMemoryError) {
         try {
-            long result = getCellRowIndex(yBigDecimal);
+            long result = getRow(y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellRowIndex(yBigDecimal, handleOutOfMemoryError);
+                return getRow(y, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1528,15 +1529,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param y_BigDecimal
+     * @param y
      * @return Cell row Index for the cells that intersect the line with
      * y-coordinate yBigDecimal.
      */
-    protected final long getCellRowIndex(BigDecimal y_BigDecimal) {
+    protected final long getRow(BigDecimal y) {
         Grids_Dimensions gd;
         gd = getDimensions();
         BigDecimal yMinusYMin;
-        yMinusYMin = y_BigDecimal.subtract(gd.getYMin());
+        yMinusYMin = y.subtract(gd.getYMin());
         BigDecimal div;
         div = Generic_BigDecimal.divideRoundIfNecessary(
                 yMinusYMin,
@@ -1555,16 +1556,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return long CellRowIndex, the cell row index for the cells in chunk row
      * index _Row chunk cell row index chunkCellRowIndex.
      */
-    public final long getCellRowIndex(int chunkRow, int cellRow, boolean handleOutOfMemoryError) {
+    public final long getRow(int chunkRow, int cellRow, boolean handleOutOfMemoryError) {
         try {
-            long result = Grids_AbstractGrid.this.getRow(chunkRow, cellRow);
+            long result = getRow(chunkRow, cellRow);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellRowIndex(chunkRow, cellRow, handleOutOfMemoryError);
+                return getRow(chunkRow, cellRow, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1585,14 +1586,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final long getRow(int chunkRow, int cellRow, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
-            long result = Grids_AbstractGrid.this.getRow(chunkRow, cellRow);
+            long result = getRow(chunkRow, cellRow);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return Grids_AbstractGrid.this.getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
+                return getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1616,14 +1617,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final long getRow(int chunkRow, int cellRow, HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m, boolean handleOutOfMemoryError) {
         try {
-            long result = Grids_AbstractGrid.this.getRow(chunkRow, cellRow);
+            long result = getRow(chunkRow, cellRow);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(m, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(m, e);
-                return Grids_AbstractGrid.this.getRow(chunkRow, cellRow, m, handleOutOfMemoryError);
+                return getRow(chunkRow, cellRow, m, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1645,16 +1646,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param handleOutOfMemoryError
      * @return A Random CellRowIndex.
      */
-    public final long getCellRowIndex(Random random, boolean handleOutOfMemoryError) {
+    public final long getRow(Random random, boolean handleOutOfMemoryError) {
         try {
-            long result = Grids_AbstractGrid.this.getRow(random);
+            long result = getRow(random);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellRowIndex(random, handleOutOfMemoryError);
+                return getRow(random, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1695,16 +1696,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkCellRowIndex(double y, boolean handleOutOfMemoryError) {
+    public final int getCellRow(double y, boolean handleOutOfMemoryError) {
         try {
-            int result = getChunkCellRowIndex(y);
+            int result = getCellRow(y);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkCellRowIndex(y, handleOutOfMemoryError);
+                return getCellRow(y, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1717,28 +1718,28 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param y The y-coordinate of the line for which the chunk cell row index
      * is returned.
      */
-    protected final int getChunkCellRowIndex(double y) {
-        return Grids_AbstractGrid.this.getCellRow(getRow(y));
+    protected final int getCellRow(double y) {
+        return getCellRow(getRow(y));
     }
 
     /**
-     * @param a_CellRowIndex
+     * @param row
      * @return Chunk cell row index of the cells with cell row index equal to
      * _CellRowIndex.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final int getChunkCellRowIndex(long a_CellRowIndex, boolean handleOutOfMemoryError) {
+    public final int getCellRow(long row, boolean handleOutOfMemoryError) {
         try {
-            int result = Grids_AbstractGrid.this.getCellRow(a_CellRowIndex);
+            int result = getCellRow(row);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getChunkCellRowIndex(a_CellRowIndex, handleOutOfMemoryError);
+                return getCellRow(row, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1750,7 +1751,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param row
      */
     protected final int getCellRow(long row) {
-        return (int) (row - ((row / ChunkNRows) * ChunkNRows));
+        long chunkRow = getChunkRow(row);
+        return (int) (row - (chunkRow * ChunkNRows));
     }
 
     /**
@@ -1856,7 +1858,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param y The y-coordinate.
      */
     protected final Grids_2D_ID_long getCellID(BigDecimal x, BigDecimal y) {
-        return new Grids_2D_ID_long(getCellRowIndex(y), getCellColIndex(x));
+        return new Grids_2D_ID_long(getRow(y), getCol(x));
     }
 
     /**
@@ -3912,7 +3914,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * x-coordinate is returned.
      */
     protected final double getCellXDouble(int chunkCellColIndex, int chunkCol) {
-        return getCellXDouble(getCellColIndex(chunkCellColIndex, chunkCol));
+        return getCellXDouble(getCol(chunkCellColIndex, chunkCol));
     }
 
     /**
@@ -4189,7 +4191,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * y-coordinate is returned.
      */
     protected final double getCellYDouble(int chunkCellRowIndex, int chunkRow) {
-        return getCellYDouble(Grids_AbstractGrid.this.getRow(chunkCellRowIndex, chunkRow));
+        return getCellYDouble(getRow(chunkCellRowIndex, chunkRow));
     }
 
     /**

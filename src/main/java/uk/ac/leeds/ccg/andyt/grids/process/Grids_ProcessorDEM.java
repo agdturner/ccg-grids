@@ -661,10 +661,10 @@ public class Grids_ProcessorDEM
                         chunkNrows = g.getChunkNRows(cri, handleOutOfMemoryError);
                         chunkNcols = g.getChunkNCols(cci, handleOutOfMemoryError);
                         for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getCellRowIndex(cri, chunkCellRowIndex, handleOutOfMemoryError);
+                            cellRowIndex = g.getRow(cri, chunkCellRowIndex, handleOutOfMemoryError);
                             y = g.getCellYDouble(cellRowIndex, handleOutOfMemoryError);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellColIndex(cci, chunkCellColIndex, handleOutOfMemoryError);
+                                cellColIndex = g.getCol(cci, chunkCellColIndex, handleOutOfMemoryError);
                                 x = g.getCellXDouble(cellColIndex, handleOutOfMemoryError);
                                 h = chunkDouble.getCell(
                                         chunkCellRowIndex,
@@ -807,10 +807,10 @@ public class Grids_ProcessorDEM
                         chunk = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
                                 cri, cci, handleOutOfMemoryError);
                         for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getCellRowIndex(cri, chunkCellRowIndex, handleOutOfMemoryError);
+                            cellRowIndex = g.getRow(cri, chunkCellRowIndex, handleOutOfMemoryError);
                             y = g.getCellYDouble(cellRowIndex, handleOutOfMemoryError);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellColIndex(cci, chunkCellColIndex, handleOutOfMemoryError);
+                                cellColIndex = g.getCol(cci, chunkCellColIndex, handleOutOfMemoryError);
                                 x = g.getCellXDouble(cellColIndex, handleOutOfMemoryError);
                                 heightInt = chunk.getCell(
                                         chunkCellRowIndex, 
@@ -1056,7 +1056,7 @@ public class Grids_ProcessorDEM
             return getSlopeAspect(
                     _Grid2DSquareCell,
                     _Grid2DSquareCell.getRow(y, handleOutOfMemoryError),
-                    _Grid2DSquareCell.getCellColIndex(x, handleOutOfMemoryError),
+                    _Grid2DSquareCell.getCol(x, handleOutOfMemoryError),
                     x,
                     y,
                     distance,
@@ -2921,7 +2921,7 @@ public class Grids_ProcessorDEM
                                     handleOutOfMemoryError,
                                     chunkID);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellCol(
+                                cellColIndex = g.getCol(
                                         chunkColIndex,
                                         chunkCellColIndex,
                                         chunkID,
@@ -2970,8 +2970,8 @@ public class Grids_ProcessorDEM
                                         } catch (OutOfMemoryError _OutOfMemoryError) {
                                             ge.clearMemoryReserve();
                                             Grids_2D_ID_int aChunkID = new Grids_2D_ID_int(
-                                                    metrics1[i].getChunkRowIndex(cellRowIndex, handleOutOfMemoryError),
-                                                    metrics1[i].getChunkColIndex(cellColIndex, handleOutOfMemoryError));
+                                                    metrics1[i].getChunkRow(cellRowIndex, handleOutOfMemoryError),
+                                                    metrics1[i].getChunkCol(cellColIndex, handleOutOfMemoryError));
                                             long swap = ge.swapChunkExcept_Account(
                                                     metrics1[i],
                                                     aChunkID,
@@ -3041,7 +3041,7 @@ public class Grids_ProcessorDEM
                                     handleOutOfMemoryError,
                                     chunkID);
                             for (chunkCellColIndex = 0; chunkCellColIndex < chunkNCols; chunkCellColIndex++) {
-                                cellColIndex = g.getCellCol(
+                                cellColIndex = g.getCol(
                                         chunkColIndex,
                                         chunkCellColIndex,
                                         chunkID,
@@ -3691,8 +3691,8 @@ public class Grids_ProcessorDEM
                             thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                             if (thisDistance < distance) {
                                 Grids_2D_ID_int _ChunkID2 = new Grids_2D_ID_int(
-                                        g.getChunkRowIndex((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
-                                        g.getChunkColIndex((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
+                                        g.getChunkRow((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
+                                        g.getChunkCol((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
                                 chunkIDs.add(_ChunkID2);
                             }
                         }
@@ -3987,8 +3987,8 @@ public class Grids_ProcessorDEM
                             thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, cellX, cellY);
                             if (thisDistance < distance) {
                                 Grids_2D_ID_int _ChunkID2 = new Grids_2D_ID_int(
-                                        g.getChunkRowIndex((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
-                                        g.getChunkColIndex((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
+                                        g.getChunkRow((long) rowIndex + p, ge.HandleOutOfMemoryErrorFalse),
+                                        g.getChunkCol((long) colIndex + q, ge.HandleOutOfMemoryErrorFalse));
                                 chunkIDs.add(_ChunkID2);
                             }
                         }

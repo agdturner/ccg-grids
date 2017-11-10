@@ -598,7 +598,7 @@ public class Grids_GridDouble
                                     row = rowIndex - startRow;
                                     if (rowIndex >= startRow && rowIndex <= endRow) {
                                         for (cellCol = 0; cellCol < gridChunkNCols; cellCol++) {
-                                            colIndex = g.getCellCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
+                                            colIndex = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
                                             col = colIndex - startCol;
                                             if (colIndex >= startCol && colIndex <= endCol) {
                                                 gValue = grid.getCell(
@@ -679,7 +679,7 @@ public class Grids_GridDouble
                                     row = rowIndex - startRow;
                                     if (rowIndex >= startRow && rowIndex <= endRow) {
                                         for (cellCol = 0; cellCol < gridChunkNCols; cellCol++) {
-                                            colIndex = g.getCellCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
+                                            colIndex = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
                                             col = colIndex - startCol;
                                             if (colIndex >= startCol && colIndex <= endCol) {
                                                 // Initialise chunk if it does not exist
@@ -1120,9 +1120,7 @@ public class Grids_GridDouble
             long col,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getCell(
-                    row,
-                    col);
+            double result = getCell(row, col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1132,10 +1130,7 @@ public class Grids_GridDouble
                         getChunkRow(row),
                         getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCell(
-                        row,
-                        col,
-                        handleOutOfMemoryError);
+                return getCell(row, col, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1151,16 +1146,12 @@ public class Grids_GridDouble
     protected double getCell(
             long row,
             long col) {
-        boolean isInGrid = isInGrid(
-                row,
-                col);
+        boolean isInGrid = isInGrid(row, col);
         if (isInGrid) {
             int chunkRow = getChunkRow(row);
             int chunkCol = getChunkCol(col);
-            long chunkRowl = chunkRow;
-            long chunkColl = chunkCol;
-            int cellRow = (int) (row - (chunkRowl * ChunkNRows));
-            int cellCol = (int) (col - (chunkColl * ChunkNCols));
+            int cellRow = getCellRow(row);
+            int cellCol = getCellCol(col);
             Grids_AbstractGridChunk chunk;
             chunk = getChunk(
                     chunkRow,
@@ -1185,9 +1176,6 @@ public class Grids_GridDouble
      * @return Value at position given by chunk row index _ChunkRowIndex, chunk
      * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
      * column index cellCol.
-     * @param chunkRow The chunk row index of the cell thats value is returned.
-     * @param chunkCol The chunk column index of the cell thats value is
-     * returned.
      * @param cellRow The chunk cell row index of the cell thats value is
      * returned.
      * @param cellCol The chunk cell column index of the cell thats value is
@@ -1198,16 +1186,12 @@ public class Grids_GridDouble
      */
     public double getCell(
             Grids_AbstractGridChunkDouble chunk,
-            int chunkRow,
-            int chunkCol,
             int cellRow,
             int cellCol,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCell(
                     chunk,
-                    chunkRow,
-                    chunkCol,
                     cellRow,
                     cellCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -1221,8 +1205,6 @@ public class Grids_GridDouble
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCell(
                         chunk,
-                        chunkRow,
-                        chunkCol,
                         cellRow,
                         cellCol,
                         handleOutOfMemoryError);
@@ -1237,10 +1219,6 @@ public class Grids_GridDouble
      * @return Value at position given by chunk row index _ChunkRowIndex, chunk
      * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
      * column index cellCol.
-     * @param chunkRow The chunk row index of the cell that'Statistics value is
-     * returned.
-     * @param chunkCol The chunk column index of the cell that'Statistics value
-     * is returned.
      * @param cellRow The chunk cell row index of the cell thats value is
      * returned.
      * @param cellCol The chunk cell column index of the cell thats value is
@@ -1248,8 +1226,6 @@ public class Grids_GridDouble
      */
     protected double getCell(
             Grids_AbstractGridChunkDouble chunk,
-            int chunkRow,
-            int chunkCol,
             int cellRow,
             int cellCol) {
         if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
@@ -1261,7 +1237,9 @@ public class Grids_GridDouble
                     cellCol,
                     false);
         } else {
-            return NoDataValue;
+            return ((Grids_GridChunkDouble) chunk).getCell(cellRow,
+                    cellCol,
+                    false);
         }
     }
 
@@ -1309,9 +1287,7 @@ public class Grids_GridDouble
     protected final double getCell(
             double x,
             double y) {
-        return getCell(
-                getRow(y),
-                getCol(x));
+        return getCell(getRow(y), getCol(x));
     }
 
     /**
@@ -1328,9 +1304,7 @@ public class Grids_GridDouble
             Grids_2D_ID_long cellID,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getCell(
-                    cellID.getRow(),
-                    cellID.getCol());
+            double result = getCell(cellID.getRow(), cellID.getCol());
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1340,9 +1314,7 @@ public class Grids_GridDouble
                         getChunkRow(cellID.getRow()),
                         getChunkCol(cellID.getCol()));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCell(
-                        cellID,
-                        handleOutOfMemoryError);
+                return getCell(cellID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1367,10 +1339,7 @@ public class Grids_GridDouble
             double newValue,
             boolean handleOutOfMemoryError) {
         try {
-            double result = setCell(
-                    x,
-                    y,
-                    newValue);
+            double result = setCell(x, y, newValue);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1380,11 +1349,7 @@ public class Grids_GridDouble
                         getChunkRow(y),
                         getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return setCell(
-                        x,
-                        y,
-                        newValue,
-                        handleOutOfMemoryError);
+                return setCell(x, y, newValue, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1397,17 +1362,17 @@ public class Grids_GridDouble
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param newValue .
+     * @param value .
      * @return
      */
     protected final double setCell(
             double x,
             double y,
-            double newValue) {
+            double value) {
         return setCell(
                 getRow(x),
                 getCol(y),
-                newValue);
+                value);
     }
 
     /**
@@ -1415,7 +1380,7 @@ public class Grids_GridDouble
      * setting it to newValue.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
-     * @param newValue .
+     * @param value .
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1423,13 +1388,13 @@ public class Grids_GridDouble
      */
     public final double setCell(
             Grids_2D_ID_long cellID,
-            double newValue,
+            double value,
             boolean handleOutOfMemoryError) {
         try {
             double result = setCell(
                     cellID.getRow(),
                     cellID.getCol(),
-                    newValue);
+                    value);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1441,7 +1406,7 @@ public class Grids_GridDouble
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return setCell(
                         cellID,
-                        newValue,
+                        value,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1450,7 +1415,7 @@ public class Grids_GridDouble
     }
 
     /**
-     * @param valueToSet
+     * @param value
      * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
      * to valueToSet.
      * @param row The cell row index.
@@ -1459,18 +1424,18 @@ public class Grids_GridDouble
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double setCell(long row, long col, double valueToSet, boolean handleOutOfMemoryError) {
+    public final double setCell(long row, long col, double value, boolean handleOutOfMemoryError) {
         try {
-            double result = setCell(row, col, valueToSet);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
+            double result = setCell(row, col, value);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+                        getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return setCell(row, col, valueToSet, handleOutOfMemoryError);
+                return setCell(row, col, value, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1483,13 +1448,13 @@ public class Grids_GridDouble
      *
      * @param row
      * @param col
-     * @param newValue .
+     * @param value .
      * @return
      */
     protected double setCell(
             long row,
             long col,
-            double newValue) {
+            double value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
@@ -1500,11 +1465,9 @@ public class Grids_GridDouble
                 chunkCol);
         return setCell(
                 chunk,
-                chunkRow,
-                chunkCol,
                 cellRow,
                 cellCol,
-                newValue);
+                value);
     }
 
     /**
@@ -1516,7 +1479,7 @@ public class Grids_GridDouble
      * @param chunkCol
      * @param cellRow
      * @param cellCol
-     * @param newValue
+     * @param value
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1527,7 +1490,7 @@ public class Grids_GridDouble
             int chunkCol,
             int cellRow,
             int cellCol,
-            double newValue,
+            double value,
             boolean handleOutOfMemoryError) {
         try {
             double result = setCell(
@@ -1535,7 +1498,7 @@ public class Grids_GridDouble
                     chunkCol,
                     cellRow,
                     cellCol,
-                    newValue);
+                    value);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1550,7 +1513,7 @@ public class Grids_GridDouble
                         chunkCol,
                         cellRow,
                         cellCol,
-                        newValue,
+                        value,
                         handleOutOfMemoryError);
             } else {
                 throw e;
@@ -1567,7 +1530,7 @@ public class Grids_GridDouble
      * @param chunkCol
      * @param cellRow
      * @param cellCol
-     * @param newValue
+     * @param value
      * @return
      */
     protected double setCell(
@@ -1575,26 +1538,22 @@ public class Grids_GridDouble
             int chunkCol,
             int cellRow,
             int cellCol,
-            double newValue) {
+            double value) {
         Grids_AbstractGridChunkDouble chunk;
         chunk = (Grids_AbstractGridChunkDouble) getGridChunk(
                 chunkRow,
                 chunkCol);
         return setCell(
                 chunk,
-                chunkRow,
-                chunkCol,
                 cellRow,
                 cellCol,
-                newValue);
+                value);
     }
 
     /**
      * @param chunk
-     * @param chunkRow
      * @param cellCol
      * @param cellRow
-     * @param chunkCol
      * @param newValue
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -1603,8 +1562,6 @@ public class Grids_GridDouble
      */
     public double setCell(
             Grids_AbstractGridChunkDouble chunk,
-            int chunkRow,
-            int chunkCol,
             int cellRow,
             int cellCol,
             double newValue,
@@ -1612,8 +1569,6 @@ public class Grids_GridDouble
         try {
             double result = setCell(
                     chunk,
-                    chunkRow,
-                    chunkCol,
                     cellRow,
                     cellCol,
                     newValue);
@@ -1628,8 +1583,6 @@ public class Grids_GridDouble
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return setCell(
                         chunk,
-                        chunkRow,
-                        chunkCol,
                         cellRow,
                         cellCol,
                         newValue,
@@ -1651,8 +1604,6 @@ public class Grids_GridDouble
      */
     protected double setCell(
             Grids_AbstractGridChunkDouble chunk,
-            int chunkRow,
-            int chunkCol,
             int cellRow,
             int cellCol,
             double newValue) {
@@ -1696,10 +1647,7 @@ public class Grids_GridDouble
      * @param col
      * @param value
      */
-    protected void initCell(
-            long row,
-            long col,
-            double value) {
+    protected void initCell(long row, long col, double value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(

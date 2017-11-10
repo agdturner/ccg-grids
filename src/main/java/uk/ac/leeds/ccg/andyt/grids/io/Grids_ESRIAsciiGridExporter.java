@@ -249,8 +249,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                             g.ge.clearMemoryReserve();
                             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                    g.getChunkRowIndex(row, handleOutOfMemoryError),
-                                    g.getChunkColIndex(col, handleOutOfMemoryError));
+                                    g.getChunkRow(row, handleOutOfMemoryError),
+                                    g.getChunkCol(col, handleOutOfMemoryError));
                             if (g.ge.swapChunksExcept_Account(
                                     g,
                                     chunkID,
@@ -312,8 +312,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         } catch (OutOfMemoryError a_OutOfMemoryError) {
                             g.ge.clearMemoryReserve();
                             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                    g.getChunkRowIndex(row, handleOutOfMemoryError),
-                                    g.getChunkColIndex(col, handleOutOfMemoryError));
+                                    g.getChunkRow(row, handleOutOfMemoryError),
+                                    g.getChunkCol(col, handleOutOfMemoryError));
                             if (g.ge.swapChunksExcept_Account(
                                     g,
                                     chunkID,

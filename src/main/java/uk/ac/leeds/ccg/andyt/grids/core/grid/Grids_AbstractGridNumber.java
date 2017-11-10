@@ -122,8 +122,8 @@ public abstract class Grids_AbstractGridNumber
         return getCellDouble(
                 getChunkRow(point.getY()),
                 getChunkCol(point.getX()),
-                getChunkCellRowIndex(point.getY()),
-                getChunkCellColIndex(point.getX()));
+                getCellRow(point.getY()),
+                getCellCol(point.getX()));
     }
 
     /**
@@ -178,8 +178,8 @@ public abstract class Grids_AbstractGridNumber
         return getCellDouble(
                 getChunkRow(y),
                 getChunkCol(x),
-                getChunkCellRowIndex(y),
-                getChunkCellColIndex(x));
+                getCellRow(y),
+                getCellCol(x));
     }
 
     /**
