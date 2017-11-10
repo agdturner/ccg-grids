@@ -156,8 +156,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Initialises non transient Grids_AbstractGrid fields from
-     * g.
+     * Initialises non transient Grids_AbstractGrid fields from g.
      *
      * @param g The Grids_AbstractGrid from which the non transient
      * Grids_AbstractGrid fields of this are set.
@@ -220,12 +219,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with ID.chunkRow equal to
-     * chunkRow and ID.chunkCol equal to chunkCol.
-     * @param chunkRow The ID.chunkRow of the returned
-     * Grids_AbstractGridChunk.
-     * @param chunkCol The ID.chunkCol of the returned
-     * Grids_AbstractGridChunk.
+     * @return the Grids_AbstractGridChunk with ID.chunkRow equal to chunkRow
+     * and ID.chunkCol equal to chunkCol.
+     * @param chunkRow The ID.chunkRow of the returned Grids_AbstractGridChunk.
+     * @param chunkCol The ID.chunkCol of the returned Grids_AbstractGridChunk.
      */
     protected Grids_AbstractGridChunk getChunk(
             int chunkRow, int chunkCol) {
@@ -234,10 +231,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with ChunkID equal to
-     * chunkID.
-     * @param chunkID The Grids_2D_ID_int of the
-     * Grids_AbstractGridChunk to be returned.
+     * @return the Grids_AbstractGridChunk with ChunkID equal to chunkID.
+     * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk to be
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -260,8 +256,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with ChunkID equal to
-     * chunkID.
+     * @return the Grids_AbstractGridChunk with ChunkID equal to chunkID.
      *
      * @param chunkID The ChunkID of the Grids_AbstractGridChunk returned.
      */
@@ -502,7 +497,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public void setChunk(Grids_AbstractGridChunk chunk, Grids_2D_ID_int chunkID, 
+    public void setChunk(Grids_AbstractGridChunk chunk, Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
         try {
             ChunkIDChunkMap.put(chunkID, chunk);
@@ -624,8 +619,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @return The number of chunks in this as a
-     * long.
+     * @return The number of chunks in this as a long.
      */
     public final long getNChunks(boolean handleOutOfMemoryError) {
         try {
@@ -808,7 +802,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkCol
-          * @return The number of columns in the chunks in the chunk column chunkCol.
+     * @return The number of columns in the chunks in the chunk column chunkCol.
      */
     protected final int getChunkNCols(int chunkCol) {
         if (chunkCol > -1 && chunkCol < NChunkCols) {
@@ -1327,8 +1321,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Chunk cell column index of the cells in the cell column index
      * _CellColIndex.
-     * @param col The cell column index of the cell thats chunk cell
-     * column index is returned.
+     * @param col The cell column index of the cell thats chunk cell column
+     * index is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1352,8 +1346,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Chunk cell column index of the cells in the cell column index
      * _CellColIndex.
-     * @param col The cell column index of the cell thats chunk cell
-     * column index is returned.
+     * @param col The cell column index of the cell thats chunk cell column
+     * index is returned.
      */
     protected final int getCellCol(long col) {
         return (int) (col - ((col / ChunkNCols) * ChunkNCols));
@@ -1443,8 +1437,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Chunk row index for the chunk intersecting the cells with cell
      * row index _CellRowIndex.
-     * @param row The cell row index of the cells thats chunk row index
-     * is returned.
+     * @param row The cell row index of the cells thats chunk row index is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1468,8 +1462,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Chunk row index for the chunk intersecting the cells with cell
      * row index _CellRowIndex.
-     * @param row The cell row index of the cells thats chunk row index
-     * is returned.
+     * @param row The cell row index of the cells thats chunk row index is
+     * returned.
      */
     protected final int getChunkRow(long row) {
         return (int) (row / (long) ChunkNRows);
@@ -1760,25 +1754,24 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param a_CellRowIndex
-     * @param a_CellColIndex
-     * @return Grids_2D_ID_long of the cell given by cell row index
-     * _CellRowIndex, cell column index _CellColIndex. A Grids_2D_ID_long is
-     * returned even if that cell would not be in the grid.
+     * @param row
+     * @param col
+     * @return Grids_2D_ID_long of the cell given by row, col. A
+     * Grids_2D_ID_long is returned even if that cell would not be in the grid!
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final Grids_2D_ID_long getCellID(long a_CellRowIndex, long a_CellColIndex, boolean handleOutOfMemoryError) {
+    public final Grids_2D_ID_long getCellID(long row, long col, boolean handleOutOfMemoryError) {
         try {
-            Grids_2D_ID_long result = getCellID(a_CellRowIndex, a_CellColIndex);
+            Grids_2D_ID_long result = getCellID(row, col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellID(a_CellRowIndex, a_CellColIndex, handleOutOfMemoryError);
+                return getCellID(row, col, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -2642,7 +2635,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 id2 = new Grids_2D_ID_int(cri, cci);
                 if (!chunkID.equals(id2)) {
                     if (isInCache(id2)) {
-                        writeToFileChunk(                                id2);
+                        writeToFileChunk(id2);
                         clearFromCacheChunk(id2);
                         return 1L;
                     }
@@ -2664,7 +2657,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 id2 = new Grids_2D_ID_int(cri, cci);
                 if (chunkID != id2) {
                     if (isInCache(chunkID)) {
-                        writeToFileChunk(                                chunkID);
+                        writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
                     }
@@ -3122,10 +3115,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * would be intersected by circle with centre at centroid of cell given by
      * cell row index _CellRowIndex, cell column index _CellColIndex, and radius
      * distance.
-     * @param row the row index for the cell thats centroid is the
-     * circle centre from which cell values are returned.
-     * @param col the column index for the cell thats centroid is the
-     * circle centre from which cell values are returned.
+     * @param row the row index for the cell thats centroid is the circle centre
+     * from which cell values are returned.
+     * @param col the column index for the cell thats centroid is the circle
+     * centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -3153,10 +3146,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * would be intersected by circle with centre at centroid of cell given by
      * cell row index _CellRowIndex, cell column index _CellColIndex, and radius
      * distance.
-     * @param row the row index for the cell thats centroid is the
-     * circle centre from which cell values are returned.
-     * @param col the column index for the cell thats centroid is the
-     * circle centre from which cell values are returned.
+     * @param row the row index for the cell thats centroid is the circle centre
+     * from which cell values are returned.
+     * @param col the column index for the cell thats centroid is the circle
+     * centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
@@ -3280,10 +3273,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
      * to point given by cell row index _CellRowIndex, cell column index
      * _CellColIndex.
-     * @param row the row index from which nearest cell Grids_2D_ID_int
-     * is returned.
-     * @param col the column index from which nearest cell
-     * Grids_2D_ID_int is returned.
+     * @param row the row index from which nearest cell Grids_2D_ID_int is
+     * returned.
+     * @param col the column index from which nearest cell Grids_2D_ID_int is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown. TODO: return
@@ -3309,11 +3302,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
      * to point given by cell row index _CellRowIndex, cell column index
      * _CellColIndex.
-     * @param row the row index from which nearest cell Grids_2D_ID_int
-     * is returned.
-     * @param col the column index from which nearest cell
-     * Grids_2D_ID_int is returned. TODO: return Grids_2D_ID_long[] as could be
-     * more than one nearest CellID
+     * @param row the row index from which nearest cell Grids_2D_ID_int is
+     * returned.
+     * @param col the column index from which nearest cell Grids_2D_ID_int is
+     * returned. TODO: return Grids_2D_ID_long[] as could be more than one
+     * nearest CellID
      */
     protected Grids_2D_ID_long getNearestCellID(long row, long col) {
         return getNearestCellID(getCellXDouble(col), getCellYDouble(row), row, col);
@@ -3770,8 +3763,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return the x-coordinate of the centroid for cells with column index
      * _CellColIndex as a BigDecimal.
-     * @param col The cell column index thats centroid x-coordinate is
-     * returned.
+     * @param col The cell column index thats centroid x-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3800,8 +3792,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkRow
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a BigDecimal.
-     * @param col The cell column index thats centroid x-coordinate is
-     * returned.
+     * @param col The cell column index thats centroid x-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3838,8 +3829,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param col The cell column index thats centroid x-coordinate is
-     * returned.
+     * @param col The cell column index thats centroid x-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3863,8 +3853,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param col The cell column index thats centroid x-coordinate is
-     * returned.
+     * @param col The cell column index thats centroid x-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3929,8 +3918,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param col The cell column index thats centroid x-coordinate is
-     * returned.
+     * @param col The cell column index thats centroid x-coordinate is returned.
      */
     protected final double getCellXDouble(long col) {
         return getCellXBigDecimal(col).doubleValue();
@@ -3963,11 +3951,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @param cellID The Grids_2D_ID_long of the cell thats centroid is
      * returned.
-     * @param chunkRow The chunk row index of the Grids_AbstractGridChunk
-     * not to be swapped if an OutOfMemoryError is thrown.
-     * @param chunkCol The chunk column index of the
-     * Grids_AbstractGridChunk not to be swapped if an OutOfMemoryError is
-     * thrown.
+     * @param chunkRow The chunk row index of the Grids_AbstractGridChunk not to
+     * be swapped if an OutOfMemoryError is thrown.
+     * @param chunkCol The chunk column index of the Grids_AbstractGridChunk not
+     * to be swapped if an OutOfMemoryError is thrown.
      * @param handleOutOfMemoryError
      * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a getCellXBigDecimal.
@@ -4058,8 +4045,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a BigDecimal.
-     * @param row the cell column index thats centroid y-coordinate is
-     * returned.
+     * @param row the cell column index thats centroid y-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -4086,8 +4072,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a BigDecimal.
-     * @param row the cell column index thats centroid y-coordinate is
-     * returned.
+     * @param row the cell column index thats centroid y-coordinate is returned.
      */
     public final BigDecimal getCellYBigDecimal(long row, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
@@ -4121,8 +4106,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
-     * @param row the cell column index thats centroid y-coordinate is
-     * returned.
+     * @param row the cell column index thats centroid y-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -4146,8 +4130,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
-     * @param row the cell column index thats centroid y-coordinate is
-     * returned.
+     * @param row the cell column index thats centroid y-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -4387,10 +4370,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * (rowIndex,colIndex) double[2] xmax, right most x-coordinate of cell at
      * (rowIndex,colIndex) double[3] ymax, highest y-coordinate of cell at
      * (rowIndex,colIndex)
-     * @param row the row index of the cell for which the bounds are
-     * returned
-     * @param col the column index of the cell for which the bounds are
-     * returned
+     * @param row the row index of the cell for which the bounds are returned
+     * @param col the column index of the cell for which the bounds are returned
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -4424,8 +4405,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * (rowIndex,colIndex) double[2] xmax, right most x-coordinate of cell at
      * (rowIndex,colIndex) double[3] ymax, highest y-coordinate of cell at
      * (rowIndex,colIndex)
-     * @param row the row index of the cell for which the bounds are
-     * returned
+     * @param row the row index of the cell for which the bounds are returned
      */
     protected final double[] getCellBoundsDoubleArray(double halfCellsize, long row, long col) {
         return getCellBoundsDoubleArray(halfCellsize, getCellXDouble(col), getCellYDouble(row));

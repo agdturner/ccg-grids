@@ -503,14 +503,14 @@ public class Grids_GridDouble
      * construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
-     * @param startRow The Grid2DSquareCell row index which is the bottom
-     * most row of this.
-     * @param startCol The Grid2DSquareCell column index which is the left
-     * most column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most
+     * @param startRow The Grid2DSquareCell row index which is the bottom most
      * row of this.
-     * @param endCol The Grid2DSquareCell column index which is the right
-     * most column of this.
+     * @param startCol The Grid2DSquareCell column index which is the left most
+     * column of this.
+     * @param endRow The Grid2DSquareCell row index which is the top most row of
+     * this.
+     * @param endCol The Grid2DSquareCell column index which is the right most
+     * column of this.
      * @param noDataValue The NoDataValue for this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -953,7 +953,6 @@ public class Grids_GridDouble
         int chunkRow;
         int chunkCol;
         Grids_2D_ID_int chunkID;
-
         chunkRow = getChunkRow(row);
         chunkCol = getChunkCol(col);
         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
@@ -979,7 +978,7 @@ public class Grids_GridDouble
                     chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                             chunk,
                             chunkID);
-                    chunk.setCell(chunkRow, chunkCol, value, ge.HandleOutOfMemoryError);
+                    chunk.initCell(getCellRow(row), getCellCol(col), value);
                     ChunkIDChunkMap.put(chunkID, chunk);
                 }
             } else {
@@ -1184,16 +1183,15 @@ public class Grids_GridDouble
     /**
      * @param chunk
      * @return Value at position given by chunk row index _ChunkRowIndex, chunk
-     * column index _ChunkColIndex, chunk cell row index cellRow,
-     * chunk cell column index cellCol.
-     * @param chunkRow The chunk row index of the cell thats value is
-     * returned.
+     * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
+     * column index cellCol.
+     * @param chunkRow The chunk row index of the cell thats value is returned.
      * @param chunkCol The chunk column index of the cell thats value is
      * returned.
-     * @param cellRow The chunk cell row index of the cell thats value
-     * is returned.
-     * @param cellCol The chunk cell column index of the cell thats
-     * value is returned.
+     * @param cellRow The chunk cell row index of the cell thats value is
+     * returned.
+     * @param cellCol The chunk cell column index of the cell thats value is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -1237,16 +1235,16 @@ public class Grids_GridDouble
     /**
      * @param chunk
      * @return Value at position given by chunk row index _ChunkRowIndex, chunk
-     * column index _ChunkColIndex, chunk cell row index cellRow,
-     * chunk cell column index cellCol.
-     * @param chunkRow The chunk row index of the cell that'Statistics
-     * value is returned.
-     * @param chunkCol The chunk column index of the cell that'Statistics
-     * value is returned.
-     * @param cellRow The chunk cell row index of the cell thats value
+     * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
+     * column index cellCol.
+     * @param chunkRow The chunk row index of the cell that'Statistics value is
+     * returned.
+     * @param chunkCol The chunk column index of the cell that'Statistics value
      * is returned.
-     * @param cellCol The chunk cell column index of the cell thats
-     * value is returned.
+     * @param cellRow The chunk cell row index of the cell thats value is
+     * returned.
+     * @param cellCol The chunk cell column index of the cell thats value is
+     * returned.
      */
     protected double getCell(
             Grids_AbstractGridChunkDouble chunk,
@@ -1511,8 +1509,8 @@ public class Grids_GridDouble
 
     /**
      * For returning the value of the cell in chunk given by _ChunkRowIndex and
-     * _ChunkColIndex and cell in the chunk given by cellCol and
-     * cellRow and setting it to newValue.
+     * _ChunkColIndex and cell in the chunk given by cellCol and cellRow and
+     * setting it to newValue.
      *
      * @param chunkRow
      * @param chunkCol
@@ -1562,8 +1560,8 @@ public class Grids_GridDouble
 
     /**
      * For returning the value of the cell in chunk given by _ChunkRowIndex and
-     * _ChunkColIndex and cell in the chunk given by cellCol and
-     * cellRow and setting it to newValue.
+     * _ChunkColIndex and cell in the chunk given by cellCol and cellRow and
+     * setting it to newValue.
      *
      * @param chunkRow
      * @param chunkCol
@@ -1708,10 +1706,7 @@ public class Grids_GridDouble
                 chunkRow,
                 chunkCol);
         Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
-        chunk.initCell(
-                (int) (row - ((long) chunkRow * (long) ChunkNRows)),
-                (int) (col - ((long) chunkCol * (long) ChunkNCols)),
-                value);
+        chunk.initCell(getCellRow(row), getCellCol(col), value);
         // Update Statistics
         if (value != NoDataValue) {
             updateStatistics(value);
@@ -1751,24 +1746,17 @@ public class Grids_GridDouble
      *
      * @param row
      * @param col
-     * @param valueToInitialise
+     * @param value
      */
     protected void initCellFast(
             long row,
             long col,
-            double valueToInitialise) {
+            double value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
-        int chunkNRows = ChunkNRows;
-        int chunkNCols = ChunkNCols;
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                chunkRow,
-                chunkCol);
+        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
-        chunk.initCell(
-                (int) (row - ((long) chunkRow * (long) chunkNRows)),
-                (int) (col - ((long) chunkCol * (long) chunkNCols)),
-                valueToInitialise);
+        chunk.initCell(getCellRow(row), getCellCol(col), value);
     }
 
     /**
@@ -1847,10 +1835,10 @@ public class Grids_GridDouble
      * @return double[] of all cell values for cells thats centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
-     * @param row the row index for the cell that'Statistics centroid
-     * is the circle centre from which cell values are returned.
-     * @param col the column index for the cell that'Statistics
-     * centroid is the circle centre from which cell values are returned.
+     * @param row the row index for the cell that'Statistics centroid is the
+     * circle centre from which cell values are returned.
+     * @param col the column index for the cell that'Statistics centroid is the
+     * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -1896,10 +1884,10 @@ public class Grids_GridDouble
      * @return double[] of all cell values for cells thats centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
-     * @param row the row index for the cell that'Statistics centroid
-     * is the circle centre from which cell values are returned.
-     * @param col the column index for the cell that'Statistics
-     * centroid is the circle centre from which cell values are returned.
+     * @param row the row index for the cell that'Statistics centroid is the
+     * circle centre from which cell values are returned.
+     * @param col the column index for the cell that'Statistics centroid is the
+     * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
@@ -2040,10 +2028,10 @@ public class Grids_GridDouble
     }
 
     /**
-     * @param row The row index from which average of the nearest data
-     * values is returned.
-     * @param col The column index from which average of the nearest
-     * data values is returned.
+     * @param row The row index from which average of the nearest data values is
+     * returned.
+     * @param col The column index from which average of the nearest data values
+     * is returned.
      * @return the average of the nearest data values to position given by row
      * index rowIndex, column index colIndex
      */
@@ -2070,10 +2058,10 @@ public class Grids_GridDouble
      * column index colIndex
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row the row index from which average of the nearest data
-     * values is returned
-     * @param col the column index from which average of the nearest
-     * data values is returned
+     * @param row the row index from which average of the nearest data values is
+     * returned
+     * @param col the column index from which average of the nearest data values
+     * is returned
      */
     @Override
     protected double getNearestValueDouble(
@@ -2240,8 +2228,8 @@ public class Grids_GridDouble
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param col
      */
     @Override
@@ -2272,10 +2260,10 @@ public class Grids_GridDouble
      * _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
-     * @param col The column index from which the cell IDs of the
-     * nearest cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param col The column index from which the cell IDs of the nearest cells
+     * with data values are returned.
      */
     @Override
     protected Grids_2D_ID_long[] getNearestValuesCellIDs(
@@ -2449,10 +2437,10 @@ public class Grids_GridDouble
     /**
      * @return the distance to the nearest data value from position given by row
      * index rowIndex, column index colIndex as a double.
-     * @param row The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
+     * @param row The cell row index of the cell from which the distance nearest
+     * to the nearest cell value is returned.
+     * @param col The cell column index of the cell from which the distance
+     * nearest to the nearest cell value is returned.
      */
     protected double getNearestValueDoubleDistance(
             long row,
@@ -2475,10 +2463,10 @@ public class Grids_GridDouble
      * column index colIndex as a double.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param row The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
+     * @param row The cell row index of the cell from which the distance nearest
+     * to the nearest cell value is returned.
+     * @param col The cell column index of the cell from which the distance
+     * nearest to the nearest cell value is returned.
      */
     @Override
     protected double getNearestValueDoubleDistance(

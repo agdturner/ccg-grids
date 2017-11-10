@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator
  * standard deviation would always require going through all the data again if
  * the values have changed.)
  */
-public class Grids_GridDoubleStatistics
+public class Grids_GridDoubleStatistics 
         extends Grids_AbstractGridNumberStatistics
         implements Serializable {
 

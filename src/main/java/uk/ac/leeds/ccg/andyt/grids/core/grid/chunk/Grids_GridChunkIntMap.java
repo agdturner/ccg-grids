@@ -155,14 +155,8 @@ public class Grids_GridChunkIntMap
         int value;
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
-                value = gridChunk.getCell(
-                        row,
-                        col,
-                        handleOutOfMemoryError);
-                initCell(
-                        row,
-                        col,
-                        value);
+                value = gridChunk.getCell(row, col, handleOutOfMemoryError);
+                initCell(row, col, value);
             }
         }
         this.SwapUpToDate = false;
@@ -173,9 +167,7 @@ public class Grids_GridChunkIntMap
      */
     @Override
     protected final void initData() {
-        Data = new GridChunkIntMapData(
-                new TreeMap<>(),
-                new TreeMap<>());
+        Data = new GridChunkIntMapData(new TreeMap<>(), new TreeMap<>());
         NoData = new BitSet(ChunkNCols * ChunkNRows);
         InDataMapHashSet = new BitSet(ChunkNCols * ChunkNRows);
         InDataMapBitSet = new BitSet(ChunkNCols * ChunkNRows);
@@ -414,12 +406,11 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunk cell row row; chunk
-     * cell row col.
+     * Returns the value at position given by: chunk cell row row; chunk cell
+     * row col.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @return
      */
     @Override
@@ -445,12 +436,11 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunk cell row row; chunk
-     * cell row col.
+     * Returns the value at position given by: chunk cell row row; chunk cell
+     * row col.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param cellID
      * @return
      */
@@ -522,12 +512,11 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Initialises the value at position given by: chunk cell row row;
-     * chunk cell column col. Utility method for constructor.
+     * Initialises the value at position given by: chunk cell row row; chunk
+     * cell column col. Utility method for constructor.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToInitialise the value with which the cell is initialised
      */
     @Override
@@ -628,8 +617,8 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: chunk cell row row; chunk
-     * cell column col and sets it to valueToSet
+     * Returns the value at position given by: chunk cell row row; chunk cell
+     * column col and sets it to valueToSet
      *
      * @param row the chunk row.
      * @param col the chunk column.
