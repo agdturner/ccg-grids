@@ -1058,8 +1058,8 @@ public class Grids_Processor extends Grids_Object {
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             int cellRow;
             int cellCol;
-            int chunkNrows;
-            int chunkNcols;
+            int chunkNRows;
+            int chunkNCols;
             int chunkRow;
             int chunkCol;
             Grids_2D_ID_int chunkID;
@@ -1074,12 +1074,12 @@ public class Grids_Processor extends Grids_Object {
                     chunkID = chunk.getChunkID(handleOutOfMemoryError);
                     ge.addToNotToSwapData(g, chunkID);
                     ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-                    chunkNrows = gridInt.getChunkNRows(chunkID, handleOutOfMemoryError);
-                    chunkNcols = gridInt.getChunkNCols(chunkID, handleOutOfMemoryError);
+                    chunkNRows = gridInt.getChunkNRows(chunkID, handleOutOfMemoryError);
+                    chunkNCols = gridInt.getChunkNCols(chunkID, handleOutOfMemoryError);
                     chunkRow = chunkID.getRow();
                     chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                             value = gridInt.getCell(
                                     chunk,
                                     cellRow,
@@ -1088,8 +1088,6 @@ public class Grids_Processor extends Grids_Object {
                             if (value >= min && value <= max) {
                                 gridInt.setCell(
                                         chunk,
-                                        chunkRow,
-                                        chunkCol,
                                         cellRow,
                                         cellCol,
                                         noDataValue,
@@ -1112,24 +1110,18 @@ public class Grids_Processor extends Grids_Object {
                     chunkID = gridChunk.getChunkID(handleOutOfMemoryError);
                     ge.addToNotToSwapData(g, chunkID);
                     ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-                    chunkNrows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
-                    chunkNcols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
-                    chunkRow = chunkID.getRow();
-                    chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                    chunkNRows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
+                    chunkNCols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                             value = gridDouble.getCell(
                                     gridChunk,
-                                    chunkRow,
-                                    chunkCol,
                                     cellRow,
                                     cellCol,
                                     handleOutOfMemoryError);
                             if (value >= min && value <= max) {
                                 gridDouble.setCell(
                                         gridChunk,
-                                        chunkRow,
-                                        chunkCol,
                                         cellRow,
                                         cellCol,
                                         noDataValue,

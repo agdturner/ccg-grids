@@ -569,7 +569,7 @@ public class Grids_GridInt
                                             chunkID,
                                             chunk);
                                 } else {
-                                    chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
+                                    chunk = (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
                                 }
                                 gridChunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
                                 gridChunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
@@ -587,12 +587,14 @@ public class Grids_GridInt
                                                 // Initialise value
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
+                                                            chunk,
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
                                                         initCell(
+                                                                chunk,
                                                                 row,
                                                                 col,
                                                                 (int) gValue);
@@ -655,17 +657,7 @@ public class Grids_GridInt
                                         chunkRow,
                                         chunkCol);
                                 ge.addToNotToSwapData(g, chunkID);
-                                gridChunkNRows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
-                                gridChunkNCols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
-                                for (cellRow = 0; cellRow < gridChunkNRows; cellRow++) {
-                                    rowIndex = g.getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
-                                    row = rowIndex - startRowIndex;
-                                    if (rowIndex >= startRowIndex && rowIndex <= endRowIndex) {
-                                        for (cellCol = 0; cellCol < gridChunkNCols; cellCol++) {
-                                            col = g.getCellCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
-                                            col = col - startColIndex;
-                                            if (col >= startColIndex && col <= endColIndex) {
-                                                // Initialise chunk if it does not exist
+                                // Initialise chunk if it does not exist
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = chunkFactory.createGridChunkInt(
                                                             this,
@@ -676,6 +668,16 @@ public class Grids_GridInt
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
                                                 }
+                                                gridChunkNRows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
+                                gridChunkNCols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
+                                for (cellRow = 0; cellRow < gridChunkNRows; cellRow++) {
+                                    rowIndex = g.getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
+                                    row = rowIndex - startRowIndex;
+                                    if (rowIndex >= startRowIndex && rowIndex <= endRowIndex) {
+                                        for (cellCol = 0; cellCol < gridChunkNCols; cellCol++) {
+                                            col = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
+                                            col = col - startColIndex;
+                                            if (col >= startColIndex && col <= endColIndex) {
                                                 gValue = grid.getCell(
                                                         rowIndex,
                                                         col);
@@ -688,6 +690,7 @@ public class Grids_GridInt
                                                             noDataValue);
                                                 } else {
                                                     initCell(
+                                                            chunk,
                                                             row,
                                                             col,
                                                             gValue);
@@ -1678,6 +1681,7 @@ public class Grids_GridInt
     /**
      * Initialises the value at row, col and does nothing about Statistics
      *
+     * @param chunk
      * @param row
      * @param col
      * @param value

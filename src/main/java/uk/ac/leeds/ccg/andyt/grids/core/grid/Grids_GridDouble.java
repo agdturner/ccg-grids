@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -590,6 +589,8 @@ public class Grids_GridDouble
                                     ChunkIDChunkMap.put(
                                             chunkID,
                                             chunk);
+                                } else {
+                                    chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
                                 }
                                 gridChunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
                                 gridChunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
@@ -607,17 +608,20 @@ public class Grids_GridDouble
                                                 // Initialise value
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
+                                                            chunk,
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
                                                         initCell(
+                                                                chunk,
                                                                 row,
                                                                 col,
                                                                 gValue);
                                                     } else {
                                                         initCell(
+                                                                chunk,
                                                                 row,
                                                                 col,
                                                                 noDataValue);
@@ -672,6 +676,17 @@ public class Grids_GridDouble
                                         chunkRow,
                                         chunkCol);
                                 ge.addToNotToSwapData(g, chunkID);
+                                // Initialise chunk if it does not exist
+                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
+                                                    chunk = chunkFactory.createGridChunkDouble(
+                                                            this,
+                                                            chunkID);
+                                                    ChunkIDChunkMap.put(
+                                                            chunkID,
+                                                            chunk);
+                                                } else {
+                                                    chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
+                                                }
                                 gridChunkNRows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
                                 gridChunkNCols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
                                 for (cellRow = 0; cellRow < gridChunkNRows; cellRow++) {
@@ -682,26 +697,19 @@ public class Grids_GridDouble
                                             colIndex = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
                                             col = colIndex - startCol;
                                             if (colIndex >= startCol && colIndex <= endCol) {
-                                                // Initialise chunk if it does not exist
-                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.createGridChunkDouble(
-                                                            this,
-                                                            chunkID);
-                                                    ChunkIDChunkMap.put(
-                                                            chunkID,
-                                                            chunk);
-                                                }
                                                 gValue = grid.getCell(
                                                         rowIndex,
                                                         colIndex);
                                                 // Initialise value
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
+                                                            chunk,
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     initCell(
+                                                            chunk,
                                                             row,
                                                             col,
                                                             gValue);
@@ -947,7 +955,8 @@ public class Grids_GridDouble
      * @param value
      * @param fast
      */
-    private void initCell(long row, long col, double value, boolean fast) {
+    private void initCell( 
+            long row, long col, double value, boolean fast) {
         Grids_AbstractGridChunkDouble chunk;
         Grids_GridChunkDouble gridChunk;
         int chunkRow;
@@ -983,9 +992,9 @@ public class Grids_GridDouble
                 }
             } else {
                 if (fast) {
-                    initCellFast(row, col, value);
+                    initCellFast(chunk, row, col, value);
                 } else {
-                    initCell(row, col, value);
+                    initCell(chunk, row, col, value);
                 }
             }
         }
@@ -1199,10 +1208,7 @@ public class Grids_GridDouble
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRow,
-                        chunkCol);
-                freeSomeMemoryAndResetReserve(chunkID, e);
+                freeSomeMemoryAndResetReserve(chunk.getChunkID(false), e);
                 return getCell(
                         chunk,
                         cellRow,
@@ -1577,10 +1583,7 @@ public class Grids_GridDouble
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRow,
-                        chunkCol);
-                freeSomeMemoryAndResetReserve(chunkID, e);
+                freeSomeMemoryAndResetReserve(chunk.getChunkID(false), e);
                 return setCell(
                         chunk,
                         cellRow,
@@ -1595,10 +1598,8 @@ public class Grids_GridDouble
 
     /**
      * @param chunk
-     * @param chunkRow
      * @param cellCol
      * @param cellRow
-     * @param chunkCol
      * @param newValue
      * @return Value at _CellRowIndex, _CellColIndex and sets it to newValue.
      */
@@ -1643,17 +1644,20 @@ public class Grids_GridDouble
     /**
      * Initialises the value at row, col.
      *
+     * @param chunk
      * @param row
      * @param col
      * @param value
      */
-    protected void initCell(long row, long col, double value) {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                chunkRow,
-                chunkCol);
-        Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
+    protected void initCell(
+            Grids_AbstractGridChunkDouble chunk, 
+            long row, long col, double value) {
+//        int chunkRow = getChunkRow(row);
+//        int chunkCol = getChunkCol(col);
+//        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+//                chunkRow,
+//                chunkCol);
+//        Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
         chunk.initCell(getCellRow(row), getCellCol(col), value);
         // Update Statistics
         if (value != NoDataValue) {
@@ -1697,13 +1701,14 @@ public class Grids_GridDouble
      * @param value
      */
     protected void initCellFast(
+            Grids_AbstractGridChunkDouble chunk,
             long row,
             long col,
             double value) {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
+//        int chunkRow = getChunkRow(row);
+//        int chunkCol = getChunkCol(col);
+//        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+//        Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
         chunk.initCell(getCellRow(row), getCellCol(col), value);
     }
 
