@@ -19,8 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,8 +78,10 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
 
     public Grids_GridDouble[] generateCircularData(
             boolean handleOutOfMemoryError) {
+        File d = new File(Directory, "CircularData");
+        d.mkdirs();
         File f;
-        f = new File(Directory, "grids.txt");
+        f = new File(d, "grids.txt");
         PrintWriter pw = Generic_StaticIO.getPrintWriter(f, false);
         //         minRadius  maxRadius  elevation             Grids
         //circle1          0          5         -1  1,3,(5-4)
