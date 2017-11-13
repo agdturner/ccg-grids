@@ -279,56 +279,6 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * @return The number of cells with finite non zero data values.
      */
     protected abstract BigInteger getNonZeroN();
-//    {
-//        BigInteger result;
-//        result = BigInteger.ZERO;
-//        boolean handleOutOfMemoryError = true;
-//        if (Grid instanceof Grids_GridDouble) {
-//            Grids_GridDouble g;
-//            g = (Grids_GridDouble) Grid;
-//            double noDataValue;
-//            noDataValue = g.getNoDataValue(handleOutOfMemoryError);
-//            Iterator<Double> ite;
-//            ite = g.iterator(handleOutOfMemoryError);
-//            while (ite.hasNext()) {
-//                double value = ite.next();
-//                if (!(value == noDataValue || value == 0)) {
-//                    result = result.add(BigInteger.ONE);
-//                }
-//            }
-////            // Go through all values in the grid and work it out
-////            int nChunkRows = g.getNChunkRows();
-////            int nChunkCols = g.getNChunkCols();
-////            for (int chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
-////                for (int chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
-////                    int chunkNcols;
-////                    int chunkNrows;
-////                    chunkNcols = g.getChunkNCols(
-////                            chunkColIndex, handleOutOfMemoryError);
-////                    chunkNrows = g.getChunkNRows(
-////                            chunkRowIndex, handleOutOfMemoryError);
-////                    AbstractGrid2DSquareCellDoubleChunk chunk;
-////                    chunk = (AbstractGrid2DSquareCellDoubleChunk) g.getChunk(
-////                            chunkRowIndex, chunkColIndex, handleOutOfMemoryError);
-////                    for (int chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
-////                        for (int chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
-////                            double value;
-////                            value = g.getCell(
-////                                    chunk, chunkRowIndex, chunkColIndex,
-////                                    chunkCellRowIndex, chunkCellColIndex,
-////                                    handleOutOfMemoryError);
-////                            if (value != noDataValue || value != 0) {
-////                                result = result.add(BigInteger.ONE);
-////                            }
-////                        }
-////                    }
-////                }
-////            }
-//            return result;
-//        } else {
-//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        }
-//    }
 
     /**
      * For returning the sum of all finite data values.

@@ -28,8 +28,8 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grid. The values are returned chunk by
- * chunk. The order of values within each chunk is determined by each chunk's
- * type.
+ * chunk in row major order. The values within each chunk are also returned in
+ * row major order.
  */
 public abstract class Grids_AbstractGridNumberIterator
         extends Grids_AbstractIterator {
@@ -46,7 +46,7 @@ public abstract class Grids_AbstractGridNumberIterator
         super(grid.ge);
         Grid = grid;
     }
-    
+
     protected abstract void initChunkIterator();
 
     public abstract Grids_AbstractGridNumber getGrid();
@@ -56,17 +56,18 @@ public abstract class Grids_AbstractGridNumberIterator
     }
 
     public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
-          return ChunkIterator;
+        return ChunkIterator;
     }
 
     /**
      * ChunkIterator
+     *
      * @param chunk
-     * @return 
+     * @return
      */
     public abstract Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
             Grids_AbstractGridChunkNumber chunk);
-    
+
     /**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
      * words, returns <tt>true</tt> if <tt>next</tt> would return an element

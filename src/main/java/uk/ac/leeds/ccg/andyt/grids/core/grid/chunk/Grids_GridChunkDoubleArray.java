@@ -37,9 +37,6 @@ public class Grids_GridChunkDoubleArray
      */
     private double[][] Data;
 
-    /**
-     * Creates a new Grid2DSquareCellDoubleChunkArray.
-     */
     protected Grids_GridChunkDoubleArray() {
     }
 
@@ -47,8 +44,8 @@ public class Grids_GridChunkDoubleArray
      * Creates a new Grids_GridChunkDoubleArray for g containing all no Data
      * values.
      *
-     * @param g The Grid2DSquareCellDouble this is to be a chunk of.
-     * @param chunkID The ID to be _ChunkID.
+     * @param g The Grids_GridDouble this is to be a chunk of.
+     * @param chunkID The ID to be ChunkID.
      */
     protected Grids_GridChunkDoubleArray(
             Grids_GridDouble g,
@@ -69,9 +66,8 @@ public class Grids_GridChunkDoubleArray
      *
      * @param chunk The Grids_AbstractGridChunkDouble this values are taken
      * from.
-     * @param chunkID The ID to be ChunkID. TODO: A fast toArray() method in
-     * Grid2DSquareCellDoubleChunkMap could be coded then a constructor based on
-     * an double[] or double[][] might be faster?
+     * @param chunkID The ID to be ChunkID.
+     * @TODO optimise for different types of chunk.
      */
     protected Grids_GridChunkDoubleArray(
             Grids_AbstractGridChunkDouble chunk,

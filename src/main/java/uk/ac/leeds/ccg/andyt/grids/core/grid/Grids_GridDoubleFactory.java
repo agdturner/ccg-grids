@@ -326,12 +326,11 @@ public class Grids_GridDoubleFactory
      *
      * @param statistics The type of Grids_GridDoubleStatistics to accompany the
      * returned grid.
-     * @param directory The Directory to be used for storing cached Grid
+     * @param directory The directory to be used for storing cached Grid
      * information.
-     * @param gridFile Either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grid2DSquareCellDouble to be returned.
-     * @param chunkFactory The preferred Grids_AbstractGridChunkDoubleFactory
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be returned.
+     * @param chunkFactory The preferred factory
      * for creating chunks that the constructed Grid is to be made of.
      * @param startRowIndex The topmost row index of the grid stored as
      * gridFile.

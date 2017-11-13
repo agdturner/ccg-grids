@@ -187,23 +187,22 @@ public class Grids_GridDouble
      * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
      *
-     * @param gs The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param gridFile Either a _Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grid2DSquareCellDouble to be returned.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory preferred to
-     * construct chunks of this.
+     * @param gs The statistics to accompany this grid.
+     * @param directory The directory to be used for storing data about this
+     * grid.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data for this.
+     * @param chunkFactory The factory preferred to construct chunks of this.
      * @param chunkNRows
-     * @param startRowIndex The Grid2DSquareCell row index which is the bottom
-     * most row of this.
      * @param chunkNCols
-     * @param startColIndex The Grid2DSquareCell column index which is the left
-     * most column of this.
-     * @param endRowIndex The Grid2DSquareCell row index which is the top most
+     * @param startRowIndex The row of the input that will be the bottom most
      * row of this.
-     * @param endColIndex The Grid2DSquareCell column index which is the right
-     * most column of this.
+     * @param startColIndex The column of the input that will be the left most
+     * column of this.
+     * @param endRowIndex The row of the input that will be the top most row of
+     * this.
+     * @param endColIndex The column of the input that will be the right most
+     * column of this.
      * @param noDataValue The NoDataValue for this.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -268,13 +267,6 @@ public class Grids_GridDouble
         }
     }
 
-    /**
-     * Initialises this.
-     *
-     * @param g The Grids_GridDouble from which the fields of this are set.
-     * @param initTransientFields Iff true then transient fields of this are set
-     * with those of _Grid2DSquareCellDouble.
-     */
     private void init(
             Grids_GridDouble g,
             boolean initTransientFields) {
@@ -288,21 +280,6 @@ public class Grids_GridDouble
         ge.addGrid(this);
     }
 
-    /**
-     * Initialises this.
-     *
-     * @param directory The File _Directory to be used for swapping.
-     * @param gridFile The File _Directory containing the File named thisFile
-     * that the ois was constructed from.
-     * @param ois The ObjectInputStream used in first attempt to construct this.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGridNumber instances.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @see Grid2DSquareCellDouble( File, File, ObjectInputStream, HashSet,
-     * boolean)
-     */
     private void init(
             File file,
             ObjectInputStream ois,
@@ -385,28 +362,6 @@ public class Grids_GridDouble
         }
     }
 
-    /**
-     * Initialises this.
-     *
-     * @param statistics The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param grid2DSquareCellDoubleChunkFactory The
-     * Grids_AbstractGridChunkDoubleFactory prefered for creating chunks.
-     * @param chunkNRows The number of rows of cells in any chunk.
-     * @param chunkNCols The number of columns of cells in any chunk.
-     * @param nRows The number of rows of cells.
-     * @param nCols The number of columns of cells.
-     * @param _Dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The NoDataValue.
-     * @param _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGrid instances.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @see Grid2DSquareCellDouble( AbstractGridStatistics, File,
-     * AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long ,
-     * BigDecimal[], double, HashSet, boolean );
-     */
     private void init(
             Grids_GridDoubleStatistics statistics,
             File directory,
@@ -491,33 +446,6 @@ public class Grids_GridDouble
         }
     }
 
-    /**
-     * Initialises this.
-     *
-     * @param statistics The AbstractGridStatistics to accompany this.
-     * @param directory gridStatistics File _Directory to be used for swapping.
-     * @param g The Grids_AbstractGridNumber from which this is to be
-     * constructed.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory prefered to
-     * construct chunks of this.
-     * @param chunkNRows The number of rows of cells in any chunk.
-     * @param chunkNCols The number of columns of cells in any chunk.
-     * @param startRow The Grid2DSquareCell row index which is the bottom most
-     * row of this.
-     * @param startCol The Grid2DSquareCell column index which is the left most
-     * column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most row of
-     * this.
-     * @param endCol The Grid2DSquareCell column index which is the right most
-     * column of this.
-     * @param noDataValue The NoDataValue for this.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @see initGrid2DSquareCellDouble( AbstractGridStatistics, File,
-     * AbstractGrid2DSquareCell, AbstractGrid2DSquareCellDoubleChunkFactory,
-     * int, int, long, long, long, long, double, HashSet, boolean );
-     */
     private void init(
             Grids_GridDoubleStatistics statistics,
             Grids_AbstractGridNumber g,
@@ -677,16 +605,16 @@ public class Grids_GridDouble
                                         chunkCol);
                                 ge.addToNotToSwapData(g, chunkID);
                                 // Initialise chunk if it does not exist
-                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.createGridChunkDouble(
-                                                            this,
-                                                            chunkID);
-                                                    ChunkIDChunkMap.put(
-                                                            chunkID,
-                                                            chunk);
-                                                } else {
-                                                    chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
-                                                }
+                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
+                                    chunk = chunkFactory.createGridChunkDouble(
+                                            this,
+                                            chunkID);
+                                    ChunkIDChunkMap.put(
+                                            chunkID,
+                                            chunk);
+                                } else {
+                                    chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
+                                }
                                 gridChunkNRows = g.getChunkNRows(chunkID, handleOutOfMemoryError);
                                 gridChunkNCols = g.getChunkNCols(chunkID, handleOutOfMemoryError);
                                 for (cellRow = 0; cellRow < gridChunkNRows; cellRow++) {
@@ -770,33 +698,6 @@ public class Grids_GridDouble
         }
     }
 
-    /**
-     * Initialises this.
-     *
-     * @param statistics The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param gridFile Either a _Directory, or a formatted File with a specific
-     * extension containing the data and information about the Grids_GridDouble
-     * to be returned.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory preferred to
-     * construct chunks of this.
-     * @param chunkNRows The Grids_GridDouble _ChunkNRows.
-     * @param chunkNCols The Grids_GridDouble _ChunkNCols.
-     * @param startRowIndex The topmost row index of the grid stored as
-     * gridFile.
-     * @param startColIndex The leftmost column index of the grid stored as
-     * gridFile.
-     * @param endRowIndex The bottom row index of the grid stored as gridFile.
-     * @param endColIndex The rightmost column index of the grid stored as
-     * gridFile.
-     * @param noDataValue The NoDataValue for this.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @see Grid2DSquareCellDouble( AbstractGridStatistics, File, File,
-     * AbstractGrid2DSquareCellDoubleChunkFactory, int, int, long, long, long,
-     * long, double, HashSet, boolean )
-     */
     private void init(
             Grids_GridDoubleStatistics statistics,
             File gridFile,
@@ -955,7 +856,7 @@ public class Grids_GridDouble
      * @param value
      * @param fast
      */
-    private void initCell( 
+    private void initCell(
             long row, long col, double value, boolean fast) {
         Grids_AbstractGridChunkDouble chunk;
         Grids_GridChunkDouble gridChunk;
@@ -1650,7 +1551,7 @@ public class Grids_GridDouble
      * @param value
      */
     protected void initCell(
-            Grids_AbstractGridChunkDouble chunk, 
+            Grids_AbstractGridChunkDouble chunk,
             long row, long col, double value) {
 //        int chunkRow = getChunkRow(row);
 //        int chunkCol = getChunkCol(col);
@@ -1696,6 +1597,7 @@ public class Grids_GridDouble
      * Initialises the value at _CellRowIndex, _CellColIndex and does nothing
      * about Statistics
      *
+     * @param chunk
      * @param row
      * @param col
      * @param value

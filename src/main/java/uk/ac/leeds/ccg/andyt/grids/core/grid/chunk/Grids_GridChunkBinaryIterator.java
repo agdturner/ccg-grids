@@ -23,8 +23,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkArray
- * instance. The values are not returned in any particular order.
+ * For iterating through the values in a Grids_GridChunkBinary instance. The
+ * values are not returned in any particular order.
  */
 public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
 
@@ -43,8 +43,8 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
         Row = 0;
         Col = 0;
         Grids_GridBinary g = chunk.getGrid();
-        NRows = g.getChunkNRows(chunk.ChunkID,                ge.HandleOutOfMemoryError);
-        NCols = g.getChunkNCols(chunk.ChunkID,                ge.HandleOutOfMemoryError);
+        NRows = g.getChunkNRows(chunk.ChunkID, ge.HandleOutOfMemoryError);
+        NCols = g.getChunkNCols(chunk.ChunkID, ge.HandleOutOfMemoryError);
     }
 
     /**

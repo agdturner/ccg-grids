@@ -28,9 +28,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 
 /**
- * For iterating through the values in a Grids_GridInt instance. The
- * values are returned chunk by chunk, but the order within each chunk is
- * determined by the chunks types. If some
+ * For iterating through the values in a Grids_GridInt. The values are returned
+ * chunk by chunk in row major order. The values within each chunk are also
+ * returned in row major order.
  */
 public class Grids_GridIntIterator
         extends Grids_AbstractGridNumberIterator {

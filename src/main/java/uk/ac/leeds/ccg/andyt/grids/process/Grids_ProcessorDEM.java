@@ -35,6 +35,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -201,7 +204,7 @@ public class Grids_ProcessorDEM
             int slopeAndAspectSize = 10;
             Grids_GridDouble[] slopeAndAspect = new Grids_GridDouble[slopeAndAspectSize];
             boolean shortName = true; // Filenames that are too long are problematic!
-            boolean swapToFileCache = true;
+            boolean swapToFileCache;
             // Initialisation
             long ncols = g.getNCols(handleOutOfMemoryError);
             long nrows = g.getNRows(handleOutOfMemoryError);
@@ -795,11 +798,16 @@ public class Grids_ProcessorDEM
                     }
                 }
             } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridInt.class )
+                // ( g.getClass() == Grids_GridInt.class )
                 gridInt = (Grids_GridInt) g;
                 noDataValueInt = gridInt.getNoDataValue(handleOutOfMemoryError);
-                heightInt = Integer.MIN_VALUE;
-                thisHeightInt = Integer.MIN_VALUE;
+//                Grids_GridIntIterator ite;
+//                ite = gridInt.iterator();
+//                Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIte;
+//                while (ite.hasNext()) {
+//                    chunkIte = ite.getChunkIterator();
+//                    chunkIte.
+//                }
                 for (cri = 0; cri < chunkRows; cri++) {
                     chunkNrows = g.getChunkNRows(cri, handleOutOfMemoryError);
                     for (cci = 0; cci < chunkCols; cci++) {
@@ -3562,21 +3570,21 @@ public class Grids_ProcessorDEM
                     < metrics1.length; i++) {
                 metrics1[i] = 0.0d;
             }
-            double x = 0.0d;
-            double y = 0.0d;
-            double weight = 0.0d;
-            double upCount = 0.0d;
-            double downCount = 0.0d;
-            double upness = 0.0d;
-            double downness = 0.0d;
-            double averageDiff = 0.0d;
-            double averageHeight = 0.0d;
-            double noDataCount = 0.0d;
-            double xDiff = 0.0d;
-            double yDiff = 0.0d;
-            double sumWeight = 0.0d;
-            int p = 0;
-            int q = 0;
+            double x ;
+            double y ;
+            double weight ;
+            double upCount ;
+            double downCount ;
+            double upness ;
+            double downness ;
+            double averageDiff ;
+            double averageHeight ;
+            double noDataCount ;
+            double xDiff ;
+            double yDiff ;
+            double sumWeight ;
+            int p;
+            int q;
             double noDataValue = g.getNoDataValue(
                     ge.HandleOutOfMemoryErrorTrue);
             double cellHeight = g.getCell(rowIndex, colIndex, ge.HandleOutOfMemoryErrorTrue);
@@ -3859,21 +3867,21 @@ public class Grids_ProcessorDEM
                     < metrics1.length; i++) {
                 metrics1[i] = 0.0d;
             }
-            double x = 0.0d;
-            double y = 0.0d;
-            double weight = 0.0d;
-            double upCount = 0.0d;
-            double downCount = 0.0d;
-            double upness = 0.0d;
-            double downness = 0.0d;
-            double averageDiff = 0.0d;
-            double averageHeight = 0.0d;
-            double noDataCount = 0.0d;
-            double xDiff = 0.0d;
-            double yDiff = 0.0d;
-            double sumWeight = 0.0d;
-            int p = 0;
-            int q = 0;
+            double x ;
+            double y ;
+            double weight ;
+            double upCount ;
+            double downCount ;
+            double upness ;
+            double downness ;
+            double averageDiff ;
+            double averageHeight ;
+            double noDataCount ;
+            double xDiff ;
+            double yDiff ;
+            double sumWeight ;
+            int p;
+            int q;
             int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryErrorFalse);
             double cellHeight = g.getCell(rowIndex, colIndex, ge.HandleOutOfMemoryErrorFalse);
             for (p = 0; p <= cellDistance; p++) {
@@ -3885,7 +3893,6 @@ public class Grids_ProcessorDEM
                     x = g.getCellXDouble(colIndex + q, ge.HandleOutOfMemoryErrorFalse);
                     weight = weights[p][q];
                     xDiff = x - cellX;
-                    yDiff = y - cellY;
                     heights[0] = g.getCell(x, y, ge.HandleOutOfMemoryErrorFalse);
                     if (heights[0] == noDataValue) {
                         heights[0] = cellHeight;
@@ -5004,9 +5011,8 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * Returns caseSwitch for the 81 different cases of higher, lower or same
-     * height orthoganol equidistant cells in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
+     * @return Case identifier for the 81 different cases of higher, lower or same
+     * height orthogonal equidistant cells.
      *
      * @param diff the array of height differences
      */
@@ -5453,14 +5459,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 6 metrics with all cells higher or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[9] - maxd_hhhh [sum of distance weighted maximum height
-     * differences] metrics1[10] - mind_hhhh [sum of distance weighted minimum
-     * height differences] metrics1[11] - sumd_hhhh [sum of distance weighted
-     * height differences] metrics1[12] - aved_hhhh [sum of distance weighted
-     * average height difference] metrics1[13] - count_hhhh [count] metrics1[14]
-     * - w_hhhh [sum of distance weights]
+     * For processing 6 metrics with all cells higher or same.
      *
      * @param metrics1 the array of metrics to be processed
      * @param diff the array of differences of cell values
@@ -5485,24 +5484,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 11 metrics with one cell lower or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[15] - mind_hxhx_ai_hhhl [sum of distance weighted ( minimum
-     * difference of cells adjacent to lower cell )] metrics1[16] -
-     * maxd_hxhx_ai_hhhl [sum of distance weighted ( maximum difference of cells
-     * adjacent to lower cell )] metrics1[17] - sumd_hxhx_ai_hhhl [sum of
-     * distance weighted ( sum of differences of cells adjacent to lower cell )]
-     * metrics1[18] - d_xhxx_ai_hhhl [sum of distance weighted ( difference of
-     * cell opposite lower cell )] metrics1[19] - d_xxxl_ai_hhhl [sum of
-     * distance weighted ( difference of lower cell )] metrics1[20] -
-     * sumd_xhxl_ai_hhhl [sum of distance weighted ( sum of differences of lower
-     * cell and cell opposite )] metrics1[21] - mind_abs_xhxl_ai_hhhl [sum of
-     * distance weighted ( minimum difference magnitude of lower cell and cell
-     * opposite )] metrics1[22] - maxd_abs_xhxl_ai_hhhl [sum of distance
-     * weighted ( maximum difference magnitude of lower cell and cell opposite
-     * )] metrics1[23] - sumd_abs_xhxl_ai_hhhl [sum of distance weighted ( sum
-     * of difference magnitudes of lower cell and cell opposite )] metrics1[24]
-     * - count_hhhl [count] metrics1[25] - w_hhhl [sum of distance weights]
+     * For processing a11 metrics with one cell lower or same.
      *
      * @param metrics1 the array of metrics to be processed
      * @param diff the array of differences of cell values
@@ -5528,22 +5510,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 11 metrics with opposite cells lower/higher or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[26] mind_hxhx_ai_hlhl [sum of distance weighted ( minimum
-     * difference of higher cells )] metrics1[27] maxd_hxhx_ai_hlhl [sum of
-     * distance weighted ( maximum difference of higher cells )] metrics1[28]
-     * sumd_hxhx_ai_hlhl [sum of distance weighted ( sum differences of higher
-     * cells )] metrics1[29] mind_xlxl_ai_hlhl [sum of distance weighted (
-     * minimum difference of lower cells )] metrics1[30] maxd_xlxl_ai_hlhl [sum
-     * of distance weighted ( maximum difference of lower cells )] metrics1[31]
-     * sumd_xlxl_ai_hlhl [sum of distance weighted ( sum of differences of lower
-     * cells )] metrics1[32] mind_abs_hlhl [sum of distance weighted ( minimum
-     * difference magnitude of cells )] metrics1[33] maxd_abs_hlhl [sum of
-     * distance weighted ( maximum difference magnitude of cells )] metrics1[34]
-     * sumd_abs_hlhl [sum of distance weighted ( sum of difference magnitudes of
-     * cells )] metrics1[35] count_hlhl [count] metrics1[36] w_hlhl [sum of
-     * distance weights]
+     * For processing 11 metrics with opposite cells lower/higher or same.
      *
      * @param metrics1 the array of metrics to be processed
      * @param diff the array of differences of cell values
@@ -5569,22 +5536,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 11 metrics with adjacent cells lower/higher or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[37] - mind_hhxx_ai_hhll [sum of distance weighted ( minimum
-     * difference of higher cells )] metrics1[38] - maxd_hhxx_ai_hhll [sum of
-     * distance weighted ( maximum difference of higher cells )] metrics1[39] -
-     * sumd_hhxx_ai_hhll [sum of distance weighted ( sum of differences of
-     * higher cells )] metrics1[40] - mind_xxll_ai_hhll [sum of distance
-     * weighted ( minimum difference of lower cells )] metrics1[41] -
-     * maxd_xxll_ai_hhll [sum of distance weighted ( maximum difference of lower
-     * cells )] metrics1[42] - sumd_xxll_ai_hhll [sum of distance weighted ( sum
-     * of differences of lower cells )] metrics1[43] - mind_abs_hhll [sum of
-     * distance weighted ( minimum difference magnitude of cells )] metrics1[44]
-     * - maxd_abs_hhll [sum of distance weighted ( maximum difference magnitude
-     * of cells )] metrics1[45] - sumd_abs_hhll [sum of distance weighted ( sum
-     * of difference magnitudes of cells )] metrics1[46] - count_hhll [count]
-     * metrics1[47] - w_hhll [sum of distance weights]
+     * For processing a11 metrics with adjacent cells lower/higher or same.
      *
      * @param metrics1 the array of metrics to be processed
      * @param diff the array of differences of cell values
@@ -5610,25 +5562,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 11 metrics with one cell higher or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[ 48 ] - mind_lxlx_ai_lllh [sum of distance weighted ( minimum
-     * difference of cells adjacent to higher cell )] metrics1[ 49 ] -
-     * maxd_lxlx_ai_lllh [sum of distance weighted ( maximum difference of cells
-     * adjacent to higher cell )] metrics1[ 50 ] - sumd_lxlx_ai_lllh [sum of
-     * distance weighted ( sum of differences of cells adjacent to higher cell
-     * )] metrics1[ 51 ] - d_xlxx_ai_lllh [sum of distance weighted ( difference
-     * of cell opposite higher cell )] metrics1[ 52 ] - d_xxxh_ai_lllh [sum of
-     * distance weighted ( difference of higher cell )] metrics1[ 53 ] -
-     * sumd_xlxh_ai_lllh [sum of distance weighted ( sum of differences of
-     * higher cell and cell opposite )] metrics1[ 54 ] - mind_abs_xlxh_ai_lllh
-     * [sum of distance weighted ( minimum difference magnitude of higher cell
-     * and cell opposite )] metrics1[ 55 ] - maxd_abs_xlxh_ai_lllh [sum of
-     * distance weighted ( maximum difference magnitude of higher cell and cell
-     * opposite )] metrics1[ 56 ] - sumd_abs_xlxh_ai_lllh [sum of distance
-     * weighted ( sum of difference magnitudes of higher cell and cell opposite
-     * )] metrics1[ 57 ] - count_lllh [count] metrics1[ 58 ] - w_lllh [sum of
-     * distance weights]
+     * For processing a11 metrics with one cell higher or same.
      *
      * @param metrics1 the array of metrics to be processed
      * @param diff the array of differences of cell values
@@ -5658,14 +5592,7 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     * For processing 6 metrics with all cells lower or same in:
-     * metrics1(AbstractGrid2DSquareCellDouble,int,int,double,double[][])
-     * metrics1[59] - maxd_llll [sum of distance weighted maximum height
-     * differences] metrics1[60] - mind_llll [sum of distance weighted minimum
-     * height differences] metrics1[61] - sumd_llll [sum of distance weighted
-     * height differences] metrics1[62] - aved_llll [sum of distance weighted
-     * average height difference] metrics1[63] - count_llll [count] metrics1[64]
-     * - w_llll [sum of distance weights]
+     * For processing 6 metrics with all cells lower or same.
      */
     private void metrics1Calculate_llll(
             double[] metrics1,
@@ -5731,14 +5658,14 @@ public class Grids_ProcessorDEM
                 result[i] = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
 
             }
-            double[] metrics2 = null;
+            double[] metrics2;
 
             double slope;
 
             double aspect;
             Point2D.Double[] metrics2Points;
 
-            double[] weights = null;
+            double[] weights;
 
             long row;
 

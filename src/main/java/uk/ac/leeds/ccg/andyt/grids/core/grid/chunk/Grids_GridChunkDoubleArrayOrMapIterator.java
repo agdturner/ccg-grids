@@ -21,7 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 
 /**
- * For iterating through the values in a Grid2DSquareCellDoubleChunkArray instance.
+ * For iterating through the values in a Grids_GridChunkDoubleArray instance.
  * The values are not returned in any particular order.
  */
 public class Grids_GridChunkDoubleArrayOrMapIterator

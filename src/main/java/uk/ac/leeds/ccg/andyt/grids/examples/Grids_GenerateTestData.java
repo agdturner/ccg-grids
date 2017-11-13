@@ -61,18 +61,18 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     @Override
     public void run() {
         System.out.println("Initialising...");
-        boolean _HandleOutOfMemoryError = true;
-        testDataDirectory = this.getDirectory(_HandleOutOfMemoryError);
-        //Grid2DSquareCellDouble[] testData = generateCatchment( _HandleOutOfMemoryError );
-        //Grid2DSquareCellDouble[] testData = generateSquareData( _HandleOutOfMemoryError );
-        Grids_GridDouble[] testData = generateCircularData(_HandleOutOfMemoryError);
+        boolean handleOutOfMemoryError = true;
+        testDataDirectory = this.getDirectory(handleOutOfMemoryError);
+        //Grids_GridDouble[] testData = generateCatchment(handleOutOfMemoryError);
+        //Grids_GridDouble[] testData = generateSquareData(handleOutOfMemoryError);
+        Grids_GridDouble[] testData = generateCircularData(handleOutOfMemoryError);
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
-            file = new File(testDataDirectory, testData[i].getName(_HandleOutOfMemoryError) + ".asc");
-            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file, _HandleOutOfMemoryError);
-            file = new File(testDataDirectory, testData[i].getName(_HandleOutOfMemoryError) + ".png");
-            new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", _HandleOutOfMemoryError);
+            file = new File(testDataDirectory, testData[i].getName(handleOutOfMemoryError) + ".asc");
+            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file, handleOutOfMemoryError);
+            file = new File(testDataDirectory, testData[i].getName(handleOutOfMemoryError) + ".png");
+            new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", handleOutOfMemoryError);
         }
         System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time0));
     }

@@ -638,7 +638,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of Grid2DSquareCellDoubleChunkAbstracts in this as a
+     * @return the number of chunks in this as a
      * long.
      */
     protected final long getNChunks() {
@@ -3061,7 +3061,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         this.ge.setDataToSwap(true);
                         return;
                     }
-                    System.err.println("Unrecognised type of Grid2DSquareCellDoubleChunkAbstract or null " + this.getClass().getName() + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
+                    System.err.println("Unrecognised type of chunk or null " 
+                            + this.getClass().getName() 
+                            + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
                 }
             }
         }

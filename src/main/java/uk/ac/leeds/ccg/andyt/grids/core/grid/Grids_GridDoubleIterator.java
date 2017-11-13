@@ -28,11 +28,9 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
 
 /**
- * For iterating through the values in a Grids_GridDouble instance. The
- * values are not returned in any particular order. The chunk order depends on
- * the order in which an iterator returns
- * Grid2DSquareCellDouble._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.values()
- *
+ * For iterating through the values in a Grids_GridDouble. The values are
+ * returned chunk by chunk in row major order. The values within each chunk are
+ * also returned in row major order.
  */
 public class Grids_GridDoubleIterator
         extends Grids_AbstractGridNumberIterator {

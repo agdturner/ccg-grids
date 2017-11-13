@@ -94,9 +94,9 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //            System.out.println( e );
 //            System.exit( 0 );
 //        }
-//        Grid2DSquareCellDoubleFactory factory = new Grid2DSquareCellDoubleFactory();
-//        Grid2DSquareCellDouble countGrid = factory.createGrid2DSquareCellDouble( countFile );
-//        Grid2DSquareCellDouble parGrid = factory.createGrid2DSquareCellDouble( parFile );
+//        Grids_GridDoubleFactory factory = new Grids_GridDoubleFactory();
+//        Grids_GridDouble countGrid = factory.create(countFile);
+//        Grids_GridDouble parGrid = factory.create(parFile);
 //        
 //        long nrows = countGrid.getNrows();
 //        long ncols = countGrid.getNcols();
