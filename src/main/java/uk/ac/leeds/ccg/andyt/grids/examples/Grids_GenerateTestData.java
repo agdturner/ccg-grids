@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
@@ -38,40 +39,40 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  */
 public class Grids_GenerateTestData extends Grids_Processor implements Runnable {
 
-    File testDataDirectory;
     long time0;
 
-    public Grids_GenerateTestData() {
+    protected Grids_GenerateTestData() {
     }
 
     public Grids_GenerateTestData(Grids_Environment ge) {
         super(ge);
+        Directory = ge.getDirectory();        
     }
 
-    public static void main(String[] args) throws java.io.IOException {
-        File Directory = new File("C:/work/src/andyt/java/grids/");
-        //File file = new File( "C:/tmp/data/" );
+    public static void main(String[] args) {
+        File dir = new File(
+                System.getProperty("user.dir"),
+        Grids_GenerateTestData.class.getName());
         Grids_Environment ge;
-        ge = new Grids_Environment(Directory);
-        Grids_GenerateTestData gtd = new Grids_GenerateTestData(ge);
-        gtd.time0 = System.currentTimeMillis();
-        gtd.run();
+        ge = new Grids_Environment(dir);
+        Grids_GenerateTestData p = new Grids_GenerateTestData(ge);
+        p.time0 = System.currentTimeMillis();
+        p.run();
     }
 
     @Override
     public void run() {
         System.out.println("Initialising...");
         boolean handleOutOfMemoryError = true;
-        testDataDirectory = this.getDirectory(handleOutOfMemoryError);
         //Grids_GridDouble[] testData = generateCatchment(handleOutOfMemoryError);
         //Grids_GridDouble[] testData = generateSquareData(handleOutOfMemoryError);
         Grids_GridDouble[] testData = generateCircularData(handleOutOfMemoryError);
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
-            file = new File(testDataDirectory, testData[i].getName(handleOutOfMemoryError) + ".asc");
+            file = new File(Directory, testData[i].getName(handleOutOfMemoryError) + ".asc");
             new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file, handleOutOfMemoryError);
-            file = new File(testDataDirectory, testData[i].getName(handleOutOfMemoryError) + ".png");
+            file = new File(Directory, testData[i].getName(handleOutOfMemoryError) + ".png");
             new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", handleOutOfMemoryError);
         }
         System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time0));
@@ -79,14 +80,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
 
     public Grids_GridDouble[] generateCircularData(
             boolean handleOutOfMemoryError) {
-
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new FileOutputStream(new File(testDataDirectory, "grids.txt")));
-        } catch (FileNotFoundException fnfe0) {
-            fnfe0.printStackTrace();
-        }
-
+        File f;
+        f = new File(Directory, "grids.txt");
+        PrintWriter pw = Generic_StaticIO.getPrintWriter(f, false);
         //         minRadius  maxRadius  elevation             Grids
         //circle1          0          5         -1  1,3,(5-4)
         //circle2          5          6          1  2,4,(6-4),7,8,(9-3)
@@ -103,9 +99,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) new Grids_GridDoubleFactory(ge,
-                    nrows,
-                    ncols).create(nrows, ncols);
+            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
             addToGrid(grids[i], 0.0d, handleOutOfMemoryError);
             grids[i].setName("Grid" + i, handleOutOfMemoryError);
         }
