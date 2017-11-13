@@ -114,10 +114,6 @@ public class Grids_GridChunkDouble
             int row,
             int col,
             double valueToInitialise) {
-        if (valueToInitialise != Value) {
-            throw new Error("valueToInitialise != Value in " + 
-                    this.getClass().getName() + ".initCell(int,int,double)");
-        }
     }
 
     public double getSumDouble() {

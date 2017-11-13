@@ -587,20 +587,20 @@ public class Grids_GridInt
                                                 // Initialise value
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
-                                                            chunk,
+                                                            chunk,chunkID, 
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
                                                         initCell(
-                                                                chunk,
+                                                                chunk,chunkID, 
                                                                 row,
                                                                 col,
                                                                 (int) gValue);
                                                     } else {
                                                         initCell(
-                                                                chunk,
+                                                                chunk,chunkID, 
                                                                 row,
                                                                 col,
                                                                 noDataValue);
@@ -684,13 +684,13 @@ public class Grids_GridInt
                                                 // Initialise value
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
-                                                            chunk,
+                                                            chunk,chunkID, 
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     initCell(
-                                                            chunk,
+                                                            chunk,chunkID, 
                                                             row,
                                                             col,
                                                             gValue);
@@ -974,7 +974,7 @@ public class Grids_GridInt
                 if (fast) {
                     initCellFast(chunk, row, col, value);
                 } else {
-                    initCell(chunk, row, col, value);
+                    initCell(chunk, chunkID, row, col, value);
                 }
             }
         }
@@ -1639,13 +1639,23 @@ public class Grids_GridInt
      */
     protected void initCell(
             Grids_AbstractGridChunkInt chunk,
+            Grids_2D_ID_int chunkID,
             long row,
             long col,
             int value) {
-        //int chunkRow = getChunkRow(row);
-        //int chunkCol = getChunkCol(col);
-        //Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        //Grids_AbstractGridChunkInt chunk = getGridChunk(chunkID);
+        if (chunk instanceof Grids_GridChunkInt) {
+            Grids_GridChunkInt gridChunk = (Grids_GridChunkInt) chunk;
+            if (value != gridChunk.Value) {
+                // Convert chunk to another type
+                chunk = ge.getProcessor().GridChunkIntDefaultFactory.createGridChunkInt(
+                        chunk,
+                        chunkID);
+                ChunkIDChunkMap.put(chunkID, chunk);
+                chunk.initCell(getCellRow(row), getCellCol(col), value);
+            } else {
+                return;
+            }
+        }
         chunk.initCell(getCellRow(row), getCellCol(col), value);
         // Update Statistics
         if (value != NoDataValue) {

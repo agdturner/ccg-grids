@@ -481,6 +481,7 @@ public class Grids_GridDouble
             long col;
             Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkDouble chunk;
+            Grids_AbstractGridChunkDouble chunk2;
             int gridChunkNRows;
             int gridChunkNCols;
             long rowIndex;
@@ -537,6 +538,7 @@ public class Grids_GridDouble
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
                                                             chunk,
+                                                            chunkID,
                                                             row,
                                                             col,
                                                             noDataValue);
@@ -544,12 +546,14 @@ public class Grids_GridDouble
                                                     if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
                                                         initCell(
                                                                 chunk,
+                                                                chunkID,
                                                                 row,
                                                                 col,
                                                                 gValue);
                                                     } else {
                                                         initCell(
                                                                 chunk,
+                                                                chunkID,
                                                                 row,
                                                                 col,
                                                                 noDataValue);
@@ -632,12 +636,14 @@ public class Grids_GridDouble
                                                 if (gValue == gNoDataValue) {
                                                     initCell(
                                                             chunk,
+                                                            chunkID,
                                                             row,
                                                             col,
                                                             noDataValue);
                                                 } else {
                                                     initCell(
                                                             chunk,
+                                                            chunkID,
                                                             row,
                                                             col,
                                                             gValue);
@@ -888,14 +894,15 @@ public class Grids_GridDouble
                     chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
                             chunk,
                             chunkID);
-                    chunk.initCell(getCellRow(row), getCellCol(col), value);
                     ChunkIDChunkMap.put(chunkID, chunk);
+                    chunk.initCell(getCellRow(row), getCellCol(col), value);
                 }
             } else {
                 if (fast) {
                     initCellFast(chunk, row, col, value);
                 } else {
-                    initCell(chunk, row, col, value);
+                    initCell(chunk,
+                            chunkID, row, col, value);
                 }
             }
         }
@@ -1546,19 +1553,29 @@ public class Grids_GridDouble
      * Initialises the value at row, col.
      *
      * @param chunk
+     * @param chunkID
      * @param row
      * @param col
      * @param value
+     * @return
      */
     protected void initCell(
             Grids_AbstractGridChunkDouble chunk,
+            Grids_2D_ID_int chunkID,
             long row, long col, double value) {
-//        int chunkRow = getChunkRow(row);
-//        int chunkCol = getChunkCol(col);
-//        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-//                chunkRow,
-//                chunkCol);
-//        Grids_AbstractGridChunkDouble chunk = getGridChunk(chunkID);
+        if (chunk instanceof Grids_GridChunkDouble) {
+            Grids_GridChunkDouble gridChunk = (Grids_GridChunkDouble) chunk;
+            if (value != gridChunk.Value) {
+                // Convert chunk to another type
+                chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
+                        chunk,
+                        chunkID);
+                ChunkIDChunkMap.put(chunkID, chunk);
+                chunk.initCell(getCellRow(row), getCellCol(col), value);
+            } else {
+                return;
+            }
+        }
         chunk.initCell(getCellRow(row), getCellCol(col), value);
         // Update Statistics
         if (value != NoDataValue) {
