@@ -19,6 +19,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
  *
@@ -215,16 +216,20 @@ public class Grids_GridDoubleTest {
             double noDataValue,
             Grids_GridChunkDoubleArrayFactory chunkFactory,
             boolean handleOutOfMemoryError) {
+        Grids_Processor gp;
+        gp = ge.getProcessor();
         Grids_GridDoubleFactory result;
         result = new Grids_GridDoubleFactory(
                 ge,
                 ge.getFiles().getGeneratedGridDoubleFactoryDir(),
+                gp.GridChunkDoubleFactory,
+                //gp.DefaultGridChunkDoubleFactory,
+                chunkFactory,
                 noDataValue,
                 chunkNRows,
                 chunkNCols,
                 new Grids_Dimensions(nRows, nCols),
-                new Grids_GridDoubleStatisticsNotUpdated(ge),
-                chunkFactory);
+                new Grids_GridDoubleStatisticsNotUpdated(ge));
         return result;
     }
 
