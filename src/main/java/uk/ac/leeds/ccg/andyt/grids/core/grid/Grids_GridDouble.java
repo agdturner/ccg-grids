@@ -37,10 +37,13 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
@@ -306,16 +309,19 @@ public class Grids_GridDouble
                     ois.close();
                     ois = Generic_StaticIO.getObjectInputStream(thisFile);
                     // If the object is a Grids_GridInt
+                    Grids_Processor gp;
+                    gp = ge.getProcessor();
                     Grids_GridIntFactory gif;
                     gif = new Grids_GridIntFactory(
                             ge,
-                            ge.getFiles().getGeneratedGridIntFactoryDir(),
+                            gp.GridIntFactory.Directory,
+                            gp.GridChunkIntFactory,
+                            gp.GridChunkIntArrayFactory,
                             Integer.MIN_VALUE,
                             ChunkNRows,
                             ChunkNCols,
                             Dimensions,
-                            new Grids_GridIntStatisticsNotUpdated(ge),
-                            ge.getProcessor().GridChunkIntArrayFactory);
+                            new Grids_GridIntStatisticsNotUpdated(ge));
                     Grids_GridInt gridInt;
                     gridInt = (Grids_GridInt) gif.create(
                             Directory,
@@ -324,13 +330,14 @@ public class Grids_GridDouble
                             handleOutOfMemoryError);
                     Grids_GridDoubleFactory gdf = new Grids_GridDoubleFactory(
                             ge,
-                            Directory,
+                            gp.GridDoubleFactory.Directory,
+                            gp.GridChunkDoubleFactory,
+                            gp.GridChunkDoubleArrayFactory,
                             gridInt.NoDataValue,
                             gridInt.ChunkNRows,
                             gridInt.ChunkNCols,
                             gridInt.Dimensions,
-                            Statistics,
-                            ge.getProcessor().GridChunkDoubleArrayFactory);
+                            Statistics);
                     Grids_GridDouble gridDouble = (Grids_GridDouble) gdf.create(gridInt);
                     boolean initTransientFields = false;
                     init(gridDouble, initTransientFields);
@@ -721,16 +728,19 @@ public class Grids_GridDouble
         reportN = (int) (endRowIndex - startRowIndex) / 10;
         if (gridFile.isDirectory()) {
             if (true) {
+                Grids_Processor gp;
+                    gp = ge.getProcessor();
                 Grids_GridDoubleFactory gf;
                 gf = new Grids_GridDoubleFactory(
                         ge,
-                        ge.getFiles().getGeneratedGridDoubleFactoryDir(),
-                        noDataValue,
+                        gp.GridDoubleFactory.Directory,
+                            gp.GridChunkDoubleFactory,
+                            gp.GridChunkDoubleArrayFactory,
+                            noDataValue,
                         chunkNRows,
                         chunkNCols,
                         new Grids_Dimensions(NChunkRows, NChunkCols),
-                        statistics,
-                        chunkFactory);
+                        statistics);
                 File thisFile = new File(
                         gridFile,
                         "thisFile");
@@ -888,7 +898,7 @@ public class Grids_GridDouble
                 gridChunk = (Grids_GridChunkDouble) chunk;
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
+                    chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.createGridChunkDouble(
                             chunk,
                             chunkID);
                     ChunkIDChunkMap.put(chunkID, chunk);
@@ -1533,7 +1543,7 @@ public class Grids_GridDouble
                 // Convert chunk to another type
                 Grids_2D_ID_int chunkID;
                 chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-                chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
+                chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.createGridChunkDouble(
                         chunk,
                         chunkID);
                 chunk.setCell(cellRow, cellCol, newValue, ge.HandleOutOfMemoryError);
@@ -1564,7 +1574,7 @@ public class Grids_GridDouble
             Grids_GridChunkDouble gridChunk = (Grids_GridChunkDouble) chunk;
             if (value != gridChunk.Value) {
                 // Convert chunk to another type
-                chunk = ge.getProcessor().GridChunkDoubleDefaultFactory.createGridChunkDouble(
+                chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.createGridChunkDouble(
                         chunk,
                         chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);

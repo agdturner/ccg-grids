@@ -41,7 +41,7 @@ public class Grids_GridIntFactory
     public Grids_GridChunkIntFactory GridChunkIntFactory;
 //    public Grids_GridChunkIntMapFactory ChunkIntMapFactory;
 //    public Grids_GridChunkIntArrayFactory ChunkIntArrayFactory;
-    public Grids_AbstractGridChunkIntFactory DefaultGridChunkFactory;
+    public Grids_AbstractGridChunkIntFactory DefaultGridChunkIntFactory;
 
     protected Grids_GridIntFactory() {
     }
@@ -52,23 +52,30 @@ public class Grids_GridIntFactory
      * new Grids_Dimensions(chunkNRows, chunkNCols). Statistics is defaulted to
      * new Grids_GridStatisticsNotUpdatedAsDataChanged(ge). NoDataValue is
      * defaulted to Integer.MIN_VALUE. GridChunkIntFactory is defaulted to new
-     * Grids_GridChunkIntFactory(). DefaultGridChunkFactory is defaulted to
-     * GridChunkIntFactory.
+     * gridChunkIntFactory. DefaultGridChunkIntFactory is defaulted to
+     * defaultGridChunkIntFactory.
      *
      * @param chunkNRows The number of rows chunks have by default.
+     * @param directory
+     * @param gridChunkIntFactory
+     * @param defaultGridChunkIntFactory
      * @param chunkNCols The number of columns chunks have by default.
      * @param ge
      */
     public Grids_GridIntFactory(
             Grids_Environment ge,
+            File directory,
+            Grids_GridChunkIntFactory gridChunkIntFactory,
+            Grids_AbstractGridChunkIntFactory defaultGridChunkIntFactory,
             int chunkNRows,
             int chunkNCols) {
-        super(ge, ge.getFiles().getGeneratedGridIntFactoryDir(),
+        super(ge, directory, 
+                //ge.getFiles().getGeneratedGridIntFactoryDir(),
                 chunkNRows, chunkNCols,
                 new Grids_Dimensions(chunkNRows, chunkNCols));
+        GridChunkIntFactory = gridChunkIntFactory;
+        DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         NoDataValue = Integer.MIN_VALUE;
-        GridChunkIntFactory = new Grids_GridChunkIntFactory(NoDataValue);
-        DefaultGridChunkFactory = GridChunkIntFactory;
     }
 
     /**
@@ -77,8 +84,9 @@ public class Grids_GridIntFactory
      * @param directory A directory for storing temporary files and caching Grid
      * data.
      * @param chunkNRows The number of rows chunks have by default.
+     * @param gridChunkIntFactory
+     * @param defaultGridChunkIntFactory
      * @param noDataValue
-     * @param defaultGridChunkFactory
      * @param dimensions
      * @param statistics
      * @param chunkNCols The number of columns chunks have by default.
@@ -87,26 +95,27 @@ public class Grids_GridIntFactory
     public Grids_GridIntFactory(
             Grids_Environment ge,
             File directory,
+            Grids_GridChunkIntFactory gridChunkIntFactory,
+            Grids_AbstractGridChunkIntFactory defaultGridChunkIntFactory,
             int noDataValue,
             int chunkNRows,
             int chunkNCols,
             Grids_Dimensions dimensions,
-            Grids_GridIntStatistics statistics,
-            Grids_AbstractGridChunkIntFactory defaultGridChunkFactory) {
+            Grids_GridIntStatistics statistics) {
         super(ge, directory, chunkNRows, chunkNCols, dimensions);
+        GridChunkIntFactory = gridChunkIntFactory;
+        DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         NoDataValue = noDataValue;
-        GridChunkIntFactory = new Grids_GridChunkIntFactory(NoDataValue);
-        DefaultGridChunkFactory = defaultGridChunkFactory;
     }
 
     /**
-     * Set DefaultGridChunkFactory to defaultChunkFactory.
+     * Set DefaultGridChunkIntFactory to defaultChunkFactory.
      *
      * @param defaultChunkFactory
      */
     public void setDefaultChunkFactory(
             Grids_AbstractGridChunkIntFactory defaultChunkFactory) {
-        DefaultGridChunkFactory = defaultChunkFactory;
+        DefaultGridChunkIntFactory = defaultChunkFactory;
     }
 
     /**
@@ -150,10 +159,9 @@ public class Grids_GridIntFactory
             long nCols,
             Grids_Dimensions dimensions,
             boolean handleOutOfMemoryError) {
-        return create(
-                new Grids_GridIntStatisticsNotUpdated(ge),
+        return create(new Grids_GridIntStatisticsNotUpdated(ge),
                 directory,
-                DefaultGridChunkFactory,
+                DefaultGridChunkIntFactory,
                 nRows,
                 nCols,
                 dimensions,
@@ -235,11 +243,10 @@ public class Grids_GridIntFactory
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
-        return create(
-                new Grids_GridIntStatisticsNotUpdated(ge),
+        return create(new Grids_GridIntStatisticsNotUpdated(ge),
                 directory,
                 g,
-                DefaultGridChunkFactory,
+                DefaultGridChunkIntFactory,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
@@ -320,11 +327,10 @@ public class Grids_GridIntFactory
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
-        return create(
-                new Grids_GridIntStatisticsNotUpdated(ge),
+        return create(new Grids_GridIntStatisticsNotUpdated(ge),
                 directory,
                 gridFile,
-                DefaultGridChunkFactory,
+                DefaultGridChunkIntFactory,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,

@@ -138,24 +138,29 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
         String yFilename = "casnullm";
-        Grids_GridDoubleFactory gf;
-        gf = new Grids_GridDoubleFactory(
-                ge,
-                files.getGeneratedGridDoubleFactoryDir(),
-                -Double.MAX_VALUE,
-                divisions,
-                divisions,
-                new Grids_Dimensions(divisions, divisions),
-                new Grids_GridDoubleStatisticsNotUpdated(ge),
-                new Grids_GridChunkDoubleArrayFactory());
-        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(
+//        Grids_GridDoubleFactory gf;
+//        gf = new Grids_GridDoubleFactory(
+//                ge,
+//                files.getGeneratedGridDoubleFactoryDir(),
+//                -Double.MAX_VALUE,
+//                divisions,
+//                divisions,
+//                new Grids_Dimensions(divisions, divisions),
+//                new Grids_GridDoubleStatisticsNotUpdated(ge),
+//                new Grids_GridChunkDoubleArrayFactory());
+//        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(
+//                new File(inDataDirectory + xFilename + ".asc"));
+//        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
+//                new File(inDataDirectory + yFilename + ".asc"));
+        Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(
                 new File(inDataDirectory + xFilename + ".asc"));
-        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
+        Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(
                 new File(inDataDirectory + yFilename + ".asc"));
         System.out.println(xGrid.toString());
         System.out.println(yGrid.toString());
         System.out.println("Processing...");
-        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gf);
+        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, GridDoubleFactory);
+//        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gf);
         double[] stdevy = (double[]) result[0];
         double[] meany = (double[]) result[1];
         double[] numy = (double[]) result[2];

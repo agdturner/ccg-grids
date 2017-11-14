@@ -58,6 +58,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisti
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatistics;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -92,7 +93,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_AbstractGridChunkIntFactory
      */
-    public Grids_AbstractGridChunkIntFactory GridChunkIntDefaultFactory;
+    public Grids_AbstractGridChunkIntFactory DefaultGridChunkIntFactory;
 
     /**
      * Grids_GridChunkIntFactory
@@ -117,12 +118,12 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_AbstractGridChunkDoubleFactory
      */
-    public Grids_AbstractGridChunkDoubleFactory GridChunkDoubleDefaultFactory;
+    public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkDoubleFactory;
 
     /**
      * Grids_GridChunkDoubleFactory
      */
-    public Grids_AbstractGridChunkDoubleFactory GridChunkDoubleFactory;
+    public Grids_GridChunkDoubleFactory GridChunkDoubleFactory;
 
     /**
      * Grids_GridChunkDoubleArrayFactory
@@ -170,8 +171,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_Environment ge) {
         this(ge,
                 new File(ge.getDirectory(),
-                        "Grids_Processor"),
-                true);
+                        "Grids_Processor"));
     }
 
     /**
@@ -180,18 +180,18 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param ge
      * @param directory
-     * @param appendToLogFile
      */
     public Grids_Processor(
             Grids_Environment ge,
-            File directory,
-            boolean appendToLogFile) {
+            File directory) {
         super(ge);
         StartTime = System.currentTimeMillis();
         File logFile;
         Directory = directory;
-        if (Directory.exists()) {
-            logFile = new File(Directory, "log.txt");
+        if (!Directory.exists()) {
+            Directory.mkdirs();
+        }
+           logFile = new File(Directory, "log.txt");
             if (!logFile.exists()) {
                 try {
                     logFile.createNewFile();
@@ -199,21 +199,10 @@ public class Grids_Processor extends Grids_Object {
                     Logger.getLogger(Grids_Processor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if (appendToLogFile) {
-            }
-        } else {
-            Directory.mkdir();
-            logFile = new File(Directory, "log.txt");
-            try {
-                logFile.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(Grids_Processor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         Log = Generic_StaticIO.getPrintWriter(logFile, true);
         LogIndentation = 0;
         log(LogIndentation,
-                "log file " + logFile + " set up " + Generic_Time.getTime(StartTime),
+                this.getClass().getName() + " set up " + Generic_Time.getTime(StartTime),
                 ge.HandleOutOfMemoryErrorTrue);
         initFactories();
     }
@@ -223,26 +212,26 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories() {
         initChunkFactories();
-        initFactories(Directory);
-        initGridStatistics();
-    }
-
-    /**
-     * Initialises GridFactories.
-     *
-     * @param directory The directory factories will create directories in.
-     */
-    private void initFactories(File directory) {
+        Grids_Files gf;
+        gf = ge.getFiles();
         GridIntFactory = new Grids_GridIntFactory(
                 ge,
+                gf.getGeneratedGridIntDir(),
+                GridChunkIntFactory,
+                DefaultGridChunkIntFactory,
                 512,
                 512);
         GridDoubleFactory = new Grids_GridDoubleFactory(
                 ge,
+                gf.getGeneratedGridDoubleDir(),
+                GridChunkDoubleFactory,
+                DefaultGridChunkDoubleFactory,
                 512,
                 512);
+        initGridStatistics();
     }
 
+ 
     /**
      * Initialises Grid2DSquareCellChunk Factories.
      */
@@ -250,11 +239,11 @@ public class Grids_Processor extends Grids_Object {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
         GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
         GridChunkIntFactory = new Grids_GridChunkIntFactory(0);
-        GridChunkIntDefaultFactory = GridChunkIntArrayFactory;
+        DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
         GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(0.0d);
-        GridChunkDoubleDefaultFactory = GridChunkDoubleArrayFactory;
+        DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
     }
 
     /**
@@ -1968,6 +1957,9 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDoubleFactory gridFactory;
             gridFactory = new Grids_GridDoubleFactory(
                     ge,
+                    ge.getFiles().getGeneratedGridDoubleDir(),
+                    GridChunkDoubleFactory,
+                    GridChunkDoubleArrayFactory,
                     grid.getChunkNCols(handleOutOfMemoryError),
                     grid.getChunkNRows(handleOutOfMemoryError));
             if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)
