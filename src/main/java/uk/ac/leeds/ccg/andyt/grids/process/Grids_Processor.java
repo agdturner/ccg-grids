@@ -1230,43 +1230,43 @@ public class Grids_Processor extends Grids_Object {
         outputGrid.setName(g.getName(handleOutOfMemoryError), handleOutOfMemoryError);
         System.out.println(outputGrid.toString(handleOutOfMemoryError));
         ge.getGrids().add(outputGrid);
-        int chunkRowIndex;
-        int chunkColIndex;
-        int chunkCellRowIndex;
-        int chunkCellColIndex;
+        int chunkRow;
+        int chunkCol;
+        int cellRow;
+        int cellCol;
         if (type == null) {
             // if range of either input or output range is zero return min for all non noDataValues
             if (rangeGrid == 0.0d || range == 0.0d) {
                 // Better to go through chunks rather than rows. Though it 
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
-                for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
-                    for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                chunkRowIndex, chunkColIndex);
+                                chunkRow, chunkCol);
                         ge.addToNotToSwapData(g, chunkID);
                         ge.addToNotToSwapData(outputGrid, chunkID);
                         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                         int thisChunkNCols = g.getChunkNCols(
-                                chunkColIndex, handleOutOfMemoryError, chunkID);
+                                chunkCol, handleOutOfMemoryError, chunkID);
                         int thisChunkNRows = g.getChunkNRows(
-                                chunkRowIndex, handleOutOfMemoryError);
+                                chunkRow, handleOutOfMemoryError);
                         Grids_AbstractGridChunkDouble gridChunk;
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
                         Grids_AbstractGridChunkDouble outputGridChunk;
                         outputGridChunk = (Grids_AbstractGridChunkDouble) outputGrid.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
-                        for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
-                            for (chunkCellColIndex = 0; chunkCellColIndex < thisChunkNCols; chunkCellColIndex++) {
+                        for (cellRow = 0; cellRow < thisChunkNRows; cellRow++) {
+                            for (cellCol = 0; cellCol < thisChunkNCols; cellCol++) {
                                 value = gridChunk.getCell(
-                                        chunkCellRowIndex,
-                                        chunkCellColIndex,
+                                        cellRow,
+                                        cellCol,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
                                     outputGridChunk.setCell(
-                                            chunkCellRowIndex,
-                                            chunkCellColIndex,
+                                            cellRow,
+                                            cellCol,
                                             min,
                                             handleOutOfMemoryError);
                                 }
@@ -1278,33 +1278,33 @@ public class Grids_Processor extends Grids_Object {
                 // Better to go through chunks rather than rows. Though it 
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
-                for (chunkRowIndex = 0; chunkRowIndex < nChunkRows; chunkRowIndex++) {
-                    for (chunkColIndex = 0; chunkColIndex < nChunkCols; chunkColIndex++) {
+                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                chunkRowIndex, chunkColIndex);
+                                chunkRow, chunkCol);
                         ge.addToNotToSwapData(g, chunkID);
                         ge.addToNotToSwapData(outputGrid, chunkID);
                         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                         int thisChunkNCols = g.getChunkNCols(
-                                chunkColIndex, handleOutOfMemoryError, chunkID);
+                                chunkCol, handleOutOfMemoryError, chunkID);
                         int thisChunkNRows = g.getChunkNRows(
-                                chunkRowIndex, handleOutOfMemoryError);
+                                chunkRow, handleOutOfMemoryError);
                         Grids_AbstractGridChunkDouble gridChunk;
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
                         Grids_AbstractGridChunkDouble outputGridChunk;
                         outputGridChunk = (Grids_AbstractGridChunkDouble) outputGrid.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
-                        for (chunkCellRowIndex = 0; chunkCellRowIndex < thisChunkNRows; chunkCellRowIndex++) {
-                            for (chunkCellColIndex = 0; chunkCellColIndex < thisChunkNCols; chunkCellColIndex++) {
+                        for (cellRow = 0; cellRow < thisChunkNRows; cellRow++) {
+                            for (cellCol = 0; cellCol < thisChunkNCols; cellCol++) {
                                 value = gridChunk.getCell(
-                                        chunkCellRowIndex,
-                                        chunkCellColIndex,
+                                        cellRow,
+                                        cellCol,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
                                     outputGridChunk.setCell(
-                                            chunkCellRowIndex,
-                                            chunkCellColIndex,
+                                            cellRow,
+                                            cellCol,
                                             (((value - minGrid) / rangeGrid) * range) + min,
                                             handleOutOfMemoryError);
                                 }
@@ -3842,7 +3842,6 @@ public class Grids_Processor extends Grids_Object {
                 imageTypes = new String[1];
                 imageTypes[0] = "PNG";
             }
-            BigDecimal bigDecimal_Minus9999Point0 = new BigDecimal("-9999.0");
             String string;
             String string_DOT = ".";
             File file;
@@ -3864,13 +3863,11 @@ public class Grids_Processor extends Grids_Object {
                         imageTypes[i],
                         handleOutOfMemoryError);
             }
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(
-                        grid,
-                        handleOutOfMemoryError) < 1) {
-                    throw _OutOfMemoryError;
+                if (ge.swapChunksExcept_Account(                        grid,                        handleOutOfMemoryError) < 1) {
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 outputImage(
@@ -3880,7 +3877,7 @@ public class Grids_Processor extends Grids_Object {
                         imageTypes,
                         handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3926,11 +3923,11 @@ public class Grids_Processor extends Grids_Object {
                     file,
                     noDataValue,
                     handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 outputESRIAsciiGrid(
@@ -3939,7 +3936,7 @@ public class Grids_Processor extends Grids_Object {
                         eage,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
