@@ -323,7 +323,7 @@ public class Grids_GridInt
                             ge,
                             gp.GridDoubleFactory.Directory,
                             gp.GridChunkDoubleFactory,
-                            gp.GridChunkDoubleArrayFactory,
+                            gp.DefaultGridChunkDoubleFactory,
                             -Double.MAX_VALUE,
                             ChunkNRows,
                             ChunkNCols,
@@ -339,7 +339,7 @@ public class Grids_GridInt
                             ge,
                             gp.GridIntFactory.Directory,
                             gp.GridChunkIntFactory,
-                            gp.GridChunkIntArrayFactory,
+                            gp.DefaultGridChunkIntFactory,
                             Integer.MIN_VALUE,
                             gridDouble.ChunkNRows,
                             gridDouble.ChunkNCols,
@@ -809,7 +809,7 @@ public class Grids_GridInt
                         ge,
                         gp.GridIntFactory.Directory,
                         gp.GridChunkIntFactory,
-                        gp.GridChunkIntArrayFactory,
+                        gp.DefaultGridChunkIntFactory,
                         noDataValue,
                         chunkNRows,
                         chunkNCols,
@@ -973,7 +973,7 @@ public class Grids_GridInt
                 gridChunk = (Grids_GridChunkInt) chunk;
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().GridChunkIntFactory.createGridChunkInt(
+                    chunk = ge.getProcessor().DefaultGridChunkIntFactory.createGridChunkInt(
                             chunk,
                             chunkID);
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
@@ -1111,9 +1111,7 @@ public class Grids_GridInt
             long col,
             boolean handleOutOfMemoryError) {
         try {
-            int result = getCell(
-                    row,
-                    col);
+            int result = getCell(                    row,                    col);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -1123,10 +1121,7 @@ public class Grids_GridInt
                         getChunkRow(row),
                         getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCell(
-                        row,
-                        col,
-                        handleOutOfMemoryError);
+                return getCell(                        row,                        col,                        handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1142,9 +1137,7 @@ public class Grids_GridInt
     protected int getCell(
             long row,
             long col) {
-        boolean isInGrid = isInGrid(
-                row,
-                col);
+        boolean isInGrid = isInGrid(                row,                col);
         if (isInGrid) {
             int chunkRow = getChunkRow(row);
             int chunkCol = getChunkCol(col);

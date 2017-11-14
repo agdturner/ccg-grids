@@ -233,7 +233,7 @@ public class Grids_Processor extends Grids_Object {
 
  
     /**
-     * Initialises Grid2DSquareCellChunk Factories.
+     * Initialises chunk Factories.
      */
     private void initChunkFactories() {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
@@ -1959,7 +1959,7 @@ public class Grids_Processor extends Grids_Object {
                     ge,
                     ge.getFiles().getGeneratedGridDoubleDir(),
                     GridChunkDoubleFactory,
-                    GridChunkDoubleArrayFactory,
+                    DefaultGridChunkDoubleFactory,
                     grid.getChunkNCols(handleOutOfMemoryError),
                     grid.getChunkNRows(handleOutOfMemoryError));
             if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)

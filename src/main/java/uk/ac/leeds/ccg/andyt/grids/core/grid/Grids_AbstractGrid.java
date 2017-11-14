@@ -3855,53 +3855,26 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return x-coordinate of the centroid for cells with column index
-     * _CellColIndex as a double.
-     * @param col The cell column index thats centroid x-coordinate is returned.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     */
-    public final double getCellXDouble(long col, boolean handleOutOfMemoryError, Grids_2D_ID_int chunkID) {
-        try {
-            double result = getCellXDouble(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellXDouble(col, handleOutOfMemoryError, chunkID);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkCol
      * @param chunkRow
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param chunkCellColIndex The cell column index thats centroid
+     * @param cellCol The cell column index thats centroid
      * x-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellXDouble(int chunkCellColIndex, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final double getCellXDouble(int cellCol, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
-            double result = getCellXDouble(chunkCellColIndex, chunkCol);
+            double result = getCellXDouble(cellCol, chunkCol);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellXDouble(chunkCellColIndex, chunkRow, chunkCol, handleOutOfMemoryError);
+                return getCellXDouble(cellCol, chunkRow, chunkCol, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3912,11 +3885,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param chunkCellColIndex The cell column index thats centroid
+     * @param cellCol The cell column index thats centroid
      * x-coordinate is returned.
      */
-    protected final double getCellXDouble(int chunkCellColIndex, int chunkCol) {
-        return getCellXDouble(getCol(chunkCellColIndex, chunkCol));
+    protected final double getCellXDouble(int cellCol, int chunkCol) {
+        return getCellXDouble(getCol(cellCol, chunkCol));
     }
 
     /**
@@ -3929,23 +3902,22 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
-     * _CellID as a BigDecimal.
-     * @param a_CellID
+     * @return x-coordinate of the centroid for cell.
+     * @param cellID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long a_CellID, boolean handleOutOfMemoryError) {
+    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, boolean handleOutOfMemoryError) {
         try {
-            BigDecimal result = getCellXBigDecimal(a_CellID);
+            BigDecimal result = getCellXBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellXBigDecimal(a_CellID, handleOutOfMemoryError);
+                return getCellXBigDecimal(cellID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3963,7 +3935,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a getCellXBigDecimal.
      */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, 
+            int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -3991,21 +3964,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
      * _CellID as a double
-     * @param a_CellID
+     * @param cellID
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellXDouble(Grids_2D_ID_long a_CellID, boolean handleOutOfMemoryError) {
+    public final double getCellXDouble(Grids_2D_ID_long cellID, boolean handleOutOfMemoryError) {
         try {
-            double result = getCellXDouble(a_CellID);
+            double result = getCellXDouble(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellXDouble(a_CellID, handleOutOfMemoryError);
+                return getCellXDouble(cellID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -4018,19 +3991,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a double.
-     * @param a_CellID The Grids_2D_ID_long of the cell thats centroid is
+     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
      * returned.
      */
-    public final double getCellXDouble(Grids_2D_ID_long a_CellID, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final double getCellXDouble(Grids_2D_ID_long cellID, int chunkRow, 
+            int chunkCol, boolean handleOutOfMemoryError) {
         try {
-            double result = getCellXDouble(a_CellID);
+            double result = getCellXDouble(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellXDouble(a_CellID, chunkRow, chunkCol, handleOutOfMemoryError);
+                return getCellXDouble(cellID, chunkRow, chunkCol, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -4038,12 +4012,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param _CellID
+     * @param cellID
      * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
      * _CellID as a double
      */
-    protected final double getCellXDouble(Grids_2D_ID_long _CellID) {
-        return getCellXBigDecimal(_CellID).doubleValue();
+    protected final double getCellXDouble(Grids_2D_ID_long cellID) {
+        return getCellXBigDecimal(cellID).doubleValue();
     }
 
     /**
@@ -4078,7 +4052,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * _CellRowIndex as a BigDecimal.
      * @param row the cell column index thats centroid y-coordinate is returned.
      */
-    public final BigDecimal getCellYBigDecimal(long row, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final BigDecimal getCellYBigDecimal(long row, int chunkRow, 
+            int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(row);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -4132,53 +4107,27 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a double.
-     * @param row the cell column index thats centroid y-coordinate is returned.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @param a_ChunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     */
-    public final double getCellYDouble(long row, boolean handleOutOfMemoryError, Grids_2D_ID_int a_ChunkID) {
-        try {
-            double result = getCellYDouble(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellYDouble(row, handleOutOfMemoryError, a_ChunkID);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkCol
      * @param chunkRow
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
-     * @param chunkCellRowIndex the chunk cell column index thats centroid
+     * @param cellRow the chunk cell column index thats centroid
      * y-coordinate is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellYDouble(int chunkCellRowIndex, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final double getCellYDouble(int cellRow, int chunkRow, int chunkCol, 
+            boolean handleOutOfMemoryError) {
         try {
-            double result = getCellYDouble(chunkCellRowIndex, chunkRow);
+            double result = getCellYDouble(cellRow, chunkRow);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellYDouble(chunkCellRowIndex, chunkRow, chunkCol, handleOutOfMemoryError);
+                return getCellYDouble(cellRow, chunkRow, chunkCol, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -4189,11 +4138,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkRow
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
-     * @param chunkCellRowIndex the chunk cell column index thats centroid
+     * @param cellRow the chunk cell column index thats centroid
      * y-coordinate is returned.
      */
-    protected final double getCellYDouble(int chunkCellRowIndex, int chunkRow) {
-        return getCellYDouble(getRow(chunkCellRowIndex, chunkRow));
+    protected final double getCellYDouble(int cellRow, int chunkRow) {
+        return getCellYDouble(getRow(cellRow, chunkRow));
     }
 
     /**
@@ -4214,7 +4163,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, boolean handleOutOfMemoryError) {
+    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, 
+            boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -4239,7 +4189,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a BigDecimal.
      */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, 
+            int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -4272,7 +4223,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellYDouble(Grids_2D_ID_long chunkID, boolean handleOutOfMemoryError) {
+    public final double getCellYDouble(Grids_2D_ID_long chunkID, 
+            boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -4297,7 +4249,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkID The Grids_2D_ID_long of the cell thats centroid is
      * returned.
      */
-    public final double getCellYDouble(Grids_2D_ID_long chunkID, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final double getCellYDouble(Grids_2D_ID_long chunkID, int chunkRow,
+            int chunkCol, boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(chunkID);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);

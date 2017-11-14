@@ -191,7 +191,7 @@ public class Grids_Environment
     }
 
     /**
-     * Adds the chunkID of each grid in g[] to NotToSwapData.
+     * Adds the chunkID of each grid in g to NotToSwapData.
      *
      * @param g
      * @param chunkID
