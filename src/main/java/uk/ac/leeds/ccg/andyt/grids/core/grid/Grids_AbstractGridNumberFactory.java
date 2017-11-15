@@ -24,6 +24,7 @@ import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 
 /**
  * Abstract class to be extended by all Grids_AbstractGridNumber factories.
@@ -221,9 +222,9 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
         eagi = new Grids_ESRIAsciiGridImporter(
                 gridFile,
                 ge);
-        Object[] header = eagi.readHeaderObject();
-        long nCols = (Long) header[0];
-        long nRows = (Long) header[1];
+        Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+        long nCols = header.NCols;
+        long nRows = header.NRows;
         //double _NoDataValue = (Double) header[5];
         eagi.close();
         String gridName = gridFile.getName().substring(0, gridFile.getName().length() - 4);
@@ -269,6 +270,20 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long startColIndex,
             long endRowIndex,
             long endColIndex,
+            boolean handleOutOfMemoryError);
+
+    /**
+     * @return Grids_AbstractGridNumber with values obtained from gridFile.
+     * @param directory The Directory to be used for storing cached
+     * Grid2DSquareCellInt information.
+     * @param gridFile either a Directory, or a formatted File with a specific
+     * extension containing the data and information about the
+     * Grids_AbstractGridNumber to be returned.
+     * @param handleOutOfMemoryError
+     */
+    public abstract Grids_AbstractGridNumber create(
+            File directory,
+            File gridFile,
             boolean handleOutOfMemoryError);
 
     /**

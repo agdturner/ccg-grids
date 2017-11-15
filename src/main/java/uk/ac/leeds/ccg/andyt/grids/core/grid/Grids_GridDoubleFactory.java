@@ -376,6 +376,35 @@ public class Grids_GridDoubleFactory
                 handleOutOfMemoryError);
     }
 
+        /**
+     * Returns a new Grids_GridDouble with values obtained from gridFile.
+     *
+     * @param statistics The type of Grids_GridDoubleStatistics to accompany the
+     * returned grid.
+     * @param directory The directory to be used for storing cached Grid
+     * information.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be
+     * returned.
+     * @param chunkFactory The preferred factory for creating chunks that the
+     * constructed Grid is to be made of.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * in this method then swap operations are initiated prior to retrying. If
+     * false then OutOfMemoryErrors are caught and thrown.
+     * @return
+     */
+    @Override
+    public Grids_GridDouble create(
+            File directory,
+            File gridFile,
+            boolean handleOutOfMemoryError) {
+        return new Grids_GridDouble(
+                ge,
+                directory,
+                gridFile,
+                handleOutOfMemoryError);
+    }
+
     /**
      *
      * @param statistics

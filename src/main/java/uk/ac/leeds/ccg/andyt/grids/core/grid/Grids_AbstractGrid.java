@@ -34,6 +34,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -4699,15 +4701,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return UnsignedLongPowersOf2;
     }
 
-    protected void initDimensions(Object[] header, long startRowIndex, long startColIndex) {
+    protected void initDimensions(Grids_ESRIAsciiGridHeader header, 
+            long startRowIndex, long startColIndex) {
         BigDecimal xMin;
         BigDecimal yMin;
         BigDecimal xMax;
         BigDecimal yMax;
         BigDecimal cellsize;
-        cellsize = (BigDecimal) header[4];
-        xMin = ((BigDecimal) header[2]).add(cellsize.multiply(new BigDecimal(startColIndex)));
-        yMin = ((BigDecimal) header[3]).add(cellsize.multiply(new BigDecimal(startRowIndex)));
+        cellsize = header.cellsize;
+        xMin = ((BigDecimal) header.xllcorner).add(cellsize.multiply(new BigDecimal(startColIndex)));
+        yMin = ((BigDecimal) header.yllcorner).add(cellsize.multiply(new BigDecimal(startRowIndex)));
         xMax = xMin.add(new BigDecimal(Long.toString(NCols)).multiply(cellsize));
         yMax = yMin.add(new BigDecimal(Long.toString(NRows)).multiply(cellsize));
         Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);

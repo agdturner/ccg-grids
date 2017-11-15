@@ -43,6 +43,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisti
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatisticsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -237,6 +238,32 @@ public class Grids_GridDouble
                 endRowIndex,
                 endColIndex,
                 noDataValue,
+                handleOutOfMemoryError);
+    }
+
+    /**
+     * Creates a new Grids_GridDouble with values obtained from gridFile.
+     * Currently gridFile must be a directory of a Grids_GridDouble or
+     * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
+     * ".asc" or ".txt".
+     *
+     * @param ge
+     * @param directory The directory to be used for storing data about this
+     * grid.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data for this.
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    protected Grids_GridDouble(
+            Grids_Environment ge,
+            File directory,
+            File gridFile,
+            boolean handleOutOfMemoryError) {
+        super(ge, directory);
+        init(new Grids_GridDoubleStatisticsNotUpdated(ge),
+                gridFile,
                 handleOutOfMemoryError);
     }
 
@@ -596,7 +623,6 @@ public class Grids_GridDouble
                         //cci1 = _ChunkColIndex;
                     }
                     System.out.println("Done chunkRow " + chunkRow + " out of " + nChunkRows);
-                    chunkRow++;
                 }
             } else {
                 Grids_GridInt grid = (Grids_GridInt) g;
@@ -604,7 +630,7 @@ public class Grids_GridDouble
                 int gValue;
                 for (chunkRow = startChunkRow; chunkRow <= endChunkRow; chunkRow++) {
                     gridChunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
-                                for (chunkCol = startChunkCol; chunkCol <= endChunkCol; chunkCol++) {
+                    for (chunkCol = startChunkCol; chunkCol <= endChunkCol; chunkCol++) {
                         do {
                             try {
                                 ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -676,11 +702,8 @@ public class Grids_GridDouble
                             }
                         } while (!isLoadedChunk);
                         isLoadedChunk = false;
-                        //loadedChunkCount++;
-                        //cci1 = _ChunkColIndex;
                     }
                     System.out.println("Done chunkRow " + chunkRow + " out of " + nChunkRows);
-                    chunkRow++;
                 }
             }
             ge.addGrid(this);
@@ -729,14 +752,14 @@ public class Grids_GridDouble
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_Processor gp;
-                    gp = ge.getProcessor();
+                gp = ge.getProcessor();
                 Grids_GridDoubleFactory gf;
                 gf = new Grids_GridDoubleFactory(
                         ge,
                         gp.GridDoubleFactory.Directory,
-                            gp.GridChunkDoubleFactory,
-                            gp.DefaultGridChunkDoubleFactory,
-                            noDataValue,
+                        gp.GridChunkDoubleFactory,
+                        gp.DefaultGridChunkDoubleFactory,
+                        noDataValue,
                         chunkNRows,
                         chunkNCols,
                         new Grids_Dimensions(NChunkRows, NChunkCols),
@@ -785,15 +808,149 @@ public class Grids_GridDouble
                 eagi = new Grids_ESRIAsciiGridImporter(
                         gridFile,
                         ge);
-                Object[] header = eagi.readHeaderObject();
+                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
                 initDimensions(header, startRowIndex, startColIndex);
-                double gridFileNoDataValue = (Double) header[5];
+                double gridFileNoDataValue = header.NoDataValue.doubleValue();
                 long row;
                 long col;
                 Grids_AbstractGridChunkDouble chunk;
                 Grids_GridChunkDouble gridChunk;
+                // Read Data into Chunks. This starts with the last row and ends with the first.
+                if (gridFileNoDataValue == NoDataValue) {
+                    if (statistics.getClass().getName().equalsIgnoreCase(Grids_GridDoubleStatistics.class.getName())) {
+                        for (row = (NRows - 1); row > -1; row--) {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                            ge.initNotToSwapData();
+                            for (col = 0; col < NCols; col++) {
+                                value = eagi.readDouble();
+                                initCell(row, col, value, false);
+                            }
+                            if (row % reportN == 0) {
+                                System.out.println("Done row " + row);
+                            }
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        }
+                    } else {
+                        for (row = (NRows - 1); row > -1; row--) {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                            ge.initNotToSwapData();
+                            for (col = 0; col < NCols; col++) {
+                                value = eagi.readDouble();
+                                if (value == gridFileNoDataValue) {
+                                    value = NoDataValue;
+                                }
+                                initCell(row, col, value, true);
+                            }
+                            if (row % reportN == 0) {
+                                System.out.println("Done row " + row);
+                            }
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        }
+                    }
+                } else {
+                    if (statistics.getClass().getName().equalsIgnoreCase(Grids_GridDoubleStatistics.class.getName())) {
+                        for (row = (NRows - 1); row > -1; row--) {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                            ge.initNotToSwapData();
+                            for (col = 0; col < NCols; col++) {
+                                value = eagi.readDouble();
+                                if (value == gridFileNoDataValue) {
+                                    value = NoDataValue;
+                                }
+                                initCell(row, col, value, false);
+                            }
+                            if (row % reportN == 0) {
+                                System.out.println("Done row " + row);
+                            }
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        }
+                    } else {
+                        for (row = (NRows - 1); row > -1; row--) {
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                            ge.initNotToSwapData();
+                            for (col = 0; col < NCols; col++) {
+                                value = eagi.readDouble();
+                                initCell(row, col, value, true);
+                            }
+                            if (row % reportN == 0) {
+                                System.out.println("Done row " + row);
+                            }
+                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void init(
+            Grids_GridDoubleStatistics statistics,
+            File gridFile,
+            boolean handleOutOfMemoryError) {
+        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+        Statistics = statistics;
+        statistics.init(this);
+        // Set to report every 10%
+        int reportN;
+        Grids_Processor gp;
+        gp = ge.getProcessor();
+        if (gridFile.isDirectory()) {
+            if (true) {
+                Grids_GridDoubleFactory gf;
+                gf = new Grids_GridDoubleFactory(
+                        ge,
+                        gp.GridDoubleFactory.Directory,
+                        gp.GridChunkDoubleFactory,
+                        gp.DefaultGridChunkDoubleFactory,
+                        gp.GridIntFactory.NoDataValue,
+                        gp.GridDoubleFactory.ChunkNRows,
+                        gp.GridDoubleFactory.ChunkNCols,
+                        new Grids_Dimensions(NChunkRows, NChunkCols),
+                        statistics);
+                File thisFile = new File(
+                        gridFile,
+                        "thisFile");
+                ObjectInputStream ois;
+                ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                Grids_GridDouble g;
+                g = (Grids_GridDouble) gf.create(
+                        Directory,
+                        thisFile,
+                        ois,
+                        handleOutOfMemoryError);
+            }
+            initChunks(gridFile);
+        } else {
+            // Assume ESRI AsciiFile
+            Name = Directory.getName();
+            ChunkIDChunkMap = new TreeMap<>();
+            Statistics = statistics;
+            statistics.Grid = this;
+            String filename = gridFile.getName();
+            double value;
+            if (filename.endsWith("asc") || filename.endsWith("txt")) {
+                Grids_ESRIAsciiGridImporter eagi;
+                eagi = new Grids_ESRIAsciiGridImporter(
+                        gridFile,
+                        ge);
+                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+                //long inputNcols = ( Long ) header[ 0 ];
+                //long inputNrows = ( Long ) header[ 1 ];
+                NCols = header.NRows;
+                NRows = header.NCols;
+                ChunkNRows = gp.GridDoubleFactory.ChunkNRows;
+                ChunkNCols = gp.GridDoubleFactory.ChunkNCols;
+                initNChunkRows();
+                initNChunkCols();
+                initDimensions(header, 0, 0);
+                reportN = (int) (NRows - 1) / 10;
+                double gridFileNoDataValue = header.NoDataValue.doubleValue();
+                Grids_AbstractGridChunkDouble chunk;
+                Grids_GridChunkDouble gridChunk;
+                long row;
+                long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (gridFileNoDataValue == NoDataValue) {
                     if (statistics.getClass().getName().equalsIgnoreCase(Grids_GridDoubleStatistics.class.getName())) {

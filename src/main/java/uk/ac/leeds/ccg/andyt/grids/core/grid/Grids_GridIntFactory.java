@@ -327,14 +327,34 @@ public class Grids_GridIntFactory
             long endRowIndex,
             long endColIndex,
             boolean handleOutOfMemoryError) {
-        return create(new Grids_GridIntStatisticsNotUpdated(ge),
+        return create(
+                new Grids_GridIntStatisticsNotUpdated(ge),
                 directory,
                 gridFile,
                 DefaultGridChunkIntFactory,
-                startRowIndex,
-                startColIndex,
-                endRowIndex,
-                endColIndex,
+                startRowIndex, startColIndex, endRowIndex, endColIndex, 
+                handleOutOfMemoryError);
+    }
+
+    /**
+     * Returns a new Grids_GridInt with values obtained from gridFile.
+     *
+     * @param directory The Directory to be used for storing cached Grid
+     * information.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be
+     * returned.
+     * @return
+     */
+    @Override
+    public Grids_GridInt create(
+            File directory,
+            File gridFile,
+            boolean handleOutOfMemoryError) {
+        return new Grids_GridInt(
+                ge,
+                directory,
+                gridFile,
                 handleOutOfMemoryError);
     }
 
