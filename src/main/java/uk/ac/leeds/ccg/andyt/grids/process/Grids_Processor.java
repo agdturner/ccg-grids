@@ -1286,11 +1286,32 @@ public class Grids_Processor extends Grids_Object {
                                         cellCol,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
-                                    resultChunk.setCell(
+                                    
+                                    try { //DEBUGGING
+                                    
+                                        resultChunk.setCell(
                                             cellRow,
                                             cellCol,
                                             (((value - minGrid) / rangeGrid) * range) + min,
                                             handleOutOfMemoryError);
+                                    
+                                    } catch (Exception e){
+                                        System.out.println("Debug");
+                                        if (resultChunk == null) {
+                                            System.out.println("");
+                                            System.out.println("chunkID " + chunkID);
+                                            System.out.println("cellRow " + cellRow);
+                                            System.out.println("cellCol " + cellCol);
+                                            System.out.println("value " + value);
+                                            System.out.println("");
+                                            e.printStackTrace(System.err);
+                                        }
+//                                        resultChunk.setCell(
+//                                            cellRow,
+//                                            cellCol,
+//                                            (((value - minGrid) / rangeGrid) * range) + min,
+//                                            handleOutOfMemoryError);
+                                    }
                                 }
                             }
                         }

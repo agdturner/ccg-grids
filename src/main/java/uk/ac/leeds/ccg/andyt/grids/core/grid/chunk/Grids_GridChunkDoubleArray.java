@@ -144,7 +144,12 @@ public class Grids_GridChunkDoubleArray
             int debug = 1;
         }
 
-        Data[row][col] = valueToSet;
+        try {
+            Data[row][col] = valueToSet;
+        } catch (Exception e) {
+            int debug = 1;
+        }
+        
         if (isSwapUpToDate()) {
             // Optimisation? Want a setCellFast method closer to initCell? 
             // What about an unmodifiable readOnly type chunk?
