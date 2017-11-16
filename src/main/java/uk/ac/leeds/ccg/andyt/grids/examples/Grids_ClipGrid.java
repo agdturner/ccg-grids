@@ -87,19 +87,17 @@ public class Grids_ClipGrid
             Grids_Files gf;
             gf = ge.getFiles();
             File input;
-//            input = new File(
-//                    gf.getInputDataDir(),
-//                    "p15oct.asc");
+            input = new File(
+                    gf.getInputDataDir(),
+                    "p15oct.asc");
 //            input = new File(
 //                    gf.getInputDataDir(),
 //                    "RADAR_UK_Composite_Highres_23_6.asc");
-            input = new File(
-                    gf.getInputDataDir(),
-                    "2017-08-02RADAR_UK_Composite_Highres.asc");
-            
-            
-            //C:\Users\geoagdt\src\grids\data\input
+//            input = new File(
+//                    gf.getInputDataDir(),
+//                    "2017-08-02RADAR_UK_Composite_Highres.asc");
 
+            //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
             Grids_ImageExporter imageExporter = new Grids_ImageExporter(ge);
             File workspaceDirectory = new File(
@@ -130,30 +128,58 @@ public class Grids_ClipGrid
                         dir,
                         input,
                         HandleOutOfMemoryError);
-//        System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
-//        System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
-        System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
+//                System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
+//                System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
+//                System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
                 // clip gridDouble
                 dir = new File(
                         ge.getFiles().getGeneratedGridDoubleDir(),
                         "Clipped" + inputNameWithoutExtension);
-//                g = (Grids_GridDouble) GridDoubleFactory.create(
-//                        dir,
-//                        gridDouble,
-//                        0,
-//                        0,
-//                        nRows - 1,
-//                        nCols - 1,
-//                        HandleOutOfMemoryError);
-//                gridDouble = g;
-//                // Cache input
-//                boolean swapToFileCache = true;
-//                gridDouble.writeToFile(swapToFileCache,
-//                        HandleOutOfMemoryError);
+                long nRows = gridDouble.getNRows(HandleOutOfMemoryError);
+                long nCols = gridDouble.getNCols(HandleOutOfMemoryError);
+                int chunkNRows = gridDouble.getChunkNRows(HandleOutOfMemoryError);
+                int chunkNCols = gridDouble.getChunkNCols(HandleOutOfMemoryError);
+                long startRow;
+                long startCol;
+                long endRow;
+                long endCol;
+//                // Move in a chunk from the bottom left
+//                startRow = chunkNRows;
+//                startCol = chunkNCols;
+//                endRow = nRows - 1;
+//                endCol = nCols - 1;
+//                // Move in a chunk from the top right
+//                startRow = 0;
+//                startCol = 0;
+//                endRow = nRows - 1 - chunkNRows;
+//                endCol = nCols - 1 - chunkNCols;
+                // Move in a chunk from the bottom left and top right
+                startRow = chunkNRows;
+                startCol = chunkNCols;
+                endRow = nRows - 1 - chunkNRows;
+                endCol = nCols - 1 - chunkNCols;
+                g = (Grids_GridDouble) GridDoubleFactory.create(
+                        dir,
+                        gridDouble,
+                        startRow,//0,
+                        startCol,//0,
+                        endRow,
+                        endCol,
+                        HandleOutOfMemoryError);
+                gridDouble = g;
+                // Cache input
+                boolean swapToFileCache = true;
+                gridDouble.writeToFile(swapToFileCache,
+                        HandleOutOfMemoryError);
                 ge.getGrids().add(gridDouble);
                 System.out.println("<outputImage>");
                 System.out.println("outputDirectory " + outputDirectory);
-                gridDouble.setName(inputNameWithoutExtension, HandleOutOfMemoryError);
+                gridDouble.setName(
+                        inputNameWithoutExtension
+                        + "_" + startRow + "_" + "_" + startCol + "_"
+                        + "_" + endRow + "_" + "_" + endCol + "_",
+                        HandleOutOfMemoryError);
+                System.out.println("gridDouble " + gridDouble.toString(HandleOutOfMemoryError));
                 try {
                     outputImage(
                             gridDouble,

@@ -484,7 +484,7 @@ public class Grids_GridDouble
     /**
      * TODO: This still needs work. At the moment there is an assumption that
      * the two grids have the same frame of chunks.
-     * TODO: In any case the equivallent method in Grids_GridInt needs changing!
+     * TODO: In any case the equivalent method in Grids_GridInt needs changing!
      *
      * @param statistics
      * @param g
@@ -560,16 +560,25 @@ public class Grids_GridDouble
                             try {
                                 ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
                                 // Try to load chunk.
+                                chunkID = new Grids_2D_ID_int(
+                                        chunkRow - startChunkRow,
+                                        chunkCol - startChunkCol);
+                                ge.addToNotToSwapData(this, chunkID);
                                 gChunkID = new Grids_2D_ID_int(
                                         chunkRow,
                                         chunkCol);
                                 ge.addToNotToSwapData(g, gChunkID);
                                 gChunk = ((Grids_GridDouble) g).getGridChunk(gChunkID);
+                                gChunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
+                                for (cellRow = 0; cellRow < gChunkNRows; cellRow++) {
+                                    gRow = g.getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
+                                    row = gRow - startRow;
+                                    if (gRow >= startRow && gRow <= endRow) {
+                                        for (cellCol = 0; cellCol < gChunkNCols; cellCol++) {
+                                            gCol = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
+                                            col = gCol - startCol;
+                                            if (gCol >= startCol && gCol <= endCol) {
                                 // Initialise chunk if it does not exist
-                                chunkID = new Grids_2D_ID_int(
-                                        chunkRow - startChunkRow,
-                                        chunkCol - startChunkCol);
-                                ge.addToNotToSwapData(this, chunkID);
                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
                                     chunk = chunkFactory.createGridChunkDouble(
                                             this,
@@ -580,15 +589,6 @@ public class Grids_GridDouble
                                 } else {
                                     chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
                                 }
-                                gChunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
-                                for (cellRow = 0; cellRow < gChunkNRows; cellRow++) {
-                                    gRow = g.getRow(chunkRow, cellRow, chunkID, handleOutOfMemoryError);
-                                    row = gRow - startRow;
-                                    if (gRow >= startRow && gRow <= endRow) {
-                                        for (cellCol = 0; cellCol < gChunkNCols; cellCol++) {
-                                            gCol = g.getCol(chunkCol, cellCol, chunkID, handleOutOfMemoryError);
-                                            col = gCol - startCol;
-                                            if (gCol >= startCol && gCol <= endCol) {
                                                 gValue = grid.getCell(gChunk, cellRow, cellCol, handleOutOfMemoryError);
 //                                                gValue = grid.getCell(row, col);
                                                 // Initialise value

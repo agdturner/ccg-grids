@@ -1212,7 +1212,7 @@ public class Grids_Processor extends Grids_Object {
 //        System.out.println("NoDataValue " + result.getNoDataValue(handleOutOfMemoryError));
 //        System.out.println("r.getCell(0L, 0L) " + result.getCell(0L, 0L, handleOutOfMemoryError));
         result.setName(g.getName(handleOutOfMemoryError), handleOutOfMemoryError);
-//        System.out.println(result.toString(handleOutOfMemoryError));
+        System.out.println(result.toString(handleOutOfMemoryError));
         ge.getGrids().add(result);
         int chunkRow;
         int chunkCol;
