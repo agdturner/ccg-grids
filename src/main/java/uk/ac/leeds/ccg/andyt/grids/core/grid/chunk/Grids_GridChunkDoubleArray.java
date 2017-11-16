@@ -135,7 +135,15 @@ public class Grids_GridChunkDoubleArray
             int row,
             int col,
             double valueToSet) {
-        double oldValue = Data[row][col];
+        double oldValue;
+
+        oldValue = 0;
+        try {
+            oldValue = Data[row][col];
+        } catch (Exception e) {
+            int debug = 1;
+        }
+
         Data[row][col] = valueToSet;
         if (isSwapUpToDate()) {
             // Optimisation? Want a setCellFast method closer to initCell? 

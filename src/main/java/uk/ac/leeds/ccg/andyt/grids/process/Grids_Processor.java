@@ -1238,8 +1238,8 @@ public class Grids_Processor extends Grids_Object {
                         Grids_AbstractGridChunkDouble gridChunk;
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
-                        Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
+                        Grids_AbstractGridChunkDouble resultChunk;
+                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -1248,7 +1248,7 @@ public class Grids_Processor extends Grids_Object {
                                         cellCol,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
-                                    outputGridChunk.setCell(
+                                    resultChunk.setCell(
                                             cellRow,
                                             cellCol,
                                             min,
@@ -1276,8 +1276,8 @@ public class Grids_Processor extends Grids_Object {
                         Grids_AbstractGridChunkDouble gridChunk;
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
-                        Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
+                        Grids_AbstractGridChunkDouble resultChunk;
+                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
                                 chunkID, handleOutOfMemoryError);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -1286,7 +1286,7 @@ public class Grids_Processor extends Grids_Object {
                                         cellCol,
                                         handleOutOfMemoryError);
                                 if (value != noDataValue) {
-                                    outputGridChunk.setCell(
+                                    resultChunk.setCell(
                                             cellRow,
                                             cellCol,
                                             (((value - minGrid) / rangeGrid) * range) + min,
