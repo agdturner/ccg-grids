@@ -233,7 +233,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
         }
-        write(1, 1, gridImageArray, type, file, handleOutOfMemoryError);
+        write((int) ncols, (int) nrows, gridImageArray, type, file, handleOutOfMemoryError);
     }
 
     private void write(

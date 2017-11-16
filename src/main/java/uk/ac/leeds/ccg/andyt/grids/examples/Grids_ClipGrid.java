@@ -143,6 +143,11 @@ public class Grids_ClipGrid
                 long startCol;
                 long endRow;
                 long endCol;
+//                // Whole chunk
+//                startRow = 0;
+//                startCol = 0;
+//                endRow = nRows - 1;
+//                endCol = nCols - 1;
 //                // Move in a chunk from the bottom left
 //                startRow = chunkNRows;
 //                startCol = chunkNCols;
@@ -158,15 +163,20 @@ public class Grids_ClipGrid
                 startCol = chunkNCols + 10;
                 endRow = nRows - 1 - chunkNRows - 10;
                 endCol = nCols - 1 - chunkNCols - 10;
-                g = (Grids_GridDouble) GridDoubleFactory.create(
-                        dir,
-                        gridDouble,
-                        startRow,//0,
-                        startCol,//0,
-                        endRow,
-                        endCol,
-                        HandleOutOfMemoryError);
-                gridDouble = g;
+//                // Move in a chunk from the bottom left and top right
+//                startRow = chunkNRows + 5;
+//                startCol = chunkNCols + 50;
+//                endRow = nRows - 1 - chunkNRows - 5;
+//                endCol = nCols - 1 - chunkNCols - 50;
+//                g = (Grids_GridDouble) GridDoubleFactory.create(
+//                        dir,
+//                        gridDouble,
+//                        startRow,//0,
+//                        startCol,//0,
+//                        endRow,
+//                        endCol,
+//                        HandleOutOfMemoryError);
+//                gridDouble = g;
                 // Cache input
                 boolean swapToFileCache = true;
                 gridDouble.writeToFile(swapToFileCache,
