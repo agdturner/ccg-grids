@@ -87,9 +87,17 @@ public class Grids_ClipGrid
             Grids_Files gf;
             gf = ge.getFiles();
             File input;
+//            input = new File(
+//                    gf.getInputDataDir(),
+//                    "p15oct.asc");
+//            input = new File(
+//                    gf.getInputDataDir(),
+//                    "RADAR_UK_Composite_Highres_23_6.asc");
             input = new File(
                     gf.getInputDataDir(),
-                    "p15oct.asc");
+                    "2017-08-02RADAR_UK_Composite_Highres.asc");
+            
+            
             //C:\Users\geoagdt\src\grids\data\input
 
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
@@ -122,6 +130,9 @@ public class Grids_ClipGrid
                         dir,
                         input,
                         HandleOutOfMemoryError);
+//        System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
+//        System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
+        System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
                 // clip gridDouble
                 dir = new File(
                         ge.getFiles().getGeneratedGridDoubleDir(),

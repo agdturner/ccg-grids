@@ -1151,18 +1151,12 @@ public class Grids_Processor extends Grids_Object {
         try {
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             if (g instanceof Grids_GridDouble) {
-                return rescale((Grids_GridDouble) g,
-                        type,
-                        min,
-                        max);
+                return rescale((Grids_GridDouble) g, type, min, max);
             } else {
                 if (!(g instanceof Grids_GridInt)) {
                     throw new UnsupportedOperationException();
                 }
-                return rescale((Grids_GridInt) g,
-                        type,
-                        min,
-                        max);
+                return rescale((Grids_GridInt) g, type, min, max);
             }
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1171,12 +1165,7 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                return rescale(
-                        g,
-                        type,
-                        min,
-                        max,
-                        handleOutOfMemoryError);
+                return rescale(g, type, min, max, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -1220,8 +1209,10 @@ public class Grids_Processor extends Grids_Object {
         result = (Grids_GridDouble) GridDoubleFactory.create(
                 new File(Directory, "Rescaled"), g, 0, 0, nrows - 1, ncols - 1,
                 handleOutOfMemoryError);
+//        System.out.println("NoDataValue " + result.getNoDataValue(handleOutOfMemoryError));
+//        System.out.println("r.getCell(0L, 0L) " + result.getCell(0L, 0L, handleOutOfMemoryError));
         result.setName(g.getName(handleOutOfMemoryError), handleOutOfMemoryError);
-        System.out.println(result.toString(handleOutOfMemoryError));
+//        System.out.println(result.toString(handleOutOfMemoryError));
         ge.getGrids().add(result);
         int chunkRow;
         int chunkCol;
