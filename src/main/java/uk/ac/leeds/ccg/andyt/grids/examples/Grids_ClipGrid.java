@@ -154,10 +154,10 @@ public class Grids_ClipGrid
 //                endRow = nRows - 1 - chunkNRows;
 //                endCol = nCols - 1 - chunkNCols;
                 // Move in a chunk from the bottom left and top right
-                startRow = chunkNRows;
-                startCol = chunkNCols;
-                endRow = nRows - 1 - chunkNRows;
-                endCol = nCols - 1 - chunkNCols;
+                startRow = chunkNRows + 10;
+                startCol = chunkNCols + 10;
+                endRow = nRows - 1 - chunkNRows - 10;
+                endCol = nCols - 1 - chunkNCols - 10;
                 g = (Grids_GridDouble) GridDoubleFactory.create(
                         dir,
                         gridDouble,
