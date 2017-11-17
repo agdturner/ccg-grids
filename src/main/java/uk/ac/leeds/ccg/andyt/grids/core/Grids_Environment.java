@@ -323,7 +323,7 @@ public class Grids_Environment
         int l;
         for (k = -i; k <= i; k++) {
             chunkRow2 = chunkRow + k;
-            for (l = -j; l <= j; j++) {
+            for (l = -j; l <= j; l++) {
                 chunkCol2 = chunkRow + k;
                 if (g.isInGrid(chunkRow2, chunkCol2, HandleOutOfMemoryError)) {
                     chunkIDs.add(new Grids_2D_ID_int(chunkRow2, chunkCol2));
