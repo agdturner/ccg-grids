@@ -97,7 +97,7 @@ public class Grids_GridIntStatistics
         int value;
         int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         Grids_GridIntIterator ite;
-        ite = new Grids_GridIntIterator(g);
+        ite = g.iterator();
         while (ite.hasNext()) {
             value = (Integer) ite.next();
             if (value != noDataValue) {
@@ -142,11 +142,11 @@ public class Grids_GridIntStatistics
         }
         return Min;
     }
-    
+
     public void setMin(int min) {
         Min = min;
     }
-    
+
     /**
      * For returning the maximum of all data values.
      *
@@ -165,7 +165,7 @@ public class Grids_GridIntStatistics
     public void setMax(int max) {
         Max = max;
     }
-    
+
     @Override
     protected String getName() {
         return getClass().getName();
@@ -178,10 +178,10 @@ public class Grids_GridIntStatistics
     protected long getN() {
         long result = 0;
         Grids_GridInt g = getGrid();
-        Grids_GridIntIterator gridIntIterator;
-        gridIntIterator = new Grids_GridIntIterator(g);
+        Grids_GridIntIterator gIte;
+        gIte = g.iterator();
         Iterator<Grids_AbstractGridChunk> ite;
-        ite = gridIntIterator.getGridIterator();
+        ite = gIte.getGridIterator();
         Grids_AbstractGridChunkInt chunk;
         while (ite.hasNext()) {
             chunk = (Grids_AbstractGridChunkInt) ite.next();
@@ -234,15 +234,15 @@ public class Grids_GridIntStatistics
     protected BigDecimal getSum() {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridInt g = getGrid();
-        Grids_GridIntIterator gridIntIterator;
-        gridIntIterator = new Grids_GridIntIterator(g);
+        Grids_GridIntIterator gIte;
+        gIte = g.iterator();
         Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIterator;
-        chunkIterator = gridIntIterator.getChunkIterator();
-        Grids_AbstractGridChunkInt chunkDouble;
+        chunkIterator = gIte.getChunkIterator();
+        Grids_AbstractGridChunkInt chunk;
         while (chunkIterator.hasNext()) {
-            chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
+            chunk = (Grids_AbstractGridChunkInt) chunkIterator.next();
             result = result.add(
-                    chunkDouble.getSum(ge.HandleOutOfMemoryError));
+                    chunk.getSum(ge.HandleOutOfMemoryError));
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
@@ -259,32 +259,23 @@ public class Grids_GridIntStatistics
 
     @Override
     protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
-                BigDecimal stdev = BigDecimal.ZERO;
+        BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
         BigDecimal differenceFromMean;
-            Grids_GridInt g = (Grids_GridInt) Grid;
-            int value;
-            int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-            Grids_GridChunkInt chunk;
-            Grids_GridIntIterator ite;
-            Grids_GridChunkIntIterator ite2;
-            Grids_2D_ID_int chunkID;
-            ite = new Grids_GridIntIterator(g);
-            while (ite.hasNext()) {
-                chunk = (Grids_GridChunkInt) ite.next();
-                chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-                ge.addToNotToSwapData(g, chunkID);
-                ite2 = new Grids_GridChunkIntIterator(chunk);
-                while (ite2.hasNext()) {
-                    value = (Integer) ite2.next();
-                    if (value != noDataValue) {
-                        differenceFromMean = new BigDecimal(value).subtract(mean);
-                        stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
-                        dataValueCount = dataValueCount.add(BigDecimal.ONE);
-                    }
-                }
+        Grids_GridInt g = (Grids_GridInt) Grid;
+        int value;
+        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        Grids_GridIntIterator ite;
+        ite = g.iterator();
+        while (ite.hasNext()) {
+            value = (Integer) ite.next();
+            if (value != noDataValue) {
+                differenceFromMean = new BigDecimal(value).subtract(mean);
+                stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
+                dataValueCount = dataValueCount.add(BigDecimal.ONE);
             }
+        }
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }

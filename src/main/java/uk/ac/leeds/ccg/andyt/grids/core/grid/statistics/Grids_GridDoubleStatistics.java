@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator
  * standard deviation would always require going through all the data again if
  * the values have changed.)
  */
-public class Grids_GridDoubleStatistics 
+public class Grids_GridDoubleStatistics
         extends Grids_AbstractGridNumberStatistics
         implements Serializable {
 
@@ -77,8 +77,13 @@ public class Grids_GridDoubleStatistics
      */
     private void init() {
         //getGrid().initStatistics(this);
+        //super.init();
         Min = Double.MAX_VALUE;
         Max = -Double.MAX_VALUE;
+        N = 0;
+        Sum = BigDecimal.ZERO;
+        NMin = 0;
+        NMax = 0;
     }
 
     /**
@@ -97,12 +102,13 @@ public class Grids_GridDoubleStatistics
     @Override
     public void update() {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(ge.HandleOutOfMemoryError);
+        init();
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;
         double value;
         double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
         Grids_GridDoubleIterator ite;
-        ite = new Grids_GridDoubleIterator(g);
+        ite = g.iterator();
         while (ite.hasNext()) {
             value = (Double) ite.next();
             if (!Double.isNaN(value)) {
@@ -188,10 +194,10 @@ public class Grids_GridDoubleStatistics
     protected long getN() {
         long result = 0;
         Grids_GridDouble g = getGrid();
-        Grids_GridDoubleIterator gridDoubleIterator;
-        gridDoubleIterator = new Grids_GridDoubleIterator(g);
+        Grids_GridDoubleIterator gIte;
+        gIte = g.iterator();
         Iterator<Grids_AbstractGridChunk> ite;
-        ite = gridDoubleIterator.getGridIterator();
+        ite = gIte.getGridIterator();
         Grids_AbstractGridChunkDouble chunk;
         while (ite.hasNext()) {
             chunk = (Grids_AbstractGridChunkDouble) ite.next();
@@ -241,10 +247,10 @@ public class Grids_GridDoubleStatistics
     protected BigDecimal getSum() {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
-        Grids_GridDoubleIterator gridDoubleIterator;
-        gridDoubleIterator = new Grids_GridDoubleIterator(g);
+        Grids_GridDoubleIterator gIte;
+        gIte = g.iterator();
         Iterator<Grids_AbstractGridChunk> ite;
-        ite = gridDoubleIterator.getGridIterator();
+        ite = gIte.getGridIterator();
         Grids_AbstractGridChunkDouble chunk;
         while (ite.hasNext()) {
             chunk = (Grids_AbstractGridChunkDouble) ite.next();
@@ -275,23 +281,14 @@ public class Grids_GridDoubleStatistics
         Grids_GridDouble g = (Grids_GridDouble) Grid;
         double value;
         double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
-        Grids_GridChunkDouble chunk;
         Grids_GridDoubleIterator ite;
-        Grids_GridChunkDoubleIterator ite2;
-        Grids_2D_ID_int chunkID;
-        ite = new Grids_GridDoubleIterator(g);
+        ite = g.iterator();
         while (ite.hasNext()) {
-            chunk = (Grids_GridChunkDouble) ite.next();
-            chunkID = chunk.getChunkID(ge.HandleOutOfMemoryError);
-            ge.addToNotToSwapData(g, chunkID);
-            ite2 = new Grids_GridChunkDoubleIterator(chunk);
-            while (ite2.hasNext()) {
-                value = (Integer) ite2.next();
+                value = (Double) ite.next();
                 if (value != noDataValue) {
                     differenceFromMean = new BigDecimal(value).subtract(mean);
                     stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
                     dataValueCount = dataValueCount.add(BigDecimal.ONE);
-                }
             }
         }
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
