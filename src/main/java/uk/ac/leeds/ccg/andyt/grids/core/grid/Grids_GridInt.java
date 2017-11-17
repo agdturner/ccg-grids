@@ -35,6 +35,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFac
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
@@ -1130,6 +1132,42 @@ public class Grids_GridInt
         }
     }
 
+    /**
+     * Attempts to load into the memory cache the chunk with chunk ID chunkID.
+     *
+     * @param chunkID The chunk ID of the chunk to be restored.
+     */
+    @Override
+    protected void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
+        boolean isInCache = isInCache(chunkID);
+        if (!isInCache) {
+            File f = new File(getDirectory(),
+                    "" + chunkID.getRow() + "_" + chunkID.getCol());
+            Object o = Generic_StaticIO.readObject(f);
+            Grids_AbstractGridChunkInt chunk = null;
+            if (o.getClass() == Grids_GridChunkIntArray.class) {
+                Grids_GridChunkIntArray c;
+                c = (Grids_GridChunkIntArray) o;
+                chunk = c;
+            }
+            if (o.getClass() == Grids_GridChunkIntMap.class) {
+                Grids_GridChunkIntMap c;
+                c = (Grids_GridChunkIntMap) o;
+                chunk = c;
+            }
+            if (chunk != null) {
+                chunk.initGrid(this);
+                chunk.initChunkID(chunkID);
+                ChunkIDChunkMap.put(chunkID, chunk);
+                ge.setDataToSwap(true);
+                return;
+            }
+            System.err.println("Unrecognised type of chunk or null "
+                    + this.getClass().getName()
+                    + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
+        }
+    }
+    
     /**
      *
      * @param row

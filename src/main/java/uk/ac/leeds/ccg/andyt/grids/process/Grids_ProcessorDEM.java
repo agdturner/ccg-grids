@@ -2420,10 +2420,10 @@ public class Grids_ProcessorDEM
             ge.getGrids().add(g);
             if (gridDoubleFactory.getChunkNCols() != gridIntFactory.getChunkNCols()
                     || gridDoubleFactory.getChunkNRows() != gridIntFactory.getChunkNRows()) {
-                log("Warning! ( _Grid2DSquareCellDoubleFactory.getChunkNcols() "
-                        + "!= _Grid2DSquareCellIntFactory.getChunkNcols() || "
-                        + "_Grid2DSquareCellDoubleFactory.getChunkNrows() != "
-                        + "_Grid2DSquareCellIntFactory.getChunkNrows() )",
+                log("Warning! ((gridDoubleFactory.getChunkNcols() "
+                        + "!= gridIntFactory.getChunkNcols()) || "
+                        + "(gridDoubleFactory.getChunkNrows() != "
+                        + "gridIntFactory.getChunkNrows()))",
                         handleOutOfMemoryError);
             }
             Grids_AbstractGridNumber[] metrics1 = new Grids_AbstractGridNumber[65];

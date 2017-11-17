@@ -164,7 +164,7 @@ public class Grids_GridDoubleFactory
             boolean handleOutOfMemoryError) {
         return create(new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
-                DefaultGridChunkDoubleFactory,
+                GridChunkDoubleFactory,
                 nRows,
                 nCols,
                 dimensions,

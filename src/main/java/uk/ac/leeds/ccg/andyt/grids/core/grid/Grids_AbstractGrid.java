@@ -1,7 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Version 1.0 is to handle single variable 2DSquareCelled raster data.
+ * Copyright (C) 2005 Andy Turner, CCG, University of Leeds, UK.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
@@ -1964,12 +1977,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to File a seriailized version of a
-     * Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap. The first
-     * Grids_AbstractGridChunk attempted to be written is that with a chunk row
-     * index of 0, and a chunk column index of 0.
-     *
+     * Attempts to write to file a chunk in ChunkIDChunkMap. The chunks are iterated through in row major order.
+     * 
      * @return Grids_2D_ID_int of the Grids_AbstractGridChunk which was swapped
      * or null.
      */
@@ -2000,7 +2009,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
          * issue a warning and swap one that is in ge.getNotToSwapData() or
          * return null.
          */
-        System.out.println("Not managed to swap any chunk not in ge.getNotToSwapData()!!!");
+        System.out.println("Not managed to swap any chunk in grid as they are all in ge.getNotToSwapData()!!!");
         ite = ChunkIDChunkMap.keySet().iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
@@ -2091,13 +2100,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Attempts to write to file and clear from the cache a
-     * Grids_AbstractGridChunk in this. This is one of the lowest level memory
+     * chunk in this. This is one of the lowest level memory
      * handling operation of this class.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
-     * @return HashMap<Grids_AbstractGrid,ID> for accounting what was swapped.
+     * @return An account of what was swapped.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunk_AccountDetail(
             boolean handleOutOfMemoryError) {
@@ -2253,6 +2262,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return id;
     }
 
+    /**
+     * Swaps the chunk with chunkID to file.
+     * @param chunkID
+     * @param handleOutOfMemoryError 
+     */
     public void swapChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             swapChunk(chunkID);
@@ -2268,6 +2282,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
+    /**
+     * Swaps the chunk with chunkID to file.
+     * @param chunkID
+     */
     protected void swapChunk(Grids_2D_ID_int chunkID) {
         if (writeToFileChunk(chunkID)) {
             clearFromCacheChunk(chunkID);
@@ -2275,8 +2293,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache a
-     * Grids_AbstractGridChunk in this. This is one of the lowest level memory
+     * Attempts to write to file and clear from the cache any
+     * chunk in this. This is one of the lowest level memory
      * handling operation of this class.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
@@ -2348,7 +2366,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @return The Grids_2D_ID_int of Grids_AbstractGridChunk swapped or null.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunkExcept_AccountDetail(
+                Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkID);
@@ -2596,15 +2616,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Attempts to write to file and clear from the cache all
-     * Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int
-     * _ChunkID.
+     * chunks in this except that with chunk IDs in chunkIDs.
      *
      * @param chunkIDs HashSet of Grids_AbstractGridChunk.ChunkIDs not to be
      * swapped.
-     * @return A HashSet with the ChunkIDs of those Grids_AbstractGridChunk
-     * swapped.
+     * @return A map of those chunks swapped.
      */
-    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunksExcept_AccountDetail(
+    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunksExcept_AccountDetail(
             HashSet<Grids_2D_ID_int> chunkIDs) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
@@ -2628,10 +2647,46 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return result;
     }
 
-    public long swapChunkExcept_Account(
+    /**
+     * Attempt to swap to file a chunk in this grid except the chunk with chunkID.
+     * @param chunkID
+     * @param handleOutOfMemoryError
+     * @return 1L if a chunk was swapped and 0 otherwise.
+     */
+    public final long swapChunkExcept_Account(
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
-        int cri;
+        try {
+            long result = swapChunkExcept_Account(chunkID);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                long result = ge.swapChunkExcept_Account(this, chunkID, false);
+                if (result < 1L) {
+                    result = ge.swapChunkExcept_Account(this, chunkID, false);
+                    if (result < 1L) {
+                        throw e;
+                    }
+                }
+                result += ge.initMemoryReserve_Account(this, chunkID, handleOutOfMemoryError);
+                result += swapChunksExcept_Account(chunkID, handleOutOfMemoryError);
+                return result;
+            } else {
+                throw e;
+            }
+        }
+    }
+    
+     /**
+     * Attempt to swap to file a chunk in this grid except the chunk with chunkID.
+     * @param chunkID
+     * @return 1L if a chunk was swapped and 0 otherwise.
+     */
+    protected final long swapChunkExcept_Account(
+            Grids_2D_ID_int chunkID) {
+       int cri;
         int cci;
         Grids_2D_ID_int id2;
         for (cri = 0; cri < NChunkRows; cri++) {
@@ -2649,9 +2704,44 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return 0L;
     }
 
-    public long swapChunksExcept_Account(
+    /**
+     * Attempt to swap to file all chunks in this grid except the chunk with chunkID.
+     * @param chunkID
+     * @param handleOutOfMemoryError
+     * @return A count of the number of chunks swapped.
+     */
+    public final long swapChunksExcept_Account(
             Grids_2D_ID_int chunkID,
             boolean handleOutOfMemoryError) {
+        try {
+            long result = swapChunksExcept_Account(chunkID);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                long result = ge.swapChunkExcept_Account(this, chunkID, false);
+                if (result < 1L) {
+                    result = ge.swapChunkExcept_Account(this, chunkID, false);
+                    if (result < 1L) {
+                        throw e;
+                    }
+                }
+                result += ge.initMemoryReserve_Account(this, chunkID, handleOutOfMemoryError);
+                result += swapChunksExcept_Account(chunkID, handleOutOfMemoryError);
+                return result;
+            } else {
+                throw e;
+            }
+        }
+    }
+    
+     /**
+     * Attempt to swap to file all chunks in this grid except the chunk with chunkID.
+     * @param chunkID
+     * @return A count of the number of chunks swapped.
+     */
+    protected final long swapChunksExcept_Account(Grids_2D_ID_int chunkID) {
         long result = 0L;
         int cri;
         int cci;
@@ -2671,7 +2761,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return result;
     }
 
-    protected long swapChunksExcept_Account(HashSet<Grids_2D_ID_int> chunkIDs) {
+    protected final long swapChunksExcept_Account(HashSet<Grids_2D_ID_int> chunkIDs) {
         long result = 0L;
         int cri;
         int cci;
@@ -2689,6 +2779,32 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
         return result;
+    }
+
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunkExcept_AccountDetail(
+            HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+        try {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+            result = swapChunkExcept_AccountDetail(chunkIDs);
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+                result = swapChunkExcept_AccountDetail(chunkIDs);
+                if (result == null) {
+                    if (ge.swapChunk_Account(false) < 1L) {
+                        throw e;
+                    }
+                }
+                ge.initMemoryReserve(handleOutOfMemoryError);
+                return result;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -2737,8 +2853,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunks_AccountDetail(
-            boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunks_AccountDetail(            boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunks_AccountDetail();
@@ -2774,8 +2890,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      *
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunks_AccountDetail() {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result = new HashMap<>(1);
+    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunks_AccountDetail() {
+        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+        result = new HashMap<>(1);
         HashSet<Grids_2D_ID_int> chunkIDs = new HashSet<>();
         int cri;
         int cci;
@@ -2798,7 +2916,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to swap seriailsed version of all Grids_AbstractGridChunk from
+     * Attempts to swap serialised version of all Grids_AbstractGridChunk from
      * (cri0, cci0) to (cri1, cci1) in row major order. This involves writing
      * them to files and then clearing them from the cache.
      *
@@ -3003,73 +3121,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to load into the memory cache Grids_AbstractGridChunk with
-     * Grids_2D_ID_int equal to _ChunkID.
+     * Attempts to load into the memory cache the chunk with chunk ID chunkID.
      *
-     *
-     * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk to be
+     * @param chunkID The chunk ID of the chunk to be
      * restored.
      */
-    protected final void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
-        boolean isInCache = isInCache(chunkID);
-        if (!isInCache) {
-            File f = new File(this.getDirectory(), "" + chunkID.getRow() + "_" + chunkID.getCol());
-
-            System.out.println(f); // DEBUGGING CODE
-
-            Object o = Generic_StaticIO.readObject(f);
-
-            if (this instanceof Grids_GridInt) {
-                if (this.getClass() == Grids_GridInt.class) {
-                    Grids_AbstractGridChunkInt chunk = null;
-                    if (o.getClass() == Grids_GridChunkIntArray.class) {
-                        Grids_GridChunkIntArray c;
-                        c = (Grids_GridChunkIntArray) o;
-                        chunk = c;
-                    }
-                    if (o.getClass() == Grids_GridChunkIntMap.class) {
-                        Grids_GridChunkIntMap c;
-                        c = (Grids_GridChunkIntMap) o;
-                        chunk = c;
-                    }
-                    if (chunk != null) {
-                        chunk.initGrid(this);
-                        chunk.initChunkID(chunkID);
-                        ChunkIDChunkMap.put(chunkID, chunk);
-                        this.ge.setDataToSwap(true);
-                        return;
-                    }
-                    System.err.println("Unrecognised type of Grid2DSquareCellIntChunkAbstract or null " + this.getClass().getName() + ".loadIntoCacheChunk( ChunkID( " + chunkID.toString() + " ) )");
-                } else {
-                    Grids_AbstractGridChunkDouble chunk = null;
-                    if (o == null) {
-                        int debug = 1;
-                        System.out.println("No chunk loading from file " + f);
-                    }
-                    if (o.getClass() == Grids_GridChunkDoubleArray.class) {
-                        Grids_GridChunkDoubleArray c;
-                        c = (Grids_GridChunkDoubleArray) o;
-                        chunk = c;
-                    }
-                    if (o.getClass() == Grids_GridChunkDoubleMap.class) {
-                        Grids_GridChunkDoubleMap c;
-                        c = (Grids_GridChunkDoubleMap) o;
-                        chunk = c;
-                    }
-                    if (chunk != null) {
-                        chunk.initGrid(this);
-                        chunk.initChunkID(chunkID);
-                        ChunkIDChunkMap.put(chunkID, chunk);
-                        this.ge.setDataToSwap(true);
-                        return;
-                    }
-                    System.err.println("Unrecognised type of chunk or null " 
-                            + this.getClass().getName() 
-                            + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
-                }
-            }
-        }
-    }
+    protected abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
 
     /**
      * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids are

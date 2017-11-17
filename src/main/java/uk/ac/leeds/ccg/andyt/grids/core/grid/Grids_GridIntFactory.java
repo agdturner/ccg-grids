@@ -161,7 +161,7 @@ public class Grids_GridIntFactory
             boolean handleOutOfMemoryError) {
         return create(new Grids_GridIntStatisticsNotUpdated(ge),
                 directory,
-                DefaultGridChunkIntFactory,
+                GridChunkIntFactory,
                 nRows,
                 nCols,
                 dimensions,
