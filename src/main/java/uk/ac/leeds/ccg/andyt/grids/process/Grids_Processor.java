@@ -235,11 +235,11 @@ public class Grids_Processor extends Grids_Object {
     private void initChunkFactories() {
         GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
         GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
-        GridChunkIntFactory = new Grids_GridChunkIntFactory(0);
+        GridChunkIntFactory = new Grids_GridChunkIntFactory(Integer.MIN_VALUE);
         DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(0.0d);
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(-Double.MAX_VALUE);
         DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
     }
 
