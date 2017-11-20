@@ -243,10 +243,10 @@ public class Grids_GridDoubleTest {
         BigDecimal cellsize = BigDecimal.ONE;
         Grids_Dimensions result;
         BigDecimal xMin = BigDecimal.ONE;
-        BigDecimal yMin = BigDecimal.ONE;
         BigDecimal xMax = new BigDecimal(nCols).multiply(cellsize);
+        BigDecimal yMin = BigDecimal.ONE;
         BigDecimal yMax = new BigDecimal(nRows).multiply(cellsize);
-        result = new Grids_Dimensions(xMin, xMax, yMin, yMax, yMin);
+        result = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
         return result;
     }
 
