@@ -39,25 +39,25 @@ public class Grids_Dimensions implements Serializable {
 
     public Grids_Dimensions(int nRows, int nCols) {
         this(BigDecimal.ZERO,
-                new BigDecimal(nRows),
-                BigDecimal.ZERO,
                 new BigDecimal(nCols),
+                BigDecimal.ZERO,
+                new BigDecimal(nRows),
                 BigDecimal.ONE);
     }
     
     public Grids_Dimensions(long nRows, long nCols) {
         this(BigDecimal.ZERO,
-                BigDecimal.valueOf(nRows),
-                BigDecimal.ZERO,
                 BigDecimal.valueOf(nCols),
+                BigDecimal.ZERO,
+                BigDecimal.valueOf(nRows),
                 BigDecimal.ONE);
     }
 
     public Grids_Dimensions(BigDecimal width, BigDecimal height) {
         this(BigDecimal.ZERO,
-                height,
-                BigDecimal.ZERO,
                 width,
+                BigDecimal.ZERO,
+                height,
                 BigDecimal.ONE);
     }
     
@@ -77,10 +77,10 @@ public class Grids_Dimensions implements Serializable {
             BigDecimal yMin,
             BigDecimal yMax,
             BigDecimal cellsize) {
-        this.XMax = xMax;
         this.XMin = xMin;
-        this.YMax = yMax;
+        this.XMax = xMax;
         this.YMin = yMin;
+        this.YMax = yMax;
         Cellsize = cellsize;
         Width = XMax.subtract(XMin);
         Height = YMax.subtract(YMin);

@@ -72,7 +72,7 @@ public class Grids_GridIntFactory
         super(ge, directory, 
                 //ge.getFiles().getGeneratedGridIntFactoryDir(),
                 chunkNRows, chunkNCols,
-                new Grids_Dimensions(chunkNRows, chunkNCols));
+                null);
         GridChunkIntFactory = gridChunkIntFactory;
         DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         NoDataValue = Integer.MIN_VALUE;

@@ -102,7 +102,12 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param chunkNRows
      */
     protected final void getDimensions(int chunkNCols, int chunkNRows) {
-        Dimensions = new Grids_Dimensions(new BigDecimal(0L), new BigDecimal(0L), new BigDecimal(chunkNCols), new BigDecimal(chunkNRows), new BigDecimal(1L));
+        Dimensions = new Grids_Dimensions(
+                new BigDecimal(0L), 
+                new BigDecimal(chunkNCols),
+                new BigDecimal(0L),
+                new BigDecimal(chunkNRows),
+                new BigDecimal(1L));
     }
 
     /**
@@ -120,7 +125,12 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
         cellsize = Dimensions.getCellsize();
         BigDecimal xMax = Dimensions.getXMin().add(new BigDecimal(nCols).multiply(cellsize));
         BigDecimal yMax = Dimensions.getYMin().add(new BigDecimal(nRows).multiply(cellsize));
-        result = new Grids_Dimensions(Dimensions.getXMin(), Dimensions.getYMin(), xMax, yMax, cellsize);
+        result = new Grids_Dimensions(
+                Dimensions.getXMin(), 
+                xMax,
+                Dimensions.getYMin(), 
+                yMax, 
+                cellsize);
         return result;
     }
     

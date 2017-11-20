@@ -4195,8 +4195,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRow
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a double.
+     * @return y-coordinate of the centroid for cell given by cellRow, chunkRow.
      * @param cellRow the chunk cell column index thats centroid
      * y-coordinate is returned.
      */
@@ -4531,11 +4530,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             BigDecimal halfCellsize, BigDecimal x, BigDecimal y) {
         Grids_Dimensions result;
         result = new Grids_Dimensions(
-                getCellsize(false),
                 x.subtract(halfCellsize),
-                y.subtract(halfCellsize),
                 x.add(halfCellsize),
-                y.add(halfCellsize));
+                y.subtract(halfCellsize),
+                y.add(halfCellsize),
+                        getCellsize(false));
         return result;
     }
 

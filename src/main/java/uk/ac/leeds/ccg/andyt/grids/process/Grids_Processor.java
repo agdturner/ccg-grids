@@ -2454,8 +2454,8 @@ public class Grids_Processor extends Grids_Object {
             BigDecimal resultYMax = resultYMin.add(resultHeight);
             Grids_Dimensions resultDimensions = new Grids_Dimensions(
                     resultXMin,
-                    resultYMin,
                     resultXMax,
+                    resultYMin,
                     resultYMax,
                     resultCellsize);
             // Initialise result

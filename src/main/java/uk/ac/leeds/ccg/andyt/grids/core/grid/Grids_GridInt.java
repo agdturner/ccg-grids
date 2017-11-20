@@ -35,8 +35,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFac
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
@@ -356,7 +354,7 @@ public class Grids_GridInt
                             -Double.MAX_VALUE,
                             ChunkNRows,
                             ChunkNCols,
-                            Dimensions,
+                            null,
                             new Grids_GridDoubleStatisticsNotUpdated(ge));
                     Grids_GridDouble gridDouble;
                     gridDouble = (Grids_GridDouble) gdf.create(
@@ -874,7 +872,7 @@ public class Grids_GridInt
                         noDataValue,
                         chunkNRows,
                         chunkNCols,
-                        new Grids_Dimensions(NChunkRows * chunkNRows, NChunkCols * chunkNRows),
+                        null,
                         statistics);
                 File thisFile = new File(
                         gridFile,
@@ -1021,7 +1019,7 @@ public class Grids_GridInt
                         gp.GridIntFactory.NoDataValue,
                         gp.GridIntFactory.ChunkNRows,
                         gp.GridIntFactory.ChunkNCols,
-                        new Grids_Dimensions(NChunkRows, NChunkCols),
+                        null,
                         statistics);
                 File thisFile = new File(
                         gridFile,

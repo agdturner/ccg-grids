@@ -73,7 +73,7 @@ public class Grids_GridDoubleFactory
             int chunkNCols) {
         super(ge, directory, //ge.getFiles().getGeneratedGridDoubleFactoryDir(),
                 chunkNRows, chunkNCols,
-                new Grids_Dimensions(chunkNRows, chunkNCols));
+                null);
         GridChunkDoubleFactory = gridChunkDoubleFactory;
         DefaultGridChunkDoubleFactory = defaultGridChunkDoubleFactory;
         Statistics = new Grids_GridDoubleStatisticsNotUpdated(ge);

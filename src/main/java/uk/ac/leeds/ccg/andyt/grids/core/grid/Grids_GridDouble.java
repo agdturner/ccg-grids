@@ -812,7 +812,7 @@ public class Grids_GridDouble
                         noDataValue,
                         chunkNRows,
                         chunkNCols,
-                        new Grids_Dimensions(NChunkRows, NChunkCols),
+                        null,
                         statistics);
                 File thisFile = new File(
                         gridFile,
@@ -957,7 +957,7 @@ public class Grids_GridDouble
                         gp.GridIntFactory.NoDataValue,
                         gp.GridDoubleFactory.ChunkNRows,
                         gp.GridDoubleFactory.ChunkNCols,
-                        new Grids_Dimensions(NChunkRows, NChunkCols),
+                        null,
                         statistics);
                 File thisFile = new File(
                         gridFile,
