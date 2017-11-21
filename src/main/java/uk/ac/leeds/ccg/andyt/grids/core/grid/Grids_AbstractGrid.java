@@ -38,16 +38,9 @@ import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -3023,7 +3016,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * see if it is swapToFiled.
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
-        return getChunkIDChunkMap().containsKey(chunkID);
+        return ChunkIDChunkMap.get(chunkID) != null;
+//        return getChunkIDChunkMap().containsKey(chunkID);
     }
 
     /**
@@ -3060,7 +3054,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * cleared.
      */
     protected final void clearFromCacheChunk(Grids_2D_ID_int chunkID) {
-        getChunkIDChunkMap().remove(chunkID);
+        ChunkIDChunkMap.replace(chunkID, null);
         System.gc();
     }
 
@@ -3092,7 +3086,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
      */
     protected final void clearFromCacheChunks() {
-        ChunkIDChunkMap = new TreeMap<>();
+        Iterator<Grids_2D_ID_int> ite;
+        ite = ChunkIDChunkMap.keySet().iterator();
+        while (ite.hasNext()) {
+            ChunkIDChunkMap.replace(ite.next(), null);
+        }
         System.gc();
     }
 
