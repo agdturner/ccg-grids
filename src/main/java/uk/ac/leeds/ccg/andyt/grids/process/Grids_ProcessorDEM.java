@@ -2933,7 +2933,7 @@ public class Grids_ProcessorDEM
                     }
                 }
             } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridInt.class )
+                // (g.getClass() == Grids_GridInt.class)
                 Grids_GridInt gridInt = (Grids_GridInt) g;
                 int noDataValue = gridInt.getNoDataValue(handleOutOfMemoryError);
                 int height;

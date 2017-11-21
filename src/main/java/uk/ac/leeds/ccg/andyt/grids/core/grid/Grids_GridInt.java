@@ -370,8 +370,8 @@ public class Grids_GridInt
                             Integer.MIN_VALUE,
                             gridDouble.ChunkNRows,
                             gridDouble.ChunkNCols,
-                            gridDouble.Dimensions,
-                            Statistics);
+                            null,
+                            new Grids_GridIntStatisticsNotUpdated(ge));
                     Grids_GridInt gridInt = (Grids_GridInt) gif.create(gridDouble);
                     boolean initTransientFields = false;
                     init(gridInt, initTransientFields);
@@ -452,11 +452,10 @@ public class Grids_GridInt
             int chunkRow;
             int chunkCol;
             boolean isLoadedChunk = false;
-            int int_0 = 0;
             Grids_2D_ID_int chunkID;
             Grids_AbstractGridChunkInt chunk;
-            for (chunkRow = int_0; chunkRow < NChunkRows; chunkRow++) {
-                for (chunkCol = int_0; chunkCol < NChunkCols; chunkCol++) {
+            for (chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
+                for (chunkCol = 0; chunkCol < NChunkCols; chunkCol++) {
                     do {
                         try {
                             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
@@ -546,7 +545,7 @@ public class Grids_GridInt
         try {
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Statistics = statistics;
-            statistics.init(this);
+            Statistics.init(this);
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
             NRows = endRow - startRow + 1L;
@@ -855,7 +854,7 @@ public class Grids_GridInt
             boolean handleOutOfMemoryError) {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         Statistics = statistics;
-        statistics.init(this);
+        Statistics.init(this);
         // Set to report every 10%
         int reportN;
         reportN = (int) (endRowIndex - startRowIndex) / 10;
@@ -1003,7 +1002,7 @@ public class Grids_GridInt
             boolean handleOutOfMemoryError) {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         Statistics = statistics;
-        statistics.init(this);
+        Statistics.init(this);
         // For reporting
         int reportN;
         Grids_Processor gp;
@@ -1039,7 +1038,7 @@ public class Grids_GridInt
             Name = Directory.getName();
             ChunkIDChunkMap = new TreeMap<>();
             Statistics = statistics;
-            statistics.Grid = this;
+            Statistics.init(this);
             String filename = gridFile.getName();
             int value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {

@@ -365,7 +365,7 @@ public class Grids_GridDouble
                             gridInt.ChunkNRows,
                             gridInt.ChunkNCols,
                             gridInt.Dimensions,
-                            Statistics);
+                            new Grids_GridDoubleStatisticsNotUpdated(ge));
                     Grids_GridDouble gridDouble = (Grids_GridDouble) gdf.create(gridInt);
                     boolean initTransientFields = false;
                     init(gridDouble, initTransientFields);
@@ -412,7 +412,7 @@ public class Grids_GridDouble
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Directory = directory;
             Statistics = statistics;
-            statistics.Grid = this;
+            Statistics.init(this);
             Directory = directory;
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
@@ -510,7 +510,7 @@ public class Grids_GridDouble
         try {
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             Statistics = statistics;
-            statistics.init(this);
+            Statistics.init(this);
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
             NRows = endRow - startRow + 1L;
@@ -795,7 +795,7 @@ public class Grids_GridDouble
             boolean handleOutOfMemoryError) {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         Statistics = statistics;
-        statistics.init(this);
+        Statistics.init(this);
         // Set to report every 10%
         int reportN;
         reportN = (int) (endRowIndex - startRowIndex) / 10;
@@ -850,7 +850,7 @@ public class Grids_GridDouble
             initNChunkCols();
             ChunkIDChunkMap = new TreeMap<>();
             Statistics = statistics;
-            statistics.Grid = this;
+            Statistics.Grid = this;
             String filename = gridFile.getName();
             double value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
@@ -941,7 +941,7 @@ public class Grids_GridDouble
             boolean handleOutOfMemoryError) {
         ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         Statistics = statistics;
-        statistics.init(this);
+        Statistics.init(this);
         // Set to report every 10%
         int reportN;
         Grids_Processor gp;
@@ -977,7 +977,7 @@ public class Grids_GridDouble
             Name = Directory.getName();
             ChunkIDChunkMap = new TreeMap<>();
             Statistics = statistics;
-            statistics.Grid = this;
+            Statistics.init(this);
             String filename = gridFile.getName();
             double value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {

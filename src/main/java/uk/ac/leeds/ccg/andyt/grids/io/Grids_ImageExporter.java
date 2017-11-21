@@ -61,7 +61,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
     /**
      * Writes this grid as a Grey scale image
      *
-     * @param grid
+     * @param g
      * @param processor
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png",
@@ -69,33 +69,23 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param handleOutOfMemoryError
      */
     public void toGreyScaleImage(
-            Grids_AbstractGridNumber grid,
+            Grids_AbstractGridNumber g,
             Grids_Processor processor,
             File file,
             String type,
             boolean handleOutOfMemoryError) {
         try {
-            toGreyScaleImage(
-                    grid,
-                    processor,
-                    file,
-                    type);
+            toGreyScaleImage(g, processor, file, type);
             ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                long swap = ge.swapChunks_Account(
-                        handleOutOfMemoryError);
+                long swap = ge.swapChunks_Account(                        handleOutOfMemoryError);
                 if (swap < 1L) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                toGreyScaleImage(
-                        grid,
-                        processor,
-                        file,
-                        type,
-                        handleOutOfMemoryError);
+                toGreyScaleImage(g, processor, file, type, handleOutOfMemoryError);
             } else {
                 throw e;
             }
