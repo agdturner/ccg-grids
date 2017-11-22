@@ -1188,11 +1188,15 @@ public class Grids_GridDouble
     /**
      * If newValue and oldValue are the same then statistics won't change. A
      * test might be appropriate in set cell so that this method is not called.
+     * 
+     * WARNING! This should not be public, please don't use it. The reason it
+     * has been made public is to allow access from chunk setCell methods which
+     * may be accessed directly instead of via setCell in this class.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
      */
-    private void upDateGridStatistics(
+    protected void upDateGridStatistics(
             double newValue,
             double oldValue) {
         if (Statistics.getClass() == Grids_GridDoubleStatistics.class) {
@@ -1840,7 +1844,7 @@ public class Grids_GridDouble
         }
     }
 
-    private void updateStatistics(double value) {
+    protected void updateStatistics(double value) {
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             boolean h = ge.HandleOutOfMemoryError;
             BigDecimal valueBD = new BigDecimal(value);

@@ -93,8 +93,7 @@ public abstract class Grids_AbstractGridChunkInt
      * cell row chunkCol, as a double.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -137,8 +136,7 @@ public abstract class Grids_AbstractGridChunkInt
      * cell col chunkCol as a int.
      *
      * @param row The row index of the cell w.r.t. the origin of this chunk
-     * @param col The column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col The column index of the cell w.r.t. the origin of this chunk
      * @return
      */
     protected abstract int getCell(
@@ -149,8 +147,7 @@ public abstract class Grids_AbstractGridChunkInt
      * Initialises the value at position given by: row, col.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToInitialise the value with which the cell is initialised
      */
     public abstract void initCell(
@@ -159,12 +156,16 @@ public abstract class Grids_AbstractGridChunkInt
             int valueToInitialise);
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol and sets it to valueToSet
+     * Returns the value at position given by: row, col and sets it to
+     * valueToSet.
+     *
+     * Warning! Please do not use this, but use grid.setCell(chunk,row, col,
+     * valueToSet,boolean) instead to ensure grid statistics do not go awry.
+     * Ideally this would have some other level of access so that it was not
+     * public!
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToSet the value the cell is to be set to
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -206,8 +207,7 @@ public abstract class Grids_AbstractGridChunkInt
      * cell row chunkCol and sets it to valueToSet
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToSet the value the cell is to be set to
      * @return
      */

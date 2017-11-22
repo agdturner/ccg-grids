@@ -55,10 +55,9 @@ public abstract class Grids_AbstractGridChunkDouble
 
     /**
      * Returns the value at position given by: row, col.
-     * 
+     *
      * @param row the row index of the cell w.r.t. the origin of this chunk.
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk.
+     * @param col the column index of the cell w.r.t. the origin of this chunk.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -230,8 +229,13 @@ public abstract class Grids_AbstractGridChunkDouble
             double valueToInitialise);
 
     /**
-     * Returns the value at position given by: row, col. sets it to
-     * valueToSet
+     * Returns the value at position given by: row, col and sets it to
+     * valueToSet.
+     *
+     * Warning! Please do not use this, but use grid.setCell(chunk,row, col,
+     * valueToSet,boolean) instead to ensure grid statistics do not go awry.
+     * Ideally this would have some other level of access so that it was not
+     * public!
      *
      * @param row the row of the chunk.
      * @param col the column of the chunk.
@@ -248,6 +252,7 @@ public abstract class Grids_AbstractGridChunkDouble
             double valueToSet,
             boolean handleOutOfMemoryError) {
         try {
+            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
             double result = setCell(
                     row,
                     col,
@@ -340,9 +345,9 @@ public abstract class Grids_AbstractGridChunkDouble
             for (col = 0; col < ncols; col++) {
                 value = getCell(row, col);
                 if (Double.isNaN(value) && Double.isFinite(value)) {
-                if (value != noDataValue) {
-                    sum = sum.add(new BigDecimal(value));
-                }
+                    if (value != noDataValue) {
+                        sum = sum.add(new BigDecimal(value));
+                    }
                 }
             }
         }
@@ -376,7 +381,7 @@ public abstract class Grids_AbstractGridChunkDouble
         int count = 0;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                array[count] = getCell(                        row,                        col);
+                array[count] = getCell(row, col);
                 count++;
             }
         }
@@ -434,7 +439,7 @@ public abstract class Grids_AbstractGridChunkDouble
         double value;
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                value = getCell(                        row,                        col);
+                value = getCell(row, col);
                 if (value != noDataValue) {
                     array[count] = value;
                     count++;

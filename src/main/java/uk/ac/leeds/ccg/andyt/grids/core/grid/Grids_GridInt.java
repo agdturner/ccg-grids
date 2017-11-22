@@ -1243,13 +1243,15 @@ public class Grids_GridInt
     /**
      * If newValue and oldValue are the same then statistics won't change. A
      * test might be appropriate in set cell so that this method is not called.
-     * Also want to keep track if underlying data has changed for getting
-     * statistics of Grids_GridStatisticsNotUpdatedAsDataChanged type.
+     *
+     * WARNING! This should not be public, please don't use it. The reason it
+     * has been made public is to allow access from chunk setCell methods which
+     * may be accessed directly instead of via setCell in this class.
      *
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
      */
-    private void upDateGridStatistics(
+    protected void upDateGridStatistics(
             int newValue,
             int oldValue) {
         if (Statistics.getClass() == Grids_GridIntStatistics.class) {
@@ -1897,7 +1899,7 @@ public class Grids_GridInt
         }
     }
 
-    private void updateStatistics(int value) {
+    protected void updateStatistics(int value) {
         boolean h = ge.HandleOutOfMemoryError;
         BigDecimal valueBD = new BigDecimal(value);
         Statistics.setN(Statistics.getN(h) + 1);
