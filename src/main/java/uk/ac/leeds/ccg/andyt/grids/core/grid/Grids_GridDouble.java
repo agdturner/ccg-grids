@@ -1096,6 +1096,7 @@ public class Grids_GridDouble
                 chunk = c;
             }
             if (chunk != null) {
+                chunk.ge = ge;
                 chunk.initGrid(this);
                 chunk.initChunkID(chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);

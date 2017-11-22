@@ -530,7 +530,7 @@ public class Grids_GridInt
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-        private void init(
+    private void init(
             Grids_GridIntStatistics statistics,
             Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkIntFactory chunkFactory,
@@ -640,12 +640,12 @@ public class Grids_GridInt
                                                                 noDataValue);
                                                     } else {
                                                         if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
-                                                                initCell(
-                                                                        chunk,
-                                                                        chunkID,
-                                                                        row,
-                                                                        col,
-                                                                        (int) gValue);
+                                                            initCell(
+                                                                    chunk,
+                                                                    chunkID,
+                                                                    row,
+                                                                    col,
+                                                                    (int) gValue);
                                                         } else {
                                                             initCell(
                                                                     chunk,
@@ -655,7 +655,7 @@ public class Grids_GridInt
                                                                     noDataValue);
                                                         }
                                                     }
-                                                    ge.removeFromNotToSwapData(this, chunkID);                                                 
+                                                    ge.removeFromNotToSwapData(this, chunkID);
                                                 }
                                             }
                                         }
@@ -747,12 +747,12 @@ public class Grids_GridInt
                                                                 noDataValue);
                                                     } else {
                                                         if (!Double.isNaN(gValue) && Double.isFinite(gValue)) {
-                                                                initCell(
-                                                                        chunk,
-                                                                        chunkID,
-                                                                        row,
-                                                                        col,
-                                                                        gValue);
+                                                            initCell(
+                                                                    chunk,
+                                                                    chunkID,
+                                                                    row,
+                                                                    col,
+                                                                    gValue);
                                                         } else {
                                                             initCell(
                                                                     chunk,
@@ -762,7 +762,7 @@ public class Grids_GridInt
                                                                     noDataValue);
                                                         }
                                                     }
-                                                    ge.removeFromNotToSwapData(this, chunkID);                                                 
+                                                    ge.removeFromNotToSwapData(this, chunkID);
                                                 }
                                             }
                                         }
@@ -1153,6 +1153,7 @@ public class Grids_GridInt
                 chunk = c;
             }
             if (chunk != null) {
+                chunk.ge = ge;
                 chunk.initGrid(this);
                 chunk.initChunkID(chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);
@@ -1164,7 +1165,7 @@ public class Grids_GridInt
                     + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
         }
     }
-    
+
     /**
      *
      * @param row
