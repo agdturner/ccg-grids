@@ -41,6 +41,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
@@ -1901,8 +1903,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write this instance to Files located in the _Directory
-     * returned by getDirectory(). Chunks are all written but no data is swapped
+     * Attempts to write this instance to Files located in the Directory
+     * returned by getDirectory().
      *
      * @param swapToFileCache Iff true then
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
@@ -1987,14 +1989,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ite = ChunkIDChunkMap.keySet().iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
-            if (notToSwapData.containsKey(this)) {
-                if (!notToSwapData.get(this).contains(chunkID)) {
+            if (!isChunkSingleValueChunk(chunkID)) {
+                if (notToSwapData.containsKey(this)) {
+                    if (!notToSwapData.get(this).contains(chunkID)) {
+                        writeToFileChunk(chunkID);
+                        return chunkID;
+                    }
+                } else {
                     writeToFileChunk(chunkID);
                     return chunkID;
                 }
-            } else {
-                writeToFileChunk(chunkID);
-                return chunkID;
             }
         }
         /**
@@ -2006,16 +2010,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ite = ChunkIDChunkMap.keySet().iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
-            writeToFileChunk(chunkID);
-            return chunkID;
+            if (!isChunkSingleValueChunk(chunkID)) {
+                writeToFileChunk(chunkID);
+                return chunkID;
+            }
         }
         return null;
     }
 
     /**
-     * Attempts to write to File a seriailized version of the
-     * Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap given by _ChunkID.
+     * Attempts to write to File a serialised version of the chunk with chunkID.
      *
      * @param chunkID The ID of the Chunk. to be written.
      * @return True if Grids_AbstractGridChunk on file is up to date.
@@ -2052,8 +2056,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to File serialised versions of all
-     * Grids_AbstractGridChunk in ChunkIDChunkMap.
+     * Attempts to write to File serialised versions of all chunks in
+     * ChunkIDChunkMap that are not single valued chunks.
      */
     protected final void writeToFileChunks() {
         Iterator ite;
@@ -2061,8 +2065,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            if (isInCache(chunkID)) {
-                writeToFileChunk(chunkID);
+            if (isWorthSwapping(chunkID)) {
+                    writeToFileChunk(chunkID);
             }
         }
     }
@@ -2073,19 +2077,19 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that have ID equal to
      * those in _ChunkIDs.
      *
-     * @param a_ChunkID_HashSet A HashSet containing the Grids_2D_ID_int of the
+     * @param chunkIDs A HashSet containing the Grids_2D_ID_int of the
      * Grids_AbstractGridChunk to be written to file.
      * @param handleOutOfMemoryError
      */
     public final void writeToFileChunks(
-            HashSet<Grids_2D_ID_int> a_ChunkID_HashSet,
+            HashSet<Grids_2D_ID_int> chunkIDs,
             boolean handleOutOfMemoryError) {
         Iterator<Grids_2D_ID_int> ite;
-        ite = a_ChunkID_HashSet.iterator();
+        ite = chunkIDs.iterator();
         Grids_2D_ID_int id;
         while (ite.hasNext()) {
             id = ite.next();
-            if (isInCache(id)) {
+            if (isWorthSwapping(id)) {
                 writeToFileChunk(id);
             }
         }
@@ -2133,10 +2137,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         Grids_2D_ID_int chunkID = writeToFileChunk();
-        clearFromCacheChunk(chunkID);
-        HashSet<Grids_2D_ID_int> chunks = new HashSet<>(1);
-        chunks.add(chunkID);
-        result.put(this, chunks);
+        if (chunkID != null) {
+            HashSet<Grids_2D_ID_int> chunks = new HashSet<>(1);
+            clearFromCacheChunk(chunkID);
+            chunks.add(chunkID);
+            result.put(this, chunks);
+        }
         return result;
     }
 
@@ -2237,21 +2243,33 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected Grids_2D_ID_int swapChunkExcept_AccountChunk(
             HashSet<Grids_2D_ID_int> chunkIDs) {
         Grids_2D_ID_int id = null;
-        int cri;
-        int cci;
-        for (cri = 0; cri < NChunkRows; cri++) {
-            for (cci = 0; cci < NChunkCols; cci++) {
-                id = new Grids_2D_ID_int(cri, cci);
+        int chunkRow;
+        int chunkCol;
+        for (chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
+            for (chunkCol = 0; chunkCol < NChunkCols; chunkCol++) {
+                id = new Grids_2D_ID_int(chunkRow, chunkCol);
                 if (!chunkIDs.contains(id)) {
-                    if (isInCache(id)) {
-                        writeToFileChunk(id);
-                        clearFromCacheChunk(id);
-                        return id;
+                    if (isWorthSwapping(id)) {
+                            writeToFileChunk(id);
+                            clearFromCacheChunk(id);
+                            return id;
                     }
                 }
             }
         }
         return id;
+    }
+
+    /**
+     * Returns true if chunk is a single value (which tends not to be worth
+     * swapping).
+     *
+     * @param chunkID
+     * @return
+     */
+    public boolean isChunkSingleValueChunk(Grids_2D_ID_int chunkID) {
+        return ChunkIDChunkMap.get(chunkID) instanceof Grids_GridChunkDouble
+                || ChunkIDChunkMap.get(chunkID) instanceof Grids_GridChunkInt;
     }
 
     /**
@@ -2389,8 +2407,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache a
-     * chunk in this._AbstractGrid2DSquareCell_HashSet.
+     * Attempts to write to file and clear from the cache a chunk in
+     * this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param chunkID
      * @return The Grids_2D_ID_int of Grids_AbstractGridChunk swapped or null.
@@ -2406,7 +2424,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 bid = new Grids_2D_ID_int(cri, cci);
                 if (!bid.equals(chunkID)) {
-                    if (isInCache(bid)) {
+                    if (isWorthSwapping(bid)) {
                         writeToFileChunk(bid);
                         clearFromCacheChunk(bid);
                         HashSet<Grids_2D_ID_int> chunks;
@@ -2455,7 +2473,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 result = new Grids_2D_ID_int(cri, cci);
                 if (!result.equals(chunkID)) {
-                    if (isInCache(result)) {
+                    if (isWorthSwapping(result)) {
                         writeToFileChunk(result);
                         clearFromCacheChunk(result);
                         return result;
@@ -2518,18 +2536,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) {
-        // Using default as not sure if what to use as initialCapacity for result...
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         HashSet<Grids_2D_ID_int> chunksSwapped = new HashSet<>();
-        int cri;
-        int cci;
+        int chunkRow;
+        int chunkCol;
         Grids_2D_ID_int chunkIDToSwap;
-        for (cri = 0; cri < NChunkRows; cri++) {
-            for (cci = 0; cci < NChunkCols; cci++) {
-                chunkIDToSwap = new Grids_2D_ID_int(cri, cci);
+        for (chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
+            for (chunkCol = 0; chunkCol < NChunkCols; chunkCol++) {
+                chunkIDToSwap = new Grids_2D_ID_int(chunkRow, chunkCol);
                 if (!chunkID.equals(chunkIDToSwap)) {
-                    if (isInCache(chunkIDToSwap)) {
+                    if (isWorthSwapping(chunkIDToSwap)) {
                         writeToFileChunk(chunkIDToSwap);
                         clearFromCacheChunk(chunkIDToSwap);
                         chunksSwapped.add(chunkIDToSwap);
@@ -2563,7 +2580,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         for (cri = 0; cri < NChunkRows; cri++) {
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
-                if (isInCache(chunkID)) {
+                if (isWorthSwapping(chunkID)) {
                     writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                 }
@@ -2628,7 +2645,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunkIDs.contains(chunkID)) {
-                    if (isInCache(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
                         writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         chunkIDs2.add(chunkID);
@@ -2690,7 +2707,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 id2 = new Grids_2D_ID_int(cri, cci);
                 if (!chunkID.equals(id2)) {
-                    if (isInCache(id2)) {
+                    if (isWorthSwapping(id2)) {
                         writeToFileChunk(id2);
                         clearFromCacheChunk(id2);
                         return 1L;
@@ -2751,7 +2768,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 id2 = new Grids_2D_ID_int(cri, cci);
                 if (chunkID != id2) {
-                    if (isInCache(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
                         writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
@@ -2771,7 +2788,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunkIDs.contains(chunkID)) {
-                    if (isInCache(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
                         writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
@@ -2829,7 +2846,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!chunks.contains(chunkID)) {
-                    if (isInCache(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
                         writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         //result_ChunkID_HashSet.add(a_ChunkID);
@@ -2902,7 +2919,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         for (cri = 0; cri < NChunkRows; cri++) {
             for (cci = 0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri, cci);
-                if (isInCache(chunkID)) {
+                if (isWorthSwapping(chunkID)) {
                     writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     chunkIDs.add(chunkID);
@@ -2980,7 +2997,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         if (cri0 != cri1) {
             for (int cci = cci0; cci < NChunkCols; cci++) {
                 chunkID = new Grids_2D_ID_int(cri0, cci);
-                if (isInCache(chunkID)) {
+                if (isWorthSwapping(chunkID)) {
                     writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
@@ -2989,7 +3006,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             for (int cri = cri0 + 1; cri < cri1; cri++) {
                 for (int cci = 0; cci < NChunkCols; cci++) {
                     chunkID = new Grids_2D_ID_int(cri, cci);
-                    if (isInCache(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
                         writeToFileChunk(chunkID);
                         clearFromCacheChunk(chunkID);
                         result++;
@@ -2998,7 +3015,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
             for (int cci = 0; cci < cci1; cci++) {
                 chunkID = new Grids_2D_ID_int(cri1, cci);
-                if (isInCache(chunkID)) {
+                if (isWorthSwapping(chunkID)) {
                     writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
@@ -3007,7 +3024,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         } else {
             for (int cci = cci0; cci < cci1 + 1; cci++) {
                 chunkID = new Grids_2D_ID_int(cri0, cci);
-                if (isInCache(chunkID)) {
+                if (isWorthSwapping(chunkID)) {
                     writeToFileChunk(chunkID);
                     clearFromCacheChunk(chunkID);
                     result++;
@@ -3018,14 +3035,29 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return true iff grid2DSquareCellChunk given by _ChunkID is swapToFiled.
-     * This must be an upToDate swapToFile.
-     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk tested to
-     * see if it is swapToFiled.
+     * @return true iff chunk given by chunkID is in the cache.
+     * @param chunkID The ID of the chunk tested as to whether it is in the
+     * cache.
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
         return ChunkIDChunkMap.get(chunkID) != null;
 //        return getChunkIDChunkMap().containsKey(chunkID);
+    }
+
+    /**
+     * @return true iff the chunk given by chunkID is worth swapping.
+     * @param chunkID The ID of the chunk tested as to whether it is worth
+     * swapping.
+     */
+    protected final boolean isWorthSwapping(Grids_2D_ID_int chunkID) {
+        if (isInCache(chunkID)) {
+            if (isChunkSingleValueChunk(chunkID)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
