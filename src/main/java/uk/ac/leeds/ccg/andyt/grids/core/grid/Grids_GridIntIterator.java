@@ -47,6 +47,7 @@ public class Grids_GridIntIterator
      */
     public Grids_GridIntIterator(
             Grids_GridInt g) {
+        super(g);
         TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> chunkIDChunkMap;
         chunkIDChunkMap = g.getChunkIDChunkMap();
         GridIterator = chunkIDChunkMap.keySet().iterator();
