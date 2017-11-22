@@ -28,10 +28,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
 
 /**
  * Used by Grids_GridDouble instances to access statistics. This class is to be
@@ -196,11 +193,13 @@ public class Grids_GridDoubleStatistics
         Grids_GridDouble g = getGrid();
         Grids_GridDoubleIterator gIte;
         gIte = g.iterator();
-        Iterator<Grids_AbstractGridChunk> ite;
+        Iterator<Grids_2D_ID_int> ite;
         ite = gIte.getGridIterator();
         Grids_AbstractGridChunkDouble chunk;
+        Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            chunk = (Grids_AbstractGridChunkDouble) ite.next();
+            chunkID = (Grids_2D_ID_int) ite.next();
+            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
             result += chunk.getN(ge.HandleOutOfMemoryError);
         }
 //        double noDataValue;
@@ -249,14 +248,14 @@ public class Grids_GridDoubleStatistics
         Grids_GridDouble g = getGrid();
         Grids_GridDoubleIterator gIte;
         gIte = g.iterator();
-        Iterator<Grids_AbstractGridChunk> ite;
+        Iterator<Grids_2D_ID_int> ite;
         ite = gIte.getGridIterator();
         Grids_AbstractGridChunkDouble chunk;
+        Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            chunk = (Grids_AbstractGridChunkDouble) ite.next();
-            result = result.add(
-                    chunk.getSum(ge.HandleOutOfMemoryError));
-            //System.out.println(result);
+            chunkID = (Grids_2D_ID_int) ite.next();
+            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
+            result = result.add(chunk.getSum(ge.HandleOutOfMemoryError));
         }
 //        double noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
@@ -284,11 +283,11 @@ public class Grids_GridDoubleStatistics
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
-                value = (Double) ite.next();
-                if (value != noDataValue) {
-                    differenceFromMean = new BigDecimal(value).subtract(mean);
-                    stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
-                    dataValueCount = dataValueCount.add(BigDecimal.ONE);
+            value = (Double) ite.next();
+            if (value != noDataValue) {
+                differenceFromMean = new BigDecimal(value).subtract(mean);
+                stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
+                dataValueCount = dataValueCount.add(BigDecimal.ONE);
             }
         }
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {

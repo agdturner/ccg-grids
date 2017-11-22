@@ -27,11 +27,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 
 /**
  * Used by Grids_GridInt instances to access statistics. This class is to be
@@ -180,11 +176,13 @@ public class Grids_GridIntStatistics
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
         gIte = g.iterator();
-        Iterator<Grids_AbstractGridChunk> ite;
+        Iterator<Grids_2D_ID_int> ite;
         ite = gIte.getGridIterator();
         Grids_AbstractGridChunkInt chunk;
+        Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            chunk = (Grids_AbstractGridChunkInt) ite.next();
+            chunkID = (Grids_2D_ID_int) ite.next();
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
             result += chunk.getN(ge.HandleOutOfMemoryError);
         }
 //        int noDataValue;
@@ -236,13 +234,14 @@ public class Grids_GridIntStatistics
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
         gIte = g.iterator();
-        Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIterator;
-        chunkIterator = gIte.getChunkIterator();
+        Iterator<Grids_2D_ID_int> ite;
+        ite = gIte.getGridIterator();
         Grids_AbstractGridChunkInt chunk;
-        while (chunkIterator.hasNext()) {
-            chunk = (Grids_AbstractGridChunkInt) chunkIterator.next();
-            result = result.add(
-                    chunk.getSum(ge.HandleOutOfMemoryError));
+        Grids_2D_ID_int chunkID;
+        while (ite.hasNext()) {
+            chunkID = (Grids_2D_ID_int) ite.next();
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
+            result = result.add(chunk.getSum(ge.HandleOutOfMemoryError));
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);

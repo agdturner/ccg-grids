@@ -36,7 +36,9 @@ public abstract class Grids_AbstractGridNumberIterator
 
     protected Grids_AbstractGridNumber Grid;
     protected Grids_AbstractGridChunkNumber Chunk;
-    protected Iterator<Grids_AbstractGridChunk> GridIterator;
+    protected Grids_2D_ID_int ChunkID;
+//    protected Iterator<Grids_AbstractGridChunk> GridIterator;
+    protected Iterator<Grids_2D_ID_int> GridIterator;
     protected Grids_AbstractGridChunkNumberRowMajorOrderIterator ChunkIterator;
 
     protected Grids_AbstractGridNumberIterator() {
@@ -51,7 +53,7 @@ public abstract class Grids_AbstractGridNumberIterator
 
     public abstract Grids_AbstractGridNumber getGrid();
 
-    public Iterator<Grids_AbstractGridChunk> getGridIterator() {
+    public Iterator<Grids_2D_ID_int> getGridIterator() {
         return GridIterator;
     }
 
@@ -99,9 +101,13 @@ public abstract class Grids_AbstractGridNumberIterator
             return ChunkIterator.next();
         } else {
             if (GridIterator.hasNext()) {
-                ge.removeFromNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
-                Chunk = (Grids_AbstractGridChunkNumber) GridIterator.next();
-                ge.addToNotToSwapData(Grid, Chunk.getChunkID(ge.HandleOutOfMemoryError));
+                ge.removeFromNotToSwapData(Grid, ChunkID);
+                ChunkID = (Grids_2D_ID_int) GridIterator.next();
+                Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
+                if (Chunk == null) {
+                    Grid.loadIntoCacheChunk(ChunkID);
+                }
+                ge.addToNotToSwapData(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {
                     return ChunkIterator.next();
@@ -116,15 +122,7 @@ public abstract class Grids_AbstractGridNumberIterator
      * @return Chunk.ChunkID
      */
     public Grids_2D_ID_int getChunkID() {
-        return Chunk.getChunkID(ge.HandleOutOfMemoryError);
-    }
-
-    /**
-     *
-     * @return Chunk.ChunkID
-     */
-    public Grids_2D_ID_int getCellID() {
-        return Chunk.getChunkID(ge.HandleOutOfMemoryError);
+        return ChunkID;
     }
 
     /**

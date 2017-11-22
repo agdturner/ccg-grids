@@ -24,7 +24,8 @@ import java.util.NoSuchElementException;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGridChunkNumberRowMajorOrderIterator extends Grids_AbstractGridChunkNumberIterator {
+public abstract class Grids_AbstractGridChunkNumberRowMajorOrderIterator 
+        extends Grids_AbstractGridChunkNumberIterator {
 
     protected int Row;
     protected int Col;

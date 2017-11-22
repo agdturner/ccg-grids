@@ -18,6 +18,9 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
+import java.util.TreeMap;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
@@ -44,9 +47,16 @@ public class Grids_GridIntIterator
      */
     public Grids_GridIntIterator(
             Grids_GridInt g) {
-        GridIterator = g.getChunkIDChunkMap().values().iterator();
+        TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> chunkIDChunkMap;
+        chunkIDChunkMap = g.getChunkIDChunkMap();
+        GridIterator = chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
-            Chunk = (Grids_AbstractGridChunkInt) GridIterator.next();
+            ChunkID = (Grids_2D_ID_int) GridIterator.next();
+            Chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(ChunkID);
+            if (Chunk == null) {
+                Grid.loadIntoCacheChunk(ChunkID);
+                Chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(ChunkID);
+            }
             initChunkIterator();
         }
     }
