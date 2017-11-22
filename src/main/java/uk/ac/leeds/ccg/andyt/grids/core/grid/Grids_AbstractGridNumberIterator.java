@@ -107,6 +107,7 @@ public abstract class Grids_AbstractGridNumberIterator
                 if (Chunk == null) {
                     Grid.loadIntoCacheChunk(ChunkID);
                 }
+                Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
                 ge.addToNotToSwapData(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {
