@@ -1098,17 +1098,15 @@ public class Grids_GridDouble
                 c = (Grids_GridChunkDouble) o;
                 chunk = c;
             } else {
-                System.err.println("Unrecognised type of chunk or null "
+                throw new Error("Unrecognised type of chunk or null "
                         + this.getClass().getName()
                         + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
             }
-            if (chunk != null) {
-                chunk.ge = ge;
-                chunk.initGrid(this);
-                chunk.initChunkID(chunkID);
-                ChunkIDChunkMap.put(chunkID, chunk);
-                ge.setDataToSwap(true);
-            }
+            chunk.ge = ge;
+            chunk.initGrid(this);
+            chunk.initChunkID(chunkID);
+            ChunkIDChunkMap.put(chunkID, chunk);
+            ge.setDataToSwap(true);
         }
     }
 
@@ -1188,7 +1186,7 @@ public class Grids_GridDouble
     /**
      * If newValue and oldValue are the same then statistics won't change. A
      * test might be appropriate in set cell so that this method is not called.
-     * 
+     *
      * WARNING! This should not be public, please don't use it. The reason it
      * has been made public is to allow access from chunk setCell methods which
      * may be accessed directly instead of via setCell in this class.

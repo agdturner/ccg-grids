@@ -1155,17 +1155,15 @@ public class Grids_GridInt
                 c = (Grids_GridChunkInt) o;
                 chunk = c;
             } else {
-                System.err.println("Unrecognised type of chunk or null "
+                throw new Error("Unrecognised type of chunk or null "
                         + this.getClass().getName()
                         + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
             }
-            if (chunk != null) {
-                chunk.ge = ge;
-                chunk.initGrid(this);
-                chunk.initChunkID(chunkID);
-                ChunkIDChunkMap.put(chunkID, chunk);
-                ge.setDataToSwap(true);
-            }
+            chunk.ge = ge;
+            chunk.initGrid(this);
+            chunk.initChunkID(chunkID);
+            ChunkIDChunkMap.put(chunkID, chunk);
+            ge.setDataToSwap(true);
         }
     }
 

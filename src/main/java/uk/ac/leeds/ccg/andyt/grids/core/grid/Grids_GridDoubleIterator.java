@@ -86,12 +86,19 @@ public class Grids_GridDoubleIterator
     @Override
     public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
             Grids_AbstractGridChunkNumber chunk) {
-        if (chunk instanceof Grids_GridChunkDoubleArray || chunk instanceof Grids_GridChunkDoubleMap) {
+        if (chunk instanceof Grids_GridChunkDoubleArray) {
             return new Grids_GridChunkDoubleArrayOrMapIterator(
                     (Grids_GridChunkDoubleArray) chunk);
-        } else {
-            return new Grids_GridChunkDoubleIterator(
+        } else if (chunk instanceof Grids_GridChunkDoubleMap) {
+            return new Grids_GridChunkDoubleArrayOrMapIterator(
+                    (Grids_GridChunkDoubleMap) chunk);
+        } else if (chunk instanceof Grids_GridChunkDouble) {
+            return new Grids_GridChunkDoubleIterator( 
                     (Grids_GridChunkDouble) chunk);
+        } else {
+            throw new Error("Unrecognised type of chunk "
+                        + this.getClass().getName()
+                        + ".getChunkIterator(Chunk(" + chunk.toString() + "))");
         }
     }
 
