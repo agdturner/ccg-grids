@@ -28,7 +28,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * Grids_AbstractGridChunkInt extension that stores cell values in a int[][].
  */
 public class Grids_GridChunkIntArray
-        extends Grids_AbstractGridChunkInt
+        extends Grids_AbstractGridChunkIntArrayOrMap
         implements Serializable {
 
     //private static final long serialVersionUID = 1L; 
@@ -180,16 +180,6 @@ public class Grids_GridChunkIntArray
             return oldValue;
     }
 
-    /**
-     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
-     * cells in this.
-     *
-     * @return
-     */
-    @Override
-    protected Grids_GridChunkIntArrayOrMapIterator iterator() {
-        return new Grids_GridChunkIntArrayOrMapIterator(this);
-    }
 
     @Override
     public Number getMin(boolean update, boolean handleOutOfMemoryError) {
@@ -205,6 +195,17 @@ public class Grids_GridChunkIntArray
     @Override
     public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
+     * cells in this in row major order.
+     *
+     * @return
+     */
+    protected @Override
+    Grids_GridChunkIntArrayOrMapIterator iterator() {
+        return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 
 }

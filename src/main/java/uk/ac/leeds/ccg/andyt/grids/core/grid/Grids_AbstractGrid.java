@@ -646,8 +646,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of chunks in this as a
-     * long.
+     * @return the number of chunks in this as a long.
      */
     protected final long getNChunks() {
         long nChunks = (long) NChunkRows * (long) NChunkCols;
@@ -1970,8 +1969,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file a chunk in ChunkIDChunkMap. The chunks are iterated through in row major order.
-     * 
+     * Attempts to write to file a chunk in ChunkIDChunkMap. The chunks are
+     * iterated through in row major order.
+     *
      * @return Grids_2D_ID_int of the Grids_AbstractGridChunk which was swapped
      * or null.
      */
@@ -2092,9 +2092,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache a
-     * chunk in this. This is one of the lowest level memory
-     * handling operation of this class.
+     * Attempts to write to file and clear from the cache a chunk in this. This
+     * is one of the lowest level memory handling operation of this class.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -2257,8 +2256,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Swaps the chunk with chunkID to file.
+     *
      * @param chunkID
-     * @param handleOutOfMemoryError 
+     * @param handleOutOfMemoryError
      */
     public void swapChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
@@ -2277,6 +2277,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Swaps the chunk with chunkID to file.
+     *
      * @param chunkID
      */
     protected void swapChunk(Grids_2D_ID_int chunkID) {
@@ -2286,9 +2287,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache any
-     * chunk in this. This is one of the lowest level memory
-     * handling operation of this class.
+     * Attempts to write to file and clear from the cache any chunk in this.
+     * This is one of the lowest level memory handling operation of this class.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -2359,9 +2359,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @return The Grids_2D_ID_int of Grids_AbstractGridChunk swapped or null.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunkExcept_AccountDetail(
-                Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunkExcept_AccountDetail(
+                    Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkID);
@@ -2390,13 +2390,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Attempts to write to file and clear from the cache a
-     * Grids_AbstractGridChunk in this._AbstractGrid2DSquareCell_HashSet.
+     * chunk in this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param chunkID
      * @return The Grids_2D_ID_int of Grids_AbstractGridChunk swapped or null.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunkExcept_AccountDetail(
-            Grids_2D_ID_int chunkID) {
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         int cri;
@@ -2509,15 +2509,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache all
-     * Grid2DSquareCellChunkAbstracts in this except that with Grids_2D_ID_int
-     * _ChunkID.
+     * Attempts to write to file and clear from the cache all chunks in this
+     * except that with chunkID.
      *
      * @param chunkID
      * @return A HashSet with the ChunkIDs of those Grids_AbstractGridChunk
      * swapped.
      */
-    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) {
+    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) {
         // Using default as not sure if what to use as initialCapacity for result...
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
@@ -2608,16 +2608,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to file and clear from the cache all
-     * chunks in this except that with chunk IDs in chunkIDs.
+     * Attempts to write to file and clear from the cache all chunks in this
+     * except that with chunk IDs in chunkIDs.
      *
      * @param chunkIDs HashSet of Grids_AbstractGridChunk.ChunkIDs not to be
      * swapped.
      * @return A map of those chunks swapped.
      */
-    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunksExcept_AccountDetail(
-            HashSet<Grids_2D_ID_int> chunkIDs) {
+    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(
+                    HashSet<Grids_2D_ID_int> chunkIDs) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         HashSet<Grids_2D_ID_int> chunkIDs2 = new HashSet<>();
@@ -2641,7 +2641,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempt to swap to file a chunk in this grid except the chunk with chunkID.
+     * Attempt to swap to file a chunk in this grid except the chunk with
+     * chunkID.
+     *
      * @param chunkID
      * @param handleOutOfMemoryError
      * @return 1L if a chunk was swapped and 0 otherwise.
@@ -2671,15 +2673,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
-    
-     /**
-     * Attempt to swap to file a chunk in this grid except the chunk with chunkID.
+
+    /**
+     * Attempt to swap to file a chunk in this grid except the chunk with
+     * chunkID.
+     *
      * @param chunkID
      * @return 1L if a chunk was swapped and 0 otherwise.
      */
     protected final long swapChunkExcept_Account(
             Grids_2D_ID_int chunkID) {
-       int cri;
+        int cri;
         int cci;
         Grids_2D_ID_int id2;
         for (cri = 0; cri < NChunkRows; cri++) {
@@ -2698,7 +2702,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempt to swap to file all chunks in this grid except the chunk with chunkID.
+     * Attempt to swap to file all chunks in this grid except the chunk with
+     * chunkID.
+     *
      * @param chunkID
      * @param handleOutOfMemoryError
      * @return A count of the number of chunks swapped.
@@ -2728,9 +2734,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
-    
-     /**
-     * Attempt to swap to file all chunks in this grid except the chunk with chunkID.
+
+    /**
+     * Attempt to swap to file all chunks in this grid except the chunk with
+     * chunkID.
+     *
      * @param chunkID
      * @return A count of the number of chunks swapped.
      */
@@ -2774,9 +2782,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return result;
     }
 
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunkExcept_AccountDetail(
-            HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunkExcept_AccountDetail(
+                    HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkIDs);
@@ -2846,8 +2854,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunks_AccountDetail(            boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunks_AccountDetail(boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunks_AccountDetail();
@@ -2883,8 +2891,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      *
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunks_AccountDetail() {
+    protected final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunks_AccountDetail() {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         HashSet<Grids_2D_ID_int> chunkIDs = new HashSet<>();
@@ -3021,8 +3029,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * For releasing a grid2DSquareCellChunk stored in memory. This is usually
-     * only done after the equivallent of swapToFileChunk(ID) has been called.
+     * For releasing a chunk stored in memory. This is usually only done after
+     * the equivallent of swapToFileChunk(ID) has been called.
      *
      * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
      * cleared.
@@ -3030,7 +3038,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    protected final void clearFromCacheGrid2DSquareCellChunk(
+    protected final void clearFromCacheChunk(
             Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             clearFromCacheChunk(chunkID);
@@ -3039,7 +3047,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                clearFromCacheGrid2DSquareCellChunk(chunkID, handleOutOfMemoryError);
+                clearFromCacheChunk(chunkID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3121,8 +3129,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * Attempts to load into the memory cache the chunk with chunk ID chunkID.
      *
-     * @param chunkID The chunk ID of the chunk to be
-     * restored.
+     * @param chunkID The chunk ID of the chunk to be restored.
      */
     protected abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
 
@@ -3916,8 +3923,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkRow
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param cellCol The cell column index thats centroid
-     * x-coordinate is returned.
+     * @param cellCol The cell column index thats centroid x-coordinate is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3942,8 +3949,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return x-coordinate of the centroid for cells with column index
      * _CellColIndex as a double.
-     * @param cellCol The cell column index thats centroid
-     * x-coordinate is returned.
+     * @param cellCol The cell column index thats centroid x-coordinate is
+     * returned.
      */
     protected final double getCellXDouble(int cellCol, int chunkCol) {
         return getCellXDouble(getCol(cellCol, chunkCol));
@@ -3992,7 +3999,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a getCellXBigDecimal.
      */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, 
+    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID,
             int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(cellID);
@@ -4051,7 +4058,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param cellID The Grids_2D_ID_long of the cell thats centroid is
      * returned.
      */
-    public final double getCellXDouble(Grids_2D_ID_long cellID, int chunkRow, 
+    public final double getCellXDouble(Grids_2D_ID_long cellID, int chunkRow,
             int chunkCol, boolean handleOutOfMemoryError) {
         try {
             double result = getCellXDouble(cellID);
@@ -4109,7 +4116,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * _CellRowIndex as a BigDecimal.
      * @param row the cell column index thats centroid y-coordinate is returned.
      */
-    public final BigDecimal getCellYBigDecimal(long row, int chunkRow, 
+    public final BigDecimal getCellYBigDecimal(long row, int chunkRow,
             int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(row);
@@ -4168,13 +4175,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkRow
      * @return y-coordinate of the centroid for cells with row index
      * _CellRowIndex as a double.
-     * @param cellRow the chunk cell column index thats centroid
-     * y-coordinate is returned.
+     * @param cellRow the chunk cell column index thats centroid y-coordinate is
+     * returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellYDouble(int cellRow, int chunkRow, int chunkCol, 
+    public final double getCellYDouble(int cellRow, int chunkRow, int chunkCol,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(cellRow, chunkRow);
@@ -4194,8 +4201,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @param chunkRow
      * @return y-coordinate of the centroid for cell given by cellRow, chunkRow.
-     * @param cellRow the chunk cell column index thats centroid
-     * y-coordinate is returned.
+     * @param cellRow the chunk cell column index thats centroid y-coordinate is
+     * returned.
      */
     protected final double getCellYDouble(int cellRow, int chunkRow) {
         return getCellYDouble(getRow(cellRow, chunkRow));
@@ -4219,7 +4226,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, 
+    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID,
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
@@ -4245,7 +4252,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a BigDecimal.
      */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID, 
+    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID,
             int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
@@ -4279,7 +4286,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellYDouble(Grids_2D_ID_long chunkID, 
+    public final double getCellYDouble(Grids_2D_ID_long chunkID,
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(chunkID);
@@ -4532,7 +4539,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 x.add(halfCellsize),
                 y.subtract(halfCellsize),
                 y.add(halfCellsize),
-                        getCellsize(false));
+                getCellsize(false));
         return result;
     }
 
@@ -4755,7 +4762,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return UnsignedLongPowersOf2;
     }
 
-    protected void initDimensions(Grids_ESRIAsciiGridHeader header, 
+    protected void initDimensions(Grids_ESRIAsciiGridHeader header,
             long startRowIndex, long startColIndex) {
         BigDecimal xMin;
         BigDecimal yMin;

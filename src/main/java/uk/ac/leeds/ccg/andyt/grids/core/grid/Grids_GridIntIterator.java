@@ -18,9 +18,7 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
-import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
@@ -48,15 +46,19 @@ public class Grids_GridIntIterator
     public Grids_GridIntIterator(
             Grids_GridInt g) {
         super(g);
-        TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> chunkIDChunkMap;
-        chunkIDChunkMap = g.getChunkIDChunkMap();
-        GridIterator = chunkIDChunkMap.keySet().iterator();
+        GridIterator = g.ChunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = (Grids_2D_ID_int) GridIterator.next();
-            Chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(ChunkID);
+            Chunk = (Grids_AbstractGridChunkInt) g.ChunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_AbstractGridChunkInt) g.ChunkIDChunkMap.get(ChunkID);
+
+                if (Chunk == null) {
+                    System.out.println("Chunk == null after having tried to reload it");
+                    Grid.loadIntoCacheChunk(ChunkID); //debug
+                }
+
             }
             initChunkIterator();
         }
@@ -67,9 +69,12 @@ public class Grids_GridIntIterator
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_GridChunkIntArray || Chunk instanceof Grids_GridChunkIntMap) {
+        if (Chunk instanceof Grids_GridChunkIntArray) {
             ChunkIterator = new Grids_GridChunkIntArrayOrMapIterator(
                     (Grids_GridChunkIntArray) Chunk);
+        } else if (Chunk instanceof Grids_GridChunkIntMap) {
+            ChunkIterator = new Grids_GridChunkIntArrayOrMapIterator(
+                    (Grids_GridChunkIntMap) Chunk);
         } else {
             ChunkIterator = new Grids_GridChunkIntIterator(
                     (Grids_GridChunkInt) Chunk);

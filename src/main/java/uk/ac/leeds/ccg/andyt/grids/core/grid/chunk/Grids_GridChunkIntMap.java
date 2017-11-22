@@ -57,7 +57,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * alternative storage for chunks.
  */
 public class Grids_GridChunkIntMap
-        extends Grids_AbstractGridChunkInt
+        extends Grids_AbstractGridChunkIntArrayOrMap
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
@@ -1077,13 +1077,13 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns a Grids_GridChunkIntMapIterator for iterating over the cells in
-     * this.
+     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
+     * cells in this in row major order.
      *
      * @return
      */
     protected @Override
-    Grids_AbstractIterator iterator() {
+    Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 

@@ -28,7 +28,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * double[][].
  */
 public class Grids_GridChunkDoubleArray
-        extends Grids_AbstractGridChunkDouble
+        extends Grids_AbstractGridChunkDoubleArrayOrMap
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
@@ -167,7 +167,6 @@ public class Grids_GridChunkDoubleArray
      * @return
      */
     @Override
-    //protected Grids_AbstractGridChunkIterator iterator() {
     protected Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }

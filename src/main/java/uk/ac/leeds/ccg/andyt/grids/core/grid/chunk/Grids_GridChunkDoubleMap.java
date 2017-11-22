@@ -57,7 +57,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * alternative storage for chunks.
  */
 public class Grids_GridChunkDoubleMap
-        extends Grids_AbstractGridChunkDouble
+        extends Grids_AbstractGridChunkDoubleArrayOrMap
         implements Serializable {
 
     //private static final long serialVersionUID = 1L;
@@ -1094,7 +1094,7 @@ public class Grids_GridChunkDoubleMap
      * @return
      */
     protected @Override
-    Grids_AbstractIterator iterator() {
+    Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }
 

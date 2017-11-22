@@ -1146,11 +1146,18 @@ public class Grids_GridInt
                 Grids_GridChunkIntArray c;
                 c = (Grids_GridChunkIntArray) o;
                 chunk = c;
-            }
-            if (o.getClass() == Grids_GridChunkIntMap.class) {
+            } else if (o.getClass() == Grids_GridChunkIntMap.class) {
                 Grids_GridChunkIntMap c;
                 c = (Grids_GridChunkIntMap) o;
                 chunk = c;
+            } else if (o.getClass() == Grids_GridChunkInt.class) {
+                Grids_GridChunkInt c;
+                c = (Grids_GridChunkInt) o;
+                chunk = c;
+            } else {
+                System.err.println("Unrecognised type of chunk or null "
+                        + this.getClass().getName()
+                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
             }
             if (chunk != null) {
                 chunk.ge = ge;
@@ -1158,11 +1165,7 @@ public class Grids_GridInt
                 chunk.initChunkID(chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);
                 ge.setDataToSwap(true);
-                return;
             }
-            System.err.println("Unrecognised type of chunk or null "
-                    + this.getClass().getName()
-                    + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
         }
     }
 
