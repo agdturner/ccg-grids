@@ -61,7 +61,7 @@ public abstract class Grids_AbstractGridChunkNumber
     public Long getN(boolean handleOutOfMemoryError) {
         try {
             long result = getN();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -96,7 +96,7 @@ public abstract class Grids_AbstractGridChunkNumber
     public BigDecimal getSum(boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getSum();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -135,7 +135,7 @@ public abstract class Grids_AbstractGridChunkNumber
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -173,7 +173,7 @@ public abstract class Grids_AbstractGridChunkNumber
     public double getArithmeticMeanDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getArithmeticMeanDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -210,7 +210,7 @@ public abstract class Grids_AbstractGridChunkNumber
     public double getMedianDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getMedianDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -245,7 +245,7 @@ public abstract class Grids_AbstractGridChunkNumber
     public double getStandardDeviationDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getStandardDeviationDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {

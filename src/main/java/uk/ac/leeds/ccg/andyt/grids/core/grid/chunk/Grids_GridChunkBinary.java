@@ -72,7 +72,7 @@ public class Grids_GridChunkBinary
             boolean handleOutOfMemoryError) {
         try {
             boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -111,7 +111,7 @@ public class Grids_GridChunkBinary
             Grids_2D_ID_int chunkID) {
         try {
             boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -175,7 +175,7 @@ public class Grids_GridChunkBinary
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     valueToInitialise);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();

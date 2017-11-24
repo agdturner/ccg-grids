@@ -116,7 +116,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      */
     protected abstract void update();
 //    public void update() {
-//        ge.tryToEnsureThereIsEnoughMemoryToContinue(ge.HandleOutOfMemoryError);
+//        ge.checkAndMaybeFreeMemory(ge.HandleOutOfMemoryError);
 //        if (Grid instanceof Grids_GridInt) {
 //            Grids_GridInt g = (Grids_GridInt) Grid;
 //            BigDecimal valueBigDecimal;
@@ -160,13 +160,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             String result = toString();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -215,13 +215,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     public final Long getN(boolean handleOutOfMemoryError) {
         try {
             long result = getN();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -257,13 +257,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigInteger result = getNonZeroN();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -292,13 +292,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     public final BigDecimal getSum(boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getSum();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -331,13 +331,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             Number result = getMin(update);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -372,13 +372,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             Number result = getMax(update);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -647,7 +647,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                    nRows,
 //                    nCols,
 //                    value);
-//            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+//            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (handleOutOfMemoryError) {
@@ -738,7 +738,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //            boolean handleOutOfMemoryError) {
 //        try {
 //            long result = count(g, row, col, nRows, nCols, value);
-//            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+//            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (handleOutOfMemoryError) {
@@ -814,13 +814,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -862,13 +862,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }

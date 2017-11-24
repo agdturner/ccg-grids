@@ -64,7 +64,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final Grids_AbstractGrid getGrid(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGrid result = getGrid();
-            result.ge.tryToEnsureThereIsEnoughMemoryToContinue(ChunkID, handleOutOfMemoryError);
+            result.ge.checkAndMaybeFreeMemory(ChunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -116,7 +116,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final Grids_2D_ID_int getChunkID(boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getChunkID();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -153,7 +153,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final boolean isSwapUpToDate(boolean handleOutOfMemoryError) {
         try {
             boolean result = isSwapUpToDate();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -224,7 +224,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final String toString(boolean handleOutOfMemoryError) {
         try {
             String result = getDescription();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -260,7 +260,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final String getName(boolean handleOutOfMemoryError) {
         try {
             String result = getName();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -297,7 +297,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     public final Grids_AbstractIterator iterator(boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractIterator result = iterator();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -338,7 +338,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
             boolean handleOutOfMemoryError) {
         try {
             boolean result = inChunk(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {

@@ -76,7 +76,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             boolean handleOutOfMemoryError) {
         try {
             toGreyScaleImage(g, processor, file, type);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -154,7 +154,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             return;
         }
         int[] gridImageArray = initGridImageArray(size, handleOutOfMemoryError);
-        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r = processor.rescale(
                 g, null, 0.0d, 255.0d, handleOutOfMemoryError);
@@ -180,10 +180,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
             chunkNRows = r.getChunkNRows(chunkRow, handleOutOfMemoryError);
             for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                 chunkNCols = r.getChunkNCols(chunkCol, handleOutOfMemoryError);
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                ge.addToNotToSwapData(r, chunkID);
+                ge.addToNotToSwap(r, chunkID);
                 chunk = (Grids_AbstractGridChunkDouble) r.getGridChunk(
                         chunkID, handleOutOfMemoryError);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
@@ -215,8 +215,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                         gridImageArray[p] = pixel.getRGB();
                     }
                 }
-                ge.removeFromNotToSwapData(g, chunkID);
-                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                ge.removeFromNotToSwap(g, chunkID);
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             }
         }
         System.out.println("Number of NoDataValues " + countNoDataValues);
@@ -336,7 +336,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                     grid,
                     file,
                     type);
-            grid.ge.tryToEnsureThereIsEnoughMemoryToContinue(
+            grid.ge.checkAndMaybeFreeMemory(
                     handleOutOfMemoryError);
         } catch (java.lang.OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
@@ -433,7 +433,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             return;
         }
         int[] gridImageArray = initGridImageArray(size, handleOutOfMemoryError);
-        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         // If not already in the range 0 to 255, rescale grid into this range.
         double noDataValue = g.getNoDataValue(handleOutOfMemoryError);
         int countNoDataValues = 0;
@@ -452,10 +452,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
             chunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
             for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                 chunkNCols = g.getChunkNCols(chunkCol, handleOutOfMemoryError);
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                ge.addToNotToSwapData(g, chunkID);
+                ge.addToNotToSwap(g, chunkID);
                 chunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
                         chunkID, handleOutOfMemoryError);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
@@ -518,7 +518,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
 //                            handleOutOfMemoryError);
 //                    ge.initMemoryReserve(handleOutOfMemoryError);
 //                }
-//                ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+//                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
 //                if (v == noDataValue) {
 //                    pixel = noDataValueColour;
 //                } else {

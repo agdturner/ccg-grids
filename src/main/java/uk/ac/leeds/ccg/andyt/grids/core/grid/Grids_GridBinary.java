@@ -87,13 +87,13 @@ public abstract class Grids_GridBinary
         try {
             String result = "GridBinary( "
                     + super.toString(handleOutOfMemoryError) + " )";
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
-                    throw e;
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                        throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return toString(
@@ -118,7 +118,7 @@ public abstract class Grids_GridBinary
         try {
             double result = setCell(row, col, valueToSet);
             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {

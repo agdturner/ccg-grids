@@ -34,11 +34,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Kernel;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -90,7 +87,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -141,7 +138,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(ge.HandleOutOfMemoryErrorFalse) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -900,7 +897,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -959,8 +956,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(
-                        handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw a_OutOfMemoryError;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1021,7 +1017,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1176,7 +1172,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1784,7 +1780,7 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             ge.clearMemoryReserve();
-            if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+            if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                 throw _OutOfMemoryError0;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1872,8 +1868,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError a_OutOfMemoryError) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(
-                        handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw a_OutOfMemoryError;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2013,7 +2008,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2172,7 +2167,7 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             ge.clearMemoryReserve();
-            if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+            if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                 throw _OutOfMemoryError0;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2299,7 +2294,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError _OutOfMemoryError0) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2466,7 +2461,7 @@ public class Grids_ProcessorDEM
                     } catch (OutOfMemoryError e) {
                         ge.clearMemoryReserve();
                         System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                        if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                        if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                             throw e;
                         }
                         ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2486,7 +2481,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2566,7 +2561,7 @@ public class Grids_ProcessorDEM
 //                        }
 //                    }
 //                } while ( ! isInitialised );
-//            tryToEnsureThereIsEnoughMemoryToContinue();
+//            checkAndMaybeFreeMemory();
 //            return get_Roughness(
 //                    _Roughness,
 //                    _Grid2DSquareCell,
@@ -2786,7 +2781,7 @@ public class Grids_ProcessorDEM
             /**
              * Try to ensure there is enough memory to continue.
              */
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             String name;
             String underScore = "_";
             double cellsize = dimensions.getCellsize().doubleValue();
@@ -2838,19 +2833,19 @@ public class Grids_ProcessorDEM
                 double height;
                 Grids_AbstractGridChunkDouble gridChunkDouble;
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                    ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                     System.out.println("chunkRow(" + chunkRow + ")");
                     chunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                         System.out.println("chunkCol(" + chunkCol + ")");
                         chunkID = new Grids_2D_ID_int(
                                 chunkRow, chunkCol);
-                        ge.initNotToSwapData();
-                        ge.addToNotToSwapData(g, chunkID, chunkRow, chunkCol,
+                        ge.initNotToSwap();
+                        ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                                 normalChunkNRows, normalChunkNCols, cellDistance);
-                        ge.addToNotToSwapData(g, chunkID);
-                        ge.addToNotToSwapData(metrics1, chunkID);
+                        ge.addToNotToSwap(g, chunkID);
+                        ge.addToNotToSwap(metrics1, chunkID);
                         gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getGridChunk(
                                 chunkRow,
                                 chunkCol,
@@ -2866,7 +2861,7 @@ public class Grids_ProcessorDEM
                                     chunkCol,
                                     handleOutOfMemoryError,
                                     chunkID);
-                            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                             for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                                 row = g.getRow(
                                         chunkRow,
@@ -2939,19 +2934,19 @@ public class Grids_ProcessorDEM
                 int height;
                 Grids_AbstractGridChunkInt gridChunkInt;
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                    ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                     chunkNRows = g.getChunkNRows(chunkRow, handleOutOfMemoryError);
                     System.out.println("chunkRow(" + chunkRow + ")");
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                         System.out.println("chunkColIndex(" + chunkCol + ")");
                         chunkID = new Grids_2D_ID_int(
                                 chunkRow, chunkCol);
-                        ge.initNotToSwapData();
-                        ge.addToNotToSwapData(g, chunkID, chunkRow, chunkCol,
+                        ge.initNotToSwap();
+                        ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                                 normalChunkNRows, normalChunkNCols, cellDistance);
-                        ge.addToNotToSwapData(g, chunkID);
-                        ge.addToNotToSwapData(metrics1, chunkID);
+                        ge.addToNotToSwap(g, chunkID);
+                        ge.addToNotToSwap(metrics1, chunkID);
                         gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
                                 chunkRow,
                                 chunkCol,
@@ -3042,7 +3037,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw e;
                 }
                 return getMetrics1(
@@ -5655,7 +5650,7 @@ public class Grids_ProcessorDEM
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
 
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw _OutOfMemoryError0;
 
                 }

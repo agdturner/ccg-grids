@@ -71,7 +71,7 @@ public abstract class Grids_AbstractGridChunkDouble
             double result = getCell(
                     row,
                     col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -252,12 +252,12 @@ public abstract class Grids_AbstractGridChunkDouble
             double valueToSet,
             boolean handleOutOfMemoryError) {
         try {
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             double result = setCell(
                     row,
                     col,
                     valueToSet);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -309,7 +309,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean handleOutOfMemoryError) {
         try {
             double[] result = toArrayIncludingNoDataValues();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -401,7 +401,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean handleOutOfMemoryError) {
         try {
             double[] result = toArrayNotIncludingNoDataValues();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -461,7 +461,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean handleOutOfMemoryError) {
         try {
             double result = getMinDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -519,7 +519,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean handleOutOfMemoryError) {
         try {
             double result = getMaxDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -573,7 +573,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean handleOutOfMemoryError) {
         try {
             HashSet<Double> result = getMode();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {

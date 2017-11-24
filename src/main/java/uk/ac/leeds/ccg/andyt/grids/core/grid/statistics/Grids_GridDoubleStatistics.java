@@ -98,7 +98,7 @@ public class Grids_GridDoubleStatistics
      */
     @Override
     public void update() {
-        ge.tryToEnsureThereIsEnoughMemoryToContinue(ge.HandleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(ge.HandleOutOfMemoryError);
         init();
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;

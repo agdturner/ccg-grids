@@ -94,7 +94,7 @@ public abstract class Grids_AbstractGridNumber
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellDouble(point);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -145,7 +145,7 @@ public abstract class Grids_AbstractGridNumber
             double result = getCellDouble(
                     x,
                     y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -197,7 +197,7 @@ public abstract class Grids_AbstractGridNumber
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellDouble(                    row,                    col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -253,7 +253,7 @@ public abstract class Grids_AbstractGridNumber
                     chunkColIndex,
                     chunkCellRowIndex,
                     chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -341,7 +341,7 @@ public abstract class Grids_AbstractGridNumber
                     chunkCol,
                     cellRow,
                     cellCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -397,7 +397,7 @@ public abstract class Grids_AbstractGridNumber
             int result = getCellInt(
                     row,
                     col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -456,7 +456,7 @@ public abstract class Grids_AbstractGridNumber
                     chunkColIndex,
                     chunkCellRowIndex,
                     chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -530,7 +530,7 @@ public abstract class Grids_AbstractGridNumber
                     chunkColIndex,
                     chunkCellRowIndex,
                     chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -632,7 +632,7 @@ public abstract class Grids_AbstractGridNumber
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -676,7 +676,7 @@ public abstract class Grids_AbstractGridNumber
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y, row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -712,7 +712,7 @@ public abstract class Grids_AbstractGridNumber
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -746,7 +746,7 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDouble(double x, double y, boolean handleOutOfMemoryError) {
         try {
             double result = getNearestValueDouble(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -825,7 +825,7 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDouble(long row, long col, boolean handleOutOfMemoryError) {
         try {
             double result = getNearestValueDouble(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -861,7 +861,7 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDoubleDistance(double x, double y, boolean handleOutOfMemoryError) {
         try {
             double result = getNearestValueDoubleDistance(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -900,7 +900,7 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDoubleDistance(double x, double y, long row, long col, boolean handleOutOfMemoryError) {
         try {
             double result = getNearestValueDoubleDistance(x, y, row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -941,7 +941,7 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDoubleDistance(long row, long col, boolean handleOutOfMemoryError) {
         try {
             double result = getNearestValueDoubleDistance(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -966,7 +966,7 @@ public abstract class Grids_AbstractGridNumber
             boolean handleOutOfMemoryError) {
         try {
             Iterator result = iterator();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -991,7 +991,7 @@ public abstract class Grids_AbstractGridNumber
         try {
             Grids_AbstractGridNumberStatistics result;
             result = getStatistics();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {

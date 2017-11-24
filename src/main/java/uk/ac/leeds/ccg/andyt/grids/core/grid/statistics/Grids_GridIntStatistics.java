@@ -87,7 +87,7 @@ public class Grids_GridIntStatistics
      */
     @Override
     public void update() {
-        ge.tryToEnsureThereIsEnoughMemoryToContinue(ge.HandleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(ge.HandleOutOfMemoryError);
         Grids_GridInt g = getGrid();
         BigDecimal valueBD;
         int value;

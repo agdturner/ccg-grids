@@ -101,14 +101,14 @@ public abstract class Grids_AbstractGridNumberIterator
             return ChunkIterator.next();
         } else {
             if (GridIterator.hasNext()) {
-                ge.removeFromNotToSwapData(Grid, ChunkID);
+                ge.removeFromNotToSwap(Grid, ChunkID);
                 ChunkID = (Grids_2D_ID_int) GridIterator.next();
                 Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
                 if (Chunk == null) {
                     Grid.loadIntoCacheChunk(ChunkID);
                 }
                 Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
-                ge.addToNotToSwapData(Grid, ChunkID);
+                ge.addToNotToSwap(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {
                     return ChunkIterator.next();

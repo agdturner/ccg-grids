@@ -62,7 +62,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             boolean handleOutOfMemoryError) {
         try {
             File result = toAsciiFile(g);
-            g.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            g.ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -112,7 +112,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             boolean handleOutOfMemoryError) {
         try {
             File result = toAsciiFile(g, file);
-            g.ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            g.ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -174,7 +174,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     g,
                     file,
                     noDataValue);
-            g.ge.tryToEnsureThereIsEnoughMemoryToContinue(
+            g.ge.checkAndMaybeFreeMemory(
                     handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError a_OutOfMemoryError) {

@@ -44,7 +44,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_UnsignedLongPowersOf2;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
@@ -53,13 +52,6 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  */
 public abstract class Grids_AbstractGrid extends Grids_Object implements Serializable {
 
-    /**
-     * For storing individual locations mapped to a binary encoded long. This is
-     * only used in Grids_GridChunkDouble64CellMap and
-     * Grids_GridChunkInt64CellMap. It is stored in this to save it being stored
-     * in every chunk or calculated on the fly.
-     */
-    protected Grids_UnsignedLongPowersOf2 UnsignedLongPowersOf2;
     //    /**
     //     * A version number for confidence in reloading serialised instances.
     //     */
@@ -129,7 +121,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             File f, boolean handleOutOfMemoryError) {
         try {
             initChunks(f);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -190,7 +182,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public HashSet<Grids_AbstractGrid> getGrids(boolean handleOutOfMemoryError) {
         try {
             HashSet<Grids_AbstractGrid> result = ge.getGrids();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -252,7 +244,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGridChunk result = getChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -292,7 +284,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public HashSet<Grids_2D_ID_int> getChunkIDs(boolean handleOutOfMemoryError) {
         try {
             HashSet<Grids_2D_ID_int> result = getChunkIDs();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -329,7 +321,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public String toString(boolean handleOutOfMemoryError) {
         try {
             String result = toString();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -358,14 +350,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 + "Name( " + Name + "),"
                 + getDimensions().toString();
         if (ChunkIDChunkMap == null) {
-            result += ",ChunkID_GridChunk_Map==null";
+            result += ",ChunkIDChunkMap==null";
         } else {
-            result += ",ChunkID_GridChunk_Map.size(" + ChunkIDChunkMap.size() + ")";
-        }
-        if (UnsignedLongPowersOf2 == null) {
-            result += ",UnsignedLongPowersOf2==null";
-        } else {
-            result += ",UnsignedLongPowersOf2(" + UnsignedLongPowersOf2.toString() + ")";
+            result += ",ChunkIDChunkMap.size(" + ChunkIDChunkMap.size() + ")";
         }
         HashSet<Grids_AbstractGrid> grids;
         grids = ge.getGrids();
@@ -388,7 +375,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public File getDirectory(boolean handleOutOfMemoryError) {
         try {
             File result = getDirectory();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -418,7 +405,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public String getName(boolean handleOutOfMemoryError) {
         try {
             String result = Name;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -442,7 +429,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public void setName(String name, boolean handleOutOfMemoryError) {
         try {
             setName(name);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -472,7 +459,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public String getBasicDescription(boolean handleOutOfMemoryError) {
         try {
             String result = getBasicDescription();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -511,7 +498,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             ChunkIDChunkMap.put(chunkID, chunk);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -533,7 +520,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getNCols(boolean handleOutOfMemoryError) {
         try {
             long result = NCols;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -555,7 +542,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getNRows(boolean handleOutOfMemoryError) {
         try {
             long result = NRows;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -578,7 +565,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getNChunkRows(boolean handleOutOfMemoryError) {
         try {
             int result = NChunkRows;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -612,7 +599,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getNChunkCols(boolean handleOutOfMemoryError) {
         try {
             int result = NChunkCols;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -634,7 +621,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getNChunks(boolean handleOutOfMemoryError) {
         try {
             long result = getNChunks();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -681,7 +668,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNRows(boolean handleOutOfMemoryError) {
         try {
             int result = getChunkNRows();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -708,7 +695,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNRows(int chunkRow, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkNRows(chunkRow);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -746,7 +733,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNCols(boolean handleOutOfMemoryError) {
         try {
             int result = ChunkNCols;
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -769,7 +756,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNCols(int chunkCol, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkNCols(chunkCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -796,7 +783,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError, Grids_2D_ID_int chunkID) {
         try {
             int result = getChunkNCols(chunkCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -895,7 +882,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNRows(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkNRows(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -934,7 +921,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkNCols(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkNCols(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -972,7 +959,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             Grids_Dimensions result;
             result = getDimensions();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1003,7 +990,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getCellsize(boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getDimensions().getCellsize();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1027,7 +1014,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getCellsizeDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getCellsize(handleOutOfMemoryError).doubleValue();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1091,7 +1078,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkCol(double x, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkCol(x);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1125,7 +1112,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkCol(long col, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkCol(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1160,7 +1147,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getCol(double x, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(x);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1195,7 +1182,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getCol(BigDecimal x, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(x);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1241,7 +1228,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getCol(int chunkCol, int cellCol, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(chunkCol, cellCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1269,7 +1256,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getCol(int chunkCol, int cellCol, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(chunkCol, cellCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1304,7 +1291,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getCellCol(double x, boolean handleOutOfMemoryError) {
         try {
             int result = getCellCol(x);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1339,7 +1326,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getCellCol(long col, boolean handleOutOfMemoryError) {
         try {
             int result = getCellCol(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1371,7 +1358,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getCol(Random random, boolean handleOutOfMemoryError) {
         try {
             long result = getCol(random);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1421,7 +1408,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkRow(double y, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkRow(y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1456,7 +1443,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getChunkRow(long row, boolean handleOutOfMemoryError) {
         try {
             int result = getChunkRow(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1490,7 +1477,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(double y, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1524,7 +1511,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(BigDecimal y, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1568,7 +1555,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(int chunkRow, int cellRow, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(chunkRow, cellRow);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1596,7 +1583,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(int chunkRow, int cellRow, Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(chunkRow, cellRow);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(this, chunkID, handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(this, chunkID, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1627,7 +1614,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(int chunkRow, int cellRow, HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(chunkRow, cellRow);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(m, handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(m, handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1658,7 +1645,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final long getRow(Random random, boolean handleOutOfMemoryError) {
         try {
             long result = getRow(random);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1708,7 +1695,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getCellRow(double y, boolean handleOutOfMemoryError) {
         try {
             int result = getCellRow(y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1742,7 +1729,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final int getCellRow(long row, boolean handleOutOfMemoryError) {
         try {
             int result = getCellRow(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1776,7 +1763,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_2D_ID_long getCellID(long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getCellID(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1812,7 +1799,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_2D_ID_long getCellID(double x, double y, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getCellID(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1847,7 +1834,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_2D_ID_long getCellID(BigDecimal x, BigDecimal y, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getCellID(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -1887,11 +1874,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final void writeToFile(boolean swapToFileCache, boolean handleOutOfMemoryError) throws IOException {
         try {
             writeToFile(swapToFileCache);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+                if (!ge.swapChunk(handleOutOfMemoryError)) {
                     throw e;
                 }
                 writeToFileSwapping(swapToFileCache);
@@ -1972,41 +1959,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * Attempts to write to file a chunk in ChunkIDChunkMap. The chunks are
-     * iterated through in row major order.
+     * iterated through in row major order. Only chunks that are not single
+     * values chunks are written out. This method is low level and does not
+     * consider ge,NotToSwap. Other handling is required prior to calling this
+     * method in order to first prefer to not to swap those chunks in
+     * ge.NotToSwap.
      *
-     * @return Grids_2D_ID_int of the Grids_AbstractGridChunk which was swapped
-     * or null.
+     * @return Grids_2D_ID_int of the chunk which was swapped or null if there
+     * are no suitable chunks to swap.
      */
     public final Grids_2D_ID_int writeToFileChunk() {
         if (ChunkIDChunkMap.isEmpty()) {
             return null;
         }
         Grids_2D_ID_int chunkID;
-        // First try to swap any chunk not in ge.getNotToSwapData(). 
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToSwapData;
-        notToSwapData = ge.getNotToSwapData();
         Iterator<Grids_2D_ID_int> ite;
-        ite = ChunkIDChunkMap.keySet().iterator();
-        while (ite.hasNext()) {
-            chunkID = ite.next();
-            if (!isChunkSingleValueChunk(chunkID)) {
-                if (notToSwapData.containsKey(this)) {
-                    if (!notToSwapData.get(this).contains(chunkID)) {
-                        writeToFileChunk(chunkID);
-                        return chunkID;
-                    }
-                } else {
-                    writeToFileChunk(chunkID);
-                    return chunkID;
-                }
-            }
-        }
-        /**
-         * If not managed to swap any chunk not in ge.getNotToSwapData(), then
-         * issue a warning and swap one that is in ge.getNotToSwapData() or
-         * return null.
-         */
-        System.out.println("Not managed to swap any chunk in grid as they are all in ge.getNotToSwapData()!!!");
         ite = ChunkIDChunkMap.keySet().iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
@@ -2066,7 +2033,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
             if (isWorthSwapping(chunkID)) {
-                    writeToFileChunk(chunkID);
+                writeToFileChunk(chunkID);
             }
         }
     }
@@ -2109,9 +2076,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunk_AccountDetail();
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
-            potentialPartResult = ge.tryToEnsureThereIsEnoughMemoryToContinue_AccountDetail(handleOutOfMemoryError);
-            ge.combine(result, potentialPartResult);
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+            partResult = ge.checkAndMaybeFreeMemory_AccountDetail(handleOutOfMemoryError);
+            ge.combine(result, partResult);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2121,11 +2088,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 if (result.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
-                potentialPartResult = ge.initMemoryReserve_AccountDetail(handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
-                potentialPartResult = swapChunk_AccountDetail(handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = ge.initMemoryReserve_AccountDetail(handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                partResult = swapChunk_AccountDetail(handleOutOfMemoryError);
+                ge.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -2155,7 +2122,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             Grids_2D_ID_int result;
             result = swapChunk_AccountChunk();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2163,7 +2130,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 Grids_2D_ID_int result;
                 result = swapChunk_AccountChunk();
                 if (result == null) {
-                    if (ge.swapChunk_Account(false) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -2175,6 +2142,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
+    /**
+     * Attempt to swap a chunk and return true if swapped and false otherwise.
+     * This will first try to swap a chunk not in ge.NotToSwap.
+     *
+     * @return
+     */
     protected Grids_2D_ID_int swapChunk_AccountChunk() {
         Grids_2D_ID_int id;
         id = writeToFileChunk();
@@ -2201,14 +2174,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         return result;
     }
 
-    protected long swapChunks_Account(Set<Grids_2D_ID_int> b_ChunkID_Set) {
+    protected long swapChunks_Account(Set<Grids_2D_ID_int> chunkIDs) {
         long result = 0L;
-        Iterator<Grids_2D_ID_int> a_Iterator = b_ChunkID_Set.iterator();
-        Grids_2D_ID_int id;
-        while (a_Iterator.hasNext()) {
-            id = a_Iterator.next();
-            if (writeToFileChunk(id)) {
-                clearFromCacheChunk(id);
+        Iterator<Grids_2D_ID_int> ite = chunkIDs.iterator();
+        Grids_2D_ID_int chunkID;
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            if (writeToFileChunk(chunkID)) {
+                clearFromCacheChunk(chunkID);
                 result++;
             }
         }
@@ -2216,11 +2189,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     public Grids_2D_ID_int swapChunkExcept_AccountChunk(
-            HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+            HashSet<Grids_2D_ID_int> chunkIDs,
+            boolean checkAndMaybeFreeMemory,
+            boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result;
             result = swapChunkExcept_AccountChunk(chunkIDs);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2228,7 +2205,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 Grids_2D_ID_int result;
                 result = swapChunkExcept_AccountChunk(chunkIDs);
                 if (result == null) {
-                    if (ge.swapChunk_Account(false) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -2242,22 +2219,22 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected Grids_2D_ID_int swapChunkExcept_AccountChunk(
             HashSet<Grids_2D_ID_int> chunkIDs) {
-        Grids_2D_ID_int id = null;
+        Grids_2D_ID_int chunkID = null;
         int chunkRow;
         int chunkCol;
         for (chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
             for (chunkCol = 0; chunkCol < NChunkCols; chunkCol++) {
-                id = new Grids_2D_ID_int(chunkRow, chunkCol);
-                if (!chunkIDs.contains(id)) {
-                    if (isWorthSwapping(id)) {
-                            writeToFileChunk(id);
-                            clearFromCacheChunk(id);
-                            return id;
+                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                if (!chunkIDs.contains(chunkID)) {
+                    if (isWorthSwapping(chunkID)) {
+                        writeToFileChunk(chunkID);
+                        clearFromCacheChunk(chunkID);
+                        return chunkID;
                     }
                 }
             }
         }
-        return id;
+        return chunkID;
     }
 
     /**
@@ -2281,7 +2258,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public void swapChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             swapChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -2294,14 +2271,19 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Swaps the chunk with chunkID to file.
+     * Swaps the chunk with chunkID to file. This will return true if the chunk
+     * is swapped and false otherwise. It is not sensible to swap some types of
+     * chunk and in these cases false is returned.
      *
      * @param chunkID
+     * @return
      */
-    protected void swapChunk(Grids_2D_ID_int chunkID) {
+    protected boolean swapChunk(Grids_2D_ID_int chunkID) {
         if (writeToFileChunk(chunkID)) {
             clearFromCacheChunk(chunkID);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -2311,60 +2293,38 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
+     * @return
      */
-    public void swapChunk(boolean handleOutOfMemoryError) {
+    public boolean swapChunk(boolean handleOutOfMemoryError) {
         try {
-            swapChunk();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
-        } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                swapChunk(handleOutOfMemoryError);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    protected void swapChunk() {
-        Grids_2D_ID_int id;
-        id = writeToFileChunk();
-        if (id != null) {
-            clearFromCacheChunk(id);
-        }
-    }
-
-    public long swapChunk_Account(boolean handleOutOfMemoryError) {
-        try {
-            long result = swapChunk_Account();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            boolean result = swapChunk();
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                long result = swapChunk_Account();
-                if (result < 1L) {
-                    if (ge.swapChunk_Account(false) < 1L) {
-                        throw e;
-                    }
-                }
-                result += ge.initMemoryReserve_Account(handleOutOfMemoryError);
-                return result;
+                freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
+                return swapChunk(handleOutOfMemoryError);
             } else {
                 throw e;
             }
         }
     }
 
-    public long swapChunk_Account() {
-        Grids_2D_ID_int id;
-        id = writeToFileChunk();
-        if (id != null) {
-            clearFromCacheChunk(id);
-            return 1L;
+    /**
+     * Attempt to swap a chunk and return true if swapped and false otherwise.
+     * This will first try to swap a chunk not in ge.NotToSwap.
+     *
+     * @return
+     */
+    protected boolean swapChunk() {
+        Grids_2D_ID_int chunkID;
+        chunkID = writeToFileChunk();
+        if (chunkID != null) {
+            clearFromCacheChunk(chunkID);
+            return true;
         }
-        return 0L;
+        return false;
     }
 
     /**
@@ -2383,7 +2343,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2394,11 +2354,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     result = ge.swapChunkExcept_AccountDetail(
                             this, chunkID, false);
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
-                potentialPartResult = ge.initMemoryReserve_AccountDetail(this, chunkID, handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
-                potentialPartResult = swapChunkExcept_AccountDetail(chunkID);
-                ge.combine(result, potentialPartResult);
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = ge.initMemoryReserve_AccountDetail(this, chunkID, handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                partResult = swapChunkExcept_AccountDetail(chunkID);
+                ge.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -2444,7 +2404,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = swapChunkExcept_AccountChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2494,11 +2454,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunksExcept_AccountDetail(
+                Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2514,11 +2476,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
-                potentialPartResult = ge.initMemoryReserve_AccountDetail(this, chunkID, handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
-                potentialPartResult = swapChunksExcept_AccountDetail(chunkID, handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = ge.initMemoryReserve_AccountDetail(this, chunkID, handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                partResult = swapChunksExcept_AccountDetail(chunkID, handleOutOfMemoryError);
+                ge.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -2561,7 +2523,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public void swapChunks(boolean handleOutOfMemoryError) {
         try {
             swapChunks();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -2603,7 +2565,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             long result = swapChunksExcept_Account(chunks);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2624,6 +2586,49 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
+    /**
+     * Attempts to write to file and clear from the cache all
+     * Grid2DSquareCellChunkAbstracts in this except that with ID a_ChunkID.
+     *
+     * @param chunkIDs
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     * @return The number of Grids_AbstractGridChunk swapped.
+     */
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
+        swapChunksExcept_AccountDetail(
+                HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+        try {
+            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+            result = swapChunksExcept_AccountDetail(chunkIDs);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+                result = swapChunkExcept_AccountDetail(chunkIDs);
+                if (result.isEmpty()) {
+                    ge.addToNotToSwap(this, chunkIDs);
+                    result = ge.swapChunk_AccountDetail(
+                            ge.HandleOutOfMemoryErrorFalse);
+                    if (result.isEmpty()) {
+                        throw e;
+                    }
+                }
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = ge.initMemoryReserve_AccountDetail(this, chunkIDs, handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                partResult = swapChunksExcept_AccountDetail(chunkIDs, handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                return result;
+            } else {
+                throw e;
+            }
+        }
+    }
+        
     /**
      * Attempts to write to file and clear from the cache all chunks in this
      * except that with chunk IDs in chunkIDs.
@@ -2662,15 +2667,19 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * chunkID.
      *
      * @param chunkID
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError
      * @return 1L if a chunk was swapped and 0 otherwise.
      */
     public final long swapChunkExcept_Account(
             Grids_2D_ID_int chunkID,
+            boolean checkAndMaybeFreeMemory,
             boolean handleOutOfMemoryError) {
         try {
             long result = swapChunkExcept_Account(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2731,7 +2740,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             long result = swapChunksExcept_Account(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2805,7 +2814,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkIDs);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2813,7 +2822,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunkExcept_AccountDetail(chunkIDs);
                 if (result == null) {
-                    if (ge.swapChunk_Account(false) < 1L) {
+                    if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                         throw e;
                     }
                 }
@@ -2876,7 +2885,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunks_AccountDetail();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2889,11 +2898,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> potentialPartResult;
-                potentialPartResult = ge.initMemoryReserve_AccountDetail(handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
-                potentialPartResult = swapChunks_AccountDetail(handleOutOfMemoryError);
-                ge.combine(result, potentialPartResult);
+                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = ge.initMemoryReserve_AccountDetail(handleOutOfMemoryError);
+                ge.combine(result, partResult);
+                partResult = swapChunks_AccountDetail(handleOutOfMemoryError);
+                ge.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -2956,15 +2965,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             long result = swapChunks_Account(
                     cri0, cci0, cri1, cci1);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                long result = swapChunk_Account();
-                if (result < 1) {
+                if (!swapChunk()) {
                     throw e;
                 }
+                long result = 1;
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 result += swapChunks_Account(
                         cri0, cci0, cri1, cci1, handleOutOfMemoryError);
@@ -3051,11 +3060,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected final boolean isWorthSwapping(Grids_2D_ID_int chunkID) {
         if (isInCache(chunkID)) {
-            if (isChunkSingleValueChunk(chunkID)) {
-                return false;
-            } else {
-                return true;
-            }
+            return !isChunkSingleValueChunk(chunkID);
         }
         return false;
     }
@@ -3074,7 +3079,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             clearFromCacheChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -3109,7 +3114,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected final void clearFromCacheChunks(boolean handleOutOfMemoryError) {
         try {
             clearFromCacheChunks();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -3146,7 +3151,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final void loadIntoCacheChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             loadIntoCacheChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(chunkID, handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(chunkID, handleOutOfMemoryError);
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -3182,7 +3187,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_2D_ID_long[] getCellIDs(double x, double y, double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(x, y, distance);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3228,7 +3233,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_2D_ID_long[] getCellIDs(long row, long col, double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(row, col, distance);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3276,7 +3281,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_long[] getCellIDs(double x, double y, long row, long col, double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(x, y, row, col, distance);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3346,7 +3351,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_long getNearestCellID(double x, double y, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3385,7 +3390,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_long getNearestCellID(long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3426,7 +3431,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_long getNearestCellID(double x, double y, long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(x, y, row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3501,7 +3506,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getHeightDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getHeightDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3530,7 +3535,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getHeightBigDecimal(boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getHeightBigDecimal();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3559,7 +3564,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getWidthDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getWidthDouble();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3588,7 +3593,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getWidthBigDecimal(boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getWidthBigDecimal();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3620,7 +3625,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(BigDecimal x, BigDecimal y, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3658,7 +3663,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(double x, double y, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3693,7 +3698,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(long row, long col, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3728,7 +3733,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(chunkRow, chunkCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3761,7 +3766,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(Grids_2D_ID_long a_CellID, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(a_CellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3792,7 +3797,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(Grids_2D_ID_int a_ChunkID, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(a_ChunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3829,7 +3834,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final boolean isInGrid(int chunkRow, int chunkCol, int chunkCellRowIndex, int chunkCellColIndex, boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3871,12 +3876,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getCellXBigDecimal(long col, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunk_Account(false) < 1L) {
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -3900,7 +3905,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getCellXBigDecimal(long col, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3937,7 +3942,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getCellXDouble(long col, boolean handleOutOfMemoryError) {
         try {
             double result = getCellXDouble(col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -3964,7 +3969,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getCellXDouble(int cellCol, int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             double result = getCellXDouble(cellCol, chunkCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4007,7 +4012,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4035,7 +4040,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellXBigDecimal(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4068,7 +4073,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getCellXDouble(Grids_2D_ID_long cellID, boolean handleOutOfMemoryError) {
         try {
             double result = getCellXDouble(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4094,7 +4099,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkCol, boolean handleOutOfMemoryError) {
         try {
             double result = getCellXDouble(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4127,7 +4132,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final BigDecimal getCellYBigDecimal(long row, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4152,7 +4157,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4189,7 +4194,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double getCellYDouble(long row, boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(row);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4217,7 +4222,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(cellRow, chunkRow);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4262,7 +4267,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4288,7 +4293,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             BigDecimal result = getCellYBigDecimal(cellID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4322,7 +4327,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4348,7 +4353,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkCol, boolean handleOutOfMemoryError) {
         try {
             double result = getCellYDouble(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4385,7 +4390,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double[] getGridBounds(boolean handleOutOfMemoryError) {
         try {
             double[] result = getGridBounds();
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4435,7 +4440,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean handleOutOfMemoryError) {
         try {
             double[] result = getCellBoundsDoubleArray(halfCellsize, row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4481,7 +4486,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final double[] getCellBoundsDoubleArray(double halfCellsize, double x, double y, boolean handleOutOfMemoryError) {
         try {
             double[] result = getCellBoundsDoubleArray(halfCellsize, x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4536,7 +4541,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             BigDecimal halfCellsize, BigDecimal x, BigDecimal y, boolean handleOutOfMemoryError) {
         try {
             Grids_Dimensions result = getCellDimensions(halfCellsize, x, y);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4592,7 +4597,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             BigDecimal halfCellsize, long row, long col, boolean handleOutOfMemoryError) {
         try {
             Grids_Dimensions result = getCellDimensions(halfCellsize, row, col);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4638,7 +4643,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_int getNextChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getNextChunk(chunkID, nChunkRows, nChunkCols);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4683,7 +4688,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_int getPreviousChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = getPreviousChunk(chunkID, nChunkRows, nChunkCols);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4741,20 +4746,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         throw e;
     }
 
-    protected void freeSomeMemoryAndResetReserve(int chunkRow, int chunkCol, OutOfMemoryError e) {
+    protected void freeSomeMemoryAndResetReserve(
+            int chunkRow, int chunkCol, OutOfMemoryError e) {
         //env.clearMemoryReserve();
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         freeSomeMemoryAndResetReserve(chunkID, e);
     }
 
-    protected void freeSomeMemoryAndResetReserve(HashSet<Grids_2D_ID_int> chunkIDs, OutOfMemoryError e) {
+    protected void freeSomeMemoryAndResetReserve(
+            HashSet<Grids_2D_ID_int> chunkIDs, OutOfMemoryError e) {
         if (ge.swapChunkExcept_Account(this, chunkIDs, false) < 1L) {
             throw e;
         }
         ge.initMemoryReserve(this, chunkIDs, ge.HandleOutOfMemoryErrorTrue);
     }
 
-    protected void freeSomeMemoryAndResetReserve(Grids_2D_ID_int chunkID, OutOfMemoryError e) {
+    protected void freeSomeMemoryAndResetReserve(
+            Grids_2D_ID_int chunkID, OutOfMemoryError e) {
         if (ge.swapChunkExcept_Account(this, false) < 1L) {
             if (ge.swapChunkExcept_Account(this, chunkID, false) < 1L) {
                 throw e;
@@ -4763,8 +4771,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ge.initMemoryReserve(this, chunkID, ge.HandleOutOfMemoryErrorTrue);
     }
 
-    protected void freeSomeMemoryAndResetReserve(boolean handleOutOfMemoryError, OutOfMemoryError e) {
-        if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+    protected void freeSomeMemoryAndResetReserve(
+            boolean handleOutOfMemoryError, OutOfMemoryError e) {
+        if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
             throw e;
         }
         ge.initMemoryReserve(handleOutOfMemoryError);
@@ -4782,16 +4791,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> getChunkIDChunkMap() {
         return ChunkIDChunkMap;
-    }
-
-    /**
-     * @return the UnsignedLongPowersOf2
-     */
-    public Grids_UnsignedLongPowersOf2 getUnsignedLongPowersOf2() {
-        if (UnsignedLongPowersOf2 == null) {
-            UnsignedLongPowersOf2 = new Grids_UnsignedLongPowersOf2(false);
-        }
-        return UnsignedLongPowersOf2;
     }
 
     protected void initDimensions(Grids_ESRIAsciiGridHeader header,
@@ -4863,7 +4862,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGridChunk result = getGridChunk(chunkID);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -4899,7 +4898,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_AbstractGridChunk getGridChunk(int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
         try {
             Grids_AbstractGridChunk result = getGridChunk(chunkRow, chunkCol);
-            ge.tryToEnsureThereIsEnoughMemoryToContinue(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
