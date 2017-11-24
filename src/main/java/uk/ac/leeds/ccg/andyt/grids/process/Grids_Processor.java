@@ -1804,11 +1804,11 @@ public class Grids_Processor extends Grids_Object {
                     weight,
                     handleOutOfMemoryError);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 addToGrid(
@@ -1817,7 +1817,7 @@ public class Grids_Processor extends Grids_Object {
                         weight,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
