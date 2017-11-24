@@ -1113,8 +1113,12 @@ public class Grids_Environment
             return checkAndMaybeFreeMemory_SwapAny();
         } else {
             do {
-                if (!swapChunkExcept(NotToSwap)) {
-                    return false;
+                if (swapChunkExcept(NotToSwap)) {
+                    if (getTotalFreeMemory() < Memory_Threshold) {
+                        return true;
+                    }
+                } else {
+                    break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             return checkAndMaybeFreeMemory_SwapAny();
