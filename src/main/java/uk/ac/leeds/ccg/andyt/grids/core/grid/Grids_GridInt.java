@@ -1224,13 +1224,10 @@ public class Grids_GridInt
      */
     @Override
     protected Grids_AbstractGridChunkInt getGridChunk(
-            Grids_2D_ID_int chunkID
-    ) {
-        boolean containsKey;
+            Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {
-            containsKey = ChunkIDChunkMap.containsKey(chunkID);
-            if (!containsKey) {
+            if (ChunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
             return (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);

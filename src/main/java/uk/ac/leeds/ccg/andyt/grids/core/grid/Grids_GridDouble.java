@@ -1167,13 +1167,10 @@ public class Grids_GridDouble
      */
     @Override
     protected Grids_AbstractGridChunkDouble getGridChunk(
-            Grids_2D_ID_int chunkID
-    ) {
-        boolean containsKey;
+            Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {
-            containsKey = ChunkIDChunkMap.containsKey(chunkID);
-            if (!containsKey) {
+            if (ChunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
             return (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
