@@ -2716,7 +2716,7 @@ public class Grids_Environment
         Iterator<Grids_AbstractGrid> ite = Grids.iterator();
         while (ite.hasNext()) {
             partResult = ite.next().swapChunks_AccountDetail(
-                    HandleOutOfMemoryErrorFalse);
+                    false, HandleOutOfMemoryErrorFalse);
             combine(result,
                     partResult);
         }
@@ -2740,7 +2740,7 @@ public class Grids_Environment
         while (ite.hasNext()) {
             g = ite.next();
             partResult = g.swapChunksExcept_AccountDetail(
-                    m.get(g), HandleOutOfMemoryErrorFalse);
+                    m.get(g), false, HandleOutOfMemoryErrorFalse);
             combine(result, partResult);
         }
         return result;
@@ -2770,10 +2770,14 @@ public class Grids_Environment
                         }
                     }
                 } else {
-                    result += checkAndMaybeFreeMemory_Account(handleOutOfMemoryError);
+                    result += checkAndMaybeFreeMemory_Account(
+                            handleOutOfMemoryError);
                 }
             } catch (OutOfMemoryError e) {
-                // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
+                /**
+                 * Set handleOutOfMemoryError = false to exit method by throwing
+                 * OutOfMemoryError
+                 */
                 handleOutOfMemoryError = false;
                 throw e;
             }
@@ -2828,7 +2832,10 @@ public class Grids_Environment
                     checkAndMaybeFreeMemory(handleOutOfMemoryError);
                 }
             } catch (OutOfMemoryError e) {
-                // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
+                /**
+                 * Set handleOutOfMemoryError = false to exit method by throwing
+                 * OutOfMemoryError
+                 */
                 handleOutOfMemoryError = false;
                 throw e;
             }
@@ -2967,7 +2974,7 @@ public class Grids_Environment
             if (swapChunkExcept(NotToSwap)) {
                 return true;
             }
-            if (g.swapChunk(HandleOutOfMemoryErrorFalse)) {
+            if (g.swapChunk(false, HandleOutOfMemoryErrorFalse)) {
                 return true;
             }
         }
@@ -3029,7 +3036,7 @@ public class Grids_Environment
         while (ite.hasNext()) {
             bg = ite.next();
             if (bg != g) {
-                if (bg.swapChunk(HandleOutOfMemoryErrorFalse)) {
+                if (bg.swapChunk(false, HandleOutOfMemoryErrorFalse)) {
                     return true;
                 }
             }
@@ -3049,13 +3056,13 @@ public class Grids_Environment
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> toCombine) {
         if (toCombine != null) {
             if (!toCombine.isEmpty()) {
-                Set<Grids_AbstractGrid> toGetCombined_KeySet = toGetCombined.keySet();
-                Set<Grids_AbstractGrid> toCombine_KeySet = toCombine.keySet();
-                Iterator<Grids_AbstractGrid> toCombine_KeySet_Iterator = toCombine_KeySet.iterator();
+                Set<Grids_AbstractGrid> toGetCombinedKS = toGetCombined.keySet();
+                Set<Grids_AbstractGrid> toCombineKS = toCombine.keySet();
+                Iterator<Grids_AbstractGrid> ite = toCombineKS.iterator();
                 Grids_AbstractGrid g;
-                while (toCombine_KeySet_Iterator.hasNext()) {
-                    g = toCombine_KeySet_Iterator.next();
-                    if (toGetCombined_KeySet.contains(g)) {
+                while (ite.hasNext()) {
+                    g = ite.next();
+                    if (toGetCombinedKS.contains(g)) {
                         toGetCombined.get(g).addAll(toCombine.get(g));
                     } else {
                         toGetCombined.put(g, toCombine.get(g));
@@ -3082,7 +3089,7 @@ public class Grids_Environment
                 HashSet<Grids_2D_ID_int> chunkIDs;
                 chunkIDs = NotToSwap.get(g);
                 result = g.swapChunkExcept_AccountDetail(
-                        chunkIDs, HandleOutOfMemoryErrorFalse);
+                        chunkIDs, false, HandleOutOfMemoryErrorFalse);
                 if (!result.isEmpty()) {
                     return result;
                 }
@@ -3167,8 +3174,8 @@ public class Grids_Environment
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            result = g.swapChunkExcept_AccountDetail(
-                    chunkID, HandleOutOfMemoryErrorFalse);
+            result = g.swapChunkExcept_AccountDetail(chunkID, false, 
+                    HandleOutOfMemoryErrorFalse);
             if (!result.isEmpty()) {
                 HashSet<Grids_2D_ID_int> chunkIDs = new HashSet<>(1);
                 chunkIDs.add(chunkID);
@@ -3259,9 +3266,9 @@ public class Grids_Environment
     protected boolean swapChunkExcept(
             Grids_2D_ID_int chunkID) {
         Iterator<Grids_AbstractGrid> ite = Grids.iterator();
-        Grids_AbstractGrid g;
+        //Grids_AbstractGrid g;
         while (ite.hasNext()) {
-            g = ite.next();
+            //g = ite.next();
             if (swapChunkExcept_Account(chunkID) > 0) {
                 return true;
             }
@@ -3357,7 +3364,8 @@ public class Grids_Environment
                     return result;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+            chunkID = g.swapChunk_AccountChunk(
+                    false, HandleOutOfMemoryErrorFalse);
             if (chunkID != null) {
                 result_ChunkID_HashSet.add(chunkID);
                 result.put(g, result_ChunkID_HashSet);
@@ -3396,7 +3404,8 @@ public class Grids_Environment
                     return result;
                 }
             } else {
-                chunkID = g.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+                chunkID = g.swapChunk_AccountChunk(
+                        false, HandleOutOfMemoryErrorFalse);
                 if (chunkID != null) {
                     resultPart.add(chunkID);
                     result.put(g, resultPart);
@@ -3427,14 +3436,15 @@ public class Grids_Environment
             gb = ite.next();
             if (g == gb) {
                 chunkIDb = gb.swapChunkExcept_AccountChunk(
-                        chunkID, HandleOutOfMemoryErrorFalse);
+                        chunkID, false, HandleOutOfMemoryErrorFalse);
                 if (chunkIDb != null) {
                     resultPart.add(chunkIDb);
                     result.put(g, resultPart);
                     return result;
                 }
             } else {
-                chunkIDb = g.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+                chunkIDb = g.swapChunk_AccountChunk(
+                        false, HandleOutOfMemoryErrorFalse);
                 if (chunkIDb != null) {
                     resultPart.add(chunkIDb);
                     result.put(g, resultPart);
@@ -3498,7 +3508,8 @@ public class Grids_Environment
         while (ite.hasNext()) {
             gb = ite.next();
             if (g != gb) {
-                chunkID = gb.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+                chunkID = gb.swapChunk_AccountChunk(
+                        false, HandleOutOfMemoryErrorFalse);
                 if (chunkID != null) {
                     resultPart.add(chunkID);
                     result.put(g, resultPart);
@@ -3530,7 +3541,8 @@ public class Grids_Environment
                     return 1L;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+            chunkID = g.swapChunk_AccountChunk(
+                    false, HandleOutOfMemoryErrorFalse);
             if (chunkID != null) {
                 return 1L;
             }
@@ -3555,7 +3567,8 @@ public class Grids_Environment
                     return true;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+            chunkID = g.swapChunk_AccountChunk(
+                    false, HandleOutOfMemoryErrorFalse);
             if (chunkID != null) {
                 return true;
             }
@@ -3582,7 +3595,8 @@ public class Grids_Environment
             result = swapChunkExcept_Account(g, chunkIDs);
             try {
                 if (result < 1) {
-                    Account account = checkAndMaybeFreeMemory_Account(g, chunkIDs);
+                    Account account;
+                    account = checkAndMaybeFreeMemory_Account(g, chunkIDs);
                     if (account != null) {
                         if (account.Success) {
                             result += account.Detail;
@@ -3595,7 +3609,10 @@ public class Grids_Environment
                             g, chunkIDs, handleOutOfMemoryError);
                 }
             } catch (OutOfMemoryError e) {
-                // Set handleOutOfMemoryError = false to exit method by throwing OutOfMemoryError
+                /**
+                 * Set handleOutOfMemoryError = false to exit method by throwing
+                 * OutOfMemoryError
+                 */
                 handleOutOfMemoryError = false;
                 throw e;
             }
@@ -3648,7 +3665,8 @@ public class Grids_Environment
                         //Check it can be swapped
                         chunkb = m.get(chunkID);
                         if (chunkb != null) {
-                            gb.swapChunk(chunkID, HandleOutOfMemoryErrorFalse);
+                            gb.swapChunk(chunkID, false,
+                                    HandleOutOfMemoryErrorFalse);
                             return 1;
                         }
                     }
@@ -3789,8 +3807,7 @@ public class Grids_Environment
      * _Grid2DSquareCell.
      * @param g Grids_AbstractGrid that's chunks are not to be swapped.
      */
-    protected long swapChunkExcept_Account(
-            Grids_AbstractGrid g) {
+    protected long swapChunkExcept_Account(Grids_AbstractGrid g) {
         Iterator<Grids_AbstractGrid> ite;
         ite = getGrids().iterator();
         Grids_AbstractGrid gb;
@@ -3798,7 +3815,8 @@ public class Grids_Environment
             gb = ite.next();
             if (gb != g) {
                 Grids_2D_ID_int chunkID;
-                chunkID = gb.swapChunk_AccountChunk(HandleOutOfMemoryErrorFalse);
+                chunkID = gb.swapChunk_AccountChunk(
+                        false, HandleOutOfMemoryErrorFalse);
                 if (chunkID != null) {
                     return 1L;
                 }
@@ -3817,9 +3835,10 @@ public class Grids_Environment
      * Grids_AbstractGridChunk._ChunkID swapped.
      * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunksExcept_AccountDetail(
-            Grids_2D_ID_int chunkID,
-            boolean handleOutOfMemoryError) {
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(
+                    Grids_2D_ID_int chunkID,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkID);
@@ -3856,8 +3875,7 @@ public class Grids_Environment
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
                 partResult = initMemoryReserve_AccountDetail(
-                        chunkID,
-                        handleOutOfMemoryError);
+                        chunkID, handleOutOfMemoryError);
                 combine(result, partResult);
                 partResult = swapChunksExcept_AccountDetail(
                         chunkID, handleOutOfMemoryError);
@@ -3887,7 +3905,7 @@ public class Grids_Environment
             Grids_AbstractGrid g = ite.next();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             partResult = g.swapChunksExcept_AccountDetail(
-                    chunkID, false);
+                    chunkID, false, HandleOutOfMemoryErrorFalse);
             combine(result, partResult);
         }
         return result;
@@ -3943,8 +3961,7 @@ public class Grids_Environment
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
                 partResult = initMemoryReserve_AccountDetail(
-                        g,
-                        handleOutOfMemoryError);
+                        g, handleOutOfMemoryError);
                 combine(result, partResult);
                 partResult = swapChunksExcept_AccountDetail(
                         g, handleOutOfMemoryError);
@@ -3976,7 +3993,8 @@ public class Grids_Environment
         while (ite.hasNext()) {
             gb = ite.next();
             if (gb != g) {
-                partResult = gb.swapChunks_AccountDetail(false);
+                partResult = gb.swapChunks_AccountDetail(
+                        false, HandleOutOfMemoryErrorFalse);
                 combine(result, partResult);
             }
         }
@@ -4057,8 +4075,7 @@ public class Grids_Environment
                     boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-            result = swapChunksExcept_AccountDetail(
-                    g, chunkID);
+            result = swapChunksExcept_AccountDetail(g, chunkID);
             try {
                 if (result.isEmpty()) {
                     AccountDetail account;
@@ -4196,19 +4213,22 @@ public class Grids_Environment
         while (ite.hasNext()) {
             bg = ite.next();
             if (bg == g) {
-                partResult = bg.swapChunksExcept_AccountDetail(chunkID, false);
+                partResult = bg.swapChunksExcept_AccountDetail(
+                        chunkID, false, HandleOutOfMemoryErrorFalse);
                 combine(result, partResult);
             } else {
-                partResult = bg.swapChunks_AccountDetail(false);
+                partResult = bg.swapChunks_AccountDetail(false,
+                        HandleOutOfMemoryErrorFalse);
                 combine(result, partResult);
             }
         }
         return result;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> swapChunksExcept_AccountDetail(
-            Grids_AbstractGrid g,
-            HashSet<Grids_2D_ID_int> chunkIDs) {
+    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(
+                    Grids_AbstractGrid g,
+                    HashSet<Grids_2D_ID_int> chunkIDs) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>();
         Iterator<Grids_AbstractGrid> ite;
@@ -4218,18 +4238,19 @@ public class Grids_Environment
         while (ite.hasNext()) {
             gb = ite.next();
             if (gb != g) {
-                partResult = gb.swapChunks_AccountDetail(false);
+                partResult = gb.swapChunks_AccountDetail(false, false);
                 combine(result, partResult);
             } else {
                 HashSet<Grids_2D_ID_int> chunks;
                 chunks = g.getChunkIDs(false);
-                Grids_2D_ID_int id;
+                Grids_2D_ID_int chunkID;
                 Iterator<Grids_2D_ID_int> ite2;
                 ite2 = chunks.iterator();
                 while (ite2.hasNext()) {
-                    id = ite2.next();
-                    if (!chunkIDs.contains(id)) {
-                        partResult = swapChunksExcept_AccountDetail(id, false);
+                    chunkID = ite2.next();
+                    if (!chunkIDs.contains(chunkID)) {
+                        partResult = swapChunksExcept_AccountDetail(
+                                chunkID, false);
                         combine(result, partResult);
                     }
                 }
@@ -4250,7 +4271,6 @@ public class Grids_Environment
     protected long swapChunksExcept_Account(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
-        boolean handleOutOfMemoryError = false;
         long result = 0L;
         Iterator<Grids_AbstractGrid> ite;
         ite = Grids.iterator();
@@ -4259,14 +4279,14 @@ public class Grids_Environment
             gb = ite.next();
             if (gb != g) {
                 int cri0 = 0;
-                int cri1 = gb.getNChunkRows(handleOutOfMemoryError) - 1;
+                int cri1 = gb.getNChunkRows(HandleOutOfMemoryErrorFalse) - 1;
                 int cci0 = 0;
-                int cci1 = gb.getNChunkCols(handleOutOfMemoryError) - 1;
+                int cci1 = gb.getNChunkCols(HandleOutOfMemoryErrorFalse) - 1;
                 result += gb.swapChunks_Account(
-                        cri0, cci0, cri1, cci1, handleOutOfMemoryError);
+                        cri0, cci0, cri1, cci1, HandleOutOfMemoryErrorFalse);
             } else {
                 result += gb.swapChunksExcept_Account(
-                        chunkIDs, handleOutOfMemoryError);
+                        chunkIDs, false, HandleOutOfMemoryErrorFalse);
             }
         }
         return result;
@@ -4329,7 +4349,8 @@ public class Grids_Environment
         while (ite.hasNext()) {
             g = ite.next();
             chunkIDs = m.get(g);
-            result += g.swapChunksExcept_Account(chunkIDs, false);
+            result += g.swapChunksExcept_Account(chunkIDs, false,
+                    HandleOutOfMemoryErrorFalse);
         }
         return result;
     }

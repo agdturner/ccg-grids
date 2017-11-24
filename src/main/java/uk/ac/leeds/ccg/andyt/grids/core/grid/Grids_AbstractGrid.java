@@ -2114,15 +2114,19 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError
      * @return
      */
     public Grids_2D_ID_int swapChunk_AccountChunk(
+            boolean checkAndMaybeFreeMemory,
             boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result;
             result = swapChunk_AccountChunk();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2135,7 +2139,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     }
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                return swapChunk_AccountChunk(handleOutOfMemoryError);
+                return swapChunk_AccountChunk(
+                        checkAndMaybeFreeMemory, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -2253,17 +2258,24 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Swaps the chunk with chunkID to file.
      *
      * @param chunkID
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError
      */
-    public void swapChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public void swapChunk(
+            Grids_2D_ID_int chunkID,
+            boolean checkAndMaybeFreeMemory,
+            boolean handleOutOfMemoryError) {
         try {
             swapChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                swapChunk(chunkID, handleOutOfMemoryError);
+                swapChunk(chunkID, checkAndMaybeFreeMemory,
+                        handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -2290,21 +2302,27 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Attempts to write to file and clear from the cache any chunk in this.
      * This is one of the lowest level memory handling operation of this class.
      *
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public boolean swapChunk(boolean handleOutOfMemoryError) {
+    public boolean swapChunk(
+            boolean checkAndMaybeFreeMemory,
+            boolean handleOutOfMemoryError) {
         try {
             boolean result = swapChunk();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return swapChunk(handleOutOfMemoryError);
+                return swapChunk(checkAndMaybeFreeMemory,
+                        handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -2332,6 +2350,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grids_AbstractGridChunk in this._AbstractGrid2DSquareCell_HashSet.
      *
      * @param chunkID A Grids_2D_ID_int not to be swapped
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -2339,11 +2358,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(
-                    Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+                    Grids_2D_ID_int chunkID,
+                    boolean checkAndMaybeFreeMemory,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkID);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2401,10 +2424,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     public Grids_2D_ID_int swapChunkExcept_AccountChunk(
             Grids_2D_ID_int chunkID,
+            boolean checkAndMaybeFreeMemory,
             boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_int result = swapChunkExcept_AccountChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2449,18 +2475,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grid2DSquareCellChunkAbstracts in this except that with ID a_ChunkID.
      *
      * @param chunkID
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunksExcept_AccountDetail(
-                Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(
+                    Grids_2D_ID_int chunkID,
+                    boolean checkAndMaybeFreeMemory,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkID);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2469,17 +2500,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 result = swapChunkExcept_AccountDetail(chunkID);
                 if (result.isEmpty()) {
                     result = ge.swapChunkExcept_AccountDetail(
-                            this,
-                            chunkID,
-                            false);
+                            this, chunkID, false);
                     if (result.isEmpty()) {
                         throw e;
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(this, chunkID, handleOutOfMemoryError);
+                partResult = ge.initMemoryReserve_AccountDetail(
+                        this, chunkID, handleOutOfMemoryError);
                 ge.combine(result, partResult);
-                partResult = swapChunksExcept_AccountDetail(chunkID, handleOutOfMemoryError);
+                partResult = swapChunksExcept_AccountDetail(
+                        chunkID, checkAndMaybeFreeMemory, handleOutOfMemoryError);
                 ge.combine(result, partResult);
                 return result;
             } else {
@@ -2562,10 +2593,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public long swapChunksExcept_Account(
             HashSet<Grids_2D_ID_int> chunks,
+            boolean checkAndMaybeFreeMemory,
             boolean handleOutOfMemoryError) {
         try {
             long result = swapChunksExcept_Account(chunks);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2577,8 +2611,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                result += ge.initMemoryReserve_Account(this, chunks, handleOutOfMemoryError);
-                result += swapChunksExcept_Account(chunks, handleOutOfMemoryError);
+                result += ge.initMemoryReserve_Account(
+                        this, chunks, handleOutOfMemoryError);
+                result += swapChunksExcept_Account(chunks,
+                        checkAndMaybeFreeMemory, handleOutOfMemoryError);
                 return result;
             } else {
                 throw e;
@@ -2591,18 +2627,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grid2DSquareCellChunkAbstracts in this except that with ID a_ChunkID.
      *
      * @param chunkIDs
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
-    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> 
-        swapChunksExcept_AccountDetail(
-                HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+    public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+            swapChunksExcept_AccountDetail(
+                    HashSet<Grids_2D_ID_int> chunkIDs,
+                    boolean checkAndMaybeFreeMemory,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkIDs);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2618,9 +2659,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(this, chunkIDs, handleOutOfMemoryError);
+                partResult = ge.initMemoryReserve_AccountDetail(
+                        this, chunkIDs, handleOutOfMemoryError);
                 ge.combine(result, partResult);
-                partResult = swapChunksExcept_AccountDetail(chunkIDs, handleOutOfMemoryError);
+                partResult = swapChunksExcept_AccountDetail(
+                        chunkIDs, checkAndMaybeFreeMemory,
+                        handleOutOfMemoryError);
                 ge.combine(result, partResult);
                 return result;
             } else {
@@ -2628,7 +2672,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
-        
+
     /**
      * Attempts to write to file and clear from the cache all chunks in this
      * except that with chunk IDs in chunkIDs.
@@ -2810,11 +2854,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(
-                    HashSet<Grids_2D_ID_int> chunkIDs, boolean handleOutOfMemoryError) {
+                    HashSet<Grids_2D_ID_int> chunkIDs,
+                    boolean checkAndMaybeFreeMemory,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkIDs);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2875,17 +2923,22 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * <code>swapToFileGrid2DSquareCellGrid2DSquareCellChunks(boolean)</code>
      * Swapping involves writing to files and then clearing them from the cache.
      *
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return The number of Grids_AbstractGridChunk swapped.
      */
     public final HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunks_AccountDetail(boolean handleOutOfMemoryError) {
+            swapChunks_AccountDetail(
+                    boolean checkAndMaybeFreeMemory,
+                    boolean handleOutOfMemoryError) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunks_AccountDetail();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            if (checkAndMaybeFreeMemory) {
+                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            }
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
@@ -2899,9 +2952,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(handleOutOfMemoryError);
+                partResult = ge.initMemoryReserve_AccountDetail(
+                        handleOutOfMemoryError);
                 ge.combine(result, partResult);
-                partResult = swapChunks_AccountDetail(handleOutOfMemoryError);
+                partResult = swapChunks_AccountDetail(
+                        checkAndMaybeFreeMemory, handleOutOfMemoryError);
                 ge.combine(result, partResult);
                 return result;
             } else {

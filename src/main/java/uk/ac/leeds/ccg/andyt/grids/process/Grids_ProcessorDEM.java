@@ -2922,7 +2922,7 @@ public class Grids_ProcessorDEM
                         System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
                         if (swapOutProcessedChunks) {
                             for (i = 0; i < metrics1.length; i++) {
-                                metrics1[i].swapChunk(chunkID, handleOutOfMemoryError);
+                                metrics1[i].swapChunk(chunkID, true, handleOutOfMemoryError);
                             }
                         }
                     }
@@ -3020,7 +3020,7 @@ public class Grids_ProcessorDEM
                                 "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
                         if (swapOutProcessedChunks) {
                             for (i = 0; i < metrics1.length; i++) {
-                                metrics1[i].swapChunk(chunkID, handleOutOfMemoryError);
+                                metrics1[i].swapChunk(chunkID, true, handleOutOfMemoryError);
                             }
                         }
                     }
