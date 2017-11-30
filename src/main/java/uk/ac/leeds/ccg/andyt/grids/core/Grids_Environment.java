@@ -189,6 +189,42 @@ public class Grids_Environment
      * Adds the chunkID of g to NotToSwap.
      *
      * @param g
+     * @param row
+     */
+    public final int addToNotToSwap(
+            Grids_AbstractGrid g,
+            long row) {
+        int chunkRow = g.getChunkRow(row, HandleOutOfMemoryError);
+        int nChunkCols = g.getNChunkCols(HandleOutOfMemoryError);
+        Grids_2D_ID_int chunkID;
+        for (int chunkCol = 0; chunkCol < nChunkCols; chunkCol ++) {
+            chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+            addToNotToSwap(g, chunkID);
+        }
+        return chunkRow;
+    }
+    
+    /**
+     * Removes the chunkID of g to NotToSwap.
+     *
+     * @param g
+     * @param chunkRow
+     */
+    public final void removeFromNotToSwap(
+            Grids_AbstractGrid g,
+            int chunkRow) {
+        int nChunkCols = g.getNChunkCols(HandleOutOfMemoryError);
+        Grids_2D_ID_int chunkID;
+        for (int chunkCol = 0; chunkCol < nChunkCols; chunkCol ++) {
+            chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+            removeFromNotToSwap(g, chunkID);
+        }
+    }
+    
+    /**
+     * Adds the chunkID of g to NotToSwap.
+     *
+     * @param g
      * @param chunkID
      */
     public final void addToNotToSwap(

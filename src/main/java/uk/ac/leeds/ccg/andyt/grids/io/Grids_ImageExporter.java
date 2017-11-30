@@ -107,6 +107,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             File file,
             String type) {
         // Initialisation
+        ge.initNotToSwap();
         boolean handleOutOfMemoryError = true;
         long nrows = g.getNRows(handleOutOfMemoryError);
         long ncols = g.getNCols(handleOutOfMemoryError);
@@ -383,6 +384,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             File file,
             String type) {
         // Initialisation
+        ge.initNotToSwap();
         boolean handleOutOfMemoryError = true;
         long nrows = g.getNRows(handleOutOfMemoryError);
         long ncols = g.getNCols(handleOutOfMemoryError);
@@ -427,8 +429,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                     + "available.");
             String[] writerTypes = ImageIO.getWriterMIMETypes();
             System.out.println("WriterTypes:");
-            for (int i = 0; i < writerTypes.length; i++) {
-                System.out.println(writerTypes[i]);
+            for (String writerType : writerTypes) {
+                System.out.println(writerType);
             }
             return;
         }

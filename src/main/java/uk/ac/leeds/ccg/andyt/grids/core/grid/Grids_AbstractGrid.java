@@ -265,9 +265,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected Grids_AbstractGridChunk getChunk(Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {
-            boolean chunkIDChunkMapContainsKey;
-            chunkIDChunkMapContainsKey = getChunkIDChunkMap().containsKey(chunkID);
-            if (!chunkIDChunkMapContainsKey) {
+            if (ChunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
             return (Grids_AbstractGridChunk) ChunkIDChunkMap.get(chunkID);
@@ -302,7 +300,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected HashSet<Grids_2D_ID_int> getChunkIDs() {
         HashSet<Grids_2D_ID_int> result = new HashSet<>();
-        result.addAll(getChunkIDChunkMap().keySet());
+        result.addAll(ChunkIDChunkMap.keySet());
         return result;
     }
 
@@ -2586,6 +2584,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grid2DSquareCellChunkAbstracts in this except that with ID _ChunkIDs.
      *
      * @param chunks
+     * @param checkAndMaybeFreeMemory
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -3105,7 +3104,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected final boolean isInCache(Grids_2D_ID_int chunkID) {
         return ChunkIDChunkMap.get(chunkID) != null;
-//        return getChunkIDChunkMap().containsKey(chunkID);
+//        return ChunkIDChunkMap.containsKey(chunkID);
     }
 
     /**
