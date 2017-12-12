@@ -566,7 +566,7 @@ public class Grids_GridChunkDoubleMap
                 NoData.set(position);
             } else {
                 /**
-                 * Look in data.DataMapBitSet;
+                 * Look in data.DataMapBitSet or dataMapHashSet
                  */
                 TreeMap<Double, OffsetBitSet> dataMapBitSet;
                 dataMapBitSet = Data.DataMapBitSet;

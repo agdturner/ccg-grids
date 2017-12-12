@@ -1149,14 +1149,17 @@ public class Grids_Processor extends Grids_Object {
             boolean handleOutOfMemoryError) {
         try {
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            Grids_GridDouble result;
             if (g instanceof Grids_GridDouble) {
-                return rescale((Grids_GridDouble) g, type, min, max);
+                result = rescale((Grids_GridDouble) g, type, min, max);
             } else {
                 if (!(g instanceof Grids_GridInt)) {
                     throw new UnsupportedOperationException();
                 }
-                return rescale((Grids_GridInt) g, type, min, max);
+                result = rescale((Grids_GridInt) g, type, min, max);
             }
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
@@ -1359,23 +1362,23 @@ public class Grids_Processor extends Grids_Object {
             String type,
             double min,
             double max) {
-        boolean handleOutOfMemoryError = true;
-        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+        boolean hoome = false;
+        ge.checkAndMaybeFreeMemory(hoome);
         ge.getGrids().add(g);
-        long nrows = g.getNRows(handleOutOfMemoryError);
-        long ncols = g.getNCols(handleOutOfMemoryError);
-        int nChunkCols = g.getNChunkCols(handleOutOfMemoryError);
-        int nChunkRows = g.getNChunkCols(handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        long nrows = g.getNRows(hoome);
+        long ncols = g.getNCols(hoome);
+        int nChunkCols = g.getNChunkCols(hoome);
+        int nChunkRows = g.getNChunkCols(hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         double range = max - min;
-        Grids_AbstractGridNumberStatistics stats = g.getStatistics(handleOutOfMemoryError);
-        double minGrid = stats.getMin(true, handleOutOfMemoryError).doubleValue();
-        double maxGrid = stats.getMax(true, handleOutOfMemoryError).doubleValue();
+        Grids_AbstractGridNumberStatistics stats = g.getStatistics(hoome);
+        double minGrid = stats.getMin(true, hoome).doubleValue();
+        double maxGrid = stats.getMax(true, hoome).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
         Grids_GridDouble outputGrid;
         outputGrid = (Grids_GridDouble) GridDoubleFactory.create(g);
-        outputGrid.setName(g.getName(handleOutOfMemoryError), handleOutOfMemoryError);
+        outputGrid.setName(g.getName(hoome), hoome);
         ge.getGrids().add(outputGrid);
         int chunkRow;
         int chunkCol;
@@ -1393,37 +1396,31 @@ public class Grids_Processor extends Grids_Object {
                                 chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(outputGrid, chunkID);
-                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(hoome);
                         int chunkNCols = g.getChunkNCols(
-                                chunkCol, handleOutOfMemoryError, chunkID);
+                                chunkCol, hoome, chunkID);
                         int chunkNRows = g.getChunkNRows(
-                                chunkRow, handleOutOfMemoryError);
+                                chunkRow, hoome);
                         Grids_AbstractGridChunkInt gridChunk;
                         gridChunk = (Grids_AbstractGridChunkInt) g.getGridChunk(
-                                chunkID, handleOutOfMemoryError);
+                                chunkID, hoome);
                         Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = (Grids_AbstractGridChunkDouble) outputGrid.getGridChunk(
-                                chunkID, handleOutOfMemoryError);
+                        outputGridChunk
+                                = (Grids_AbstractGridChunkDouble) outputGrid.getGridChunk(
+                                        chunkID, hoome);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(
-                                        cellRow,
-                                        cellCol,
-                                        handleOutOfMemoryError,
-                                        chunkID);
+                                value = gridChunk.getCell(cellRow, cellCol,
+                                        hoome, chunkID);
                                 if (value != noDataValue) {
-                                    outputGrid.setCell(
-                                            outputGridChunk,
-                                            cellRow,
-                                            cellCol,
-                                            min,
-                                            handleOutOfMemoryError);
+                                    outputGrid.setCell(outputGridChunk, cellRow,
+                                            cellCol, min, hoome);
                                 }
                             }
                         }
                         ge.removeFromNotToSwap(g, chunkID);
                         ge.removeFromNotToSwap(outputGrid, chunkID);
-                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(hoome);
                     }
                 }
             } else {
@@ -1436,23 +1433,23 @@ public class Grids_Processor extends Grids_Object {
                                 chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(outputGrid, chunkID);
-                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(hoome);
                         int chunkNCols = g.getChunkNCols(
-                                chunkCol, handleOutOfMemoryError, chunkID);
+                                chunkCol, hoome, chunkID);
                         int chunkNRows = g.getChunkNRows(
-                                chunkRow, handleOutOfMemoryError);
+                                chunkRow, hoome);
                         Grids_AbstractGridChunkInt gridChunk;
                         gridChunk = (Grids_AbstractGridChunkInt) g.getGridChunk(
-                                chunkID, handleOutOfMemoryError);
+                                chunkID, hoome);
                         Grids_AbstractGridChunkDouble outputGridChunk;
                         outputGridChunk = (Grids_AbstractGridChunkDouble) outputGrid.getGridChunk(
-                                chunkID, handleOutOfMemoryError);
+                                chunkID, hoome);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(
                                         cellRow,
                                         cellCol,
-                                        handleOutOfMemoryError,
+                                        hoome,
                                         chunkID);
                                 if (value != noDataValue) {
                                     outputGrid.setCell(
@@ -1460,18 +1457,18 @@ public class Grids_Processor extends Grids_Object {
                                             cellRow,
                                             cellCol,
                                             (((value - minGrid) / rangeGrid) * range) + min,
-                                            handleOutOfMemoryError);
+                                            hoome);
                                 }
                             }
                         }
                         ge.removeFromNotToSwap(g, chunkID);
                         ge.removeFromNotToSwap(outputGrid, chunkID);
-                        ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+                        ge.checkAndMaybeFreeMemory(hoome);
                     }
                 }
             }
-            outputGrid.setName(g.getName(handleOutOfMemoryError) + "_linearRescale", handleOutOfMemoryError);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            outputGrid.setName(g.getName(hoome) + "_linearRescale", hoome);
+            ge.checkAndMaybeFreeMemory(hoome);
         } else {
             // @TODO this is not a brilliant implementation
             if (type.equalsIgnoreCase("log")) {
@@ -1480,7 +1477,7 @@ public class Grids_Processor extends Grids_Object {
                         null,
                         1.0d,
                         1000000.0d,
-                        handleOutOfMemoryError);
+                        hoome);
                 long row;
                 long col;
                 for (row = 0; row < nrows; row++) {
@@ -1488,13 +1485,13 @@ public class Grids_Processor extends Grids_Object {
                         value = g.getCell(
                                 row,
                                 col,
-                                handleOutOfMemoryError);
+                                hoome);
                         if (value != noDataValue) {
                             outputGrid.setCell(
                                     row,
                                     col,
                                     Math.log(value),
-                                    handleOutOfMemoryError);
+                                    hoome);
                         }
                     }
                 }
@@ -1504,7 +1501,7 @@ public class Grids_Processor extends Grids_Object {
                         min,
                         max);
                 //grid.setName( grid.getName() + "_logRescale" );
-                ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+                ge.checkAndMaybeFreeMemory(hoome);
             } else {
                 System.out.println("Unable to rescale: type " + type + "not recognised. Returning a Grid2DSquareCellDouble of _InputGrid.");
             }
@@ -1545,11 +1542,11 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 setValueALittleBitLarger(
@@ -1557,7 +1554,7 @@ public class Grids_Processor extends Grids_Object {
                         _CellIDs,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1635,11 +1632,11 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 addToGrid(
@@ -1648,7 +1645,7 @@ public class Grids_Processor extends Grids_Object {
                         value,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -1878,11 +1875,11 @@ public class Grids_Processor extends Grids_Object {
                     weight,
                     handleOutOfMemoryError);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 addToGrid(
@@ -1895,7 +1892,7 @@ public class Grids_Processor extends Grids_Object {
                         weight,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -2564,11 +2561,11 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return aggregate(
@@ -2580,7 +2577,7 @@ public class Grids_Processor extends Grids_Object {
                         gridFactory,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
 
         }
@@ -3371,11 +3368,11 @@ public class Grids_Processor extends Grids_Object {
              */
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return aggregate(
@@ -3385,7 +3382,7 @@ public class Grids_Processor extends Grids_Object {
                         gridFactory,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -3716,7 +3713,7 @@ public class Grids_Processor extends Grids_Object {
     //    }
     /**
      * <a
-     * name="_Output(AbstractGrid2DSquareCell,File,ImageExporter,String[],ESRIAsciiGridExporter,boolean)"></a>
+     * name="output(AbstractGrid2DSquareCell,File,ImageExporter,String[],ESRIAsciiGridExporter,boolean)"></a>
      * For outputting _Grid2DSquareCell to various formats of file. It might be
      * better to have this in exchange.IO class.
      *
@@ -3737,7 +3734,7 @@ public class Grids_Processor extends Grids_Object {
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            System.out.println("_Output " + grid.toString(handleOutOfMemoryError));
+            System.out.println("Output " + grid.toString(handleOutOfMemoryError));
             if (imageExporter == null) {
                 imageExporter = new Grids_ImageExporter(ge);
             }
@@ -3784,13 +3781,13 @@ public class Grids_Processor extends Grids_Object {
                     file,
                     noDataValue,
                     handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunksExcept_Account(
                         grid,
                         handleOutOfMemoryError) < 1) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 output(
@@ -3801,7 +3798,7 @@ public class Grids_Processor extends Grids_Object {
                         eSRIAsciiGridExporter,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }

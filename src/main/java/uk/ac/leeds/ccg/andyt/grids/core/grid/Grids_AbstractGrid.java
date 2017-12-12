@@ -1869,7 +1869,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown.
      * @throws java.io.IOException
      */
-    public final void writeToFile(boolean swapToFileCache, boolean handleOutOfMemoryError) throws IOException {
+    public final void writeToFile(boolean swapToFileCache, boolean handleOutOfMemoryError) {
         try {
             writeToFile(swapToFileCache);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -1894,31 +1894,37 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param swapToFileCache Iff true then
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
      * File(getDirectory(),"cache").
-     * @throws java.io.IOException
      */
-    protected void writeToFile(boolean swapToFileCache) throws IOException {
-        try {
+    protected void writeToFile(boolean swapToFileCache) {
             writeToFileChunks();
-            ObjectOutputStream oos;
-            File file;
             if (swapToFileCache) {
-                // Write out thisCache
-                file = new File(this.getDirectory(), "cache");
-                oos = Generic_StaticIO.getObjectOutputStream(file);
-                oos.writeObject(ChunkIDChunkMap);
-                oos.flush();
-                oos.close();
+                // Write out cache
+                writeOutCache();
             }
-            // Write out this.
-            file = new File(this.getDirectory(), "thisFile");
-            oos = Generic_StaticIO.getObjectOutputStream(file);
+            writeOutThis();
+    }
+
+    public void writeOutCache() {
+        // Write out thisCache
+        File f = new File(getDirectory(), "cache");
+        try (ObjectOutputStream oos = Generic_StaticIO.getObjectOutputStream(f)) {
+            oos.writeObject(ChunkIDChunkMap);
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void writeOutThis() {
+        // Write out thisCache
+        File f = new File(getDirectory(), "thisFile");
+        try (ObjectOutputStream oos = Generic_StaticIO.getObjectOutputStream(f)) {
             oos.writeObject(this);
             oos.flush();
-            oos.close();
-        } catch (IOException ioe0) {
-            System.err.println(ioe0.getMessage());
-            throw ioe0;
+        } catch (IOException ex) {
+            Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     /**
@@ -1928,31 +1934,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param swapToFileCache Iff true then
      * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
      * File(getDirectory(),"cache").
-     * @throws java.io.IOException
      */
-    protected void writeToFileSwapping(boolean swapToFileCache) throws IOException {
-        try {
-            swapChunks();
-            ObjectOutputStream oos;
-            File file;
-            if (swapToFileCache) {
-                // Write out thisCache
-                file = new File(this.getDirectory(), "cache");
-                oos = Generic_StaticIO.getObjectOutputStream(file);
-                oos.writeObject(ChunkIDChunkMap);
-                oos.flush();
-                oos.close();
-            }
-            // Write out this.
-            file = new File(this.getDirectory(), "thisFile");
-            oos = Generic_StaticIO.getObjectOutputStream(file);
-            oos.writeObject(this);
-            oos.flush();
-            oos.close();
-        } catch (IOException ioe0) {
-            System.err.println(ioe0.getMessage());
-            throw ioe0;
-        }
+    protected void writeToFileSwapping(boolean swapToFileCache) {
+        swapChunks();
+        writeToFile(swapToFileCache);
     }
 
     /**

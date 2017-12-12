@@ -177,13 +177,13 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             g.ge.checkAndMaybeFreeMemory(
                     handleOutOfMemoryError);
             return result;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 g.ge.clearMemoryReserve();
                 if (g.ge.swapChunksExcept_Account(
                         g,
                         handleOutOfMemoryError) < 1L) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 g.ge.initMemoryReserve(
                         g,
@@ -194,7 +194,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         noDataValue,
                         handleOutOfMemoryError);
             } else {
-                throw a_OutOfMemoryError;
+                throw e;
             }
         }
     }
@@ -228,7 +228,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             pw.println("cellsize " + dimensions.getCellsize().toString());
             long row = 0L;
             long col = 0L;
-            int chunkRow0 = ge.addToNotToSwap(g, nrows_minus_1);
+            int chunkRow0 = g.getChunkRow(nrows_minus_1, handleOutOfMemoryError);
+            ge.addToNotToSwap(g, chunkRow0);
             int chunkRow;
             if (g.getClass() == Grids_GridInt.class) {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
@@ -239,43 +240,44 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     chunkRow = g.getChunkRow(row, handleOutOfMemoryError);
                     if (chunkRow0 != chunkRow) {
                         ge.removeFromNotToSwap(g, chunkRow0);
-                        ge.addToNotToSwap(g, row);
+                        ge.addToNotToSwap(g, chunkRow);
+                        chunkRow0 = chunkRow;
                     }
                     for (col = 0; col < ncols; col++) {
-                        try {
-                            value = gridInt.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                            if (value == gridNoDataValue) {
-                                pw.print(noDataValue + " ");
-                            } else {
-                                pw.print(value + " ");
-                            }
-                        } catch (OutOfMemoryError e) {
-                            g.ge.clearMemoryReserve();
-                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                    g.getChunkRow(row, handleOutOfMemoryError),
-                                    g.getChunkCol(col, handleOutOfMemoryError));
-                            if (g.ge.swapChunksExcept_Account(
-                                    g,
-                                    chunkID,
-                                    handleOutOfMemoryError) < 1L) {
-                                throw e;
-                            }
-                            g.ge.initMemoryReserve(handleOutOfMemoryError);
-
-                            //pw.print( grid.getCell( row, col ) + " " );
-                            value = gridInt.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                            if (value == gridNoDataValue) {
-                                pw.print(noDataValue + " ");
-                            } else {
-                                pw.print(value + " ");
-                            }
+                        //try {
+                        value = gridInt.getCell(
+                                row,
+                                col,
+                                handleOutOfMemoryError);
+                        if (value == gridNoDataValue) {
+                            pw.print(noDataValue + " ");
+                        } else {
+                            pw.print(value + " ");
                         }
+//                        } catch (OutOfMemoryError e) {
+//                            g.ge.clearMemoryReserve();
+//                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+//                                    g.getChunkRow(row, handleOutOfMemoryError),
+//                                    g.getChunkCol(col, handleOutOfMemoryError));
+//                            if (g.ge.swapChunksExcept_Account(
+//                                    g,
+//                                    chunkID,
+//                                    handleOutOfMemoryError) < 1L) {
+//                                throw e;
+//                            }
+//                            g.ge.initMemoryReserve(handleOutOfMemoryError);
+//
+//                            //pw.print( grid.getCell( row, col ) + " " );
+//                            value = gridInt.getCell(
+//                                    row,
+//                                    col,
+//                                    handleOutOfMemoryError);
+//                            if (value == gridNoDataValue) {
+//                                pw.print(noDataValue + " ");
+//                            } else {
+//                                pw.print(value + " ");
+//                            }
+//                        }
                     }
                     pw.println("");
                 }
@@ -283,65 +285,66 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 //_Grid2DSquareCell.getClass() == Grids_GridDouble.class
                 Grids_GridDouble gridDouble = (Grids_GridDouble) g;
                 double gridNoDataValue = gridDouble.getNoDataValue(handleOutOfMemoryError);
-                if (Double.isInfinite(gridNoDataValue)) {
+                if (!Double.isFinite(gridNoDataValue)) {
                     System.out.println(
-                            "Warning!!! noDataValue = "
-                            + noDataValue
-                            + " in ESRIAsciigridExporter.toAsciiFile( \n"
-                            + "Grid2DSquareCellAbstract( " + gridDouble.toString() + " ), \n"
-                            + "File( " + file.toString() + " ) )");
+                            "Warning!!! noDataValue not finite in "
+                            + "ESRIAsciigridExporter.toAsciiFile("
+                            + gridDouble.getClass().getName() 
+                                    + "(" + gridDouble.toString() + "),"
+                            + "File(" + file.toString() + "))");
                 }
                 pw.println("NODATA_Value " + noDataValue);
                 double value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     for (col = 0; col < ncols; col++) {
-                    chunkRow = g.getChunkRow(row, handleOutOfMemoryError);
-                    if (chunkRow0 != chunkRow) {
-                        ge.removeFromNotToSwap(g, chunkRow0);
-                        ge.addToNotToSwap(g, row);
-                    }
-                        try {
-                            //pw.print( grid.getCell( row, col ) + " " );
-                            value = gridDouble.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
-                            if (Double.isNaN(value)) {
-                                pw.print(noDataValue + " ");
-                                System.out.println(
-                                        "Warning!!! NaN encountered at "
-                                        + "row " + row + ","
-                                        + " column " + col + ""
-                                        + " set to noDataValue " + noDataValue + ".");
-                            } else {
-                                if (value == gridNoDataValue) {
-                                    pw.print(noDataValue + " ");
-                                } else {
-                                    pw.print(value + " ");
-                                }
-                            }
-                        } catch (OutOfMemoryError e) {
-                            g.ge.clearMemoryReserve();
-                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                    g.getChunkRow(row, handleOutOfMemoryError),
-                                    g.getChunkCol(col, handleOutOfMemoryError));
-                            if (g.ge.swapChunksExcept_Account(
-                                    g,
-                                    chunkID,
-                                    handleOutOfMemoryError) < 1L) {
-                                throw e;
-                            }
-                            g.ge.initMemoryReserve(handleOutOfMemoryError);
-                            value = gridDouble.getCell(
-                                    row,
-                                    col,
-                                    handleOutOfMemoryError);
+                        chunkRow = g.getChunkRow(row, handleOutOfMemoryError);
+                        if (chunkRow0 != chunkRow) {
+                            ge.removeFromNotToSwap(g, chunkRow0);
+                            ge.addToNotToSwap(g, chunkRow);
+                            chunkRow0 = chunkRow;
+                        }
+//                        try {
+                        //pw.print( grid.getCell( row, col ) + " " );
+                        value = gridDouble.getCell(
+                                row,
+                                col,
+                                handleOutOfMemoryError);
+                        if (!Double.isFinite(value)) {
+                            pw.print(noDataValue + " ");
+                            System.out.println(
+                                    "Warning!!! Infinitity or NaN encountered at "
+                                    + "row " + row + ","
+                                    + " column " + col + ""
+                                    + " set to noDataValue " + noDataValue + ".");
+                        } else {
                             if (value == gridNoDataValue) {
                                 pw.print(noDataValue + " ");
                             } else {
                                 pw.print(value + " ");
                             }
                         }
+//                        } catch (OutOfMemoryError e) {
+//                            g.ge.clearMemoryReserve();
+//                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+//                                    g.getChunkRow(row, handleOutOfMemoryError),
+//                                    g.getChunkCol(col, handleOutOfMemoryError));
+//                            if (g.ge.swapChunksExcept_Account(
+//                                    g,
+//                                    chunkID,
+//                                    handleOutOfMemoryError) < 1L) {
+//                                throw e;
+//                            }
+//                            g.ge.initMemoryReserve(handleOutOfMemoryError);
+//                            value = gridDouble.getCell(
+//                                    row,
+//                                    col,
+//                                    handleOutOfMemoryError);
+//                            if (value == gridNoDataValue) {
+//                                pw.print(noDataValue + " ");
+//                            } else {
+//                                pw.print(value + " ");
+//                            }
+//                        }
                     }
                     pw.println("");
                 }

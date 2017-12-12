@@ -1209,7 +1209,6 @@ public class Grids_GridDouble
                         Statistics.setNMax(Statistics.getNMax() - 1);
                     }
                 }
-                if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
                     Statistics.setN(Statistics.getN(handleOutOfMemoryError) + 1);
                     Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).add(newValueBD));
@@ -1222,7 +1221,6 @@ public class Grids_GridDouble
                         // The Statistics need recalculating
                         Statistics.update();
                     }
-                }
             }
         } else {
             if (newValue != oldValue) {
@@ -1398,16 +1396,13 @@ public class Grids_GridDouble
             int cellCol) {
         if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
             return ((Grids_GridChunkDoubleArray) chunk).getCell(cellRow,
-                    cellCol,
-                    false);
+                    cellCol, false);
         } else if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
             return ((Grids_GridChunkDoubleMap) chunk).getCell(cellRow,
-                    cellCol,
-                    false);
+                    cellCol, false);
         } else {
             return ((Grids_GridChunkDouble) chunk).getCell(cellRow,
-                    cellCol,
-                    false);
+                    cellCol, false);
         }
     }
 

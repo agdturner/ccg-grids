@@ -91,9 +91,7 @@ public class Grids_ProcessorDEM
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                return getSlopeAspect(
-                        g,
-                        handleOutOfMemoryError);
+                return getSlopeAspect(g, handleOutOfMemoryError);
             }
             throw e;
         }
@@ -189,7 +187,9 @@ public class Grids_ProcessorDEM
             boolean handleOutOfMemoryError)
             throws IOException {
         try {
-            System.out.println("getSlopeAspect(AbstractGrid2DSquareCell,double,double,double,boolean)");
+            String methodName = "getSlopeAspect(" + g.getClass().getName()
+                    + ",double,double,double,boolean)";
+            System.out.println(methodName);
             ge.getGrids().add(g);
             Grids_AbstractGridChunkDouble chunkDouble;
             Grids_GridDouble gridDouble;
@@ -218,7 +218,8 @@ public class Grids_ProcessorDEM
             double cosAngle;
             double slope;
             double aspect;
-            double[][] weights = getNormalDistributionKernelWeights(
+            double[][] weights;
+            weights = getNormalDistributionKernelWeights(
                     g.getCellsizeDouble(handleOutOfMemoryError),
                     distance,
                     handleOutOfMemoryError);
@@ -280,7 +281,7 @@ public class Grids_ProcessorDEM
                 }
             }
             averageDistance = distanceSum / numberObservations;
-            String _Grid2DSquareCellName = g.getName(handleOutOfMemoryError);
+            String gName = g.getName(handleOutOfMemoryError);
             int _FilenameLength = 1000;
             String filename;
             File dir;
@@ -297,7 +298,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "slope_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[slope,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -314,20 +315,16 @@ public class Grids_ProcessorDEM
                     filename,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[0].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[0]);
             System.out.println(slopeAndAspect[0].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 1 ]");
             if (shortName) {
                 filename = "aspect_N_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -344,19 +341,15 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[1].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[1]);
             System.out.println("Initialising _SlopeAndAspect[ 2 ]");
             if (shortName) {
                 filename = "sin_aspect_N_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -374,21 +367,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[2].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-                //ioe0.printStackTrace();
-            }
             ge.getGrids().add(slopeAndAspect[2]);
             System.out.println(slopeAndAspect[2].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 3 ]");
             if (shortName) {
                 filename = "sin_aspect_NNE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_NNE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -405,21 +393,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[3].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-                //ioe0.printStackTrace();
-            }
             ge.getGrids().add(slopeAndAspect[3]);
             System.out.println(slopeAndAspect[3].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 4 ]");
             if (shortName) {
                 filename = "sin_aspect_NE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_NE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -436,21 +419,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[4].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-//                ioe0.printStackTrace();
-            }
             ge.getGrids().add(slopeAndAspect[4]);
             System.out.println(slopeAndAspect[4].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 5 ]");
             if (shortName) {
                 filename = "sin_aspect_ENE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_ENE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -467,20 +445,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[5].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[5]);
             System.out.println(slopeAndAspect[5].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 6 ]");
             if (shortName) {
                 filename = "sin_aspect_E_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_E,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -497,20 +471,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[6].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[6]);
             System.out.println(slopeAndAspect[6].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 7 ]");
             if (shortName) {
                 filename = "sin_aspect_ESE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_ESE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -527,20 +497,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[7].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[7]);
             System.out.println(slopeAndAspect[7].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 8 ]");
             if (shortName) {
                 filename = "sin_aspect_SE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_SE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -557,20 +523,16 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[8].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[8]);
             System.out.println(slopeAndAspect[8].toString(handleOutOfMemoryError));
             System.out.println("Initialising _SlopeAndAspect[ 9 ]");
             if (shortName) {
                 filename = "sin_aspect_SSE_" + averageDistance;
             } else {
-                filename = _Grid2DSquareCellName
+                filename = gName
                         + "__SlopeAndAspect[sin_aspect_SSE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
@@ -587,13 +549,9 @@ public class Grids_ProcessorDEM
                     filename, //string0,
                     handleOutOfMemoryError);
             swapToFileCache = true;
-            try {
                 slopeAndAspect[9].writeToFile(
                         swapToFileCache,
                         handleOutOfMemoryError);
-            } catch (IOException ioe0) {
-                System.err.println(ioe0.getMessage());
-            }
             ge.getGrids().add(slopeAndAspect[9]);
             System.out.println("Initialised Results");
             System.out.println(g.toString(handleOutOfMemoryError));
@@ -894,11 +852,11 @@ public class Grids_ProcessorDEM
                 }
             }
             return slopeAndAspect;
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return getSlopeAspect(
@@ -908,7 +866,7 @@ public class Grids_ProcessorDEM
                         weightFactor,
                         handleOutOfMemoryError);
             }
-            throw _OutOfMemoryError0;
+            throw e;
         }
     }
 
@@ -953,11 +911,11 @@ public class Grids_ProcessorDEM
                     weightIntersect,
                     weightFactor,
                     handleOutOfMemoryError);
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return getSlopeAspect(
@@ -969,7 +927,7 @@ public class Grids_ProcessorDEM
                         weightFactor,
                         handleOutOfMemoryError);
             }
-            throw a_OutOfMemoryError;
+            throw e;
         }
     }
 
@@ -985,7 +943,7 @@ public class Grids_ProcessorDEM
      * weightIntersect and weightFactor. This is the cosine of the clockwize
      * angle from north.
      *
-     * @param _Grid2DSquareCell the Grids_GridDouble to be processed.
+     * @param g the Grids_GridDouble to be processed.
      * @param x the x coordinate from where the aspect is calculated
      * @param y the y coordinate from where the aspect is calculated
      * @param distance the distance which defines the aggregate region.
@@ -995,7 +953,7 @@ public class Grids_ProcessorDEM
      * @return
      */
     protected double[] getSlopeAspect(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             double x,
             double y,
             double distance,
@@ -1003,26 +961,26 @@ public class Grids_ProcessorDEM
             double weightFactor,
             boolean handleOutOfMemoryError) {
         try {
-            ge.getGrids().add(_Grid2DSquareCell);
+            ge.getGrids().add(g);
             return getSlopeAspect(
-                    _Grid2DSquareCell,
-                    _Grid2DSquareCell.getRow(y, handleOutOfMemoryError),
-                    _Grid2DSquareCell.getCol(x, handleOutOfMemoryError),
+                    g,
+                    g.getRow(y, handleOutOfMemoryError),
+                    g.getCol(x, handleOutOfMemoryError),
                     x,
                     y,
                     distance,
                     weightIntersect,
                     weightFactor,
                     handleOutOfMemoryError);
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return getSlopeAspect(
-                        _Grid2DSquareCell,
+                        g,
                         x,
                         y,
                         distance,
@@ -1030,7 +988,7 @@ public class Grids_ProcessorDEM
                         weightFactor,
                         handleOutOfMemoryError);
             }
-            throw _OutOfMemoryError0;
+            throw e;
         }
     }
 
@@ -1124,11 +1082,11 @@ public class Grids_ProcessorDEM
                 Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
                 double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
                 double value;
-                double[] _SlopeAndAspect = new double[2];
-                _SlopeAndAspect[0] = noDataValue;
-                _SlopeAndAspect[1] = noDataValue;
-                _SlopeAndAspect[2] = noDataValue;
-                _SlopeAndAspect[3] = noDataValue;
+                double[] slopeAndAspect = new double[2];
+                slopeAndAspect[0] = noDataValue;
+                slopeAndAspect[1] = noDataValue;
+                slopeAndAspect[2] = noDataValue;
+                slopeAndAspect[3] = noDataValue;
                 double height = _Grid2DSquareCellDouble.getCell(x, y, handleOutOfMemoryError);
                 if (height != noDataValue) {
                     double cellsize = g.getCellsizeDouble(handleOutOfMemoryError);
@@ -1162,23 +1120,23 @@ public class Grids_ProcessorDEM
                             }
                         }
                     }
-                    _SlopeAndAspect[0] = slope;
-                    _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
-                    _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
-                    _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    slopeAndAspect[0] = slope;
+                    slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError);
+                    slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
+                    slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), handleOutOfMemoryError));
                 }
-                return _SlopeAndAspect;
+                return slopeAndAspect;
             }
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 getSlopeAspect(g, rowIndex, colIndex, x, y, distance, weightIntersect, weightFactor, handleOutOfMemoryError);
             }
-            throw _OutOfMemoryError0;
+            throw e;
         }
     }
 
@@ -1778,10 +1736,10 @@ public class Grids_ProcessorDEM
                 }
             }
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             ge.clearMemoryReserve();
             if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                throw _OutOfMemoryError0;
+                throw e;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
             return getHollowFilledDEM(
@@ -1865,11 +1823,11 @@ public class Grids_ProcessorDEM
                 }
             }
             return outflowCellIDs;
-        } catch (OutOfMemoryError a_OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw a_OutOfMemoryError;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 getHollowFilledDEMOutflowCellIDs(
@@ -1881,7 +1839,7 @@ public class Grids_ProcessorDEM
                         _TreatNoDataValueAsOutflow,
                         handleOutOfMemoryError);
             }
-            throw a_OutOfMemoryError;
+            throw e;
         }
     }
 
@@ -2005,11 +1963,11 @@ public class Grids_ProcessorDEM
                 }
             }
             return initialHollowsHashSet;
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 return getHollowFilledDEMInitialHollowsHashSet(
@@ -2019,7 +1977,7 @@ public class Grids_ProcessorDEM
                         _TreatNoDataValueAsOutflow,
                         handleOutOfMemoryError);
             } else {
-                throw _OutOfMemoryError0;
+                throw e;
             }
         }
     }
@@ -2031,16 +1989,16 @@ public class Grids_ProcessorDEM
      *
      *
      *
-     * @param _Grid2DSquareCell The Grids_AbstractGridNumber to be processed.
+     * @param g The Grids_AbstractGridNumber to be processed.
      * @param _CellIDs the HashSet storing _CellIDs that must be examined.
      */
     private HashSet getHollowsInNeighbourhood(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             HashSet _CellIDs,
             boolean _TreatNoDataValueAsOutflow,
             boolean handleOutOfMemoryError) {
         try {
-            ge.getGrids().add(_Grid2DSquareCell);
+            ge.getGrids().add(g);
             HashSet result = new HashSet();
             HashSet visited1 = new HashSet();
             Grids_2D_ID_long cellID;
@@ -2052,8 +2010,8 @@ public class Grids_ProcessorDEM
             long q;
             int k;
             Iterator iterator1 = _CellIDs.iterator();
-            if (_Grid2DSquareCell.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) _Grid2DSquareCell;
+            if (g.getClass() == Grids_GridInt.class) {
+                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(handleOutOfMemoryError);
                 int[] heights = new int[9];
                 while (iterator1.hasNext()) {
@@ -2088,7 +2046,7 @@ public class Grids_ProcessorDEM
                                                 && (heights[6] >= heights[0])
                                                 && (heights[7] >= heights[0])
                                                 && (heights[8] >= heights[0])) {
-                                            result.add(_Grid2DSquareCell.getCellID(row + a, col + b, handleOutOfMemoryError));
+                                            result.add(g.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     } else {
                                         if ((heights[1] >= heights[0] || heights[1] == noDataValue)
@@ -2109,7 +2067,7 @@ public class Grids_ProcessorDEM
                 }
             } else {
                 // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) _Grid2DSquareCell;
+                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
                 double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
                 double[] heights = new double[9];
                 while (iterator1.hasNext()) {
@@ -2144,7 +2102,7 @@ public class Grids_ProcessorDEM
                                                 && (heights[6] >= heights[0])
                                                 && (heights[7] >= heights[0])
                                                 && (heights[8] >= heights[0])) {
-                                            result.add(_Grid2DSquareCell.getCellID(row + a, col + b, handleOutOfMemoryError));
+                                            result.add(g.getCellID(row + a, col + b, handleOutOfMemoryError));
                                         }
                                     } else {
                                         if ((heights[1] >= heights[0] || heights[1] == noDataValue)
@@ -2165,14 +2123,14 @@ public class Grids_ProcessorDEM
                 }
             }
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             ge.clearMemoryReserve();
             if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                throw _OutOfMemoryError0;
+                throw e;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
             return getHollowsInNeighbourhood(
-                    _Grid2DSquareCell,
+                    g,
                     _CellIDs,
                     _TreatNoDataValueAsOutflow,
                     handleOutOfMemoryError);
@@ -2180,13 +2138,13 @@ public class Grids_ProcessorDEM
     }
 
     private HashSet getHollowFilledDEMCalculateHollows(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             HashSet cellIDs,
             boolean handleOutOfMemoryError) {
         try {
-            ge.getGrids().add(_Grid2DSquareCell);
+            ge.getGrids().add(g);
 
-            if ((_Grid2DSquareCell.getNCols(handleOutOfMemoryError) * _Grid2DSquareCell.getNRows(handleOutOfMemoryError)) / 4 < cellIDs.size()) {
+            if ((g.getNCols(handleOutOfMemoryError) * g.getNRows(handleOutOfMemoryError)) / 4 < cellIDs.size()) {
                 // return getInitialHollowsHashSet( grid );
             }
             HashSet result = new HashSet();
@@ -2204,8 +2162,8 @@ public class Grids_ProcessorDEM
             //int noDataCount;
             Iterator iterator1 = cellIDs.iterator();
 
-            if (_Grid2DSquareCell.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) _Grid2DSquareCell;
+            if (g.getClass() == Grids_GridInt.class) {
+                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
                 int noDataValue = _Grid2DSquareCellInt.getNoDataValue(handleOutOfMemoryError);
                 int[] heights = new int[9];
                 while (iterator1.hasNext()) {
@@ -2243,7 +2201,7 @@ public class Grids_ProcessorDEM
                     }
                 }
             } else { // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) _Grid2DSquareCell;
+                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
 
                 double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(handleOutOfMemoryError);
 
@@ -2291,17 +2249,17 @@ public class Grids_ProcessorDEM
             }
             return result;
 
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
                 getHollowFilledDEMCalculateHollows(
-                        _Grid2DSquareCell, cellIDs, handleOutOfMemoryError);
+                        g, cellIDs, handleOutOfMemoryError);
             }
-            throw _OutOfMemoryError0;
+            throw e;
         }
     }
 
@@ -2496,101 +2454,13 @@ public class Grids_ProcessorDEM
                         swapOutProcessedChunks,
                         handleOutOfMemoryError);
             } else {
-                //_OutOfMemoryError0.printStackTrace();
+                //e.printStackTrace();
                 //println( "getMetrics1(Grids_AbstractGridNumber,double,double,double,Grids_GridDoubleFactory,Grids_GridIntFactory,boolean" );
                 throw e;
             }
         }
     }
 
-//    public Grids_AbstractGridNumber get_Roughness(
-//            Grids_AbstractGridNumber _Grid2DSquareCell,
-//            double distance,
-//            double weightIntersect,
-//            double weightFactor,
-//            Grids_GridDoubleFactory GridDoubleFactory,
-//            Grids_GridIntFactory GridIntFactory,
-//            boolean handleOutOfMemoryError )
-//            throws IOException {
-//        try {
-//            ge.getGrids().add( _Grid2DSquareCell );
-//            int _MessageLength = 1000;
-//            String _Message0 = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            String _Message = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            if ( GridDoubleFactory.getChunkNCols() != GridIntFactory.getChunkNCols() ||
-//                    GridDoubleFactory.getChunkNRows() != GridIntFactory.getChunkNRows() ) {
-//                Log( "Warning! ( GridDoubleFactory.getChunkNcols() != GridIntFactory.getChunkNcols() || GridDoubleFactory.getChunkNrows() != GridIntFactory.getChunkNrows() )", handleOutOfMemoryError );
-//            }
-//            Grids_GridDouble _Roughness;
-//            long ncols = _Grid2DSquareCell.getNCols( handleOutOfMemoryError );
-//            long nrows = _Grid2DSquareCell.getNRows( handleOutOfMemoryError );
-//            BigDecimal[] dimensions = _Grid2DSquareCell.getDimensions( handleOutOfMemoryError );
-//            int cachedIndex = 0;
-//            boolean isInitialised = false;
-//            String[] _Metrics1Names = getMetrics1Names();
-//            int _FilenameLength = 5000;
-//            String _FileString;
-//            File _File;
-//            File Directory = getDirectory( handleOutOfMemoryError );
-//            int _intZero = 0;
-//            int i = 0;
-//            boolean _iForInt = false;
-//            _File = ge.initFileDirectory(
-//                        Directory,
-//                        _Metrics1Names[ i ],
-//                        handleOutOfMemoryError );
-//                do {
-//                    try {
-//                        isInitialised = false;
-//                        _Roughness = ( Grids_GridDouble ) GridDoubleFactory.create(
-//                                    _File,
-//                                    nrows,
-//                                    ncols,
-//                                    dimensions,
-//                                    ge,
-//                                    handleOutOfMemoryError );
-//                        ge.getGrids().add( _Roughness );
-//                        isInitialised = true;
-//                    } catch ( OutOfMemoryError _OutOfMemoryError0 ) {
-//                        if ( handleOutOfMemoryError ) {
-//                            clearMemoryReserve();
-//                            swapChunks( handleOutOfMemoryError );
-//                            initMemoryReserve( handleOutOfMemoryError );
-//                        } else {
-//                            throw _OutOfMemoryError0;
-//                        }
-//                    }
-//                } while ( ! isInitialised );
-//            checkAndMaybeFreeMemory();
-//            return get_Roughness(
-//                    _Roughness,
-//                    _Grid2DSquareCell,
-//                    dimensions,
-//                    distance,
-//                    weightIntersect,
-//                    weightFactor,
-//                    handleOutOfMemoryError );
-//        } catch ( OutOfMemoryError _OutOfMemoryError0 ) {
-//            if ( handleOutOfMemoryError ) {
-//                clearMemoryReserve();
-//                ge.getGrids().add( _Grid2DSquareCell );
-//                swapChunk_AccountDetail( handleOutOfMemoryError );
-//                initMemoryReserve( handleOutOfMemoryError );
-//                return get_Roughness(
-//                        _Grid2DSquareCell,
-//                        distance,
-//                        weightIntersect,
-//                        weightFactor,
-//                        GridDoubleFactory,
-//                        GridIntFactory,
-//                        handleOutOfMemoryError );
-//            } else {
-//                //_OutOfMemoryError0.printStackTrace();
-//                //println( "getMetrics1(Grids_AbstractGridNumber,double,double,double,Grids_GridDoubleFactory,Grids_GridIntFactory,boolean" );
-//                throw _OutOfMemoryError0;
-//            }
-//        }
-//    }
     /**
      * TODO
      *
@@ -3055,318 +2925,6 @@ public class Grids_ProcessorDEM
         }
     }
 
-//    public Grids_GridDouble get_Roughness(
-//            Grids_GridDouble _Roughness,
-//            Grids_AbstractGridNumber _Grid2DSquareCell,
-//            BigDecimal[] dimensions,
-//            double distance,
-//            double weightIntersect,
-//            double weightFactor,
-//            boolean handleOutOfMemoryError ) {
-//        try {
-//            ge.getGrids().add( _Grid2DSquareCell );
-//            int _MessageLength = 1000;
-//            String _Message0 = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            String _Message = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            int _NameLength = 1000;
-//            String _Name = ge.initString( _NameLength, handleOutOfMemoryError );
-//            _Name = ge.initString( _NameLength, handleOutOfMemoryError );
-//            String _UnderScore = "_";
-//            boolean _boolean1 = true;
-//            long ncols = _Grid2DSquareCell.getNCols( handleOutOfMemoryError );
-//            long nrows = _Grid2DSquareCell.getNRows( handleOutOfMemoryError );
-//            double cellsize = dimensions[0].doubleValue();
-//            int cellDistance = ( int ) Math.ceil( distance / cellsize );
-//            double value = 0.0d;
-//            double[] heights = new double[ 4 ];
-//            heights[ 0 ] = 0.0d;
-//            heights[ 1 ] = 0.0d;
-//            heights[ 2 ] = 0.0d;
-//            heights[ 3 ] = 0.0d;
-//            double[] diff = new double[ 4 ];
-//            diff[ 0 ] = 0.0d;
-//            diff[ 1 ] = 0.0d;
-//            diff[ 2 ] = 0.0d;
-//            diff[ 3 ] = 0.0d;
-//            double[] dummyDiff = new double[ 4 ];
-//            dummyDiff[ 0 ] = 0.0d;
-//            dummyDiff[ 1 ] = 0.0d;
-//            dummyDiff[ 2 ] = 0.0d;
-//            dummyDiff[ 3 ] = 0.0d;
-//            double[][] weights = getNormalDistributionKernelWeights(
-//                    _Grid2DSquareCell,
-//                    distance,
-//                    handleOutOfMemoryError );
-//            double _RoughnessValue = 0.0d;
-//            long cellRowIndex = 0L;
-//            long cellColIndex = 0L;
-//            double x = 0.0d;
-//            double y = 0.0d;
-//            ID _ChunkID = new ID();
-//            int _NChunkRows = _Grid2DSquareCell.getNChunkRows( handleOutOfMemoryError );
-//            int nChunkCols = _Grid2DSquareCell.getNChunkCols( handleOutOfMemoryError );
-//            int chunkNrows = _Grid2DSquareCell.getChunkNRows( handleOutOfMemoryError );
-//            int chunkNcols = _Grid2DSquareCell.getChunkNCols( handleOutOfMemoryError );
-//            int _ChunkRowIndex = 0;
-//            int _ChunkColIndex = 0;
-//            int chunkCellRowIndex = 0;
-//            int chunkCellColIndex = 0;
-//            int i = 0;
-//            int _int_0 = 0;
-//            if ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class ) {
-//                Grids_GridDouble _Grid2DSquareCellDouble = ( Grids_GridDouble ) _Grid2DSquareCell;
-//                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue( handleOutOfMemoryError );
-//                double heightInt;
-//                double thisHeightInt;;
-//                Grids_AbstractGridChunkDouble _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk( 0, 0, handleOutOfMemoryError );
-//                for ( _ChunkRowIndex = _int_0; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex ++ ) {
-//                    chunkNrows = _Grid2DSquareCell.getChunkNRows(
-//                            _ChunkRowIndex,
-//                            handleOutOfMemoryError );
-//                    for ( _ChunkColIndex = _int_0; _ChunkColIndex < nChunkCols; _ChunkColIndex ++ ) {
-//                        _ChunkID = new ID( _NChunkRows, _ChunkRowIndex, _ChunkColIndex );
-//                        try {
-//                            _Grid2DSquareCellDoubleChunk = _Grid2DSquareCellDouble.getGridChunk(
-//                                    _ChunkRowIndex,
-//                                    _ChunkColIndex,
-//                                    handleOutOfMemoryError );
-//                            chunkNcols = _Grid2DSquareCell.getChunkNCols(
-//                                    _ChunkColIndex,
-//                                    handleOutOfMemoryError,
-//                                    _ChunkID );
-//                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                            throw _OutOfMemoryError;
-//                        }
-//                        try {
-//                            for ( chunkCellRowIndex = _int_0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex ++ ) {
-//                                try {
-//                                    cellRowIndex = _Grid2DSquareCell.getRow(
-//                                            _ChunkRowIndex,
-//                                            chunkCellRowIndex,
-//                                            handleOutOfMemoryError,
-//                                            _ChunkID );
-//                                    y = _Grid2DSquareCell.getCellYDouble(
-//                                            cellRowIndex,
-//                                            handleOutOfMemoryError,
-//                                            _ChunkID );
-//                                } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                    clearMemoryReserve();
-//                                    System.out.println("Problem!!!");
-//                                    ID _chunkID2 = new ID(
-//                                            _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                            _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
-//                                            _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
-//                                    _Roughness.swapToFileGrid2DSquareCellChunkExcept(
-//                                            _chunkID2,
-//                                            handleOutOfMemoryError );
-//                                    initMemoryReserve( handleOutOfMemoryError );
-//                                    cellRowIndex = _Grid2DSquareCell.getRow( _ChunkRowIndex, chunkCellRowIndex, handleOutOfMemoryError );
-//                                    y = _Grid2DSquareCell.getCellYDouble( cellRowIndex, handleOutOfMemoryError );
-//                                }
-//                                try {
-//                                    for ( chunkCellColIndex = _int_0; chunkCellColIndex < chunkNcols; chunkCellColIndex ++ ) {
-//                                        try {
-//                                            try {
-//                                                cellColIndex = _Grid2DSquareCell.getCellCol(
-//                                                        _ChunkColIndex,
-//                                                        chunkCellColIndex,
-//                                                        handleOutOfMemoryError,
-//                                                        _ChunkID );
-//                                                x = _Grid2DSquareCellDouble.getCellXDouble(
-//                                                        cellColIndex,
-//                                                        handleOutOfMemoryError,
-//                                                        _ChunkID );
-//                                                //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, handleOutOfMemoryError );
-//                                                height = _Grid2DSquareCellDoubleChunk.getCell(
-//                                                        chunkCellRowIndex,
-//                                                        chunkCellColIndex,
-//                                                        noDataValue,
-//                                                        handleOutOfMemoryError,
-//                                                        _ChunkID );
-//                                            } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                                clearMemoryReserve();
-//                                                ID _chunkID2 = new ID(
-//                                                        _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                                        _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
-//                                                        _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
-//                                                _Roughness.swapToFileGrid2DSquareCellChunkExcept(
-//                                                        _chunkID2, handleOutOfMemoryError );
-//                                                initMemoryReserve( handleOutOfMemoryError );
-//                                                height = _Grid2DSquareCellDoubleChunk.getCell(
-//                                                        chunkCellRowIndex,
-//                                                        chunkCellColIndex,
-//                                                        noDataValue,
-//                                                        handleOutOfMemoryError );
-//                                                cellColIndex = _Grid2DSquareCell.getCellCol( _ChunkColIndex, chunkCellColIndex, handleOutOfMemoryError );
-//                                                x = _Grid2DSquareCellDouble.getCellXDouble( cellColIndex, handleOutOfMemoryError );
-//                                            }
-//                                            _boolean1 = height != noDataValue;
-//                                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                            throw _OutOfMemoryError;
-//                                        }
-//                                        try {
-//                                            if ( _boolean1 ) {
-//                                                try {
-//                                                    _RoughnessValue = _calculateRoughness(
-//                                                            _Grid2DSquareCellDouble,
-//                                                            cellsize,
-//                                                            cellRowIndex,
-//                                                            cellColIndex,
-//                                                            x,
-//                                                            y,
-//                                                            distance,
-//                                                            cellDistance,
-//                                                            weights,
-//                                                            _RoughnessValue,
-//                                                            heights,
-//                                                            diff,
-//                                                            dummyDiff,
-//                                                            handleOutOfMemoryError,
-//                                                            _ChunkID );
-//                                                } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                                    throw _OutOfMemoryError;
-//                                                }
-//                                                try {
-//                                                    try {
-//                                                            _Roughness.setCell(
-//                                                                    cellRowIndex,
-//                                                                    cellColIndex,
-//                                                                    _RoughnessValue,
-//                                                                    handleOutOfMemoryError,
-//                                                                    _ChunkID );
-//                                                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                                            clearMemoryReserve();
-//                                                            ID _chunkID2 = new ID(
-//                                                                    _Roughness.getNChunkCols( handleOutOfMemoryError ),
-//                                                                    _Roughness.getChunkRow( cellRowIndex, handleOutOfMemoryError ),
-//                                                                    _Roughness.getChunkCol( cellColIndex, handleOutOfMemoryError ) );
-//                                                            _Roughness.swapToFileGrid2DSquareCellChunkExcept(
-//                                                                    _chunkID2,
-//                                                                    handleOutOfMemoryError );
-//                                                            initMemoryReserve( handleOutOfMemoryError );
-//                                                            _Roughness.setCell(
-//                                                                    cellRowIndex,
-//                                                                    cellColIndex,
-//                                                                    _RoughnessValue,
-//                                                                    handleOutOfMemoryError );
-//                                                        }
-//                                                } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                                    throw _OutOfMemoryError;
-//                                                }
-//                                            }
-//                                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                            throw _OutOfMemoryError;
-//                                        }
-//                                    }
-//                                } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                                    throw _OutOfMemoryError;
-//                                }
-//                            }
-//                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                            throw _OutOfMemoryError;
-//                        }
-//                        try {
-//                            _Message = "Done Chunk ( " + _ChunkRowIndex + ", " + _ChunkColIndex + " )";
-//                            _Message = ge.println( _Message, _Message0 , handleOutOfMemoryError);
-//                        } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                            throw _OutOfMemoryError;
-//                        }
-//                    }
-//                }
-//            } else {
-//                // Needs work to handle memory as well as Grids_GridDouble above!
-//                // ( _Grid2DSquareCell.getClass() == Grids_GridInt.class )
-//                Grids_GridInt _Grid2DSquareCellInt = ( Grids_GridInt ) _Grid2DSquareCell;
-//                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(
-//                        handleOutOfMemoryError );
-//                int height = Integer.MIN_VALUE;
-//                int thisHeight = Integer.MIN_VALUE;
-//                Grids_AbstractGridChunkInt _Grid2DSquareCellIntChunk = _Grid2DSquareCellInt.getGridChunk( 0, 0, handleOutOfMemoryError );
-//                for ( _ChunkRowIndex = _int_0; _ChunkRowIndex < _NChunkRows; _ChunkRowIndex ++ ) {
-//                    chunkNrows = _Grid2DSquareCell.getChunkNRows(
-//                            _ChunkRowIndex,
-//                            handleOutOfMemoryError );
-//                    for ( _ChunkColIndex = _int_0; _ChunkColIndex < nChunkCols; _ChunkColIndex ++ ) {
-//                        _Grid2DSquareCellIntChunk = _Grid2DSquareCellInt.getGridChunk(
-//                                _ChunkRowIndex,
-//                                _ChunkColIndex,
-//                                handleOutOfMemoryError );
-//                        chunkNcols = _Grid2DSquareCell.getChunkNCols(
-//                                _ChunkColIndex,
-//                                handleOutOfMemoryError );
-//                        for ( chunkCellRowIndex = _int_0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex ++ ) {
-//                            cellRowIndex = _Grid2DSquareCell.getRow(
-//                                    _ChunkRowIndex,
-//                                    chunkCellRowIndex,
-//                                    handleOutOfMemoryError );
-//                            y = _Grid2DSquareCell.getCellYDouble(
-//                                    cellRowIndex,
-//                                    handleOutOfMemoryError );
-//                            for ( chunkCellColIndex = _int_0; chunkCellColIndex < chunkNcols; chunkCellColIndex ++ ) {
-//                                cellColIndex = _Grid2DSquareCell.getCellCol(
-//                                        _ChunkColIndex,
-//                                        chunkCellColIndex,
-//                                        handleOutOfMemoryError );
-//                                x = _Grid2DSquareCellInt.getCellXDouble(
-//                                        cellColIndex,
-//                                        handleOutOfMemoryError );
-//                                height = _Grid2DSquareCellIntChunk.getCell(
-//                                        chunkCellRowIndex,
-//                                        chunkCellColIndex,
-//                                        noDataValue,
-//                                        handleOutOfMemoryError );
-//                                _boolean1 = height != noDataValue;
-//                                if ( _boolean1 ) {
-//                                    _RoughnessValue = _calculateRoughness(
-//                                            _Grid2DSquareCellInt,
-//                                            cellsize,
-//                                            cellRowIndex,
-//                                            cellColIndex,
-//                                            x,
-//                                            y,
-//                                            distance,
-//                                            cellDistance,
-//                                            weights,
-//                                            _RoughnessValue,
-//                                            heights,
-//                                            diff,
-//                                            dummyDiff,
-//                                            handleOutOfMemoryError );
-//                                     _RoughnessValue.setCell(
-//                                                cellRowIndex,
-//                                                cellColIndex,
-//                                                _RoughnessValue,
-//                                                handleOutOfMemoryError );
-//                                }
-//                            }
-//                        }
-//                        _Message = "Done Chunk ( " + _ChunkRowIndex + ", " + _ChunkColIndex + " )";
-//                        _Message = ge.println( _Message, _Message0 , handleOutOfMemoryError);
-//                    }
-//                }
-//            }
-//            try {
-//                _Name = ge.initString(
-//                            ge.initString( name, _UnderScore, handleOutOfMemoryError ),
-//                            toString( distance, handleOutOfMemoryError ),
-//                            handleOutOfMemoryError );
-//                    _Roughness.setName( _Name, handleOutOfMemoryError );
-//                    _Name = ge.initString( _NameLength, handleOutOfMemoryError );
-//            } catch ( OutOfMemoryError _OutOfMemoryError ) {
-//                throw _OutOfMemoryError;
-//            }
-//            return metrics1;
-//        } catch ( OutOfMemoryError _OutOfMemoryError0 ) {
-//            clearMemoryReserve();
-//            int _MessageLength = 1000;
-//            String _Message0 = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            String _Message = ge.initString( _MessageLength, handleOutOfMemoryError );
-//            _Message = "OutOfMemoryError in " + this.getClass().getName() + ".getMetrics1(Grid2DSquareCellAbstract[],Grid2DSquareCellAbstract,BigDecimal[],double,double,double,boolean)";
-//            _Message = ge.println( _Message, _Message0 , handleOutOfMemoryError);
-//            _OutOfMemoryError0.printStackTrace();
-//            throw _OutOfMemoryError0;
-//        }
-//    }
     /**
      * Returns a double[] metrics1 of the cells in grid upto distance from a
      * cell given by rowIndex and colIndex. The elements of metrics1 do not
@@ -3789,7 +3347,6 @@ public class Grids_ProcessorDEM
                                 if (diff[n] < 0.0d) {
                                     upness += diff[n];
                                     upCount += 1.0d;
-
                                 } else {
                                     metrics1[1] += weight; // flatness
                                 }
@@ -3844,446 +3401,292 @@ public class Grids_ProcessorDEM
             case 0:
                 // hhhh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-
                 break;
-
             case 1:
                 // hhhl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
-
                 break;
-
             case 2:
                 // hhhs
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-                metrics1Calculate_hhhl(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, diff, weight);
                 //count_hhhs += 1.0d;
                 //w_hhhs += weight;
-
                 break;
-
             case 3:
                 // hhlh
                 // Shuffle diff once for hhhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 break;
-
             case 4:
                 // hhll
                 metrics1Calculate_hhll(metrics1, diff, weight);
-
                 break;
-
             case 5:
                 // hhls
                 // Shuffle diff once for hhhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
                 //count_hhsl += 1.0d;
                 //w_hhsl += weight;
-
                 break;
-
             case 6:
                 // hhsh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff once for hhhl
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 //count_hhhs += 1.0d;
                 //w_hhhs += weight;
-
                 break;
-
             case 7:
                 // hhsl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
                 //count_hhsl += 1.0d;
                 //w_hhsl += weight;
-
                 break;
 
             case 8:
                 // hhss
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-                metrics1Calculate_hhhl(
-                        metrics1, diff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, diff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
                 //count_hhss += 1.0d;
                 //w_hhss += weight;
-
                 break;
-
             case 9:
                 // hlhh
                 // Shuffle diff twice for hhhl
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 break;
-
             case 10:
                 // metrics1Calculate_hlhl
                 metrics1Calculate_hlhl(metrics1, diff, weight);
-
                 break;
-
             case 11:
                 // hlhs
                 // Shuffle diff twice for hhhl
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, diff, weight);
                 //count_hshl += 1.0d;
                 //w_hshl += weight;
-
                 break;
-
             case 12:
                 // hllh
                 // Shuffle diff once for hhll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 13:
                 // hlll
                 metrics1Calculate_hlll(metrics1, diff, weight);
-
                 break;
-
             case 14:
                 // hlls
                 // Shuffle diff once for hhll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 //count_hsll += 1.0d;
                 //w_hsll += weight;
-
                 break;
-
             case 15:
                 // hlsh
                 // Shuffle diff twice for hhll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff once for hhll
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 //count_hhsl += 1.0d;
                 //w_hhsl += weight;
-
                 break;
-
             case 16:
                 // hlsl
                 metrics1Calculate_hlhl(metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 //count_hlsl += 1.0d;
                 //w_hlsl += weight;
-
                 break;
-
             case 17:
                 // hlss
                 // Shuffle diff twice for hhhl
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, diff, weight);
                 // Shuffle diff once for hhll
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 break;
-
             case 18:
                 // hshh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff twice for hhhl
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 break;
-
             case 19:
                 // hshl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hlhl(metrics1, diff, weight);
                 break;
-
             case 20:
                 // hshs
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-                metrics1Calculate_hhhl(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hhhl(metrics1, diff, weight);
+                metrics1Calculate_hlhl(metrics1, diff, weight);
                 break;
-
             case 21:
                 // hslh
                 // Shuffle diff once for hhhl and hhll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 22:
                 // hsll
                 metrics1Calculate_hhll(metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 break;
-
             case 23:
                 // hsls
                 // Shuffle diff once for hhhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 break;
-
             case 24:
                 // hssh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff once for hhhl and hhll
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 25:
                 // hssl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hhll(metrics1, diff, weight);
+                metrics1Calculate_hlhl(metrics1, diff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 break;
-
             case 26:
                 // metrics1Calculate_hsss
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-                metrics1Calculate_hhhl(
-                        metrics1, diff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-
+                metrics1Calculate_hhhl(metrics1, diff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
+                metrics1Calculate_hlhl(metrics1, diff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
                 break;
-
             case 27:
                 // lhhh
                 // Shuffle diff thrice for hhhl
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 break;
-
             case 28:
                 // lhhl
                 // Shuffle diff thrice for hhll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 29:
                 // lhhs
                 // Shuffle diff thrice for hhhl and hhll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 30:
                 // lhlh
                 // Shuffle once for hlhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 break;
-
             case 31:
                 // lhll
                 // Shuffle diff thrice for hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 32:
                 // lhls
                 // Shuffle diff once for hlhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 // Shuffle diff thrice for hlll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 33:
                 // lhsh
                 // Shuffle diff thrice for hhhl
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff once for hlhl
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 break;
-
             case 34:
                 // lhsl
                 // Shuffle diff thrice for hhll and hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 35:
                 // lhss
                 // Shuffle diff thrice for hhhl, hhll, hlhl, hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 break;
-
             case 36:
                 // llhh
                 // Shuffle diff twice for hhll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 37:
                 // llhl
                 // Shuffle diff twice for hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 38:
                 // llhs
                 // Shuffle diff twice for hhll and hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 39:
                 // lllh
                 // Shuffle diff once for hlll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 40:
                 // llll
                 metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
-
                 break;
-
             case 41:
                 // llls
                 // Shuffle diff once for hlll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 42:
                 // llsh
                 // Shuffle diff twice for hhll
@@ -4291,514 +3694,318 @@ public class Grids_ProcessorDEM
                 metrics1Calculate_hhll(
                         metrics1, dummyDiff, weight);
                 // Shuffle diff once for hlll
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 43:
                 // llsl
                 // Shuffle diff twice for hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 44:
                 // llss
                 // Shuffle diff twice for hhll hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 45:
                 // lshh
                 // Shuffle diff thrice for hhhl
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff twice for hhll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 46:
                 // lshl
                 // Shuffle diff thrice for hhll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 // Shuffle diff twice for hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 47:
                 // lshs
                 // Shuffle diff thrice for hhhl
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff twice for hhll hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 48:
                 // lslh
                 // Shuffle diff once for hlhl and hlll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 49:
                 // lsll
                 // Shuffle diff thrice for hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 50:
                 // lsls
                 // Shuffle diff once for hlhl hlll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 51:
                 // lssh
                 // Shuffle diff thrice for hhhl
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff twice for hhll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 // Shuffle diff once for hlll
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 52:
                 // lssl
                 // Shuffle diff thrice for hhll hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 53:
                 // lsss
                 // Shuffle diff thrice for hhhl hhll hlll
                 metrics1Shuffle3(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 54:
                 // shhh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff thrice for hhhl
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 break;
-
             case 55:
                 // shhl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
                 // Shuffle diff thrice for hhll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 56:
                 // shhs
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
-                metrics1Calculate_hhhl(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, diff, weight);
                 // Shuffle diff twice for hhll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 57:
                 // shlh
                 // Shuffle diff once for hhhl hlhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 break;
-
             case 58:
                 // shll
                 metrics1Calculate_hhll(metrics1, diff, weight);
                 // Shuffle diff thrice for hlll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 59:
                 // shls
                 // Shuffle diff once for hhhl
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
                 // Shuffle diff thrice for hlll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 60:
                 // shsh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff once for hhhl hlhl
-                metrics1Shuffle1(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle1(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
                 break;
-
             case 61:
                 // shsl
                 metrics1Calculate_hhhl(metrics1, diff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, diff, weight);
+                metrics1Calculate_hhll(metrics1, diff, weight);
                 // Shuffle diff thrice for hlll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 62:
                 // shss
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff thrice for hhhl hhll hlhl hlll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 63:
                 // slhh
                 // Shuffle diff twice for hhhl hhll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 64:
                 // slhl
                 metrics1Calculate_hlhl(metrics1, diff, weight);
                 // Shuffle diff twice for hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 65:
                 // slhs
                 // Shuffle diff twice for hhhl hhll hlhl hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 66:
                 // sllh
                 // Shuffle diff twice for hhll hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 67:
                 // slll
                 metrics1Calculate_hlll(metrics1, diff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 68:
                 // slls
                 // Shuffle diff once for hhll
                 metrics1Shuffle1(dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, diff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 69:
                 // slsh
                 // Shuffle diff twice for hhhl hhll hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 70:
                 // slsl
                 metrics1Calculate_hlhl(metrics1, diff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, diff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlll(metrics1, diff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 71:
                 // slss
                 // Shuffle diff twice for hhhl hhll hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 72:
                 // sshh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff twice for hhhl hhll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 break;
-
             case 73:
                 // sshl
                 metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
                 // Shuffle diff thrice for hhll
-                metrics1Shuffle3(
-                        dummyDiff, diff);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
+                metrics1Shuffle3(dummyDiff, diff);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
                 // Shuffle diff twice for hlhl hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 74:
                 // sshs
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff twice for hhhl hhll hlhl hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 75:
                 // sslh
                 // Shuffle diff once for hhhl hhll hlhl hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 76:
                 // ssll
                 metrics1Calculate_hhll(metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 77:
                 // ssls
                 // Shuffle diff once for hhhl hhll hlhl hlll
                 metrics1Shuffle2(dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 78:
                 // sssh
                 metrics1Calculate_hhhh(metrics1, diff, weight, averageDiff);
                 // Shuffle diff once for hhhl hhll hlhl hlll
-                metrics1Shuffle2(
-                        dummyDiff, diff);
-                metrics1Calculate_hhhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-
+                metrics1Shuffle2(dummyDiff, diff);
+                metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
                 break;
-
             case 79:
                 // sssl
                 metrics1Calculate_hhhl(metrics1, dummyDiff, weight);
-                metrics1Calculate_hhll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlhl(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_hlll(
-                        metrics1, dummyDiff, weight);
-                metrics1Calculate_llll(
-                        metrics1, diff, weight, averageDiff);
-
+                metrics1Calculate_hhll(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlhl(metrics1, dummyDiff, weight);
+                metrics1Calculate_hlll(metrics1, dummyDiff, weight);
+                metrics1Calculate_llll(metrics1, diff, weight, averageDiff);
                 break;
-
             case 80:
                 // ssss
                 // This case should not happen!
                 break;
-
         }
     }
 
@@ -4815,38 +4022,30 @@ public class Grids_ProcessorDEM
                 if (diff[2] > 0.0d) {
                     if (diff[3] > 0.0d) {
                         return 0; // metrics1Calculate_hhhh
-
                     } else {
                         if (diff[3] < 0.0d) {
                             return 1; // metrics1Calculate_hhhl
-
                         } else {
                             return 2; // metrics1Calculate_hhhs
-
                         }
                     }
                 } else {
                     if (diff[2] < 0.0d) {
                         if (diff[3] > 0.0d) {
                             return 3; // metrics1Calculate_hhlh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 4; // metrics1Calculate_hhll
-
                             } else {
                                 return 5; // metrics1Calculate_hhls
-
                             }
                         }
                     } else {
                         if (diff[3] > 0.0d) {
                             return 6; // metrics1Calculate_hhsh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 7; // metrics1Calculate_hhsl
-
                             } else {
                                 return 8; // metrics1Calculate_hhss
 
@@ -4859,38 +4058,30 @@ public class Grids_ProcessorDEM
                     if (diff[2] > 0.0d) {
                         if (diff[3] > 0.0d) {
                             return 9; // metrics1Calculate_hlhh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 10; // metrics1Calculate_hlhl
-
                             } else {
                                 return 11; // metrics1Calculate_hlhs
-
                             }
                         }
                     } else {
                         if (diff[2] < 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 12; // metrics1Calculate_hllh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 13; // metrics1Calculate_hlll
-
                                 } else {
                                     return 14; // metrics1Calculate_hlls
-
                                 }
                             }
                         } else {
                             if (diff[3] > 0.0d) {
                                 return 15; // metrics1Calculate_hlsh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 16; // metrics1Calculate_hlsl
-
                                 } else {
                                     return 17; // metrics1Calculate_hlss
 
@@ -4902,41 +4093,32 @@ public class Grids_ProcessorDEM
                     if (diff[2] > 0.0d) {
                         if (diff[3] > 0.0d) {
                             return 18; // metrics1Calculate_hshh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 19; // metrics1Calculate_hshl
-
                             } else {
                                 return 20; // metrics1Calculate_hshs
-
                             }
                         }
                     } else {
                         if (diff[2] < 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 21; // metrics1Calculate_hslh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 22; // metrics1Calculate_hsll
-
                                 } else {
                                     return 23; // metrics1Calculate_hsls
-
                                 }
                             }
                         } else {
                             if (diff[3] > 0.0d) {
                                 return 24; // metrics1Calculate_hssh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 25; // metrics1Calculate_hssl
-
                                 } else {
                                     return 26; // metrics1Calculate_hsss
-
                                 }
                             }
                         }
@@ -4949,41 +4131,32 @@ public class Grids_ProcessorDEM
                     if (diff[2] > 0.0d) {
                         if (diff[3] > 0.0d) {
                             return 27; // metrics1Calculate_lhhh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 28; // metrics1Calculate_lhhl
-
                             } else {
                                 return 29; // metrics1Calculate_lhhs
-
                             }
                         }
                     } else {
                         if (diff[2] < 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 30; // metrics1Calculate_lhlh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 31; // metrics1Calculate_lhll
-
                                 } else {
                                     return 32; // metrics1Calculate_lhls
-
                                 }
                             }
                         } else {
                             if (diff[3] > 0.0d) {
                                 return 33; // metrics1Calculate_lhsh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 34; // metrics1Calculate_lhsl
-
                                 } else {
                                     return 35; // metrics1Calculate_lhss
-
                                 }
                             }
                         }
@@ -4993,41 +4166,32 @@ public class Grids_ProcessorDEM
                         if (diff[2] > 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 36; // metrics1Calculate_llhh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 37; // metrics1Calculate_llhl
-
                                 } else {
                                     return 38; // metrics1Calculate_llhs
-
                                 }
                             }
                         } else {
                             if (diff[2] < 0.0d) {
                                 if (diff[3] > 0.0d) {
                                     return 39; // metrics1Calculate_lllh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 40; // metrics1Calculate_llll
-
                                     } else {
                                         return 41; // metrics1Calculate_llls
-
                                     }
                                 }
                             } else {
                                 if (diff[3] > 0.0d) {
                                     return 42; // metrics1Calculate_llsh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 43; // metrics1Calculate_llsl
-
                                     } else {
                                         return 44; // metrics1Calculate_llss
-
                                     }
                                 }
                             }
@@ -5036,41 +4200,32 @@ public class Grids_ProcessorDEM
                         if (diff[2] > 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 45; // metrics1Calculate_lshh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 46; // metrics1Calculate_lshl
-
                                 } else {
                                     return 47; // metrics1Calculate_lshs
-
                                 }
                             }
                         } else {
                             if (diff[2] < 0.0d) {
                                 if (diff[3] > 0.0d) {
                                     return 48; // metrics1Calculate_lslh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 49; // metrics1Calculate_lsll
-
                                     } else {
                                         return 50; // metrics1Calculate_lsls
-
                                     }
                                 }
                             } else {
                                 if (diff[3] > 0.0d) {
                                     return 51; // metrics1Calculate_lssh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 52; // metrics1Calculate_lssl
-
                                     } else {
                                         return 53; // metrics1Calculate_lsss
-
                                     }
                                 }
                             }
@@ -5082,41 +4237,32 @@ public class Grids_ProcessorDEM
                     if (diff[2] > 0.0d) {
                         if (diff[3] > 0.0d) {
                             return 54; // metrics1Calculate_shhh
-
                         } else {
                             if (diff[3] < 0.0d) {
                                 return 55; // metrics1Calculate_shhl
-
                             } else {
                                 return 56; // metrics1Calculate_shhs
-
                             }
                         }
                     } else {
                         if (diff[2] < 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 57; // metrics1Calculate_shlh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 58; // metrics1Calculate_shll
-
                                 } else {
                                     return 59; // metrics1Calculate_shls
-
                                 }
                             }
                         } else {
                             if (diff[3] > 0.0d) {
                                 return 60; // metrics1Calculate_shsh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 61; // metrics1Calculate_shsl
-
                                 } else {
                                     return 62; // metrics1Calculate_shss
-
                                 }
                             }
                         }
@@ -5126,41 +4272,32 @@ public class Grids_ProcessorDEM
                         if (diff[2] > 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 63; // metrics1Calculate_slhh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 64; // metrics1Calculate_slhl
-
                                 } else {
                                     return 65; // metrics1Calculate_slhs
-
                                 }
                             }
                         } else {
                             if (diff[2] < 0.0d) {
                                 if (diff[3] > 0.0d) {
                                     return 66; // metrics1Calculate_sllh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 67; // metrics1Calculate_slll
-
                                     } else {
                                         return 68; // metrics1Calculate_slls
-
                                     }
                                 }
                             } else {
                                 if (diff[3] > 0.0d) {
                                     return 69; // metrics1Calculate_slsh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 70; // metrics1Calculate_slsl
-
                                     } else {
                                         return 71; // metrics1Calculate_slss
-
                                     }
                                 }
                             }
@@ -5169,41 +4306,32 @@ public class Grids_ProcessorDEM
                         if (diff[2] > 0.0d) {
                             if (diff[3] > 0.0d) {
                                 return 72; // metrics1Calculate_sshh
-
                             } else {
                                 if (diff[3] < 0.0d) {
                                     return 73; // metrics1Calculate_sshl
-
                                 } else {
                                     return 74; // metrics1Calculate_sshs
-
                                 }
                             }
                         } else {
                             if (diff[2] < 0.0d) {
                                 if (diff[3] > 0.0d) {
                                     return 75; // metrics1Calculate_sslh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 76; // metrics1Calculate_ssll
-
                                     } else {
                                         return 77; // metrics1Calculate_ssls
-
                                     }
                                 }
                             } else {
                                 if (diff[3] > 0.0d) {
                                     return 78; // metrics1Calculate_sssh
-
                                 } else {
                                     if (diff[3] < 0.0d) {
                                         return 79; // metrics1Calculate_sssl
-
                                     } else {
                                         return 80; // metrics1Calculate_ssss
-
                                     }
                                 }
                             }
@@ -5464,7 +4592,7 @@ public class Grids_ProcessorDEM
 
             return result;
 
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 getMetrics2(
                         grid,
@@ -5476,7 +4604,7 @@ public class Grids_ProcessorDEM
                         handleOutOfMemoryError);
 
             }
-            throw _OutOfMemoryError;
+            throw e;
 
         }
     }
@@ -5488,7 +4616,7 @@ public class Grids_ProcessorDEM
      *
      */
     private Point2D.Double[] getMetrics2Points(
-            Grids_GridDouble[] _SlopeAndAspect,
+            Grids_GridDouble[] slopeAndAspect,
             double distance,
             int samplingDensity) {
         Point2D.Double[] metrics2Points = null;
@@ -5501,7 +4629,7 @@ public class Grids_ProcessorDEM
             Grids_GridDouble grid,
             long row,
             long col,
-            Grids_GridDouble[] _SlopeAndAspect,
+            Grids_GridDouble[] slopeAndAspect,
             double distance,
             double[] weights) {
         double[] metrics2 = null;
@@ -5594,7 +4722,7 @@ public class Grids_ProcessorDEM
                 }
             }
             return result;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 return getMaxFlowDirection(
                         grid,
@@ -5602,7 +4730,7 @@ public class Grids_ProcessorDEM
                         handleOutOfMemoryError);
 
             } else {
-                throw _OutOfMemoryError;
+                throw e;
 
             }
         }
@@ -5646,12 +4774,12 @@ public class Grids_ProcessorDEM
 
             return upSlopeAreaMetrics;
 
-        } catch (OutOfMemoryError _OutOfMemoryError0) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
 
                 if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
-                    throw _OutOfMemoryError0;
+                    throw e;
 
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -5664,7 +4792,7 @@ public class Grids_ProcessorDEM
                         handleOutOfMemoryError);
 
             }
-            throw _OutOfMemoryError0;
+            throw e;
 
         }
     }
@@ -5734,7 +4862,7 @@ public class Grids_ProcessorDEM
                 }
             }
             return initialPeaksHashSet;
-        } catch (OutOfMemoryError _OutOfMemoryError) {
+        } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 return getInitialPeaksHashSetAndSetTheirValue(
                         grid,
@@ -5742,7 +4870,7 @@ public class Grids_ProcessorDEM
                         handleOutOfMemoryError);
 
             } else {
-                throw _OutOfMemoryError;
+                throw e;
 
             }
         }
