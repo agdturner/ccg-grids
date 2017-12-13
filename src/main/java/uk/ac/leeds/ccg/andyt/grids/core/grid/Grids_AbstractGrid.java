@@ -3000,7 +3000,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return The number of Grids_AbstractGridChunk swapped.
      */
     public final long swapChunks_Account(
-            int cri0, int cci0, int cri1, int cci1, boolean handleOutOfMemoryError) {
+            int cri0, int cci0, int cri1, int cci1, 
+            boolean handleOutOfMemoryError) {
         try {
             long result = swapChunks_Account(
                     cri0, cci0, cri1, cci1);
@@ -3187,7 +3188,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final void loadIntoCacheChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public final void loadIntoCacheChunk(Grids_2D_ID_int chunkID, 
+            boolean handleOutOfMemoryError) {
         try {
             loadIntoCacheChunk(chunkID);
             ge.checkAndMaybeFreeMemory(chunkID, handleOutOfMemoryError);
@@ -3223,7 +3225,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final Grids_2D_ID_long[] getCellIDs(double x, double y, double distance, boolean handleOutOfMemoryError) {
+    public final Grids_2D_ID_long[] getCellIDs(double x, double y, 
+            double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(x, y, distance);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3250,7 +3253,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    protected final Grids_2D_ID_long[] getCellIDs(double x, double y, double distance) {
+    protected final Grids_2D_ID_long[] getCellIDs(double x, double y, 
+            double distance) {
         return getCellIDs(x, y, getRow(y), getCol(x), distance);
     }
 
@@ -3269,7 +3273,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final Grids_2D_ID_long[] getCellIDs(long row, long col, double distance, boolean handleOutOfMemoryError) {
+    public final Grids_2D_ID_long[] getCellIDs(long row, long col, 
+            double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(row, col, distance);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3297,8 +3302,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    protected final Grids_2D_ID_long[] getCellIDs(long row, long col, double distance) {
-        return getCellIDs(getCellXDouble(col), getCellYDouble(row), row, col, distance);
+    protected final Grids_2D_ID_long[] getCellIDs(long row, long col, 
+            double distance) {
+        return getCellIDs(getCellXDouble(col), getCellYDouble(row), row, col, 
+                distance);
     }
 
     /**
@@ -3317,7 +3324,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_long[] getCellIDs(double x, double y, long row, long col, double distance, boolean handleOutOfMemoryError) {
+    public Grids_2D_ID_long[] getCellIDs(double x, double y, long row, long col, 
+            double distance, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long[] result = getCellIDs(x, y, row, col, distance);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3326,7 +3334,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return getCellIDs(x, y, row, col, distance, handleOutOfMemoryError);
+                return getCellIDs(x, y, row, col, distance, 
+                        handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3387,7 +3396,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_long getNearestCellID(double x, double y, boolean handleOutOfMemoryError) {
+    public Grids_2D_ID_long getNearestCellID(double x, double y, 
+            boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(x, y);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3426,7 +3436,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * then OutOfMemoryErrors are caught and thrown. TODO: return
      * Grids_2D_ID_long[] as could be more than one nearest CellID
      */
-    public Grids_2D_ID_long getNearestCellID(long row, long col, boolean handleOutOfMemoryError) {
+    public Grids_2D_ID_long getNearestCellID(long row, long col, 
+            boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(row, col);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3467,7 +3478,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_long getNearestCellID(double x, double y, long row, long col, boolean handleOutOfMemoryError) {
+    public Grids_2D_ID_long getNearestCellID(double x, double y, long row, 
+            long col, boolean handleOutOfMemoryError) {
         try {
             Grids_2D_ID_long result = getNearestCellID(x, y, row, col);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3491,7 +3503,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param row The cell row index of cell containing point.
      * @param col The cell column index of cell containing point.
      */
-    protected Grids_2D_ID_long getNearestCellID(double x, double y, long row, long col) {
+    protected Grids_2D_ID_long getNearestCellID(double x, double y, long row, 
+            long col) {
         Grids_2D_ID_long cellID;
         boolean isInGrid = isInGrid(x, y);
         if (!isInGrid) {
@@ -3661,7 +3674,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final boolean isInGrid(BigDecimal x, BigDecimal y, boolean handleOutOfMemoryError) {
+    public final boolean isInGrid(BigDecimal x, BigDecimal y, 
+            boolean handleOutOfMemoryError) {
         try {
             boolean result = isInGrid(x, y);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -3757,7 +3771,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param col The cell column index to test.
      */
     protected final boolean isInGrid(long row, long col) {
-        return row >= 0 && row < NRows && col >= 0 && col < NCols;
+        //return row >= 0 && row < NRows && col >= 0 && col < NCols;
+        if (row < 0) {
+            return false;
+        }
+        if (col < 0) {
+            return false;
+        }
+        if (row >= NRows) {
+            return false;
+        }
+        return col < NCols;
     }
 
     /**
@@ -3792,26 +3816,37 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * index _Col is in the Grid.
      */
     protected final boolean isInGrid(int chunkRow, int chunkCol) {
-        return chunkRow >= 0 && chunkRow < NRows && chunkCol >= 0 && chunkCol < NCols;
+        //return chunkRow >= 0 && chunkRow < NChunkRows && chunkCol >= 0 && chunkCol < NChunkCols;
+        if (chunkRow < 0) {
+            return false;
+        }
+        if (chunkCol < 0) {
+            return false;
+        }
+        if (chunkRow >= NChunkRows) {
+            return false;
+        }
+        return chunkCol < NChunkCols;
     }
 
     /**
-     * @return true iff cell given by _CellID is in the Grid.
-     * @param a_CellID The Grids_2D_ID_long of a cell to test.
+     * @return true iff cell given by cellID is in the Grid.
+     * @param cellID The Grids_2D_ID_long of a cell to test.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final boolean isInGrid(Grids_2D_ID_long a_CellID, boolean handleOutOfMemoryError) {
+    public final boolean isInGrid(Grids_2D_ID_long cellID, 
+            boolean handleOutOfMemoryError) {
         try {
-            boolean result = isInGrid(a_CellID);
+            boolean result = isInGrid(cellID);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return isInGrid(a_CellID, handleOutOfMemoryError);
+                return isInGrid(cellID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3827,22 +3862,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return true iff Grids_2D_ID_int _ChunkID is in the Grid.
-     * @param a_ChunkID The Grids_2D_ID_int of a cell to test.
+     * @return true iff Grids_2D_ID_int _ChunkID is in the Grid.chunkID
+     * @param chunkID The Grids_2D_ID_int of a cell to test.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final boolean isInGrid(Grids_2D_ID_int a_ChunkID, boolean handleOutOfMemoryError) {
+    public final boolean isInGrid(Grids_2D_ID_int chunkID, 
+            boolean handleOutOfMemoryError) {
         try {
-            boolean result = isInGrid(a_ChunkID);
+            boolean result = isInGrid(chunkID);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return isInGrid(a_ChunkID, handleOutOfMemoryError);
+                return isInGrid(chunkID, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3856,7 +3892,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected final boolean isInGrid(Grids_2D_ID_int chunkID) {
         int chunkRow = chunkID.getRow();
         int chunkCol = chunkID.getCol();
-        return chunkRow > -1 && chunkRow < NChunkRows && chunkCol > -1 && chunkCol < NChunkCols;
+        return isInGrid(chunkRow, chunkCol);
     }
 
     /**
@@ -3870,16 +3906,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final boolean isInGrid(int chunkRow, int chunkCol, int chunkCellRowIndex, int chunkCellColIndex, boolean handleOutOfMemoryError) {
+    public final boolean isInGrid(int chunkRow, int chunkCol, 
+            int chunkCellRowIndex, int chunkCellColIndex, 
+            boolean handleOutOfMemoryError) {
         try {
-            boolean result = isInGrid(chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex);
+            boolean result;
+            result = isInGrid(chunkRow, chunkCol, chunkCellRowIndex, 
+                    chunkCellColIndex);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(handleOutOfMemoryError, e);
-                return isInGrid(chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, handleOutOfMemoryError);
+                return isInGrid(chunkRow, chunkCol, chunkCellRowIndex, 
+                        chunkCellColIndex, handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -3889,19 +3930,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @param chunkRow
      * @param chunkCol
-     * @param chunkCellRowIndex
-     * @param chunkCellColIndex
-     * @return true iff cell given by _Row, _Col, chunkCellRowIndex,
-     * chunkCellColIndex is in the Grid.
+     * @param cellRow
+     * @param cellCol
+     * @return true iff cell is in the Grid.
      */
     protected final boolean isInGrid(
             int chunkRow,
             int chunkCol,
-            int chunkCellRowIndex,
-            int chunkCellColIndex) {
+            int cellRow,
+            int cellCol) {
         return isInGrid(
-                ((long) chunkRow * (long) ChunkNRows) + (long) chunkCellRowIndex,
-                ((long) chunkCol * (long) ChunkNCols) + (long) chunkCellColIndex);
+                getRow(chunkRow, cellRow),
+                getCol(chunkCol, cellCol));
+//        return isInGrid(
+//                ((long) chunkRow * (long) ChunkNRows) + (long) cellRow,
+//                ((long) chunkCol * (long) ChunkNCols) + (long) cellCol);
     }
 
     /**
