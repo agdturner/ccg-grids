@@ -49,6 +49,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
@@ -1986,11 +1987,7 @@ public class Grids_Processor extends Grids_Object {
                             x = gridToAdd.getCellXDouble(col, handleOutOfMemoryError);
                             value = gridToAdd.getCell(row, col, handleOutOfMemoryError);
                             if (value != gridToAddNoDataValue) {
-                                grid.addToCell(
-                                        x,
-                                        y,
-                                        value * weight,
-                                        handleOutOfMemoryError);
+                                grid.addToCell(x, y, value * weight, handleOutOfMemoryError);
                             }
                         }
                     }
@@ -2328,6 +2325,134 @@ public class Grids_Processor extends Grids_Object {
                 throw e;
             }
         }
+    }
+
+    /**
+     * Multiply g0 and g1 and return a new grid. It is assumed that the
+     * dimensions are all the same;
+     *
+     * @param g0
+     * @param g1
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * in this method then swap operations are initiated prior to retrying. If
+     * false then OutOfMemoryErrors are caught and thrown.
+     * @return
+     */
+    public Grids_GridDouble multiply(
+            Grids_GridDouble g0,
+            Grids_GridDouble g1,
+            boolean handleOutOfMemoryError) {
+        try {
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.getGrids().add(g0);
+            ge.getGrids().add(g1);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            return multiply(g0, g1);
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                    throw e;
+                }
+                ge.initMemoryReserve(handleOutOfMemoryError);
+                return multiply(g0, g1, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public Grids_GridDouble multiply(
+            Grids_GridDouble g0,
+            Grids_GridDouble g1) {
+        Grids_GridDouble result;
+        boolean hoome = false;
+        long nRows = g0.getNRows(hoome);
+        long nCols = g0.getNCols(hoome);
+        result = GridDoubleFactory.create(
+                getDirectory(hoome),
+                g0, 0L, 0L, nRows - 1, nCols - 1, hoome);
+        double v0;
+        double v1;
+        double noDataValue0 = g0.getNoDataValue(hoome);
+        double noDataValue1 = g1.getNoDataValue(hoome);
+        for (long row = 0L; row < nRows; row++) {
+            for (long col = 0L; col < nCols; col++) {
+                v0 = g0.getCell(row, col, hoome);
+                v1 = g1.getCell(row, col, hoome);
+                if (v0 != noDataValue0) {
+                    if (v1 != noDataValue1) {
+                        result.setCell(row, col, v0 * v1, hoome);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Divide g0 by g1 and return a new grid. It is assumed that the dimensions
+     * are all the same;
+     *
+     * @param g0 Numerator
+     * @param g1 Denominator
+     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * in this method then swap operations are initiated prior to retrying. If
+     * false then OutOfMemoryErrors are caught and thrown.
+     * @return
+     */
+    public Grids_GridDouble divide(
+            Grids_GridDouble g0,
+            Grids_GridDouble g1,
+            boolean handleOutOfMemoryError) {
+        try {
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.getGrids().add(g0);
+            ge.getGrids().add(g1);
+            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            return divide(g0, g1);
+        } catch (OutOfMemoryError e) {
+            if (handleOutOfMemoryError) {
+                ge.clearMemoryReserve();
+                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                    throw e;
+                }
+                ge.initMemoryReserve(handleOutOfMemoryError);
+                return divide(g0, g1, handleOutOfMemoryError);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public Grids_GridDouble divide(
+            Grids_GridDouble g0,
+            Grids_GridDouble g1) {
+        Grids_GridDouble result;
+        boolean hoome = false;
+        long nRows = g0.getNRows(hoome);
+        long nCols = g0.getNCols(hoome);
+        result = GridDoubleFactory.create(
+                getDirectory(hoome),
+                g0, 0L, 0L, nRows - 1, nCols - 1, hoome);
+        double v0;
+        double v1;
+        double noDataValue0 = g0.getNoDataValue(hoome);
+        double noDataValue1 = g1.getNoDataValue(hoome);
+        for (long row = 0L; row < nRows; row++) {
+            for (long col = 0L; col < nCols; col++) {
+                v0 = g0.getCell(row, col, hoome);
+                v1 = g1.getCell(row, col, hoome);
+                if (v0 != noDataValue0) {
+                    if (v1 != noDataValue1) {
+                        if (v1 != 0) {
+                            result.setCell(row, col, v0 / v1, hoome);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
