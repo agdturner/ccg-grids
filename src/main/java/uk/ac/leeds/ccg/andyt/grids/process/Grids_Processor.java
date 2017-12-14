@@ -1565,19 +1565,20 @@ public class Grids_Processor extends Grids_Object {
      * value a little bit smaller.
      *
      * @param grid The Grids_GridDouble to be processed.
-     * @param _CellIDs The CellIDs of the cells to be processed.
+     * @param cellIDs The CellIDs of the cells to be processed.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
     public void setValueALittleBitSmaller(
             Grids_GridDouble grid,
-            HashSet _CellIDs,
+            HashSet cellIDs,
             boolean handleOutOfMemoryError) {
         try {
+            setValueALittleBitSmaller(grid, cellIDs);
             Grids_2D_ID_long cellID;
             double noDataValue = grid.getNoDataValue(handleOutOfMemoryError);
-            Iterator iterator1 = _CellIDs.iterator();
+            Iterator iterator1 = cellIDs.iterator();
             double thisValue;
             while (iterator1.hasNext()) {
                 cellID = (Grids_2D_ID_long) iterator1.next();
@@ -1594,12 +1595,26 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
-                setValueALittleBitSmaller(
-                        grid,
-                        _CellIDs,
+                setValueALittleBitSmaller(grid, cellIDs,
                         handleOutOfMemoryError);
             } else {
                 throw e;
+            }
+        }
+    }
+
+    void setValueALittleBitSmaller(Grids_GridDouble g, HashSet cellIDs) {
+        boolean hoome = false;
+        Grids_2D_ID_long cellID;
+        double noDataValue = g.getNoDataValue(hoome);
+        Iterator iterator1 = cellIDs.iterator();
+        double thisValue;
+        while (iterator1.hasNext()) {
+            cellID = (Grids_2D_ID_long) iterator1.next();
+            thisValue = g.getCell(cellID.getRow(), cellID.getCol(), hoome);
+            if (thisValue != noDataValue) {
+                g.setCell(cellID, 
+                        Grids_Utilities.getValueALittleBitSmaller(thisValue), hoome);
             }
         }
     }

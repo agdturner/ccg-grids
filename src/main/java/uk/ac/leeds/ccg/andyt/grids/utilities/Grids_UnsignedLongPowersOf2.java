@@ -39,7 +39,7 @@ public class Grids_UnsignedLongPowersOf2 {
         for ( int i = 0; i < l.powersOf2.length; i ++ ) {
             System.out.println( l.powersOf2[ i ] );
         }
-        System.out.println( "Processing complete in " + Grids_Utilities._ReportTime( System.currentTimeMillis() - time ) );
+        System.out.println( "Processing complete in " + Grids_Utilities.getTime( System.currentTimeMillis() - time ) );
     }
     
     /**

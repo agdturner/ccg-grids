@@ -73,7 +73,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
             file = new File(Directory, testData[i].getName(handleOutOfMemoryError) + ".png");
             new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", handleOutOfMemoryError);
         }
-        System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time0));
+        System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
     }
 
     public Grids_GridDouble[] generateCircularData(

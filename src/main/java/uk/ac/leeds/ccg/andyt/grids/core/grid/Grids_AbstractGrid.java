@@ -3771,17 +3771,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param col The cell column index to test.
      */
     protected final boolean isInGrid(long row, long col) {
-        //return row >= 0 && row < NRows && col >= 0 && col < NCols;
-        if (row < 0) {
-            return false;
-        }
-        if (col < 0) {
-            return false;
-        }
-        if (row >= NRows) {
-            return false;
-        }
-        return col < NCols;
+        return row >= 0 && row < NRows && col >= 0 && col < NCols;
+//        if (row < 0) {
+//            return false;
+//        }
+//        if (col < 0) {
+//            return false;
+//        }
+//        if (row >= NRows) {
+//            return false;
+//        }
+//        return col < NCols;
     }
 
     /**
@@ -3816,17 +3816,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * index _Col is in the Grid.
      */
     protected final boolean isInGrid(int chunkRow, int chunkCol) {
-        //return chunkRow >= 0 && chunkRow < NChunkRows && chunkCol >= 0 && chunkCol < NChunkCols;
-        if (chunkRow < 0) {
-            return false;
-        }
-        if (chunkCol < 0) {
-            return false;
-        }
-        if (chunkRow >= NChunkRows) {
-            return false;
-        }
-        return chunkCol < NChunkCols;
+        return chunkRow >= 0 && chunkRow < NChunkRows && chunkCol >= 0 && chunkCol < NChunkCols;
+//        if (chunkRow < 0) {
+//            return false;
+//        }
+//        if (chunkCol < 0) {
+//            return false;
+//        }
+//        if (chunkRow >= NChunkRows) {
+//            return false;
+//        }
+//        return chunkCol < NChunkCols;
     }
 
     /**

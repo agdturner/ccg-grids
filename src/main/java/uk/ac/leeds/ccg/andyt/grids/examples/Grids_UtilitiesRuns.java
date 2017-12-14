@@ -66,7 +66,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         //toGainsChartCSV();
         //xyFileToGAM();
         //gamOutputToGrid();
-        System.out.println("Processing complete in " + Grids_Utilities._ReportTime(System.currentTimeMillis() - time));
+        System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time));
     }
 
     public void kernelVolume() {
