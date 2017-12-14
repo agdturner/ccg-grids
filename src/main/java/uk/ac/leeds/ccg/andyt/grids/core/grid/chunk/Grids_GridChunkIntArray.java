@@ -54,7 +54,7 @@ public class Grids_GridChunkIntArray
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
         initData();
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        int noDataValue = g.getNoDataValue(ge.HOOME);
         int row;
         for (row = 0; row < ChunkNRows; row++) {
             Arrays.fill(Data[row], noDataValue);
@@ -127,7 +127,7 @@ public class Grids_GridChunkIntArray
      * of this chunk
      * @return
      */
-    protected @Override
+    public @Override
     int getCell(
             int row,
             int col) {
@@ -163,16 +163,14 @@ public class Grids_GridChunkIntArray
      * @param valueToSet the value the cell is to be set to
      * @return
      */
-    protected @Override
-    int setCell(
+     @Override
+    public int setCell(
             int row,
             int col,
             int valueToSet) {
             int oldValue = Data[row][col];
             Data[row][col] = valueToSet;
             if (isSwapUpToDate()) {
-                // Optimisation? Want a setCellFast method closer to initCell? 
-                // What about an unmodifiable readOnly type chunk?
                 if (valueToSet != oldValue) {
                     setSwapUpToDate(false);
                 }

@@ -85,13 +85,12 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long nRows,
             long nCols,
             Grids_Dimensions dimensions) {
-        return create(
-                ge.getFiles().createNewFile(
+        return create(ge.getFiles().createNewFile(
                         Directory),
                 nRows,
                 nCols,
                 dimensions,
-                ge.HandleOutOfMemoryError);
+                ge.HOOME);
     }
 
     /**
@@ -121,14 +120,13 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      */
     public Grids_AbstractGridNumber create(
             Grids_AbstractGridNumber g) {
-        return create(
-                Directory,
+        return create(Directory,
                 g,
                 0L,
                 0L,
-                g.getNRows(ge.HandleOutOfMemoryErrorTrue) - 1L,
-                g.getNCols(ge.HandleOutOfMemoryErrorTrue) - 1L,
-                ge.HandleOutOfMemoryError);
+                g.getNRows(ge.HOOMET) - 1L,
+                g.getNCols(ge.HOOMET) - 1L,
+                ge.HOOME);
     }
 
     /**
@@ -151,14 +149,13 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long endRowIndex,
             long endColIndex) {
         File file = ge.getFiles().createNewFile(Directory);
-        return create(
-                file,
+        return create(file,
                 g,
                 startRowIndex,
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                ge.HandleOutOfMemoryError);
+                ge.HOOME);
     }
 
     /**
@@ -207,11 +204,10 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             try {
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
-                return create(
-                        Directory,
+                return create(Directory,
                         gridFile,
                         ois,
-                        ge.HandleOutOfMemoryError);
+                        ge.HOOME);
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace(System.err);
@@ -236,14 +232,13 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
         //this.Directory = Grids_Files.createNewFile( new File( _DirectoryName ) );
         Directory = new File(directoryName);
         Directory.mkdirs();
-        return create(
-                Directory,
+        return create(Directory,
                 gridFile,
                 0L,
                 0L,
                 nRows - 1L,
                 nCols - 1L,
-                ge.HandleOutOfMemoryError);
+                ge.HOOME);
     }
 
     /**

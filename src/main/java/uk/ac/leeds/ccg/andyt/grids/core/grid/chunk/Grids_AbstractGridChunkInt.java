@@ -47,16 +47,16 @@ public abstract class Grids_AbstractGridChunkInt
      * @return (Grids_GridInt) Grid;
      */
     @Override
-    protected final Grids_GridInt getGrid() {
+    public final Grids_GridInt getGrid() {
         return (Grids_GridInt) Grid;
     }
 
     /**
-     * Returns the value at position given by: chunkRow, chunkCol, as a int.
+     * Returns the value at row, col.
      *
      * @param row The row of the chunk.
      * @param col The column of the chunk.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -64,24 +64,19 @@ public abstract class Grids_AbstractGridChunkInt
     public int getCell(
             int row,
             int col,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
-            int result = getCell(
-                    row,
-                    col);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            int result = getCell(                    row,                    col);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getCell(
-                        row,
-                        col,
-                        handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return getCell(                        row,                        col,                        hoome);
             } else {
                 throw e;
             }
@@ -89,12 +84,11 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol, as a double.
+     * Returns the value at row, col.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @param chunkID This is a Grids_2D_ID_int for those
@@ -105,26 +99,20 @@ public abstract class Grids_AbstractGridChunkInt
     public int getCell(
             int row,
             int col,
-            boolean handleOutOfMemoryError,
+            boolean hoome,
             Grids_2D_ID_int chunkID) {
         try {
-            int result = getCell(
-                    row,
-                    col);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            int result = getCell(                    row,                    col);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_AccountDetail(chunkID, false) == null) {
                     ge.swapChunk_AccountDetail(false);
                 }
-                ge.initMemoryReserve(ChunkID, handleOutOfMemoryError);
-                return getCell(
-                        row,
-                        col,
-                        handleOutOfMemoryError,
-                        chunkID);
+                ge.initMemoryReserve(ChunkID, hoome);
+                return getCell(                        row,                        col,                        hoome,                        chunkID);
             } else {
                 throw e;
             }
@@ -132,14 +120,13 @@ public abstract class Grids_AbstractGridChunkInt
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell col chunkCol as a int.
+     * Returns the value at row, col.
      *
      * @param row The row index of the cell w.r.t. the origin of this chunk
      * @param col The column index of the cell w.r.t. the origin of this chunk
      * @return
      */
-    protected abstract int getCell(
+    public abstract int getCell(
             int row,
             int col);
 
@@ -211,7 +198,7 @@ public abstract class Grids_AbstractGridChunkInt
      * @param valueToSet the value the cell is to be set to
      * @return
      */
-    protected abstract int setCell(
+    public abstract int setCell(
             int row,
             int col,
             int valueToSet);
@@ -371,7 +358,7 @@ public abstract class Grids_AbstractGridChunkInt
      */
     @Override
     protected long getN() {
-        boolean handleOutOfMemoryError = Grid.ge.HandleOutOfMemoryError;
+        boolean handleOutOfMemoryError = Grid.ge.HOOME;
         long n = 0;
         Grids_GridInt g = getGrid();
         int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);

@@ -572,7 +572,7 @@ public abstract class Grids_AbstractGridNumber
             Grids_AbstractGridChunkDouble gridChunk;
             gridChunk = (Grids_AbstractGridChunkDouble) chunk;
             Grids_GridDouble g;
-            g = (Grids_GridDouble) gridChunk.getGrid(false);
+            g = (Grids_GridDouble) gridChunk.getGrid();
             if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
                 Grids_GridChunkDoubleArray gridChunkArray;
                 gridChunkArray = (Grids_GridChunkDoubleArray) gridChunk;
@@ -596,7 +596,7 @@ public abstract class Grids_AbstractGridNumber
             Grids_AbstractGridChunkInt gridChunk
                     = (Grids_AbstractGridChunkInt) chunk;
             Grids_GridInt g;
-            g = (Grids_GridInt) gridChunk.getGrid(false);
+            g = (Grids_GridInt) gridChunk.getGrid();
             if (chunk.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray gridChunkArray;
                 gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
@@ -604,7 +604,7 @@ public abstract class Grids_AbstractGridNumber
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         false,
-                        chunk.getChunkID(false));
+                        chunk.getChunkID());
             }
             if (chunk.getClass() == Grids_GridChunkIntMap.class) {
                 Grids_GridChunkIntMap gridChunkMap;
@@ -613,7 +613,7 @@ public abstract class Grids_AbstractGridNumber
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         false,
-                        chunk.getChunkID(false));
+                        chunk.getChunkID());
             }
             int noDataValue = g.NoDataValue;
             return noDataValue;

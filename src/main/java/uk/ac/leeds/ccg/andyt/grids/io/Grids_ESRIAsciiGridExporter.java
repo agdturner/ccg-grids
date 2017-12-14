@@ -141,9 +141,9 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             File file) {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
-            noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue(ge.HandleOutOfMemoryErrorFalse);
+            noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue(ge.HOOMEF);
         } else if (g instanceof Grids_GridInt) {
-            noDataValue = "" + ((Grids_GridInt) g).getNoDataValue(ge.HandleOutOfMemoryErrorFalse);
+            noDataValue = "" + ((Grids_GridInt) g).getNoDataValue(ge.HOOMEF);
         }
         return toAsciiFile(
                 g,
@@ -218,8 +218,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
         try (PrintWriter pw = Generic_StaticIO.getPrintWriter(file, false)) {
             Grids_Dimensions dimensions;
             dimensions = g.getDimensions(handleOutOfMemoryError);
-            long nrows = g.getNRows(ge.HandleOutOfMemoryErrorFalse);
-            long ncols = g.getNCols(ge.HandleOutOfMemoryErrorFalse);
+            long nrows = g.getNRows(ge.HOOMEF);
+            long ncols = g.getNCols(ge.HOOMEF);
             long nrows_minus_1 = nrows - 1L;
             pw.println("ncols " + ncols);
             pw.println("nrows " + nrows);

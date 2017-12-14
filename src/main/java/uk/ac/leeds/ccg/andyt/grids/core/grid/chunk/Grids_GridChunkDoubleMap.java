@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * Grids_AbstractGridChunkDouble extension that stores cell values in: a TreeMap
@@ -131,7 +130,7 @@ public class Grids_GridChunkDoubleMap
             double defaultValue) {
         super(g, chunkID);
         DefaultValue = defaultValue;
-        NoDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        NoDataValue = g.getNoDataValue(ge.HOOME);
         initData();
         SwapUpToDate = false;
     }
@@ -151,9 +150,9 @@ public class Grids_GridChunkDoubleMap
             Grids_2D_ID_int chunkID,
             double defaultValue) {
         super(gridChunk.getGrid(), chunkID);
-        boolean handleOutOfMemoryError = gridChunk.ge.HandleOutOfMemoryErrorFalse;
+        boolean handleOutOfMemoryError = gridChunk.ge.HOOMEF;
         DefaultValue = defaultValue;
-        NoDataValue = getGrid().getNoDataValue(ge.HandleOutOfMemoryError);
+        NoDataValue = getGrid().getNoDataValue(ge.HOOME);
         initData();
         double value;
         for (int row = 0; row < ChunkNRows; row++) {
@@ -209,9 +208,9 @@ public class Grids_GridChunkDoubleMap
      */
     double[][] to2DDoubleArray() {
         Grids_GridDouble grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryError);
-        int ncols = grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryError);
-        double noDataValue = grid.getNoDataValue(ge.HandleOutOfMemoryError);
+        int nrows = grid.getChunkNRows(ChunkID, ge.HOOME);
+        int ncols = grid.getChunkNCols(ChunkID, ge.HOOME);
+        double noDataValue = grid.getNoDataValue(ge.HOOME);
         double[][] result;
         result = new double[nrows][ncols];
         Arrays.fill(result, DefaultValue);
@@ -297,11 +296,11 @@ public class Grids_GridChunkDoubleMap
     protected @Override
     double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
-        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HandleOutOfMemoryErrorFalse);
+        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HOOMEF);
+        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HOOMEF);
         double[] result;
         result = new double[nrows * ncols];
-        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HandleOutOfMemoryErrorFalse));
+        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HOOMEF));
         Iterator<Double> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
@@ -425,7 +424,7 @@ public class Grids_GridChunkDoubleMap
      * @return
      */
     @Override
-    protected double getCell(
+    public double getCell(
             int row,
             int col) {
         int position = (row * ChunkNCols) + col;
@@ -614,36 +613,13 @@ public class Grids_GridChunkDoubleMap
      * @param valueToSet the value the cell is to be set to
      * @return
      */
-    protected @Override
-    double setCell(
+     @Override
+    public double setCell(
             int row,
             int col,
-            double valueToSet) {
-        Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(row, col);
-        return setCell(
-                row,
-                col,
-                chunkCellID,
-                valueToSet);
-    }
-
-    /**
-     * Returns the value at position given by: chunk cell row row; chunk
-     * cell column col and sets it to valueToSet
-     *
-     * @param row the chunk row.
-     * @param col the chunk column.
-     * @param chunkCellID the Grids_AbstractGridChunkDouble.Grids_2D_ID_int of
-     * the cell to be initialised
-     * @param valueToSet the value the cell is to be set to
-     * @return
-     */
-    protected double setCell(
-            int row,
-            int col,
-            Grids_2D_ID_int chunkCellID,
             double valueToSet) {
         double result;
+        Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(row, col);
         result = getCell(row, col, chunkCellID);
         if (result == valueToSet) {
             return result;

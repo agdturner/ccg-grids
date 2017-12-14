@@ -48,8 +48,8 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
         super(g.ge);
         Grid = g;
         ChunkID = chunkID;
-        ChunkNRows = Grid.getChunkNRows(ChunkID, ge.HandleOutOfMemoryErrorFalse);
-        ChunkNCols = Grid.getChunkNCols(ChunkID, ge.HandleOutOfMemoryErrorFalse);
+        ChunkNRows = Grid.getChunkNRows(ChunkID, ge.HOOMEF);
+        ChunkNCols = Grid.getChunkNCols(ChunkID, ge.HOOMEF);
         SwapUpToDate = false;
     }
 
@@ -73,7 +73,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return Grids_AbstractGridChunk.this.getGrid(handleOutOfMemoryError);
+                return getGrid(handleOutOfMemoryError);
             } else {
                 throw e;
             }
@@ -85,7 +85,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      *
      * @return
      */
-    protected abstract Grids_AbstractGrid getGrid();
+    public abstract Grids_AbstractGrid getGrid();
 
     /**
      * Initialises Grid = g.
@@ -125,7 +125,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getChunkID(handleOutOfMemoryError);
+                return getChunkID();
             } else {
                 throw e;
             }
@@ -137,7 +137,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      *
      * @return
      */
-    protected Grids_2D_ID_int getChunkID() {
+    public Grids_2D_ID_int getChunkID() {
         return new Grids_2D_ID_int(ChunkID);
         //return this._ChunkID;
     }

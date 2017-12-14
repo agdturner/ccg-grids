@@ -98,12 +98,12 @@ public class Grids_GridDoubleStatistics
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory(ge.HandleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(ge.HOOME);
         init();
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;
         double value;
-        double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        double noDataValue = g.getNoDataValue(ge.HOOME);
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
@@ -199,13 +199,13 @@ public class Grids_GridDoubleStatistics
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
-            result += chunk.getN(ge.HandleOutOfMemoryError);
+            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HOOME);
+            result += chunk.getN(ge.HOOME);
         }
 //        double noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        noDataValue = g.getNoDataValue(ge.HOOME);
 //        Iterator<Double> ite;
-//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        ite = g.iterator(ge.HOOME);
 //        while (ite.hasNext()) {
 //            double value = ite.next();
 //            if (value != noDataValue) {
@@ -226,9 +226,9 @@ public class Grids_GridDoubleStatistics
         BigInteger result = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         double noDataValue;
-        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        noDataValue = g.getNoDataValue(ge.HOOME);
         Iterator<Double> ite;
-        ite = g.iterator(ge.HandleOutOfMemoryError);
+        ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
             double value = ite.next();
             if (!(value == noDataValue || value == 0)) {
@@ -254,13 +254,13 @@ public class Grids_GridDoubleStatistics
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
-            result = result.add(chunk.getSum(ge.HandleOutOfMemoryError));
+            chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID, ge.HOOME);
+            result = result.add(chunk.getSum(ge.HOOME));
         }
 //        double noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        noDataValue = g.getNoDataValue(ge.HOOME);
 //        Iterator<Double> ite;
-//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        ite = g.iterator(ge.HOOME);
 //        while (ite.hasNext()) {
 //            double value = ite.next();
 //            if (value != noDataValue) {
@@ -279,7 +279,7 @@ public class Grids_GridDoubleStatistics
         BigDecimal differenceFromMean;
         Grids_GridDouble g = (Grids_GridDouble) Grid;
         double value;
-        double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        double noDataValue = g.getNoDataValue(ge.HOOME);
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
@@ -319,8 +319,7 @@ public class Grids_GridDoubleStatistics
         result[0] = minDouble;
         result[1] = maxDouble;
         BigInteger nonZeroN;
-        nonZeroN = getNonZeroN(
-                ge.HandleOutOfMemoryError);
+        nonZeroN = getNonZeroN(ge.HOOME);
         long nonZeroNLong = nonZeroN.longValueExact();
         System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroN);
         long numberOfValuesInEachClass;
@@ -329,7 +328,7 @@ public class Grids_GridDoubleStatistics
             numberOfValuesInEachClass += 1;
         }
         double noDataValue;
-        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        noDataValue = g.getNoDataValue(ge.HOOME);
         TreeMap<Integer, Long> classCounts;
         classCounts = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
@@ -346,7 +345,7 @@ public class Grids_GridDoubleStatistics
         int count = 0;
         //long valueID = 0;
         Iterator<Double> ite;
-        ite = g.iterator(ge.HandleOutOfMemoryError);
+        ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
             double value;
             value = ite.next();

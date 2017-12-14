@@ -106,8 +106,15 @@ public class Grids_GridChunkDoubleArray
         System.gc();
     }
 
+    /**
+     * Beware OutOfMemoryErrors being thrown if calling this method.
+     *
+     * @param row
+     * @param col
+     * @return
+     */
     @Override
-    protected double getCell(
+    public double getCell(
             int row,
             int col) {
         return Data[row][col];
@@ -122,37 +129,24 @@ public class Grids_GridChunkDoubleArray
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * valueToSet
+     * Returns the value at position given by: row, col and sets it to value.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param valueToSet the value the cell is to be set to
+     * @param value the value the cell is to be set to
      * @return
      */
-    protected @Override
-    double setCell(
+    @Override
+    public double setCell(
             int row,
             int col,
-            double valueToSet) {
+            double value) {
         double oldValue;
-
         oldValue = 0;
-        try {
-            oldValue = Data[row][col];
-        } catch (Exception e) {
-            int debug = 1;
-        }
-
-        try {
-            Data[row][col] = valueToSet;
-        } catch (Exception e) {
-            int debug = 1;
-        }
+        oldValue = Data[row][col];
+        Data[row][col] = value;
         if (isSwapUpToDate()) {
-            // Optimisation? Want a setCellFast method closer to initCell? 
-            // What about an unmodifiable readOnly type chunk?
-            if (valueToSet != oldValue) {
+            if (value != oldValue) {
                 setSwapUpToDate(false);
             }
         }

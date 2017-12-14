@@ -364,12 +364,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     // GC overhead limit exceeded
                     // java.lang.OutOfMemoryError: GC overhead limit exceeded
                     // There is probably a better doing way?
-                    cellX = grid.getCellXDouble(
-                            col,
-                            ge.HandleOutOfMemoryErrorFalse);
-                    cellY = grid.getCellYDouble(
-                            row,
-                            ge.HandleOutOfMemoryErrorFalse);
+                    cellX = grid.getCellXDouble(col,
+                            ge.HOOMEF);
+                    cellY = grid.getCellYDouble(row,
+                            ge.HOOMEF);
                     // Calculate sumWeights and non-weighted stats
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
@@ -403,66 +401,56 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                         }
 
-                        sumWeightGrid.setCell(
-                                row, col,
+                        sumWeightGrid.setCell(row, col,
                                 sumWeight / totalSumWeight,
-                                ge.HandleOutOfMemoryErrorFalse);
+                                ge.HOOMEF);
 
                         //if ( doSum ) { sumGrid.setCell( row, col, sum ); }
                         if (doSum) {
-                            sumGrid.setCell(
-                                    row, col, 
+                            sumGrid.setCell(row, col, 
                                     sum * sumCells / totalCells, 
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doWSum) {
-                            wSumGrid.setCell(
-                                    row, col,
+                            wSumGrid.setCell(row, col,
                                     wSum, 
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doNWSum) {
-                            nWSumGrid.setCell(
-                                    row, col,
+                            nWSumGrid.setCell(row, col,
                                     nWSum,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doWSumN) {
-                            wSumNGrid.setCell(
-                                    row, col, 
+                            wSumNGrid.setCell(row, col, 
                                     wSum * sumWeight / totalSumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
 
                         if (doMean) {
-                            meanGrid.setCell(
-                                    row, col, 
+                            meanGrid.setCell(row, col, 
                                     sum / sumCells,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doWMean1) {
-                            wMean1Grid.setCell(
-                                    row, col, 
+                            wMean1Grid.setCell(row, col, 
                                     wSum / sumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doWMean2) {
-                            wMean2Grid.setCell(
-                                    row, col, 
+                            wMean2Grid.setCell(row, col, 
                                     wMean,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doNWMean) {
-                            nWMeanGrid.setCell(
-                                    row, col, 
+                            nWMeanGrid.setCell(row, col, 
                                     nWSum / sumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         if (doWMeanN) {
-                            wMeanNGrid.setCell(
-                                    row, col, 
+                            wMeanNGrid.setCell(row, col, 
                                     wMean * sumWeight / totalSumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
 
                     }
@@ -549,12 +537,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     sDWMeanPow3 = 0.0d;
                     sDWMeanPow4 = 0.0d;
                     sumWeight = 0.0d;
-                    cellX = grid.getCellXDouble(
-                            col, 
-                            ge.HandleOutOfMemoryErrorFalse);
-                    cellY = grid.getCellYDouble(
-                            row, 
-                            ge.HandleOutOfMemoryErrorFalse);
+                    cellX = grid.getCellXDouble(col, 
+                            ge.HOOMEF);
+                    cellY = grid.getCellYDouble(row, 
+                            ge.HOOMEF);
                     // Take moments
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
@@ -583,19 +569,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         //    propGrid.setCell( row, col, ( sDMean / sumCells ) );
                         //}
                         if (doWProp) {
-                            wPropGrid.setCell(
-                                    row, col, 
+                            wPropGrid.setCell(row, col, 
                                     sDWMean / sumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         //if ( doVar ) {
                         //    varGrid.setCell( row, col, ( sDMeanPow2 / sumCells ) );
                         //}
                         if (doWVar) {
-                            wVarGrid.setCell(
-                                    row, col,
+                            wVarGrid.setCell(row, col,
                                     sDWMeanPow2 / sumWeight,
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                         }
                         //if ( doSkew ) {
                         //    // Need to control for Math.pow as it does not do roots of negative numbers at all well!
@@ -614,22 +598,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
                             numerator = sDWMeanPow3 / sumWeight;
                             if (numerator > 0.0d) {
-                                wSkewGrid.setCell(
-                                        row, col,
+                                wSkewGrid.setCell(row, col,
                                         (Math.pow(numerator, 1.0d / 3.0d)),
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             }
                             if (numerator == 0.0d) {
-                                wSkewGrid.setCell(
-                                        row, col, 
+                                wSkewGrid.setCell(row, col, 
                                         numerator, 
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             }
                             if (numerator < 0.0d) {
-                                wSkewGrid.setCell(
-                                        row, col, 
+                                wSkewGrid.setCell(row, col, 
                                         -1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d)),
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             }
                         }
                         //if ( doCVar ) {
@@ -642,18 +623,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         //    }
                         //}
                         if (doWCVar) {
-                            denominator = wVarGrid.getCell(
-                                    row, col, 
-                                    ge.HandleOutOfMemoryErrorFalse);
+                            denominator = wVarGrid.getCell(row, col, 
+                                    ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = wPropGrid.getCell(
-                                        row, col, 
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                numerator = wPropGrid.getCell(row, col, 
+                                        ge.HOOMEF);
                                 if (numerator != noDataValue) {
-                                    wCVarGrid.setCell(
-                                            row, col, 
+                                    wCVarGrid.setCell(row, col, 
                                             (numerator / denominator), 
-                                            ge.HandleOutOfMemoryErrorFalse);
+                                            ge.HOOMEF);
                                 }
                             }
                         }
@@ -675,28 +653,24 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         //}
                         if (doWCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            denominator = wVarGrid.getCell(
-                                    row, col, 
-                                    ge.HandleOutOfMemoryErrorFalse);
+                            denominator = wVarGrid.getCell(row, col, 
+                                    ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
                                 numerator = sDWMeanPow3 / sumWeight;
                                 if (numerator > 0.0d) {
-                                    wCSkewGrid.setCell(
-                                            row, col,
+                                    wCSkewGrid.setCell(row, col,
                                             (Math.pow(numerator, 1.0d / 3.0d)) / denominator,
-                                            ge.HandleOutOfMemoryErrorFalse);
+                                            ge.HOOMEF);
                                 }
                                 if (numerator == 0.0d) {
-                                    wCSkewGrid.setCell(
-                                            row, col, 
+                                    wCSkewGrid.setCell(row, col, 
                                             numerator,
-                                            ge.HandleOutOfMemoryErrorFalse);
+                                            ge.HOOMEF);
                                 }
                                 if (numerator < 0.0d) {
-                                    wCSkewGrid.setCell(
-                                            row, col,
+                                    wCSkewGrid.setCell(row, col,
                                             (-1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d))) / denominator, 
-                                            ge.HandleOutOfMemoryErrorFalse);
+                                            ge.HOOMEF);
                                 }
                             }
                         }
@@ -734,125 +708,105 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          * meanZscoreGrid[ 0 ]; }
          */
 
-        sumWeightGrid.setName(
-                "SumWeight_" + grid.getName(handleOutOfMemoryError),
-                ge.HandleOutOfMemoryErrorFalse);
+        sumWeightGrid.setName("SumWeight_" + grid.getName(handleOutOfMemoryError),
+                ge.HOOMEF);
         result.add(sumWeightGrid);
 
         if (doSum) {
-            sumGrid.setName(
-                    "Sum_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            sumGrid.setName("Sum_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(sumGrid);
         }
         if (doWSum) {
-            wSumGrid.setName(
-                    "WSum_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wSumGrid.setName("WSum_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wSumGrid);
         }
         if (doNWSum) {
-            nWSumGrid.setName(
-                    "NWSum_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            nWSumGrid.setName("NWSum_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(nWSumGrid);
         }
         if (doWSumN) {
-            wSumNGrid.setName(
-                    "WSumN_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wSumNGrid.setName("WSumN_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wSumNGrid);
         }
 
         if (doMean) {
-            meanGrid.setName(
-                    "Mean_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            meanGrid.setName("Mean_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(meanGrid);
         }
         if (doWMean1) {
-            wMean1Grid.setName(
-                    "WMean1_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wMean1Grid.setName("WMean1_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wMean1Grid);
         }
         if (doWMean2) {
-            wMean2Grid.setName(
-                    "WMean2_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wMean2Grid.setName("WMean2_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wMean2Grid);
         }
         if (doNWMean) {
-            nWMeanGrid.setName(
-                    "NWMean_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            nWMeanGrid.setName("NWMean_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(nWMeanGrid);
         }
         if (doWMeanN) {
-            wMeanNGrid.setName(
-                    "WMeanN_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wMeanNGrid.setName("WMeanN_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wMeanNGrid);
         }
 
         if (doProp) {
-            propGrid.setName(
-                    "Prop_" + grid.getName(handleOutOfMemoryError), 
-                    ge.HandleOutOfMemoryErrorFalse);
+            propGrid.setName("Prop_" + grid.getName(handleOutOfMemoryError), 
+                    ge.HOOMEF);
             result.add(propGrid);
         }
         if (doWProp) {
-            wPropGrid.setName(
-                    "WProp_" + grid.getName(handleOutOfMemoryError), 
-                    ge.HandleOutOfMemoryErrorFalse);
+            wPropGrid.setName("WProp_" + grid.getName(handleOutOfMemoryError), 
+                    ge.HOOMEF);
             result.add(wPropGrid);
         }
         if (doVar) {
-            varGrid.setName(
-                    "Var_" + grid.getName(handleOutOfMemoryError), 
-                    ge.HandleOutOfMemoryErrorFalse);
+            varGrid.setName("Var_" + grid.getName(handleOutOfMemoryError), 
+                    ge.HOOMEF);
             result.add(varGrid);
         }
         if (doWVar) {
-            wVarGrid.setName(
-                    "WVar_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wVarGrid.setName("WVar_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wVarGrid);
         }
         if (doSkew) {
-            skewGrid.setName(
-                    "Skew_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            skewGrid.setName("Skew_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(skewGrid);
         }
         if (doWSkew) {
-            wSkewGrid.setName(
-                    "WSkew_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wSkewGrid.setName("WSkew_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wSkewGrid);
         }
         if (doCVar) {
-            cVarGrid.setName(
-                    "CVar_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            cVarGrid.setName("CVar_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(cVarGrid);
         }
         if (doWCVar) {
-            wCVarGrid.setName(
-                    "WCVar_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wCVarGrid.setName("WCVar_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wCVarGrid);
         }
         if (doCSkew) {
-            cSkewGrid.setName(
-                    "CSkew" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            cSkewGrid.setName("CSkew" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(cSkewGrid);
         }
         if (doWCSkew) {
-            wCSkewGrid.setName(
-                    "WCSkew_" + grid.getName(handleOutOfMemoryError),
-                    ge.HandleOutOfMemoryErrorFalse);
+            wCSkewGrid.setName("WCSkew_" + grid.getName(handleOutOfMemoryError),
+                    ge.HOOMEF);
             result.add(wCSkewGrid);
         }
 
@@ -1065,15 +1019,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     sumCells = 0.0d;
                     wSum = 0.0d;
                     sum = 0.0d;
-                    cellX = grid.getCellXDouble(col, ge.HandleOutOfMemoryErrorFalse);
-                    cellY = grid.getCellYDouble(row, ge.HandleOutOfMemoryErrorFalse);
+                    cellX = grid.getCellXDouble(col, ge.HOOMEF);
+                    cellY = grid.getCellYDouble(row, ge.HOOMEF);
                     // Calculate sumWeights and non-weighted stats
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            value = grid.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
+                            value = grid.getCell(row + p, col + q, ge.HOOMEF);
                             if (value != noDataValue) {
-                                thisCellX = grid.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                thisCellY = grid.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                thisCellX = grid.getCellXDouble(col + q, ge.HOOMEF);
+                                thisCellY = grid.getCellYDouble(row + p, ge.HOOMEF);
                                 thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                 if (thisDistance < distance) {
                                     sumWeight += Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
@@ -1089,10 +1043,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     if (sumCells > 0.0d && sumWeight > 0.0d) {
                         for (int p = -cellDistance; p <= cellDistance; p++) {
                             for (int q = -cellDistance; q <= cellDistance; q++) {
-                                value = grid.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
+                                value = grid.getCell(row + p, col + q, ge.HOOMEF);
                                 if (value != noDataValue) {
-                                    thisCellX = grid.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                    thisCellY = grid.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                    thisCellX = grid.getCellXDouble(col + q, ge.HOOMEF);
+                                    thisCellY = grid.getCellYDouble(row + p, ge.HOOMEF);
                                     thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                     if (thisDistance < distance) {
                                         weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
@@ -1104,18 +1058,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                         }
                         if (doMean) {
-                            meanGrid.setCell(row, col, sum / sumCells, ge.HandleOutOfMemoryErrorFalse);
+                            meanGrid.setCell(row, col, sum / sumCells, ge.HOOMEF);
                         }
                         if (doWMean) {
-                            wMeanGrid.setCell(row, col, wSum / sumWeight, ge.HandleOutOfMemoryErrorFalse);
+                            wMeanGrid.setCell(row, col, wSum / sumWeight, ge.HOOMEF);
                         }
                         //if ( doSum ) { sumGrid.setCell( row, col, sum ); }
                         //if ( doWSum ) { wSumGrid.setCell( row, col, wSum ); }
                         if (doSum) {
-                            sumGrid.setCell(row, col, sum * sumCells / totalCells, ge.HandleOutOfMemoryErrorFalse);
+                            sumGrid.setCell(row, col, sum * sumCells / totalCells, ge.HOOMEF);
                         }
                         if (doWSum) {
-                            wSumGrid.setCell(row, col, wSum * sumWeight / totalSumWeight, ge.HandleOutOfMemoryErrorFalse);
+                            wSumGrid.setCell(row, col, wSum * sumWeight / totalSumWeight, ge.HOOMEF);
                         }
                     }
                 }
@@ -1193,18 +1147,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     sDWMeanPow3 = 0.0d;
                     sDWMeanPow4 = 0.0d;
                     sumWeight = 0.0d;
-                    cellX = grid.getCellXDouble(col, ge.HandleOutOfMemoryErrorFalse);
-                    cellY = grid.getCellYDouble(row, ge.HandleOutOfMemoryErrorFalse);
+                    cellX = grid.getCellXDouble(col, ge.HOOMEF);
+                    cellY = grid.getCellYDouble(row, ge.HOOMEF);
                     // Take moments
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            value = grid.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
+                            value = grid.getCell(row + p, col + q, ge.HOOMEF);
                             if (value != noDataValue) {
-                                thisCellX = grid.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                thisCellY = grid.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                thisCellX = grid.getCellXDouble(col + q, ge.HOOMEF);
+                                thisCellY = grid.getCellYDouble(row + p, ge.HOOMEF);
                                 thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
                                 if (thisDistance < distance) {
-                                    wMean = wMeanGrid.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
+                                    wMean = wMeanGrid.getCell(row + p, col + q, ge.HOOMEF);
                                     weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                     sumWeight += weight;
                                     sDWMean += (value - wMean) * weight;
@@ -1224,90 +1178,90 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     }
                     if (sumCells > 0.0d && sumWeight > 0.0d) {
                         if (doProp) {
-                            propGrid.setCell(row, col, (sDMean / sumCells), ge.HandleOutOfMemoryErrorFalse);
+                            propGrid.setCell(row, col, (sDMean / sumCells), ge.HOOMEF);
                         }
                         if (doWProp) {
-                            wPropGrid.setCell(row, col, (sDWMean / sumWeight), ge.HandleOutOfMemoryErrorFalse);
+                            wPropGrid.setCell(row, col, (sDWMean / sumWeight), ge.HOOMEF);
                         }
                         if (doVar) {
-                            varGrid.setCell(row, col, (sDMeanPow2 / sumCells), ge.HandleOutOfMemoryErrorFalse);
+                            varGrid.setCell(row, col, (sDMeanPow2 / sumCells), ge.HOOMEF);
                         }
                         if (doWVar) {
-                            wVarGrid.setCell(row, col, (sDWMeanPow2 / sumWeight), ge.HandleOutOfMemoryErrorFalse);
+                            wVarGrid.setCell(row, col, (sDWMeanPow2 / sumWeight), ge.HOOMEF);
                         }
                         if (doSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
                             numerator = sDMeanPow3 / sumCells;
                             if (numerator > 0.0d) {
-                                skewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)), ge.HandleOutOfMemoryErrorFalse);
+                                skewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)), ge.HOOMEF);
                             }
                             if (numerator == 0.0d) {
-                                skewGrid.setCell(row, col, numerator, ge.HandleOutOfMemoryErrorFalse);
+                                skewGrid.setCell(row, col, numerator, ge.HOOMEF);
                             }
                             if (numerator < 0.0d) {
-                                skewGrid.setCell(row, col, -1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d)), ge.HandleOutOfMemoryErrorFalse);
+                                skewGrid.setCell(row, col, -1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d)), ge.HOOMEF);
                             }
                         }
                         if (doWSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
                             numerator = sDWMeanPow3 / sumWeight;
                             if (numerator > 0.0d) {
-                                wSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)), ge.HandleOutOfMemoryErrorFalse);
+                                wSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)), ge.HOOMEF);
                             }
                             if (numerator == 0.0d) {
-                                wSkewGrid.setCell(row, col, numerator, ge.HandleOutOfMemoryErrorFalse);
+                                wSkewGrid.setCell(row, col, numerator, ge.HOOMEF);
                             }
                             if (numerator < 0.0d) {
-                                wSkewGrid.setCell(row, col, -1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d)), ge.HandleOutOfMemoryErrorFalse);
+                                wSkewGrid.setCell(row, col, -1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d)), ge.HOOMEF);
                             }
                         }
                         if (doCVar) {
-                            denominator = varGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                            denominator = varGrid.getCell(row, col, ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = propGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                                numerator = propGrid.getCell(row, col, ge.HOOMEF);
                                 if (numerator != noDataValue) {
-                                    cVarGrid.setCell(row, col, (numerator / denominator), ge.HandleOutOfMemoryErrorFalse);
+                                    cVarGrid.setCell(row, col, (numerator / denominator), ge.HOOMEF);
                                 }
                             }
                         }
                         if (doWCVar) {
-                            denominator = wVarGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                            denominator = wVarGrid.getCell(row, col, ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = wPropGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                                numerator = wPropGrid.getCell(row, col, ge.HOOMEF);
                                 if (numerator != noDataValue) {
-                                    wCVarGrid.setCell(row, col, (numerator / denominator), ge.HandleOutOfMemoryErrorFalse);
+                                    wCVarGrid.setCell(row, col, (numerator / denominator), ge.HOOMEF);
                                 }
                             }
                         }
                         if (doCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            denominator = varGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                            denominator = varGrid.getCell(row, col, ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
                                 numerator = sDMeanPow3 / sumCells;
                                 if (numerator > 0.0d) {
-                                    cSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                    cSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator, ge.HOOMEF);
                                 }
                                 if (numerator == 0.0d) {
-                                    cSkewGrid.setCell(row, col, numerator, ge.HandleOutOfMemoryErrorFalse);
+                                    cSkewGrid.setCell(row, col, numerator, ge.HOOMEF);
                                 }
                                 if (numerator < 0.0d) {
-                                    cSkewGrid.setCell(row, col, (-1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d))) / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                    cSkewGrid.setCell(row, col, (-1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d))) / denominator, ge.HOOMEF);
                                 }
                             }
                         }
                         if (doWCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            denominator = wVarGrid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                            denominator = wVarGrid.getCell(row, col, ge.HOOMEF);
                             if (denominator > 0.0d && denominator != noDataValue) {
                                 numerator = sDWMeanPow3 / sumWeight;
                                 if (numerator > 0.0d) {
-                                    wCSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                    wCSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator, ge.HOOMEF);
                                 }
                                 if (numerator == 0.0d) {
-                                    wCSkewGrid.setCell(row, col, numerator, ge.HandleOutOfMemoryErrorFalse);
+                                    wCSkewGrid.setCell(row, col, numerator, ge.HOOMEF);
                                 }
                                 if (numerator < 0.0d) {
-                                    wCSkewGrid.setCell(row, col, (-1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d))) / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                    wCSkewGrid.setCell(row, col, (-1.0d * (Math.pow(Math.abs(numerator), 1.0d / 3.0d))) / denominator, ge.HOOMEF);
                                 }
                             }
                         }
@@ -1346,60 +1300,60 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          */
 
         if (doSum) {
-            sumGrid.setName("Sum", ge.HandleOutOfMemoryErrorFalse);
+            sumGrid.setName("Sum", ge.HOOMEF);
             result.add(sumGrid);
         }
         if (doWSum) {
-            wSumGrid.setName("WSum", ge.HandleOutOfMemoryErrorFalse);
+            wSumGrid.setName("WSum", ge.HOOMEF);
             result.add(wSumGrid);
         }
         if (doMean) {
-            meanGrid.setName("Mean", ge.HandleOutOfMemoryErrorFalse);
+            meanGrid.setName("Mean", ge.HOOMEF);
             result.add(meanGrid);
         }
         if (doWMean) {
-            wMeanGrid.setName("WMean", ge.HandleOutOfMemoryErrorFalse);
+            wMeanGrid.setName("WMean", ge.HOOMEF);
             result.add(wMeanGrid);
         }
 
         if (doProp) {
-            propGrid.setName("Prop", ge.HandleOutOfMemoryErrorFalse);
+            propGrid.setName("Prop", ge.HOOMEF);
             result.add(propGrid);
         }
         if (doWProp) {
-            wPropGrid.setName("WProp", ge.HandleOutOfMemoryErrorFalse);
+            wPropGrid.setName("WProp", ge.HOOMEF);
             result.add(wPropGrid);
         }
         if (doVar) {
-            varGrid.setName("Var", ge.HandleOutOfMemoryErrorFalse);
+            varGrid.setName("Var", ge.HOOMEF);
             result.add(varGrid);
         }
         if (doWVar) {
-            wVarGrid.setName("WVar", ge.HandleOutOfMemoryErrorFalse);
+            wVarGrid.setName("WVar", ge.HOOMEF);
             result.add(wVarGrid);
         }
         if (doSkew) {
-            skewGrid.setName("Skew", ge.HandleOutOfMemoryErrorFalse);
+            skewGrid.setName("Skew", ge.HOOMEF);
             result.add(skewGrid);
         }
         if (doWSkew) {
-            wSkewGrid.setName("WSkew", ge.HandleOutOfMemoryErrorFalse);
+            wSkewGrid.setName("WSkew", ge.HOOMEF);
             result.add(wSkewGrid);
         }
         if (doCVar) {
-            cVarGrid.setName("CVar", ge.HandleOutOfMemoryErrorFalse);
+            cVarGrid.setName("CVar", ge.HOOMEF);
             result.add(cVarGrid);
         }
         if (doWCVar) {
-            wCVarGrid.setName("WCVar", ge.HandleOutOfMemoryErrorFalse);
+            wCVarGrid.setName("WCVar", ge.HOOMEF);
             result.add(wCVarGrid);
         }
         if (doCSkew) {
-            cSkewGrid.setName("CSkew", ge.HandleOutOfMemoryErrorFalse);
+            cSkewGrid.setName("CSkew", ge.HOOMEF);
             result.add(cSkewGrid);
         }
         if (doWCSkew) {
-            wCSkewGrid.setName("WCSkew", ge.HandleOutOfMemoryErrorFalse);
+            wCSkewGrid.setName("WCSkew", ge.HOOMEF);
             result.add(wCSkewGrid);
         }
 
@@ -1605,12 +1559,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble g3 = (Grids_GridDouble) gridFactory.create(nrows, ncols);
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
-                d1 = grid.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+                d1 = grid.getCell(row, col, ge.HOOMEF);
                 if (d1 != noDataValue) {
                     //g2.initCell( row, col, d1 );
                     //g3.initCell( row, col, 1.0d );
-                    g2.setCell(row, col, d1, ge.HandleOutOfMemoryErrorFalse);
-                    g3.setCell(row, col, 1.0d, ge.HandleOutOfMemoryErrorFalse);
+                    g2.setCell(row, col, d1, ge.HOOMEF);
+                    g3.setCell(row, col, 1.0d, ge.HOOMEF);
                 }
             }
         }
@@ -1633,53 +1587,43 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 for (int q = 0; q < doubler; q++) {
                     for (row = 0; row < height; row += doubler) {
                         for (col = 0; col < width; col += doubler) {
-                            d1 = g2.getCell(
-                                    (row + p),
+                            d1 = g2.getCell((row + p),
                                     (col + q),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g2.getCell(
-                                    (row + p),
+                                    ge.HOOMEF)
+                                    + g2.getCell((row + p),
                                     (col + q - doubler),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g2.getCell(
-                                    (row + p - doubler),
+                                    ge.HOOMEF)
+                                    + g2.getCell((row + p - doubler),
                                     (col + q),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g2.getCell(
-                                    (row + p - doubler),
+                                    ge.HOOMEF)
+                                    + g2.getCell((row + p - doubler),
                                     (col + q - doubler),
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                             //g4.initCell( ( row + p ), ( col + q ), d1 );
-                            g4.setCell(
-                                    (row + p),
+                            g4.setCell((row + p),
                                     (col + q),
                                     d1,
-                                    ge.HandleOutOfMemoryErrorFalse);
-                            d2 = g3.getCell(
-                                    (row + p),
+                                    ge.HOOMEF);
+                            d2 = g3.getCell((row + p),
                                     (col + q),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g3.getCell(
-                                    (row + p),
+                                    ge.HOOMEF)
+                                    + g3.getCell((row + p),
                                     (col + q - doubler),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g3.getCell(
-                                    (row + p - doubler),
+                                    ge.HOOMEF)
+                                    + g3.getCell((row + p - doubler),
                                     (col + q),
-                                    ge.HandleOutOfMemoryErrorFalse)
-                                    + g3.getCell(
-                                    (row + p - doubler),
+                                    ge.HOOMEF)
+                                    + g3.getCell((row + p - doubler),
                                     (col + q - doubler),
-                                    ge.HandleOutOfMemoryErrorFalse);
+                                    ge.HOOMEF);
                             //g5.initCell( ( row + p ), ( col + q ), d2 );
-                            g5.setCell((row + p), (col + q), d2, ge.HandleOutOfMemoryErrorFalse);
+                            g5.setCell((row + p), (col + q), d2, ge.HOOMEF);
                             if (d2 != 0.0d) {
                                 //g6.initCell( ( row + p ), ( col + q ), ( d1 / d2 ) );
-                                g6.setCell(
-                                        (row + p),
+                                g6.setCell((row + p),
                                         (col + q),
                                         (d1 / d2),
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             }
                         }
                     }
@@ -1702,11 +1646,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             d2 = 0.0d;
                             for (int a = 0; a < growth; a++) {
                                 for (int b = 0; b < growth; b++) {
-                                    if (g6.isInGrid((row + p + a), (col + q + b), ge.HandleOutOfMemoryErrorFalse)) {
-                                        d1 += g6.getCell(
-                                                (row + p + a),
+                                    if (g6.isInGrid((row + p + a), (col + q + b), ge.HOOMEF)) {
+                                        d1 += g6.getCell((row + p + a),
                                                 (col + q + b),
-                                                ge.HandleOutOfMemoryErrorFalse);
+                                                ge.HOOMEF);
                                         d2 += 1.0d;
                                     }
                                 }
@@ -1714,18 +1657,16 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (d2 != 0.0d) {
                                 //density.addToCell( ( row + p ), ( col + q ), ( d1 / d2 ) );
                                 //density.initCell( ( row + p ), ( col + q ), ( d1 / d2 ) );
-                                density.setCell(
-                                        (row + p),
+                                density.setCell((row + p),
                                         (col + q),
                                         (d1 / d2),
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             } else {
                                 //density.initCell( ( row + p ), ( col + q ), 0.0d );
-                                density.setCell(
-                                        (row + p),
+                                density.setCell((row + p),
                                         (col + q),
                                         0.0d,
-                                        ge.HandleOutOfMemoryErrorFalse);
+                                        ge.HOOMEF);
                             }
                         }
                     }
@@ -2039,8 +1980,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     max1 = Double.MIN_VALUE;
                     min0 = Double.MAX_VALUE;
                     min1 = Double.MAX_VALUE;
-                    x0 = grid0.getCellXDouble(col, ge.HandleOutOfMemoryErrorFalse);
-                    y0 = grid0.getCellYDouble(row, ge.HandleOutOfMemoryErrorFalse);
+                    x0 = grid0.getCellXDouble(col, ge.HOOMEF);
+                    y0 = grid0.getCellYDouble(row, ge.HOOMEF);
                     diff = 0.0d;
                     weightedDiff = 0.0d;
                     normalisedDiff = 0.0d;
@@ -2049,12 +1990,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     n = 0;
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                            y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                            x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                            y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                             thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                             if (thisDistance < distance) {
-                                value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
-                                value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                value0 = grid0.getCell(x1, y1, ge.HOOMEF);
+                                value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                 if (value0 != grid0NoDataValue) {
                                     max0 = Math.max(max0, value0);
                                     min0 = Math.min(min0, value0);
@@ -2079,12 +2020,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                    y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                    x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                                    y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                                     thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
-                                        value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
-                                        value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                        value0 = grid0.getCell(x1, y1, ge.HOOMEF);
+                                        value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                         if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                             weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
                                             if (range0 > 0.0d) {
@@ -2104,10 +2045,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                 }
                             }
                         }
-                        diffGrid.setCell(row, col, diff, ge.HandleOutOfMemoryErrorFalse);
-                        weightedDiffGrid.setCell(row, col, weightedDiff * sumWeight / totalSumWeight, ge.HandleOutOfMemoryErrorFalse);
-                        normalisedDiffGrid.setCell(row, col, normalisedDiff, ge.HandleOutOfMemoryErrorFalse);
-                        weightedNormalisedDiffGrid.setCell(row, col, weightedNormalisedDiff * sumWeight / totalSumWeight, ge.HandleOutOfMemoryErrorFalse);
+                        diffGrid.setCell(row, col, diff, ge.HOOMEF);
+                        weightedDiffGrid.setCell(row, col, weightedDiff * sumWeight / totalSumWeight, ge.HOOMEF);
+                        normalisedDiffGrid.setCell(row, col, normalisedDiff, ge.HOOMEF);
+                        weightedNormalisedDiffGrid.setCell(row, col, weightedNormalisedDiff * sumWeight / totalSumWeight, ge.HOOMEF);
                     }
                 }
             }
@@ -2155,8 +2096,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
                     //if ( grid0.getCell( row, col ) != grid0NoDataValue ) {
-                    x0 = grid0.getCellXDouble(col, ge.HandleOutOfMemoryErrorFalse);
-                    y0 = grid0.getCellYDouble(row, ge.HandleOutOfMemoryErrorFalse);
+                    x0 = grid0.getCellXDouble(col, ge.HOOMEF);
+                    y0 = grid0.getCellYDouble(row, ge.HOOMEF);
                     max0 = Double.MIN_VALUE;
                     max1 = Double.MIN_VALUE;
                     min0 = Double.MAX_VALUE;
@@ -2185,13 +2126,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     // Calculate max min range sumWeight
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                            y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                            x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                            y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                             thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                             if (thisDistance < distance) {
                                 weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
-                                value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                value0 = grid0.getCell(x1, y1, ge.HOOMEF);
+                                value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                 if (value0 != grid0NoDataValue) {
                                     max0 = Math.max(max0, value0);
                                     min0 = Math.min(min0, value0);
@@ -2216,13 +2157,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                    y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                    x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                                    y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                                     thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
                                         weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                        value0 = grid0.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
-                                        value1 = grid1.getCell(row + p, col + q, ge.HandleOutOfMemoryErrorFalse);
+                                        value0 = grid0.getCell(row + p, col + q, ge.HOOMEF);
+                                        value1 = grid1.getCell(row + p, col + q, ge.HOOMEF);
                                         if (value0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
@@ -2246,12 +2187,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                    y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                    x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                                    y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                                     thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                     if (thisDistance < distance) {
                                         weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                        value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                        value0 = grid0.getCell(x1, y1, ge.HOOMEF);
                                         if (value0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
@@ -2261,7 +2202,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             standardDeviation0 += Math.pow((dummy0 - mean0), 2.0d);
                                             weightedStandardDeviation0 += Math.pow((dummy0 - weightedMean0), 2.0d) * weight;
                                         }
-                                        value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                        value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                         if (value1 != grid1NoDataValue) {
                                             if (range1 > 0.0d) {
                                                 dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
@@ -2287,11 +2228,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                             denominator = Math.sqrt(weightedSum0Squared) * Math.sqrt(weightedSum1Squared);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                weightedCorrelationGrid.setCell(row, col, weightedSum01 / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                weightedCorrelationGrid.setCell(row, col, weightedSum01 / denominator, ge.HOOMEF);
                             }
                             denominator = Math.sqrt(sum0Squared) * Math.sqrt(sum1Squared);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                correlationGrid.setCell(row, col, sum01 / denominator, ge.HandleOutOfMemoryErrorFalse);
+                                correlationGrid.setCell(row, col, sum01 / denominator, ge.HOOMEF);
                             }
                             weightedStandardDeviation0 = Math.sqrt(weightedStandardDeviation0 / (n0 - 1.0d));
                             standardDeviation0 = Math.sqrt(standardDeviation0 / (n0 - 1.0d));
@@ -2301,12 +2242,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (weightedStandardDeviation0 > 0.0d && weightedStandardDeviation1 > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                        y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                        x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                                        y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                                         thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                         if (thisDistance < distance) {
-                                            value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
-                                            value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                            value0 = grid0.getCell(x1, y1, ge.HOOMEF);
+                                            value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                             if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
                                                     dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
@@ -2325,17 +2266,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                         }
                                     }
                                 }
-                                weightedZdiffGrid.setCell(row, col, weightedZdiff, ge.HandleOutOfMemoryErrorFalse);
+                                weightedZdiffGrid.setCell(row, col, weightedZdiff, ge.HOOMEF);
                             }
                             if (standardDeviation0 > 0.0d && standardDeviation1 > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        x1 = grid0.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorFalse);
-                                        y1 = grid0.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorFalse);
+                                        x1 = grid0.getCellXDouble(col + q, ge.HOOMEF);
+                                        y1 = grid0.getCellYDouble(row + p, ge.HOOMEF);
                                         thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                                         if (thisDistance < distance) {
-                                            value0 = grid0.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
-                                            value1 = grid1.getCell(x1, y1, ge.HandleOutOfMemoryErrorFalse);
+                                            value0 = grid0.getCell(x1, y1, ge.HOOMEF);
+                                            value1 = grid1.getCell(x1, y1, ge.HOOMEF);
                                             if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
                                                     dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
@@ -2352,7 +2293,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                         }
                                     }
                                 }
-                                zdiffGrid.setCell(row, col, zdiff, ge.HandleOutOfMemoryErrorFalse);
+                                zdiffGrid.setCell(row, col, zdiff, ge.HOOMEF);
                             }
                         }
                     }
@@ -2361,32 +2302,32 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         }
         allStatistics = 0;
         if (dodiff) {
-            diffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Diff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            diffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Diff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = diffGrid;
             allStatistics++;
-            weightedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WDiff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = weightedDiffGrid;
             allStatistics++;
-            normalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            normalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NDiff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = normalisedDiffGrid;
             allStatistics++;
-            weightedNormalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NWDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedNormalisedDiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_NWDiff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = weightedNormalisedDiffGrid;
             allStatistics++;
         }
         if (docorr) {
-            weightedCorrelationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WCorr_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedCorrelationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WCorr_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = weightedCorrelationGrid;
             allStatistics++;
-            correlationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Corr_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            correlationGrid.setName(grid0.getName(handleOutOfMemoryError) + "_Corr_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = correlationGrid;
             allStatistics++;
         }
         if (dozdiff) {
-            weightedZdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            weightedZdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_WZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = weightedZdiffGrid;
             allStatistics++;
-            zdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_ZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HandleOutOfMemoryErrorFalse);
+            zdiffGrid.setName(grid0.getName(handleOutOfMemoryError) + "_ZDiff_" + grid1.getName(handleOutOfMemoryError), ge.HOOMEF);
             result[ allStatistics] = zdiffGrid;
             allStatistics++;
         }

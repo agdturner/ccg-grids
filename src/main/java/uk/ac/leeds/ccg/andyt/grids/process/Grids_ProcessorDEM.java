@@ -87,7 +87,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -136,7 +136,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -727,7 +727,7 @@ public class Grids_ProcessorDEM
                                         chunkCellRowIndex,
                                         chunkCellColIndex,
                                         handleOutOfMemoryError,
-                                        chunk.getChunkID(handleOutOfMemoryError));
+                                        chunk.getChunkID());
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
@@ -855,7 +855,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -914,7 +914,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -975,7 +975,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1130,7 +1130,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1738,7 +1738,7 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError e) {
             ge.clearMemoryReserve();
-            if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+            if (!ge.swapChunk(ge.HOOMEF)) {
                 throw e;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1826,7 +1826,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -1966,7 +1966,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2125,7 +2125,7 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError e) {
             ge.clearMemoryReserve();
-            if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+            if (!ge.swapChunk(ge.HOOMEF)) {
                 throw e;
             }
             ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2252,7 +2252,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2419,7 +2419,7 @@ public class Grids_ProcessorDEM
                     } catch (OutOfMemoryError e) {
                         ge.clearMemoryReserve();
                         System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                        if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                        if (!ge.swapChunk(ge.HOOMEF)) {
                             throw e;
                         }
                         ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2439,7 +2439,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);
@@ -2907,7 +2907,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
                 return getMetrics1(
@@ -3061,34 +3061,34 @@ public class Grids_ProcessorDEM
         double sumWeight;
         int p;
         int q;
-        double noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryErrorTrue);
-        double cellHeight = g.getCell(row, col, ge.HandleOutOfMemoryErrorTrue);
+        double noDataValue = g.getNoDataValue(ge.HOOMET);
+        double cellHeight = g.getCell(row, col, ge.HOOMET);
         for (p = 0; p <= cellDistance; p++) {
-            y = g.getCellYDouble(row + p, ge.HandleOutOfMemoryErrorTrue);
+            y = g.getCellYDouble(row + p, ge.HOOMET);
             yDiff = y - cellY;
             for (q = 1; q <= cellDistance; q++) {
                 //if ( p == 2 && q == 2 ) { int debug2 = 0; }
                 noDataCount = 0.0d;
-                x = g.getCellXDouble(col + q, ge.HandleOutOfMemoryErrorTrue);
+                x = g.getCellXDouble(col + q, ge.HOOMET);
                 weight = weights[p][q];
                 if (weight > 0) {
                     xDiff = x - cellX;
-                    heights[0] = g.getCell(x, y, ge.HandleOutOfMemoryErrorTrue);
+                    heights[0] = g.getCell(x, y, ge.HOOMET);
                     if (heights[0] == noDataValue) {
                         heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[1] = g.getCell(cellX + yDiff, cellY - xDiff, ge.HandleOutOfMemoryErrorTrue);
+                    heights[1] = g.getCell(cellX + yDiff, cellY - xDiff, ge.HOOMET);
                     if (heights[1] == noDataValue) {
                         heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[2] = g.getCell(cellX - xDiff, cellY - yDiff, ge.HandleOutOfMemoryErrorTrue);
+                    heights[2] = g.getCell(cellX - xDiff, cellY - yDiff, ge.HOOMET);
                     if (heights[2] == noDataValue) {
                         heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[3] = g.getCell(cellX - yDiff, cellY + xDiff, ge.HandleOutOfMemoryErrorTrue);
+                    heights[3] = g.getCell(cellX - yDiff, cellY + xDiff, ge.HOOMET);
                     if (heights[3] == noDataValue) {
                         heights[3] = cellHeight;
                         noDataCount += 1.0d;
@@ -3292,8 +3292,8 @@ public class Grids_ProcessorDEM
         int qPlusCellDistance;
         long r;
         long c;
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryErrorFalse);
-        double cellHeight = g.getCell(row, col, ge.HandleOutOfMemoryErrorFalse);
+        int noDataValue = g.getNoDataValue(ge.HOOMEF);
+        double cellHeight = g.getCell(row, col, ge.HOOMEF);
         for (p = -cellDistance; p <= cellDistance; p++) {
             r = row + p;
             pPlusCellDistance = p + cellDistance;
@@ -3303,22 +3303,22 @@ public class Grids_ProcessorDEM
                 noDataCount = 0.0d;
                 weight = weights[pPlusCellDistance][qPlusCellDistance];
                 if (weight > 0) {
-                    heights[0] = g.getCell(r, c, ge.HandleOutOfMemoryErrorFalse);
+                    heights[0] = g.getCell(r, c, ge.HOOMEF);
                     if (heights[0] == noDataValue) {
                         heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[1] = g.getCell(r, c, ge.HandleOutOfMemoryErrorFalse);
+                    heights[1] = g.getCell(r, c, ge.HOOMEF);
                     if (heights[1] == noDataValue) {
                         heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[2] = g.getCell(r, c, ge.HandleOutOfMemoryErrorFalse);
+                    heights[2] = g.getCell(r, c, ge.HOOMEF);
                     if (heights[2] == noDataValue) {
                         heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[3] = g.getCell(r, c, ge.HandleOutOfMemoryErrorFalse);
+                    heights[3] = g.getCell(r, c, ge.HOOMEF);
                     if (heights[3] == noDataValue) {
                         heights[3] = cellHeight;
                         noDataCount += 1.0d;
@@ -4778,7 +4778,7 @@ public class Grids_ProcessorDEM
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
 
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
 
                 }

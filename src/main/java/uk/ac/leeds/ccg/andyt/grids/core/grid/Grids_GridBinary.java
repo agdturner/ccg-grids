@@ -92,7 +92,7 @@ public abstract class Grids_GridBinary
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HandleOutOfMemoryErrorFalse)) {
+                if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                 }
                 ge.initMemoryReserve(handleOutOfMemoryError);

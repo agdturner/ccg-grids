@@ -66,8 +66,14 @@ public class Grids_GridChunkDouble
     protected void clearData() {
     }
 
+    /**
+     * Beware OutOfMemoryErrors being thrown if calling this method.
+     * @param row
+     * @param col
+     * @return 
+     */
     @Override
-    protected double getCell(
+    public double getCell(
             int row,
             int col) {
         return Value;
@@ -83,7 +89,7 @@ public class Grids_GridChunkDouble
      * @return
      */
     @Override
-    protected double setCell(
+    public double setCell(
             int row,
             int col,
             double valueToSet) {

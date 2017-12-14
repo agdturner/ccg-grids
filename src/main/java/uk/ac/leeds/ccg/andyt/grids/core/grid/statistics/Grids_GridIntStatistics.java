@@ -87,11 +87,11 @@ public class Grids_GridIntStatistics
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory(ge.HandleOutOfMemoryError);
+        ge.checkAndMaybeFreeMemory(ge.HOOME);
         Grids_GridInt g = getGrid();
         BigDecimal valueBD;
         int value;
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        int noDataValue = g.getNoDataValue(ge.HOOME);
         Grids_GridIntIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
@@ -182,13 +182,13 @@ public class Grids_GridIntStatistics
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
-            result += chunk.getN(ge.HandleOutOfMemoryError);
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HOOME);
+            result += chunk.getN(ge.HOOME);
         }
 //        int noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        noDataValue = g.getNoDataValue(ge.HOOME);
 //        Iterator<Integer> ite;
-//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        ite = g.iterator(ge.HOOME);
 //        while (ite.hasNext()) {
 //            int value = ite.next();
 //            if (value != noDataValue) {
@@ -213,12 +213,12 @@ public class Grids_GridIntStatistics
 //        while (chunkIterator.hasNext()) {
 //            chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
 //            result = result.add(
-//                    chunkDouble.getNonZeroN(ge.HandleOutOfMemoryError));
+//                    chunkDouble.getNonZeroN(ge.HOOME));
 //        }
         int noDataValue;
-        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        noDataValue = g.getNoDataValue(ge.HOOME);
         Iterator<Integer> ite;
-        ite = g.iterator(ge.HandleOutOfMemoryError);
+        ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
             int value = ite.next();
             if (!(value == noDataValue || value == 0)) {
@@ -240,13 +240,13 @@ public class Grids_GridIntStatistics
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HandleOutOfMemoryError);
-            result = result.add(chunk.getSum(ge.HandleOutOfMemoryError));
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HOOME);
+            result = result.add(chunk.getSum(ge.HOOME));
         }
 //        int noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+//        noDataValue = g.getNoDataValue(ge.HOOME);
 //        Iterator<Integer> ite;
-//        ite = g.iterator(ge.HandleOutOfMemoryError);
+//        ite = g.iterator(ge.HOOME);
 //        while (ite.hasNext()) {
 //            int value = ite.next();
 //            if (value != noDataValue) {
@@ -264,7 +264,7 @@ public class Grids_GridIntStatistics
         BigDecimal differenceFromMean;
         Grids_GridInt g = (Grids_GridInt) Grid;
         int value;
-        int noDataValue = g.getNoDataValue(ge.HandleOutOfMemoryError);
+        int noDataValue = g.getNoDataValue(ge.HOOME);
         Grids_GridIntIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {

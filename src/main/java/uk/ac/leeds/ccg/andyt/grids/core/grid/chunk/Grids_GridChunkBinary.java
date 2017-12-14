@@ -49,7 +49,7 @@ public class Grids_GridChunkBinary
      * @return (Grids_GridBinary) Grid;
      */
     @Override
-    protected Grids_GridBinary getGrid() {
+    public Grids_GridBinary getGrid() {
         return (Grids_GridBinary) Grid;
     }
 

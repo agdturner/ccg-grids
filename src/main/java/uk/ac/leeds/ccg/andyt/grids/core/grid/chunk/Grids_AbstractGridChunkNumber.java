@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
@@ -47,7 +46,7 @@ public abstract class Grids_AbstractGridChunkNumber
      * @return
      */
     @Override
-    protected abstract Grids_AbstractGridNumber getGrid();
+    public abstract Grids_AbstractGridNumber getGrid();
     
     /**
      * Returns the number of cells with data values.

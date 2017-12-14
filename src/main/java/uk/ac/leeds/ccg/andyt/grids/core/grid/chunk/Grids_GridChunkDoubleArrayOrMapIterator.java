@@ -57,7 +57,7 @@ public class Grids_GridChunkDoubleArrayOrMapIterator
 
     @Override
     public void remove() {
-        Data[Row][Col] = ((Grids_GridDouble) Grid).getNoDataValue(ge.HandleOutOfMemoryError);
+        Data[Row][Col] = ((Grids_GridDouble) Grid).getNoDataValue(ge.HOOME);
 //        throw new UnsupportedOperationException();
     }
 }

@@ -68,7 +68,7 @@ public class Grids_GridChunkInt
     }
 
     @Override
-    protected int getCell(
+    public int getCell(
             int row,
             int col) {
         return Value;
@@ -85,7 +85,7 @@ public class Grids_GridChunkInt
      * @return
      */
     @Override
-    protected int setCell(
+    public int setCell(
             int row,
             int col,
             int valueToSet) {
