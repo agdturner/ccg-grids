@@ -38,7 +38,7 @@ public abstract class Grids_AbstractGridChunkIntFactory
      * @param chunkID
      * @return
      */
-    public abstract Grids_AbstractGridChunkInt createGridChunkInt(
+    public abstract Grids_AbstractGridChunkInt create(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID);
 
@@ -50,7 +50,7 @@ public abstract class Grids_AbstractGridChunkIntFactory
      * @param chunkID
      * @return
      */
-    public abstract Grids_AbstractGridChunkInt createGridChunkInt(
+    public abstract Grids_AbstractGridChunkInt create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID);
 

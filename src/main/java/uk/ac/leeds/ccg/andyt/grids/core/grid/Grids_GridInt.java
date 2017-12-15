@@ -463,7 +463,7 @@ public class Grids_GridInt
                             chunkID = new Grids_2D_ID_int(
                                     chunkRow,
                                     chunkCol);
-                            chunk = chunkFactory.createGridChunkInt(
+                            chunk = chunkFactory.create(
                                     this,
                                     chunkID);
                             ChunkIDChunkMap.put(
@@ -620,7 +620,7 @@ public class Grids_GridInt
                                                             chunkCol);
                                                     ge.addToNotToSwap(this, chunkID);
                                                     if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                        chunk = chunkFactory.createGridChunkInt(
+                                                        chunk = chunkFactory.create(
                                                                 this,
                                                                 chunkID);
                                                         ChunkIDChunkMap.put(
@@ -727,7 +727,7 @@ public class Grids_GridInt
                                                             chunkCol);
                                                     ge.addToNotToSwap(this, chunkID);
                                                     if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                        chunk = chunkFactory.createGridChunkInt(
+                                                        chunk = chunkFactory.create(
                                                                 this,
                                                                 chunkID);
                                                         ChunkIDChunkMap.put(
@@ -1202,7 +1202,7 @@ public class Grids_GridInt
                 gridChunk = (Grids_GridChunkInt) chunk;
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().DefaultGridChunkIntFactory.createGridChunkInt(
+                    chunk = ge.getProcessor().DefaultGridChunkIntFactory.create(
                             chunk,
                             chunkID);
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
@@ -1796,7 +1796,7 @@ public class Grids_GridInt
         Grids_AbstractGridChunkInt result;
         Grids_AbstractGridChunkIntFactory f;
         f = ge.getProcessor().DefaultGridChunkIntFactory;
-        result = f.createGridChunkInt(chunk, chunkID);
+        result = f.create(chunk, chunkID);
         ChunkIDChunkMap.put(chunkID, result);
         return result;
     }

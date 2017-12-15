@@ -31,21 +31,17 @@ public class Grids_GridChunkIntArrayFactory
     }
 
     @Override
-    public Grids_GridChunkIntArray createGridChunkInt(
+    public Grids_GridChunkIntArray create(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntArray(
-                g,
-                chunkID);
+        return new Grids_GridChunkIntArray(g, chunkID);
     }
 
     @Override
-    public Grids_GridChunkIntArray createGridChunkInt(
+    public Grids_GridChunkIntArray create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntArray(
-                chunk,
-                chunkID);
+        return new Grids_GridChunkIntArray(chunk, chunkID);
     }
 
 }

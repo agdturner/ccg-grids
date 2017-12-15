@@ -67,6 +67,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected transient TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
     /**
+     * The Grids_AbstractGridChunk data cache.
+     */
+    protected HashMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunksToSwap;
+    /**
      * For storing the number of chunk rows.
      */
     protected int NChunkRows;

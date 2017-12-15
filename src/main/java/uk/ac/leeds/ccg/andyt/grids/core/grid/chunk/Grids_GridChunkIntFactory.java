@@ -40,7 +40,7 @@ public class Grids_GridChunkIntFactory
     }
 
     @Override
-    public Grids_AbstractGridChunkInt createGridChunkInt(
+    public Grids_AbstractGridChunkInt create(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkInt(
@@ -50,7 +50,7 @@ public class Grids_GridChunkIntFactory
     }
 
     @Override
-    public Grids_AbstractGridChunkInt createGridChunkInt(
+    public Grids_AbstractGridChunkInt create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
         return new Grids_GridChunkInt(

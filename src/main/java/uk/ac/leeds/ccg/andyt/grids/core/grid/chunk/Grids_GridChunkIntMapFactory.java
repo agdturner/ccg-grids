@@ -31,32 +31,25 @@ public class Grids_GridChunkIntMapFactory
     }
 
     @Override
-    public Grids_GridChunkIntMap createGridChunkInt(
+    public Grids_GridChunkIntMap create(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntMap(
-                g,
-                chunkID);
+        return new Grids_GridChunkIntMap(g, chunkID);
     }
 
     @Override
-    public Grids_GridChunkIntMap createGridChunkInt(
+    public Grids_GridChunkIntMap create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkIntMap(
-                chunk,
-                chunkID,
-                chunk.getGrid().getNoDataValue(false));
+        return new Grids_GridChunkIntMap(chunk, chunkID,
+                chunk.getGrid().getNoDataValue());
     }
 
-    public Grids_GridChunkIntMap createGridChunkInt(
+    public Grids_GridChunkIntMap create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID,
             int defaultValue) {
-        return new Grids_GridChunkIntMap(
-                chunk,
-                chunkID,
-                defaultValue);
+        return new Grids_GridChunkIntMap(chunk, chunkID, defaultValue);
     }
 
 }

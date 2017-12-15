@@ -37,22 +37,17 @@ public class Grids_GridChunkDoubleFactory
     }
 
     @Override
-    public Grids_AbstractGridChunkDouble createGridChunkDouble(
+    public Grids_AbstractGridChunkDouble create(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDouble(
-                g,
-                chunkID,
-                DefaultValue);
+        return new Grids_GridChunkDouble(g, chunkID, DefaultValue);
     }
 
     @Override
-    public Grids_AbstractGridChunkDouble createGridChunkDouble(
+    public Grids_AbstractGridChunkDouble create(
             Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDouble(
-                chunk.getGrid(),
-                chunkID,
+        return new Grids_GridChunkDouble(chunk.getGrid(), chunkID, 
                 DefaultValue);
     }
 

@@ -436,7 +436,7 @@ public class Grids_GridDouble
                             chunkID = new Grids_2D_ID_int(
                                     chunkRow,
                                     chunkCol);
-                            chunk = chunkFactory.createGridChunkDouble(
+                            chunk = chunkFactory.create(
                                     this,
                                     chunkID);
                             ChunkIDChunkMap.put(
@@ -581,7 +581,7 @@ public class Grids_GridDouble
                                                             chunkCol);
                                                     //ge.addToNotToSwap(this, chunkID);
                                                     if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                        chunk = chunkFactory.createGridChunkDouble(
+                                                        chunk = chunkFactory.create(
                                                                 this,
                                                                 chunkID);
                                                         ChunkIDChunkMap.put(
@@ -688,7 +688,7 @@ public class Grids_GridDouble
                                                             chunkCol);
                                                     ge.addToNotToSwap(this, chunkID);
                                                     if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                        chunk = chunkFactory.createGridChunkDouble(
+                                                        chunk = chunkFactory.create(
                                                                 this,
                                                                 chunkID);
                                                         ChunkIDChunkMap.put(
@@ -1142,7 +1142,7 @@ public class Grids_GridDouble
                 gridChunk = (Grids_GridChunkDouble) chunk;
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.createGridChunkDouble(
+                    chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.create(
                             chunk,
                             chunkID);
                     ChunkIDChunkMap.put(chunkID, chunk);
@@ -1745,7 +1745,7 @@ public class Grids_GridDouble
         Grids_AbstractGridChunkDouble result;
         Grids_AbstractGridChunkDoubleFactory f;
         f = ge.getProcessor().DefaultGridChunkDoubleFactory;
-        result = f.createGridChunkDouble(chunk, chunkID);
+        result = f.create(chunk, chunkID);
         ChunkIDChunkMap.put(chunkID, result);
         return result;
     }

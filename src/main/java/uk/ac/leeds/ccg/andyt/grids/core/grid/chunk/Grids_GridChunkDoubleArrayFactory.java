@@ -31,21 +31,17 @@ public class Grids_GridChunkDoubleArrayFactory
     }
 
     @Override
-    public Grids_GridChunkDoubleArray createGridChunkDouble(
+    public Grids_GridChunkDoubleArray create(
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDoubleArray(
-                g,
-                chunkID);
+        return new Grids_GridChunkDoubleArray(g, chunkID);
     }
 
     @Override
-    public Grids_GridChunkDoubleArray createGridChunkDouble(
+    public Grids_GridChunkDoubleArray create(
             Grids_AbstractGridChunkDouble chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkDoubleArray(
-                chunk,
-                chunkID);
+        return new Grids_GridChunkDoubleArray(chunk, chunkID);
     }
 
 }
