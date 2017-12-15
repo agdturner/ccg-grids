@@ -1100,12 +1100,12 @@ public class Grids_Environment
      * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
      * If not enough data is found to swap then an OutOfMemoryError is thrown.
      *
-     * @param handleOutOfMemoryError
+     * @param hoome
      * @return true if there is sufficient memory to continue and throws an
      * OutOfMemoryError otherwise.
      */
     @Override
-    public boolean checkAndMaybeFreeMemory(boolean handleOutOfMemoryError) {
+    public boolean checkAndMaybeFreeMemory(boolean hoome) {
         try {
             if (checkAndMaybeFreeMemory()) {
                 return true;
@@ -1115,16 +1115,16 @@ public class Grids_Environment
                         + ".checkAndMaybeFreeMemory(boolean)";
                 System.out.println(message);
                 // Set to exit method with OutOfMemoryError
-                handleOutOfMemoryError = false;
+                hoome = false;
                 throw new OutOfMemoryError(message);
             }
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 clearMemoryReserve();
                 if (!checkAndMaybeFreeMemory()) {
                     throw e;
                 }
-                initMemoryReserve(handleOutOfMemoryError);
+                initMemoryReserve(hoome);
                 return true;
             } else {
                 throw e;
@@ -1142,7 +1142,7 @@ public class Grids_Environment
      * otherwise.
      */
     @Override
-    protected boolean checkAndMaybeFreeMemory() {
+    public boolean checkAndMaybeFreeMemory() {
         if (NotToSwap.isEmpty()) {
             return checkAndMaybeFreeMemory_SwapAny();
         } else {

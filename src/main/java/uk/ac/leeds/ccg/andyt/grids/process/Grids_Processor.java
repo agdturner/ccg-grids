@@ -1185,7 +1185,7 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Log rescaling implementation is not brilliant and could be
      * parametrised.
      */
-    protected Grids_GridDouble rescale(
+    public Grids_GridDouble rescale(
             Grids_GridDouble g,
             String type,
             double min,

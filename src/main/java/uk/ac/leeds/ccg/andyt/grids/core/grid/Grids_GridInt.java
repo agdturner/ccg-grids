@@ -1135,7 +1135,7 @@ public class Grids_GridInt
      * @param chunkID The chunk ID of the chunk to be restored.
      */
     @Override
-    protected void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
+    public void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
         boolean isInCache = isInCache(chunkID);
         if (!isInCache) {
             File f = new File(getDirectory(),
@@ -1223,7 +1223,7 @@ public class Grids_GridInt
      * @param chunkID
      */
     @Override
-    protected Grids_AbstractGridChunkInt getGridChunk(
+    public Grids_AbstractGridChunkInt getGridChunk(
             Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {
@@ -1316,6 +1316,10 @@ public class Grids_GridInt
         }
     }
 
+    public final int getNoDataValue() {
+        return NoDataValue;
+    }
+
     /**
      * Initialises NoDataValue as noDataValue.
      *
@@ -1331,9 +1335,9 @@ public class Grids_GridInt
      *
      * @param row
      * @param col
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public int getCell(
@@ -1391,9 +1395,9 @@ public class Grids_GridInt
      * returned.
      * @param cellCol The chunk cell column index of the cell thats value is
      * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public int getCell(
             Grids_AbstractGridChunkInt chunk,
@@ -1445,9 +1449,9 @@ public class Grids_GridInt
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final int getCell(
@@ -1494,9 +1498,9 @@ public class Grids_GridInt
      * For returning the value of the cell with cellID.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final int getCell(
@@ -1510,7 +1514,7 @@ public class Grids_GridInt
             if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(cellID.getRow()), 
+                        getChunkRow(cellID.getRow()),
                         getChunkCol(cellID.getCol()));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCell(cellID, hoome);
@@ -1526,9 +1530,9 @@ public class Grids_GridInt
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
      * @param value .
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(
             double x,
@@ -1570,9 +1574,9 @@ public class Grids_GridInt
      *
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param value .
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(
             Grids_2D_ID_long cellID,

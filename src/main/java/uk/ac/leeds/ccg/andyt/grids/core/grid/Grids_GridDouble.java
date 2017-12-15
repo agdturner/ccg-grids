@@ -1074,7 +1074,7 @@ public class Grids_GridDouble
      * @param chunkID The chunk ID of the chunk to be restored.
      */
     @Override
-    protected void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
+    public void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
         boolean isInCache = isInCache(chunkID);
         if (!isInCache) {
             File f = new File(getDirectory(),
