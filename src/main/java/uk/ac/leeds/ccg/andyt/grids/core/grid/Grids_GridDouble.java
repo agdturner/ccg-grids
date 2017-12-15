@@ -557,9 +557,7 @@ public class Grids_GridDouble
                             try {
                                 ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
                                 // Try to load chunk.
-                                gChunkID = new Grids_2D_ID_int(
-                                        gChunkRow,
-                                        gChunkCol);
+                                gChunkID = new Grids_2D_ID_int(gChunkRow, gChunkCol);
                                 ge.addToNotToSwap(g, gChunkID);
                                 gChunk = ((Grids_GridDouble) g).getGridChunk(gChunkID);
                                 gChunkNCols = g.getChunkNCols(gChunkCol);
@@ -1326,17 +1324,11 @@ public class Grids_GridDouble
 //        if (isInGrid) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
+        Grids_AbstractGridChunkDouble c;
+        c = (Grids_AbstractGridChunkDouble) getChunk(chunkRow, chunkCol);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
-        Grids_AbstractGridChunk c;
-        c = getChunk(chunkRow, chunkCol);
-        if (c.getClass() == Grids_GridChunkDoubleArray.class) {
-            return ((Grids_GridChunkDoubleArray) c).getCell(cellRow, cellCol);
-        } else if (c.getClass() == Grids_GridChunkDoubleMap.class) {
-            return ((Grids_GridChunkDoubleMap) c).getCell(cellRow, cellCol);
-        } else {
-            return ((Grids_GridChunkDouble) c).getCell(cellRow, cellCol);
-        }
+        return getCell(c, cellRow, cellCol);
 //        }
 //        return NoDataValue;
     }
@@ -1389,19 +1381,16 @@ public class Grids_GridDouble
      * column index cellCol.
      *
      */
-    protected double getCell(
+    public double getCell(
             Grids_AbstractGridChunkDouble chunk,
             int cellRow,
             int cellCol) {
         if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
-            return ((Grids_GridChunkDoubleArray) chunk).getCell(cellRow,
-                    cellCol);
+            return ((Grids_GridChunkDoubleArray) chunk).getCell(cellRow, cellCol);
         } else if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
-            return ((Grids_GridChunkDoubleMap) chunk).getCell(cellRow,
-                    cellCol, false);
+            return ((Grids_GridChunkDoubleMap) chunk).getCell(cellRow, cellCol);
         } else {
-            return ((Grids_GridChunkDouble) chunk).getCell(cellRow,
-                    cellCol, false);
+            return ((Grids_GridChunkDouble) chunk).getCell(cellRow, cellCol);
         }
     }
 
@@ -1410,9 +1399,9 @@ public class Grids_GridDouble
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double getCell(
@@ -1443,7 +1432,7 @@ public class Grids_GridDouble
      * @param y the y-coordinate of the point.
      * @return
      */
-    protected final double getCell(
+    public final double getCell(
             double x,
             double y) {
         long row = getRow(y);
@@ -1523,7 +1512,7 @@ public class Grids_GridDouble
      * @param y the y-coordinate of the point.
      * @param value
      */
-    protected final void setCell(
+    public final void setCell(
             double x,
             double y,
             double value) {
@@ -1594,7 +1583,7 @@ public class Grids_GridDouble
      * @param col
      * @param value
      */
-    protected void setCell(
+    public void setCell(
             long row,
             long col,
             double value) {
@@ -1653,7 +1642,7 @@ public class Grids_GridDouble
      * @param cellCol
      * @param value
      */
-    protected void setCell(
+    public void setCell(
             int chunkRow,
             int chunkCol,
             int cellRow,
@@ -1702,7 +1691,7 @@ public class Grids_GridDouble
      * @param cellRow
      * @param newValue
      */
-    protected void setCell(
+    public void setCell(
             Grids_AbstractGridChunkDouble chunk,
             int cellRow,
             int cellCol,

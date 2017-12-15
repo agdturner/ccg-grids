@@ -196,7 +196,7 @@ public abstract class Grids_AbstractGridNumber
             long col,
             boolean handleOutOfMemoryError) {
         try {
-            double result = getCellDouble(                    row,                    col);
+            double result = getCellDouble(row, col);
             ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
@@ -206,7 +206,7 @@ public abstract class Grids_AbstractGridNumber
                         getChunkRow(row),
                         getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellDouble(                        row,                        col,                        handleOutOfMemoryError);
+                return getCellDouble(row, col, handleOutOfMemoryError);
             } else {
                 throw e;
 
@@ -319,11 +319,10 @@ public abstract class Grids_AbstractGridNumber
      * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
      * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
      * index _Row, chunk col index _Col as a double.
-     * @param chunk The Grids_AbstractGridChunk containing the
-     * cell.
+     * @param chunk The Grids_AbstractGridChunk containing the cell.
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
@@ -333,30 +332,20 @@ public abstract class Grids_AbstractGridNumber
             int chunkCol,
             int cellRow,
             int cellCol,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
-            double result = getCellDouble(
-                    chunk,
-                    chunkRow,
-                    chunkCol,
-                    cellRow,
+            double result = getCellDouble(chunk, chunkRow, chunkCol, cellRow, 
                     cellCol);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRow,
-                        chunkCol);
+                        chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellDouble(
-                        chunk,
-                        chunkRow,
-                        chunkCol,
-                        cellRow,
-                        cellCol,
-                        handleOutOfMemoryError);
+                return getCellDouble(chunk, chunkRow, chunkCol, cellRow, 
+                        cellCol, hoome);
             } else {
                 throw e;
             }
@@ -653,8 +642,8 @@ public abstract class Grids_AbstractGridNumber
      * _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param col
      */
     protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, long row, long col);
@@ -666,8 +655,8 @@ public abstract class Grids_AbstractGridNumber
      * _CellColIndex.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param col
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
@@ -693,8 +682,8 @@ public abstract class Grids_AbstractGridNumber
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param col
      */
     protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col);
@@ -703,8 +692,8 @@ public abstract class Grids_AbstractGridNumber
      * @param col
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest
-     * cells with data values are returned.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -775,10 +764,10 @@ public abstract class Grids_AbstractGridNumber
      * column index colIndex
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row the row index from which average of the nearest data
-     * values is returned
-     * @param col the column index from which average of the nearest
-     * data values is returned
+     * @param row the row index from which average of the nearest data values is
+     * returned
+     * @param col the column index from which average of the nearest data values
+     * is returned
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -804,20 +793,20 @@ public abstract class Grids_AbstractGridNumber
      * column index colIndex
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param row the row index from which average of the nearest data
-     * values is returned
-     * @param col the column index from which average of the nearest
-     * data values is returned
+     * @param row the row index from which average of the nearest data values is
+     * returned
+     * @param col the column index from which average of the nearest data values
+     * is returned
      */
     protected abstract double getNearestValueDouble(double x, double y, long row, long col);
 
     /**
      * @return the average of the nearest data values to position given by row
      * index rowIndex, column index colIndex.
-     * @param row The row index from which average of the nearest data
-     * values is returned.
-     * @param col The column index from which average of the nearest
-     * data values is returned.
+     * @param row The row index from which average of the nearest data values is
+     * returned.
+     * @param col The column index from which average of the nearest data values
+     * is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -840,10 +829,10 @@ public abstract class Grids_AbstractGridNumber
     }
 
     /**
-     * @param row The row index from which average of the nearest data
-     * values is returned.
-     * @param col The column index from which average of the nearest
-     * data values is returned.
+     * @param row The row index from which average of the nearest data values is
+     * returned.
+     * @param col The column index from which average of the nearest data values
+     * is returned.
      * @return the average of the nearest data values to position given by row
      * index rowIndex, column index colIndex
      */
@@ -889,10 +878,10 @@ public abstract class Grids_AbstractGridNumber
      * column index colIndex as a double.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param row The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
+     * @param row The cell row index of the cell from which the distance nearest
+     * to the nearest cell value is returned.
+     * @param col The cell column index of the cell from which the distance
+     * nearest to the nearest cell value is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
@@ -920,20 +909,20 @@ public abstract class Grids_AbstractGridNumber
      * column index colIndex as a double.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param row The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
+     * @param row The cell row index of the cell from which the distance nearest
+     * to the nearest cell value is returned.
+     * @param col The cell column index of the cell from which the distance
+     * nearest to the nearest cell value is returned.
      */
     protected abstract double getNearestValueDoubleDistance(double x, double y, long row, long col);
 
     /**
      * @return the distance to the nearest data value from position given by row
      * index rowIndex, column index colIndex as a double.
-     * @param row The cell row index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the
-     * distance nearest to the nearest cell value is returned.
+     * @param row The cell row index of the cell from which the distance nearest
+     * to the nearest cell value is returned.
+     * @param col The cell column index of the cell from which the distance
+     * nearest to the nearest cell value is returned.
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.

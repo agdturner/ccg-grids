@@ -1236,15 +1236,15 @@ public class Grids_Processor extends Grids_Object {
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory(hoome);
-                        chunkNCols = g.getChunkNCols(chunkCol, hoome, chunkID);
+                        chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(chunkID);
                         resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
                                 chunkID, hoome);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(cellRow, cellCol, hoome);
+                                value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != noDataValue) {
-                                    result.setCell(resultChunk, cellRow, cellCol, min, hoome);
+                                    result.setCell(resultChunk, cellRow, cellCol, min);
                                 }
                             }
                         }
@@ -1255,33 +1255,24 @@ public class Grids_Processor extends Grids_Object {
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    chunkNRows = g.getChunkNRows(
-                            chunkRow, hoome);
+                    chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                                 chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory(hoome);
-                        chunkNCols = g.getChunkNCols(
-                                chunkCol, hoome, chunkID);
+                        chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
-                                chunkID, hoome);
+                                chunkID);
                         resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
-                                chunkID, hoome);
+                                chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(
-                                        cellRow,
-                                        cellCol,
-                                        hoome);
+                                value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != noDataValue) {
-                                    result.setCell(
-                                            resultChunk,
-                                            cellRow,
-                                            cellCol,
-                                            (((value - minGrid) / rangeGrid) * range) + min,
-                                            hoome);
+                                    result.setCell(resultChunk, cellRow, cellCol,
+                                            (((value - minGrid) / rangeGrid) * range) + min);
                                 }
                             }
                         }
@@ -1291,17 +1282,11 @@ public class Grids_Processor extends Grids_Object {
             result.setName(g.getName(hoome) + "_linearRescale", hoome);
             ge.checkAndMaybeFreeMemory(hoome);
         } else {
-            // @TODO this is not a brilliant implementation it could perhaps 
-            // do with parameterising the range etc...
+            // @TODO this implementation could be much improved...
             int row;
             int col;
             if (type.equalsIgnoreCase("log")) {
-                result = rescale(
-                        result,
-                        null,
-                        1.0d,
-                        1000000.0d,
-                        hoome);
+                result = rescale(result, null, 1.0d, 1000000.0d, hoome);
                 // Probably better to do this by chunks
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
@@ -1870,7 +1855,7 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(hoome);
-                addToGrid(grid, gridToAdd, startRow, startCol, endRow, endCol, 
+                addToGrid(grid, gridToAdd, startRow, startCol, endRow, endCol,
                         weight, hoome);
             } else {
                 throw e;
@@ -1885,20 +1870,20 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param grid The Grids_GridDouble to be processed.
      * @param gridToAdd The Grids_GridDouble from which values are added.
-     * @param startRow The index of the first row from which gridToAdd
-     * values are added.
-     * @param startCol The index of the first column from which gridToAdd
-     * values are added.
-     * @param endRow The index of the final row from which gridToAdd values
+     * @param startRow The index of the first row from which gridToAdd values
      * are added.
-     * @param endCol The index of the final column from which gridToAdd
-     * values are added.
+     * @param startCol The index of the first column from which gridToAdd values
+     * are added.
+     * @param endRow The index of the final row from which gridToAdd values are
+     * added.
+     * @param endCol The index of the final column from which gridToAdd values
+     * are added.
      * @param dimensionConstraints
      * @param weight The value gridToAdd values are multiplied by.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown. TODO: Check that
-     * reasonable answers are returned for intersections and aggregations.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown. TODO: Check that reasonable
+     * answers are returned for intersections and aggregations.
      *
      * @todo work needed to handle OutOfMemoryErrors...
      */

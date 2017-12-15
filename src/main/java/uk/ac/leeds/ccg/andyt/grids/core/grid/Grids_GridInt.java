@@ -1371,17 +1371,11 @@ public class Grids_GridInt
 //        if (isInGrid) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
+        Grids_AbstractGridChunkInt c;
+        c = (Grids_AbstractGridChunkInt) getChunk(chunkRow, chunkCol);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
-        Grids_AbstractGridChunk c;
-        c = getChunk(chunkRow, chunkCol);
-        if (c.getClass() == Grids_GridChunkIntArray.class) {
-            return ((Grids_GridChunkIntArray) c).getCell(cellRow, cellCol);
-        } else if (c.getClass() == Grids_GridChunkIntMap.class) {
-            return ((Grids_GridChunkIntMap) c).getCell(cellRow, cellCol);
-        } else {
-            return ((Grids_GridChunkInt) c).getCell(cellRow, cellCol);
-        }
+        return getCell(c, cellRow, cellCol);
 //        }
 //        return NoDataValue;
     }
