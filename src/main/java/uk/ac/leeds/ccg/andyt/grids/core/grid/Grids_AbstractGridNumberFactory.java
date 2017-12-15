@@ -99,7 +99,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * @param nRows The _NRows for the construct.
      * @param nCols The _NCols for the construct.
      * @param dimensions
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * @param hoome If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      */
@@ -108,7 +108,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
-            boolean handleOutOfMemoryError);
+            boolean hoome);
 
     //////////////////////////////////////////////////////
     // Create from an existing Grids_AbstractGridNumber //
@@ -171,7 +171,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * values are used.
      * @param endColIndex The rightmost column index of grid2DSquareCell thats
      * values are used.
-     * @param handleOutOfMemoryError
+     * @param hoome
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
@@ -180,7 +180,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError);
+            boolean hoome);
 
     ////////////////////////
     // Create from a File //
@@ -256,7 +256,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * gridFile thats values are used.
      * @param endColIndex The rightmost column index of the grid represented in
      * gridFile thats values are used.
-     * @param handleOutOfMemoryError
+     * @param hoome
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
@@ -265,7 +265,7 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError);
+            boolean hoome);
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
@@ -274,23 +274,23 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * @param gridFile either a Directory, or a formatted File with a specific
      * extension containing the data and information about the
      * Grids_AbstractGridNumber to be returned.
-     * @param handleOutOfMemoryError
+     * @param hoome
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
             File gridFile,
-            boolean handleOutOfMemoryError);
+            boolean hoome);
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
      * @param directory The Directory for swapping to file.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param handleOutOfMemoryError
+     * @param hoome
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
             File gridFile,
             ObjectInputStream ois,
-            boolean handleOutOfMemoryError);
+            boolean hoome);
 }

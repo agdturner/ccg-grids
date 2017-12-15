@@ -150,7 +150,7 @@ public class Grids_GridDoubleFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -161,14 +161,14 @@ public class Grids_GridDoubleFactory
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return create(new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 GridChunkDoubleFactory,
                 nRows,
                 nCols,
                 dimensions,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     /**
@@ -182,7 +182,7 @@ public class Grids_GridDoubleFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * @param hoome If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -194,7 +194,7 @@ public class Grids_GridDoubleFactory
             long nRows,
             long nCols,
             Grids_Dimensions dimensions,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return new Grids_GridDouble(
                 getStatistics(statistics),
                 directory,
@@ -206,7 +206,7 @@ public class Grids_GridDoubleFactory
                 dimensions,
                 NoDataValue,
                 ge,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     //////////////////////////////////////////////////////
@@ -221,6 +221,7 @@ public class Grids_GridDoubleFactory
      * @param startColIndex The leftmost column index of g.
      * @param endRowIndex The bottom row index of g.
      * @param endColIndex The rightmost column index of g.
+     * @param hoome
      * @return
      */
     @Override
@@ -231,7 +232,7 @@ public class Grids_GridDoubleFactory
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return create(new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 g,
@@ -240,7 +241,7 @@ public class Grids_GridDoubleFactory
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     /**
@@ -256,7 +257,7 @@ public class Grids_GridDoubleFactory
      * @param startColIndex The leftmost column index of g.
      * @param endRowIndex The bottom row index of g.
      * @param endColIndex The rightmost column index of g.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -270,7 +271,7 @@ public class Grids_GridDoubleFactory
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return new Grids_GridDouble(
                 getStatistics(statistics),
                 directory,
@@ -283,7 +284,7 @@ public class Grids_GridDoubleFactory
                 endRowIndex,
                 endColIndex,
                 NoDataValue,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     ////////////////////////
@@ -304,6 +305,7 @@ public class Grids_GridDoubleFactory
      * @param endRowIndex The bottom row index of the grid stored as gridFile.
      * @param endColIndex The rightmost column index of the grid stored as
      * gridFile.
+     * @param hoome
      * @return
      */
     @Override
@@ -314,7 +316,7 @@ public class Grids_GridDoubleFactory
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return create(new Grids_GridDoubleStatisticsNotUpdated(ge),
                 directory,
                 gridFile,
@@ -323,7 +325,7 @@ public class Grids_GridDoubleFactory
                 startColIndex,
                 endRowIndex,
                 endColIndex,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     /**
@@ -345,7 +347,7 @@ public class Grids_GridDoubleFactory
      * @param endRowIndex The bottom row index of the grid stored as gridFile.
      * @param endColIndex The rightmost column index of the grid stored as
      * gridFile.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * @param hoome If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -359,7 +361,7 @@ public class Grids_GridDoubleFactory
             long startColIndex,
             long endRowIndex,
             long endColIndex,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return new Grids_GridDouble(
                 getStatistics(statistics),
                 directory,
@@ -373,22 +375,18 @@ public class Grids_GridDoubleFactory
                 endColIndex,
                 NoDataValue,
                 ge,
-                handleOutOfMemoryError);
+                hoome);
     }
 
-        /**
+    /**
      * Returns a new Grids_GridDouble with values obtained from gridFile.
      *
-     * @param statistics The type of Grids_GridDoubleStatistics to accompany the
-     * returned grid.
      * @param directory The directory to be used for storing cached Grid
      * information.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * returned.
-     * @param chunkFactory The preferred factory for creating chunks that the
-     * constructed Grid is to be made of.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught
+     * @param hoome If true then OutOfMemoryErrors are caught
      * in this method then swap operations are initiated prior to retrying. If
      * false then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -397,12 +395,12 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(
             File directory,
             File gridFile,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return new Grids_GridDouble(
                 ge,
                 directory,
                 gridFile,
-                handleOutOfMemoryError);
+                hoome);
     }
 
     /**
@@ -428,6 +426,7 @@ public class Grids_GridDoubleFactory
      * information.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
+     * @param hoome
      * @return
      */
     public @Override
@@ -435,12 +434,12 @@ public class Grids_GridDoubleFactory
             File directory,
             File gridFile,
             ObjectInputStream ois,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         return new Grids_GridDouble(
                 directory,
                 gridFile,
                 ois,
                 ge,
-                handleOutOfMemoryError);
+                hoome);
     }
 }

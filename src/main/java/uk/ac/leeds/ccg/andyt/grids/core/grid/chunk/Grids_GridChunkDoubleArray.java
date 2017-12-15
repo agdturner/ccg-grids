@@ -76,13 +76,13 @@ public class Grids_GridChunkDoubleArray
         initData();
         int row;
         int col;
-        boolean handleOutOfMemoryError = true;
+        boolean hoome = true;
         for (row = 0; row < ChunkNRows; row++) {
             for (col = 0; col < ChunkNCols; col++) {
                 Data[row][col] = chunk.getCell(
                         row,
                         col,
-                        handleOutOfMemoryError);
+                        hoome);
             }
         }
         SwapUpToDate = false;
@@ -142,7 +142,6 @@ public class Grids_GridChunkDoubleArray
             int col,
             double value) {
         double oldValue;
-        oldValue = 0;
         oldValue = Data[row][col];
         Data[row][col] = value;
         if (isSwapUpToDate()) {
@@ -170,12 +169,12 @@ public class Grids_GridChunkDoubleArray
     }
 
     @Override
-    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+    public Number getMin(boolean update, boolean hoome) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+    public Number getMax(boolean update, boolean hoome) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

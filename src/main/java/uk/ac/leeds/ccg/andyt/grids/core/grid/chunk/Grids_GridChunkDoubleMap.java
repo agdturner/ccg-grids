@@ -150,7 +150,7 @@ public class Grids_GridChunkDoubleMap
             Grids_2D_ID_int chunkID,
             double defaultValue) {
         super(gridChunk.getGrid(), chunkID);
-        boolean handleOutOfMemoryError = gridChunk.ge.HOOMEF;
+        boolean hoome = gridChunk.ge.HOOMEF;
         DefaultValue = defaultValue;
         NoDataValue = getGrid().getNoDataValue(ge.HOOME);
         initData();
@@ -160,7 +160,7 @@ public class Grids_GridChunkDoubleMap
                 value = gridChunk.getCell(
                         row,
                         col,
-                        handleOutOfMemoryError);
+                        hoome);
                 initCell(
                         row,
                         col,
@@ -1075,7 +1075,7 @@ public class Grids_GridChunkDoubleMap
     }
 
     @Override
-    public Double getMin(boolean update, boolean handleOutOfMemoryError) {
+    public Double getMin(boolean update, boolean hoome) {
         double min = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             min = Math.min(min, DefaultValue);
@@ -1086,7 +1086,7 @@ public class Grids_GridChunkDoubleMap
     }
 
     @Override
-    public Double getMax(boolean update, boolean handleOutOfMemoryError) {
+    public Double getMax(boolean update, boolean hoome) {
         double max = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             max = Math.max(max, DefaultValue);

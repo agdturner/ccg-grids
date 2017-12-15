@@ -148,14 +148,14 @@ public class Grids_GridChunkIntMap
             Grids_2D_ID_int chunkID,
             int defaultValue) {
         super(gridChunk.getGrid(), chunkID);
-        boolean handleOutOfMemoryError = gridChunk.ge.HOOMEF;
+        boolean hoome = gridChunk.ge.HOOMEF;
         DefaultValue = defaultValue;
         NoDataValue = getGrid().getNoDataValue(ge.HOOME);
         initData();
         int value;
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
-                value = gridChunk.getCell(row, col, handleOutOfMemoryError);
+                value = gridChunk.getCell(row, col, hoome);
                 initCell(row, col, value);
             }
         }
@@ -1084,7 +1084,7 @@ public class Grids_GridChunkIntMap
     }
 
     @Override
-    public Integer getMin(boolean update, boolean handleOutOfMemoryError) {
+    public Integer getMin(boolean update, boolean hoome) {
         int min = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             min = Math.min(min, DefaultValue);
@@ -1095,7 +1095,7 @@ public class Grids_GridChunkIntMap
     }
 
     @Override
-    public Integer getMax(boolean update, boolean handleOutOfMemoryError) {
+    public Integer getMax(boolean update, boolean hoome) {
         int max = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             max = Math.max(max, DefaultValue);

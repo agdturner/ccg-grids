@@ -38,10 +38,10 @@ public class Grids_GridChunkBinary
 
     @Override
     protected void initData() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         Grids_GridBinary g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        int chunkNrows = g.getChunkNRows(ChunkID, hoome);
+        int chunkNcols = g.getChunkNCols(ChunkID, hoome);
         data = new boolean[chunkNrows][chunkNcols];
     }
 
@@ -61,7 +61,7 @@ public class Grids_GridChunkBinary
      * this chunk
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -69,19 +69,19 @@ public class Grids_GridChunkBinary
     public boolean getCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getCell(chunkCellRowIndex, chunkCellColIndex, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return getCell(chunkCellRowIndex, chunkCellColIndex, hoome);
             } else {
                 throw e;
             }
@@ -96,7 +96,7 @@ public class Grids_GridChunkBinary
      * this chunk
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @param chunkID This is a Grids_2D_ID_int for those
@@ -107,23 +107,23 @@ public class Grids_GridChunkBinary
     public boolean getCell(
             int chunkCellRowIndex,
             int chunkCellColIndex,
-            boolean handleOutOfMemoryError,
+            boolean hoome,
             Grids_2D_ID_int chunkID) {
         try {
             boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_AccountDetail(chunkID, false) == null) {
                     ge.swapChunk_AccountDetail(false);
                 }
-                ge.initMemoryReserve(ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(ChunkID, hoome);
                 return getCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
-                        handleOutOfMemoryError,
+                        hoome,
                         chunkID);
             } else {
                 throw e;
@@ -161,7 +161,7 @@ public class Grids_GridChunkBinary
      * @param chunkCellColIndex the column index of the cell w.r.t. the origin
      * of this chunk
      * @param valueToInitialise the value with which the cell is initialised
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
@@ -169,25 +169,25 @@ public class Grids_GridChunkBinary
             int chunkCellRowIndex,
             int chunkCellColIndex,
             boolean valueToInitialise,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             initCell(
                     chunkCellRowIndex,
                     chunkCellColIndex,
                     valueToInitialise);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
                 initCell(
                         chunkCellRowIndex,
                         chunkCellColIndex,
                         valueToInitialise,
-                        handleOutOfMemoryError);
+                        hoome);
             } else {
                 throw e;
             }

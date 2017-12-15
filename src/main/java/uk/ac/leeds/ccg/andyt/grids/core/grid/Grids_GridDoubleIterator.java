@@ -52,11 +52,6 @@ public class Grids_GridDoubleIterator
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
                 Chunk = (Grids_AbstractGridChunkDouble) g.ChunkIDChunkMap.get(ChunkID);
-                
-                if (Chunk == null) {
-                    Grid.loadIntoCacheChunk(ChunkID); //debug
-                }
-                
             }
             initChunkIterator();
         }

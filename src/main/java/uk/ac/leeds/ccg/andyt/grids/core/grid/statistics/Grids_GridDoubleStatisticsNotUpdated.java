@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;

@@ -151,27 +151,27 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * Returns a String describing this instance
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public String toString(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             String result = toString();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(false);
-                return toString(handleOutOfMemoryError);
+                return toString(hoome);
             } else {
                 throw e;
             }
@@ -206,27 +206,27 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For returning the number of cells with data values as a BigInteger.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
-    public final Long getN(boolean handleOutOfMemoryError) {
+    public final Long getN(boolean hoome) {
         try {
             long result = getN();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(false);
-                return getN(handleOutOfMemoryError);
+                return getN(hoome);
             } else {
                 throw e;
             }
@@ -248,27 +248,27 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * For returning the number of cells with non zero data values as a
      * BigInteger.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final BigInteger getNonZeroN(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             BigInteger result = getNonZeroN();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(false);
-                return getNonZeroN(handleOutOfMemoryError);
+                return getNonZeroN(hoome);
             } else {
                 throw e;
             }
@@ -283,27 +283,27 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For returning the sum of all finite data values.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
-    public final BigDecimal getSum(boolean handleOutOfMemoryError) {
+    public final BigDecimal getSum(boolean hoome) {
         try {
             BigDecimal result = getSum();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(ge.HOOMEF);
-                return getSum(handleOutOfMemoryError);
+                return getSum(hoome);
             } else {
                 throw e;
             }
@@ -320,7 +320,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For returning the minimum of all data values.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -328,21 +328,21 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     @Override
     public Number getMin(
             boolean update,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             Number result = getMin(update);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(ge.HOOMEF);
-                return getMin(update, handleOutOfMemoryError);
+                return getMin(update, hoome);
             } else {
                 throw e;
             }
@@ -361,7 +361,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * For returning the maximum of all data values.
      *
      * @param update If true then an update of the statistics is made.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -369,15 +369,15 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     @Override
     public final Number getMax(
             boolean update,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             Number result = getMax(update);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
@@ -385,7 +385,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
                 ge.initMemoryReserve(ge.HOOMEF);
                 return getMax(
                         update,
-                        handleOutOfMemoryError);
+                        hoome);
             } else {
                 throw e;
             }
@@ -538,7 +538,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        long col;
 //        int value;
 //        int thisValue;
-//        boolean handleOutOfMemoryError = true;
+//        boolean hoome = true;
 //        Grids_GridIntIterator ite;
 //        ite = g.iterator();
 //        while (ite.hasNext()) {
@@ -559,7 +559,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                g.getCellID(
 //                        p,
 //                        q,
-//                        handleOutOfMemoryError);
+//                        hoome);
 //                //initMode[2] = new CellID( p, q );
 //                return initMode;
 //            }
@@ -581,13 +581,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        long col;
 //        double value;
 //        double thisValue;
-//        boolean handleOutOfMemoryError = true;
+//        boolean hoome = true;
 //        for (p = 0; p < _NRows; p++) {
 //            for (q = 0; q < _NCols; q++) {
 //                value = grid2DSquareCellDouble.getCell(
 //                        p,
 //                        q,
-//                        handleOutOfMemoryError);
+//                        hoome);
 //                if (value != noDataValue) {
 //                    modeCount = 0L;
 //                    for (row = 0; row < _NRows; row++) {
@@ -595,7 +595,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                            thisValue = grid2DSquareCellDouble.getCell(
 //                                    row,
 //                                    col,
-//                                    handleOutOfMemoryError);
+//                                    hoome);
 //                            if (thisValue == value) {
 //                                modeCount++;
 //                            }
@@ -606,7 +606,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                    initMode[2] = grid2DSquareCellDouble.getCellID(
 //                            p,
 //                            q,
-//                            handleOutOfMemoryError);
+//                            hoome);
 //                    //initMode[2] = new CellID( p, q );
 //                    return initMode;
 //                }
@@ -626,7 +626,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //     * @param nRows The number of rows in grid2DSquareCellInt.
 //     * @param nCols The number of columns in grid2DSquareCellInt.
 //     * @param value The value to be counted.
-//     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+//     * @param hoome If true then OutOfMemoryErrors are caught,
 //     * swap operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
@@ -638,7 +638,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //            long nRows,
 //            long nCols,
 //            int value,
-//            boolean handleOutOfMemoryError) {
+//            boolean hoome) {
 //        try {
 //            long result = count(
 //                    g,
@@ -647,13 +647,13 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                    nRows,
 //                    nCols,
 //                    value);
-//            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+//            ge.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
-//            if (handleOutOfMemoryError) {
+//            if (hoome) {
 //                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-//                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (ge.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
 //                }
@@ -665,7 +665,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //                        nRows,
 //                        nCols,
 //                        value,
-//                        handleOutOfMemoryError);
+//                        hoome);
 //            } else {
 //                throw e;
 //            }
@@ -693,10 +693,10 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //            int value) {
 //        long count = 1L;
 //        int thisValue;
-//        boolean handleOutOfMemoryError = true;
+//        boolean hoome = true;
 //        // Do remainder of the row of grid2DSquareCellInt
 //        for (col++; col < nCols; col++) {
-//            thisValue = g.getCell(row, col, handleOutOfMemoryError);
+//            thisValue = g.getCell(row, col, hoome);
 //            if (thisValue == value) {
 //                count++;
 //            }
@@ -704,7 +704,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        // Do remainder of the grid2DSquareCellInt
 //        for (row++; row < nRows; row++) {
 //            for (col = 0; col < nCols; col++) {
-//                thisValue = g.getCell(row, col, handleOutOfMemoryError);
+//                thisValue = g.getCell(row, col, hoome);
 //                if (thisValue == value) {
 //                    count++;
 //                }
@@ -723,7 +723,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //     * @param nRows The number of rows in grid2DSquareCellInt.
 //     * @param nCols The number of columns in grid2DSquareCellInt.
 //     * @param value The value to be counted.
-//     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+//     * @param hoome If true then OutOfMemoryErrors are caught,
 //     * swap operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
@@ -735,21 +735,21 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //            long nRows,
 //            long nCols,
 //            double value,
-//            boolean handleOutOfMemoryError) {
+//            boolean hoome) {
 //        try {
 //            long result = count(g, row, col, nRows, nCols, value);
-//            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+//            ge.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
-//            if (handleOutOfMemoryError) {
+//            if (hoome) {
 //                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
-//                    if (ge.swapChunk_Account(handleOutOfMemoryError) < 1L) {
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (ge.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
 //                }
 //                ge.initMemoryReserve(ge.HOOMEF);
-//                return count(g, row, col, nRows, nCols, value, handleOutOfMemoryError);
+//                return count(g, row, col, nRows, nCols, value, hoome);
 //            } else {
 //                throw e;
 //            }
@@ -778,10 +778,10 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //            double value) {
 //        long count = 1L;
 //        double thisValue;
-//        boolean handleOutOfMemoryError = true;
+//        boolean hoome = true;
 //        // Do remainder of the row of g
 //        for (col++; col < nCols; col++) {
-//            thisValue = g.getCell(row, col, handleOutOfMemoryError);
+//            thisValue = g.getCell(row, col, hoome);
 //            if (thisValue == value) {
 //                count++;
 //            }
@@ -789,7 +789,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
 //        // Do remainder of the grid2DSquareCellDouble
 //        for (row++; row < nRows; row++) {
 //            for (col = 0; col < nCols; col++) {
-//                thisValue = g.getCell(row, col, handleOutOfMemoryError);
+//                thisValue = g.getCell(row, col, hoome);
 //                if (thisValue == value) {
 //                    count++;
 //                }
@@ -803,7 +803,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * @param numberOfDecimalPlaces The result returned uses BigDecimal
      * arithmetic to ensure the result is correct given a round scheme to this
      * many decimal places.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -811,21 +811,21 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     @Override
     public BigDecimal getArithmeticMean(
             int numberOfDecimalPlaces,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
                 }
                 ge.initMemoryReserve(ge.HOOMEF);
-                return getArithmeticMean(numberOfDecimalPlaces, handleOutOfMemoryError);
+                return getArithmeticMean(numberOfDecimalPlaces, hoome);
             } else {
                 throw e;
             }
@@ -852,22 +852,22 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * Returns the standard deviation of all data values.
      *
      * @param numberOfDecimalPlaces
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public BigDecimal getStandardDeviation(
             int numberOfDecimalPlaces,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, handleOutOfMemoryError) < 1L) {
+                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
@@ -875,7 +875,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
                 ge.initMemoryReserve(ge.HOOMEF);
                 return getStandardDeviation(
                         numberOfDecimalPlaces,
-                        handleOutOfMemoryError);
+                        hoome);
             } else {
                 throw e;
             }

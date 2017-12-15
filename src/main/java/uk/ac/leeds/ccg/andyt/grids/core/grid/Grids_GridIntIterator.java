@@ -53,12 +53,6 @@ public class Grids_GridIntIterator
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
                 Chunk = (Grids_AbstractGridChunkInt) g.ChunkIDChunkMap.get(ChunkID);
-
-                if (Chunk == null) {
-                    System.out.println("Chunk == null after having tried to reload it");
-                    Grid.loadIntoCacheChunk(ChunkID); //debug
-                }
-
             }
             initChunkIterator();
         }

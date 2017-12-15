@@ -154,7 +154,7 @@ public abstract class Grids_AbstractGridChunkInt
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToSet the value the cell is to be set to
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -163,26 +163,26 @@ public abstract class Grids_AbstractGridChunkInt
             int row,
             int col,
             int valueToSet,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             int result = setCell(
                     row,
                     col,
                     valueToSet);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
                 return setCell(
                         row,
                         col,
                         valueToSet,
-                        handleOutOfMemoryError);
+                        hoome);
             } else {
                 throw e;
             }
@@ -218,19 +218,19 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * Returns values in row major order as an int[].
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public int[] toArrayIncludingNoDataValues(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             int[] result = toArrayIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(
                         Grid,
@@ -238,8 +238,8 @@ public abstract class Grids_AbstractGridChunkInt
                         false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return toArrayIncludingNoDataValues(handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return toArrayIncludingNoDataValues(hoome);
             } else {
                 throw e;
             }
@@ -252,10 +252,10 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     protected int[] toArrayIncludingNoDataValues() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         Grids_GridInt g = getGrid();
-        int chunkNrows = g.getChunkNRows(handleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(handleOutOfMemoryError);
+        int chunkNrows = g.getChunkNRows(hoome);
+        int chunkNcols = g.getChunkNCols(hoome);
         long nChunkCells
                 = (long) chunkNrows
                 * (long) chunkNcols;
@@ -269,7 +269,7 @@ public abstract class Grids_AbstractGridChunkInt
                     "Warning! The returned array size is only "
                     + Integer.MAX_VALUE + " instead of " + nChunkCells);
         }
-        int noDataValue = getGrid().getNoDataValue(handleOutOfMemoryError);
+        int noDataValue = getGrid().getNoDataValue(hoome);
         array = new int[chunkNrows * chunkNcols];
         int row;
         int col;
@@ -279,7 +279,7 @@ public abstract class Grids_AbstractGridChunkInt
                 array[count] = getCell(
                         row,
                         col,
-                        handleOutOfMemoryError);
+                        hoome);
                 count++;
             }
         }
@@ -290,25 +290,25 @@ public abstract class Grids_AbstractGridChunkInt
      * Returns values (except those that are noDataValues) in row major order as
      * an int[].
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public int[] toArrayNotIncludingNoDataValues(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             int[] result = toArrayNotIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return toArrayNotIncludingNoDataValues(handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return toArrayNotIncludingNoDataValues(hoome);
             } else {
                 throw e;
             }
@@ -322,11 +322,11 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     protected int[] toArrayNotIncludingNoDataValues() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         Grids_GridInt g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int chunkNcols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int chunkNrows = g.getChunkNRows(ChunkID, hoome);
+        int chunkNcols = g.getChunkNCols(ChunkID, hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         long n = getN();
         if (n != (int) n) {
             throw new Error("n != (int) n");
@@ -341,7 +341,7 @@ public abstract class Grids_AbstractGridChunkInt
                 value = getCell(
                         row,
                         col,
-                        handleOutOfMemoryError);
+                        hoome);
                 if (value != noDataValue) {
                     array[count] = value;
                     count++;
@@ -358,11 +358,11 @@ public abstract class Grids_AbstractGridChunkInt
      */
     @Override
     protected long getN() {
-        boolean handleOutOfMemoryError = Grid.ge.HOOME;
+        boolean hoome = Grid.ge.HOOME;
         long n = 0;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
         int noDataValue = g.getNoDataValue(false);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -381,12 +381,12 @@ public abstract class Grids_AbstractGridChunkInt
      */
     @Override
     protected BigDecimal getSum() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         BigDecimal sum = new BigDecimal(0.0d);
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         int value;
         int row;
         int col;
@@ -404,25 +404,25 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * For returning the minimum of all non noDataValues as a int.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public int getMinInt(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             int result = getMinInt();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMinInt(handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return getMinInt(hoome);
             } else {
                 throw e;
             }
@@ -435,12 +435,12 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     protected int getMinInt() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         int min = Integer.MAX_VALUE;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(hoome);
+        int ncols = g.getChunkNCols(hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         int value;
         int row;
         int col;
@@ -460,25 +460,25 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * For returning the maximum of all non noDataValues as a double.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public int getMaxInt(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             int result = getMaxInt();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMaxInt(handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return getMaxInt(hoome);
             } else {
                 throw e;
             }
@@ -491,12 +491,12 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     protected int getMaxInt() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         int max = Integer.MIN_VALUE;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         int value;
         int row;
         int col;
@@ -522,13 +522,13 @@ public abstract class Grids_AbstractGridChunkInt
     @Override
     protected BigDecimal getArithmeticMean(
             int numberOfDecimalPlaces) {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         BigDecimal mean = BigDecimal.ZERO;
         BigDecimal count = BigDecimal.ZERO;
         BigDecimal one = BigDecimal.ONE;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
         int noDataValue = Integer.MIN_VALUE;
         int value;
         int row;
@@ -559,14 +559,14 @@ public abstract class Grids_AbstractGridChunkInt
      */
     @Override
     protected double getArithmeticMeanDouble() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         BigDecimal mean = new BigDecimal(0.0d);
         BigDecimal count = new BigDecimal(0.0d);
         BigDecimal one = new BigDecimal(1.0d);
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-        int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
+        int noDataValue = g.getNoDataValue(hoome);
         int value;
         int row;
         int col;
@@ -593,25 +593,25 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * For returning the mode of all data values as a HashSet&LT;Integer&GT;.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public HashSet<Integer> getMode(
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             HashSet<Integer> result = getMode();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMode(handleOutOfMemoryError);
+                ge.initMemoryReserve(Grid, ChunkID, hoome);
+                return getMode(hoome);
             } else {
                 throw e;
             }
@@ -626,14 +626,14 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     protected HashSet<Integer> getMode() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         HashSet<Integer> mode = new HashSet<>();
         long n = getN();
         if (n > 0) {
             Grids_GridInt g = getGrid();
-            int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-            int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
-            int noDataValue = g.getNoDataValue(handleOutOfMemoryError);
+            int nrows = g.getChunkNRows(ChunkID, hoome);
+            int ncols = g.getChunkNCols(ChunkID, hoome);
+            int noDataValue = g.getNoDataValue(hoome);
             int p;
             int q;
             Object[] tmode = initMode(nrows, ncols, noDataValue);
@@ -907,12 +907,12 @@ public abstract class Grids_AbstractGridChunkInt
      */
     @Override
     protected double getStandardDeviationDouble() {
-        boolean handleOutOfMemoryError = false;
+        boolean hoome = false;
         double standardDeviation = 0.0d;
         double mean = getArithmeticMeanDouble();
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID, handleOutOfMemoryError);
-        int ncols = g.getChunkNCols(ChunkID, handleOutOfMemoryError);
+        int nrows = g.getChunkNRows(ChunkID, hoome);
+        int ncols = g.getChunkNCols(ChunkID, hoome);
         int noDataValue = Integer.MIN_VALUE;
         int value;
         double count = 0.0d;

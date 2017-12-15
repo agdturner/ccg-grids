@@ -123,17 +123,17 @@ public class Grids_GridChunkInt
     }
 
     @Override
-    public Number getMin(boolean update, boolean handleOutOfMemoryError) {
+    public Number getMin(boolean update, boolean hoome) {
         return Value;
     }
 
     @Override
-    public Number getMax(boolean update, boolean handleOutOfMemoryError) {
+    public Number getMax(boolean update, boolean hoome) {
         return Value;
     }
 
     @Override
-    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError) {
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean hoome) {
         return BigDecimal.valueOf(Value);
     }
 

@@ -27,44 +27,44 @@ public interface Grids_InterfaceStatistics {
     /**
      * For returning the number of cells with noDataValues.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getN(boolean handleOutOfMemoryError);
+    public Number getN(boolean hoome);
 
     /**
      * For returning the sum of all data values.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getSum(boolean handleOutOfMemoryError);
+    public Number getSum(boolean hoome);
 
     /**
      * For returning the minimum of all data values.
      *
      * @param update If true then an update of the statistics is made.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getMin(boolean update, boolean handleOutOfMemoryError);
+    public Number getMin(boolean update, boolean hoome);
 
     /**
      * For returning the maximum of all data values.
      *
      * @param update If true then an update of the statistics is made.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getMax(boolean update, boolean handleOutOfMemoryError);
+    public Number getMax(boolean update, boolean hoome);
 
     /**
      * For returning the arithmetic mean of all data values.
@@ -72,12 +72,12 @@ public interface Grids_InterfaceStatistics {
      * @param numberOfDecimalPlaces The result returned uses BigDecimal 
      * arithmetic to ensure the result is correct given a round scheme to this
      * many decimal places.  
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getArithmeticMean(int numberOfDecimalPlaces, boolean handleOutOfMemoryError);
+    public Number getArithmeticMean(int numberOfDecimalPlaces, boolean hoome);
 
 //    @TODO
 //    StandardDeviation

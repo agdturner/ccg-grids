@@ -21,7 +21,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
