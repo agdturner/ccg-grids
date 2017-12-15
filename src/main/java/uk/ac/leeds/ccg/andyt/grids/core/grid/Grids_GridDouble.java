@@ -1410,7 +1410,7 @@ public class Grids_GridDouble
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
@@ -1418,18 +1418,18 @@ public class Grids_GridDouble
     public final double getCell(
             double x,
             double y,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             double result = getCell(x, y);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCell(x, y, handleOutOfMemoryError);
+                return getCell(x, y, hoome);
             } else {
                 throw e;
             }
@@ -1446,7 +1446,13 @@ public class Grids_GridDouble
     protected final double getCell(
             double x,
             double y) {
-        return getCell(getRow(y), getCol(x));
+        long row = getRow(y);
+        long col = getCol(x);
+        boolean isInGrid = isInGrid(row, col);
+        if (isInGrid) {
+            return getCell(row, col);
+        }
+        return NoDataValue;
     }
 
     /**
@@ -1703,10 +1709,10 @@ public class Grids_GridDouble
             double newValue) {
         double v = getCell(chunk, cellRow, cellCol);
         if (chunk instanceof Grids_GridChunkDoubleArray) {
-            ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol, 
+            ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol,
                     newValue);
         } else if (chunk instanceof Grids_GridChunkDoubleMap) {
-            ((Grids_GridChunkDoubleMap) chunk).setCell(cellRow, cellCol, 
+            ((Grids_GridChunkDoubleMap) chunk).setCell(cellRow, cellCol,
                     newValue);
         } else {
             Grids_GridChunkDouble c;
@@ -2076,10 +2082,7 @@ public class Grids_GridDouble
             double y) {
         double result = getCell(x, y);
         if (result == NoDataValue) {
-            result = getNearestValueDouble(
-                    x, y,
-                    getRow(y),
-                    getCol(x));
+            result = getNearestValueDouble(x, y, getRow(y), getCol(x));
         }
         return result;
     }
@@ -2478,14 +2481,9 @@ public class Grids_GridDouble
     protected double getNearestValueDoubleDistance(
             double x,
             double y) {
-        double result = getCell(
-                x,
-                y);
+        double result = getCell(x, y);
         if (result == NoDataValue) {
-            result = getNearestValueDoubleDistance(x,
-                    y,
-                    getRow(y),
-                    getCol(x));
+            result = getNearestValueDoubleDistance(x, y, getRow(y), getCol(x));
         }
         return result;
     }

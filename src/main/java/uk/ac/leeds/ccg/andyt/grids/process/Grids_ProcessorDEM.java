@@ -2758,6 +2758,7 @@ public class Grids_ProcessorDEM
                                     if (height != noDataValue) {
                                         metrics1Calculate_All(
                                                 gridDouble,
+                                                noDataValue,
                                                 cellsize,
                                                 row,
                                                 col,
@@ -3031,6 +3032,7 @@ public class Grids_ProcessorDEM
      */
     private void metrics1Calculate_All(
             Grids_GridDouble g,
+            double noDataValue,
             double cellsize,
             long row,
             long col,
@@ -3061,7 +3063,6 @@ public class Grids_ProcessorDEM
         double sumWeight;
         int p;
         int q;
-        double noDataValue = g.getNoDataValue(ge.HOOMET);
         double cellHeight = g.getCell(row, col, ge.HOOMET);
         for (p = 0; p <= cellDistance; p++) {
             y = g.getCellYDouble(row + p, ge.HOOMET);
