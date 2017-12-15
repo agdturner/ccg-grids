@@ -1166,8 +1166,25 @@ public class Grids_GridDouble
     @Override
     public Grids_AbstractGridChunkDouble getGridChunk(
             Grids_2D_ID_int chunkID) {
-        boolean isInGrid = isInGrid(chunkID);
-        if (isInGrid) {
+        if (isInGrid(chunkID)) {
+            if (ChunkIDChunkMap.get(chunkID) == null) {
+                loadIntoCacheChunk(chunkID);
+            }
+            return (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
+        }
+        return null;
+    }
+
+    /**
+     * @return Grids_AbstractGridChunkDouble for the given chunkID.
+     * @param chunkID
+     */
+    @Override
+    public Grids_AbstractGridChunkDouble getGridChunk(
+            Grids_2D_ID_int chunkID,
+            int chunkRow,
+            int chunkCol) {
+        if (isInGrid(chunkRow, chunkCol)) {
             if (ChunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
@@ -1448,9 +1465,9 @@ public class Grids_GridDouble
      * For getting the value of at cellID.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double getCell(
@@ -1480,9 +1497,9 @@ public class Grids_GridDouble
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
      * @param newValue .
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(
             double x,
@@ -1525,9 +1542,9 @@ public class Grids_GridDouble
      *
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param value .
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(
             Grids_2D_ID_long cellID,
@@ -1554,9 +1571,9 @@ public class Grids_GridDouble
      * @param value
      * @param row The cell row index.
      * @param col The cell column index.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(long row, long col, double value,
             boolean hoome) {
@@ -1605,9 +1622,9 @@ public class Grids_GridDouble
      * @param cellRow
      * @param cellCol
      * @param value
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void setCell(
             int chunkRow,
@@ -1623,9 +1640,9 @@ public class Grids_GridDouble
             if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(chunkRow,                        chunkCol);
+                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                setCell(chunkRow, chunkCol, cellRow, cellCol, value,                        hoome);
+                setCell(chunkRow, chunkCol, cellRow, cellCol, value, hoome);
             } else {
                 throw e;
             }
@@ -1688,35 +1705,35 @@ public class Grids_GridDouble
      * @param chunk
      * @param cellCol
      * @param cellRow
-     * @param newValue
+     * @param value
      */
     public void setCell(
             Grids_AbstractGridChunkDouble chunk,
             int cellRow,
             int cellCol,
-            double newValue) {
+            double value) {
         double v;
         if (chunk instanceof Grids_GridChunkDoubleArray) {
-             v = ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol,
-                    newValue);
+            v = ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol,
+                    value);
         } else if (chunk instanceof Grids_GridChunkDoubleMap) {
             v = ((Grids_GridChunkDoubleMap) chunk).setCell(cellRow, cellCol,
-                    newValue);
+                    value);
         } else {
             Grids_GridChunkDouble c;
             c = (Grids_GridChunkDouble) chunk;
-            if (newValue != c.Value) {
+            if (value != c.Value) {
                 // Convert chunk to another type
                 Grids_2D_ID_int chunkID;
                 chunkID = chunk.getChunkID();
                 chunk = convertToAnotherTypeOfChunk(chunk, chunkID);
-                v = chunk.setCell(cellRow, cellCol, newValue);
-             } else {
+                v = chunk.setCell(cellRow, cellCol, value);
+            } else {
                 v = c.Value;
             }
         }
         // Update Statistics
-        upDateGridStatistics(newValue, v);
+        upDateGridStatistics(value, v);
     }
 
     /**

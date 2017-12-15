@@ -1234,6 +1234,24 @@ public class Grids_GridInt
         }
         return null;
     }
+    
+    /**
+     * @return Grids_AbstractGridChunkInt for the given chunkID.
+     * @param chunkID
+     */
+    @Override
+    public Grids_AbstractGridChunkInt getGridChunk(
+            Grids_2D_ID_int chunkID,
+            int chunkRow,
+            int chunkCol) {
+        if (isInGrid(chunkRow, chunkCol)) {
+            if (ChunkIDChunkMap.get(chunkID) == null) {
+                loadIntoCacheChunk(chunkID);
+            }
+            return (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
+        }
+        return null;
+    }
 
     /**
      * If newValue and oldValue are the same then statistics won't change. A

@@ -4957,20 +4957,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Grids_AbstractGridChunk for the given chunkID.
      * @param chunkID
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID, boolean handleOutOfMemoryError) {
+    public Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID, boolean hoome) {
         try {
             Grids_AbstractGridChunk result = getGridChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(chunkID, handleOutOfMemoryError);
+                return getGridChunk(chunkID, hoome);
             } else {
                 throw e;
             }
@@ -4993,24 +4993,59 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkRow
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
-    public final Grids_AbstractGridChunk getGridChunk(int chunkRow, int chunkCol, boolean handleOutOfMemoryError) {
+    public final Grids_AbstractGridChunk getGridChunk(int chunkRow, int chunkCol, boolean hoome) {
         try {
             Grids_AbstractGridChunk result = getGridChunk(chunkRow, chunkCol);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(chunkID, handleOutOfMemoryError);
+                return getGridChunk(chunkID, chunkRow, chunkCol, hoome);
             } else {
                 throw e;
             }
         }
     }
+    
+    /**
+     * @param chunkID
+     * @param chunkRow
+     * @param chunkCol
+     * @return Grids_AbstractGridChunk.
+     * @param hoome If true then OutOfMemoryErrors are caught,
+     * swap operations are initiated, then the method is re-called. If false
+     * then OutOfMemoryErrors are caught and thrown.
+     */
+    public final Grids_AbstractGridChunk getGridChunk(
+            Grids_2D_ID_int chunkID, int chunkRow, int chunkCol, boolean hoome) {
+        try {
+            Grids_AbstractGridChunk result = getGridChunk(chunkID, chunkRow, chunkCol);
+            ge.checkAndMaybeFreeMemory(hoome);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (hoome) {
+                ge.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(chunkID, e);
+                return getGridChunk(chunkID, chunkRow, chunkCol, hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+    
+    /**
+     * @param chunkID
+     * @param chunkRow
+     * @param chunkCol
+     * @return Grids_AbstractGridChunk.
+     */
+    public abstract Grids_AbstractGridChunk getGridChunk(
+            Grids_2D_ID_int chunkID, int chunkRow, int chunkCol);
 }
