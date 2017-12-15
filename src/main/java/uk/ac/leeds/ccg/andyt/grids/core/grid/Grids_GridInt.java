@@ -1250,26 +1250,26 @@ public class Grids_GridInt
             int newValue,
             int oldValue) {
         if (Statistics.getClass() == Grids_GridIntStatistics.class) {
-            boolean handleOutOfMemoryError;
-            handleOutOfMemoryError = ge.HOOME;
+            boolean hoome;
+            hoome = ge.HOOME;
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) - 1);
-                    Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).subtract(oldValueBD));
-                    int min = Statistics.getMin(false, handleOutOfMemoryError).intValue();
+                    Statistics.setN(Statistics.getN(hoome) - 1);
+                    Statistics.setSum(Statistics.getSum(hoome).subtract(oldValueBD));
+                    int min = Statistics.getMin(false, hoome).intValue();
                     if (oldValue == min) {
                         Statistics.setNMin(Statistics.getNMin() - 1);
                     }
-                    int max = Statistics.getMax(false, handleOutOfMemoryError).intValue();
+                    int max = Statistics.getMax(false, hoome).intValue();
                     if (oldValue == max) {
                         Statistics.setNMax(Statistics.getNMax() - 1);
                     }
                 }
                 if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) + 1);
-                    Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).add(newValueBD));
+                    Statistics.setN(Statistics.getN(hoome) + 1);
+                    Statistics.setSum(Statistics.getSum(hoome).add(newValueBD));
                     updateStatistics(newValue);
                     if (Statistics.getNMin() < 1) {
                         // The Statistics need recalculating
@@ -1558,7 +1558,7 @@ public class Grids_GridInt
      * @param y the y-coordinate of the point.
      * @param value
      */
-    protected final void setCell(
+    public final void setCell(
             double x,
             double y,
             int value) {
@@ -1631,7 +1631,7 @@ public class Grids_GridInt
      * @param col
      * @param value
      */
-    protected void setCell(long row, long col, int value) {
+    public void setCell(long row, long col, int value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
@@ -1688,7 +1688,7 @@ public class Grids_GridInt
      * @param cellCol
      * @param newValue
      */
-    protected void setCell(
+    public void setCell(
             int chunkRow,
             int chunkCol,
             int cellRow,
@@ -1738,16 +1738,16 @@ public class Grids_GridInt
      * @param cellRow
      * @param value
      */
-    protected void setCell(
+    public void setCell(
             Grids_AbstractGridChunkInt chunk,
             int cellRow,
             int cellCol,
             int value) {
-        int v = getCell(chunk, cellRow, cellCol);
+        int v;
         if (chunk instanceof Grids_GridChunkIntArray) {
-            ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol, value);
+            v = ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol, value);
         } else if (chunk instanceof Grids_GridChunkIntMap) {
-            ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol, value);
+            v = ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol, value);
         } else {
             Grids_GridChunkInt c;
             c = (Grids_GridChunkInt) chunk;
@@ -1756,7 +1756,9 @@ public class Grids_GridInt
                 Grids_2D_ID_int chunkID;
                 chunkID = chunk.getChunkID();
                 chunk = convertToAnotherTypeOfChunk(chunk, chunkID);
-                chunk.setCell(cellRow, cellCol, value);
+                v = chunk.setCell(cellRow, cellCol, value);
+            } else {
+                v = c.Value;
             }
         }
         // Update Statistics

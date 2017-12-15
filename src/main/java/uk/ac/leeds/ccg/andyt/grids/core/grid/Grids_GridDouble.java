@@ -1191,25 +1191,25 @@ public class Grids_GridDouble
             double newValue,
             double oldValue) {
         if (Statistics.getClass() == Grids_GridDoubleStatistics.class) {
-            boolean handleOutOfMemoryError;
-            handleOutOfMemoryError = ge.HOOME;
+            boolean hoome;
+            hoome = ge.HOOME;
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Statistics.setN(Statistics.getN(handleOutOfMemoryError) - 1);
-                    Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).subtract(oldValueBD));
-                    double min = Statistics.getMin(false, handleOutOfMemoryError).doubleValue();
+                    Statistics.setN(Statistics.getN(hoome) - 1);
+                    Statistics.setSum(Statistics.getSum(hoome).subtract(oldValueBD));
+                    double min = Statistics.getMin(false, hoome).doubleValue();
                     if (oldValue == min) {
                         Statistics.setNMin(Statistics.getNMin() - 1);
                     }
-                    double max = Statistics.getMax(false, handleOutOfMemoryError).doubleValue();
+                    double max = Statistics.getMax(false, hoome).doubleValue();
                     if (oldValue == max) {
                         Statistics.setNMax(Statistics.getNMax() - 1);
                     }
                 }
                 BigDecimal newValueBD = new BigDecimal(newValue);
-                Statistics.setN(Statistics.getN(handleOutOfMemoryError) + 1);
-                Statistics.setSum(Statistics.getSum(handleOutOfMemoryError).add(newValueBD));
+                Statistics.setN(Statistics.getN(hoome) + 1);
+                Statistics.setSum(Statistics.getSum(hoome).add(newValueBD));
                 updateStatistics(newValue);
                 if (Statistics.getNMin() < 1) {
                     // The Statistics need recalculating
@@ -1448,26 +1448,26 @@ public class Grids_GridDouble
      * For getting the value of at cellID.
      *
      * @param cellID the Grids_2D_ID_long of the cell.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double getCell(
             Grids_2D_ID_long cellID,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             double result = getCell(cellID.getRow(), cellID.getCol());
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(cellID.getRow()),
                         getChunkCol(cellID.getCol()));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCell(cellID, handleOutOfMemoryError);
+                return getCell(cellID, hoome);
             } else {
                 throw e;
             }
@@ -1480,7 +1480,7 @@ public class Grids_GridDouble
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
      * @param newValue .
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
@@ -1488,17 +1488,17 @@ public class Grids_GridDouble
             double x,
             double y,
             double newValue,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             setCell(x, y, newValue);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                setCell(x, y, newValue, handleOutOfMemoryError);
+                setCell(x, y, newValue, hoome);
             } else {
                 throw e;
             }
@@ -1525,25 +1525,25 @@ public class Grids_GridDouble
      *
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param value .
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(
             Grids_2D_ID_long cellID,
             double value,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             setCell(cellID.getRow(), cellID.getCol(), value);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(cellID.getRow()),
                         getChunkCol(cellID.getCol()));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                setCell(cellID, value, handleOutOfMemoryError);
+                setCell(cellID, value, hoome);
             } else {
                 throw e;
             }
@@ -1554,22 +1554,22 @@ public class Grids_GridDouble
      * @param value
      * @param row The cell row index.
      * @param col The cell column index.
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
     public final void setCell(long row, long col, double value,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             setCell(row, col, value);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                setCell(row, col, value, handleOutOfMemoryError);
+                setCell(row, col, value, hoome);
             } else {
                 throw e;
             }
@@ -1605,7 +1605,7 @@ public class Grids_GridDouble
      * @param cellRow
      * @param cellCol
      * @param value
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * swap operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      */
@@ -1615,18 +1615,17 @@ public class Grids_GridDouble
             int cellRow,
             int cellCol,
             double value,
-            boolean handleOutOfMemoryError) {
+            boolean hoome) {
         try {
             setCell(chunkRow, chunkCol, cellRow, cellCol, value);
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow,
-                        chunkCol);
+                Grids_2D_ID_int chunkID;
+                chunkID = new Grids_2D_ID_int(chunkRow,                        chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                setCell(chunkRow, chunkCol, cellRow, cellCol, value,
-                        handleOutOfMemoryError);
+                setCell(chunkRow, chunkCol, cellRow, cellCol, value,                        hoome);
             } else {
                 throw e;
             }
@@ -1696,12 +1695,12 @@ public class Grids_GridDouble
             int cellRow,
             int cellCol,
             double newValue) {
-        double v = getCell(chunk, cellRow, cellCol);
+        double v;
         if (chunk instanceof Grids_GridChunkDoubleArray) {
-            ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol,
+             v = ((Grids_GridChunkDoubleArray) chunk).setCell(cellRow, cellCol,
                     newValue);
         } else if (chunk instanceof Grids_GridChunkDoubleMap) {
-            ((Grids_GridChunkDoubleMap) chunk).setCell(cellRow, cellCol,
+            v = ((Grids_GridChunkDoubleMap) chunk).setCell(cellRow, cellCol,
                     newValue);
         } else {
             Grids_GridChunkDouble c;
@@ -1711,7 +1710,9 @@ public class Grids_GridDouble
                 Grids_2D_ID_int chunkID;
                 chunkID = chunk.getChunkID();
                 chunk = convertToAnotherTypeOfChunk(chunk, chunkID);
-                chunk.setCell(cellRow, cellCol, newValue);
+                v = chunk.setCell(cellRow, cellCol, newValue);
+             } else {
+                v = c.Value;
             }
         }
         // Update Statistics
