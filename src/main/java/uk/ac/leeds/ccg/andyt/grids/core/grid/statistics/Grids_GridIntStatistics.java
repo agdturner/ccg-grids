@@ -130,7 +130,7 @@ public class Grids_GridIntStatistics
      * @return
      */
     @Override
-    protected Integer getMin(boolean update) {
+    public Integer getMin(boolean update) {
         if (getNMin() < 1) {
             if (update) {
                 update();
@@ -149,7 +149,7 @@ public class Grids_GridIntStatistics
      * @return
      */
     @Override
-    protected Integer getMax(boolean update) {
+    public Integer getMax(boolean update) {
         if (getNMax() < 1) {
             if (update) {
                 update();

@@ -355,7 +355,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * @param update If true then an update of the statistics is made.
      * @return
      */
-    protected abstract Number getMin(boolean update);
+    public abstract Number getMin(boolean update);
 
     /**
      * For returning the maximum of all data values.
@@ -398,7 +398,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      * @param update If true then an update of the statistics is made.
      * @return
      */
-    protected abstract Number getMax(boolean update);
+    public abstract Number getMax(boolean update);
 
 //    /**
 //     * For returning the mode of all data values.

@@ -144,7 +144,7 @@ public class Grids_GridDoubleStatistics
      * @return
      */
     @Override
-    protected Double getMin(boolean update) {
+    public Double getMin(boolean update) {
         if (NMin < 1) {
             if (update) {
                 update();
@@ -163,7 +163,7 @@ public class Grids_GridDoubleStatistics
      * @return
      */
     @Override
-    protected Double getMax(boolean update) {
+    public Double getMax(boolean update) {
         if (NMax < 1) {
             if (update) {
                 update();

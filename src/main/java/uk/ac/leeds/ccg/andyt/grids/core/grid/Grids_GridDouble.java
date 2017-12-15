@@ -1166,7 +1166,7 @@ public class Grids_GridDouble
      * @param chunkID
      */
     @Override
-    protected Grids_AbstractGridChunkDouble getGridChunk(
+    public Grids_AbstractGridChunkDouble getGridChunk(
             Grids_2D_ID_int chunkID) {
         boolean isInGrid = isInGrid(chunkID);
         if (isInGrid) {

@@ -125,7 +125,7 @@ public class Grids_GridIntStatisticsNotUpdated
      * @return
      */
     @Override
-    protected Integer getMin(boolean update) {
+    public Integer getMin(boolean update) {
         if (update) {
             update();
         }
@@ -139,7 +139,7 @@ public class Grids_GridIntStatisticsNotUpdated
      * @return
      */
     @Override
-    protected Integer getMax(boolean update) {
+    public Integer getMax(boolean update) {
         if (update) {
             update();
         }
