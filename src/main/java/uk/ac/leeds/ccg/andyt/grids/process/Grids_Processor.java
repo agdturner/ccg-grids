@@ -1898,22 +1898,23 @@ public class Grids_Processor extends Grids_Object {
             double weight,
             boolean hoome) {
         try {
+            ge.checkAndMaybeFreeMemory();
             ge.getGrids().add(grid);
             ge.getGrids().add(gridToAdd);
-            long nrows = grid.getNRows(hoome);
-            long ncols = grid.getNCols(hoome);
-            double noDataValue = grid.getNoDataValue(hoome);
-            Grids_Dimensions gridDimensions = grid.getDimensions(hoome);
-            double gridToAddNoDataValue = gridToAdd.getNoDataValue(hoome);
-            Grids_Dimensions gridToAddDimensions = gridToAdd.getDimensions(hoome);
+            long nrows = grid.getNRows();
+            long ncols = grid.getNCols();
+            double noDataValue = grid.getNoDataValue();
+            Grids_Dimensions gridDimensions = grid.getDimensions();
+            double gridToAddNoDataValue = gridToAdd.getNoDataValue();
+            Grids_Dimensions gridToAddDimensions = gridToAdd.getDimensions();
             Grids_GridDoubleFactory gridFactory;
             gridFactory = new Grids_GridDoubleFactory(
                     ge,
                     ge.getFiles().getGeneratedGridDoubleDir(),
                     GridChunkDoubleFactory,
                     DefaultGridChunkDoubleFactory,
-                    grid.getChunkNCols(hoome),
-                    grid.getChunkNRows(hoome));
+                    grid.getChunkNCols(),
+                    grid.getChunkNRows());
             if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)
                     || (dimensionConstraints[3].compareTo(gridDimensions.getXMin()) == -1)
                     || (dimensionConstraints[2].compareTo(gridDimensions.getYMax()) == 1)
@@ -1947,12 +1948,13 @@ public class Grids_Processor extends Grids_Object {
                     // The necessity can be calculated given the precision and size of
                     // the double and the grid cellsize.
                     for (row = startRow; row <= endRow; row++) {
-                        y = gridToAdd.getCellYDouble(row, hoome);
+                        ge.checkAndMaybeFreeMemory();
+                        y = gridToAdd.getCellYDouble(row);
                         for (col = startCol; col <= endCol; col++) {
-                            x = gridToAdd.getCellXDouble(col, hoome);
-                            value = gridToAdd.getCell(row, col, hoome);
+                            x = gridToAdd.getCellXDouble(col);
+                            value = gridToAdd.getCell(row, col);
                             if (value != gridToAddNoDataValue) {
-                                grid.addToCell(x, y, value * weight, hoome);
+                                grid.addToCell(x, y, value * weight);
                             }
                         }
                     }
@@ -1992,92 +1994,91 @@ public class Grids_Processor extends Grids_Object {
                     // TODO:
                     // precision checking and use of BigDecimal?
                     for (row = 0; row < nrows; row++) {
+                        ge.checkAndMaybeFreeMemory();
                         for (col = 0; col < ncols; col++) {
-                            bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col, hoome);
-                            x = grid.getCellXDouble(col, hoome);
-                            y = grid.getCellYDouble(row, hoome);
-                            cellID1 = gridToAdd.getCellID(bounds[0], bounds[3], hoome);
-                            cellID2 = gridToAdd.getCellID(bounds[2], bounds[3], hoome);
-                            cellID3 = gridToAdd.getCellID(bounds[0], bounds[1], hoome);
-                            cellID4 = gridToAdd.getCellID(bounds[2], bounds[1], hoome);
+                            bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
+                            x = grid.getCellXDouble(col);
+                            y = grid.getCellYDouble(row);
+                            cellID1 = gridToAdd.getCellID(bounds[0], bounds[3]);
+                            cellID2 = gridToAdd.getCellID(bounds[2], bounds[3]);
+                            cellID3 = gridToAdd.getCellID(bounds[0], bounds[1]);
+                            cellID4 = gridToAdd.getCellID(bounds[2], bounds[1]);
+                            d1 = gridToAdd.getCell(cellID1.getRow(), cellID1.getCol());
                             if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
-                                d1 = gridToAdd.getCell(cellID1, hoome);
                                 if (d1 != gridToAddNoDataValue) {
                                     areaProportion = (gridCellsize.multiply(gridCellsize).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue();
-                                    tempGrid1.addToCell(row, col, d1 * areaProportion, hoome);
-                                    tempGrid2.addToCell(row, col, areaProportion, hoome);
+                                    tempGrid1.addToCell(row, col, d1 * areaProportion);
+                                    tempGrid2.addToCell(row, col, areaProportion);
                                 }
                             } else {
-                                d1 = gridToAdd.getCell(cellID1, hoome);
-                                d2 = gridToAdd.getCell(cellID2, hoome);
-                                d3 = gridToAdd.getCell(cellID3, hoome);
-                                d4 = gridToAdd.getCell(cellID4, hoome);
-
-                                if (!gridToAdd.isInGrid(cellID1, hoome) && d1 != gridToAddNoDataValue) {
+                                d2 = gridToAdd.getCell(cellID2.getRow(), cellID2.getCol());
+                                d3 = gridToAdd.getCell(cellID3.getRow(), cellID3.getCol());
+                                d4 = gridToAdd.getCell(cellID4.getRow(), cellID4.getCol());
+                                if (!gridToAdd.isInGrid(cellID1.getRow(), cellID1.getCol()) && d1 != gridToAddNoDataValue) {
                                     if (cellID1.equals(cellID2) || cellID1.equals(cellID3)) {
                                         if (cellID1.equals(cellID2)) {
                                             //areaProportion = ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID1 ) - gridToAddCellsizeDividedBy2 ) ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
                                             areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    gridToAdd.getCellYBigDecimal(cellID1, hoome).subtract(
+                                                    gridToAdd.getCellYBigDecimal(cellID1).subtract(
                                                             gridToAddHalfCellsize)).multiply(gridCellsize)).divide(
                                                     gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
                                             //areaProportion = ( Math.abs( ( gridToAdd.getCellXDouble( cellID1 ) + gridToAddCellsizeDividedBy2 ) - bounds[0] ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellXBigDecimal(cellID1, hoome).add(
+                                            areaProportion = Math.abs(((((gridToAdd.getCellXBigDecimal(cellID1).add(
                                                     gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
                                                     gridCellsize)).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
                                     } else {
                                         //areaProportion = ( ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID1 ) - gridToAddCellsizeDividedBy2 ) ) * Math.abs( ( gridToAdd.getCellXDouble( cellID1 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[0] ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(gridToAdd.getCellYBigDecimal(cellID1, hoome).subtract(gridToAddHalfCellsize))).multiply((gridToAdd.getCellXBigDecimal(cellID1, hoome).add(gridToAddHalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(gridToAddCellsizeSquared, scale, roundingMode))).doubleValue());
+                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(gridToAdd.getCellYBigDecimal(cellID1).subtract(gridToAddHalfCellsize))).multiply((gridToAdd.getCellXBigDecimal(cellID1).add(gridToAddHalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(gridToAddCellsizeSquared, scale, roundingMode))).doubleValue());
                                     }
-                                    tempGrid1.addToCell(row, col, d1 * areaProportion, hoome);
-                                    tempGrid2.addToCell(row, col, areaProportion, hoome);
+                                    tempGrid1.addToCell(row, col, d1 * areaProportion);
+                                    tempGrid2.addToCell(row, col, areaProportion);
                                 }
-                                if (!gridToAdd.isInGrid(cellID2, hoome) && d2 != gridToAddNoDataValue) {
+                                if (!gridToAdd.isInGrid(cellID2) && d2 != gridToAddNoDataValue) {
                                     if (cellID2.equals(cellID1)) {
                                         if (cellID2.equals(cellID4)) {
                                             //areaProportion = ( Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID2 ) - gridToAddCellsizeDividedBy2 ) ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
                                             areaProportion = Math.abs((((BigDecimal.valueOf(bounds[2]).subtract(
-                                                    gridToAdd.getCellXBigDecimal(cellID2, hoome).subtract(
+                                                    gridToAdd.getCellXBigDecimal(cellID2).subtract(
                                                             gridToAddHalfCellsize))).multiply(gridCellsize)).divide(
                                                     gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
                                             //areaProportion = ( ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID2 ) - gridToAddCellsizeDividedBy2 ) ) * Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID2 ) - ( gridToAddCellsize / 2.0d ) ) ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
                                             areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    gridToAdd.getCellYBigDecimal(cellID2, hoome).subtract(
+                                                    gridToAdd.getCellYBigDecimal(cellID2).subtract(
                                                             gridToAddHalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
-                                                            gridToAdd.getCellXBigDecimal(cellID2, hoome).subtract(
+                                                            gridToAdd.getCellXBigDecimal(cellID2).subtract(
                                                                     gridToAddHalfCellsize))).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
-                                        tempGrid1.addToCell(row, col, d2 * areaProportion, hoome);
-                                        tempGrid2.addToCell(row, col, areaProportion, hoome);
+                                        tempGrid1.addToCell(row, col, d2 * areaProportion);
+                                        tempGrid2.addToCell(row, col, areaProportion);
                                     }
                                 }
-                                if (!gridToAdd.isInGrid(cellID3, hoome) && d3 != gridToAddNoDataValue) {
+                                if (!gridToAdd.isInGrid(cellID3) && d3 != gridToAddNoDataValue) {
                                     if (!cellID3.equals(cellID1)) {
                                         if (cellID3.equals(cellID4)) {
                                             //areaProportion = ( Math.abs( ( gridToAdd.getCellYDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3, hoome).add(
+                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3).add(
                                                     gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
                                                     gridCellsize)).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
                                             //areaProportion = ( ( Math.abs( ( gridToAdd.getCellYDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( ( gridToAdd.getCellXDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[0] ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3, hoome).add(
-                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((gridToAdd.getCellXBigDecimal(cellID3, hoome).add(
+                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3).add(
+                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((gridToAdd.getCellXBigDecimal(cellID3).add(
                                                     gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
                                                     gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
-                                        tempGrid1.addToCell(row, col, d3 * areaProportion, hoome);
-                                        tempGrid2.addToCell(row, col, areaProportion, hoome);
+                                        tempGrid1.addToCell(row, col, d3 * areaProportion);
+                                        tempGrid2.addToCell(row, col, areaProportion);
                                     }
                                 }
-                                if (!gridToAdd.isInGrid(cellID4, hoome) && d4 != gridToAddNoDataValue) {
+                                if (!gridToAdd.isInGrid(cellID4) && d4 != gridToAddNoDataValue) {
                                     if (cellID4 != cellID2 && cellID4 != cellID3) {
                                         //areaProportion = ( ( Math.abs( ( gridToAdd.getCellYDouble( cellID4 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID4 ) - ( gridToAddCellsize / 2.0d ) ) ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                        areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID4, hoome).add(gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(BigDecimal.valueOf(bounds[2]).subtract((gridToAdd.getCellXBigDecimal(cellID4, hoome)).subtract(gridToAddHalfCellsize)))).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
-                                        tempGrid1.addToCell(row, col, d4 * areaProportion, hoome);
-                                        tempGrid2.addToCell(row, col, areaProportion, hoome);
+                                        areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID4).add(gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(BigDecimal.valueOf(bounds[2]).subtract((gridToAdd.getCellXBigDecimal(cellID4)).subtract(gridToAddHalfCellsize)))).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                        tempGrid1.addToCell(row, col, d4 * areaProportion);
+                                        tempGrid2.addToCell(row, col, areaProportion);
                                     }
                                 }
                                 //// Check
@@ -2088,11 +2089,12 @@ public class Grids_Processor extends Grids_Object {
                     }
                     // The values are normalised by dividing the aggregate Grid sum by the proportion of cells with grid values.
                     for (row = 0; row <= nrows; row++) {
+                        ge.checkAndMaybeFreeMemory();
                         for (col = 0; col <= ncols; col++) {
-                            d1 = tempGrid2.getCell(row, col, hoome);
+                            d1 = tempGrid2.getCell(row, col);
                             if (!(d1 == 0.0d || d1 == noDataValue)) {
                                 //setCell( i, tempGrid2.getCell( i ) );
-                                grid.addToCell(row, col, weight * tempGrid1.getCell(row, col, hoome) / d1, hoome);
+                                grid.addToCell(row, col, weight * tempGrid1.getCell(row, col) / d1);
                                 //addToCell( i, tempGrid1.getCell( i ) / ( Math.pow( ( gridToAddCellsize / cellsize ), 2.0d ) / d1 ) );
                             }
                         }

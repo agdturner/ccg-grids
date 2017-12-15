@@ -710,6 +710,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
+    
+    public final int getChunkNRows() {
+        return ChunkNRows;
+     }
 
     /**
      * @param chunkRow
@@ -771,6 +775,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
+    
+     public final int getChunkNCols() {
+        return ChunkNCols;
+     }
+    
 
     /**
      * @param chunkCol

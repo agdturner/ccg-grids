@@ -1234,7 +1234,7 @@ public class Grids_GridInt
         }
         return null;
     }
-    
+
     /**
      * @return Grids_AbstractGridChunkInt for the given chunkID.
      * @param chunkID
@@ -1835,7 +1835,7 @@ public class Grids_GridInt
         }
     }
 
-    protected void updateStatistics(int value) {
+    public void updateStatistics(int value) {
         boolean h = ge.HOOME;
         BigDecimal valueBD = new BigDecimal(value);
         Statistics.setN(Statistics.getN(h) + 1);
@@ -1946,12 +1946,7 @@ public class Grids_GridInt
             double x,
             double y,
             double distance) {
-        return getCells(
-                x,
-                y,
-                getRow(y),
-                getCol(x),
-                distance);
+        return getCells(x, y, getRow(y), getCol(x), distance);
     }
 
     /**
@@ -2014,7 +2009,7 @@ public class Grids_GridInt
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    protected int[] getCells(
+    public int[] getCells(
             long row,
             long col,
             double distance) {
@@ -2094,7 +2089,7 @@ public class Grids_GridInt
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      */
-    protected int[] getCells(
+    public int[] getCells(
             double x,
             double y,
             long row,
@@ -2137,7 +2132,7 @@ public class Grids_GridInt
      * @param y the y-coordinate of the point
      */
     @Override
-    protected double getNearestValueDouble(
+    public double getNearestValueDouble(
             double x,
             double y) {
         double result = getCell(x, y);
@@ -2159,7 +2154,7 @@ public class Grids_GridInt
      * index rowIndex, column index colIndex
      */
     @Override
-    protected double getNearestValueDouble(
+    public double getNearestValueDouble(
             long row,
             long col) {
         double result = getCell(
@@ -2187,7 +2182,7 @@ public class Grids_GridInt
      * is returned
      */
     @Override
-    protected double getNearestValueDouble(
+    public double getNearestValueDouble(
             double x,
             double y,
             long row,
@@ -2338,7 +2333,7 @@ public class Grids_GridInt
      * @param y The y-coordinate of the point.
      */
     @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y) {
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y) {
         double value = getCell(x, y);
         if (value == NoDataValue) {
             return getNearestValuesCellIDs(x, y, getRow(y), getCol(x));
@@ -2356,7 +2351,7 @@ public class Grids_GridInt
      * @param col
      */
     @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(
             long row,
             long col) {
         double value = getCell(
@@ -2389,7 +2384,7 @@ public class Grids_GridInt
      * with data values are returned.
      */
     @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(
             double x,
             double y,
             long row,
@@ -2541,7 +2536,7 @@ public class Grids_GridInt
      * @param y The y-coordinate of the point.
      */
     @Override
-    protected double getNearestValueDoubleDistance(double x, double y) {
+    public double getNearestValueDoubleDistance(double x, double y) {
         double result = getCell(x, y);
         if (result == NoDataValue) {
             result = getNearestValueDoubleDistance(
@@ -2560,7 +2555,7 @@ public class Grids_GridInt
      * @param col The cell column index of the cell from which the distance
      * nearest to the nearest cell value is returned.
      */
-    protected double getNearestValueDoubleDistance(
+    public double getNearestValueDoubleDistance(
             long row,
             long col) {
         double result = getCell(
@@ -2587,7 +2582,7 @@ public class Grids_GridInt
      * nearest to the nearest cell value is returned.
      */
     @Override
-    protected double getNearestValueDoubleDistance(
+    public double getNearestValueDoubleDistance(
             double x,
             double y,
             long row,
