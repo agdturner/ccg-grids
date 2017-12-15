@@ -2719,7 +2719,7 @@ public class Grids_GridDouble
      * @param y the y-coordinate of the point
      * @param valueToAdd the value to be added to the cell containing the point
      */
-    protected void addToCell(
+    public void addToCell(
             double x,
             double y,
             double valueToAdd) {
@@ -2758,7 +2758,7 @@ public class Grids_GridDouble
      * @param cellID the Grids_2D_ID_long of the cell.
      * @param valueToAdd the value to be added to the cell containing the point
      */
-    protected void addToCell(
+    public void addToCell(
             Grids_2D_ID_long cellID,
             double valueToAdd) {
         addToCell(cellID.getRow(), cellID.getCol(), valueToAdd);
@@ -2904,7 +2904,7 @@ public class Grids_GridDouble
     }
 
     @Override
-    protected double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, int chunkCol, int cellRow, int cellCol) {
+    public double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, int chunkCol, int cellRow, int cellCol) {
         Grids_AbstractGridChunkDouble gridChunk;
         gridChunk = (Grids_AbstractGridChunkDouble) chunk;
         Grids_GridDouble g;
