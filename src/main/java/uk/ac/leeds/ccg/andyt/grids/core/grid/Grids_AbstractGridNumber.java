@@ -24,13 +24,7 @@ import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
 
 /**
@@ -85,9 +79,9 @@ public abstract class Grids_AbstractGridNumber
      * @return Grids_AbstractGridChunk cell value at at Point2D.Double point as
      * a double.
      * @param point The Point2D.Double for which the cell value is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(
             Point2D.Double point,
@@ -117,7 +111,7 @@ public abstract class Grids_AbstractGridNumber
      * a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
-    protected double getCellDouble(
+    public double getCellDouble(
             Point2D.Double point) {
         return getCellDouble(
                 getChunkRow(point.getY()),
@@ -133,9 +127,9 @@ public abstract class Grids_AbstractGridNumber
      * returned.
      * @param y The y coordinate of the point at which the cell value is
      * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public double getCellDouble(
             double x,
@@ -172,7 +166,7 @@ public abstract class Grids_AbstractGridNumber
      * @param y The y coordinate of the point at which the cell value is
      * returned.
      */
-    protected double getCellDouble(
+    public double getCellDouble(
             double x,
             double y) {
         return getCellDouble(
@@ -187,9 +181,9 @@ public abstract class Grids_AbstractGridNumber
      * @param col
      * @return Grids_AbstractGridChunk cell value at cell row index equal to
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(
             long row,
@@ -220,7 +214,7 @@ public abstract class Grids_AbstractGridNumber
      * @return Grids_AbstractGridChunk cell value at cell row index equal to
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      */
-    protected double getCellDouble(
+    public double getCellDouble(
             long row,
             long col) {
         return getCellDouble(
@@ -237,9 +231,9 @@ public abstract class Grids_AbstractGridNumber
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(
             int chunkRowIndex,
@@ -284,7 +278,7 @@ public abstract class Grids_AbstractGridNumber
      * @param chunkCellRowIndex The cell row index of the chunk.
      * @param chunkCellColIndex The cell column index of the chunk.
      */
-    protected double getCellDouble(
+    public double getCellDouble(
             int chunkRowIndex,
             int chunkColIndex,
             int chunkCellRowIndex,
@@ -322,9 +316,9 @@ public abstract class Grids_AbstractGridNumber
      * @param chunk The Grids_AbstractGridChunk containing the cell.
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(
             Grids_AbstractGridChunk chunk,
@@ -334,15 +328,15 @@ public abstract class Grids_AbstractGridNumber
             int cellCol,
             boolean hoome) {
         try {
-            double result = getCellDouble(chunk, chunkRow, chunkCol, cellRow, 
-                    cellCol);
+            double result;
+            result = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
             ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRow, chunkCol);
+                Grids_2D_ID_int chunkID;
+                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(chunk, chunkRow, chunkCol, cellRow, 
                         cellCol, hoome);
@@ -362,7 +356,7 @@ public abstract class Grids_AbstractGridNumber
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
      */
-    protected abstract double getCellDouble(
+    public abstract double getCellDouble(
             Grids_AbstractGridChunk chunk,
             int chunkRow,
             int chunkCol,
@@ -370,253 +364,13 @@ public abstract class Grids_AbstractGridNumber
             int cellCol);
 
     /**
-     * @param row
-     * @param col
-     * @return Grids_AbstractGridChunk cell value at cell row index equal to
-     * row, cell col index equal to col as a int.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellInt(
-            long row,
-            long col,
-            boolean hoome) {
-        try {
-            int result = getCellInt(
-                    row,
-                    col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(row),
-                        getChunkCol(col));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellInt(
-                        row,
-                        col,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Grids_AbstractGridChunk cell value at cell row index equal to
-     * row, cell col index equal to col as a int.
-     * @param row The cell row index.
-     * @param col The cell column index.
-     */
-    protected int getCellInt(
-            long row,
-            long col) {
-        return getCellInt(
-                getChunkRow(row),
-                getChunkCol(col),
-                getCellRow(row),
-                getCellCol(col));
-    }
-
-    /**
-     * @param chunkRowIndex
-     * @param chunkColIndex
-     * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
-     * index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellInt(
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean hoome) {
-        try {
-            int result = getCellInt(
-                    chunkRowIndex,
-                    chunkColIndex,
-                    chunkCellRowIndex,
-                    chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRowIndex,
-                        chunkColIndex);
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellInt(
-                        chunkRowIndex,
-                        chunkColIndex,
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkRowIndex
-     * @param chunkColIndex
-     * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
-     * index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
-     */
-    protected int getCellInt(
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex) {
-        Grids_AbstractGridChunk grid2DSquareCellChunk = getChunk(
-                chunkRowIndex,
-                chunkColIndex);
-        return getCellInt(
-                grid2DSquareCellChunk,
-                chunkRowIndex,
-                chunkColIndex,
-                chunkCellRowIndex,
-                chunkCellColIndex);
-    }
-
-    /**
-     * @param chunkColIndex
-     * @param chunkRowIndex
-     * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
-     * index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param grid2DSquareCellChunk The Grids_AbstractGridChunk containing the
-     * cell.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellInt(
-            Grids_AbstractGridChunk grid2DSquareCellChunk,
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean hoome) {
-        try {
-            int result = getCellInt(
-                    grid2DSquareCellChunk,
-                    chunkRowIndex,
-                    chunkColIndex,
-                    chunkCellRowIndex,
-                    chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        chunkRowIndex,
-                        chunkColIndex);
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellInt(
-                        grid2DSquareCellChunk,
-                        chunkRowIndex,
-                        chunkColIndex,
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkColIndex
-     * @param chunkRowIndex
-     * @return Cell value at chunk cell row index chunkCellRowIndex, chunk cell
-     * col index chunkCellColIndex of Grids_AbstractGridChunk given by chunk row
-     * index chunkRowIndex, chunk col index chunkColIndex as a int.
-     * @param chunk The Grids_AbstractGridChunk containing the cell.
-     * @param chunkCellRowIndex The cell row index of the chunk.
-     * @param chunkCellColIndex The cell column index of the chunk.
-     */
-    protected int getCellInt(
-            Grids_AbstractGridChunk chunk,
-            int chunkRowIndex,
-            int chunkColIndex,
-            int chunkCellRowIndex,
-            int chunkCellColIndex) {
-        if (chunk instanceof Grids_AbstractGridChunkDouble) {
-            Grids_AbstractGridChunkDouble gridChunk;
-            gridChunk = (Grids_AbstractGridChunkDouble) chunk;
-            Grids_GridDouble g;
-            g = (Grids_GridDouble) gridChunk.getGrid();
-            if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
-                Grids_GridChunkDoubleArray gridChunkArray;
-                gridChunkArray = (Grids_GridChunkDoubleArray) gridChunk;
-                return (int) gridChunkArray.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        false);
-            }
-            if (chunk.getClass() == Grids_GridChunkDoubleMap.class) {
-                Grids_GridChunkDoubleMap gridChunkMap;
-                gridChunkMap = (Grids_GridChunkDoubleMap) gridChunk;
-                return (int) gridChunkMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        false);
-            }
-            double noDataValue = g.NoDataValue;
-            return (int) noDataValue;
-        } else {
-            //if ( grid2DSquareCellChunk instanceof Grids_AbstractGridChunkInt ) {
-            Grids_AbstractGridChunkInt gridChunk
-                    = (Grids_AbstractGridChunkInt) chunk;
-            Grids_GridInt g;
-            g = (Grids_GridInt) gridChunk.getGrid();
-            if (chunk.getClass() == Grids_GridChunkIntArray.class) {
-                Grids_GridChunkIntArray gridChunkArray;
-                gridChunkArray = (Grids_GridChunkIntArray) gridChunk;
-                return gridChunkArray.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        false,
-                        chunk.getChunkID());
-            }
-            if (chunk.getClass() == Grids_GridChunkIntMap.class) {
-                Grids_GridChunkIntMap gridChunkMap;
-                gridChunkMap = (Grids_GridChunkIntMap) gridChunk;
-                return gridChunkMap.getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        false,
-                        chunk.getChunkID());
-            }
-            int noDataValue = g.NoDataValue;
-            return noDataValue;
-        }
-    }
-
-    /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, boolean hoome) {
         try {
@@ -658,9 +412,9 @@ public abstract class Grids_AbstractGridNumber
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y, long row, long col, boolean hoome) {
         try {
@@ -694,9 +448,9 @@ public abstract class Grids_AbstractGridNumber
      * values to position given by row index rowIndex, column index colIndex.
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col, boolean hoome) {
         try {
@@ -728,9 +482,9 @@ public abstract class Grids_AbstractGridNumber
      * x-coordinate x, y-coordinate y as a double.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(double x, double y, boolean hoome) {
         try {
@@ -768,9 +522,9 @@ public abstract class Grids_AbstractGridNumber
      * returned
      * @param col the column index from which average of the nearest data values
      * is returned
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(double x, double y, long row, long col, boolean hoome) {
         try {
@@ -807,9 +561,9 @@ public abstract class Grids_AbstractGridNumber
      * returned.
      * @param col The column index from which average of the nearest data values
      * is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(long row, long col, boolean hoome) {
         try {
@@ -843,9 +597,9 @@ public abstract class Grids_AbstractGridNumber
      * x-coordinate x, y-coordinate y as a double.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y, boolean hoome) {
         try {
@@ -882,9 +636,9 @@ public abstract class Grids_AbstractGridNumber
      * to the nearest cell value is returned.
      * @param col The cell column index of the cell from which the distance
      * nearest to the nearest cell value is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y, long row, long col, boolean hoome) {
         try {
@@ -923,9 +677,9 @@ public abstract class Grids_AbstractGridNumber
      * to the nearest cell value is returned.
      * @param col The cell column index of the cell from which the distance
      * nearest to the nearest cell value is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(long row, long col, boolean hoome) {
         try {
@@ -946,9 +700,9 @@ public abstract class Grids_AbstractGridNumber
 
     /**
      * @return An Iterator for iterating over the cell values in this.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     @Override
     public final Iterator iterator(

@@ -68,12 +68,11 @@ public class Grids_ProcessorDEM
      * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
      *
      * @param g The Grids_AbstractGridNumber to be processed.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then caching operations are initiated prior to retrying.
-     * If false then OutOfMemoryErrors are caught and thrown. Defaults: kernel
-     * to have distance = ( _Grid2DSquareCell.getDimensions(
-     * hoome )[ 0 ].doubleValue() ) * ( 3.0d / 2.0d );
-     * weightIntersect = 1.0d; weightFactor = 0.0d;
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then caching operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown. Defaults: kernel to have
+     * distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0 ].doubleValue()
+     * ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor = 0.0d;
      * @return Grids_GridDouble[] _SlopeAndAspect.
      * @throws java.io.IOException
      */
@@ -102,9 +101,9 @@ public class Grids_ProcessorDEM
      * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
      *
      * @param g The Grids_AbstractGridNumber to be processed. Defaults: kernel
-     * to have distance = ( _Grid2DSquareCell.getDimensions(
-     * hoome )[ 0 ].doubleValue() ) * ( 3.0d / 2.0d );
-     * weightIntersect = 1.0d; weightFactor = 0.0d;
+     * to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
+     * ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
+     * = 0.0d;
      * @return Grids_GridDouble[] _SlopeAndAspect. /n
      * @throws java.io.IOException
      */
@@ -153,16 +152,16 @@ public class Grids_ProcessorDEM
      * @param distance the distance which defines the aggregate region.
      * @param weightIntersect The kernel weighting weight at centre.
      * @param weightFactor The kernel weighting distance decay.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then caching operations are initiated prior to retrying.
-     * If false then OutOfMemoryErrors are caught and thrown. (NB. There are
-     * various strategies to reduce bias caused by noDataValues. Here: If the
-     * cell in grid for which _SlopeAndAspect is being calculated is a
-     * noDataValue then the cells in _SlopeAndAspect are assigned their
-     * noDataValue. If one of the cells in the calculation of slope and aspect
-     * is a noDataValue then its height is taken as the nearest cell value.
-     * (Formerly the difference in its height was taken as the average
-     * difference in height for those cells with values.) )
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then caching operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown. (NB. There are various
+     * strategies to reduce bias caused by noDataValues. Here: If the cell in
+     * grid for which _SlopeAndAspect is being calculated is a noDataValue then
+     * the cells in _SlopeAndAspect are assigned their noDataValue. If one of
+     * the cells in the calculation of slope and aspect is a noDataValue then
+     * its height is taken as the nearest cell value. (Formerly the difference
+     * in its height was taken as the average difference in height for those
+     * cells with values.) )
      * @return Grids_GridDouble[] _SlopeAndAspect where: _SlopeAndAspect[0] Is
      * the distance weighted aggregate slope over the region. This is normalised
      * by the sum of the weights used and the average distance to give a
@@ -1760,8 +1759,8 @@ public class Grids_ProcessorDEM
      * @param _Grid2DSquareCell Grids_AbstractGridNumber to process.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
-     * @param hoome If true then encountered OutOfMemeroyErrors
-     * are handled. If false then an encountered OutOfMemeroyError is thrown.
+     * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
+     * false then an encountered OutOfMemeroyError is thrown.
      * @return HashSet containing Grids_AbstractGridNumber.CellIDs of those
      * cells in _Grid2DSquareCell that are to be regarded as outflow cells.
      * Outflow cells are those: with a value <= outflowHeight; those with CellID
@@ -1850,8 +1849,8 @@ public class Grids_ProcessorDEM
      * @param _Grid2DSquareCell Grids_AbstractGridNumber to be processed.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
-     * @param hoome If true then encountered OutOfMemeroyErrors
-     * are handled. If false then an encountered OutOfMemeroyError is thrown.
+     * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
+     * false then an encountered OutOfMemeroyError is thrown.
      * @return HashSet containing _CellIDs which identifies cells which are
      * hollows. If _TreatNoDataValueAsOutflow is true then hollows are cells for
      * which all neighbouring cells in the immediate 8 cell neighbourhood are
@@ -2698,10 +2697,9 @@ public class Grids_ProcessorDEM
                 Grids_GridDouble gridDouble;
                 gridDouble = (Grids_GridDouble) g;
                 double noDataValue = gridDouble.getNoDataValue();
-                double height;
+                double cellHeight;
                 Grids_AbstractGridChunkDouble gridChunkDouble;
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    ge.checkAndMaybeFreeMemory();
                     System.out.println("chunkRow(" + chunkRow + ")");
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
@@ -2724,7 +2722,6 @@ public class Grids_ProcessorDEM
                         }
                         if (doLoop) {
                             chunkNCols = g.getChunkNCols(chunkCol);
-                            ge.checkAndMaybeFreeMemory(hoome);
                             for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                                 row = g.getRow(chunkRow, cellRow);
                                 y = g.getCellYDouble(row);
@@ -2732,18 +2729,18 @@ public class Grids_ProcessorDEM
                                     col = g.getCol(chunkCol, cellCol);
                                     x = gridDouble.getCellXDouble(col);
                                     //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, hoome );
-                                    height = gridChunkDouble.getCell(
+                                    cellHeight = gridChunkDouble.getCell(
                                             cellRow, cellCol);
-                                    if (height != noDataValue) {
+                                    if (cellHeight != noDataValue) {
+                                        ge.checkAndMaybeFreeMemory();
                                         metrics1Calculate_All(
                                                 gridDouble,
                                                 noDataValue,
-                                                cellsize,
                                                 row,
                                                 col,
                                                 x,
                                                 y,
-                                                distance,
+                                                cellHeight,
                                                 cellDistance,
                                                 weights,
                                                 metrics1ForCell,
@@ -2777,10 +2774,9 @@ public class Grids_ProcessorDEM
                 // (g.getClass() == Grids_GridInt.class)
                 Grids_GridInt gridInt = (Grids_GridInt) g;
                 int noDataValue = gridInt.getNoDataValue();
-                int height;
+                int cellHeight;
                 Grids_AbstractGridChunkInt gridChunkInt;
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    ge.checkAndMaybeFreeMemory();
                     chunkNRows = g.getChunkNRows(chunkRow);
                     System.out.println("chunkRow(" + chunkRow + ")");
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
@@ -2809,18 +2805,17 @@ public class Grids_ProcessorDEM
                                 for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                     col = g.getCol(chunkCol, cellCol);
                                     x = gridInt.getCellXDouble(cellCol);
-                                    //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, hoome );
-                                    height = gridChunkInt.getCell(
-                                            cellRow,                                            cellCol);
-                                    if (height != noDataValue) {
+                                    cellHeight = gridChunkInt.getCell(cellRow, cellCol);
+                                    if (cellHeight != noDataValue) {
+                                        ge.checkAndMaybeFreeMemory();
                                         metrics1Calculate_All(
                                                 gridInt,
-                                                cellsize,
+                                                noDataValue,
                                                 row,
                                                 col,
                                                 x,
                                                 y,
-                                                distance,
+                                                cellHeight,
                                                 cellDistance,
                                                 weights,
                                                 metrics1ForCell,
@@ -2830,11 +2825,11 @@ public class Grids_ProcessorDEM
                                         for (i = 0; i < metrics1.length; i++) {
                                             if (metrics1[i] instanceof Grids_GridInt) {
                                                 ((Grids_GridInt) metrics1[i]).setCell(
-                                                        row,                                                        col,
+                                                        row, col,
                                                         (int) metrics1ForCell[i]);
                                             } else {
                                                 ((Grids_GridDouble) metrics1[i]).setCell(
-                                                        row,                                                        col,
+                                                        row, col,
                                                         metrics1ForCell[i]);
                                             }
                                         }
@@ -2866,14 +2861,8 @@ public class Grids_ProcessorDEM
                 if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
-                return getMetrics1(
-                        metrics1,
-                        g,
-                        dimensions,
-                        distance,
-                        weightIntersect,
-                        weightFactor,
-                        swapOutProcessedChunks,
+                return getMetrics1(metrics1, g, dimensions, distance, 
+                        weightIntersect, weightFactor, swapOutProcessedChunks, 
                         hoome);
             } else {
                 throw e;
@@ -2986,14 +2975,13 @@ public class Grids_ProcessorDEM
      * swapped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
-            Grids_GridDouble g,
+            Grids_AbstractGridNumber g,
             double noDataValue,
-            double cellsize,
             long row,
             long col,
             double cellX,
             double cellY,
-            double distance,
+            double cellHeight,
             int cellDistance,
             double[][] weights,
             double[] metrics1,
@@ -3011,40 +2999,38 @@ public class Grids_ProcessorDEM
         double upness;
         double downness;
         double averageDiff;
-        double averageHeight;
+        //double averageHeight;
         double noDataCount;
         double xDiff;
         double yDiff;
-        double sumWeight;
+        //double sumWeight;
         int p;
         int q;
-        double cellHeight = g.getCell(row, col, ge.HOOMET);
         for (p = 0; p <= cellDistance; p++) {
-            y = g.getCellYDouble(row + p, ge.HOOMET);
+            y = g.getCellYDouble(row + p);
             yDiff = y - cellY;
             for (q = 1; q <= cellDistance; q++) {
-                //if ( p == 2 && q == 2 ) { int debug2 = 0; }
                 noDataCount = 0.0d;
-                x = g.getCellXDouble(col + q, ge.HOOMET);
+                x = g.getCellXDouble(col + q);
                 weight = weights[p][q];
                 if (weight > 0) {
                     xDiff = x - cellX;
-                    heights[0] = g.getCell(x, y, ge.HOOMET);
+                    heights[0] = g.getCellDouble(x, y);
                     if (heights[0] == noDataValue) {
                         heights[0] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[1] = g.getCell(cellX + yDiff, cellY - xDiff, ge.HOOMET);
+                    heights[1] = g.getCellDouble(cellX + yDiff, cellY - xDiff);
                     if (heights[1] == noDataValue) {
                         heights[1] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[2] = g.getCell(cellX - xDiff, cellY - yDiff, ge.HOOMET);
+                    heights[2] = g.getCellDouble(cellX - xDiff, cellY - yDiff);
                     if (heights[2] == noDataValue) {
                         heights[2] = cellHeight;
                         noDataCount += 1.0d;
                     }
-                    heights[3] = g.getCell(cellX - yDiff, cellY + xDiff, ge.HOOMET);
+                    heights[3] = g.getCellDouble(cellX - yDiff, cellY + xDiff);
                     if (heights[3] == noDataValue) {
                         heights[3] = cellHeight;
                         noDataCount += 1.0d;
@@ -3056,14 +3042,14 @@ public class Grids_ProcessorDEM
                         // height[2]   height[3]
 
                         // Calculate basic metrics
-                        averageHeight = 0.0d;
+                        //averageHeight = 0.0d;
                         averageDiff = 0.0d;
                         downCount = 0.0d;
                         upCount = 0.0d;
                         upness = 0.0d;
                         downness = 0.0d;
                         for (int r = 0; r < 4; r++) {
-                            averageHeight += heights[r];
+                            //averageHeight += heights[r];
                             diff[r] = heights[r] - cellHeight;
                             averageDiff += diff[r];
                             if (diff[r] > 0.0d) {
@@ -3080,236 +3066,7 @@ public class Grids_ProcessorDEM
                             }
                             metrics1[2] += weight * Math.abs(diff[r]); // roughness
                         }
-                        averageHeight /= (4.0d - noDataCount);
-                        averageDiff /= (4.0d - noDataCount);
-                        metrics1[5] += weight * downness; // totalDownness
-                        if (downCount > 0.0d) {
-                            metrics1[6] += metrics1[5] / downCount; // averageDownness
-                        }
-                        metrics1[7] += weight * upness; // totalUpness
-                        if (upCount > 0.0d) {
-                            metrics1[8] += metrics1[7] / upCount; // averageUpness
-                        }
-                        // Slopyness and levelness similar to slope in getSlopeAspect
-                        // slopyness
-                        metrics1[3] += weight * Math.sqrt(
-                                ((diff[0] - diff[2]) * (diff[0] - diff[2]))
-                                + ((diff[1] - diff[3]) * (diff[1] - diff[3])));
-                        //levelness
-                        metrics1[4] += weight * averageDiff;
-                        //levelness += weight * Math.abs( averageHeight - cellsize );
-                        // diff[1]   diff[0]
-                        //    cellHeight
-                        // diff[2]   diff[3]
-                        metrics1Calculate_Complex(
-                                metrics1,
-                                diff,
-                                dummyDiff,
-                                weight,
-                                averageDiff);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns a double[] metrics1 of the cells in grid upto distance from a
-     * cell given by rowIndex and colIndex. The elements of metrics1 do not
-     * explicitly take into account any axis such as that which can be defined
-     * from a metric of slope (general slope direction). Distance weighting is
-     * done via a kernel precalculated as weights. Some elements of metrics1 are
-     * weighted based on the difference in value (height) of the cell at
-     * (rowIndex,colIndex) and other cell values within distance. Within
-     * distance equidistant cells in 4 orthoganol directions are accounted for
-     * in the metrics1. NB. Every cell is either higher, lower or the same
-     * height as the cell at (rowIndex,colIndex). Some DEMs will have few cells
-     * in distance with the same value. 9 basic metrics: metrics1[0] = no data
-     * count; metrics1[1] = flatness; metrics1[2] = roughness; metrics1[3] =
-     * slopyness; metrics1[4] = levelness; metrics1[5] = totalDownness;
-     * metrics1[6] = averageDownness; metrics1[7] = totalUpness; metrics1[8] =
-     * averageUpness; 6 metrics with all cells higher or same: metrics1[9] =
-     * maxd_hhhh [ sum of distance weighted maximum height differences ];
-     * metrics1[10] = mind_hhhh [ sum of distance weighted minimum height
-     * differences ]; metrics1[11] = sumd_hhhh [ sum of distance weighted height
-     * differences ]; metrics1[12] = aved_hhhh [ sum of distance weighted
-     * average height difference ]; metrics1[13] = count_hhhh [ count ]; 11
-     * metrics with one cell lower or same: metrics1[14] = w_hhhh [ sum of
-     * distance weights ]; metrics1[15] = mind_hxhx_ai_hhhl [ sum of distance
-     * weighted ( minimum difference of cells adjacent to lower cell ) ];
-     * metrics1[16] = maxd_hxhx_ai_hhhl [ sum of distance weighted ( maximum
-     * difference of cells adjacent to lower cell ) ]; metrics1[17] =
-     * sumd_hxhx_ai_hhhl [ sum of distance weighted ( sum of differences of
-     * cells adjacent to lower cell ) ]; metrics1[18] = d_xhxx_ai_hhhl [ sum of
-     * distance weighted ( difference of cell opposite lower cell ) ];
-     * metrics1[19] = d_xxxl_ai_hhhl [ sum of distance weighted ( difference of
-     * lower cell ) ]; metrics1[20] = sumd_xhxl_ai_hhhl [ sum of distance
-     * weighted ( sum of differences of lower cell and cell opposite ) ];
-     * metrics1[21] = mind_abs_xhxl_ai_hhhl [ sum of distance weighted ( minimum
-     * difference magnitude of lower cell and cell opposite ) ]; metrics1[22] =
-     * maxd_abs_xhxl_ai_hhhl [ sum of distance weighted ( maximum difference
-     * magnitude of lower cell and cell opposite ) ]; metrics1[23] =
-     * sumd_abs_xhxl_ai_hhhl [ sum of distance weighted ( sum of difference
-     * magnitudes of lower cell and cell opposite ) ]; metrics1[24] = count_hhhl
-     * [ count ]; 22 metrics with two cells lower: (N.B. Could have more metrics
-     * e.g. minimum magnitude of minimum of higher and maximum of lower cells.)
-     * Metrics with opposite cells lower/higher: metrics1[25] = w_hhhl [ sum of
-     * distance weights ]; metrics1[26] = mind_hxhx_ai_hlhl [ sum of distance
-     * weighted ( minimum difference of higher cells ) ]; metrics1[27] =
-     * maxd_hxhx_ai_hlhl [ sum of distance weighted ( maximum difference of
-     * higher cells ) ]; metrics1[28] = sumd_hxhx_ai_hlhl [ sum of distance
-     * weighted ( sum differences of higher cells ) ]; metrics1[29] =
-     * mind_xlxl_ai_hlhl [ sum of distance weighted ( minimum difference of
-     * lower cells ) ]; metrics1[30] = maxd_xlxl_ai_hlhl [ sum of distance
-     * weighted ( maximum difference of lower cells ) ]; metrics1[31] =
-     * sumd_xlxl_ai_hlhl [ sum of distance weighted ( sum of differences of
-     * lower cells ) ]; metrics1[32] = mind_abs_hlhl [ sum of distance weighted
-     * ( minimum difference magnitude of cells ) ]; metrics1[33] = maxd_abs_hlhl
-     * [ sum of distance weighted ( maximum difference magnitude of cells ) ];
-     * metrics1[34] = sumd_abs_hlhl [ sum of distance weighted ( sum of
-     * difference magnitudes of cells ) ]; metrics1[35] = count_hlhl [ count ];
-     * metrics1[36] = w_hlhl [ sum of distance weights ]; Metrics with adjacent
-     * cells lower/higher: metrics1[37] = mind_hhxx_ai_hhll [ sum of distance
-     * weighted ( minimum difference of higher cells ) ]; metrics1[38] =
-     * maxd_hhxx_ai_hhll [ sum of distance weighted ( maximum difference of
-     * higher cells ) ]; metrics1[39] = sumd_hhxx_ai_hhll [ sum of distance
-     * weighted ( sum of differences of higher cells ) ]; metrics1[40] =
-     * mind_xxll_ai_hhll [ sum of distance weighted ( minimum difference of
-     * lower cells ) ]; metrics1[41] = maxd_xxll_ai_hhll [ sum of distance
-     * weighted ( maximum difference of lower cells ) ]; metrics1[42] =
-     * sumd_xxll_ai_hhll [ sum of distance weighted ( sum of differences of
-     * lower cells ) ]; metrics1[43] = mind_abs_hhll [ sum of distance weighted
-     * ( minimum difference magnitude of cells ) ]; metrics1[44] = maxd_abs_hhll
-     * [ sum of distance weighted ( maximum difference magnitude of cells ) ];
-     * metrics1[45] = sumd_abs_hhll [ sum of distance weighted ( sum of
-     * difference magnitudes of cells ) ]; metrics1[46] = count_hhll [ count ];
-     * metrics1[47] = w_hhll [ sum of distance weights ]; 11 metrics with one
-     * cell higher: metrics1[48] = mind_lxlx_ai_lllh [ sum of distance weighted
-     * ( minimum difference of cells adjacent to higher cell ) ]; metrics1[49] =
-     * maxd_lxlx_ai_lllh [ sum of distance weighted ( maximum difference of
-     * cells adjacent to higher cell ) ]; metrics1[50] = sumd_lxlx_ai_lllh [ sum
-     * of distance weighted ( sum of differences of cells adjacent to higher
-     * cell ) ]; metrics1[51] = d_xlxx_ai_lllh [ sum of distance weighted (
-     * difference of cell opposite higher cell ) ]; metrics1[52] =
-     * d_xxxh_ai_lllh [ sum of distance weighted ( difference of higher cell )
-     * ]; metrics1[53] = sumd_xlxh_ai_lllh [ sum of distance weighted ( sum of
-     * differences of higher cell and cell opposite ) ]; metrics1[54] =
-     * mind_abs_xlxh_ai_lllh [ sum of distance weighted ( minimum difference
-     * magnitude of higher cell and cell opposite ) ]; metrics1[55] =
-     * maxd_abs_xlxh_ai_lllh [ sum of distance weighted ( maximum difference
-     * magnitude of higher cell and cell opposite ) ]; metrics1[56] =
-     * sumd_abs_xlxh_ai_lllh [ sum of distance weighted ( sum of difference
-     * magnitudes of higher cell and cell opposite ) ]; metrics1[57] =
-     * count_lllh [ count ]; metrics1[58] = w_lllh [ sum of distance weights ];
-     * 6 metrics with all cells higher: metrics1[59] = maxd_llll [ sum of
-     * distance weighted maximum height differences ]; metrics1[60] = mind_llll
-     * [ sum of distance weighted minimum height differences ]; metrics1[61] =
-     * sumd_llll [ sum of distance weighted height differences ]; metrics1[62] =
-     * aved_llll [ sum of distance weighted average height difference ];
-     * metrics1[63] = count_llll [ count ]; metrics1[64] = w_llll [ sum of
-     * distance weights ];
-     *
-     * @param grid the Grids_GridDouble being processed
-     * @param row the row index of the cell being classified
-     * @param col the column index of the cell being classified
-     * @param distance the distance within which metrics1 will be calculated
-     * @param weights an array of kernel weights for weighting metrics1
-     * @param chunkID This is a ID for those AbstractGrid2DSquareCells not to be
-     * swapped if possible when an OutOfMemoryError is encountered.
-     */
-    private void metrics1Calculate_All(
-            Grids_GridInt g,
-            double cellsize,
-            long row,
-            long col,
-            double cellX,
-            double cellY,
-            double distance,
-            int cellDistance,
-            double[][] weights,
-            double[] metrics1,
-            double[] heights,
-            double[] diff,
-            double[] dummyDiff) {
-        for (int i = 0; i < metrics1.length; i++) {
-            metrics1[i] = 0.0d;
-        }
-        double weight;
-        double upCount;
-        double downCount;
-        double upness;
-        double downness;
-        double averageDiff;
-//        double averageHeight;
-        double noDataCount;
-        int p;
-        int q;
-        int pPlusCellDistance;
-        int qPlusCellDistance;
-        long r;
-        long c;
-        int noDataValue = g.getNoDataValue(ge.HOOMEF);
-        double cellHeight = g.getCell(row, col, ge.HOOMEF);
-        for (p = -cellDistance; p <= cellDistance; p++) {
-            r = row + p;
-            pPlusCellDistance = p + cellDistance;
-            for (q = -cellDistance; q <= cellDistance; q++) {
-                c = col + q;
-                qPlusCellDistance = q + cellDistance;
-                noDataCount = 0.0d;
-                weight = weights[pPlusCellDistance][qPlusCellDistance];
-                if (weight > 0) {
-                    heights[0] = g.getCell(r, c, ge.HOOMEF);
-                    if (heights[0] == noDataValue) {
-                        heights[0] = cellHeight;
-                        noDataCount += 1.0d;
-                    }
-                    heights[1] = g.getCell(r, c, ge.HOOMEF);
-                    if (heights[1] == noDataValue) {
-                        heights[1] = cellHeight;
-                        noDataCount += 1.0d;
-                    }
-                    heights[2] = g.getCell(r, c, ge.HOOMEF);
-                    if (heights[2] == noDataValue) {
-                        heights[2] = cellHeight;
-                        noDataCount += 1.0d;
-                    }
-                    heights[3] = g.getCell(r, c, ge.HOOMEF);
-                    if (heights[3] == noDataValue) {
-                        heights[3] = cellHeight;
-                        noDataCount += 1.0d;
-                    }
-                    metrics1[0] += noDataCount;
-                    if (noDataCount < 4.0d) {
-                        // height[1]   height[0]
-                        //      cellHeight
-                        // height[2]   height[3]
-
-                        // Calculate basic metrics
-//                    averageHeight = 0.0d;
-                        averageDiff = 0.0d;
-                        downCount = 0.0d;
-                        upCount = 0.0d;
-                        upness = 0.0d;
-                        downness = 0.0d;
-                        for (int n = 0; n < 4; n++) {
-//                        averageHeight += heights[n];
-                            diff[n] = heights[n] - cellHeight;
-                            averageDiff += diff[n];
-                            if (diff[n] > 0.0d) {
-                                downness += diff[n];
-                                downCount += 1.0d;
-                            } else {
-                                if (diff[n] < 0.0d) {
-                                    upness += diff[n];
-                                    upCount += 1.0d;
-                                } else {
-                                    metrics1[1] += weight; // flatness
-                                }
-                            }
-                            metrics1[2] += weight * Math.abs(diff[n]); // roughness
-                        }
-//                    averageHeight /= (4.0d - noDataCount);
+                        //averageHeight /= (4.0d - noDataCount);
                         averageDiff /= (4.0d - noDataCount);
                         metrics1[5] += weight * downness; // totalDownness
                         if (downCount > 0.0d) {

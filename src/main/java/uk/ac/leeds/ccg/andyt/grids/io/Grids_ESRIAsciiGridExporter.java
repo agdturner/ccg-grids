@@ -213,12 +213,12 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             File file,
             String noDataValue) {
         ge.initNotToSwap();
-        boolean hoome = true;
+        ge.checkAndMaybeFreeMemory();
         try (PrintWriter pw = Generic_StaticIO.getPrintWriter(file, false)) {
             Grids_Dimensions dimensions;
-            dimensions = g.getDimensions(hoome);
-            long nrows = g.getNRows(ge.HOOMEF);
-            long ncols = g.getNCols(ge.HOOMEF);
+            dimensions = g.getDimensions();
+            long nrows = g.getNRows();
+            long ncols = g.getNCols();
             long nrows_minus_1 = nrows - 1L;
             pw.println("ncols " + ncols);
             pw.println("nrows " + nrows);
@@ -227,27 +227,25 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             pw.println("cellsize " + dimensions.getCellsize().toString());
             long row;
             long col;
-            int chunkRow0 = g.getChunkRow(nrows_minus_1, hoome);
+            int chunkRow0 = g.getChunkRow(nrows_minus_1);
             ge.addToNotToSwap(g, chunkRow0);
             int chunkRow;
             if (g.getClass() == Grids_GridInt.class) {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
-                int gridNoDataValue = gridInt.getNoDataValue(hoome);
+                int gridNoDataValue = gridInt.getNoDataValue();
                 pw.println("NODATA_Value " + noDataValue);
                 int value;
                 for (row = nrows_minus_1; row >= 0; row--) {
-                    chunkRow = g.getChunkRow(row, hoome);
+                    chunkRow = g.getChunkRow(row);
                     if (chunkRow0 != chunkRow) {
                         ge.removeFromNotToSwap(g, chunkRow0);
                         ge.addToNotToSwap(g, chunkRow);
+                        ge.checkAndMaybeFreeMemory();
                         chunkRow0 = chunkRow;
                     }
                     for (col = 0; col < ncols; col++) {
                         //try {
-                        value = gridInt.getCell(
-                                row,
-                                col,
-                                hoome);
+                        value = gridInt.getCell(                                row,                                col);
                         if (value == gridNoDataValue) {
                             pw.print(noDataValue + " ");
                         } else {
@@ -283,7 +281,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             } else {
                 //_Grid2DSquareCell.getClass() == Grids_GridDouble.class
                 Grids_GridDouble gridDouble = (Grids_GridDouble) g;
-                double gridNoDataValue = gridDouble.getNoDataValue(hoome);
+                double gridNoDataValue = gridDouble.getNoDataValue();
                 if (!Double.isFinite(gridNoDataValue)) {
                     System.out.println(
                             "Warning!!! noDataValue not finite in "
@@ -296,18 +294,16 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 double value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     for (col = 0; col < ncols; col++) {
-                        chunkRow = g.getChunkRow(row, hoome);
+                        chunkRow = g.getChunkRow(row);
                         if (chunkRow0 != chunkRow) {
                             ge.removeFromNotToSwap(g, chunkRow0);
                             ge.addToNotToSwap(g, chunkRow);
+                            ge.checkAndMaybeFreeMemory();
                             chunkRow0 = chunkRow;
                         }
 //                        try {
                         //pw.print( grid.getCell( row, col ) + " " );
-                        value = gridDouble.getCell(
-                                row,
-                                col,
-                                hoome);
+                        value = gridDouble.getCell(                                row,                                col);
                         if (!Double.isFinite(value)) {
                             pw.print(noDataValue + " ");
                             System.out.println(

@@ -2978,27 +2978,24 @@ public class Grids_GridInt
     }
 
     @Override
-    public double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, int chunkCol, int cellRow, int cellCol) {
+    public double getCellDouble(Grids_AbstractGridChunk chunk, int chunkRow, 
+            int chunkCol, int cellRow, int cellCol) {
         Grids_AbstractGridChunkInt c;
         c = (Grids_AbstractGridChunkInt) chunk;
-        Grids_GridInt gridInt;
-        gridInt = (Grids_GridInt) c.getGrid();
-        int noDataValue = gridInt.getNoDataValue(true);
+        Grids_GridInt g;
+        g = (Grids_GridInt) c.getGrid();
         if (chunk.getClass() == Grids_GridChunkIntArray.class) {
             Grids_GridChunkIntArray gridChunkArray;
             gridChunkArray = (Grids_GridChunkIntArray) c;
-            return (double) gridChunkArray.getCell(cellRow, cellCol, false, chunk.getChunkID(false));
+            return gridChunkArray.getCell(cellRow, cellCol);
         }
         if (chunk.getClass() == Grids_GridChunkIntMap.class) {
-            Grids_GridChunkIntMap gridChunkMap
-                    = (Grids_GridChunkIntMap) c;
-            return (double) gridChunkMap.getCell(
-                    cellRow,
-                    cellCol,
-                    false,
-                    chunk.getChunkID());
+            Grids_GridChunkIntMap gridChunkMap;
+            gridChunkMap = (Grids_GridChunkIntMap) c;
+            return gridChunkMap.getCell(cellRow, cellCol);
         }
-        return (double) noDataValue;
+        double noDataValue = g.NoDataValue;
+        return noDataValue;
     }
 
 }
