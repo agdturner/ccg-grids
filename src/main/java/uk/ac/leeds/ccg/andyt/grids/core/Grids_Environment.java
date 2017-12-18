@@ -376,8 +376,6 @@ public class Grids_Environment
             chunkIDs = new HashSet<>();
             NotToSwap.put(g, chunkIDs);
         }
-        //chunkIDs.add(chunkID);
-        // Over how many chunkRows and how many chunkCols does cellDistance cover
         int t;
         int i = 0;
         t = 0;
@@ -391,16 +389,16 @@ public class Grids_Environment
             t += chunkNCols;
             j++;
         }
-        int chunkRow2;
-        int chunkCol2;
+        int cr;
+        int cc;
         int k;
         int l;
         for (k = -i; k <= i; k++) {
-            chunkRow2 = chunkRow + k;
+            cr = chunkRow + k;
             for (l = -j; l <= j; l++) {
-                chunkCol2 = chunkRow + l;
-                if (g.isInGrid(chunkRow2, chunkCol2)) {
-                    chunkIDs.add(new Grids_2D_ID_int(chunkRow2, chunkCol2));
+                cc = chunkCol + l;
+                if (g.isInGrid(cr, cc)) {
+                    chunkIDs.add(new Grids_2D_ID_int(cr, cc));
                 }
             }
         }

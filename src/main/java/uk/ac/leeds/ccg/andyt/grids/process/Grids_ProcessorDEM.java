@@ -2781,7 +2781,7 @@ public class Grids_ProcessorDEM
                         ge.initNotToSwap();
                         ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                                 normalChunkNRows, normalChunkNCols, cellDistance);
-                        ge.addToNotToSwap(g, chunkID);
+                        //ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(metrics1, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(

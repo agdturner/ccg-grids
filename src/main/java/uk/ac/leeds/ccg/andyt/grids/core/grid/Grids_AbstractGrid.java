@@ -1969,8 +1969,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ite = ChunkIDsofChunksWorthSwapping.iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
-                writeToFileChunk(chunkID);
-                return chunkID;
+            writeToFileChunk(chunkID);
+            return chunkID;
         }
 //        if (ChunkIDChunkMap.isEmpty()) {
 //            return null;
@@ -2001,8 +2001,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         gridChunk = ChunkIDChunkMap.get(chunkID);
         if (gridChunk != null) {
             if (!gridChunk.isSwapUpToDate()) {
-                File file = new File(
-                        getDirectory(),
+                File file = new File(getDirectory(),
                         chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
                 try {
@@ -2030,12 +2029,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * ChunkIDChunkMap that are not single valued chunks.
      */
     public final void writeToFileChunks() {
-          Iterator ite;
-                ite = ChunkIDsofChunksWorthSwapping.iterator();
+        Iterator ite;
+        ite = ChunkIDsofChunksWorthSwapping.iterator();
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-                writeToFileChunk(chunkID);
+            writeToFileChunk(chunkID);
         }
 //        ite = ChunkIDChunkMap.keySet().iterator();
 //        Grids_2D_ID_int chunkID;
