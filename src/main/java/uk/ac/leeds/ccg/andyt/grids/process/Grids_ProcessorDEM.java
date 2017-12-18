@@ -2647,10 +2647,7 @@ public class Grids_ProcessorDEM
                     + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
                     + "Grids_Dimensions,double,double,double,boolean, boolean)";
             System.out.println(methodName);
-            /**
-             * Try to ensure there is enough memory to continue.
-             */
-            ge.checkAndMaybeFreeMemory(hoome);
+            ge.checkAndMaybeFreeMemory();
             String name;
             String underScore = "_";
             double cellsize = dimensions.getCellsize().doubleValue();
@@ -2704,12 +2701,11 @@ public class Grids_ProcessorDEM
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         System.out.println("chunkCol(" + chunkCol + ")");
-                        chunkID = new Grids_2D_ID_int(
-                                chunkRow, chunkCol);
+                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.initNotToSwap();
                         ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                                 normalChunkNRows, normalChunkNCols, cellDistance);
-                        ge.addToNotToSwap(g, chunkID);
+                        //ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(metrics1, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getGridChunk(
@@ -2781,8 +2777,7 @@ public class Grids_ProcessorDEM
                     System.out.println("chunkRow(" + chunkRow + ")");
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         System.out.println("chunkColIndex(" + chunkCol + ")");
-                        chunkID = new Grids_2D_ID_int(
-                                chunkRow, chunkCol);
+                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.initNotToSwap();
                         ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                                 normalChunkNRows, normalChunkNCols, cellDistance);
@@ -2861,8 +2856,8 @@ public class Grids_ProcessorDEM
                 if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
-                return getMetrics1(metrics1, g, dimensions, distance, 
-                        weightIntersect, weightFactor, swapOutProcessedChunks, 
+                return getMetrics1(metrics1, g, dimensions, distance,
+                        weightIntersect, weightFactor, swapOutProcessedChunks,
                         hoome);
             } else {
                 throw e;
