@@ -114,7 +114,7 @@ public class Grids_GridChunkIntArray
     protected @Override
     void clearData() {
         Data = null;
-        System.gc();
+        //System.gc();
     }
 
     /**

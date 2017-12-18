@@ -188,7 +188,7 @@ public class Grids_GridChunkIntMap
     protected @Override
     void clearData() {
         Data = null;
-        System.gc();
+        //System.gc();
     }
 
     /**
@@ -198,9 +198,9 @@ public class Grids_GridChunkIntMap
      */
     int[][] to2DIntArray() {
         Grids_GridInt grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, ge.HOOME);
-        int ncols = grid.getChunkNCols(ChunkID, ge.HOOME);
-        int noDataValue = grid.getNoDataValue(ge.HOOME);
+        int nrows = grid.getChunkNRows(ChunkID);
+        int ncols = grid.getChunkNCols(ChunkID);
+        int noDataValue = grid.getNoDataValue();
         int[][] result;
         result = new int[nrows][ncols];
         Arrays.fill(result, DefaultValue);
@@ -286,11 +286,11 @@ public class Grids_GridChunkIntMap
     protected @Override
     int[] toArrayIncludingNoDataValues() {
         Grids_GridInt grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HOOMEF);
-        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HOOMEF);
+        int nrows = grid.getChunkNRows(ChunkID);
+        int ncols = grid.getChunkNCols(ChunkID);
         int[] result;
         result = new int[nrows * ncols];
-        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HOOMEF));
+        Arrays.fill(result, grid.getNoDataValue());
         Iterator<Integer> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.

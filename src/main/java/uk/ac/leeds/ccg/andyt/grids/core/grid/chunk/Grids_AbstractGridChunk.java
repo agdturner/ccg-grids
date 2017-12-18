@@ -209,7 +209,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      *
      * @param swapUpToDate
      */
-    protected void setSwapUpToDate(boolean swapUpToDate) {
+    public void setSwapUpToDate(boolean swapUpToDate) {
         SwapUpToDate = swapUpToDate;
     }
 

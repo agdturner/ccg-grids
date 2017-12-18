@@ -103,7 +103,7 @@ public class Grids_GridChunkDoubleArray
     protected @Override
     void clearData() {
         Data = null;
-        System.gc();
+        //System.gc();
     }
 
     /**

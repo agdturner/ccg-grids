@@ -198,7 +198,7 @@ public class Grids_GridChunkDoubleMap
     protected @Override
     void clearData() {
         Data = null;
-        System.gc();
+        //System.gc();
     }
 
     /**

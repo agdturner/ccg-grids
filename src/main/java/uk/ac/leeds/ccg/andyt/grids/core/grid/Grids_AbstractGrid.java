@@ -2016,8 +2016,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     //ioe0.printStackTrace();
                     System.err.println(ioe0.getMessage());
                 }
-                System.gc();
-                gridChunk.setSwapUpToDate(true, ge.HOOMEF);
+                //System.gc();
+                gridChunk.setSwapUpToDate(true);
             }
         } else {
             result = false;
