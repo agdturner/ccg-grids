@@ -2047,10 +2047,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to write to File serialized versions of those
-     * Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap that have ID equal to
-     * those in _ChunkIDs.
+     * Attempts to write to File chunks that have a chunkID in chunkIDs.
      *
      * @param chunkIDs A HashSet containing the Grids_2D_ID_int of the
      * Grids_AbstractGridChunk to be written to file.

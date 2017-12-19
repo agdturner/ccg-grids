@@ -52,11 +52,11 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridIntStatisticsNotUpdated;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStats;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdated;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStats;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
@@ -139,24 +139,24 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDoubleFactory GridDoubleFactory;
 
     /**
-     * Grids_GridDoubleStatistics
+     * Grids_GridDoubleStats
      */
-    public Grids_GridDoubleStatistics GridDoubleStatistics;
+    public Grids_GridDoubleStats GridDoubleStatistics;
 
     /**
-     * Grids_GridDoubleStatisticsNotUpdated
+     * Grids_GridDoubleStatsNotUpdated
      */
-    public Grids_GridDoubleStatisticsNotUpdated GridDoubleStatisticsNotUpdated;
+    public Grids_GridDoubleStatsNotUpdated GridDoubleStatisticsNotUpdated;
 
     /**
-     * Grids_GridIntStatistics
+     * Grids_GridIntStats
      */
-    public Grids_GridIntStatistics GridIntStatistics;
+    public Grids_GridIntStats GridIntStatistics;
 
     /**
-     * Grids_GridIntStatisticsNotUpdated
+     * Grids_GridIntStatsNotUpdated
      */
-    public Grids_GridIntStatisticsNotUpdated GridIntStatisticsNotUpdated;
+    public Grids_GridIntStatsNotUpdated GridIntStatisticsNotUpdated;
 
     protected Grids_Processor() {
         StartTime = System.currentTimeMillis();
@@ -244,13 +244,13 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Initialises Statistics.
+     * Initialises Stats.
      */
     private void initGridStatistics() {
-        GridDoubleStatistics = new Grids_GridDoubleStatistics(ge);
-        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatisticsNotUpdated(ge);
-        GridIntStatistics = new Grids_GridIntStatistics(ge);
-        GridIntStatisticsNotUpdated = new Grids_GridIntStatisticsNotUpdated(ge);
+        GridDoubleStatistics = new Grids_GridDoubleStats(ge);
+        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatsNotUpdated(ge);
+        GridIntStatistics = new Grids_GridIntStats(ge);
+        GridIntStatisticsNotUpdated = new Grids_GridIntStatsNotUpdated(ge);
     }
 
     /**
@@ -606,9 +606,9 @@ public class Grids_Processor extends Grids_Object {
      * @param x2 The x coordinate of another point.
      * @param y2 The y coordinate of another point.
      * @param chunkCols The number of Grid2DSquareCellChunkAbstract columns in
-     * theAbstractGrid2DSquareCelll that'Statistics
-     * Grid2DSquareCellChunkAbstract could be swapped if an OutOfMemoryError is
-     * thrown.
+ theAbstractGrid2DSquareCelll that'Stats
+ Grid2DSquareCellChunkAbstract could be swapped if an OutOfMemoryError is
+ thrown.
      * @param chunkRowIndex The chunk row index of the
      * Grid2DSquareCellChunkAbstract not to be swapped if an OutOfMemoryError is
      * thrown.
@@ -1202,7 +1202,7 @@ public class Grids_Processor extends Grids_Object {
         int chunkNRows;
         double noDataValue = g.getNoDataValue();
         double range = max - min;
-        Grids_AbstractGridNumberStatistics stats = g.getStatistics();
+        Grids_AbstractGridNumberStats stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
@@ -1343,7 +1343,7 @@ public class Grids_Processor extends Grids_Object {
         int nChunkRows = g.getNChunkCols(hoome);
         int noDataValue = g.getNoDataValue(hoome);
         double range = max - min;
-        Grids_AbstractGridNumberStatistics stats = g.getStatistics(hoome);
+        Grids_AbstractGridNumberStats stats = g.getStatistics(hoome);
         double minGrid = stats.getMin(true, hoome).doubleValue();
         double maxGrid = stats.getMax(true, hoome).doubleValue();
         double rangeGrid = maxGrid - minGrid;
@@ -3479,7 +3479,7 @@ public class Grids_Processor extends Grids_Object {
         }
     }
 
-    //    TODO: Move to a Extended Statistics class
+    //    TODO: Move to a Extended Stats class
     //    /**
     //     * Returns a double global statistic for an Grids_GridDouble grid
     //     * NB. Only for _AbstractGrid2DSquareCell_HashSet in the same spatial frame.
@@ -3498,8 +3498,8 @@ public class Grids_Processor extends Grids_Object {
     //        double grid1Yllcorner = grid1.getYllcorner();
     //        double grid1Cellsize = grid1.getCellsize();
     //        double grid1NoDataValue = grid1.getNoDataValue();
-    //        AbstractGridStatistics grid0Statistics = grid0.getStatistics();
-    //        AbstractGridStatistics grid1Statistics = grid1.getStatistics();
+    //        AbstractGridStatistics grid0Statistics = grid0.getStats();
+    //        AbstractGridStatistics grid1Statistics = grid1.getStats();
     //        // TODO: Check spatial frame
     //
     //        // Calculation
@@ -3646,7 +3646,7 @@ public class Grids_Processor extends Grids_Object {
     //        Grids_GridDouble temp2 = gridFactory.createGrid2DSquareCellDouble( grid0 );
     //        // Get distances
     //        Grids_GridDouble distanceGrid = distanceToDataValue( grid0, gridFactory );
-    //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getStatistics();
+    //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getStats();
     //        double maxDistance = distanceGridStatistics.getMax();
     //
     //        AbstractGrid2DSquareCellDouble[] geometricDensity = Grids_ProcessorGWS.geometricDensity( grid0, maxDistance, gridFactory );

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,8 +38,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble
  * standard deviation would always require going through all the data again if
  * the values have changed.)
  */
-public class Grids_GridDoubleStatistics
-        extends Grids_AbstractGridNumberStatistics
+public class Grids_GridDoubleStats
+        extends Grids_AbstractGridNumberStats
         implements Serializable {
 
     /**
@@ -51,10 +51,10 @@ public class Grids_GridDoubleStatistics
      */
     protected double Max;
 
-    protected Grids_GridDoubleStatistics() {
+    protected Grids_GridDoubleStats() {
     }
 
-    public Grids_GridDoubleStatistics(Grids_Environment ge) {
+    public Grids_GridDoubleStats(Grids_Environment ge) {
         super(ge);
         init();
     }
@@ -64,7 +64,7 @@ public class Grids_GridDoubleStatistics
      *
      * @param g
      */
-    public Grids_GridDoubleStatistics(Grids_GridDouble g) {
+    public Grids_GridDoubleStats(Grids_GridDouble g) {
         super(g);
         init();
     }
@@ -84,6 +84,14 @@ public class Grids_GridDoubleStatistics
     }
 
     /**
+     * @return true iff the stats are kept up to date as the underlying data change.
+     */
+    @Override
+    public boolean isUpdated() {
+        return true;
+    }
+    
+    /**
      *
      * @return (Grids_GridDouble) Grid
      */
@@ -93,17 +101,17 @@ public class Grids_GridDoubleStatistics
     }
 
     /**
-     * Updates fields (statistics) by going through all values in Grid if they
-     * might not be up to date.
+     * Updates by going through all values in Grid if the fields are likely not
+     * be up to date.
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory(ge.HOOME);
+        ge.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;
         double value;
-        double noDataValue = g.getNoDataValue(ge.HOOME);
+        double noDataValue = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {

@@ -2349,8 +2349,8 @@ public class Grids_ProcessorDEM
      * @param distance the distance within which metrics will be calculated
      * @param weightIntersect kernel parameter ( weight at the centre )
      * @param weightFactor kernel parameter ( distance decay )
-     * @param gridDoubleFactory The Grids_GridDoubleFactory for creating grids
-     * @param gridIntFactory
+     * @param gdf The Grids_GridDoubleFactory for creating grids
+     * @param gif
      * @param swapOutInitialisedFiles
      * @param swapOutProcessedChunks
      * @param hoome
@@ -2362,23 +2362,24 @@ public class Grids_ProcessorDEM
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grids_GridDoubleFactory gridDoubleFactory,
-            Grids_GridIntFactory gridIntFactory,
+            Grids_GridDoubleFactory gdf,
+            Grids_GridIntFactory gif,
             boolean swapOutInitialisedFiles,
             boolean swapOutProcessedChunks,
             boolean hoome)
             throws IOException {
         try {
             ge.getGrids().add(g);
-            if (gridDoubleFactory.getChunkNCols() != gridIntFactory.getChunkNCols()
-                    || gridDoubleFactory.getChunkNRows() != gridIntFactory.getChunkNRows()) {
+            if (gdf.getChunkNCols() != gif.getChunkNCols()
+                    || gdf.getChunkNRows() != gif.getChunkNRows()) {
                 log("Warning! ((gridDoubleFactory.getChunkNcols() "
                         + "!= gridIntFactory.getChunkNcols()) || "
                         + "(gridDoubleFactory.getChunkNrows() != "
                         + "gridIntFactory.getChunkNrows()))",
                         hoome);
             }
-            Grids_AbstractGridNumber[] metrics1 = new Grids_AbstractGridNumber[65];
+            Grids_AbstractGridNumber[] metrics1;
+            metrics1 = new Grids_AbstractGridNumber[65];
             long ncols = g.getNCols(hoome);
             long nrows = g.getNRows(hoome);
             Grids_Dimensions dimensions = g.getDimensions(hoome);
@@ -2387,30 +2388,18 @@ public class Grids_ProcessorDEM
             File file;
             File directory = getDirectory(hoome);
             for (int i = 0; i < metrics1.length; i++) {
-                file = ge.initFileDirectory(
-                        directory,
-                        metrics1Names[i],
-                        hoome);
+                file = ge.initFileDirectory(directory, metrics1Names[i], hoome);
                 do {
                     try {
                         if (isGridInt(i)) {
-                            metrics1[i] = (Grids_GridInt) gridIntFactory.create(
-                                    file,
-                                    nrows,
-                                    ncols,
-                                    dimensions,
-                                    hoome);
-                            if (swapOutInitialisedFiles) {
-                                metrics1[i].writeToFile(
-                                        true, hoome);
-                            }
+                            metrics1[i] = (Grids_GridInt) gif.create(
+                                    file, nrows, ncols, dimensions, hoome);
                         } else {
-                            metrics1[i] = (Grids_GridDouble) gridDoubleFactory.create(
-                                    file,
-                                    nrows,
-                                    ncols,
-                                    dimensions,
-                                    hoome);
+                            metrics1[i] = (Grids_GridDouble) gdf.create(
+                                    file, nrows, ncols, dimensions, hoome);
+                        }
+                        if (swapOutInitialisedFiles) {
+                            metrics1[i].writeToFile(true, hoome);
                         }
                         metrics1[i].setName(metrics1Names[i], hoome);
                         ge.getGrids().add(metrics1[i]);
@@ -2447,8 +2436,8 @@ public class Grids_ProcessorDEM
                         distance,
                         weightIntersect,
                         weightFactor,
-                        gridDoubleFactory,
-                        gridIntFactory,
+                        gdf,
+                        gif,
                         swapOutInitialisedFiles,
                         swapOutProcessedChunks,
                         hoome);

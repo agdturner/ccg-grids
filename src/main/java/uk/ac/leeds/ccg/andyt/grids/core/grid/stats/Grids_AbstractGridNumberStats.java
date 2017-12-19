@@ -16,7 +16,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -32,8 +32,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
  * To be extended to provide statistics about the data in Grids and GridChunks
  * more optimally.
  */
-public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
-        implements Serializable, Grids_InterfaceStatistics {
+public abstract class Grids_AbstractGridNumberStats extends Grids_Object
+        implements Serializable, Grids_InterfaceStats {
 
     //private long final long serialVersionUID = 1L;
     /**
@@ -61,15 +61,15 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
      */
     protected long NMax;
 
-    protected Grids_AbstractGridNumberStatistics() {
+    protected Grids_AbstractGridNumberStats() {
     }
 
-    public Grids_AbstractGridNumberStatistics(Grids_Environment ge) {
+    public Grids_AbstractGridNumberStats(Grids_Environment ge) {
         super(ge);
         init();
     }
 
-    public Grids_AbstractGridNumberStatistics(Grids_AbstractGridNumber g) {
+    public Grids_AbstractGridNumberStats(Grids_AbstractGridNumber g) {
         super(g.ge);
         init(g);
     }
@@ -94,59 +94,31 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
         Grid = g;
         init();
     }
+    
+    /**
+     * @return true iff the stats are kept up to date as the underlying data change.
+     */
+    public abstract boolean isUpdated();
 
     /**
-     * Updates fields from statistics except Grid.
+     * Updates from stats.
      *
-     * @param statistics the Grids_AbstractGridNumberStatistics instance which
-     * fields are used to update this.
+     * @param stats the Grids_AbstractGridNumberStats instance which
+ fields are used to update this.
      */
     public void update(
-            Grids_AbstractGridNumberStatistics statistics) {
-        N = statistics.N;
-        Sum = statistics.Sum;
-        NMin = statistics.NMin;
-        NMax = statistics.NMax;
+            Grids_AbstractGridNumberStats stats) {
+        N = stats.N;
+        Sum = stats.Sum;
+        NMin = stats.NMin;
+        NMax = stats.NMax;
     }
 
     /**
-     * Updates fields (statistics) by going through all values in Grid if they
-     * might not be up to date. (NB. After calling this it is inexpensive to
-     * convert a GridStatistics1 to a GridStatistics0.)
+     * Updates by going through all values in Grid if the fields are likely not
+     * be up to date.
      */
     protected abstract void update();
-//    public void update() {
-//        ge.checkAndMaybeFreeMemory(ge.HOOME);
-//        if (Grid instanceof Grids_GridInt) {
-//            Grids_GridInt g = (Grids_GridInt) Grid;
-//            BigDecimal valueBigDecimal;
-//            int value;
-//            int noDataValue = g.getNoDataValue(ge.HOOME);
-//            Grids_GridIntIterator ite;
-//            ite = new Grids_GridIntIterator(g);
-//            while (ite.hasNext()) {
-//                value = (Integer) ite.next();
-//                if (value != noDataValue) {
-//                    valueBigDecimal = new BigDecimal(value);
-//                    update(valueBigDecimal);
-//                }
-//            }
-//        } else {
-//            Grids_GridDouble g = (Grids_GridDouble) Grid;
-//            BigDecimal valueBigDecimal;
-//            double value;
-//            double noDataValue = g.getNoDataValue(ge.HOOME);
-//            Grids_GridDoubleIterator ite;
-//            ite = new Grids_GridDoubleIterator(g);
-//            while (ite.hasNext()) {
-//                value = (Double) ite.next();
-//                if (value != noDataValue) {
-//                    valueBigDecimal = new BigDecimal(value);
-//                    update(valueBigDecimal);
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Returns a String describing this instance
@@ -160,7 +132,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
             boolean hoome) {
         try {
             String result = toString();
-            ge.checkAndMaybeFreeMemory(hoome);
+            ge.checkAndMaybeFreeMemory();
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
@@ -170,7 +142,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(false);
+                ge.initMemoryReserve(ge.HOOMEF);
                 return toString(hoome);
             } else {
                 throw e;
@@ -352,7 +324,7 @@ public abstract class Grids_AbstractGridNumberStatistics extends Grids_Object
     /**
      * For returning the minimum of all data values.
      *
-     * @param update If true then an update of the statistics is made.
+     * @param update If true then update() is called.
      * @return
      */
     public abstract Number getMin(boolean update);

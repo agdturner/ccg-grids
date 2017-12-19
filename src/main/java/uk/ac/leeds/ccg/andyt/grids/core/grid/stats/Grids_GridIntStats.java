@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,8 +37,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
  * standard deviation would always require going through all the data again if
  * the values have changed.)
  */
-public class Grids_GridIntStatistics
-        extends Grids_AbstractGridNumberStatistics
+public class Grids_GridIntStats
+        extends Grids_AbstractGridNumberStats
         implements Serializable {
 
     /**
@@ -50,15 +50,15 @@ public class Grids_GridIntStatistics
      */
     protected int Max;
 
-    protected Grids_GridIntStatistics() {
+    protected Grids_GridIntStats() {
     }
 
-    public Grids_GridIntStatistics(Grids_Environment ge) {
+    public Grids_GridIntStats(Grids_Environment ge) {
         super(ge);
         init();
     }
 
-    public Grids_GridIntStatistics(Grids_GridInt g) {
+    public Grids_GridIntStats(Grids_GridInt g) {
         super(g);
         init();
     }
@@ -67,9 +67,18 @@ public class Grids_GridIntStatistics
      * For initialisation.
      */
     private void init() {
-        //getGrid().initStatistics(this);
+        //getGrid().initStats(this);
         Min = Integer.MIN_VALUE;
         Max = Integer.MAX_VALUE;
+    }
+
+    /**
+     * @return true iff the stats are kept up to date as the underlying
+     * data change.
+     */
+    @Override
+    public boolean isUpdated() {
+        return true;
     }
 
     /**
@@ -82,16 +91,16 @@ public class Grids_GridIntStatistics
     }
 
     /**
-     * Updates fields (statistics) by going through all values in Grid if they
-     * might not be up to date.
+     * Updates by going through all values in Grid if the fields are likely not
+     * be up to date.
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory(ge.HOOME);
+        ge.checkAndMaybeFreeMemory();
         Grids_GridInt g = getGrid();
         BigDecimal valueBD;
         int value;
-        int noDataValue = g.getNoDataValue(ge.HOOME);
+        int noDataValue = g.getNoDataValue();
         Grids_GridIntIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {

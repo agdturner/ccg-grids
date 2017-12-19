@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_InterfaceStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_InterfaceStats;
 
 /**
  *
@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_InterfaceStatistic
  */
 public abstract class Grids_AbstractGridChunkNumber 
         extends Grids_AbstractGridChunk 
-        implements Serializable, Grids_InterfaceStatistics {
+        implements Serializable, Grids_InterfaceStats {
     
     protected Grids_AbstractGridChunkNumber() {
     }
