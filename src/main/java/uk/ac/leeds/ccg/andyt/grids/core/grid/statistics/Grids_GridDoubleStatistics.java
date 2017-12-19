@@ -98,12 +98,12 @@ public class Grids_GridDoubleStatistics
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory(ge.HOOME);
+        ge.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;
         double value;
-        double noDataValue = g.getNoDataValue(ge.HOOME);
+        double noDataValue = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {

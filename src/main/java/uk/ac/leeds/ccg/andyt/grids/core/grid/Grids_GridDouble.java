@@ -307,6 +307,10 @@ public class Grids_GridDouble
             // Set the reference to this in the Grid Statistics
             Statistics.init(this);
         }
+        ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+                ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+            }
         ge.addGrid(this);
     }
 
@@ -381,6 +385,10 @@ public class Grids_GridDouble
             // Set the reference to this in the Grid Statistics
             this.getStatistics().init(this);
             ge.addGrid(this);
+            ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+                ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+            }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -435,15 +443,9 @@ public class Grids_GridDouble
                         try {
                             ge.checkAndMaybeFreeMemory(hoome);
                             // Try to load chunk.
-                            chunkID = new Grids_2D_ID_int(
-                                    chunkRow,
-                                    chunkCol);
-                            chunk = chunkFactory.create(
-                                    this,
-                                    chunkID);
-                            ChunkIDChunkMap.put(
-                                    chunkID,
-                                    chunk);
+                            chunkID = new Grids_2D_ID_int(                                    chunkRow,                                    chunkCol);
+                            chunk = chunkFactory.create(                                    this,                                    chunkID);
+                            ChunkIDChunkMap.put(                                    chunkID,                                    chunk);
                             if (!(chunk instanceof Grids_GridChunkDouble)) {
                                 ChunkIDsofChunksWorthSwapping.add(chunkID);
                             }
@@ -464,6 +466,10 @@ public class Grids_GridDouble
                 System.out.println("Done chunkRow " + chunkRow + " out of " + NChunkRows);
             }
             ge.addGrid(this);
+            ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+                ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+            }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -509,7 +515,7 @@ public class Grids_GridDouble
             long endRow,
             long endCol,
             double noDataValue,
-             boolean hoome
+            boolean hoome
     ) {
         try {
             ge.checkAndMaybeFreeMemory();
@@ -722,6 +728,10 @@ public class Grids_GridDouble
                 }
             }
             ge.addGrid(this);
+            ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+                ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+            }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -776,20 +786,11 @@ public class Grids_GridDouble
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
                 Grids_GridDouble g;
-                g = (Grids_GridDouble) gf.create(
-                        Directory,
-                        thisFile,
-                        ois,
+                g = (Grids_GridDouble) gf.create(Directory, thisFile, ois, 
                         hoome);
                 Grids_GridDouble g2;
-                g2 = gf.create(
-                        Directory,
-                        g,
-                        startRowIndex,
-                        startColIndex,
-                        endRowIndex,
-                        endColIndex,
-                        hoome);
+                g2 = gf.create(Directory, g, startRowIndex, startColIndex, 
+                        endRowIndex, endColIndex, hoome);
                 init(g2, false);
 
             }
@@ -890,6 +891,10 @@ public class Grids_GridDouble
                 }
             }
         }
+        ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+                ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+            }
     }
 
     private void init(
@@ -916,17 +921,12 @@ public class Grids_GridDouble
                         gp.GridDoubleFactory.ChunkNCols,
                         null,
                         statistics);
-                File thisFile = new File(
-                        gridFile,
-                        "thisFile");
+                File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
                 Grids_GridDouble g;
-                g = (Grids_GridDouble) gf.create(
-                        Directory,
-                        thisFile,
-                        ois,
-                        hoome);
+                g = (Grids_GridDouble) gf.create(Directory, thisFile, ois, hoome);
+                init(g);
             }
             initChunks(gridFile);
         } else {
@@ -940,9 +940,7 @@ public class Grids_GridDouble
             double value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(
-                        gridFile,
-                        ge);
+                eagi = new Grids_ESRIAsciiGridImporter(gridFile, ge);
                 Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
@@ -1028,6 +1026,10 @@ public class Grids_GridDouble
                 }
             }
         }
+        ge.setDataToSwap(true);
+        if (!(Statistics instanceof Grids_GridDoubleStatisticsNotUpdated)) {
+            ((Grids_GridDoubleStatisticsNotUpdated) Statistics).setUpToDate(false);
+        }
     }
 
     /**
@@ -1067,7 +1069,6 @@ public class Grids_GridDouble
             if (!(chunk instanceof Grids_GridChunkDouble)) {
                 ChunkIDsofChunksWorthSwapping.add(chunkID);
             }
-            ge.setDataToSwap(true);
         }
     }
 
@@ -1111,8 +1112,7 @@ public class Grids_GridDouble
                 if (value != gridChunk.Value) {
                     // Convert chunk to another type
                     chunk = ge.getProcessor().DefaultGridChunkDoubleFactory.create(
-                            chunk,
-                            chunkID);
+                            chunk, chunkID);
                     ChunkIDChunkMap.put(chunkID, chunk);
                     if (!(chunk instanceof Grids_GridChunkDouble)) {
                         ChunkIDsofChunksWorthSwapping.add(chunkID);
@@ -1123,8 +1123,7 @@ public class Grids_GridDouble
                 if (fast) {
                     initCellFast(chunk, row, col, value);
                 } else {
-                    initCell(chunk,
-                            chunkID, row, col, value);
+                    initCell(chunk, chunkID, row, col, value);
                 }
             }
         }
@@ -1483,8 +1482,8 @@ public class Grids_GridDouble
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(y), getChunkCol(x));
+                Grids_2D_ID_int chunkID;
+                chunkID = new Grids_2D_ID_int(getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 setCell(x, y, newValue, hoome);
             } else {
@@ -2812,9 +2811,7 @@ public class Grids_GridDouble
                     throw e;
                 }
                 ge.initMemoryReserve(hoome);
-                initCells(
-                        value,
-                        hoome);
+                initCells(value, hoome);
             } else {
                 throw e;
             }
@@ -2838,9 +2835,7 @@ public class Grids_GridDouble
         boolean hoome = true;
         while (ite.hasNext()) {
             ge.checkAndMaybeFreeMemory(hoome);
-            System.out.println(
-                    "Initialising Chunk " + counter
-                    + " out of " + nChunks);
+            System.out.println("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             chunkID = ite.next();
             chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
@@ -2848,11 +2843,7 @@ public class Grids_GridDouble
             chunkNCols = getChunkNCols(chunkID, hoome);
             for (row = 0; row <= chunkNRows; row++) {
                 for (col = 0; col <= chunkNCols; col++) {
-                    chunk.setCell(
-                            row,
-                            col,
-                            value,
-                            hoome);
+                    chunk.initCell(row, col, value);
                 }
             }
         }

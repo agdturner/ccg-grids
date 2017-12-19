@@ -362,7 +362,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * @param col
      * @return
      */
-    protected boolean inChunk(int row, int col) {
+    public boolean inChunk(int row, int col) {
         if (row >= 0 && row < ChunkNRows) {
             if (col >= 0 && col < ChunkNCols) {
                 return true;

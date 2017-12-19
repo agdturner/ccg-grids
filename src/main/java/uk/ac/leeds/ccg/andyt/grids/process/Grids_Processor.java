@@ -264,9 +264,9 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @return A copy of StartTime.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public long getTime0(
             boolean hoome) {
@@ -321,9 +321,9 @@ public class Grids_Processor extends Grids_Object {
      *
      *
      * @param directory The Directory to change to.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     protected void setDirectory(
             File directory,
@@ -367,9 +367,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param directory The Directory to change to.
      * @param copyLogFile
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void setDirectory(
             File directory,
@@ -427,9 +427,9 @@ public class Grids_Processor extends Grids_Object {
      * Copies and sets up a new Log.
      *
      * @param newLog
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @throws java.io.IOException
      */
     public void copyAndSetUpNewLog(
@@ -475,9 +475,9 @@ public class Grids_Processor extends Grids_Object {
      * Writes string to Log file and the console (standard output)
      *
      * @param string The message to Log.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void log(
             String string,
@@ -508,9 +508,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param logIndentation The indentation of string.
      * @param string The message to Log.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public final void log(
             int logIndentation,
@@ -569,9 +569,9 @@ public class Grids_Processor extends Grids_Object {
      * @param y1 The y coordinate of one point.
      * @param x2 The x coordinate of another point.
      * @param y2 The y coordinate of another point.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double distance(
@@ -615,9 +615,9 @@ public class Grids_Processor extends Grids_Object {
      * @param chunkColIndex The chunk column index of the
      * Grid2DSquareCellChunkAbstract not to be swapped if an OutOfMemoryError is
      * thrown.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double distance(
@@ -677,9 +677,9 @@ public class Grids_Processor extends Grids_Object {
      * @param y1 The y coordinate of one point.
      * @param x2 The x coordinate of another point.
      * @param y2 The y coordinate of another point.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method and swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method and
+     * swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double angle(
@@ -720,9 +720,9 @@ public class Grids_Processor extends Grids_Object {
      * if an OutOfMemoryError is thrown.
      * @param chunkColIndex The chunk column index of the chunk not to be
      * swapped if an OutOfMemoryError is thrown.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method and swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method and
+     * swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final double angle(
@@ -1135,9 +1135,9 @@ public class Grids_Processor extends Grids_Object {
      * "Log" then a Log rescale is done.
      * @param min The minimum value in the rescaled range.
      * @param max The maximum value in the rescaled range.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      *
      * @TODO Improve Memory Handling
      */
@@ -1192,7 +1192,7 @@ public class Grids_Processor extends Grids_Object {
             double max) {
         Grids_GridDouble result;
         boolean hoome = ge.HOOME;
-        ge.checkAndMaybeFreeMemory(hoome);
+        ge.checkAndMaybeFreeMemory();
         ge.getGrids().add(g);
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -1222,6 +1222,7 @@ public class Grids_Processor extends Grids_Object {
         int cellCol;
         Grids_AbstractGridChunkDouble gridChunk;
         Grids_AbstractGridChunkDouble resultChunk;
+        Grids_2D_ID_int chunkID;
         if (type == null) {
             // if range of either input or output range is zero return min for all non noDataValues
             if (rangeGrid == 0.0d || range == 0.0d) {
@@ -1231,15 +1232,13 @@ public class Grids_Processor extends Grids_Object {
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                chunkRow, chunkCol);
+                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory(hoome);
+                        ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(chunkID);
-                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
-                                chunkID, hoome);
+                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
@@ -1254,25 +1253,32 @@ public class Grids_Processor extends Grids_Object {
                 // Better to go through chunks rather than rows. Though it 
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
+                double v;
                 for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                chunkRow, chunkCol);
+                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory(hoome);
+                        ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
-                        gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
-                                chunkID);
-                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(
-                                chunkID);
+                        gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(chunkID);
+                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+//                                if (!gridChunk.inChunk(cellRow, cellCol, hoome)) {
+//                                    int debug = 1;
+//                                    System.out.println("!gridChunk.inChunk(cellRow, cellCol) cellRow " + cellRow + ", cellCol " + cellCol);
+//                                }
                                 value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != noDataValue) {
-                                    result.setCell(resultChunk, cellRow, cellCol,
-                                            (((value - minGrid) / rangeGrid) * range) + min);
+                                    v = (((value - minGrid) / rangeGrid) * range) + min;
+                                    
+                                    if (v < 0.0d || v > 255.0d) {
+                                        int debug = 1;
+                                    }
+                                    
+                                    result.setCell(resultChunk, cellRow, cellCol, v);
                                 }
                             }
                         }
@@ -1290,25 +1296,13 @@ public class Grids_Processor extends Grids_Object {
                 // Probably better to do this by chunks
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        value = g.getCell(
-                                row,
-                                col,
-                                hoome);
+                        value = g.getCell(row, col);
                         if (value != noDataValue) {
-                            result.setCell(
-                                    row,
-                                    col,
-                                    Math.log(value),
-                                    hoome);
+                            result.setCell(row, col, Math.log(value));
                         }
                     }
                 }
-                result = rescale(
-                        result,
-                        null,
-                        min,
-                        max,
-                        hoome);
+                result = rescale(result, null, min, max, hoome);
                 result.setName(g.getName(hoome) + "_logRescale", hoome);
                 ge.checkAndMaybeFreeMemory(hoome);
             } else {
@@ -1487,9 +1481,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param grid The Grids_GridDouble to be processed.
      * @param _CellIDs The CellIDs of the cells to be processed.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void setValueALittleBitLarger(
             Grids_GridDouble grid,
@@ -1537,9 +1531,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param grid The Grids_GridDouble to be processed.
      * @param cellIDs The CellIDs of the cells to be processed.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void setValueALittleBitSmaller(
             Grids_GridDouble grid,
@@ -1596,9 +1590,9 @@ public class Grids_Processor extends Grids_Object {
      * @param grid The Grids_GridDouble to be processed
      * @param cellIDs A HashSet containing CellIDs.
      * @param value The value to be added.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -1642,9 +1636,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param grid The Grids_GridDouble to be processed
      * @param value The value to be added
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -1688,9 +1682,9 @@ public class Grids_Processor extends Grids_Object {
      * @param grid The Grids_GridDouble to be processed
      * @param cellIDs Array of CellIDs.
      * @param value The value to be added.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -1726,9 +1720,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param grid The Grids_GridDouble to be processed/modified.
      * @param gridToAdd The Grids_GridDouble from which values are added.
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -1763,23 +1757,23 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Add gridToAdd to grid with values from gridToAdd multiplied by weight.
      *
-     * @param grid The Grids_GridDouble to be processed/modified.
-     * @param gridToAdd The Grids_GridDouble from which values are added.
+     * @param g The Grids_GridDouble to be processed/modified.
+     * @param g2 The Grids_GridDouble from which values are added.
      * @param weight The value gridToAdd values are multiplied by.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
      * then swap operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_GridDouble grid,
-            Grids_GridDouble gridToAdd,
+            Grids_GridDouble g,
+            Grids_GridDouble g2,
             double weight,
             boolean hoome) {
         try {
-            ge.getGrids().add(grid);
-            ge.getGrids().add(gridToAdd);
-            addToGrid(grid, gridToAdd, 0L, 0L, gridToAdd.getNRows(hoome) - 1L,
-                    gridToAdd.getNCols(hoome) - 1L, weight, hoome);
+            ge.getGrids().add(g);
+            ge.getGrids().add(g2);
+            addToGrid(g, g2, 0L, 0L, g2.getNRows(hoome) - 1L,
+                    g2.getNCols(hoome) - 1L, weight, hoome);
             ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
@@ -1788,7 +1782,7 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(hoome);
-                addToGrid(grid, gridToAdd, weight, hoome);
+                addToGrid(g, g2, weight, hoome);
             } else {
                 throw e;
             }
@@ -1801,8 +1795,8 @@ public class Grids_Processor extends Grids_Object {
      * endRowIndex, and column index between startColIndex and endColIndex are
      * added.
      *
-     * @param grid The Grids_GridDouble to be processed.
-     * @param gridToAdd The Grids_GridDouble from which values are added.
+     * @param g The Grids_GridDouble to be processed.
+     * @param g2 The Grids_GridDouble from which values are added.
      * @param startRow The index of the first row from which gridToAdd values
      * are added.
      * @param startCol the index of the first column from which gridToAdd values
@@ -1817,8 +1811,8 @@ public class Grids_Processor extends Grids_Object {
      * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
-            Grids_GridDouble grid,
-            Grids_GridDouble gridToAdd,
+            Grids_GridDouble g,
+            Grids_GridDouble g2,
             long startRow,
             long startCol,
             long endRow,
@@ -1826,9 +1820,9 @@ public class Grids_Processor extends Grids_Object {
             double weight,
             boolean hoome) {
         try {
-            ge.getGrids().add(grid);
-            ge.getGrids().add(gridToAdd);
-            Grids_Dimensions dimensions = gridToAdd.getDimensions(hoome);
+            ge.getGrids().add(g);
+            ge.getGrids().add(g2);
+            Grids_Dimensions dimensions = g2.getDimensions(hoome);
             BigDecimal xMin;
             BigDecimal yMin;
             BigDecimal cellsize;
@@ -1844,9 +1838,8 @@ public class Grids_Processor extends Grids_Object {
                     new BigDecimal(endCol - startCol + 1L).multiply(cellsize));
             dimensionConstraints[4] = yMin.add(
                     new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
-            addToGrid(grid, gridToAdd, startRow, startCol,
-                    endRow, endCol, dimensionConstraints, weight,
-                    hoome);
+            addToGrid(g, g2, startRow, startCol, endRow, endCol,
+                    dimensionConstraints, weight, hoome);
             ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
@@ -1855,7 +1848,7 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(hoome);
-                addToGrid(grid, gridToAdd, startRow, startCol, endRow, endCol,
+                addToGrid(g, g2, startRow, startCol, endRow, endCol,
                         weight, hoome);
             } else {
                 throw e;
@@ -1868,8 +1861,8 @@ public class Grids_Processor extends Grids_Object {
      * gridToAdd (with row index between startRowIndex, endRowIndex and column
      * index between startColIndex, endColIndex) multiplied by weight.
      *
-     * @param grid The Grids_GridDouble to be processed.
-     * @param gridToAdd The Grids_GridDouble from which values are added.
+     * @param g The Grids_GridDouble to be processed.
+     * @param g2 The Grids_GridDouble from which values are added.
      * @param startRow The index of the first row from which gridToAdd values
      * are added.
      * @param startCol The index of the first column from which gridToAdd values
@@ -1878,7 +1871,7 @@ public class Grids_Processor extends Grids_Object {
      * added.
      * @param endCol The index of the final column from which gridToAdd values
      * are added.
-     * @param dimensionConstraints
+     * @param constraintDimensions
      * @param weight The value gridToAdd values are multiplied by.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
      * then swap operations are initiated prior to retrying. If false then
@@ -1888,73 +1881,70 @@ public class Grids_Processor extends Grids_Object {
      * @todo work needed to handle OutOfMemoryErrors...
      */
     public void addToGrid(
-            Grids_GridDouble grid,
-            Grids_GridDouble gridToAdd,
+            Grids_GridDouble g,
+            Grids_GridDouble g2,
             long startRow,
             long startCol,
             long endRow,
             long endCol,
-            BigDecimal[] dimensionConstraints,
+            BigDecimal[] constraintDimensions,
             double weight,
             boolean hoome) {
         try {
             ge.checkAndMaybeFreeMemory();
-            ge.getGrids().add(grid);
-            ge.getGrids().add(gridToAdd);
-            long nrows = grid.getNRows();
-            long ncols = grid.getNCols();
-            double noDataValue = grid.getNoDataValue();
-            Grids_Dimensions gridDimensions = grid.getDimensions();
-            double gridToAddNoDataValue = gridToAdd.getNoDataValue();
-            Grids_Dimensions gridToAddDimensions = gridToAdd.getDimensions();
-            Grids_GridDoubleFactory gridFactory;
-            gridFactory = new Grids_GridDoubleFactory(
+            ge.getGrids().add(g);
+            ge.getGrids().add(g2);
+            long nrows = g.getNRows();
+            long ncols = g.getNCols();
+            double noDataValue = g.getNoDataValue();
+            Grids_Dimensions gDimensions = g.getDimensions();
+            double g2NoDataValue = g2.getNoDataValue();
+            Grids_Dimensions g2Dimensions = g2.getDimensions();
+            Grids_GridDoubleFactory gf;
+            gf = new Grids_GridDoubleFactory(
                     ge,
                     ge.getFiles().getGeneratedGridDoubleDir(),
                     GridChunkDoubleFactory,
                     DefaultGridChunkDoubleFactory,
-                    grid.getChunkNCols(),
-                    grid.getChunkNRows());
-            if ((dimensionConstraints[1].compareTo(gridDimensions.getXMax()) == 1)
-                    || (dimensionConstraints[3].compareTo(gridDimensions.getXMin()) == -1)
-                    || (dimensionConstraints[2].compareTo(gridDimensions.getYMax()) == 1)
-                    || (dimensionConstraints[4].compareTo(gridDimensions.getYMin()) == -1)) {
+                    g.getChunkNCols(),
+                    g.getChunkNRows());
+            if ((constraintDimensions[1].compareTo(gDimensions.getXMax()) == 1)
+                    || (constraintDimensions[3].compareTo(gDimensions.getXMin()) == -1)
+                    || (constraintDimensions[2].compareTo(gDimensions.getYMax()) == 1)
+                    || (constraintDimensions[4].compareTo(gDimensions.getYMin()) == -1)) {
                 return;
             }
-            BigDecimal gridToAddCellsize;
-            BigDecimal gridCellsize;
-            BigDecimal gridToAddHalfCellsize;
-            BigDecimal gridHalfCellsize;
-            gridToAddCellsize = gridToAddDimensions.getCellsize();
-            gridCellsize = gridDimensions.getCellsize();
-            gridToAddHalfCellsize = gridToAddDimensions.getHalfCellsize();
-            gridHalfCellsize = gridDimensions.getHalfCellsize();
-            if (gridToAddCellsize.compareTo(gridCellsize) == -1) {
+            BigDecimal g2Cellsize;
+            BigDecimal gCellsize;
+            BigDecimal g2HalfCellsize;
+            BigDecimal gHalfCellsize;
+            g2Cellsize = g2Dimensions.getCellsize();
+            gCellsize = gDimensions.getCellsize();
+            g2HalfCellsize = g2Dimensions.getHalfCellsize();
+            gHalfCellsize = gDimensions.getHalfCellsize();
+            if (g2Cellsize.compareTo(gCellsize) == -1) {
                 throw new UnsupportedOperationException();
             } else {
-                // If gridToAddCellsize is the same and the _AbstractGrid2DSquareCell_HashSet align
-                if ((gridToAddCellsize.compareTo(gridCellsize) == 0)
-                        && ((gridToAddDimensions.getXMin().remainder(gridCellsize)).compareTo((gridDimensions.getXMin().remainder(gridCellsize))) == 0)
-                        && ((gridToAddDimensions.getYMin().remainder(gridCellsize)).compareTo((gridDimensions.getYMin().remainder(gridCellsize))) == 0)) {
+                // If g2Cellsize is the same as gCellsize g and g2 align
+                if ((g2Cellsize.compareTo(gCellsize) == 0)
+                        && ((g2Dimensions.getXMin().remainder(gCellsize)).compareTo((gDimensions.getXMin().remainder(gCellsize))) == 0)
+                        && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo((gDimensions.getYMin().remainder(gCellsize))) == 0)) {
                     //println( "Grids Align!" );
                     double x;
                     double y;
                     double value;
                     long row;
                     long col;
-                    // TODO:
-                    // Make more robust if necessary using xBigDecimal and yBigDecimal
-                    // rather than using x and y?
-                    // The necessity can be calculated given the precision and size of
-                    // the double and the grid cellsize.
+                    // TODO: Control precision using xBigDecimal and yBigDecimal
+                    // rather than using x and y.
                     for (row = startRow; row <= endRow; row++) {
                         ge.checkAndMaybeFreeMemory();
-                        y = gridToAdd.getCellYDouble(row);
+                        y = g2.getCellYDouble(row);
                         for (col = startCol; col <= endCol; col++) {
-                            x = gridToAdd.getCellXDouble(col);
-                            value = gridToAdd.getCell(row, col);
-                            if (value != gridToAddNoDataValue) {
-                                grid.addToCell(x, y, value * weight);
+                            x = g2.getCellXDouble(col);
+                            value = g2.getCell(row, col);
+                            if (value != g2NoDataValue) {
+                                g.addToCell(x, y, value * weight);
                             }
                         }
                     }
@@ -1965,17 +1955,16 @@ public class Grids_Processor extends Grids_Object {
                     // TODO:
                     // Clipping gridToAdd might improve matters here.
                     // Check
-                    Grids_GridDouble tempGrid1;
-                    Grids_GridDouble tempGrid2;
-                    tempGrid1 = (Grids_GridDouble) gridFactory.create(
-                            nrows, ncols, gridDimensions);
-                    tempGrid2 = (Grids_GridDouble) gridFactory.create(
-                            nrows, ncols, gridDimensions);
+                    Grids_GridDouble tg1;
+                    Grids_GridDouble tg2;
+                    tg1 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
+                    tg2 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
                     // TODO:
                     // Check scale and rounding appropriate
                     int scale = 324;
                     int roundingMode = BigDecimal.ROUND_HALF_EVEN;
-                    BigDecimal gridToAddCellsizeSquared = gridToAddCellsize.multiply(gridToAddCellsize);
+                    BigDecimal g2CellsizeSquared;
+                    g2CellsizeSquared = g2Cellsize.multiply(g2Cellsize);
                     double[] bounds;
                     Grids_2D_ID_long cellID1;
                     Grids_2D_ID_long cellID2;
@@ -1990,100 +1979,94 @@ public class Grids_Processor extends Grids_Object {
                     long row;
                     long col;
                     double areaProportion;
-                    double halfCellsize = grid.getCellsizeDouble(hoome) / 2.0d;
+                    double halfCellsize = g.getCellsizeDouble(hoome) / 2.0d;
                     // TODO:
                     // precision checking and use of BigDecimal?
                     for (row = 0; row < nrows; row++) {
                         ge.checkAndMaybeFreeMemory();
                         for (col = 0; col < ncols; col++) {
-                            bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
-                            x = grid.getCellXDouble(col);
-                            y = grid.getCellYDouble(row);
-                            cellID1 = gridToAdd.getCellID(bounds[0], bounds[3]);
-                            cellID2 = gridToAdd.getCellID(bounds[2], bounds[3]);
-                            cellID3 = gridToAdd.getCellID(bounds[0], bounds[1]);
-                            cellID4 = gridToAdd.getCellID(bounds[2], bounds[1]);
-                            d1 = gridToAdd.getCell(cellID1.getRow(), cellID1.getCol());
+                            bounds = g.getCellBoundsDoubleArray(halfCellsize, row, col);
+                            x = g.getCellXDouble(col);
+                            y = g.getCellYDouble(row);
+                            cellID1 = g2.getCellID(bounds[0], bounds[3]);
+                            cellID2 = g2.getCellID(bounds[2], bounds[3]);
+                            cellID3 = g2.getCellID(bounds[0], bounds[1]);
+                            cellID4 = g2.getCellID(bounds[2], bounds[1]);
+                            d1 = g2.getCell(cellID1.getRow(), cellID1.getCol());
                             if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
-                                if (d1 != gridToAddNoDataValue) {
-                                    areaProportion = (gridCellsize.multiply(gridCellsize).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue();
-                                    tempGrid1.addToCell(row, col, d1 * areaProportion);
-                                    tempGrid2.addToCell(row, col, areaProportion);
+                                if (d1 != g2NoDataValue) {
+                                    areaProportion = (gCellsize.multiply(gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
+                                    tg1.addToCell(row, col, d1 * areaProportion);
+                                    tg2.addToCell(row, col, areaProportion);
                                 }
                             } else {
-                                d2 = gridToAdd.getCell(cellID2.getRow(), cellID2.getCol());
-                                d3 = gridToAdd.getCell(cellID3.getRow(), cellID3.getCol());
-                                d4 = gridToAdd.getCell(cellID4.getRow(), cellID4.getCol());
-                                if (!gridToAdd.isInGrid(cellID1.getRow(), cellID1.getCol()) && d1 != gridToAddNoDataValue) {
+                                d2 = g2.getCell(cellID2.getRow(), cellID2.getCol());
+                                d3 = g2.getCell(cellID3.getRow(), cellID3.getCol());
+                                d4 = g2.getCell(cellID4.getRow(), cellID4.getCol());
+                                if (!g2.isInGrid(cellID1.getRow(), cellID1.getCol()) && d1 != g2NoDataValue) {
                                     if (cellID1.equals(cellID2) || cellID1.equals(cellID3)) {
                                         if (cellID1.equals(cellID2)) {
-                                            //areaProportion = ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID1 ) - gridToAddCellsizeDividedBy2 ) ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
                                             areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    gridToAdd.getCellYBigDecimal(cellID1).subtract(
-                                                            gridToAddHalfCellsize)).multiply(gridCellsize)).divide(
-                                                    gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                                    g2.getCellYBigDecimal(cellID1).subtract(
+                                                            g2HalfCellsize)).multiply(gCellsize)).divide(
+                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
-                                            //areaProportion = ( Math.abs( ( gridToAdd.getCellXDouble( cellID1 ) + gridToAddCellsizeDividedBy2 ) - bounds[0] ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellXBigDecimal(cellID1).add(
-                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
-                                                    gridCellsize)).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                            areaProportion = Math.abs(((((g2.getCellXBigDecimal(cellID1).add(
+                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
+                                                    gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
                                     } else {
-                                        //areaProportion = ( ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID1 ) - gridToAddCellsizeDividedBy2 ) ) * Math.abs( ( gridToAdd.getCellXDouble( cellID1 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[0] ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(gridToAdd.getCellYBigDecimal(cellID1).subtract(gridToAddHalfCellsize))).multiply((gridToAdd.getCellXBigDecimal(cellID1).add(gridToAddHalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(gridToAddCellsizeSquared, scale, roundingMode))).doubleValue());
+                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply((g2.getCellXBigDecimal(cellID1).add(g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(g2CellsizeSquared, scale, roundingMode))).doubleValue());
                                     }
-                                    tempGrid1.addToCell(row, col, d1 * areaProportion);
-                                    tempGrid2.addToCell(row, col, areaProportion);
+                                    tg1.addToCell(row, col, d1 * areaProportion);
+                                    tg2.addToCell(row, col, areaProportion);
                                 }
-                                if (!gridToAdd.isInGrid(cellID2) && d2 != gridToAddNoDataValue) {
+                                if (!g2.isInGrid(cellID2) && d2 != g2NoDataValue) {
                                     if (cellID2.equals(cellID1)) {
                                         if (cellID2.equals(cellID4)) {
-                                            //areaProportion = ( Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID2 ) - gridToAddCellsizeDividedBy2 ) ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
                                             areaProportion = Math.abs((((BigDecimal.valueOf(bounds[2]).subtract(
-                                                    gridToAdd.getCellXBigDecimal(cellID2).subtract(
-                                                            gridToAddHalfCellsize))).multiply(gridCellsize)).divide(
-                                                    gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                                    g2.getCellXBigDecimal(cellID2).subtract(
+                                                            g2HalfCellsize))).multiply(gCellsize)).divide(
+                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
-                                            //areaProportion = ( ( Math.abs( bounds[3] - ( gridToAdd.getCellYDouble( cellID2 ) - gridToAddCellsizeDividedBy2 ) ) * Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID2 ) - ( gridToAddCellsize / 2.0d ) ) ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
                                             areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    gridToAdd.getCellYBigDecimal(cellID2).subtract(
-                                                            gridToAddHalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
-                                                            gridToAdd.getCellXBigDecimal(cellID2).subtract(
-                                                                    gridToAddHalfCellsize))).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                                    g2.getCellYBigDecimal(cellID2).subtract(
+                                                            g2HalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
+                                                            g2.getCellXBigDecimal(cellID2).subtract(
+                                                                    g2HalfCellsize))).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
-                                        tempGrid1.addToCell(row, col, d2 * areaProportion);
-                                        tempGrid2.addToCell(row, col, areaProportion);
+                                        tg1.addToCell(row, col, d2 * areaProportion);
+                                        tg2.addToCell(row, col, areaProportion);
                                     }
                                 }
-                                if (!gridToAdd.isInGrid(cellID3) && d3 != gridToAddNoDataValue) {
+                                if (!g2.isInGrid(cellID3) && d3 != g2NoDataValue) {
                                     if (!cellID3.equals(cellID1)) {
                                         if (cellID3.equals(cellID4)) {
-                                            //areaProportion = ( Math.abs( ( gridToAdd.getCellYDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * cellsize ) / ( gridToAddCellsize * gridToAddCellsize );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3).add(
-                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
-                                                    gridCellsize)).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                            areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
+                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
+                                                    gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         } else {
-                                            //areaProportion = ( ( Math.abs( ( gridToAdd.getCellYDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( ( gridToAdd.getCellXDouble( cellID3 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[0] ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                            areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID3).add(
-                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((gridToAdd.getCellXBigDecimal(cellID3).add(
-                                                    gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
-                                                    gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
+                                            areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
+                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((g2.getCellXBigDecimal(cellID3).add(
+                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
+                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                         }
-                                        tempGrid1.addToCell(row, col, d3 * areaProportion);
-                                        tempGrid2.addToCell(row, col, areaProportion);
+                                        tg1.addToCell(row, col, d3 * areaProportion);
+                                        tg2.addToCell(row, col, areaProportion);
                                     }
                                 }
-                                if (!gridToAdd.isInGrid(cellID4) && d4 != gridToAddNoDataValue) {
+                                if (!g2.isInGrid(cellID4) && d4 != g2NoDataValue) {
                                     if (cellID4 != cellID2 && cellID4 != cellID3) {
-                                        //areaProportion = ( ( Math.abs( ( gridToAdd.getCellYDouble( cellID4 ) + ( gridToAddCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( bounds[2] - ( gridToAdd.getCellXDouble( cellID4 ) - ( gridToAddCellsize / 2.0d ) ) ) ) / ( gridToAddCellsize * gridToAddCellsize ) );
-                                        areaProportion = Math.abs(((((gridToAdd.getCellYBigDecimal(cellID4).add(gridToAddHalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(BigDecimal.valueOf(bounds[2]).subtract((gridToAdd.getCellXBigDecimal(cellID4)).subtract(gridToAddHalfCellsize)))).divide(gridToAddCellsizeSquared, scale, roundingMode)).doubleValue());
-                                        tempGrid1.addToCell(row, col, d4 * areaProportion);
-                                        tempGrid2.addToCell(row, col, areaProportion);
+                                        areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID4).add(g2HalfCellsize)).subtract(
+                                                BigDecimal.valueOf(bounds[1]))).multiply(
+                                                BigDecimal.valueOf(bounds[2]).subtract(
+                                                        (g2.getCellXBigDecimal(cellID4)).subtract(
+                                                                g2HalfCellsize)))).divide(
+                                                        g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                        tg1.addToCell(row, col, d4 * areaProportion);
+                                        tg2.addToCell(row, col, areaProportion);
                                     }
                                 }
-                                //// Check
-                                // Check fails due to rounding errors!
-                                //if ( cellID1 != Integer.MIN_VALUE && cellID2 != Integer.MIN_VALUE && cellID3 != Integer.MIN_VALUE && cellID4 != Integer.MIN_VALUE && totalArea != 1.0 ) { println( "id = " + i + " : totalArea = " + totalArea + " (cellID1,cellID2,cellID3,cellID4) = (" + cellID1 + "," + cellID2 + "," + cellID3 + "," + cellID4 + ")" ); System.exit(0);}
                             }
                         }
                     }
@@ -2091,16 +2074,13 @@ public class Grids_Processor extends Grids_Object {
                     for (row = 0; row <= nrows; row++) {
                         ge.checkAndMaybeFreeMemory();
                         for (col = 0; col <= ncols; col++) {
-                            d1 = tempGrid2.getCell(row, col);
+                            d1 = tg2.getCell(row, col);
                             if (!(d1 == 0.0d || d1 == noDataValue)) {
-                                //setCell( i, tempGrid2.getCell( i ) );
-                                grid.addToCell(row, col, weight * tempGrid1.getCell(row, col) / d1);
-                                //addToCell( i, tempGrid1.getCell( i ) / ( Math.pow( ( gridToAddCellsize / cellsize ), 2.0d ) / d1 ) );
+                                g.addToCell(row, col,
+                                        weight * tg1.getCell(row, col) / d1);
                             }
                         }
                     }
-                    //                tempGrid1.clear();
-                    //                tempGrid2.clear();
                 }
             }
             ge.checkAndMaybeFreeMemory(hoome);
@@ -2111,16 +2091,8 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve(hoome);
-                addToGrid(
-                        grid,
-                        gridToAdd,
-                        startRow,
-                        startCol,
-                        endRow,
-                        endCol,
-                        dimensionConstraints,
-                        weight,
-                        hoome);
+                addToGrid(g, g2, startRow, startCol, endRow, endCol,
+                        constraintDimensions, weight, hoome);
             } else {
                 throw e;
             }
@@ -2134,9 +2106,9 @@ public class Grids_Processor extends Grids_Object {
      * @param file the file contining values to be added.
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
      * )
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -2300,9 +2272,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g0
      * @param g1
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridDouble multiply(
@@ -2363,9 +2335,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g0 Numerator
      * @param g1 Denominator
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridDouble divide(
@@ -2397,15 +2369,14 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble g1) {
         Grids_GridDouble result;
         boolean hoome = false;
-        long nRows = g0.getNRows(hoome);
-        long nCols = g0.getNCols(hoome);
-        result = GridDoubleFactory.create(
-                getDirectory(hoome),
+        long nRows = g0.getNRows();
+        long nCols = g0.getNCols();
+        result = GridDoubleFactory.create(getDirectory(hoome),
                 g0, 0L, 0L, nRows - 1, nCols - 1, hoome);
         double v0;
         double v1;
-        double noDataValue0 = g0.getNoDataValue(hoome);
-        double noDataValue1 = g1.getNoDataValue(hoome);
+        double noDataValue0 = g0.getNoDataValue();
+        double noDataValue1 = g1.getNoDataValue();
         for (long row = 0L; row < nRows; row++) {
             for (long col = 0L; col < nCols; col++) {
                 v0 = g0.getCell(row, col, hoome);
@@ -2413,7 +2384,7 @@ public class Grids_Processor extends Grids_Object {
                 if (v0 != noDataValue0) {
                     if (v1 != noDataValue1) {
                         if (v1 != 0) {
-                            result.setCell(row, col, v0 / v1, hoome);
+                            result.setCell(row, col, v0 / v1);
                         }
                     }
                 }
@@ -2440,11 +2411,11 @@ public class Grids_Processor extends Grids_Object {
      * xllcorner < 0 result xllcorner will be left of grid xllcorner @param
      * gridFactory the Abstract2DSquareCell DoubleFactory used to create result
      * and temporary AbstractGrid2DSquareCellDoubles. @param colOffset @param
-     * gridFactory @param hoome If true then OutOfMemoryErrors
-     * are caught in this method then swap operations are initiated prior to ret
-     * r y ing. If false then OutOfMemoryErrors are caught and thrown. NB. In
-     * the calculation of the sum and the mean if there is a cell in grid which
-     * has a data value then the result which incorporates that cell has a data
+     * gridFactory @param hoome If true then OutOfMemoryErrors are caught in
+     * this method then swap operations are initiated prior to ret r y ing. If
+     * false then OutOfMemoryErrors are caught and thrown. NB. In the
+     * calculation of the sum and the mean if there is a cell in grid which has
+     * a data value then the result which incorporates that cell has a data
      * value. For this result cell, any of the cells in grid which have
      * noDataValues their value is taken as that of the average of its nearest
      * cells with a value. In the calculation of the max and the min
@@ -2711,14 +2682,14 @@ public class Grids_Processor extends Grids_Object {
      * @param resultDimensions
      * @param gridFactory The Abstract2DSquareCellDoubleFactory used to create
      * _AbstractGrid2DSquareCell_HashSet
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown. Use this aggregate
-     * method if result is to have a new spatial frame. NB. In the calculation
-     * of the sum and the mean if there is a cell in grid which has a data value
-     * then the result which incorporates that cell has a data value. For this
-     * result cell, any of the cells in grid which have noDataValues their value
-     * is taken as that of the average of its nearest cells with a value. In the
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown. Use this aggregate method if
+     * result is to have a new spatial frame. NB. In the calculation of the sum
+     * and the mean if there is a cell in grid which has a data value then the
+     * result which incorporates that cell has a data value. For this result
+     * cell, any of the cells in grid which have noDataValues their value is
+     * taken as that of the average of its nearest cells with a value. In the
      * calculation of the max and the min noDataValues are simply ignored.
      * Formerly noDataValues were treated as the average of values within a
      * result cell. TODO: implement median, mode and variance aggregations.
