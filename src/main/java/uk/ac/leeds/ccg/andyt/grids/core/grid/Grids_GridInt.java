@@ -300,6 +300,10 @@ public class Grids_GridInt
      *
      * @param file The File the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
+     * <<<<<<< HEAD ======= @param
+     * _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
+     * Grids_AbstractGridNumber instances. >>>>>>>
+     * c0d2aa4510ddc5e5ac4daceec0315b58571d0c99
      * @param hoome If true then OutOfMemoryErrors are caught, swap operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
@@ -361,6 +365,10 @@ public class Grids_GridInt
             //ioe.printStackTrace();
             // Set the reference to this in the Grid Stats
             getStats().init(this);
+            ge.setDataToSwap(true);
+            if (!Stats.isUpdated()) {
+                ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
+            }
             ge.addGrid(this);
         } catch (OutOfMemoryError e) {
             if (hoome) {
@@ -439,6 +447,10 @@ public class Grids_GridInt
                         + NChunkRows);
             }
             ge.addGrid(this);
+            ge.setDataToSwap(true);
+            if (!Stats.isUpdated()) {
+                ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
+            }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -715,6 +727,10 @@ public class Grids_GridInt
                 }
             }
             ge.addGrid(this);
+            ge.setDataToSwap(true);
+            if (!Stats.isUpdated()) {
+                ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
+            }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -789,7 +805,6 @@ public class Grids_GridInt
                 g2 = gf.create(Directory, g, startRowIndex, startColIndex,
                         endRowIndex, endColIndex, hoome);
                 init(g2, false);
-
             }
             initChunks(gridFile);
         } else {
@@ -885,6 +900,10 @@ public class Grids_GridInt
                     }
                 }
             }
+        }
+        ge.setDataToSwap(true);
+        if (!Stats.isUpdated()) {
+            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
         }
     }
 
@@ -1006,6 +1025,10 @@ public class Grids_GridInt
                     }
                 }
             }
+        }
+        ge.setDataToSwap(true);
+        if (!Stats.isUpdated()) {
+            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
         }
     }
 
@@ -2802,9 +2825,7 @@ public class Grids_GridInt
         boolean hoome = true;
         while (ite.hasNext()) {
             ge.checkAndMaybeFreeMemory(hoome);
-            System.out.println(
-                    "Initialising Chunk " + counter
-                    + " out of " + nChunks);
+            System.out.println("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             chunkID = ite.next();
             chunk = (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
@@ -2812,11 +2833,7 @@ public class Grids_GridInt
             chunkNCols = getChunkNCols(chunkID, hoome);
             for (row = 0; row <= chunkNRows; row++) {
                 for (col = 0; col <= chunkNCols; col++) {
-                    chunk.setCell(
-                            chunkNRows,
-                            chunkNCols,
-                            value,
-                            hoome);
+                    chunk.initCell(chunkNRows, chunkNCols, value);
                 }
             }
         }

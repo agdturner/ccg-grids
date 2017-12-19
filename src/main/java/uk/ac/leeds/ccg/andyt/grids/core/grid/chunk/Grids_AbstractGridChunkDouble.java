@@ -234,10 +234,10 @@ public abstract class Grids_AbstractGridChunkDouble
      * @param row the row of the chunk.
      * @param col the column of the chunk.
      * @param valueToSet the value the cell is to be set to.
-     * @param hoome If true then if OutOfMemoryError is thrown
-     * then there is an attempt to manage memory. If false then if an
-     * OutOfMemoryError is thrown then there is no attempt to manage memory and
-     * the method throws the OutOfMemoryError.
+     * @param hoome If true then if OutOfMemoryError is thrown then there is an
+     * attempt to manage memory. If false then if an OutOfMemoryError is thrown
+     * then there is no attempt to manage memory and the method throws the
+     * OutOfMemoryError.
      * @return
      */
     public double setCell(
@@ -247,7 +247,7 @@ public abstract class Grids_AbstractGridChunkDouble
             boolean hoome) {
         try {
             ge.checkAndMaybeFreeMemory(hoome);
-            double result = setCell(                    row,                    col,                    valueToSet);
+            double result = setCell(row, col, valueToSet);
             ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
@@ -257,7 +257,7 @@ public abstract class Grids_AbstractGridChunkDouble
                     throw e;
                 }
                 ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return setCell(                        row,                        col,                        valueToSet,                        hoome);
+                return setCell(row, col, valueToSet, hoome);
             } else {
                 throw e;
             }
@@ -287,9 +287,9 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Returns all the values in row major order as a double[].
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public double[] toArrayIncludingNoDataValues(
@@ -379,9 +379,9 @@ public abstract class Grids_AbstractGridChunkDouble
      * Returns all the values (not including _NoDataVAlues) in row major order
      * as a double[].
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public double[] toArrayNotIncludingNoDataValues(
@@ -439,9 +439,9 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Returns the minimum of all non _NoDataValues as a double.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public double getMinDouble(
@@ -497,9 +497,9 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Returns the maximum of all non _NoDataValues as a double.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public double getMaxDouble(
@@ -551,9 +551,9 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Returns the mode of all non _NoDataValues as a TDoubleHashSet.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public HashSet<Double> getMode(

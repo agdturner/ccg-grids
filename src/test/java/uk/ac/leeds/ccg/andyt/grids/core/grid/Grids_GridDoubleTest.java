@@ -17,8 +17,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatistics;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_GridDoubleStatisticsNotUpdated;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStats;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
@@ -229,7 +229,7 @@ public class Grids_GridDoubleTest {
                 chunkNRows,
                 chunkNCols,
                 new Grids_Dimensions(nRows, nCols),
-                new Grids_GridDoubleStatisticsNotUpdated(ge));
+                new Grids_GridDoubleStatsNotUpdated(ge));
         return result;
     }
 
@@ -271,8 +271,8 @@ public class Grids_GridDoubleTest {
         Grids_GridDouble result;
         Grids_Dimensions dimensions;
         dimensions = getDimensions(nRows, nCols);
-        Grids_GridDoubleStatistics gridStatistics;
-        gridStatistics = new Grids_GridDoubleStatistics(gridDoubleFactory.ge);
+        Grids_GridDoubleStats gridStatistics;
+        gridStatistics = new Grids_GridDoubleStats(gridDoubleFactory.ge);
         result = gridDoubleFactory.create(
                 gridStatistics,
                 gridDoubleFactory.ge.getFiles().getGeneratedGridDoubleDir(),
