@@ -1772,8 +1772,8 @@ public class Grids_Processor extends Grids_Object {
         try {
             ge.getGrids().add(g);
             ge.getGrids().add(g2);
-            addToGrid(g, g2, 0L, 0L, g2.getNRows(hoome) - 1L,
-                    g2.getNCols(hoome) - 1L, weight, hoome);
+            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
+                    g2.getNCols() - 1L, weight, hoome);
             ge.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
@@ -1944,7 +1944,9 @@ public class Grids_Processor extends Grids_Object {
                             x = g2.getCellXDouble(col);
                             value = g2.getCell(row, col);
                             if (value != g2NoDataValue) {
-                                g.addToCell(x, y, value * weight);
+                                if (value != 0.0d) {
+                                    g.addToCell(x, y, value * weight);
+                                }
                             }
                         }
                     }

@@ -85,8 +85,8 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long nRows,
             long nCols,
             Grids_Dimensions dimensions) {
-        return create(ge.getFiles().createNewFile(
-                        Directory),
+        return create(
+                ge.getFiles().createNewFile(Directory),
                 nRows,
                 nCols,
                 dimensions,
