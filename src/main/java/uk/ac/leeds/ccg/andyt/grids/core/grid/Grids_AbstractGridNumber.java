@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.statistics.Grids_AbstractGridNumberStatistics;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
 
 /**
  * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and
@@ -54,7 +54,7 @@ public abstract class Grids_AbstractGridNumber
     public String toString() {
         String result;
         result = super.toString();
-//        result += "," + Statistics.toString(true);
+//        result += "," + Stats.toString(true);
         return result;
     }
 
@@ -66,12 +66,12 @@ public abstract class Grids_AbstractGridNumber
      */
     protected void init(Grids_AbstractGridNumber g) {
         super.init(g);
-        Grids_AbstractGridNumberStatistics s;
-        s = g.getStatistics();
-//        if (Statistics instanceof Grids_GridStatistics) {
-//            Statistics = new Grids_GridStatistics(this);
+        Grids_AbstractGridNumberStats s;
+        s = g.getStats();
+//        if (Stats instanceof Grids_GridStatistics) {
+//            Stats = new Grids_GridStatistics(this);
 //        } else {
-//            Statistics = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
+//            Stats = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
 //        }
     }
 
@@ -740,10 +740,10 @@ public abstract class Grids_AbstractGridNumber
      * this._GridStatistics. Or the _GridStatistics need to be made safe in that
      * only copies of fields are passed.
      */
-    public Grids_AbstractGridNumberStatistics getStatistics(boolean hoome) {
+    public Grids_AbstractGridNumberStats getStatistics(boolean hoome) {
         try {
-            Grids_AbstractGridNumberStatistics result;
-            result = getStatistics();
+            Grids_AbstractGridNumberStats result;
+            result = getStats();
             ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
@@ -757,6 +757,6 @@ public abstract class Grids_AbstractGridNumber
         }
     }
 
-    public abstract Grids_AbstractGridNumberStatistics getStatistics();
+    public abstract Grids_AbstractGridNumberStats getStats();
 
 }

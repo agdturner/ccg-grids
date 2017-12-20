@@ -1442,7 +1442,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         boolean hoome = true;
         long n;
         n = grid.getStatistics(hoome).getN(hoome);
-        //double sparseness = grid.getStatistics().getSparseness();
+        //double sparseness = grid.getStats().getSparseness();
         long nrows = grid.getNRows(hoome);
         long ncols = grid.getNCols(hoome);
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );

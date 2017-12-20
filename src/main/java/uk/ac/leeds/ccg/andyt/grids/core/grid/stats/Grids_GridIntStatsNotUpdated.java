@@ -16,7 +16,7 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package uk.ac.leeds.ccg.andyt.grids.core.grid.statistics;
+package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
@@ -30,8 +30,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
  * statistic fields up to date as the underlying data is changed can be
  * expensive, but also it can be expensive to calculate statistics often!)
  */
-public class Grids_GridDoubleStatisticsNotUpdated
-        extends Grids_GridDoubleStatistics
+public class Grids_GridIntStatsNotUpdated
+        extends Grids_GridIntStats
         implements Serializable {
 
     /**
@@ -42,7 +42,7 @@ public class Grids_GridDoubleStatisticsNotUpdated
     /**
      * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
      */
-    protected Grids_GridDoubleStatisticsNotUpdated() {
+    protected Grids_GridIntStatsNotUpdated() {
     }
 
     /**
@@ -50,7 +50,7 @@ public class Grids_GridDoubleStatisticsNotUpdated
      *
      * @param ge
      */
-    public Grids_GridDoubleStatisticsNotUpdated(Grids_Environment ge) {
+    public Grids_GridIntStatsNotUpdated(Grids_Environment ge) {
         super(ge);
     }
 
@@ -59,9 +59,18 @@ public class Grids_GridDoubleStatisticsNotUpdated
      *
      * @param g
      */
-    public Grids_GridDoubleStatisticsNotUpdated(
+    public Grids_GridIntStatsNotUpdated(
             Grids_AbstractGridNumber g) {
         super(g.ge);
+    }
+
+    /**
+     * @return true iff the stats are kept up to date as the underlying data
+     * change.
+     */
+    @Override
+    public boolean isUpdated() {
+        return false;
     }
 
     /**
@@ -84,9 +93,9 @@ public class Grids_GridDoubleStatisticsNotUpdated
     }
 
     /**
-     * Updates fields (statistics) by going through all values in Grid if they
-     * might not be up to date. (NB. After calling this it is inexpensive to
-     * convert to Grids_GridIntStatistics.)
+     * Updates by going through all values in Grid if they might not be up to
+     * date. (NB. After calling this it is inexpensive to convert to
+     * Grids_GridIntStats.)
      */
     @Override
     public void update() {
@@ -121,11 +130,11 @@ public class Grids_GridDoubleStatisticsNotUpdated
     /**
      * For returning the minimum of all data values.
      *
-     * @param update If true then an update of the statistics is made.
+     * @param update If true then update() is called.
      * @return
      */
     @Override
-    public Double getMin(boolean update) {
+    public Integer getMin(boolean update) {
         if (update) {
             update();
         }
@@ -135,11 +144,11 @@ public class Grids_GridDoubleStatisticsNotUpdated
     /**
      * For returning the maximum of all data values.
      *
-     * @param update If true then an update of the statistics is made.
+     * @param update If true then update() is called.
      * @return
      */
     @Override
-    public Double getMax(boolean update) {
+    public Integer getMax(boolean update) {
         if (update) {
             update();
         }
@@ -157,8 +166,7 @@ public class Grids_GridDoubleStatisticsNotUpdated
 //    }
 //
 //    @Override
-//    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
+//    protected BigDecimal getStandardDeviation() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-
 }
