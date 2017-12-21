@@ -54,7 +54,7 @@ public class Grids_GridChunkIntArray
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
         initData();
-        int noDataValue = g.getNoDataValue(ge.HOOME);
+        int noDataValue = g.getNoDataValue();
         int row;
         for (row = 0; row < ChunkNRows; row++) {
             Arrays.fill(Data[row], noDataValue);
@@ -75,16 +75,11 @@ public class Grids_GridChunkIntArray
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
         initData();
-        Grids_GridInt g = chunk.getGrid();
         int row;
         int col;
-        boolean hoome = true;
         for (row = 0; row < ChunkNRows; row++) {
             for (col = 0; col < ChunkNCols; col++) {
-                Data[row][col] = chunk.getCell(
-                        row,
-                        col,
-                        hoome);
+                Data[row][col] = chunk.getCell(row, col);
             }
         }
         SwapUpToDate = false;
@@ -99,8 +94,7 @@ public class Grids_GridChunkIntArray
     }
 
     /**
-     * Returns Data. TODO: Should the array be copied and the copy
-     * returned?
+     * Returns Data. TODO: Should the array be copied and the copy returned?
      *
      * @return
      */
@@ -109,7 +103,7 @@ public class Grids_GridChunkIntArray
     }
 
     /**
-     * Clears the Data associated with 
+     * Clears the Data associated with
      */
     protected @Override
     void clearData() {
@@ -121,10 +115,8 @@ public class Grids_GridChunkIntArray
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex.
      *
-     * @param row the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param col the column index of the cell w.r.t. the origin
-     * of this chunk
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @return
      */
     public @Override
@@ -137,51 +129,45 @@ public class Grids_GridChunkIntArray
     /**
      * Initialises the value at position given by: row, col.
      *
-     * @param row the row index of the cell w.r.t. the origin of
-     * this chunk.
-     * @param col the column index of the cell w.r.t. the origin
-     * of this chunk.
-     * @param valueToInitialise the value with which the cell is initialised
+     * @param row the row index of the cell w.r.t. the origin of this chunk.
+     * @param col the column index of the cell w.r.t. the origin of this chunk.
+     * @param v the value with which the cell is initialised
      */
-     @Override
-    public
-    void initCell(
+    @Override
+    public void initCell(
             int row,
             int col,
-            int valueToInitialise) {
-        Data[row][col] = valueToInitialise;
+            int v) {
+        Data[row][col] = v;
     }
 
     /**
      * Returns the value at position given by: chunk cell row chunkCellRowIndex;
      * chunk cell row chunkCellColIndex and sets it to valueToSet
      *
-     * @param row the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param col the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param valueToSet the value the cell is to be set to
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
+     * @param v the value the cell is to be set to
      * @return
      */
-     @Override
+    @Override
     public int setCell(
             int row,
             int col,
-            int valueToSet) {
-            int oldValue = Data[row][col];
-            Data[row][col] = valueToSet;
-            if (isSwapUpToDate()) {
-                if (valueToSet != oldValue) {
-                    setSwapUpToDate(false);
-                }
+            int v) {
+        int oldValue = Data[row][col];
+        Data[row][col] = v;
+        if (isSwapUpToDate()) {
+            if (v != oldValue) {
+                setSwapUpToDate(false);
             }
-            return oldValue;
+        }
+        return oldValue;
     }
-
 
     @Override
     public Number getMin(boolean update) {
-        
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -201,8 +187,8 @@ public class Grids_GridChunkIntArray
      *
      * @return
      */
-    protected @Override
-    Grids_GridChunkIntArrayOrMapIterator iterator() {
+    @Override
+    public Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 

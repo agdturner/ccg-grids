@@ -43,8 +43,8 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
         Row = 0;
         Col = 0;
         Grids_GridBinary g = chunk.getGrid();
-        NRows = g.getChunkNRows(chunk.ChunkID, ge.HOOME);
-        NCols = g.getChunkNCols(chunk.ChunkID, ge.HOOME);
+        NRows = g.getChunkNRows(chunk.ChunkID);
+        NCols = g.getChunkNCols(chunk.ChunkID);
     }
 
     /**

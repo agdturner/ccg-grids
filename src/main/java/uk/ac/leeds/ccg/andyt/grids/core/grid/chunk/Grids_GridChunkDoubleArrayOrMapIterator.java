@@ -57,7 +57,7 @@ public class Grids_GridChunkDoubleArrayOrMapIterator
 
     @Override
     public void remove() {
-        Data[Row][Col] = ((Grids_GridDouble) Grid).getNoDataValue(ge.HOOME);
+        Data[Row][Col] = ((Grids_GridDouble) Grid).getNoDataValue();
 //        throw new UnsupportedOperationException();
     }
 }

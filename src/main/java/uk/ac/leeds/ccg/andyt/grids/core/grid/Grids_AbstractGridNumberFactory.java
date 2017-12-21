@@ -85,12 +85,8 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             long nRows,
             long nCols,
             Grids_Dimensions dimensions) {
-        return create(
-                ge.getFiles().createNewFile(Directory),
-                nRows,
-                nCols,
-                dimensions,
-                ge.HOOME);
+        return create(ge.getFiles().createNewFile(Directory), nRows, nCols,
+                dimensions, ge.HOOME);
     }
 
     /**
@@ -99,9 +95,9 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * @param nRows The _NRows for the construct.
      * @param nCols The _NCols for the construct.
      * @param dimensions
-     * @param hoome If true then OutOfMemoryErrors are caught
-     * in this method then swap operations are initiated prior to retrying. If
-     * false then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught in this method
+     * then swap operations are initiated prior to retrying. If false then
+     * OutOfMemoryErrors are caught and thrown.
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
@@ -120,42 +116,31 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      */
     public Grids_AbstractGridNumber create(
             Grids_AbstractGridNumber g) {
-        return create(Directory,
-                g,
-                0L,
-                0L,
-                g.getNRows(ge.HOOMET) - 1L,
-                g.getNCols(ge.HOOMET) - 1L,
-                ge.HOOME);
+        return create(Directory, g, 0L, 0L, g.getNRows() - 1L,
+                g.getNCols() - 1L, ge.HOOME);
     }
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from
      * grid2DSquareCell.
      * @param g The Grids_AbstractGridNumber from which values are obtained.
-     * @param startRowIndex The topmost row index of grid2DSquareCell thats
+     * @param startRow The topmost row index of grid2DSquareCell thats values
+     * are used.
+     * @param startCol The leftmost column index of grid2DSquareCell thats
      * values are used.
-     * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     * values are used.
-     * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     * values are used.
-     * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     * values are used.
+     * @param endRow The bottom row index of the grid2DSquareCell thats values
+     * are used.
+     * @param endCol The rightmost column index of grid2DSquareCell thats values
+     * are used.
      */
     public Grids_AbstractGridNumber create(
             Grids_AbstractGridNumber g,
-            long startRowIndex,
-            long startColIndex,
-            long endRowIndex,
-            long endColIndex) {
+            long startRow,
+            long startCol,
+            long endRow,
+            long endCol) {
         File file = ge.getFiles().createNewFile(Directory);
-        return create(file,
-                g,
-                startRowIndex,
-                startColIndex,
-                endRowIndex,
-                endColIndex,
-                ge.HOOME);
+        return create(file, g, startRow, startCol, endRow, endCol, ge.HOOME);
     }
 
     /**
@@ -163,23 +148,23 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * grid2DSquareCell.
      * @param directory The Directory to be used for storing data in files.
      * @param g The Grids_AbstractGridNumber from which values are obtained.
-     * @param startRowIndex The topmost row index of grid2DSquareCell thats
+     * @param startRow The topmost row index of grid2DSquareCell thats values
+     * are used.
+     * @param startCol The leftmost column index of grid2DSquareCell thats
      * values are used.
-     * @param startColIndex The leftmost column index of grid2DSquareCell thats
-     * values are used.
-     * @param endRowIndex The bottom row index of the grid2DSquareCell thats
-     * values are used.
-     * @param endColIndex The rightmost column index of grid2DSquareCell thats
-     * values are used.
+     * @param endRow The bottom row index of the grid2DSquareCell thats values
+     * are used.
+     * @param endCol The rightmost column index of grid2DSquareCell thats values
+     * are used.
      * @param hoome
      */
     public abstract Grids_AbstractGridNumber create(
             File directory,
             Grids_AbstractGridNumber g,
-            long startRowIndex,
-            long startColIndex,
-            long endRowIndex,
-            long endColIndex,
+            long startRow,
+            long startCol,
+            long endRow,
+            long endCol,
             boolean hoome);
 
     ////////////////////////
@@ -198,16 +183,11 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
             File gridFile) {
         if (gridFile.isDirectory()) {
             // Initialise from File(gridFile,"this")
-            File thisFile = new File(
-                    gridFile,
-                    "thisFile");
+            File thisFile = new File(gridFile, "thisFile");
             try {
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
-                return create(Directory,
-                        gridFile,
-                        ois,
-                        ge.HOOME);
+                return create(Directory, gridFile, ois, ge.HOOME);
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace(System.err);
@@ -215,30 +195,25 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
         }
         // Assume it is ESRI asciigrid
         Grids_ESRIAsciiGridImporter eagi;
-        eagi = new Grids_ESRIAsciiGridImporter(
-                gridFile,
-                ge);
+        eagi = new Grids_ESRIAsciiGridImporter(gridFile, ge);
         Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
         long nCols = header.NCols;
         long nRows = header.NRows;
         //double _NoDataValue = (Double) header[5];
         eagi.close();
-        String gridName = gridFile.getName().substring(0, gridFile.getName().length() - 4);
-        String directoryName = gridFile.getParentFile()
+        String gridName;
+        gridName = gridFile.getName().substring(0,
+                gridFile.getName().length() - 4);
+        String dirName;
+        dirName = gridFile.getParentFile()
                 + System.getProperty("file.separator")
-                + gridName
-                + getClass().getName()
-                + "_ChunkNrows(" + ChunkNRows + ")_ChunkNcols(" + ChunkNCols + ")";
+                + gridName + getClass().getName()
+                + "_ChunkNrows(" + ChunkNRows
+                + ")_ChunkNcols(" + ChunkNCols + ")";
         //this.Directory = Grids_Files.createNewFile( new File( _DirectoryName ) );
-        Directory = new File(directoryName);
+        Directory = new File(dirName);
         Directory.mkdirs();
-        return create(Directory,
-                gridFile,
-                0L,
-                0L,
-                nRows - 1L,
-                nCols - 1L,
-                ge.HOOME);
+        return create(Directory, gridFile, 0L, 0L, nRows - 1L, nCols - 1L, ge.HOOME);
     }
 
     /**
@@ -258,14 +233,9 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * gridFile thats values are used.
      * @param hoome
      */
-    public abstract Grids_AbstractGridNumber create(
-            File directory,
-            File gridFile,
-            long startRowIndex,
-            long startColIndex,
-            long endRowIndex,
-            long endColIndex,
-            boolean hoome);
+    public abstract Grids_AbstractGridNumber create(File directory,
+            File gridFile, long startRowIndex, long startColIndex,
+            long endRowIndex, long endColIndex, boolean hoome);
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
@@ -276,10 +246,8 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * Grids_AbstractGridNumber to be returned.
      * @param hoome
      */
-    public abstract Grids_AbstractGridNumber create(
-            File directory,
-            File gridFile,
-            boolean hoome);
+    public abstract Grids_AbstractGridNumber create(File directory,
+            File gridFile, boolean hoome);
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
@@ -288,9 +256,6 @@ public abstract class Grids_AbstractGridNumberFactory extends Grids_AbstractGrid
      * @param ois The ObjectInputStream to construct from.
      * @param hoome
      */
-    public abstract Grids_AbstractGridNumber create(
-            File directory,
-            File gridFile,
-            ObjectInputStream ois,
-            boolean hoome);
+    public abstract Grids_AbstractGridNumber create(File directory, 
+            File gridFile, ObjectInputStream ois, boolean hoome);
 }

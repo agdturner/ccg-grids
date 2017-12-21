@@ -143,7 +143,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(ge.HOOMEF);
+                ge.initMemoryReserve();
                 return toString(hoome);
             } else {
                 throw e;
@@ -213,43 +213,12 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     /**
      * @return The number of cells with finite data values as a BigInteger.
      */
-    protected abstract Grids_AbstractGridNumber getGrid();
-
-    /**
-     * For returning the number of cells with non zero data values as a
-     * BigInteger.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final BigInteger getNonZeroN(
-            boolean hoome) {
-        try {
-            BigInteger result = getNonZeroN();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(false);
-                return getNonZeroN(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
+    public abstract Grids_AbstractGridNumber getGrid();
 
     /**
      * @return The number of cells with finite non zero data values.
      */
-    protected abstract BigInteger getNonZeroN();
+    public abstract BigInteger getNonZeroN();
 
 //    /**
 //     * For returning the sum of all finite data values.

@@ -178,7 +178,7 @@ public class Grids_Utilities {
      */
     public static final double distance(
             double x1, double y1, double x2, double y2) {
-        return Math.sqrt(Math.pow(x1 - x2, 2.0d) + Math.pow(y1 - y2, 2.0d));
+        return Math.hypot((x1 - x2), (y1 - y2));
     }
 
     /**
@@ -257,13 +257,13 @@ public class Grids_Utilities {
         Object[] result = new Object[4];
         boolean hoome;
         hoome = false;
-        long nrows = xGrid.getNRows(hoome);
-        long ncols = xGrid.getNCols(hoome);
+        long nrows = xGrid.getNRows();
+        long ncols = xGrid.getNCols();
         Grids_Dimensions dimensions = xGrid.getDimensions();
         double xllcorner = dimensions.getXMin().doubleValue();
         double yllcorner = dimensions.getYMin().doubleValue();
-        double xGridNoDataValue = xGrid.getNoDataValue(hoome);
-        double yGridNoDataValue = yGrid.getNoDataValue(hoome);
+        double xGridNoDataValue = xGrid.getNoDataValue();
+        double yGridNoDataValue = yGrid.getNoDataValue();
         double minx = xGrid.getStats().getMin(true);
         double maxx = xGrid.getStats().getMax(true);
         double miny = yGrid.getStats().getMin(true);
@@ -281,11 +281,11 @@ public class Grids_Utilities {
             Grids_GridDoubleIterator ite;
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
-                    value = xGrid.getCell(row, col, hoome);
+                    value = xGrid.getCell(row, col);
                     if (value != yGridNoDataValue) {
                         v = (((value - minx) / (maxx - minx))
                                 * (maxy - miny)) + miny;
-                        xGridRescaled.setCell(row, col, v, hoome);
+                        xGridRescaled.setCell(row, col, v);
                     }
                 }
             }

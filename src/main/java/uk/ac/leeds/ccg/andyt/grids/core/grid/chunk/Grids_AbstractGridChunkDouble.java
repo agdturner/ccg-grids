@@ -22,9 +22,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.HashSet;
-import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 
 /**
@@ -51,38 +49,6 @@ public abstract class Grids_AbstractGridChunkDouble
     @Override
     public final Grids_GridDouble getGrid() {
         return (Grids_GridDouble) Grid;
-    }
-
-    /**
-     * Returns the value at position given by: row, col.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getCell(
-            int row,
-            int col,
-            boolean hoome) {
-        try {
-            double result = getCell(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getCell(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -117,47 +83,6 @@ public abstract class Grids_AbstractGridChunkDouble
 
     /**
      * Returns the value at position given by: row, col and sets it to
-     * valueToSet.
-     *
-     * Warning! Please do not use this, but use grid.setCell(chunk,row, col,
-     * valueToSet,boolean) instead to ensure grid statistics do not go awry.
-     * Ideally this would have some other level of access so that it was not
-     * public!
-     *
-     * @param row the row of the chunk.
-     * @param col the column of the chunk.
-     * @param v the value the cell is to be set to.
-     * @param hoome If true then if OutOfMemoryError is thrown then there is an
-     * attempt to manage memory. If false then if an OutOfMemoryError is thrown
-     * then there is no attempt to manage memory and the method throws the
-     * OutOfMemoryError.
-     * @return
-     */
-    public double setCell(
-            int row,
-            int col,
-            double v,
-            boolean hoome) {
-        try {
-            double result = setCell(row, col, v);
-            ge.checkAndMaybeFreeMemory();
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return setCell(row, col, v, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the value at position given by: row, col and sets it to
      * valueToSet. The noDataValue is passed in for convenience.
      *
      * @param row the row of the chunk.
@@ -170,37 +95,9 @@ public abstract class Grids_AbstractGridChunkDouble
     /**
      * Returns all the values in row major order as a double[].
      *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double[] toArrayIncludingNoDataValues(
-            boolean hoome) {
-        try {
-            double[] result = toArrayIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return toArrayIncludingNoDataValues(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns all the values in row major order as a double[].
-     *
-     * @return
-     */
-    protected double[] toArrayIncludingNoDataValues() {
+    public double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
@@ -227,39 +124,11 @@ public abstract class Grids_AbstractGridChunkDouble
     }
 
     /**
-     * Returns all the values (not including _NoDataVAlues) in row major order
-     * as a double[].
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double[] toArrayNotIncludingNoDataValues(boolean hoome) {
-        try {
-            double[] result = toArrayNotIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return toArrayNotIncludingNoDataValues(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Returns all the values in row major order as a double[].
      *
      * @return
      */
-    protected double[] toArrayNotIncludingNoDataValues() {
+    public double[] toArrayNotIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);

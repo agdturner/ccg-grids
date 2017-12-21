@@ -47,50 +47,16 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
     }
 
     /**
-     * Writes _Grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * a the File to which it was written.
-     *
-     * @param g TheAbstractGrid2DSquareCelll for export.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public File toAsciiFile(
-            Grids_AbstractGridNumber g,
-            boolean hoome) {
-        try {
-            File result = toAsciiFile(g);
-            g.ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                g.ge.clearMemoryReserve();
-                if (g.ge.swapChunksExcept_Account(g, hoome) < 1L) {
-                    throw e;
-                }
-                g.ge.initMemoryReserve(g, hoome);
-                return toAsciiFile(g, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Writes grid2DSquareCell out to file in ESRI Asciigrid format and returns
      * a the File to which it was written.
      *
      * @param g TheAbstractGrid2DSquareCelll for export.
      * @return
      */
-    protected File toAsciiFile(
+    public File toAsciiFile(
             Grids_AbstractGridNumber g) {
-        boolean hoome = false;
-        File directory = g.getDirectory(hoome);
-        File file = new File(
-                directory.getParentFile(),
-                g.getName(hoome) + ".asc");
+        File directory = g.getDirectory();
+        File file = new File(directory.getParentFile(), g.getName() + ".asc");
         return toAsciiFile(g, file);
     }
 
@@ -100,102 +66,18 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      *
      * @param g TheAbstractGrid2DSquareCelll for export.
      * @param file The File to export to.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public File toAsciiFile(
-            Grids_AbstractGridNumber g,
-            File file,
-            boolean hoome) {
-        try {
-            File result = toAsciiFile(g, file);
-            g.ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                g.ge.clearMemoryReserve();
-                if (g.ge.swapChunksExcept_Account(g, hoome) < 1L) {
-                    throw e;
-                }
-                g.ge.initMemoryReserve(g, hoome);
-                return toAsciiFile(g, file, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Writes _Grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * file.
-     *
-     * @param g TheAbstractGrid2DSquareCelll for export.
-     * @param file The File to export to.
-     * @return
-     */
-    protected File toAsciiFile(
             Grids_AbstractGridNumber g,
             File file) {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
-            noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue(ge.HOOMEF);
+            noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue();
         } else if (g instanceof Grids_GridInt) {
-            noDataValue = "" + ((Grids_GridInt) g).getNoDataValue(ge.HOOMEF);
+            noDataValue = "" + ((Grids_GridInt) g).getNoDataValue();
         }
-        return toAsciiFile(
-                g,
-                file,
-                noDataValue);
-    }
-
-    /**
-     * Writes _Grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * file.
-     *
-     * @param g TheAbstractGrid2DSquareCelll for export.
-     * @param file The File to export to.
-     * @param noDataValue The value to be used or substituted as a noDataValue
-     * for g.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public File toAsciiFile(
-            Grids_AbstractGridNumber g,
-            File file,
-            String noDataValue,
-            boolean hoome) {
-        try {
-            File result = toAsciiFile(
-                    g,
-                    file,
-                    noDataValue);
-            g.ge.checkAndMaybeFreeMemory(
-                    hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                g.ge.clearMemoryReserve();
-                if (g.ge.swapChunksExcept_Account(
-                        g,
-                        hoome) < 1L) {
-                    throw e;
-                }
-                g.ge.initMemoryReserve(
-                        g,
-                        hoome);
-                return toAsciiFile(
-                        g,
-                        file,
-                        noDataValue,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
+        return toAsciiFile(                g,                file,                noDataValue);
     }
 
     /**
@@ -208,7 +90,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * for g.
      * @return
      */
-    protected File toAsciiFile(
+    public File toAsciiFile(
             Grids_AbstractGridNumber g,
             File file,
             String noDataValue) {
@@ -245,7 +127,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     }
                     for (col = 0; col < ncols; col++) {
                         //try {
-                        value = gridInt.getCell(                                row,                                col);
+                        value = gridInt.getCell(row, col);
                         if (value == gridNoDataValue) {
                             pw.print(noDataValue + " ");
                         } else {
@@ -286,8 +168,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     System.out.println(
                             "Warning!!! noDataValue not finite in "
                             + "ESRIAsciigridExporter.toAsciiFile("
-                            + gridDouble.getClass().getName() 
-                                    + "(" + gridDouble.toString() + "),"
+                            + gridDouble.getClass().getName()
+                            + "(" + gridDouble.toString() + "),"
                             + "File(" + file.toString() + "))");
                 }
                 pw.println("NODATA_Value " + noDataValue);
@@ -303,7 +185,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         }
 //                        try {
                         //pw.print( grid.getCell( row, col ) + " " );
-                        value = gridDouble.getCell(                                row,                                col);
+                        value = gridDouble.getCell(row, col);
                         if (!Double.isFinite(value)) {
                             pw.print(noDataValue + " ");
                             System.out.println(

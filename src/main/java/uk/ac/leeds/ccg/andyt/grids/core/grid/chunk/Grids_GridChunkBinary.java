@@ -19,12 +19,10 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
 
 /**
- * Provides general methods and controls what methods extended classes must
- * implement acting as an interface.
+ * For binary grid chunks..
  */
 public class Grids_GridChunkBinary
         extends Grids_AbstractGridChunk
@@ -38,10 +36,9 @@ public class Grids_GridChunkBinary
 
     @Override
     protected void initData() {
-        boolean hoome = false;
         Grids_GridBinary g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID, hoome);
-        int chunkNcols = g.getChunkNCols(ChunkID, hoome);
+        int chunkNrows = g.getChunkNRows(ChunkID);
+        int chunkNcols = g.getChunkNCols(ChunkID);
         data = new boolean[chunkNrows][chunkNcols];
     }
 
@@ -54,162 +51,30 @@ public class Grids_GridChunkBinary
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
+     * Returns the value at row, col.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
      * @return
      */
     public boolean getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean hoome) {
-        try {
-            boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getCell(chunkCellRowIndex, chunkCellColIndex, hoome);
-            } else {
-                throw e;
-            }
-        }
+            int row,
+            int col) {
+        return this.data[row][col];
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
+     * Initialises the value at row, col to v.
      *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     * @return
-     */
-    public boolean getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean hoome,
-            Grids_2D_ID_int chunkID) {
-        try {
-            boolean result = getCell(chunkCellRowIndex, chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_AccountDetail(chunkID, false) == null) {
-                    ge.swapChunk_AccountDetail(false);
-                }
-                ge.initMemoryReserve(ChunkID, hoome);
-                return getCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        hoome,
-                        chunkID);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex, as a double.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @return
-     */
-    protected boolean getCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex) {
-        try {
-            return this.data[chunkCellRowIndex][chunkCellColIndex];
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
-     * for constructors of extending classes.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param valueToInitialise the value with which the cell is initialised
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean valueToInitialise,
-            boolean hoome) {
-        try {
-            initCell(
-                    chunkCellRowIndex,
-                    chunkCellColIndex,
-                    valueToInitialise);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                initCell(
-                        chunkCellRowIndex,
-                        chunkCellColIndex,
-                        valueToInitialise,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Initialises the value at position given by: chunk cell row
-     * chunkCellRowIndex; chunk cell column chunkCellColIndex. Utility method
-     * for constructors of extending classes.
-     *
-     * @param chunkCellRowIndex the row index of the cell w.r.t. the origin of
-     * this chunk
-     * @param chunkCellColIndex the column index of the cell w.r.t. the origin
-     * of this chunk
-     * @param valueToInitialise the value with which the cell is initialised
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @param v the value with which the cell is initialised
      */
     protected void initCell(
-            int chunkCellRowIndex,
-            int chunkCellColIndex,
-            boolean valueToInitialise) {
-        this.data[chunkCellRowIndex][chunkCellColIndex] = valueToInitialise;
+            int row,
+            int col,
+            boolean v) {
+        this.data[row][col] = v;
     }
 
     /**
@@ -225,7 +90,7 @@ public class Grids_GridChunkBinary
     }
 
     @Override
-    protected Grids_GridChunkBinaryIterator iterator() {
+    public Grids_GridChunkBinaryIterator iterator() {
         return new Grids_GridChunkBinaryIterator(this);
     }
 

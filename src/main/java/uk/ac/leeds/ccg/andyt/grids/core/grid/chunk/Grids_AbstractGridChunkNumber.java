@@ -39,7 +39,8 @@ public abstract class Grids_AbstractGridChunkNumber
     protected Grids_AbstractGridChunkNumber() {
     }
 
-    protected Grids_AbstractGridChunkNumber(Grids_AbstractGrid g, Grids_2D_ID_int chunkID) {
+    protected Grids_AbstractGridChunkNumber(Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
 

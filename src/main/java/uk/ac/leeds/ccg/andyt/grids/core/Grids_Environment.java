@@ -211,7 +211,7 @@ public class Grids_Environment
     public final void removeFromNotToSwap(
             Grids_AbstractGrid g,
             int chunkRow) {
-        int nChunkCols = g.getNChunkCols(HOOME);
+        int nChunkCols = g.getNChunkCols();
         Grids_2D_ID_int chunkID;
         for (int chunkCol = 0; chunkCol < nChunkCols; chunkCol ++) {
             chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
@@ -455,7 +455,7 @@ public class Grids_Environment
                 if (!swapChunk()) {
                     throw e;
                 }
-                initMemoryReserve(handleOutOfMemoryError);
+                initMemoryReserve();
                 setGrids(grids, handleOutOfMemoryError);
             } else {
                 throw e;
@@ -507,7 +507,7 @@ public class Grids_Environment
         initGrids(grids);
         Iterator<Grids_AbstractGrid> ite = Grids.iterator();
         if (ite.hasNext()) {
-            ite.next().ge.set_MemoryReserve(MemoryReserve);
+            ite.next().ge.setMemoryReserve(MemoryReserve);
         } else {
             initMemoryReserve();
         }
@@ -1122,7 +1122,7 @@ public class Grids_Environment
                 if (!checkAndMaybeFreeMemory()) {
                     throw e;
                 }
-                initMemoryReserve(hoome);
+                initMemoryReserve();
                 return true;
             } else {
                 throw e;
@@ -1237,7 +1237,7 @@ public class Grids_Environment
      */
     protected boolean checkAndMaybeFreeMemory(Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            NotToSwap.put(g, g.getChunkIDs(HOOME));
+            NotToSwap.put(g, g.getChunkIDs());
             do {
                 if (!swapChunkExcept(NotToSwap)) {
                     break;
@@ -2875,7 +2875,7 @@ public class Grids_Environment
                 if (!swapChunk()) {
                     throw e;
                 }
-                initMemoryReserve(handleOutOfMemoryError);
+                initMemoryReserve();
                 swapChunks();
             } else {
                 throw e;
@@ -2981,7 +2981,7 @@ public class Grids_Environment
                 if (!swapChunk()) {
                     throw e;
                 }
-                initMemoryReserve(handleOutOfMemoryError);
+                initMemoryReserve();
                 // No need for recursive call: swapChunk(handleOutOfMemoryError);
                 return true;
             } else {
@@ -4182,7 +4182,6 @@ public class Grids_Environment
     protected long swapChunksExcept_Account(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
-        boolean handleOutOfMemoryError = false;
         long result = 0L;
         Iterator<Grids_AbstractGrid> ite;
         ite = Grids.iterator();
@@ -4192,13 +4191,11 @@ public class Grids_Environment
             if (gb != g) {
                 int cri0 = 0;
                 int cci0 = 0;
-                int cri1 = gb.getNChunkRows(handleOutOfMemoryError) - 1;
-                int cci1 = gb.getNChunkCols(handleOutOfMemoryError) - 1;
-                result += gb.swapChunks_Account(
-                        cri0, cci0, cri1, cci1, handleOutOfMemoryError);
+                int cri1 = gb.getNChunkRows() - 1;
+                int cci1 = gb.getNChunkCols() - 1;
+                result += gb.swapChunks_Account(                        cri0, cci0, cri1, cci1);
             } else {
-                result += gb.swapChunksExcept_Account(
-                        chunkID, handleOutOfMemoryError);
+                result += gb.swapChunksExcept_Account(                        chunkID);
             }
         }
         return result;
@@ -4255,7 +4252,7 @@ public class Grids_Environment
                 combine(result, partResult);
             } else {
                 HashSet<Grids_2D_ID_int> chunks;
-                chunks = g.getChunkIDs(false);
+                chunks = g.getChunkIDs();
                 Grids_2D_ID_int chunkID;
                 Iterator<Grids_2D_ID_int> ite2;
                 ite2 = chunks.iterator();
@@ -4292,9 +4289,9 @@ public class Grids_Environment
             gb = ite.next();
             if (gb != g) {
                 int cri0 = 0;
-                int cri1 = gb.getNChunkRows(HOOMEF) - 1;
+                int cri1 = gb.getNChunkRows() - 1;
                 int cci0 = 0;
-                int cci1 = gb.getNChunkCols(HOOMEF) - 1;
+                int cci1 = gb.getNChunkCols() - 1;
                 result += gb.swapChunks_Account(cri0, cci0, cri1, cci1, HOOMEF);
             } else {
                 result += gb.swapChunksExcept_Account(chunkIDs, false, HOOMEF);

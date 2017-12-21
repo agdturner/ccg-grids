@@ -55,74 +55,6 @@ public abstract class Grids_AbstractGridChunkInt
     /**
      * Returns the value at row, col.
      *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public int getCell(
-            int row,
-            int col,
-            boolean hoome) {
-        try {
-            int result = getCell(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getCell(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the value at row, col.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk
-     * @param col the column of the cell w.r.t. the origin of this chunk
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     * @return
-     */
-    public int getCell(
-            int row,
-            int col,
-            boolean hoome,
-            Grids_2D_ID_int chunkID) {
-        try {
-            int result = getCell(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_AccountDetail(chunkID, false) == null) {
-                    ge.swapChunk_AccountDetail(false);
-                }
-                ge.initMemoryReserve(ChunkID, hoome);
-                return getCell(row, col, hoome, chunkID);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the value at row, col.
-     *
      * @param row The row of the cell w.r.t. the origin of this chunk
      * @param col The column of the cell w.r.t. the origin of this chunk
      * @return
@@ -151,46 +83,6 @@ public abstract class Grids_AbstractGridChunkInt
     public abstract void initCell(int row, int col, int v);
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * valueToSet.
-     *
-     * Warning! Please do not use this, but use grid.setCell(chunk,row, col,
-     * valueToSet,boolean) instead to ensure grid statistics do not go awry.
-     * Ideally this would have some other level of access so that it was not
-     * public!
-     *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public int setCell(
-            int row,
-            int col,
-            int v,
-            boolean hoome) {
-        try {
-            int result = setCell(row, col, v);
-            ge.checkAndMaybeFreeMemory();
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return setCell(row, col, v, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Returns the value at position given by: chunk cell row chunkRow; chunk
      * cell row chunkCol and sets it to valueToSet
      *
@@ -200,37 +92,6 @@ public abstract class Grids_AbstractGridChunkInt
      * @return
      */
     public abstract int setCell(int row, int col, int valueToSet);
-
-    /**
-     * Returns values in row major order as an int[].
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public int[] toArrayIncludingNoDataValues(
-            boolean hoome) {
-        try {
-            int[] result = toArrayIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(
-                        Grid,
-                        ChunkID,
-                        false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return toArrayIncludingNoDataValues(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
 
     /**
      * Returns values in row major order as an int[].
@@ -264,35 +125,6 @@ public abstract class Grids_AbstractGridChunkInt
             }
         }
         return array;
-    }
-
-    /**
-     * Returns values (except those that are noDataValues) in row major order as
-     * an int[].
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public int[] toArrayNotIncludingNoDataValues(
-            boolean hoome) {
-        try {
-            int[] result = toArrayNotIncludingNoDataValues();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return toArrayNotIncludingNoDataValues(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**

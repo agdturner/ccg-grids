@@ -68,10 +68,10 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
-            file = new File(Directory, testData[i].getName(handleOutOfMemoryError) + ".asc");
-            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file, handleOutOfMemoryError);
-            file = new File(Directory, testData[i].getName(handleOutOfMemoryError) + ".png");
-            new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png", handleOutOfMemoryError);
+            file = new File(Directory, testData[i].getName() + ".asc");
+            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file);
+            file = new File(Directory, testData[i].getName() + ".png");
+            new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png");
         }
         System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
     }
@@ -100,8 +100,8 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
             grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
-            addToGrid(grids[i], 0.0d, handleOutOfMemoryError);
-            grids[i].setName("Grid" + i, handleOutOfMemoryError);
+            addToGrid(grids[i], 0.0d);
+            grids[i].setName("Grid" + i);
         }
 
         // grid 1
@@ -439,7 +439,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     }
 
     public HashSet getCellIDsHashSet(Grids_GridDouble grid, long row, long col, double radius, boolean _HandleOutOfMemoryError) {
-        Grids_2D_ID_long[] cellIDs = grid.getCellIDs(row, col, radius, _HandleOutOfMemoryError);
+        Grids_2D_ID_long[] cellIDs = grid.getCellIDs(row, col, radius);
         HashSet cellIDsHashSet = new HashSet();
         for (int cellIDIndex = 0; cellIDIndex < cellIDs.length; cellIDIndex++) {
             cellIDsHashSet.add(cellIDs[cellIDIndex]);
@@ -476,31 +476,31 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                grids[0].setCell(i, j, Math.random(), handleOutOfMemoryError);
+                grids[0].setCell(i, j, Math.random());
             }
         }
         // grids[ 1 ] should show some +ve correlation with grids[ 0 ] for large enough nrows and ncols
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                grids[1].setCell(i, j, grids[0].getCell(i, j, handleOutOfMemoryError) + Math.random(), handleOutOfMemoryError);
+                grids[1].setCell(i, j, grids[0].getCell(i, j) + Math.random());
             }
         }
         // grids[ 2 ] should be highly +vely correlated with grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                grids[2].setCell(i, j, (10.0d * grids[0].getCell(i, j, handleOutOfMemoryError)) + Math.random(), handleOutOfMemoryError);
+                grids[2].setCell(i, j, (10.0d * grids[0].getCell(i, j)) + Math.random());
             }
         }
         // grids[ 3 ] should show some -ve correlation with grids[ 0 ] for large enough nrows and ncols
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                grids[3].setCell(i, j, Math.random() - grids[0].getCell(i, j, handleOutOfMemoryError), handleOutOfMemoryError);
+                grids[3].setCell(i, j, Math.random() - grids[0].getCell(i, j));
             }
         }
         // grids[ 4 ] should be highly -vely correlated with grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                grids[4].setCell(i, j, Math.random() - (10.0d * grids[0].getCell(i, j, handleOutOfMemoryError)), handleOutOfMemoryError);
+                grids[4].setCell(i, j, Math.random() - (10.0d * grids[0].getCell(i, j)));
             }
         }
         return grids;
@@ -515,24 +515,24 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         for (int iterations = 0; iterations < 100; iterations++) {
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    catchment[0].addToCell(row, col, Math.pow(Math.random() * (Math.abs(row - (nrows / 2.0d)) + 5.0d), 0.125d), handleOutOfMemoryError);
-                    catchment[0].addToCell(row, col, Math.pow(Math.random() * ((col / 2.0d) + 5.0d), 0.125d), handleOutOfMemoryError);
+                    catchment[0].addToCell(row, col, Math.pow(Math.random() * (Math.abs(row - (nrows / 2.0d)) + 5.0d), 0.125d));
+                    catchment[0].addToCell(row, col, Math.pow(Math.random() * ((col / 2.0d) + 5.0d), 0.125d));
                     //catchment[0].addToCell( row, col, ( Math.pow( Math.random() * ( Math.abs( row - ( nrows / 2.0d ) ) + 50.0d ), 0.125d ) ) * ( Math.pow( Math.random() * col, 0.125d ) ) );
                 }
             }
         }
         // Mask
-        double noDataValue = catchment[0].getNoDataValue(handleOutOfMemoryError);
-        double centreX = catchment[0].getCellXDouble(49, handleOutOfMemoryError);
-        double centreY = catchment[0].getCellYDouble(49, handleOutOfMemoryError);
+        double noDataValue = catchment[0].getNoDataValue();
+        double centreX = catchment[0].getCellXDouble(49);
+        double centreY = catchment[0].getCellYDouble(49);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                if (Grids_Utilities.distance(catchment[0].getCellXDouble(col, handleOutOfMemoryError), catchment[0].getCellYDouble(row, handleOutOfMemoryError), centreX, centreY) >= 50.0d) {
-                    catchment[0].setCell(row, col, noDataValue, handleOutOfMemoryError);
+                if (Grids_Utilities.distance(catchment[0].getCellXDouble(col), catchment[0].getCellYDouble(row), centreX, centreY) >= 50.0d) {
+                    catchment[0].setCell(row, col, noDataValue);
                 }
             }
         }
-        catchment[0].setName("catchment1", handleOutOfMemoryError);
+        catchment[0].setName("catchment1");
         return catchment;
     }
 }

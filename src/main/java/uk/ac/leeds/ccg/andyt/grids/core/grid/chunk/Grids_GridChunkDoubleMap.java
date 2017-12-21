@@ -131,7 +131,7 @@ public class Grids_GridChunkDoubleMap
             double defaultValue) {
         super(g, chunkID);
         DefaultValue = defaultValue;
-        NoDataValue = g.getNoDataValue(ge.HOOME);
+        NoDataValue = g.getNoDataValue();
         initData();
         SwapUpToDate = false;
     }
@@ -151,21 +151,14 @@ public class Grids_GridChunkDoubleMap
             Grids_2D_ID_int chunkID,
             double defaultValue) {
         super(gridChunk.getGrid(), chunkID);
-        boolean hoome = gridChunk.ge.HOOMEF;
         DefaultValue = defaultValue;
-        NoDataValue = getGrid().getNoDataValue(ge.HOOME);
+        NoDataValue = getGrid().getNoDataValue();
         initData();
         double value;
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
-                value = gridChunk.getCell(
-                        row,
-                        col,
-                        hoome);
-                initCell(
-                        row,
-                        col,
-                        value);
+                value = gridChunk.getCell(row, col);
+                initCell(row, col, value);
             }
         }
         SwapUpToDate = false;
@@ -209,9 +202,9 @@ public class Grids_GridChunkDoubleMap
      */
     double[][] to2DDoubleArray() {
         Grids_GridDouble grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, ge.HOOME);
-        int ncols = grid.getChunkNCols(ChunkID, ge.HOOME);
-        double noDataValue = grid.getNoDataValue(ge.HOOME);
+        int nrows = grid.getChunkNRows(ChunkID);
+        int ncols = grid.getChunkNCols(ChunkID);
+        double noDataValue = grid.getNoDataValue();
         double[][] result;
         result = new double[nrows][ncols];
         Arrays.fill(result, DefaultValue);
@@ -294,14 +287,14 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-    protected @Override
-    double[] toArrayIncludingNoDataValues() {
+    @Override
+    public double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble grid = getGrid();
-        int nrows = grid.getChunkNRows(ChunkID, Grid.ge.HOOMEF);
-        int ncols = grid.getChunkNCols(ChunkID, Grid.ge.HOOMEF);
+        int nrows = grid.getChunkNRows(ChunkID);
+        int ncols = grid.getChunkNCols(ChunkID);
         double[] result;
         result = new double[nrows * ncols];
-        Arrays.fill(result, grid.getNoDataValue(Grid.ge.HOOMEF));
+        Arrays.fill(result, grid.getNoDataValue());
         Iterator<Double> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
@@ -355,8 +348,8 @@ public class Grids_GridChunkDoubleMap
     /**
      * @return
      */
-    protected @Override
-    double[] toArrayNotIncludingNoDataValues() {
+    @Override
+    public double[] toArrayNotIncludingNoDataValues() {
         double[] result;
         Iterator<Double> ite;
         TreeMap<Double, OffsetBitSet> dataMapBitSet;
@@ -757,7 +750,7 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-     @Override
+    @Override
     public Long getN() {
         return ((long) ChunkNRows * (long) ChunkNCols) - NoData.cardinality();
     }
@@ -832,7 +825,7 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-     @Override
+    @Override
     public Double getMin() {
         double min;
         int n = ChunkNRows * ChunkNCols;
@@ -982,7 +975,7 @@ public class Grids_GridChunkDoubleMap
                 }
             }
         }
-        return getGrid().getNoDataValue(false);
+        return getGrid().getNoDataValue();
     }
 
     /**
@@ -1051,8 +1044,8 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-    protected @Override
-    Grids_GridChunkDoubleArrayOrMapIterator iterator() {
+    @Override
+    public Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }
 

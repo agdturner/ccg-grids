@@ -41,6 +41,6 @@ public abstract class Grids_AbstractGridChunkDoubleArrayOrMap extends Grids_Abst
      * @return
      */
     @Override
-    protected abstract Grids_GridChunkDoubleArrayOrMapIterator iterator();
+    public abstract Grids_GridChunkDoubleArrayOrMapIterator iterator();
     
 }

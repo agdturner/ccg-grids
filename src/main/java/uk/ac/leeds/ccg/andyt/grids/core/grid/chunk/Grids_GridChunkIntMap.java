@@ -127,7 +127,7 @@ public class Grids_GridChunkIntMap
             int defaultValue) {
         super(g, chunkID);
         DefaultValue = defaultValue;
-        NoDataValue = g.getNoDataValue(ge.HOOME);
+        NoDataValue = g.getNoDataValue();
         initData();
         SwapUpToDate = false;
     }
@@ -147,14 +147,13 @@ public class Grids_GridChunkIntMap
             Grids_2D_ID_int chunkID,
             int defaultValue) {
         super(gridChunk.getGrid(), chunkID);
-        boolean hoome = gridChunk.ge.HOOMEF;
         DefaultValue = defaultValue;
-        NoDataValue = getGrid().getNoDataValue(ge.HOOME);
+        NoDataValue = getGrid().getNoDataValue();
         initData();
         int value;
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
-                value = gridChunk.getCell(row, col, hoome);
+                value = gridChunk.getCell(row, col);
                 initCell(row, col, value);
             }
         }
@@ -548,7 +547,7 @@ public class Grids_GridChunkIntMap
             Grids_2D_ID_int chunkCellID,
             int valueToInitialise) {
         if (valueToInitialise != DefaultValue) {
-            int noDataValue = getGrid().getNoDataValue(Grid.ge.HOOME);
+            int noDataValue = getGrid().getNoDataValue();
             int position = (row * ChunkNCols) + col;
             if (valueToInitialise == noDataValue) {
                 NoData.set(position);
@@ -989,7 +988,7 @@ public class Grids_GridChunkIntMap
                 }
             }
         }
-        return getGrid().getNoDataValue(false);
+        return getGrid().getNoDataValue();
     }
 
     /**
@@ -1058,8 +1057,8 @@ public class Grids_GridChunkIntMap
      *
      * @return
      */
-    protected @Override
-    Grids_GridChunkIntArrayOrMapIterator iterator() {
+    @Override
+    public Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
     }
 

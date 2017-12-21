@@ -172,7 +172,8 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         divx = (stats.getMax(true) - stats.getMin(true)) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), hoome);
+        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, 
+                new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"));
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new FileOutputStream(new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv")));

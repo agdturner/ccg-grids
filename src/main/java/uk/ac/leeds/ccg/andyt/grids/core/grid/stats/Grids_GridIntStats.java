@@ -210,7 +210,7 @@ public class Grids_GridIntStats
      * @return
      */
     @Override
-    protected BigInteger getNonZeroN() {
+    public BigInteger getNonZeroN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
 //        Grids_GridIntIterator gridIntIterator;
@@ -224,7 +224,7 @@ public class Grids_GridIntStats
 //                    chunkDouble.getNonZeroN(ge.HOOME));
 //        }
         int noDataValue;
-        noDataValue = g.getNoDataValue(ge.HOOME);
+        noDataValue = g.getNoDataValue();
         Iterator<Integer> ite;
         ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
@@ -274,7 +274,7 @@ public class Grids_GridIntStats
         BigDecimal differenceFromMean;
         Grids_GridInt g = (Grids_GridInt) Grid;
         int value;
-        int noDataValue = g.getNoDataValue(ge.HOOME);
+        int noDataValue = g.getNoDataValue();
         Grids_GridIntIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {

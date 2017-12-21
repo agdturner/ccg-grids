@@ -77,59 +77,10 @@ public abstract class Grids_GridBinary
     /**
      * @return a string description of the instance. Basically the values of
      * each field.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public String toString(
-            boolean hoome) {
-        try {
-            String result = "GridBinary( "
-                    + super.toString(hoome) + " )";
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return toString(
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param valueToSet
-     * @return the value at _CellRowIndex, _CellColIndex as a double and sets it
-     * to valueToSet.
-     * @param row The cell row index.
-     * @param col The cell column index.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public double setCell(long row, long col, double valueToSet, boolean hoome) {
-        try {
-            double result = setCell(row, col, valueToSet);
-            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
-            ge.checkAndMaybeFreeMemory(this, chunkID, hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return setCell(row, col, valueToSet, hoome);
-            } else {
-                throw e;
-            }
-        }
+    public String toString() {
+        return "GridBinary( "                    + super.toString() + " )";
     }
 
     /**
@@ -140,6 +91,6 @@ public abstract class Grids_GridBinary
      * @param valueToSet The value set.
      * @return
      */
-    protected abstract double setCell(long row, long col, double valueToSet);
+    public abstract double setCell(long row, long col, double valueToSet);
 
 }

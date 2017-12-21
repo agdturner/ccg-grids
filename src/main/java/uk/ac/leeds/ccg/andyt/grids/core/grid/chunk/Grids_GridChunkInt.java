@@ -107,7 +107,7 @@ public class Grids_GridChunkInt
      * @return
      */
     @Override
-    protected Grids_AbstractIterator iterator() {
+    public Grids_AbstractIterator iterator() {
         return new Grids_GridChunkIntIterator(this);
     }
 

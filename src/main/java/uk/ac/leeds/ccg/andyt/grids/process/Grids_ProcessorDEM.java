@@ -67,39 +67,6 @@ public class Grids_ProcessorDEM
      * Calculates and returns measures of the slope and aspect for the
      * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
      *
-     * @param g The Grids_AbstractGridNumber to be processed.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then caching operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown. Defaults: kernel to have
-     * distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0 ].doubleValue()
-     * ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor = 0.0d;
-     * @return Grids_GridDouble[] _SlopeAndAspect.
-     * @throws java.io.IOException
-     */
-    public Grids_GridDouble[] getSlopeAspect(
-            Grids_AbstractGridNumber g,
-            boolean hoome)
-            throws IOException {
-        try {
-            ge.getGrids().add(g);
-            return getSlopeAspect(g);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return getSlopeAspect(g, hoome);
-            }
-            throw e;
-        }
-    }
-
-    /**
-     * Calculates and returns measures of the slope and aspect for the
-     * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
-     *
      * @param g The Grids_AbstractGridNumber to be processed. Defaults: kernel
      * to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
      * ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
@@ -107,13 +74,13 @@ public class Grids_ProcessorDEM
      * @return Grids_GridDouble[] _SlopeAndAspect. /n
      * @throws java.io.IOException
      */
-    protected Grids_GridDouble[] getSlopeAspect(
+    public Grids_GridDouble[] getSlopeAspect(
             Grids_AbstractGridNumber g)
             throws IOException {
         boolean hoome = true;
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
-        Grids_Dimensions dimensions = g.getDimensions(hoome);
+        Grids_Dimensions dimensions = g.getDimensions();
         double distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
         double weightIntersect = 1.0d;
         double weightFactor = 0.0d;
@@ -123,28 +90,6 @@ public class Grids_ProcessorDEM
                 weightIntersect,
                 weightFactor,
                 hoome);
-    }
-
-    public double[][] getNormalDistributionKernelWeights(
-            double cellsize,
-            double distance,
-            boolean hoome) {
-        try {
-            return Grids_Kernel.getNormalDistributionKernelWeights(
-                    cellsize, distance);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return getNormalDistributionKernelWeights(
-                        cellsize, distance, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -199,10 +144,10 @@ public class Grids_ProcessorDEM
             boolean shortName = true; // Filenames that are too long are problematic!
             boolean swapToFileCache;
             // Initialisation
-            long ncols = g.getNCols(hoome);
-            long nrows = g.getNRows(hoome);
-            Grids_Dimensions dimensions = g.getDimensions(hoome);
-            double cellsize = g.getCellsizeDouble(hoome);
+            long ncols = g.getNCols();
+            long nrows = g.getNRows();
+            Grids_Dimensions dimensions = g.getDimensions();
+            double cellsize = g.getCellsizeDouble();
             long cellDistance = (long) Math.ceil(distance / cellsize);
             double thisDistance;
             double x = 0.0d;
@@ -218,21 +163,19 @@ public class Grids_ProcessorDEM
             double slope;
             double aspect;
             double[][] weights;
-            weights = getNormalDistributionKernelWeights(
-                    g.getCellsizeDouble(hoome),
-                    distance,
-                    hoome);
+            weights = Grids_Kernel.getNormalDistributionKernelWeights(
+                    cellsize, distance);
             double weight;
-            long cellRowIndex;
-            long cellColIndex;
+            long row;
+            long col;
             long p;
             long q;
-            int chunkCellRowIndex;
-            int chunkCellColIndex;
+            int cellRow;
+            int cellCol;
             int cri;
             int cci;
-            int chunkRows = g.getNChunkRows(hoome);
-            int chunkCols = g.getNChunkCols(hoome);
+            int chunkRows = g.getNChunkRows();
+            int chunkCols = g.getNChunkCols();
             int chunkNrows;
             int chunkNcols;
             double double0;
@@ -264,12 +207,7 @@ public class Grids_ProcessorDEM
                         long0 = q + cellDistance;
                         int1 = (int) (long0);
                         thisX = q * cellsize;
-                        thisDistance = distance(
-                                x,
-                                y,
-                                thisX,
-                                thisY,
-                                hoome);
+                        thisDistance = distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
                             weight = weights[int0][int1];
                             weightSum += weight;
@@ -280,19 +218,15 @@ public class Grids_ProcessorDEM
                 }
             }
             averageDistance = distanceSum / numberObservations;
-            String gName = g.getName(hoome);
-            int _FilenameLength = 1000;
+            String gName = g.getName();
             String filename;
             File dir;
             //Grid2DSquareCellDouble _Grid2DSquareCellDouble = new Grids_GridDouble( _AbstractGrid2DSquareCell_HashSet );
-            double noDataValueDoubleInt;
-            double heightDoubleInt;
-            double thisHeightDoubleInt;
             int noDataValueInt;
             int heightInt;
             int thisHeightInt;
             Object[] _NewFileResult = new Object[2];
-            File directory = getDirectory(hoome);
+            File directory = getDirectory();
             System.out.println("Initialising _SlopeAndAspect[ 0 ]");
             if (shortName) {
                 filename = "slope_" + averageDistance;
@@ -303,22 +237,18 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             this.GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[0] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows,
                     ncols,
                     dimensions,
                     hoome);
-            slopeAndAspect[0].setName(
-                    filename,
-                    hoome);
+            slopeAndAspect[0].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[0].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[0].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[0]);
-            System.out.println(slopeAndAspect[0].toString(hoome));
+            System.out.println(slopeAndAspect[0].toString());
             System.out.println("Initialising _SlopeAndAspect[ 1 ]");
             if (shortName) {
                 filename = "aspect_N_" + averageDistance;
@@ -329,20 +259,16 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[1] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows,
                     ncols,
                     dimensions,
                     hoome);
-            slopeAndAspect[1].setName(
-                    filename, //string0,
-                    hoome);
+            slopeAndAspect[1].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[1].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[1].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[1]);
             System.out.println("Initialising _SlopeAndAspect[ 2 ]");
             if (shortName) {
@@ -354,23 +280,15 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(
-                    dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[2].setName(
-                    filename, //string0,
-                    hoome);
+                    dir, nrows, ncols, dimensions, hoome);
+            slopeAndAspect[2].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[2].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[2].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[2]);
-            System.out.println(slopeAndAspect[2].toString(hoome));
+            System.out.println(slopeAndAspect[2].toString());
             System.out.println("Initialising _SlopeAndAspect[ 3 ]");
             if (shortName) {
                 filename = "sin_aspect_NNE_" + averageDistance;
@@ -381,22 +299,15 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[3].setName(
-                    filename, //string0,
-                    hoome);
+                    nrows, ncols, dimensions, hoome);
+            slopeAndAspect[3].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[3].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[3].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[3]);
-            System.out.println(slopeAndAspect[3].toString(hoome));
+            System.out.println(slopeAndAspect[3].toString());
             System.out.println("Initialising _SlopeAndAspect[ 4 ]");
             if (shortName) {
                 filename = "sin_aspect_NE_" + averageDistance;
@@ -407,22 +318,15 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[4].setName(
-                    filename, //string0,
-                    hoome);
+                    nrows, ncols, dimensions, hoome);
+            slopeAndAspect[4].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[4].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[4].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[4]);
-            System.out.println(slopeAndAspect[4].toString(hoome));
+            System.out.println(slopeAndAspect[4].toString());
             System.out.println("Initialising _SlopeAndAspect[ 5 ]");
             if (shortName) {
                 filename = "sin_aspect_ENE_" + averageDistance;
@@ -433,22 +337,18 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows,
                     ncols,
                     dimensions,
                     hoome);
-            slopeAndAspect[5].setName(
-                    filename, //string0,
-                    hoome);
+            slopeAndAspect[5].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[5].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[5].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[5]);
-            System.out.println(slopeAndAspect[5].toString(hoome));
+            System.out.println(slopeAndAspect[5].toString());
             System.out.println("Initialising _SlopeAndAspect[ 6 ]");
             if (shortName) {
                 filename = "sin_aspect_E_" + averageDistance;
@@ -459,22 +359,18 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows,
                     ncols,
                     dimensions,
                     hoome);
-            slopeAndAspect[6].setName(
-                    filename, //string0,
-                    hoome);
+            slopeAndAspect[6].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[6].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[6].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[6]);
-            System.out.println(slopeAndAspect[6].toString(hoome));
+            System.out.println(slopeAndAspect[6].toString());
             System.out.println("Initialising _SlopeAndAspect[ 7 ]");
             if (shortName) {
                 filename = "sin_aspect_ESE_" + averageDistance;
@@ -485,22 +381,15 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[7].setName(
-                    filename, //string0,
-                    hoome);
+                    nrows, ncols, dimensions, hoome);
+            slopeAndAspect[7].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[7].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[7].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[7]);
-            System.out.println(slopeAndAspect[7].toString(hoome));
+            System.out.println(slopeAndAspect[7].toString());
             System.out.println("Initialising _SlopeAndAspect[ 8 ]");
             if (shortName) {
                 filename = "sin_aspect_SE_" + averageDistance;
@@ -511,22 +400,15 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[8].setName(
-                    filename, //string0,
-                    hoome);
+                    nrows, ncols, dimensions, hoome);
+            slopeAndAspect[8].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[8].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[8].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[8]);
-            System.out.println(slopeAndAspect[8].toString(hoome));
+            System.out.println(slopeAndAspect[8].toString());
             System.out.println("Initialising _SlopeAndAspect[ 9 ]");
             if (shortName) {
                 filename = "sin_aspect_SSE_" + averageDistance;
@@ -537,45 +419,34 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = ge.initFileDirectory(directory, filename, hoome);
+            dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
-            slopeAndAspect[9].setName(
-                    filename, //string0,
-                    hoome);
+                    nrows, ncols, dimensions, hoome);
+            slopeAndAspect[9].setName(filename);
             swapToFileCache = true;
-            slopeAndAspect[9].writeToFile(
-                    swapToFileCache,
-                    hoome);
+            slopeAndAspect[9].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[9]);
             System.out.println("Initialised Results");
-            System.out.println(g.toString(hoome));
+            System.out.println(g.toString());
 
             if (g.getClass() == Grids_GridDouble.class) {
                 gridDouble = (Grids_GridDouble) g;
-                double noDataValue = gridDouble.getNoDataValue(hoome);
+                double noDataValue = gridDouble.getNoDataValue();
                 double h;
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        chunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getGridChunk(
-                                cri, cci, hoome);
-                        chunkNrows = g.getChunkNRows(cri, hoome);
-                        chunkNcols = g.getChunkNCols(cci, hoome);
-                        for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getRow(cri, chunkCellRowIndex, hoome);
-                            y = g.getCellYDouble(cellRowIndex, hoome);
-                            for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
-                                cellColIndex = g.getCol(cci, chunkCellColIndex, hoome);
-                                x = g.getCellXDouble(cellColIndex, hoome);
-                                h = chunkDouble.getCell(
-                                        chunkCellRowIndex,
-                                        chunkCellColIndex,
-                                        hoome);
+                        chunkDouble = gridDouble.getGridChunk(cri, cci);
+                        chunkNrows = g.getChunkNRows(cri);
+                        chunkNcols = g.getChunkNCols(cci);
+                        for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
+                            row = g.getRow(cri, cellRow);
+                            y = g.getCellYDouble(row);
+                            for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                                col = g.getCol(cci, cellCol);
+                                x = g.getCellXDouble(col);
+                                h = chunkDouble.getCell(cellRow, cellCol);
                                 if (h != noDataValue) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
@@ -584,18 +455,15 @@ public class Grids_ProcessorDEM
                                     distanceSum = 0.0d;
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
-                                        long0 = cellRowIndex + p;
-                                        thisY = g.getCellYDouble(long0, hoome);
+                                        long0 = row + p;
+                                        thisY = g.getCellYDouble(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                long0 = cellColIndex + q;
-                                                thisX = g.getCellXDouble(long0, hoome);
-                                                thisDistance = distance(x, y, thisX, thisY, chunkCols, cri, cci, hoome);
+                                                long0 = col + q;
+                                                thisX = g.getCellXDouble(long0);
+                                                thisDistance = distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
-                                                    h2 = gridDouble.getCell(
-                                                            thisX,
-                                                            thisY,
-                                                            hoome);
+                                                    h2 = gridDouble.getCell(thisX, thisY);
                                                     if (h2 != noDataValue) {
                                                         long0 = p + cellDistance;
                                                         int0 = (int) long0;
@@ -622,76 +490,34 @@ public class Grids_ProcessorDEM
                                         double0 = weightSum * averageDistance;
                                         slope /= double0;
                                         slope *= doubleOneHundred;
-                                        slopeAndAspect[0].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                slope,
-                                                hoome);
+                                        slopeAndAspect[0].setCell(row, col, slope);
                                         double0 = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, double0, double1,
-                                                chunkCols, cri,
-                                                cci, hoome);
-                                        slopeAndAspect[1].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                angle,
-                                                hoome);
-                                        sinAngle = ge.sin(angle, hoome);
-                                        slopeAndAspect[2].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        angle = angle(x, y, double0, double1);
+                                        slopeAndAspect[1].setCell(row, col, angle);
+                                        sinAngle = Math.sin(angle);
+                                        slopeAndAspect[2].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[3].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[3].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleFour);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[4].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[4].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleThree / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[5].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[5].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleTwo);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[6].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[6].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleFive / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[7].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[7].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleSix / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[8].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[8].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleSeven / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[9].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[9].setCell(row, col, sinAngle);
                                     }
                                 }
                             }
@@ -702,7 +528,7 @@ public class Grids_ProcessorDEM
             } else {
                 // ( g.getClass() == Grids_GridInt.class )
                 gridInt = (Grids_GridInt) g;
-                noDataValueInt = gridInt.getNoDataValue(hoome);
+                noDataValueInt = gridInt.getNoDataValue();
 //                Grids_GridIntIterator ite;
 //                ite = gridInt.iterator();
 //                Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIte;
@@ -711,22 +537,18 @@ public class Grids_ProcessorDEM
 //                    chunkIte.
 //                }
                 for (cri = 0; cri < chunkRows; cri++) {
-                    chunkNrows = g.getChunkNRows(cri, hoome);
+                    chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
-                        chunkNcols = g.getChunkNCols(cci, hoome);
+                        chunkNcols = g.getChunkNCols(cci);
                         chunk = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
-                                cri, cci, hoome);
-                        for (chunkCellRowIndex = 0; chunkCellRowIndex < chunkNrows; chunkCellRowIndex++) {
-                            cellRowIndex = g.getRow(cri, chunkCellRowIndex, hoome);
-                            y = g.getCellYDouble(cellRowIndex, hoome);
-                            for (chunkCellColIndex = 0; chunkCellColIndex < chunkNcols; chunkCellColIndex++) {
-                                cellColIndex = g.getCol(cci, chunkCellColIndex, hoome);
-                                x = g.getCellXDouble(cellColIndex, hoome);
-                                heightInt = chunk.getCell(
-                                        chunkCellRowIndex,
-                                        chunkCellColIndex,
-                                        hoome,
-                                        chunk.getChunkID());
+                                cri, cci);
+                        for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
+                            row = g.getRow(cri, cellRow);
+                            y = g.getCellYDouble(row);
+                            for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                                col = g.getCol(cci, cellCol);
+                                x = g.getCellXDouble(col);
+                                heightInt = chunk.getCell(cellRow, cellCol);
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
@@ -735,18 +557,16 @@ public class Grids_ProcessorDEM
                                     distanceSum = 0.0d;
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
-                                        long0 = cellRowIndex + p;
-                                        thisY = g.getCellYDouble(long0, hoome);
+                                        long0 = row + p;
+                                        thisY = g.getCellYDouble(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                long0 = cellColIndex + q;
-                                                thisX = g.getCellXDouble(long0, hoome);
-                                                thisDistance = distance(x, y, thisX,
-                                                        thisY, chunkCols, cri,
-                                                        cci, hoome);
+                                                long0 = col + q;
+                                                thisX = g.getCellXDouble(long0);
+                                                thisDistance = distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
                                                     thisHeightInt = gridInt.getCell(
-                                                            thisX, thisY, hoome);
+                                                            thisX, thisY);
                                                     if (thisHeightInt != noDataValueInt) {
                                                         long0 = p + cellDistance;
                                                         int0 = (int) long0;
@@ -773,75 +593,34 @@ public class Grids_ProcessorDEM
                                         double0 = weightSum * averageDistance;
                                         slope /= double0;
                                         slope *= doubleOneHundred;
-                                        slopeAndAspect[0].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                slope,
-                                                hoome);
+                                        slopeAndAspect[0].setCell(row, col, slope);
                                         double0 = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, double0, double1,
-                                                chunkCols, cri, cci, hoome);
-                                        slopeAndAspect[1].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                angle,
-                                                hoome);
-                                        sinAngle = ge.sin(angle, hoome);
-                                        slopeAndAspect[2].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        angle = angle(x, y, double0, double1);
+                                        slopeAndAspect[1].setCell(row, col, angle);
+                                        sinAngle = Math.sin(angle);
+                                        slopeAndAspect[2].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[3].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[3].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleFour);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[4].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[4].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleThree / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[5].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[5].setCell(row, col, sinAngle);
                                         double3 = angle + (PI / doubleTwo);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[6].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[6].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleFive / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[7].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[7].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleSix / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[8].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[8].setCell(row, col, sinAngle);
                                         double3 = angle + (PI * doubleSeven / doubleEight);
-                                        sinAngle = ge.sin(double3, hoome);
-                                        slopeAndAspect[9].setCell(
-                                                cellRowIndex,
-                                                cellColIndex,
-                                                sinAngle,
-                                                hoome);
+                                        sinAngle = Math.sin(double3);
+                                        slopeAndAspect[9].setCell(row, col, sinAngle);
                                     }
                                 }
                             }
@@ -857,70 +636,9 @@ public class Grids_ProcessorDEM
                 if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 return getSlopeAspect(
                         g,
-                        distance,
-                        weightIntersect,
-                        weightFactor,
-                        hoome);
-            }
-            throw e;
-        }
-    }
-
-    /**
-     * Returns a double[] _SlopeAndAspect where: _SlopeAndAspect[0] is the
-     * aggregate slope over the region weighted by distance, weightIntersect and
-     * weightFactor; _SlopeAndAspect[1] is the aggregate aspect over the region
-     * weighted by distance, weightIntersect and weightFactor. This is the
-     * clockwize angle from north. _SlopeAndAspect[2] is the aggregate aspect
-     * over the region weighted by distance, weightIntersect and weightFactor.
-     * This is the sine of the clockwize angle from north. _SlopeAndAspect[3] is
-     * the aggregate aspect over the region weighted by distance,
-     * weightIntersect and weightFactor. This is the cosine of the clockwize
-     * angle from north.
-     *
-     * @param _Grid2DSquareCell the Grids_GridDouble to be processed.
-     * @param rowIndex the rowIndex where _SlopeAndAspect is calculated.
-     * @param colIndex the colIndex where _SlopeAndAspec
-     * @param hoome
-     * @return t is calculated.
-     * @param distance the distance which defines the aggregate region.
-     * @param weightIntersect the kernel weighting weight at centre.
-     * @param weightFactor the kernel weighting distance decay.
-     */
-    protected double[] getSlopeAspect(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
-            long rowIndex,
-            long colIndex,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(_Grid2DSquareCell);
-            return getSlopeAspect(
-                    _Grid2DSquareCell,
-                    rowIndex,
-                    colIndex,
-                    _Grid2DSquareCell.getCellXDouble(colIndex, hoome),
-                    _Grid2DSquareCell.getCellYDouble(rowIndex, hoome),
-                    distance,
-                    weightIntersect,
-                    weightFactor,
-                    hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return getSlopeAspect(
-                        _Grid2DSquareCell,
-                        rowIndex,
-                        colIndex,
                         distance,
                         weightIntersect,
                         weightFactor,
@@ -948,7 +666,6 @@ public class Grids_ProcessorDEM
      * @param distance the distance which defines the aggregate region.
      * @param weightIntersect the kernel weighting weight at centre.
      * @param weightFactor the kernel weighting distance decay.
-     * @param hoome
      * @return
      */
     protected double[] getSlopeAspect(
@@ -957,38 +674,9 @@ public class Grids_ProcessorDEM
             double y,
             double distance,
             double weightIntersect,
-            double weightFactor,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(g);
-            return getSlopeAspect(
-                    g,
-                    g.getRow(y, hoome),
-                    g.getCol(x, hoome),
-                    x,
-                    y,
-                    distance,
-                    weightIntersect,
-                    weightFactor,
-                    hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return getSlopeAspect(
-                        g,
-                        x,
-                        y,
-                        distance,
-                        weightIntersect,
-                        weightFactor,
-                        hoome);
-            }
-            throw e;
-        }
+            double weightFactor) {
+        return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance,
+                weightIntersect, weightFactor);
     }
 
     /**
@@ -1014,7 +702,6 @@ public class Grids_ProcessorDEM
      * then; result[ 0 ] = grid.getNoDataValue() result[ 1 ] =
      * grid.getNoDataValue() TODO: x and y can be offset from a cell centroid so
      * consider interpolation
-     * @param hoome
      * @return
      */
     protected double[] getSlopeAspect(
@@ -1025,117 +712,105 @@ public class Grids_ProcessorDEM
             double y,
             double distance,
             double weightIntersect,
-            double weightFactor,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(g);
-            if (g.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(true);
-                double[] _SlopeAndAspect = new double[2];
-                _SlopeAndAspect[0] = noDataValue;
-                _SlopeAndAspect[1] = noDataValue;
-                _SlopeAndAspect[2] = noDataValue;
-                _SlopeAndAspect[3] = noDataValue;
-                int height = _Grid2DSquareCellInt.getCell(x, y, hoome);
-                if (height != noDataValue) {
-                    double cellsize = g.getCellsizeDouble(hoome);
-                    int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
-                    double thisDistance;
-                    double weight;
-                    double thisX;
-                    double thisY;
-                    int thisHeight;
-                    double diffX = 0.0d;
-                    double diffY = 0.0d;
-                    double diffHeight;
-                    double slope = 0.0d;
-                    double aspect;
-                    // Calculate slope and aspect
-                    for (int p = -cellDistance; p <= cellDistance; p++) {
-                        thisY = y + (p * distance);
-                        for (int q = -cellDistance; q <= cellDistance; q++) {
-                            thisX = x + (q * distance);
-                            thisDistance = distance(x, y, thisX, thisY, hoome);
-                            if (thisDistance <= distance) {
-                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                thisHeight = _Grid2DSquareCellInt.getCell(thisX, thisY, hoome);
-                                //thisHeight = _Grid2DSquareCellInt.getNearestValueDouble( thisX, thisY, hoome );
-                                if (thisHeight != noDataValue) {
-                                    diffHeight = (double) (height - thisHeight) * weight;
-                                    diffX += (x - thisX) * diffHeight;
-                                    diffY += (y - thisY) * diffHeight;
-                                    slope += diffHeight;
-                                }
+            double weightFactor) {
+        ge.getGrids().add(g);
+
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
+            int noDataValue = _Grid2DSquareCellInt.getNoDataValue();
+            double[] _SlopeAndAspect = new double[2];
+            _SlopeAndAspect[0] = noDataValue;
+            _SlopeAndAspect[1] = noDataValue;
+            _SlopeAndAspect[2] = noDataValue;
+            _SlopeAndAspect[3] = noDataValue;
+            int height = _Grid2DSquareCellInt.getCell(x, y);
+            if (height != noDataValue) {
+                double cellsize = g.getCellsizeDouble();
+                int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
+                double thisDistance;
+                double weight;
+                double thisX;
+                double thisY;
+                int thisHeight;
+                double diffX = 0.0d;
+                double diffY = 0.0d;
+                double diffHeight;
+                double slope = 0.0d;
+                double aspect;
+                // Calculate slope and aspect
+                for (int p = -cellDistance; p <= cellDistance; p++) {
+                    thisY = y + (p * distance);
+                    for (int q = -cellDistance; q <= cellDistance; q++) {
+                        thisX = x + (q * distance);
+                        thisDistance = distance(x, y, thisX, thisY);
+                        if (thisDistance <= distance) {
+                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                            thisHeight = _Grid2DSquareCellInt.getCell(thisX, thisY);
+                            //thisHeight = _Grid2DSquareCellInt.getNearestValueDouble( thisX, thisY, hoome );
+                            if (thisHeight != noDataValue) {
+                                diffHeight = (double) (height - thisHeight) * weight;
+                                diffX += (x - thisX) * diffHeight;
+                                diffY += (y - thisY) * diffHeight;
+                                slope += diffHeight;
                             }
                         }
                     }
-                    _SlopeAndAspect[0] = slope;
-                    _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), hoome);
-                    _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), hoome));
-                    _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), hoome));
                 }
-                return _SlopeAndAspect;
-            } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(hoome);
-                double value;
-                double[] slopeAndAspect = new double[2];
-                slopeAndAspect[0] = noDataValue;
-                slopeAndAspect[1] = noDataValue;
-                slopeAndAspect[2] = noDataValue;
-                slopeAndAspect[3] = noDataValue;
-                double height = _Grid2DSquareCellDouble.getCell(x, y, hoome);
-                if (height != noDataValue) {
-                    double cellsize = g.getCellsizeDouble(hoome);
-                    int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
-                    double thisDistance;
-                    double weight;
-                    double thisX;
-                    double thisY;
-                    double thisHeight;
-                    double diffX = 0.0d;
-                    double diffY = 0.0d;
-                    double diffHeight;
-                    double slope = 0.0d;
-                    double aspect;
-                    // Calculate slope and aspect
-                    for (int p = -cellDistance; p <= cellDistance; p++) {
-                        thisY = y + (p * distance);
-                        for (int q = -cellDistance; q <= cellDistance; q++) {
-                            thisX = x + (q * distance);
-                            thisDistance = distance(x, y, thisX, thisY, hoome);
-                            if (thisDistance <= distance) {
-                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                thisHeight = _Grid2DSquareCellDouble.getCell(thisX, thisY, hoome);
-                                //thisHeight = _Grid2DSquareCellDouble.getNearestValueDouble( thisX, thisY, hoome );
-                                if (thisHeight != noDataValue) {
-                                    diffHeight = (height - thisHeight) * weight;
-                                    diffX += (x - thisX) * diffHeight;
-                                    diffY += (y - thisY) * diffHeight;
-                                    slope += diffHeight;
-                                }
+                _SlopeAndAspect[0] = slope;
+                _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
+                _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
+                _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
+            }
+            return _SlopeAndAspect;
+        } else {
+            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
+            double noDataValue = _Grid2DSquareCellDouble.getNoDataValue();
+            double value;
+            double[] slopeAndAspect = new double[2];
+            slopeAndAspect[0] = noDataValue;
+            slopeAndAspect[1] = noDataValue;
+            slopeAndAspect[2] = noDataValue;
+            slopeAndAspect[3] = noDataValue;
+            double height = _Grid2DSquareCellDouble.getCell(x, y);
+            if (height != noDataValue) {
+                double cellsize = g.getCellsizeDouble();
+                int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
+                double thisDistance;
+                double weight;
+                double thisX;
+                double thisY;
+                double thisHeight;
+                double diffX = 0.0d;
+                double diffY = 0.0d;
+                double diffHeight;
+                double slope = 0.0d;
+                double aspect;
+                // Calculate slope and aspect
+                for (int p = -cellDistance; p <= cellDistance; p++) {
+                    thisY = y + (p * distance);
+                    for (int q = -cellDistance; q <= cellDistance; q++) {
+                        thisX = x + (q * distance);
+                        thisDistance = distance(x, y, thisX, thisY);
+                        if (thisDistance <= distance) {
+                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                            thisHeight = _Grid2DSquareCellDouble.getCell(thisX, thisY);
+                            //thisHeight = _Grid2DSquareCellDouble.getNearestValueDouble( thisX, thisY, hoome );
+                            if (thisHeight != noDataValue) {
+                                diffHeight = (height - thisHeight) * weight;
+                                diffX += (x - thisX) * diffHeight;
+                                diffY += (y - thisY) * diffHeight;
+                                slope += diffHeight;
                             }
                         }
                     }
-                    slopeAndAspect[0] = slope;
-                    slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY), hoome);
-                    slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY), hoome));
-                    slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY), hoome));
                 }
-                return slopeAndAspect;
+                slopeAndAspect[0] = slope;
+                slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
+                slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
             }
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                getSlopeAspect(g, rowIndex, colIndex, x, y, distance, weightIntersect, weightFactor, hoome);
-            }
-            throw e;
+            return slopeAndAspect;
         }
     }
 
@@ -1147,7 +822,6 @@ public class Grids_ProcessorDEM
      * @param gdf
      * @param outflowHeight
      * @param maxIterations
-     * @param hoome
      * @param treatNoDataValueAsOutflow
      * @param outflowCellIDsSet
      * @return Grids_GridDouble which has cell values as in _Grid2DSquareCell
@@ -1172,591 +846,554 @@ public class Grids_ProcessorDEM
             double outflowHeight,
             int maxIterations,
             HashSet outflowCellIDsSet,
-            boolean treatNoDataValueAsOutflow,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(g);
-            // Intitialise variables
-            Grids_GridDouble result;
-            long nRows;
-            long nCols;
+            boolean treatNoDataValueAsOutflow) {
+        ge.getGrids().add(g);
+        // Intitialise variables
+        Grids_GridDouble result;
+        long nRows;
+        long nCols;
 //            int chunkNrows = _Grid2DSquareCell.getChunkNRows(
 //                    hoome );
 //            int chunkNcols = _Grid2DSquareCell.getChunkNCols(
 //                    hoome );
-            //String resultName = _Grid2DSquareCell.getName( hoome ) + "_HollowFilledDEM_" + maxIterations;
-            String resultName = "_HollowFilledDEM_" + maxIterations;
-            result = (Grids_GridDouble) gdf.create(g);
-            result.setName(resultName, hoome);
-            nRows = result.getNRows(hoome);
-            nCols = result.getNCols(hoome);
-            double minHeight;
-            minHeight = result.getStats(hoome).getMin(true).doubleValue();
-            if (outflowHeight < minHeight) {
-                outflowHeight = minHeight;
-            }
-            if (g.getClass() == Grids_GridInt.class) {
-                Grids_GridInt gi = (Grids_GridInt) g;
-                int noDataValue = gi.getNoDataValue(true);
-                double height;
-                // Initialise outflowCellIDs
-                HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
-                        outflowCellIDsSet,
-                        outflowHeight,
-                        gi,
-                        nRows,
-                        nCols,
-                        treatNoDataValueAsOutflow,
-                        hoome);
-                // Initialise hollowsHashSet
-                HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                        gi,
-                        nRows,
-                        nCols,
-                        treatNoDataValueAsOutflow,
-                        hoome);
-                // Remove outflowCellIDs from hollowsHashSet
-                hollowsHashSet.removeAll(outflowCellIDs);
-                HashSet hollows2 = hollowsHashSet;
-                int numberOfHollows = hollowsHashSet.size();
-                boolean calculated1 = false;
-                boolean calculated2;
-                if (numberOfHollows == 0) {
-                    calculated1 = true;
-                }
-                int iteration1 = 0;
-                int iteration2;
-                int counter1 = 0;
-                long row;
-                long col;
-                long p;
-                long q;
-                long r;
-                long s;
-                //int cellID1;
-                //int cellID2;
-                //int cellID3;
-                Iterator iterator1;
-                Iterator iterator2;
-                //Integer cellID1;
-                //Integer cellID2;
-                //Integer cellID3;
-                Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
-                HashSet toVisitSet1;
-                HashSet toVisitSet2;
-                HashSet toVisitSet3;
-                HashSet visitedSet1;
-                HashSet visitedSet2;
-                HashSet hollows1;
-                HashSet hollowsVisited;
-                HashSet hollowSet;
-                double height0;
-                int noDataCount;
-                int outflowCellCount;
-                // Fill in hollows
-                while (!calculated1) {
-                    if (iteration1 < maxIterations) {
-                        iteration1++;
-                        numberOfHollows = hollows2.size();
-                        System.out.println("Iteration " + iteration1
-                                + " out of a maximum " + maxIterations
-                                + ": Number of hollows " + numberOfHollows);
-                        if (numberOfHollows > 0) {
-                            visitedSet1 = new HashSet();
-                            hollowsVisited = new HashSet();
-                            //hollowsVisited.addAll( outflowCellIDs );
-                            // Raise all hollows by a small amount
-                            setLarger(
-                                    result,
-                                    hollows2,
-                                    hoome);
-                            // Recalculate hollows in hollows2 neighbourhood
-                            toVisitSet1 = new HashSet();
-                            iterator1 = hollows2.iterator();
-                            while (iterator1.hasNext()) {
-                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                                row = cellIDs[0].getRow();
-                                col = cellIDs[0].getCol();
-                                for (p = -1; p < 2; p++) {
-                                    for (q = -1; q < 2; q++) {
-                                        //if ( ! ( p == 0 && q == 0 ) ) {
-                                        if (g.isInGrid(row + p, col + q, hoome)) {
-                                            toVisitSet1.add(g.getCellID(row + p, col + q, hoome));
-                                        }
-                                        //}
-                                    }
-                                }
-                            }
-                            hollows1 = getHollowsInNeighbourhood(
-                                    result,
-                                    toVisitSet1,
-                                    treatNoDataValueAsOutflow,
-                                    hoome);
-                            hollows1.removeAll(outflowCellIDs);
-                            hollows2.clear();
-                            toVisitSet1.clear();
-                            /*
-                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood( result, hollows2 );
-                             hollows1.removeAll( outflowCellIDs );
-                             hollows2.clear();
-                             */
-                            // Trace bottom of each hollow and raise to the height of the lowest cell around it.
-                            iterator1 = hollows1.iterator();
-                            while (iterator1.hasNext()) {
-                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                                if (!hollowsVisited.contains(cellIDs[0])) {
-                                    hollowSet = new HashSet();
-                                    hollowSet.add(cellIDs[0]);
-                                    row = cellIDs[0].getRow();
-                                    col = cellIDs[0].getCol();
-                                    toVisitSet1 = new HashSet();
-                                    // Step 1: Add all cells in adjoining hollows to hollowSet
-                                    for (p = -1; p < 2; p++) {
-                                        for (q = -1; q < 2; q++) {
-                                            if (!(p == 0 && q == 0)) {
-                                                if (g.isInGrid(row + p, col + q, hoome)) {
-                                                    cellIDs[1] = g.getCellID(row + p, col + q, hoome);
-                                                    toVisitSet1.add(cellIDs[1]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    toVisitSet1.removeAll(outflowCellIDs);
-                                    visitedSet2 = new HashSet();
-                                    visitedSet2.add(cellIDs[0]);
-                                    toVisitSet3 = new HashSet();
-                                    toVisitSet3.addAll(toVisitSet1);
-                                    calculated2 = false;
-                                    while (!calculated2) {
-                                        toVisitSet2 = new HashSet();
-                                        iterator2 = toVisitSet1.iterator();
-                                        while (iterator2.hasNext()) {
-                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                            visitedSet2.add(cellIDs[1]);
-                                            row = cellIDs[1].getRow();
-                                            col = cellIDs[1].getCol();
-                                            for (p = -1; p < 2; p++) {
-                                                for (q = -1; q < 2; q++) {
-                                                    if (!(p == 0 && q == 0)) {
-                                                        if (g.isInGrid(row + p, col + q, hoome)) {
-                                                            cellIDs[2] = g.getCellID(row + p, col + q, hoome);
-                                                            visitedSet1.add(cellIDs[2]);
-                                                            // If a hollow then add to hollow set and visit neighbours if not done already
-                                                            if (hollows1.contains(cellIDs[2])) {
-                                                                hollowSet.add(cellIDs[2]);
-                                                                for (r = -1; r < 2; r++) {
-                                                                    for (s = -1; s < 2; s++) {
-                                                                        if (!(r == 0 && s == 0)) { // Is this correct?
-                                                                            if (g.isInGrid(row + p + r, col + q + s, hoome)) {
-                                                                                toVisitSet2.add(g.getCellID(row + p + r, col + q + s, hoome));
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        toVisitSet2.removeAll(outflowCellIDs);
-                                        toVisitSet3.addAll(toVisitSet2);
-                                        toVisitSet1 = toVisitSet2;
-                                        toVisitSet1.removeAll(visitedSet2);
-                                        if (toVisitSet1.isEmpty()) {
-                                            calculated2 = true;
-                                        }
-                                    }
-                                    // Step 2 Examine neighbours of each hollow
-                                    toVisitSet3.removeAll(hollowSet);
-                                    // NB. toVisitSet3 contains all cells which neighbour the traced hollow
-                                    calculated2 = false;
-                                    minHeight = Double.MAX_VALUE;
-                                    height0 = result.getCell(row, col, hoome);
-                                    while (!calculated2) {
-                                        toVisitSet2 = new HashSet();
-                                        //toVisitSet2.addAll( toVisitSet3 );
-                                        iterator2 = toVisitSet3.iterator();
-                                        noDataCount = 0;
-                                        outflowCellCount = 0;
-                                        // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
-                                        while (iterator2.hasNext()) {
-                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                            row = cellIDs[1].getRow();
-                                            col = cellIDs[1].getCol();
-                                            height = result.getCell(row, col, hoome);
-                                            if (height == noDataValue) {
-                                                noDataCount++;
-                                            } else {
-                                                if (outflowCellIDs.contains(cellIDs[1])) {
-                                                    outflowCellCount++;
-                                                } else {
-                                                    minHeight = Math.min(minHeight, height);
-                                                }
-                                                // Is this correct?
-                                                //minHeight = Math.min( minHeight, height );
-                                            }
-                                        }
-                                        if (noDataCount + outflowCellCount == toVisitSet3.size()) {
-                                            // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
-                                            // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
-                                            outflowCellIDs.addAll(hollowSet);
-                                            calculated2 = true;
-                                        } else {
-                                            // Step 2.2 Treat cells:
-                                            // If minHeight is higher then add cells with this height to the
-                                            // hollow set and their neighbours to toVisitSet2
-                                            if (minHeight > height0) {
-                                                iterator2 = toVisitSet3.iterator();
-                                                while (iterator2.hasNext()) {
-                                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                                    row = cellIDs[1].getRow();
-                                                    col = cellIDs[1].getCol();
-                                                    height = result.getCell(row, col, hoome);
-                                                    if (height == minHeight) {
-                                                        hollowSet.add(cellIDs[1]);
-                                                        toVisitSet2.remove(cellIDs[1]);
-                                                        for (r = -1; r < 2; r++) {
-                                                            for (s = -1; s < 2; s++) {
-                                                                if (!(r == 0L && s == 0L)) {
-                                                                    if (g.isInGrid(row + r, col + s, hoome)) {
-                                                                        toVisitSet2.add(g.getCellID(row + r, col + s, hoome));
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                height0 = minHeight;
-                                                toVisitSet2.removeAll(hollowSet);
-                                                //toVisitSet2.removeAll( outflowCellIDs );
-                                                toVisitSet3 = toVisitSet2;
-                                            } else {
-                                                calculated2 = true;
-                                            }
-                                        }
-                                    }
-                                    // Step 3 Raise all cells in hollowSet
-                                    hollowSet.removeAll(outflowCellIDs);
-                                    iterator2 = hollowSet.iterator();
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                        row = cellIDs[1].getRow();
-                                        col = cellIDs[1].getCol();
-                                        result.setCell(row, col, Grids_Utilities.getLarger(height0), hoome);
-                                    }
-                                    hollowsVisited.addAll(hollowSet);
-                                    visitedSet1.addAll(hollowSet);
-                                }
-                            }
-                            hollows2 = getHollowsInNeighbourhood(
-                                    result,
-                                    visitedSet1,
-                                    treatNoDataValueAsOutflow,
-                                    hoome);
-                        } else {
-                            calculated1 = true;
-                        }
-                    } else {
-                        calculated1 = true;
-                    }
-                }
-            } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(true);
-                double height;
-                double heightDouble;
-                double resultNoDataValue = result.getNoDataValue(hoome);
-                // Initialise outflowCellIDs
-                HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
-                        outflowCellIDsSet,
-                        outflowHeight,
-                        _Grid2DSquareCellDouble,
-                        nRows,
-                        nCols,
-                        treatNoDataValueAsOutflow,
-                        hoome);
-                // Initialise hollowsHashSet
-                HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                        _Grid2DSquareCellDouble,
-                        nRows,
-                        nCols,
-                        treatNoDataValueAsOutflow,
-                        hoome);
-                // Remove outflowCellIDs from hollowsHashSet
-                hollowsHashSet.removeAll(outflowCellIDs);
-                HashSet hollows2 = hollowsHashSet;
-                int numberOfHollows = hollowsHashSet.size();
-                boolean calculated1 = false;
-                boolean calculated2;
-                if (numberOfHollows == 0) {
-                    calculated1 = true;
-                }
-                int iteration1 = 0;
-                int iteration2;
-                int counter1 = 0;
-                long row;
-                long col;
-                long p;
-                long q;
-                long r;
-                long s;
-                //int cellID1;
-                //int cellID2;
-                //int cellID3;
-                Iterator iterator1;
-                Iterator iterator2;
-                //Integer cellID1;
-                //Integer cellID2;
-                //Integer cellID3;
-                Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
-                HashSet toVisitSet1;
-                HashSet toVisitSet2;
-                HashSet toVisitSet3;
-                HashSet visitedSet1;
-                HashSet visitedSet2;
-                HashSet hollows1;
-                HashSet hollowsVisited;
-                HashSet hollowSet;
-                double height0;
-                int noDataCount;
-                int outflowCellCount;
-                // Fill in hollows
-                while (!calculated1) {
-                    if (iteration1 < maxIterations) {
-                        iteration1++;
-                        numberOfHollows = hollows2.size();
-                        System.out.println("Iteration " + iteration1
-                                + " out of a maximum " + maxIterations
-                                + ": Number of hollows " + numberOfHollows);
-                        if (iteration1 > 100) {
-                            boolean _DEBUG;
-                        }
-                        if (numberOfHollows > 0) {
-                            visitedSet1 = new HashSet();
-                            hollowsVisited = new HashSet();
-                            //hollowsVisited.addAll( outflowCellIDs );
-                            // Raise all hollows by a small amount
-                            setLarger(
-                                    result,
-                                    hollows2,
-                                    hoome);
-                            // Recalculate hollows in hollows2 neighbourhood
-                            toVisitSet1 = new HashSet();
-                            iterator1 = hollows2.iterator();
-                            while (iterator1.hasNext()) {
-                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                                row = cellIDs[0].getRow();
-                                col = cellIDs[0].getCol();
-                                for (p = -1; p < 2; p++) {
-                                    for (q = -1; q < 2; q++) {
-                                        //if ( ! ( p == 0 && q == 0 ) ) {
-                                        if (g.isInGrid(row + p, col + q, hoome)) {
-                                            toVisitSet1.add(g.getCellID(row + p, col + q, hoome));
-                                        }
-                                        //}
-                                    }
-                                }
-                            }
-                            hollows1 = getHollowsInNeighbourhood(
-                                    result,
-                                    toVisitSet1,
-                                    treatNoDataValueAsOutflow,
-                                    hoome);
-                            hollows1.removeAll(outflowCellIDs);
-                            hollows2.clear();
-                            toVisitSet1.clear();
-                            /*
-                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood( result, hollows2 );
-                             hollows1.removeAll( outflowCellIDs );
-                             hollows2.clear();
-                             */
-                            // Trace bottom of each hollow and raise to the height of the lowest cell around it.
-                            iterator1 = hollows1.iterator();
-                            while (iterator1.hasNext()) {
-                                cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                                if (!hollowsVisited.contains(cellIDs[0])) {
-                                    hollowSet = new HashSet();
-                                    hollowSet.add(cellIDs[0]);
-                                    row = cellIDs[0].getRow();
-                                    col = cellIDs[0].getCol();
-                                    toVisitSet1 = new HashSet();
-                                    // Step 1: Add all cells in adjoining hollows to hollowSet
-                                    for (p = -1; p < 2; p++) {
-                                        for (q = -1; q < 2; q++) {
-                                            if (!(p == 0 && q == 0)) {
-                                                if (g.isInGrid(row + p, col + q, hoome)) {
-                                                    cellIDs[1] = g.getCellID(row + p, col + q, hoome);
-                                                    toVisitSet1.add(cellIDs[1]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    toVisitSet1.removeAll(outflowCellIDs);
-                                    visitedSet2 = new HashSet();
-                                    visitedSet2.add(cellIDs[0]);
-                                    toVisitSet3 = new HashSet();
-                                    toVisitSet3.addAll(toVisitSet1);
-                                    calculated2 = false;
-                                    while (!calculated2) {
-                                        toVisitSet2 = new HashSet();
-                                        iterator2 = toVisitSet1.iterator();
-                                        while (iterator2.hasNext()) {
-                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                            visitedSet2.add(cellIDs[1]);
-                                            row = cellIDs[1].getRow();
-                                            col = cellIDs[1].getCol();
-                                            for (p = -1; p < 2; p++) {
-                                                for (q = -1; q < 2; q++) {
-                                                    if (!(p == 0 && q == 0)) {
-                                                        if (g.isInGrid(row + p, col + q, hoome)) {
-                                                            cellIDs[2] = g.getCellID(row + p, col + q, hoome);
-                                                            visitedSet1.add(cellIDs[2]);
-                                                            // If a hollow then add to hollow set and visit neighbours if not done already
-                                                            if (hollows1.contains(cellIDs[2])) {
-                                                                hollowSet.add(cellIDs[2]);
-                                                                for (r = -1; r < 2; r++) {
-                                                                    for (s = -1; s < 2; s++) {
-                                                                        if (!(r == 0 && s == 0)) { // Is this correct?
-                                                                            if (g.isInGrid(row + p + r, col + q + s, hoome)) {
-                                                                                toVisitSet2.add(g.getCellID(row + p + r, col + q + s, hoome));
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        toVisitSet2.removeAll(outflowCellIDs);
-                                        toVisitSet3.addAll(toVisitSet2);
-                                        toVisitSet1 = toVisitSet2;
-                                        toVisitSet1.removeAll(visitedSet2);
-                                        if (toVisitSet1.isEmpty()) {
-                                            calculated2 = true;
-                                        }
-                                    }
-                                    // Step 2 Examine neighbours of each hollow
-                                    toVisitSet3.removeAll(hollowSet);
-                                    // NB. toVisitSet3 contains all cells which neighbour the traced hollow
-                                    calculated2 = false;
-                                    minHeight = Double.MAX_VALUE;
-                                    height0 = result.getCell(row, col, hoome);
-                                    while (!calculated2) {
-                                        toVisitSet2 = new HashSet();
-                                        //toVisitSet2.addAll( toVisitSet3 );
-                                        iterator2 = toVisitSet3.iterator();
-                                        noDataCount = 0;
-                                        outflowCellCount = 0;
-                                        // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
-                                        while (iterator2.hasNext()) {
-                                            cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                            row = cellIDs[1].getRow();
-                                            col = cellIDs[1].getCol();
-                                            heightDouble = result.getCell(row, col, hoome);
-                                            if (heightDouble == resultNoDataValue) {
-                                                noDataCount++;
-                                            } else {
-                                                if (outflowCellIDs.contains(cellIDs[1])) {
-                                                    outflowCellCount++;
-                                                } else {
-                                                    minHeight = Math.min(minHeight, heightDouble);
-                                                }
-                                                // Is this correct?
-                                                //minHeight = Math.min( minHeight, heightDouble );
-                                            }
-                                        }
-                                        if (noDataCount + outflowCellCount == toVisitSet3.size()) {
-                                            // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
-                                            // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
-                                            outflowCellIDs.addAll(hollowSet);
-                                            calculated2 = true;
-                                        } else {
-                                            // Step 2.2 Treat cells:
-                                            // If minHeight is higher then add cells with this height to the
-                                            // hollow set and their neighbours to toVisitSet2
-                                            if (minHeight > height0) {
-                                                iterator2 = toVisitSet3.iterator();
-                                                while (iterator2.hasNext()) {
-                                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                                    row = cellIDs[1].getRow();
-                                                    col = cellIDs[1].getCol();
-                                                    heightDouble = result.getCell(row, col, hoome);
-                                                    if (heightDouble == minHeight) {
-                                                        hollowSet.add(cellIDs[1]);
-                                                        toVisitSet2.remove(cellIDs[1]);
-                                                        for (r = -1; r < 2; r++) {
-                                                            for (s = -1; s < 2; s++) {
-                                                                if (!(r == 0L && s == 0L)) {
-                                                                    if (g.isInGrid(row + r, col + s, hoome)) {
-                                                                        toVisitSet2.add(g.getCellID(row + r, col + s, hoome));
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                height0 = minHeight;
-                                                toVisitSet2.removeAll(hollowSet);
-                                                //toVisitSet2.removeAll( outflowCellIDs );
-                                                toVisitSet3 = toVisitSet2;
-                                            } else {
-                                                calculated2 = true;
-                                            }
-                                        }
-                                    }
-                                    // Step 3 Raise all cells in hollowSet
-                                    hollowSet.removeAll(outflowCellIDs);
-                                    iterator2 = hollowSet.iterator();
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
-                                        row = cellIDs[1].getRow();
-                                        col = cellIDs[1].getCol();
-                                        result.setCell(row, col, Grids_Utilities.getLarger(height0), hoome);
-                                    }
-                                    hollowsVisited.addAll(hollowSet);
-                                    visitedSet1.addAll(hollowSet);
-                                }
-                            }
-                            hollows2 = getHollowsInNeighbourhood(
-                                    result,
-                                    visitedSet1,
-                                    treatNoDataValueAsOutflow,
-                                    hoome);
-                        } else {
-                            calculated1 = true;
-                        }
-                    } else {
-                        calculated1 = true;
-                    }
-                }
-            }
-            return result;
-        } catch (OutOfMemoryError e) {
-            ge.clearMemoryReserve();
-            if (!ge.swapChunk(ge.HOOMEF)) {
-                throw e;
-            }
-            ge.initMemoryReserve(hoome);
-            return getHollowFilledDEM(
-                    g,
-                    gdf,
-                    outflowHeight,
-                    maxIterations,
-                    outflowCellIDsSet,
-                    treatNoDataValueAsOutflow,
-                    hoome);
+        //String resultName = _Grid2DSquareCell.getName( hoome ) + "_HollowFilledDEM_" + maxIterations;
+        String resultName = "_HollowFilledDEM_" + maxIterations;
+        result = (Grids_GridDouble) gdf.create(g);
+        result.setName(resultName);
+        nRows = result.getNRows();
+        nCols = result.getNCols();
+        double minHeight;
+        minHeight = result.getStats().getMin(true);
+        if (outflowHeight < minHeight) {
+            outflowHeight = minHeight;
+
         }
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int noDataValue = gi.getNoDataValue();
+            double height;
+            // Initialise outflowCellIDs
+            HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
+                    outflowCellIDsSet,
+                    outflowHeight,
+                    gi,
+                    nRows,
+                    nCols,
+                    treatNoDataValueAsOutflow);
+            // Initialise hollowsHashSet
+            HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
+                    gi,
+                    nRows,
+                    nCols,
+                    treatNoDataValueAsOutflow);
+            // Remove outflowCellIDs from hollowsHashSet
+            hollowsHashSet.removeAll(outflowCellIDs);
+            HashSet hollows2 = hollowsHashSet;
+            int numberOfHollows = hollowsHashSet.size();
+            boolean calculated1 = false;
+            boolean calculated2;
+            if (numberOfHollows == 0) {
+                calculated1 = true;
+            }
+            int iteration1 = 0;
+            int iteration2;
+            int counter1 = 0;
+            long row;
+            long col;
+            long p;
+            long q;
+            long r;
+            long s;
+            //int cellID1;
+            //int cellID2;
+            //int cellID3;
+            Iterator iterator1;
+            Iterator iterator2;
+            //Integer cellID1;
+            //Integer cellID2;
+            //Integer cellID3;
+            Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
+            HashSet toVisitSet1;
+            HashSet toVisitSet2;
+            HashSet toVisitSet3;
+            HashSet visitedSet1;
+            HashSet visitedSet2;
+            HashSet hollows1;
+            HashSet hollowsVisited;
+            HashSet hollowSet;
+            double height0;
+            int noDataCount;
+            int outflowCellCount;
+            // Fill in hollows
+            while (!calculated1) {
+                if (iteration1 < maxIterations) {
+                    iteration1++;
+                    numberOfHollows = hollows2.size();
+                    System.out.println("Iteration " + iteration1
+                            + " out of a maximum " + maxIterations
+                            + ": Number of hollows " + numberOfHollows);
+                    if (numberOfHollows > 0) {
+                        visitedSet1 = new HashSet();
+                        hollowsVisited = new HashSet();
+                        //hollowsVisited.addAll( outflowCellIDs );
+                        // Raise all hollows by a small amount
+                        setLarger(result, hollows2);
+                        // Recalculate hollows in hollows2 neighbourhood
+                        toVisitSet1 = new HashSet();
+                        iterator1 = hollows2.iterator();
+                        while (iterator1.hasNext()) {
+                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                            row = cellIDs[0].getRow();
+                            col = cellIDs[0].getCol();
+                            for (p = -1; p < 2; p++) {
+                                for (q = -1; q < 2; q++) {
+                                    //if ( ! ( p == 0 && q == 0 ) ) {
+                                    if (g.isInGrid(row + p, col + q)) {
+                                        toVisitSet1.add(g.getCellID(row + p, col + q));
+                                    }
+                                    //}
+                                }
+                            }
+                        }
+                        hollows1 = getHollowsInNeighbourhood(
+                                result,
+                                toVisitSet1,
+                                treatNoDataValueAsOutflow);
+                        hollows1.removeAll(outflowCellIDs);
+                        hollows2.clear();
+                        toVisitSet1.clear();
+                        /*
+                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood( result, hollows2 );
+                             hollows1.removeAll( outflowCellIDs );
+                             hollows2.clear();
+                         */
+                        // Trace bottom of each hollow and raise to the height of the lowest cell around it.
+                        iterator1 = hollows1.iterator();
+                        while (iterator1.hasNext()) {
+                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                            if (!hollowsVisited.contains(cellIDs[0])) {
+                                hollowSet = new HashSet();
+                                hollowSet.add(cellIDs[0]);
+                                row = cellIDs[0].getRow();
+                                col = cellIDs[0].getCol();
+                                toVisitSet1 = new HashSet();
+                                // Step 1: Add all cells in adjoining hollows to hollowSet
+                                for (p = -1; p < 2; p++) {
+                                    for (q = -1; q < 2; q++) {
+                                        if (!(p == 0 && q == 0)) {
+                                            if (g.isInGrid(row + p, col + q)) {
+                                                cellIDs[1] = g.getCellID(row + p, col + q);
+                                                toVisitSet1.add(cellIDs[1]);
+                                            }
+                                        }
+                                    }
+                                }
+                                toVisitSet1.removeAll(outflowCellIDs);
+                                visitedSet2 = new HashSet();
+                                visitedSet2.add(cellIDs[0]);
+                                toVisitSet3 = new HashSet();
+                                toVisitSet3.addAll(toVisitSet1);
+                                calculated2 = false;
+                                while (!calculated2) {
+                                    toVisitSet2 = new HashSet();
+                                    iterator2 = toVisitSet1.iterator();
+                                    while (iterator2.hasNext()) {
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        visitedSet2.add(cellIDs[1]);
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
+                                        for (p = -1; p < 2; p++) {
+                                            for (q = -1; q < 2; q++) {
+                                                if (!(p == 0 && q == 0)) {
+                                                    if (g.isInGrid(row + p, col + q)) {
+                                                        cellIDs[2] = g.getCellID(row + p, col + q);
+                                                        visitedSet1.add(cellIDs[2]);
+                                                        // If a hollow then add to hollow set and visit neighbours if not done already
+                                                        if (hollows1.contains(cellIDs[2])) {
+                                                            hollowSet.add(cellIDs[2]);
+                                                            for (r = -1; r < 2; r++) {
+                                                                for (s = -1; s < 2; s++) {
+                                                                    if (!(r == 0 && s == 0)) { // Is this correct?
+                                                                        if (g.isInGrid(row + p + r, col + q + s)) {
+                                                                            toVisitSet2.add(g.getCellID(row + p + r, col + q + s));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    toVisitSet2.removeAll(outflowCellIDs);
+                                    toVisitSet3.addAll(toVisitSet2);
+                                    toVisitSet1 = toVisitSet2;
+                                    toVisitSet1.removeAll(visitedSet2);
+                                    if (toVisitSet1.isEmpty()) {
+                                        calculated2 = true;
+                                    }
+                                }
+                                // Step 2 Examine neighbours of each hollow
+                                toVisitSet3.removeAll(hollowSet);
+                                // NB. toVisitSet3 contains all cells which neighbour the traced hollow
+                                calculated2 = false;
+                                minHeight = Double.MAX_VALUE;
+                                height0 = result.getCell(row, col);
+                                while (!calculated2) {
+                                    toVisitSet2 = new HashSet();
+                                    //toVisitSet2.addAll( toVisitSet3 );
+                                    iterator2 = toVisitSet3.iterator();
+                                    noDataCount = 0;
+                                    outflowCellCount = 0;
+                                    // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
+                                    while (iterator2.hasNext()) {
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
+                                        height = result.getCell(row, col);
+                                        if (height == noDataValue) {
+                                            noDataCount++;
+                                        } else {
+                                            if (outflowCellIDs.contains(cellIDs[1])) {
+                                                outflowCellCount++;
+                                            } else {
+                                                minHeight = Math.min(minHeight, height);
+                                            }
+                                            // Is this correct?
+                                            //minHeight = Math.min( minHeight, height );
+                                        }
+                                    }
+                                    if (noDataCount + outflowCellCount == toVisitSet3.size()) {
+                                        // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
+                                        // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
+                                        outflowCellIDs.addAll(hollowSet);
+                                        calculated2 = true;
+                                    } else {
+                                        // Step 2.2 Treat cells:
+                                        // If minHeight is higher then add cells with this height to the
+                                        // hollow set and their neighbours to toVisitSet2
+                                        if (minHeight > height0) {
+                                            iterator2 = toVisitSet3.iterator();
+                                            while (iterator2.hasNext()) {
+                                                cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                                row = cellIDs[1].getRow();
+                                                col = cellIDs[1].getCol();
+                                                height = result.getCell(row, col);
+                                                if (height == minHeight) {
+                                                    hollowSet.add(cellIDs[1]);
+                                                    toVisitSet2.remove(cellIDs[1]);
+                                                    for (r = -1; r < 2; r++) {
+                                                        for (s = -1; s < 2; s++) {
+                                                            if (!(r == 0L && s == 0L)) {
+                                                                if (g.isInGrid(row + r, col + s)) {
+                                                                    toVisitSet2.add(g.getCellID(row + r, col + s));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            height0 = minHeight;
+                                            toVisitSet2.removeAll(hollowSet);
+                                            //toVisitSet2.removeAll( outflowCellIDs );
+                                            toVisitSet3 = toVisitSet2;
+                                        } else {
+                                            calculated2 = true;
+                                        }
+                                    }
+                                }
+                                // Step 3 Raise all cells in hollowSet
+                                hollowSet.removeAll(outflowCellIDs);
+                                iterator2 = hollowSet.iterator();
+                                while (iterator2.hasNext()) {
+                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    row = cellIDs[1].getRow();
+                                    col = cellIDs[1].getCol();
+                                    result.setCell(row, col, Grids_Utilities.getLarger(height0));
+                                }
+                                hollowsVisited.addAll(hollowSet);
+                                visitedSet1.addAll(hollowSet);
+                            }
+                        }
+                        hollows2 = getHollowsInNeighbourhood(
+                                result,
+                                visitedSet1,
+                                treatNoDataValueAsOutflow);
+                    } else {
+                        calculated1 = true;
+                    }
+                } else {
+                    calculated1 = true;
+                }
+            }
+        } else {
+            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double noDataValue = gd.getNoDataValue();
+            double height;
+            double heightDouble;
+            double resultNoDataValue = result.getNoDataValue();
+            // Initialise outflowCellIDs
+            HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
+                    outflowCellIDsSet, outflowHeight, gd, nRows, nCols,
+                    treatNoDataValueAsOutflow);
+            // Initialise hollowsHashSet
+            HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
+                    gd, nRows, nCols, treatNoDataValueAsOutflow);
+            // Remove outflowCellIDs from hollowsHashSet
+            hollowsHashSet.removeAll(outflowCellIDs);
+            HashSet hollows2 = hollowsHashSet;
+            int numberOfHollows = hollowsHashSet.size();
+            boolean calculated1 = false;
+            boolean calculated2;
+            if (numberOfHollows == 0) {
+                calculated1 = true;
+            }
+            int iteration1 = 0;
+            int iteration2;
+            int counter1 = 0;
+            long row;
+            long col;
+            long p;
+            long q;
+            long r;
+            long s;
+            //int cellID1;
+            //int cellID2;
+            //int cellID3;
+            Iterator iterator1;
+            Iterator iterator2;
+            //Integer cellID1;
+            //Integer cellID2;
+            //Integer cellID3;
+            Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
+            HashSet toVisitSet1;
+            HashSet toVisitSet2;
+            HashSet toVisitSet3;
+            HashSet visitedSet1;
+            HashSet visitedSet2;
+            HashSet hollows1;
+            HashSet hollowsVisited;
+            HashSet hollowSet;
+            double height0;
+            int noDataCount;
+            int outflowCellCount;
+            // Fill in hollows
+            while (!calculated1) {
+                if (iteration1 < maxIterations) {
+                    iteration1++;
+                    numberOfHollows = hollows2.size();
+                    System.out.println("Iteration " + iteration1
+                            + " out of a maximum " + maxIterations
+                            + ": Number of hollows " + numberOfHollows);
+                    if (iteration1 > 100) {
+                        boolean _DEBUG;
+                    }
+                    if (numberOfHollows > 0) {
+                        visitedSet1 = new HashSet();
+                        hollowsVisited = new HashSet();
+                        //hollowsVisited.addAll( outflowCellIDs );
+                        // Raise all hollows by a small amount
+                        setLarger(result, hollows2);
+                        // Recalculate hollows in hollows2 neighbourhood
+                        toVisitSet1 = new HashSet();
+                        iterator1 = hollows2.iterator();
+                        while (iterator1.hasNext()) {
+                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                            row = cellIDs[0].getRow();
+                            col = cellIDs[0].getCol();
+                            for (p = -1; p < 2; p++) {
+                                for (q = -1; q < 2; q++) {
+                                    //if ( ! ( p == 0 && q == 0 ) ) {
+                                    if (g.isInGrid(row + p, col + q)) {
+                                        toVisitSet1.add(g.getCellID(row + p, col + q));
+                                    }
+                                    //}
+                                }
+                            }
+                        }
+                        hollows1 = getHollowsInNeighbourhood(
+                                result,
+                                toVisitSet1,
+                                treatNoDataValueAsOutflow);
+                        hollows1.removeAll(outflowCellIDs);
+                        hollows2.clear();
+                        toVisitSet1.clear();
+                        /*
+                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood( result, hollows2 );
+                             hollows1.removeAll( outflowCellIDs );
+                             hollows2.clear();
+                         */
+                        // Trace bottom of each hollow and raise to the height of the lowest cell around it.
+                        iterator1 = hollows1.iterator();
+                        while (iterator1.hasNext()) {
+                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                            if (!hollowsVisited.contains(cellIDs[0])) {
+                                hollowSet = new HashSet();
+                                hollowSet.add(cellIDs[0]);
+                                row = cellIDs[0].getRow();
+                                col = cellIDs[0].getCol();
+                                toVisitSet1 = new HashSet();
+                                // Step 1: Add all cells in adjoining hollows to hollowSet
+                                for (p = -1; p < 2; p++) {
+                                    for (q = -1; q < 2; q++) {
+                                        if (!(p == 0 && q == 0)) {
+                                            if (g.isInGrid(row + p, col + q)) {
+                                                cellIDs[1] = g.getCellID(row + p, col + q);
+                                                toVisitSet1.add(cellIDs[1]);
+                                            }
+                                        }
+                                    }
+                                }
+                                toVisitSet1.removeAll(outflowCellIDs);
+                                visitedSet2 = new HashSet();
+                                visitedSet2.add(cellIDs[0]);
+                                toVisitSet3 = new HashSet();
+                                toVisitSet3.addAll(toVisitSet1);
+                                calculated2 = false;
+                                while (!calculated2) {
+                                    toVisitSet2 = new HashSet();
+                                    iterator2 = toVisitSet1.iterator();
+                                    while (iterator2.hasNext()) {
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        visitedSet2.add(cellIDs[1]);
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
+                                        for (p = -1; p < 2; p++) {
+                                            for (q = -1; q < 2; q++) {
+                                                if (!(p == 0 && q == 0)) {
+                                                    if (g.isInGrid(row + p, col + q)) {
+                                                        cellIDs[2] = g.getCellID(row + p, col + q);
+                                                        visitedSet1.add(cellIDs[2]);
+                                                        // If a hollow then add to hollow set and visit neighbours if not done already
+                                                        if (hollows1.contains(cellIDs[2])) {
+                                                            hollowSet.add(cellIDs[2]);
+                                                            for (r = -1; r < 2; r++) {
+                                                                for (s = -1; s < 2; s++) {
+                                                                    if (!(r == 0 && s == 0)) { // Is this correct?
+                                                                        if (g.isInGrid(row + p + r, col + q + s)) {
+                                                                            toVisitSet2.add(g.getCellID(row + p + r, col + q + s));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    toVisitSet2.removeAll(outflowCellIDs);
+                                    toVisitSet3.addAll(toVisitSet2);
+                                    toVisitSet1 = toVisitSet2;
+                                    toVisitSet1.removeAll(visitedSet2);
+                                    if (toVisitSet1.isEmpty()) {
+                                        calculated2 = true;
+                                    }
+                                }
+                                // Step 2 Examine neighbours of each hollow
+                                toVisitSet3.removeAll(hollowSet);
+                                // NB. toVisitSet3 contains all cells which neighbour the traced hollow
+                                calculated2 = false;
+                                minHeight = Double.MAX_VALUE;
+                                height0 = result.getCell(row, col);
+                                while (!calculated2) {
+                                    toVisitSet2 = new HashSet();
+                                    //toVisitSet2.addAll( toVisitSet3 );
+                                    iterator2 = toVisitSet3.iterator();
+                                    noDataCount = 0;
+                                    outflowCellCount = 0;
+                                    // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
+                                    while (iterator2.hasNext()) {
+                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                        row = cellIDs[1].getRow();
+                                        col = cellIDs[1].getCol();
+                                        heightDouble = result.getCell(row, col);
+                                        if (heightDouble == resultNoDataValue) {
+                                            noDataCount++;
+                                        } else {
+                                            if (outflowCellIDs.contains(cellIDs[1])) {
+                                                outflowCellCount++;
+                                            } else {
+                                                minHeight = Math.min(minHeight, heightDouble);
+                                            }
+                                            // Is this correct?
+                                            //minHeight = Math.min( minHeight, heightDouble );
+                                        }
+                                    }
+                                    if (noDataCount + outflowCellCount == toVisitSet3.size()) {
+                                        // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
+                                        // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
+                                        outflowCellIDs.addAll(hollowSet);
+                                        calculated2 = true;
+                                    } else {
+                                        // Step 2.2 Treat cells:
+                                        // If minHeight is higher then add cells with this height to the
+                                        // hollow set and their neighbours to toVisitSet2
+                                        if (minHeight > height0) {
+                                            iterator2 = toVisitSet3.iterator();
+                                            while (iterator2.hasNext()) {
+                                                cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                                row = cellIDs[1].getRow();
+                                                col = cellIDs[1].getCol();
+                                                heightDouble = result.getCell(row, col);
+                                                if (heightDouble == minHeight) {
+                                                    hollowSet.add(cellIDs[1]);
+                                                    toVisitSet2.remove(cellIDs[1]);
+                                                    for (r = -1; r < 2; r++) {
+                                                        for (s = -1; s < 2; s++) {
+                                                            if (!(r == 0L && s == 0L)) {
+                                                                if (g.isInGrid(row + r, col + s)) {
+                                                                    toVisitSet2.add(g.getCellID(row + r, col + s));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            height0 = minHeight;
+                                            toVisitSet2.removeAll(hollowSet);
+                                            //toVisitSet2.removeAll( outflowCellIDs );
+                                            toVisitSet3 = toVisitSet2;
+                                        } else {
+                                            calculated2 = true;
+                                        }
+                                    }
+                                }
+                                // Step 3 Raise all cells in hollowSet
+                                hollowSet.removeAll(outflowCellIDs);
+                                iterator2 = hollowSet.iterator();
+                                while (iterator2.hasNext()) {
+                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    row = cellIDs[1].getRow();
+                                    col = cellIDs[1].getCol();
+                                    result.setCell(row, col, Grids_Utilities.getLarger(height0));
+                                }
+                                hollowsVisited.addAll(hollowSet);
+                                visitedSet1.addAll(hollowSet);
+                            }
+                        }
+                        hollows2 = getHollowsInNeighbourhood(
+                                result,
+                                visitedSet1,
+                                treatNoDataValueAsOutflow);
+                    } else {
+                        calculated1 = true;
+                    }
+                } else {
+                    calculated1 = true;
+                }
+            }
+        }
+        return result;
     }
 
     /**
      * @param outflowCellIDsSet
      * @param outflowHeight The value below which cells in _Grid2DSquareCell are
      * regarded as outflow cells.
-     * @param _Grid2DSquareCell Grids_AbstractGridNumber to process.
+     * @param g Grids_AbstractGridNumber to process.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
@@ -1770,83 +1407,64 @@ public class Grids_ProcessorDEM
     private HashSet getHollowFilledDEMOutflowCellIDs(
             HashSet outflowCellIDsSet,
             double outflowHeight,
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             long nrows,
             long ncols,
-            boolean _TreatNoDataValueAsOutflow,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(_Grid2DSquareCell);
-            HashSet outflowCellIDs = new HashSet();
-            if (!(outflowCellIDsSet == null)) {
-                outflowCellIDs.addAll(outflowCellIDsSet);
-            }
-            long row;
-            long col;
-            if (_Grid2DSquareCell.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) _Grid2DSquareCell;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(hoome);
-                int height;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        height = _Grid2DSquareCellInt.getCell(row, col, hoome);
-                        if (_TreatNoDataValueAsOutflow) {
-                            if ((height == noDataValue) || (height <= outflowHeight)) {
-                                outflowCellIDs.add(_Grid2DSquareCellInt.getCellID(row, col, hoome));
-                            }
-                        } else {
-                            if ((height != noDataValue) && (height <= outflowHeight)) {
-                                outflowCellIDs.add(_Grid2DSquareCellInt.getCellID(row, col, hoome));
-                            }
-                        }
-                    }
-                }
-            } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) _Grid2DSquareCell;
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(hoome);
-                double height;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        height = _Grid2DSquareCellDouble.getCell(row, col, hoome);
-                        if (_TreatNoDataValueAsOutflow) {
-                            if ((height == noDataValue) || (height <= outflowHeight)) {
-                                outflowCellIDs.add(_Grid2DSquareCellDouble.getCellID(row, col, hoome));
-                            }
-                        } else {
-                            if ((height != noDataValue) && (height <= outflowHeight)) {
-                                outflowCellIDs.add(_Grid2DSquareCellDouble.getCellID(row, col, hoome));
-                            }
-                        }
-                    }
-                }
-            }
-            return outflowCellIDs;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                getHollowFilledDEMOutflowCellIDs(
-                        outflowCellIDsSet,
-                        outflowHeight,
-                        _Grid2DSquareCell,
-                        nrows,
-                        ncols,
-                        _TreatNoDataValueAsOutflow,
-                        hoome);
-            }
-            throw e;
+            boolean treatNoDataValueAsOutflow) {
+        ge.getGrids().add(g);
+        HashSet outflowCellIDs = new HashSet();
+        if (!(outflowCellIDsSet == null)) {
+            outflowCellIDs.addAll(outflowCellIDsSet);
         }
+        long row;
+        long col;
+
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int noDataValue = gi.getNoDataValue();
+            int height;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    height = gi.getCell(row, col);
+                    if (treatNoDataValueAsOutflow) {
+                        if ((height == noDataValue) || (height <= outflowHeight)) {
+                            outflowCellIDs.add(gi.getCellID(row, col));
+                        }
+                    } else {
+                        if ((height != noDataValue) && (height <= outflowHeight)) {
+                            outflowCellIDs.add(gi.getCellID(row, col));
+                        }
+                    }
+                }
+            }
+        } else {
+            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double noDataValue = gd.getNoDataValue();
+            double height;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    height = gd.getCell(row, col);
+                    if (treatNoDataValueAsOutflow) {
+                        if ((height == noDataValue) || (height <= outflowHeight)) {
+                            outflowCellIDs.add(gd.getCellID(row, col));
+                        }
+                    } else {
+                        if ((height != noDataValue) && (height <= outflowHeight)) {
+                            outflowCellIDs.add(gd.getCellID(row, col));
+                        }
+                    }
+                }
+            }
+        }
+        return outflowCellIDs;
     }
 
     /**
      *
      *
      *
-     * @param _Grid2DSquareCell Grids_AbstractGridNumber to be processed.
+     * @param g Grids_AbstractGridNumber to be processed.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
@@ -1859,126 +1477,107 @@ public class Grids_ProcessorDEM
      * 8 cell neighbourhood are either the same value or higher or noDataValues.
      */
     private HashSet getHollowFilledDEMInitialHollowsHashSet(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             long nrows,
             long ncols,
-            boolean _TreatNoDataValueAsOutflow,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(_Grid2DSquareCell);
-            HashSet initialHollowsHashSet = new HashSet();
-            int k;
-            // Initialise hollows
-            long row;
-            long col;
-            long p;
-            long q;
-            if (_Grid2DSquareCell.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) _Grid2DSquareCell;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(hoome);
-                int[] heights = new int[9];
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        heights[0] = _Grid2DSquareCellInt.getCell(row, col, hoome);
-                        if (heights[0] != noDataValue) {
-                            k = 0;
-                            for (p = -1; p < 2; p++) {
-                                for (q = -1; q < 2; q++) {
-                                    if (!(p == 0 && q == 0)) {
-                                        k++;
-                                        heights[k] = _Grid2DSquareCellInt.getCell(row + p, col + q, hoome);
-                                    }
-                                }
-                            }
-                            if (_TreatNoDataValueAsOutflow) {
-                                if ((heights[1] >= heights[0])
-                                        && (heights[2] >= heights[0])
-                                        && (heights[3] >= heights[0])
-                                        && (heights[4] >= heights[0])
-                                        && (heights[5] >= heights[0])
-                                        && (heights[6] >= heights[0])
-                                        && (heights[7] >= heights[0])
-                                        && (heights[8] >= heights[0])) {
-                                    initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, hoome));
-                                }
-                            } else {
-                                if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                        && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                        && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                        && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                        && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                        && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                        && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                        && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                                    initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, hoome));
+            boolean treatNoDataValueAsOutflow) {
+        ge.getGrids().add(g);
+        HashSet initialHollowsHashSet = new HashSet();
+        int k;
+        // Initialise hollows
+        long row;
+        long col;
+        long p;
+        long q;
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int ndv = gi.getNoDataValue();
+            int[] h = new int[9];
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    h[0] = gi.getCell(row, col);
+                    if (h[0] != ndv) {
+                        k = 0;
+                        for (p = -1; p < 2; p++) {
+                            for (q = -1; q < 2; q++) {
+                                if (!(p == 0 && q == 0)) {
+                                    k++;
+                                    h[k] = gi.getCell(row + p, col + q);
                                 }
                             }
                         }
-                    }
-                }
-            } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) _Grid2DSquareCell;
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(hoome);
-                double[] heights = new double[9];
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        heights[0] = _Grid2DSquareCellDouble.getCell(row, col, hoome);
-                        if (heights[0] != noDataValue) {
-                            k = 0;
-                            for (p = -1; p < 2; p++) {
-                                for (q = -1; q < 2; q++) {
-                                    if (!(p == 0 && q == 0)) {
-                                        k++;
-                                        heights[k] = _Grid2DSquareCellDouble.getCell(row + p, col + q, hoome);
-                                    }
-                                }
+                        if (treatNoDataValueAsOutflow) {
+                            if ((h[1] >= h[0])
+                                    && (h[2] >= h[0])
+                                    && (h[3] >= h[0])
+                                    && (h[4] >= h[0])
+                                    && (h[5] >= h[0])
+                                    && (h[6] >= h[0])
+                                    && (h[7] >= h[0])
+                                    && (h[8] >= h[0])) {
+                                initialHollowsHashSet.add(g.getCellID(row, col));
                             }
-                            if (_TreatNoDataValueAsOutflow) {
-                                if ((heights[1] >= heights[0])
-                                        && (heights[2] >= heights[0])
-                                        && (heights[3] >= heights[0])
-                                        && (heights[4] >= heights[0])
-                                        && (heights[5] >= heights[0])
-                                        && (heights[6] >= heights[0])
-                                        && (heights[7] >= heights[0])
-                                        && (heights[8] >= heights[0])) {
-                                    initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, hoome));
-                                }
-                            } else {
-                                if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                        && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                        && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                        && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                        && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                        && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                        && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                        && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                                    initialHollowsHashSet.add(_Grid2DSquareCell.getCellID(row, col, hoome));
-                                }
+                        } else {
+                            if ((h[1] >= h[0] || h[1] == ndv)
+                                    && (h[2] >= h[0] || h[2] == ndv)
+                                    && (h[3] >= h[0] || h[3] == ndv)
+                                    && (h[4] >= h[0] || h[4] == ndv)
+                                    && (h[5] >= h[0] || h[5] == ndv)
+                                    && (h[6] >= h[0] || h[6] == ndv)
+                                    && (h[7] >= h[0] || h[7] == ndv)
+                                    && (h[8] >= h[0] || h[8] == ndv)) {
+                                initialHollowsHashSet.add(g.getCellID(row, col));
                             }
                         }
                     }
                 }
             }
-            return initialHollowsHashSet;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
+        } else {
+            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double ndv = gd.getNoDataValue();
+            double[] h = new double[9];
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    h[0] = gd.getCell(row, col);
+                    if (h[0] != ndv) {
+                        k = 0;
+                        for (p = -1; p < 2; p++) {
+                            for (q = -1; q < 2; q++) {
+                                if (!(p == 0 && q == 0)) {
+                                    k++;
+                                    h[k] = gd.getCell(row + p, col + q);
+                                }
+                            }
+                        }
+                        if (treatNoDataValueAsOutflow) {
+                            if ((h[1] >= h[0])
+                                    && (h[2] >= h[0])
+                                    && (h[3] >= h[0])
+                                    && (h[4] >= h[0])
+                                    && (h[5] >= h[0])
+                                    && (h[6] >= h[0])
+                                    && (h[7] >= h[0])
+                                    && (h[8] >= h[0])) {
+                                initialHollowsHashSet.add(g.getCellID(row, col));
+                            }
+                        } else {
+                            if ((h[1] >= h[0] || h[1] == ndv)
+                                    && (h[2] >= h[0] || h[2] == ndv)
+                                    && (h[3] >= h[0] || h[3] == ndv)
+                                    && (h[4] >= h[0] || h[4] == ndv)
+                                    && (h[5] >= h[0] || h[5] == ndv)
+                                    && (h[6] >= h[0] || h[6] == ndv)
+                                    && (h[7] >= h[0] || h[7] == ndv)
+                                    && (h[8] >= h[0] || h[8] == ndv)) {
+                                initialHollowsHashSet.add(g.getCellID(row, col));
+                            }
+                        }
+                    }
                 }
-                ge.initMemoryReserve(hoome);
-                return getHollowFilledDEMInitialHollowsHashSet(
-                        _Grid2DSquareCell,
-                        nrows,
-                        ncols,
-                        _TreatNoDataValueAsOutflow,
-                        hoome);
-            } else {
-                throw e;
             }
         }
+        return initialHollowsHashSet;
     }
 
     /**
@@ -1989,131 +1588,71 @@ public class Grids_ProcessorDEM
      *
      *
      * @param g The Grids_AbstractGridNumber to be processed.
-     * @param _CellIDs the HashSet storing _CellIDs that must be examined.
+     * @param cellIDs the HashSet storing _CellIDs that must be examined.
      */
     private HashSet getHollowsInNeighbourhood(
             Grids_AbstractGridNumber g,
-            HashSet _CellIDs,
-            boolean _TreatNoDataValueAsOutflow,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(g);
-            HashSet result = new HashSet();
-            HashSet visited1 = new HashSet();
-            Grids_2D_ID_long cellID;
-            long row;
-            long col;
-            long a;
-            long b;
-            long p;
-            long q;
-            int k;
-            Iterator iterator1 = _CellIDs.iterator();
-            if (g.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(hoome);
-                int[] heights = new int[9];
-                while (iterator1.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator1.next();
-                    if (!visited1.contains(cellID)) {
-                        row = cellID.getRow();
-                        col = cellID.getCol();
-                        // Examine neighbourhood
-                        for (a = -1; a < 2; a++) {
-                            for (b = -1; b < 2; b++) {
-                                visited1.add(_Grid2DSquareCellInt.getCellID(row + a, col + b, hoome));
-                                heights[0] = _Grid2DSquareCellInt.getCell(row + a, col + b, hoome);
-                                if (heights[0] != noDataValue) {
-                                    k = 0;
-                                    for (p = -1; p < 2; p++) {
-                                        for (q = -1; q < 2; q++) {
-                                            if (!(p == 0 && q == 0)) {
-                                                k++;
-                                                heights[k] = _Grid2DSquareCellInt.getCell(
-                                                        row + a + p,
-                                                        col + b + q,
-                                                        hoome);
-                                            }
-                                        }
-                                    }
-                                    if (_TreatNoDataValueAsOutflow) {
-                                        if ((heights[1] >= heights[0])
-                                                && (heights[2] >= heights[0])
-                                                && (heights[3] >= heights[0])
-                                                && (heights[4] >= heights[0])
-                                                && (heights[5] >= heights[0])
-                                                && (heights[6] >= heights[0])
-                                                && (heights[7] >= heights[0])
-                                                && (heights[8] >= heights[0])) {
-                                            result.add(g.getCellID(row + a, col + b, hoome));
-                                        }
-                                    } else {
-                                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                                            result.add(_Grid2DSquareCellInt.getCellID(row + a, col + b, hoome));
+            HashSet cellIDs,
+            boolean treatNoDataValueAsOutflow) {
+        ge.getGrids().add(g);
+        HashSet result = new HashSet();
+        HashSet visited1 = new HashSet();
+        Grids_2D_ID_long cellID;
+        long row;
+        long col;
+        long a;
+        long b;
+        long p;
+        long q;
+        int k;
+        Iterator iterator1 = cellIDs.iterator();
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int ndv = gi.getNoDataValue();
+            int[] h = new int[9];
+            while (iterator1.hasNext()) {
+                cellID = (Grids_2D_ID_long) iterator1.next();
+                if (!visited1.contains(cellID)) {
+                    row = cellID.getRow();
+                    col = cellID.getCol();
+                    // Examine neighbourhood
+                    for (a = -1; a < 2; a++) {
+                        for (b = -1; b < 2; b++) {
+                            visited1.add(gi.getCellID(row + a, col + b));
+                            h[0] = gi.getCell(row + a, col + b);
+                            if (h[0] != ndv) {
+                                k = 0;
+                                for (p = -1; p < 2; p++) {
+                                    for (q = -1; q < 2; q++) {
+                                        if (!(p == 0 && q == 0)) {
+                                            k++;
+                                            h[k] = gi.getCell(
+                                                    row + a + p,
+                                                    col + b + q);
                                         }
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-            } else {
-                // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(hoome);
-                double[] heights = new double[9];
-                while (iterator1.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator1.next();
-                    if (!visited1.contains(cellID)) {
-                        row = cellID.getRow();
-                        col = cellID.getCol();
-                        // Examine neighbourhood
-                        for (a = -1; a < 2; a++) {
-                            for (b = -1; b < 2; b++) {
-                                visited1.add(_Grid2DSquareCellDouble.getCellID(row + a, col + b, hoome));
-                                heights[0] = _Grid2DSquareCellDouble.getCell(row + a, col + b, hoome);
-                                if (heights[0] != noDataValue) {
-                                    k = 0;
-                                    for (p = -1; p < 2; p++) {
-                                        for (q = -1; q < 2; q++) {
-                                            if (!(p == 0 && q == 0)) {
-                                                k++;
-                                                heights[k] = _Grid2DSquareCellDouble.getCell(
-                                                        row + a + p,
-                                                        col + b + q,
-                                                        hoome);
-                                            }
-                                        }
+                                if (treatNoDataValueAsOutflow) {
+                                    if ((h[1] >= h[0])
+                                            && (h[2] >= h[0])
+                                            && (h[3] >= h[0])
+                                            && (h[4] >= h[0])
+                                            && (h[5] >= h[0])
+                                            && (h[6] >= h[0])
+                                            && (h[7] >= h[0])
+                                            && (h[8] >= h[0])) {
+                                        result.add(g.getCellID(row + a, col + b));
                                     }
-                                    if (_TreatNoDataValueAsOutflow) {
-                                        if ((heights[1] >= heights[0])
-                                                && (heights[2] >= heights[0])
-                                                && (heights[3] >= heights[0])
-                                                && (heights[4] >= heights[0])
-                                                && (heights[5] >= heights[0])
-                                                && (heights[6] >= heights[0])
-                                                && (heights[7] >= heights[0])
-                                                && (heights[8] >= heights[0])) {
-                                            result.add(g.getCellID(row + a, col + b, hoome));
-                                        }
-                                    } else {
-                                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                                            result.add(_Grid2DSquareCellDouble.getCellID(row + a, col + b, hoome));
-                                        }
+                                } else {
+                                    if ((h[1] >= h[0] || h[1] == ndv)
+                                            && (h[2] >= h[0] || h[2] == ndv)
+                                            && (h[3] >= h[0] || h[3] == ndv)
+                                            && (h[4] >= h[0] || h[4] == ndv)
+                                            && (h[5] >= h[0] || h[5] == ndv)
+                                            && (h[6] >= h[0] || h[6] == ndv)
+                                            && (h[7] >= h[0] || h[7] == ndv)
+                                            && (h[8] >= h[0] || h[8] == ndv)) {
+                                        result.add(gi.getCellID(row + a, col + b));
                                     }
                                 }
                             }
@@ -2121,145 +1660,160 @@ public class Grids_ProcessorDEM
                     }
                 }
             }
-            return result;
-        } catch (OutOfMemoryError e) {
-            ge.clearMemoryReserve();
-            if (!ge.swapChunk(ge.HOOMEF)) {
-                throw e;
+        } else {
+            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double ndv = gd.getNoDataValue();
+            double[] h = new double[9];
+            while (iterator1.hasNext()) {
+                cellID = (Grids_2D_ID_long) iterator1.next();
+                if (!visited1.contains(cellID)) {
+                    row = cellID.getRow();
+                    col = cellID.getCol();
+                    // Examine neighbourhood
+                    for (a = -1; a < 2; a++) {
+                        for (b = -1; b < 2; b++) {
+                            visited1.add(gd.getCellID(row + a, col + b));
+                            h[0] = gd.getCell(row + a, col + b);
+                            if (h[0] != ndv) {
+                                k = 0;
+                                for (p = -1; p < 2; p++) {
+                                    for (q = -1; q < 2; q++) {
+                                        if (!(p == 0 && q == 0)) {
+                                            k++;
+                                            h[k] = gd.getCell(
+                                                    row + a + p,
+                                                    col + b + q);
+                                        }
+                                    }
+                                }
+                                if (treatNoDataValueAsOutflow) {
+                                    if ((h[1] >= h[0])
+                                            && (h[2] >= h[0])
+                                            && (h[3] >= h[0])
+                                            && (h[4] >= h[0])
+                                            && (h[5] >= h[0])
+                                            && (h[6] >= h[0])
+                                            && (h[7] >= h[0])
+                                            && (h[8] >= h[0])) {
+                                        result.add(g.getCellID(row + a, col + b));
+                                    }
+                                } else {
+                                    if ((h[1] >= h[0] || h[1] == ndv)
+                                            && (h[2] >= h[0] || h[2] == ndv)
+                                            && (h[3] >= h[0] || h[3] == ndv)
+                                            && (h[4] >= h[0] || h[4] == ndv)
+                                            && (h[5] >= h[0] || h[5] == ndv)
+                                            && (h[6] >= h[0] || h[6] == ndv)
+                                            && (h[7] >= h[0] || h[7] == ndv)
+                                            && (h[8] >= h[0] || h[8] == ndv)) {
+                                        result.add(gd.getCellID(row + a, col + b));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            ge.initMemoryReserve(hoome);
-            return getHollowsInNeighbourhood(
-                    g,
-                    _CellIDs,
-                    _TreatNoDataValueAsOutflow,
-                    hoome);
         }
+        return result;
     }
 
     private HashSet getHollowFilledDEMCalculateHollows(
             Grids_AbstractGridNumber g,
-            HashSet cellIDs,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(g);
-
-            if ((g.getNCols(hoome) * g.getNRows(hoome)) / 4 < cellIDs.size()) {
-                // return getInitialHollowsHashSet( grid );
-            }
-            HashSet result = new HashSet();
-            Grids_2D_ID_long cellID;
-
-            long row;
-
-            long col;
-
-            long p;
-
-            long q;
-
-            int k;
-            //int noDataCount;
-            Iterator iterator1 = cellIDs.iterator();
-
-            if (g.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(hoome);
-                int[] heights = new int[9];
-                while (iterator1.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator1.next();
-                    row = cellID.getRow();
-                    col = cellID.getCol();
-                    heights[0] = _Grid2DSquareCellInt.getCell(row, col, hoome);
-                    if (heights[0] != noDataValue) {
-                        //noDataCount = 0;
-                        k = 0;
-                        for (p = -1; p < 2; p++) {
-                            for (q = -1; q < 2; q++) {
-                                if (!(p == 0 && q == 0)) {
-                                    k++;
-                                    heights[k] = _Grid2DSquareCellInt.getCell(row + p, col + q, hoome);
-                                    //if ( heights[ k ] == noDataValue ) {
-                                    //    noDataCount ++;
-                                    //}
-                                }
-                            }
-                        }
-                        // This deals with single isolated cells surrounded by noDataValues
-                        //if ( noDataCount < 8 ) {
-                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                            result.add(cellID);
-                        }
-                        //}
-                    }
-                }
-            } else { // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-
-                double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(hoome);
-
-                double[] heights = new double[9];
-
-                while (iterator1.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator1.next();
-                    row = cellID.getRow();
-                    col = cellID.getCol();
-                    heights[0] = _Grid2DSquareCellDouble.getCell(row, col, hoome);
-
-                    if (heights[0] != noDataValue) {
-                        //noDataCount = 0;
-                        k = 0;
-
-                        for (p = -1; p
-                                < 2; p++) {
-                            for (q = -1; q
-                                    < 2; q++) {
-                                if (!(p == 0 && q == 0)) {
-                                    k++;
-                                    heights[k] = _Grid2DSquareCellDouble.getCell(row + p, col + q, hoome);
-                                    //if ( heights[ k ] == noDataValue ) {
-                                    //    noDataCount ++;
-                                    //}
-
-                                }
-                            }
-                        }
-                        // This deals with single isolated cells surrounded by noDataValues
-                        //if ( noDataCount < 8 ) {
-                        if ((heights[1] >= heights[0] || heights[1] == noDataValue)
-                                && (heights[2] >= heights[0] || heights[2] == noDataValue)
-                                && (heights[3] >= heights[0] || heights[3] == noDataValue)
-                                && (heights[4] >= heights[0] || heights[4] == noDataValue)
-                                && (heights[5] >= heights[0] || heights[5] == noDataValue)
-                                && (heights[6] >= heights[0] || heights[6] == noDataValue)
-                                && (heights[7] >= heights[0] || heights[7] == noDataValue)
-                                && (heights[8] >= heights[0] || heights[8] == noDataValue)) {
-                            result.add(cellID);
-
-                        } //}
-                    }
-                }
-            }
-            return result;
-
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                getHollowFilledDEMCalculateHollows(
-                        g, cellIDs, hoome);
-            }
-            throw e;
+            HashSet cellIDs) {
+        ge.getGrids().add(g);
+        if ((g.getNCols() * g.getNRows()) / 4 < cellIDs.size()) {
+            // return getInitialHollowsHashSet( grid );
         }
+        HashSet result = new HashSet();
+        Grids_2D_ID_long cellID;
+        long row;
+        long col;
+        long p;
+        long q;
+        int k;
+        //int noDataCount;
+        Iterator iterator1 = cellIDs.iterator();
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int ndv = gi.getNoDataValue();
+            int[] h = new int[9];
+            while (iterator1.hasNext()) {
+                cellID = (Grids_2D_ID_long) iterator1.next();
+                row = cellID.getRow();
+                col = cellID.getCol();
+                h[0] = gi.getCell(row, col);
+                if (h[0] != ndv) {
+                    //noDataCount = 0;
+                    k = 0;
+                    for (p = -1; p < 2; p++) {
+                        for (q = -1; q < 2; q++) {
+                            if (!(p == 0 && q == 0)) {
+                                k++;
+                                h[k] = gi.getCell(row + p, col + q);
+                                //if ( heights[ k ] == noDataValue ) {
+                                //    noDataCount ++;
+                                //}
+                            }
+                        }
+                    }
+                    // This deals with single isolated cells surrounded by noDataValues
+                    //if ( noDataCount < 8 ) {
+                    if ((h[1] >= h[0] || h[1] == ndv)
+                            && (h[2] >= h[0] || h[2] == ndv)
+                            && (h[3] >= h[0] || h[3] == ndv)
+                            && (h[4] >= h[0] || h[4] == ndv)
+                            && (h[5] >= h[0] || h[5] == ndv)
+                            && (h[6] >= h[0] || h[6] == ndv)
+                            && (h[7] >= h[0] || h[7] == ndv)
+                            && (h[8] >= h[0] || h[8] == ndv)) {
+                        result.add(cellID);
+                    }
+                    //}
+                }
+            }
+        } else { // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double ndv = gd.getNoDataValue();
+            double[] h = new double[9];
+            while (iterator1.hasNext()) {
+                cellID = (Grids_2D_ID_long) iterator1.next();
+                row = cellID.getRow();
+                col = cellID.getCol();
+                h[0] = gd.getCell(row, col);
+                if (h[0] != ndv) {
+                    //noDataCount = 0;
+                    k = 0;
+                    for (p = -1; p < 2; p++) {
+                        for (q = -1; q < 2; q++) {
+                            if (!(p == 0 && q == 0)) {
+                                k++;
+                                h[k] = gd.getCell(row + p, col + q);
+                                //if ( heights[ k ] == noDataValue ) {
+                                //    noDataCount ++;
+                                //}
+
+                            }
+                        }
+                    }
+                    // This deals with single isolated cells surrounded by noDataValues
+                    //if ( noDataCount < 8 ) {
+                    if ((h[1] >= h[0] || h[1] == ndv)
+                            && (h[2] >= h[0] || h[2] == ndv)
+                            && (h[3] >= h[0] || h[3] == ndv)
+                            && (h[4] >= h[0] || h[4] == ndv)
+                            && (h[5] >= h[0] || h[5] == ndv)
+                            && (h[6] >= h[0] || h[6] == ndv)
+                            && (h[7] >= h[0] || h[7] == ndv)
+                            && (h[8] >= h[0] || h[8] == ndv)) {
+                        result.add(cellID);
+
+                    } //}
+                }
+            }
+        }
+        return result;
     }
 
     private boolean isGridInt(int i) {
@@ -2372,23 +1926,22 @@ public class Grids_ProcessorDEM
             ge.getGrids().add(g);
             if (gdf.getChunkNCols() != gif.getChunkNCols()
                     || gdf.getChunkNRows() != gif.getChunkNRows()) {
-                log("Warning! ((gridDoubleFactory.getChunkNcols() "
+                log(0, "Warning! ((gridDoubleFactory.getChunkNcols() "
                         + "!= gridIntFactory.getChunkNcols()) || "
                         + "(gridDoubleFactory.getChunkNrows() != "
-                        + "gridIntFactory.getChunkNrows()))",
-                        hoome);
+                        + "gridIntFactory.getChunkNrows()))");
             }
             Grids_AbstractGridNumber[] metrics1;
             metrics1 = new Grids_AbstractGridNumber[65];
-            long ncols = g.getNCols(hoome);
-            long nrows = g.getNRows(hoome);
-            Grids_Dimensions dimensions = g.getDimensions(hoome);
+            long ncols = g.getNCols();
+            long nrows = g.getNRows();
+            Grids_Dimensions dimensions = g.getDimensions();
             boolean isInitialised = false;
             String[] metrics1Names = getMetrics1Names();
             File file;
-            File directory = getDirectory(hoome);
+            File directory = getDirectory();
             for (int i = 0; i < metrics1.length; i++) {
-                file = ge.initFileDirectory(directory, metrics1Names[i], hoome);
+                file = ge.initFileDirectory(directory, metrics1Names[i]);
                 do {
                     try {
                         if (isGridInt(i)) {
@@ -2399,9 +1952,9 @@ public class Grids_ProcessorDEM
                                     file, nrows, ncols, dimensions, hoome);
                         }
                         if (swapOutInitialisedFiles) {
-                            metrics1[i].writeToFile(true, hoome);
+                            metrics1[i].writeToFile(true);
                         }
-                        metrics1[i].setName(metrics1Names[i], hoome);
+                        metrics1[i].setName(metrics1Names[i]);
                         ge.getGrids().add(metrics1[i]);
                         isInitialised = true;
                     } catch (OutOfMemoryError e) {
@@ -2410,7 +1963,7 @@ public class Grids_ProcessorDEM
                         if (!ge.swapChunk(ge.HOOMEF)) {
                             throw e;
                         }
-                        ge.initMemoryReserve(hoome);
+                        ge.initMemoryReserve();
                     }
                     System.out.println("Initialised result[" + i + "]");
                 } while (!isInitialised);
@@ -2430,7 +1983,7 @@ public class Grids_ProcessorDEM
                 if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 return getMetrics1(
                         g,
                         distance,
@@ -2656,8 +2209,9 @@ public class Grids_ProcessorDEM
             dummyDiff[1] = 0.0d;
             dummyDiff[2] = 0.0d;
             dummyDiff[3] = 0.0d;
-            double[][] weights = getNormalDistributionKernelWeights(
-                    g.getCellsizeDouble(hoome), distance, hoome);
+            double[][] weights;
+            weights = Grids_Kernel.getNormalDistributionKernelWeights(
+                    g.getCellsizeDouble(), distance);
             double[] metrics1ForCell = new double[metrics1.length];
             for (int i = 0; i < metrics1.length; i++) {
                 metrics1ForCell[i] = 0.0d;
@@ -2679,6 +2233,7 @@ public class Grids_ProcessorDEM
             String[] names = getMetrics1Names();
             int normalChunkNRows = g.getChunkNRows(0);
             int normalChunkNCols = g.getChunkNCols(0);
+
             if (g.getClass() == Grids_GridDouble.class) {
                 Grids_GridDouble gridDouble;
                 gridDouble = (Grids_GridDouble) g;
@@ -2832,11 +2387,8 @@ public class Grids_ProcessorDEM
                 }
             }
             for (i = 0; i < names.length; i++) {
-                name = ge.initString(
-                        ge.initString(names[i], underScore, hoome),
-                        ge.toString(distance, hoome),
-                        hoome);
-                metrics1[i].setName(name, hoome);
+                name = names[i] + underScore + distance;
+                metrics1[i].setName(name);
             }
             return metrics1;
         } catch (OutOfMemoryError e) {
@@ -4247,10 +3799,10 @@ public class Grids_ProcessorDEM
         try {
             ge.getGrids().add(grid);
             Grids_GridDouble[] result = new Grids_GridDouble[7];
-            long ncols = grid.getNCols(hoome);
-            long nrows = grid.getNRows(hoome);
-            Grids_Dimensions dimensions = grid.getDimensions(hoome);
-            double gridNoDataValue = grid.getNoDataValue(hoome);
+            long ncols = grid.getNCols();
+            long nrows = grid.getNRows();
+            Grids_Dimensions dimensions = grid.getDimensions();
+            double gridNoDataValue = grid.getNoDataValue();
             Grids_GridDouble[] slopeAndAspect = null;
             //Grid2DSquareCellDouble[] _SlopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
             result[0] = slopeAndAspect[0];
@@ -4267,25 +3819,25 @@ public class Grids_ProcessorDEM
             long col;
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
-                    if (grid.getCell(row, col, hoome) != gridNoDataValue) {
-                        slope = result[0].getCell(row, col, hoome);
-                        aspect = result[1].getCell(row, col, hoome);
+                    if (grid.getCell(row, col) != gridNoDataValue) {
+                        slope = result[0].getCell(row, col);
+                        aspect = result[1].getCell(row, col);
                         metrics2Points = getMetrics2Points(slopeAndAspect, distance, samplingDensity);
                         weights = Grids_Kernel.getKernelWeights(grid, row, col, distance, weightIntersect, weightFactor, metrics2Points);
                         metrics2 = getMetrics2(grid, row, col, slopeAndAspect, distance, weights);
                         for (int i = 0; i < result.length; i++) {
-                            result[i].setCell(row, col, metrics2[i], hoome);
+                            result[i].setCell(row, col, metrics2[i]);
                         }
                     }
                 }
                 System.out.println("Done row " + row);
 
             }
-            result[2].setName("", hoome);
-            result[3].setName("", hoome);
-            result[4].setName("", hoome);
-            result[5].setName("", hoome);
-            result[6].setName("", hoome);
+            result[2].setName("");
+            result[3].setName("");
+            result[4].setName("");
+            result[5].setName("");
+            result[6].setName("");
 
             return result;
 
@@ -4353,12 +3905,12 @@ public class Grids_ProcessorDEM
         try {
             ge.getGrids().add(grid);
 
-            long nrows = grid.getNRows(hoome);
+            long nrows = grid.getNRows();
 
-            long ncols = grid.getNCols(hoome);
+            long ncols = grid.getNCols();
 
-            double noDataValue = grid.getNoDataValue(hoome);
-            Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(nrows, ncols, grid.getDimensions(hoome));
+            double noDataValue = grid.getNoDataValue();
+            Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(nrows, ncols, grid.getDimensions());
             Grids_2D_ID_long cellID;
             long row;
             long col;
@@ -4373,7 +3925,7 @@ public class Grids_ProcessorDEM
             long q;
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
-                    z[0] = grid.getCell(row, col, hoome);
+                    z[0] = grid.getCell(row, col);
                     if (z[0] != noDataValue) {
                         minz = Double.MAX_VALUE;
                         minzCount = 0;
@@ -4384,7 +3936,7 @@ public class Grids_ProcessorDEM
                             for (q = -1; q < 2; q++) {
                                 if (!(p == 0 && q == 0)) {
                                     k++;
-                                    z[k] = grid.getCell(row + p, col + q, hoome);
+                                    z[k] = grid.getCell(row + p, col + q);
                                     if (z[k] != noDataValue) {
                                         if (z[k] <= minz && z[k] < z[0]) {
                                             if (z[k] == minz) {
@@ -4414,18 +3966,14 @@ public class Grids_ProcessorDEM
                             }
                             flowDirection = min[(int) Math.floor(random * (minzCount + minzCountNoDataValue))];
                         }
-                        result.setCell(row, col, (double) flowDirection, hoome);
+                        result.setCell(row, col, (double) flowDirection);
                     }
                 }
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                return getMaxFlowDirection(
-                        grid,
-                        gridFactory,
-                        hoome);
-
+                return getMaxFlowDirection(                        grid,                        gridFactory,                        hoome);
             } else {
                 throw e;
 
@@ -4456,9 +4004,9 @@ public class Grids_ProcessorDEM
         try {
             ge.getGrids().add(grid);
             Grids_GridDouble upSlopeAreaMetrics = (Grids_GridDouble) gridFactory.create(
-                    grid.getNRows(hoome),
-                    grid.getNCols(hoome),
-                    grid.getDimensions(hoome));
+                    grid.getNRows(),
+                    grid.getNCols(),
+                    grid.getDimensions());
             // Get Peaks and set their value to 1.0d
             HashSet initialPeaksHashSet = getInitialPeaksHashSetAndSetTheirValue(grid, upSlopeAreaMetrics, hoome);
             // For each Peak find its neighbours and add a proportional value to
@@ -4479,7 +4027,7 @@ public class Grids_ProcessorDEM
                     throw e;
 
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 getUpSlopeAreaMetrics(
                         grid,
                         distance,
@@ -4511,33 +4059,25 @@ public class Grids_ProcessorDEM
         try {
             ge.getGrids().add(grid);
             HashSet initialPeaksHashSet = new HashSet();
-
-            long nrows = grid.getNRows(hoome);
-
-            long ncols = grid.getNCols(hoome);
-
-            double noDataValue = grid.getNoDataValue(hoome);
-
+            long nrows = grid.getNRows();
+            long ncols = grid.getNCols();
+            double noDataValue = grid.getNoDataValue();
             double[] heights = new double[9];
-
             int k;
-
             for (int row = 0; row
                     < nrows; row++) {
                 for (int col = 0; col
                         < ncols; col++) {
-                    heights[0] = grid.getCell(row, col, hoome);
-
+                    heights[0] = grid.getCell(row, col);
                     if (heights[0] != noDataValue) {
                         k = 0;
-
                         for (int p = -1; p
                                 < 2; p++) {
                             for (int q = -1; q
                                     < 2; q++) {
                                 if (!(p == 0 && q == 0)) {
                                     k++;
-                                    heights[k] = grid.getCell(row + p, col + q, hoome);
+                                    heights[k] = grid.getCell(row + p, col + q);
 
                                 }
                             }
@@ -4551,9 +4091,8 @@ public class Grids_ProcessorDEM
                                 && (heights[6] <= heights[0] || heights[6] == noDataValue)
                                 && (heights[7] <= heights[0] || heights[7] == noDataValue)
                                 && (heights[8] <= heights[0] || heights[8] == noDataValue)) {
-                            initialPeaksHashSet.add(grid.getCellID(row, col, hoome));
-                            upSlopeAreaMetrics.addToCell(row, col, 1.0d, hoome);
-
+                            initialPeaksHashSet.add(grid.getCellID(row, col));
+                            upSlopeAreaMetrics.addToCell(row, col, 1.0d);
                         }
                     }
                 }
@@ -4562,9 +4101,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 return getInitialPeaksHashSetAndSetTheirValue(
-                        grid,
-                        upSlopeAreaMetrics,
-                        hoome);
+                        grid,                        upSlopeAreaMetrics,                        hoome);
 
             } else {
                 throw e;

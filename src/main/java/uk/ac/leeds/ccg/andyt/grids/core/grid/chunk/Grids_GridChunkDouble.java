@@ -85,15 +85,15 @@ public class Grids_GridChunkDouble
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this
      * chunk
-     * @param valueToSet the value the cell is to be set to.
+     * @param v the value the cell is to be set to.
      * @return
      */
     @Override
     public double setCell(
             int row,
             int col,
-            double valueToSet) {
-        if (valueToSet == Value) {
+            double v) {
+        if (v == Value) {
             return Value;
         } else {
             // @TODO
@@ -111,7 +111,7 @@ public class Grids_GridChunkDouble
      * @return
      */
     @Override
-    protected Grids_AbstractIterator iterator() {
+    public Grids_AbstractIterator iterator() {
         return new Grids_GridChunkDoubleIterator(this);
     }
 

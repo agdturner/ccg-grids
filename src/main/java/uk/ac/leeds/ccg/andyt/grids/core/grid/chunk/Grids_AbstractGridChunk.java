@@ -44,40 +44,14 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     protected Grids_AbstractGridChunk() {
     }
 
-    protected Grids_AbstractGridChunk(Grids_AbstractGrid g, Grids_2D_ID_int chunkID) {
+    protected Grids_AbstractGridChunk(Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID) {
         super(g.ge);
         Grid = g;
         ChunkID = chunkID;
-        ChunkNRows = Grid.getChunkNRows(ChunkID, ge.HOOMEF);
-        ChunkNCols = Grid.getChunkNCols(ChunkID, ge.HOOMEF);
+        ChunkNRows = Grid.getChunkNRows(ChunkID);
+        ChunkNCols = Grid.getChunkNCols(ChunkID);
         SwapUpToDate = false;
-    }
-
-    /**
-     * Returns this._Grid2DSquareCell.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final Grids_AbstractGrid getGrid(boolean hoome) {
-        try {
-            Grids_AbstractGrid result = getGrid();
-            result.ge.checkAndMaybeFreeMemory(ChunkID, hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getGrid(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -106,67 +80,13 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     }
 
     /**
-     * Returns a copy of this._ChunkID.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final Grids_2D_ID_int getChunkID(boolean hoome) {
-        try {
-            Grids_2D_ID_int result = getChunkID();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getChunkID();
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns a copy of this._ChunkID.
+     * Returns a copy of ChunkID.
      *
      * @return
      */
     public Grids_2D_ID_int getChunkID() {
         return new Grids_2D_ID_int(ChunkID);
         //return this._ChunkID;
-    }
-
-    /**
-     * Returns this.SwapUpToDate
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final boolean isSwapUpToDate(boolean hoome) {
-        try {
-            boolean result = isSwapUpToDate();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return isSwapUpToDate(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -177,31 +97,6 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      */
     public boolean isSwapUpToDate() {
         return SwapUpToDate;
-    }
-
-    /**
-     * Sets this.SwapUpToDate to SwapUpToDate
-     *
-     * @param swapUpToDate
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     */
-    public final void setSwapUpToDate(boolean swapUpToDate, boolean hoome) {
-        try {
-            setSwapUpToDate(swapUpToDate);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                setSwapUpToDate(swapUpToDate, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -216,33 +111,6 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     /**
      * For returning a description of this.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final String toString(boolean hoome) {
-        try {
-            String result = getDescription();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return toString(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * For returning a description of this.
-     *
      * @return
      */
     protected String getDescription() {
@@ -252,36 +120,9 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     /**
      * Returns the name of this.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public final String getName(boolean hoome) {
-        try {
-            String result = getName();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return getName(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the name of this.
-     *
-     * @return
-     */
-    protected String getName() {
+    public String getName() {
         return this.getClass().getName();
     }
 
@@ -289,74 +130,12 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
      * Returns an iterator over the cell values. These are not guaranteed to be
      * in any particular order.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public final Grids_AbstractIterator iterator(boolean hoome) {
-        try {
-            Grids_AbstractIterator result = iterator();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return iterator(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
+    public abstract Grids_AbstractIterator iterator();
 
     /**
-     * Returns an iterator over the cell values. These are not guaranteed to be
-     * in any particular order.
-     *
-     * @return
-     */
-    protected abstract Grids_AbstractIterator iterator();
-
-    /**
-     * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
-     * chunk cell col index chunkCellColIndex is in this.
-     *
-     * @param row
-     * @param col
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public final boolean inChunk(
-            int row,
-            int col,
-            boolean hoome) {
-        try {
-            boolean result = inChunk(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(Grid, ChunkID, hoome);
-                return inChunk(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns true if the cell given by chunk cell row index chunkCellRowIndex,
-     * chunk cell col index chunkCellColIndex is in this.
+     * Returns true if row, col is in this.
      *
      * @param row
      * @param col

@@ -97,16 +97,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double weightIntersect,
             double weightFactor,
             Grids_GridDoubleFactory gridFactory) {
-        boolean hoome = true;
-
         List<Grids_AbstractGridNumber> result = new ArrayList<>();
         //Vector result = new Vector();
 
-        long ncols = grid.getNCols(hoome);
-        long nrows = grid.getNRows(hoome);
-        Grids_Dimensions dimensions = grid.getDimensions(hoome);
-        double noDataValue = grid.getNoDataValue(hoome);
-        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble(hoome));
+        long ncols = grid.getNCols();
+        long nrows = grid.getNRows();
+        Grids_Dimensions dimensions = grid.getDimensions();
+        double noDataValue = grid.getNoDataValue();
+        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble());
 
         // @HACK If cellDistance is so great that data for a single kernel is
         // unlikely to fit in memory
@@ -663,85 +661,85 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          * weightedZscoreGrid = meanWeightedZscoreGrid[ 0 ]; zscoreGrid =
          * meanZscoreGrid[ 0 ]; }
          */
-        sumWeightGrid.setName("SumWeight_" + grid.getName(hoome));
+        sumWeightGrid.setName("SumWeight_" + grid.getName());
         result.add(sumWeightGrid);
 
         if (doSum) {
-            sumGrid.setName("Sum_" + grid.getName(hoome));
+            sumGrid.setName("Sum_" + grid.getName());
             result.add(sumGrid);
         }
         if (doWSum) {
-            wSumGrid.setName("WSum_" + grid.getName(hoome));
+            wSumGrid.setName("WSum_" + grid.getName());
             result.add(wSumGrid);
         }
         if (doNWSum) {
-            nWSumGrid.setName("NWSum_" + grid.getName(hoome));
+            nWSumGrid.setName("NWSum_" + grid.getName());
             result.add(nWSumGrid);
         }
         if (doWSumN) {
-            wSumNGrid.setName("WSumN_" + grid.getName(hoome));
+            wSumNGrid.setName("WSumN_" + grid.getName());
             result.add(wSumNGrid);
         }
 
         if (doMean) {
-            meanGrid.setName("Mean_" + grid.getName(hoome));
+            meanGrid.setName("Mean_" + grid.getName());
             result.add(meanGrid);
         }
         if (doWMean1) {
-            wMean1Grid.setName("WMean1_" + grid.getName(hoome));
+            wMean1Grid.setName("WMean1_" + grid.getName());
             result.add(wMean1Grid);
         }
         if (doWMean2) {
-            wMean2Grid.setName("WMean2_" + grid.getName(hoome));
+            wMean2Grid.setName("WMean2_" + grid.getName());
             result.add(wMean2Grid);
         }
         if (doNWMean) {
-            nWMeanGrid.setName("NWMean_" + grid.getName(hoome));
+            nWMeanGrid.setName("NWMean_" + grid.getName());
             result.add(nWMeanGrid);
         }
         if (doWMeanN) {
-            wMeanNGrid.setName("WMeanN_" + grid.getName(hoome));
+            wMeanNGrid.setName("WMeanN_" + grid.getName());
             result.add(wMeanNGrid);
         }
 
         if (doProp) {
-            propGrid.setName("Prop_" + grid.getName(hoome));
+            propGrid.setName("Prop_" + grid.getName());
             result.add(propGrid);
         }
         if (doWProp) {
-            wPropGrid.setName("WProp_" + grid.getName(hoome));
+            wPropGrid.setName("WProp_" + grid.getName());
             result.add(wPropGrid);
         }
         if (doVar) {
-            varGrid.setName("Var_" + grid.getName(hoome));
+            varGrid.setName("Var_" + grid.getName());
             result.add(varGrid);
         }
         if (doWVar) {
-            wVarGrid.setName("WVar_" + grid.getName(hoome));
+            wVarGrid.setName("WVar_" + grid.getName());
             result.add(wVarGrid);
         }
         if (doSkew) {
-            skewGrid.setName("Skew_" + grid.getName(hoome));
+            skewGrid.setName("Skew_" + grid.getName());
             result.add(skewGrid);
         }
         if (doWSkew) {
-            wSkewGrid.setName("WSkew_" + grid.getName(hoome));
+            wSkewGrid.setName("WSkew_" + grid.getName());
             result.add(wSkewGrid);
         }
         if (doCVar) {
-            cVarGrid.setName("CVar_" + grid.getName(hoome));
+            cVarGrid.setName("CVar_" + grid.getName());
             result.add(cVarGrid);
         }
         if (doWCVar) {
-            wCVarGrid.setName("WCVar_" + grid.getName(hoome));
+            wCVarGrid.setName("WCVar_" + grid.getName());
             result.add(wCVarGrid);
         }
         if (doCSkew) {
-            cSkewGrid.setName("CSkew" + grid.getName(hoome));
+            cSkewGrid.setName("CSkew" + grid.getName());
             result.add(cSkewGrid);
         }
         if (doWCSkew) {
-            wCSkewGrid.setName("WCSkew_" + grid.getName(hoome));
+            wCSkewGrid.setName("WCSkew_" + grid.getName());
             result.add(wCSkewGrid);
         }
 
@@ -779,12 +777,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         boolean hoome = true;
         List<Grids_AbstractGridNumber> result = new ArrayList<>();
         //        Vector result = new Vector();
-        long ncols = grid.getNCols(hoome);
-        long nrows = grid.getNRows(hoome);
-        Grids_Dimensions dimensions = grid.getDimensions(hoome);
+        long ncols = grid.getNCols();
+        long nrows = grid.getNRows();
+        Grids_Dimensions dimensions = grid.getDimensions();
         //double cellsize = dimensions[0].doubleValue();
-        double noDataValue = grid.getNoDataValue(hoome);
-        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble(hoome));
+        double noDataValue = grid.getNoDataValue();
+        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble());
         boolean doMean = false;
         boolean doWMean = false;
         boolean doSum = false;
@@ -1440,7 +1438,6 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_GridDouble grid,
             double distance,
             Grids_GridDoubleFactory gridFactory) {
-        boolean hoome = true;
         long n;
         n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
@@ -1449,8 +1446,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );
 
         Grids_Dimensions dimensions = grid.getDimensions();
-        double cellsize = grid.getCellsizeDouble(hoome);
-        double noDataValue = grid.getNoDataValue(hoome);
+        double cellsize = grid.getCellsizeDouble();
+        double noDataValue = grid.getNoDataValue();
         int cellDistance = (int) Math.ceil(distance / cellsize);
         double d1;
         double d2;
@@ -1811,16 +1808,16 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble correlationGrid = null;
         Grids_GridDouble weightedZdiffGrid = null;
         Grids_GridDouble zdiffGrid = null;
-        long grid0Nrows = grid0.getNRows(hoome);
-        long grid0Ncols = grid0.getNCols(hoome);
-        Grids_Dimensions grid0Dimensions = grid0.getDimensions(hoome);
-        double grid0NoDataValue = grid0.getNoDataValue(hoome);
-        long grid1Nrows = grid1.getNRows(hoome);
-        long grid1Ncols = grid1.getNCols(hoome);
-        Grids_Dimensions grid1Dimensions = grid1.getDimensions(hoome);
-        double grid1NoDataValue = grid1.getNoDataValue(hoome);
+        long grid0Nrows = grid0.getNRows();
+        long grid0Ncols = grid0.getNCols();
+        Grids_Dimensions grid0Dimensions = grid0.getDimensions();
+        double grid0NoDataValue = grid0.getNoDataValue();
+        long grid1Nrows = grid1.getNRows();
+        long grid1Ncols = grid1.getNCols();
+        Grids_Dimensions grid1Dimensions = grid1.getDimensions();
+        double grid1NoDataValue = grid1.getNoDataValue();
         double noDataValue = grid0NoDataValue;
-        int grid0CellDistance = (int) Math.ceil(distance / grid1.getCellsizeDouble(hoome));
+        int grid0CellDistance = (int) Math.ceil(distance / grid1.getCellsizeDouble());
 
         // setNumberOfPairs is the number of pairs of values needed to calculate
         // the comparison statistics. It must be > 2
@@ -2214,32 +2211,32 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         }
         allStatistics = 0;
         if (dodiff) {
-            diffGrid.setName(grid0.getName(hoome) + "_Diff_" + grid1.getName(hoome));
+            diffGrid.setName(grid0.getName() + "_Diff_" + grid1.getName());
             result[allStatistics] = diffGrid;
             allStatistics++;
-            weightedDiffGrid.setName(grid0.getName(hoome) + "_WDiff_" + grid1.getName(hoome));
+            weightedDiffGrid.setName(grid0.getName() + "_WDiff_" + grid1.getName());
             result[allStatistics] = weightedDiffGrid;
             allStatistics++;
-            normalisedDiffGrid.setName(grid0.getName(hoome) + "_NDiff_" + grid1.getName(hoome));
+            normalisedDiffGrid.setName(grid0.getName() + "_NDiff_" + grid1.getName());
             result[allStatistics] = normalisedDiffGrid;
             allStatistics++;
-            weightedNormalisedDiffGrid.setName(grid0.getName(hoome) + "_NWDiff_" + grid1.getName(hoome));
+            weightedNormalisedDiffGrid.setName(grid0.getName() + "_NWDiff_" + grid1.getName());
             result[allStatistics] = weightedNormalisedDiffGrid;
             allStatistics++;
         }
         if (docorr) {
-            weightedCorrelationGrid.setName(grid0.getName(hoome) + "_WCorr_" + grid1.getName(hoome));
+            weightedCorrelationGrid.setName(grid0.getName() + "_WCorr_" + grid1.getName());
             result[allStatistics] = weightedCorrelationGrid;
             allStatistics++;
-            correlationGrid.setName(grid0.getName(hoome) + "_Corr_" + grid1.getName(hoome));
+            correlationGrid.setName(grid0.getName() + "_Corr_" + grid1.getName());
             result[allStatistics] = correlationGrid;
             allStatistics++;
         }
         if (dozdiff) {
-            weightedZdiffGrid.setName(grid0.getName(hoome) + "_WZDiff_" + grid1.getName(hoome));
+            weightedZdiffGrid.setName(grid0.getName() + "_WZDiff_" + grid1.getName());
             result[allStatistics] = weightedZdiffGrid;
             allStatistics++;
-            zdiffGrid.setName(grid0.getName(hoome) + "_ZDiff_" + grid1.getName(hoome));
+            zdiffGrid.setName(grid0.getName() + "_ZDiff_" + grid1.getName());
             result[allStatistics] = zdiffGrid;
             allStatistics++;
         }

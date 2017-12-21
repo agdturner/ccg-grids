@@ -19,9 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,8 +28,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
@@ -119,43 +114,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      *
      * @param f The File directory that from which a file called cache is
      * attempted to be loaded
-     * @param hoome
-     */
-    protected void initChunks(
-            File f, boolean hoome) {
-        try {
-            initChunks(f);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                initChunks(f, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Initialises ChunkIDChunkMap by first attempting to load from new
-     * File(grid_File, "cache");
-     *
-     * @param f The File directory that from which a file called cache is
-     * attempted to be loaded
      */
     protected void initChunks(File f) {
         File cache = new File(f, "cache");
         if (cache.exists()) {
-            ObjectInputStream ois;
-            ois = Generic_StaticIO.getObjectInputStream(cache);
-            try {
-                ChunkIDChunkMap
-                        = (TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) ois.readObject();
-                ois.close();
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Object o;
+            o = Generic_StaticIO.readObject(cache);
+            ChunkIDChunkMap = (TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) o;
         } else {
             ChunkIDChunkMap = new TreeMap<>();
         }
@@ -180,51 +145,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param hoome
-     * @return Grids.
-     */
-    public HashSet<Grids_AbstractGrid> getGrids(boolean hoome) {
-        try {
-            HashSet<Grids_AbstractGrid> result = ge.getGrids();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getGrids(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return the Grids_AbstractGridChunk with ChunkID.Row equal to chunkRow
-     * and ChunkID.Col equal to chunkCol.
-     * @param chunkRow The ChunkID.Row of the returned Grids_AbstractGridChunk.
-     * @param chunkCol The ChunkID.Col of the returned Grids_AbstractGridChunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_AbstractGridChunk getChunk(
-            int chunkRow, int chunkCol,
-            boolean hoome) {
-        try {
-            return getChunk(chunkRow, chunkCol);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkRow, chunkCol, e);
-                return getChunk(chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return the Grids_AbstractGridChunk with ID.chunkRow equal to chunkRow
      * and ID.chunkCol equal to chunkCol.
      * @param chunkRow The ID.chunkRow of the returned Grids_AbstractGridChunk.
@@ -234,31 +154,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int chunkRow, int chunkCol) {
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         return getChunk(chunkID);
-    }
-
-    /**
-     * @return the Grids_AbstractGridChunk with ChunkID equal to chunkID.
-     * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk to be
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_AbstractGridChunk getChunk(
-            Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            Grids_AbstractGridChunk result = getChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getChunk(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -279,28 +174,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return HashSet containing all ChunkIDs.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public HashSet<Grids_2D_ID_int> getChunkIDs(boolean hoome) {
-        try {
-            HashSet<Grids_2D_ID_int> result = getChunkIDs();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkIDs(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return HashSet containing all ChunkIDs.
      */
     public HashSet<Grids_2D_ID_int> getChunkIDs() {
         HashSet<Grids_2D_ID_int> result = new HashSet<>();
@@ -313,28 +186,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Iterator over the cell values in this.
      */
     public abstract Iterator iterator(boolean hoome);
-
-    /**
-     * @return String description of this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public String toString(boolean hoome) {
-        try {
-            String result = toString();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return toString(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
 
     /**
      * @return a string description of the Abstract fields of this instance.
@@ -369,86 +220,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return Directory.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public File getDirectory(boolean hoome) {
-        try {
-            File result = getDirectory();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getDirectory(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Directory.
      */
     public File getDirectory() {
         return new File(Directory.getPath());
     }
 
     /**
-     * @return Name.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public String getName(boolean hoome) {
-        try {
-            String result = Name;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getName(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @return Name 
+     * @return Name
      */
     public String getName() {
         return Name;
-    }
-
-    /**
-     * Sets Name to be name.
-     *
-     * @param name The String this.Name is set to.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public void setName(String name, boolean hoome) {
-        try {
-            setName(name);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                setName(name, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -458,28 +240,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public void setName(String name) {
         Name = name;
-    }
-
-    /**
-     * @return a basic description of this instance.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public String getBasicDescription(boolean hoome) {
-        try {
-            String result = getBasicDescription();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getBasicDescription(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -495,29 +255,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return NCols.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getNCols(boolean hoome) {
-        try {
-            long result = NCols;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNCols(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Beware OutOfMemoryErrors calling this method.
      *
      * @return NCols.
@@ -527,57 +264,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return NRows.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getNRows(boolean hoome) {
-        try {
-            long result = NRows;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNRows(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Beware OutOfMemoryErrors calling this method.
      *
      * @return NRows.
      */
     public final long getNRows() {
         return NRows;
-    }
-
-    /**
-     * @return NChunkRows.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getNChunkRows(boolean hoome) {
-        try {
-            int result = NChunkRows;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNChunkRows(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -601,53 +293,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return NChunkCols.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getNChunkCols(boolean hoome) {
-        try {
-            int result = NChunkCols;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNChunkCols(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return NChunkCols.
      */
     public final int getNChunkCols() {
         return NChunkCols;
-    }
-
-    /**
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return The number of chunks in this as a long.
-     */
-    public final long getNChunks(boolean hoome) {
-        try {
-            long result = getNChunks();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNChunks(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -675,53 +323,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
-    /**
-     * @return ChunkNRows.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNRows(boolean hoome) {
-        try {
-            int result = ChunkNRows;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNRows(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
     public final int getChunkNRows() {
         return ChunkNRows;
-    }
-
-    /**
-     * @param chunkRow
-     * @return The number of rows in the chunks in the chunk row chunkRow.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNRows(int chunkRow, boolean hoome) {
-        try {
-            int result = getChunkNRows(chunkRow);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNRows(chunkRow, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -740,80 +343,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
-    /**
-     * @return ChunkNCols.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNCols(boolean hoome) {
-        try {
-            int result = ChunkNCols;
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNCols(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
     public final int getChunkNCols() {
         return ChunkNCols;
-    }
-
-    /**
-     * @param chunkCol
-     * @return The number of columns in the chunks in the chunk column chunkCol.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNCols(int chunkCol, boolean hoome) {
-        try {
-            int result = getChunkNCols(chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNCols(chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @return The number of columns in the chunks in the chunk column chunkCol.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     */
-    public final int getChunkNCols(int chunkCol,
-            boolean hoome, Grids_2D_ID_int chunkID) {
-        try {
-            int result = getChunkNCols(chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getChunkNCols(chunkCol, hoome, chunkID);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -833,26 +364,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the number of rows in the final row Chunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNRowsFinalRowChunk(boolean hoome) {
-        try {
-            return getChunkNRowsFinalRowChunk();
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNRowsFinalRowChunk(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return the number of rows in the chunks in the final row.
      */
     public final int getChunkNRowsFinalRowChunk() {
@@ -863,56 +374,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return the number of columns in the chunks in the final column.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNColsFinalColChunk(boolean hoome) {
-        try {
-            return getChunkNColsFinalColChunk();
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkNColsFinalColChunk(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return the number of columns in the chunks in the final column.
      */
     public final int getChunkNColsFinalColChunk() {
         long nChunkColsMinusOne = (long) (NChunkCols - 1);
         long chunkNCols = (long) ChunkNCols;
         return (int) (NCols - (nChunkColsMinusOne * chunkNCols));
-    }
-
-    /**
-     * @return _ChunkNRows, the number of rows in Grids_AbstractGridChunk with
-     * Grids_2D_ID_int equal to _ChunkID
-     * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk thats
-     * number of rows is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNRows(Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            int result = getChunkNRows(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getChunkNRows(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -934,61 +400,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * with Grids_2D_ID_int equal to _ChunkID
      * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk thats
      * number of columns is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkNCols(Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            int result = getChunkNCols(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getChunkNCols(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return _ChunkNCols, the number of columns in Grids_AbstractGridChunk
-     * with Grids_2D_ID_int equal to _ChunkID
-     * @param chunkID The Grids_2D_ID_int of the Grids_AbstractGridChunk thats
-     * number of columns is returned.
      */
     public final int getChunkNCols(Grids_2D_ID_int chunkID) {
         if (chunkID.getCol() < (NChunkCols - 1)) {
             return ChunkNCols;
         } else {
             return getChunkNColsFinalColChunk();
-        }
-    }
-
-    /**
-     * @return Dimensions
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_Dimensions getDimensions(boolean hoome) {
-        try {
-            Grids_Dimensions result;
-            result = getDimensions();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getDimensions(hoome);
-            } else {
-                throw e;
-            }
         }
     }
 
@@ -1003,48 +420,18 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * This method is for convenience.
      *
      * @return BigDecimal equal to this.Dimensions.getCellsize().
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
-    public final BigDecimal getCellsize(boolean hoome) {
-        try {
-            BigDecimal result = getDimensions().getCellsize();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellsize(hoome);
-            } else {
-                throw e;
-            }
-        }
+    public final BigDecimal getCellsize() {
+        return getDimensions().getCellsize();
     }
 
     /**
      * This method is for convenience.
      *
      * @return double equal to this.Dimensions[0].doubleValue.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellsizeDouble(boolean hoome) {
-        try {
-            double result = getCellsize(hoome).doubleValue();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellsizeDouble(hoome);
-            } else {
-                throw e;
-            }
-        }
+    public final double getCellsizeDouble() {
+        return getCellsize().doubleValue();
     }
 
     /**
@@ -1065,7 +452,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         HashSet<Grids_2D_ID_int> result = new HashSet<>();
         long p;
         long q;
-        long cellDistance = (long) Math.ceil(distance / getCellsizeDouble(false));
+        long cellDistance = (long) Math.ceil(distance / getCellsizeDouble());
         double thisCellX;
         double thisCellY;
         double thisDistance;
@@ -1073,7 +460,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             thisCellY = getCellYDouble(row + p);
             for (q = -cellDistance; q <= cellDistance; q++) {
                 thisCellX = getCellXDouble(col + q);
-                thisDistance = Grids_Utilities.distance(thisCellX, thisCellY, x, y);
+                thisDistance = Grids_Utilities.distance(thisCellX, thisCellY,
+                        x, y);
                 if (thisDistance < distance) {
                     Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                             getChunkRow((long) row + p),
@@ -1088,61 +476,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @return Chunk column index for the Grids_AbstractGridChunk intersecting
      * the x-coordinate x.
-     *
-     * @param x The x-coordinate of the line intersecting the chunk column index
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkCol(double x, boolean hoome) {
-        try {
-            int result = getChunkCol(x);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkCol(x, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Chunk column index for the Grids_AbstractGridChunk intersecting
-     * the x-coordinate x.
      * @param x The x-coordinate of the line intersecting the chunk column index
      * returned.
      */
     public final int getChunkCol(double x) {
         return getChunkCol(getCol(x));
-    }
-
-    /**
-     * @return Chunk column index for the Grids_AbstractGridChunk intersecting
-     * the cell column index _CellColIndex.
-     * @param col
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkCol(long col, boolean hoome) {
-        try {
-            int result = getChunkCol(col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkCol(col, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1160,59 +498,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * x-coordinate x.
      * @param x The x-coordinate of the line intersecting the cell column index
      * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getCol(double x, boolean hoome) {
-        try {
-            long result = getCol(x);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCol(x, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate x.
-     * @param x The x-coordinate of the line intersecting the cell column index
-     * returned.
      */
     public final long getCol(double x) {
         return getCol(BigDecimal.valueOf(x));
-    }
-
-    /**
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate xBigDecimal.
-     * @param x The x-coordinate of the line intersecting the cell column index
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getCol(BigDecimal x, boolean hoome) {
-        try {
-            long result = getCol(x);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCol(x, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1238,87 +526,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Cell column index for the cells in chunk column index _Col chunk
      * cell column index chunkCellColIndex.
      * @param cellCol
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getCol(int chunkCol, int cellCol, boolean hoome) {
-        try {
-            long result = getCol(chunkCol, cellCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCol(chunkCol, cellCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @return Cell column index for the cells in chunk column index _Col chunk
-     * cell column index chunkCellColIndex.
-     * @param cellCol
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     */
-    public final long getCol(int chunkCol, int cellCol, Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            long result = getCol(chunkCol, cellCol);
-            ge.checkAndMaybeFreeMemory(this, chunkID, hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCol(chunkCol, cellCol, chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @return Cell column index for the cells in chunk column index _Col chunk
-     * cell column index chunkCellColIndex.
-     * @param cellCol
      */
     public final long getCol(int chunkCol, int cellCol) {
         return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol;
-    }
-
-    /**
-     * @return Chunk cell column Index of the cells that intersect the
-     * x-coordinate x.
-     * @param x The x-coordinate of the line intersecting the chunk cell column
-     * index returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellCol(double x, boolean hoome) {
-        try {
-            int result = getCellCol(x);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellCol(x, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1336,56 +546,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * _CellColIndex.
      * @param col The cell column index of the cell thats chunk cell column
      * index is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellCol(long col, boolean hoome) {
-        try {
-            int result = getCellCol(col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellCol(col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Chunk cell column index of the cells in the cell column index
-     * _CellColIndex.
-     * @param col The cell column index of the cell thats chunk cell column
-     * index is returned.
      */
     public final int getCellCol(long col) {
         long chunkCol = getChunkCol(col);
         return (int) (col - (chunkCol * ChunkNCols));
-    }
-
-    /**
-     * @param random
-     * @param hoome
-     * @return A Random CellColIndex.
-     */
-    public final long getCol(Random random, boolean hoome) {
-        try {
-            long result = getCol(random);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCol(random, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1418,59 +582,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * y-coordinate y.
      * @param y The y-coordinate of the line for which the chunk row index is
      * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkRow(double y, boolean hoome) {
-        try {
-            int result = getChunkRow(y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkRow(y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Chunk row index for the chunks intersecting the line given by
-     * y-coordinate y.
-     * @param y The y-coordinate of the line for which the chunk row index is
-     * returned.
      */
     public final int getChunkRow(double y) {
         return getChunkRow(getRow(y));
-    }
-
-    /**
-     * @return Chunk row index for the chunk intersecting the cells with cell
-     * row index _CellRowIndex.
-     * @param row The cell row index of the cells thats chunk row index is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getChunkRow(long row, boolean hoome) {
-        try {
-            int result = getChunkRow(row);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getChunkRow(row, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1487,58 +601,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Cell row Index for the cells that intersect the line with
      * y-coordinate y.
      * @param y The y-coordinate of the line thats cell row index is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getRow(double y, boolean hoome) {
-        try {
-            long result = getRow(y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getRow(y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Cell row Index for the cells that intersect the line with
-     * y-coordinate y.
-     * @param y The y-coordinate of the line thats cell row index is returned.
      */
     public final long getRow(double y) {
         return getRow(BigDecimal.valueOf(y));
-    }
-
-    /**
-     * @return Cell row Index for the cells that intersect the line with
-     * y-coordinate yBigDecimal.
-     * @param y The y-coordinate of the line for which the cell row index is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final long getRow(BigDecimal y, boolean hoome) {
-        try {
-            long result = getRow(y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getRow(y, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1559,117 +624,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRow
-     * @param cellRow
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return long CellRowIndex, the cell row index for the cells in chunk row
-     * index _Row chunk cell row index chunkCellRowIndex.
-     */
-    public final long getRow(int chunkRow, int cellRow, boolean hoome) {
-        try {
-            long result = getRow(chunkRow, cellRow);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getRow(chunkRow, cellRow, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkRow
-     * @param cellRow
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @param chunkID This is a Grids_2D_ID_int for those
-     * AbstractGrid2DSquareCells not to be swapped if possible when an
-     * OutOfMemoryError is encountered.
-     * @return long CellRowIndex, the cell row index for the cells in chunk row
-     * index _Row chunk cell row index chunkCellRowIndex.
-     */
-    public final long getRow(int chunkRow, int cellRow, Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            long result = getRow(chunkRow, cellRow);
-            ge.checkAndMaybeFreeMemory(this, chunkID, hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getRow(chunkRow, cellRow, chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * If OutOfMemoryError is caught then an attempt is made to swap an
-     * Grids_AbstractGridChunk not in _Grid2DSquareCell_ChunkIDHashSet. If this
-     * is not done then any Grids_AbstractGridChunk is swapped and a warning is
-     * printed to sout
-     *
-     * @param chunkRow
-     * @param cellRow
-     * @param m
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return long CellRowIndex, the cell row index for the cells in chunk row
-     * index _Row chunk cell row index chunkCellRowIndex.
-     */
-    public final long getRow(int chunkRow, int cellRow, HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m, boolean hoome) {
-        try {
-            long result = getRow(chunkRow, cellRow);
-            ge.checkAndMaybeFreeMemory(m, hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(m, e);
-                return getRow(chunkRow, cellRow, m, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkRow
      * @return CellRowIndex for the cells in chunk _Row, chunk cell column index
      * chunkCellRowIndex.
      * @param cellRow
      */
     public final long getRow(int chunkRow, int cellRow) {
         return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
-    }
-
-    /**
-     * @param random
-     * @param hoome
-     * @return A Random CellRowIndex.
-     */
-    public final long getRow(Random random, boolean hoome) {
-        try {
-            long result = getRow(random);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getRow(random, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1702,58 +662,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * y-coordinate y.
      * @param y The y-coordinate of the line for which the chunk cell row index
      * is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellRow(double y, boolean hoome) {
-        try {
-            int result = getCellRow(y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellRow(y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Chunk cell row Index of the cells that intersects the line with
-     * y-coordinate y.
-     * @param y The y-coordinate of the line for which the chunk cell row index
-     * is returned.
      */
     public final int getCellRow(double y) {
         return getCellRow(getRow(y));
-    }
-
-    /**
-     * @param row
-     * @return Chunk cell row index of the cells with cell row index equal to
-     * _CellRowIndex.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final int getCellRow(long row, boolean hoome) {
-        try {
-            int result = getCellRow(row);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellRow(row, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1768,62 +679,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * @param row
      * @param col
-     * @return Grids_2D_ID_long of the cell given by row, col. A
-     * Grids_2D_ID_long is returned even if that cell would not be in the grid!
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long getCellID(long row, long col, boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getCellID(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellID(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param row
-     * @param col
      * @return Grids_2D_ID_long of the cell given by cell row index
      * _CellRowIndex, cell column index _CellColIndex. A Grids_2D_ID_long is
      * returned even if that cell would not be in the grid.
      */
     public final Grids_2D_ID_long getCellID(long row, long col) {
         return new Grids_2D_ID_long(row, col);
-    }
-
-    /**
-     * @return Grids_2D_ID_long of the cell given by x-coordinate x,
-     * y-coordinate y even if that cell would not be in the grid.
-     * @param x The x-coordinate.
-     * @param y The y-coordinate.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long getCellID(double x, double y, boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getCellID(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellID(x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1837,31 +698,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return Grids_2D_ID_long of the cell given by x-coordinate x,
-     * y-coordinate y even if that cell would not be in the grid.
-     * @param x The x-coordinate.
-     * @param y The y-coordinate.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long getCellID(BigDecimal x, BigDecimal y, boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getCellID(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellID(x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return a Grids_2D_ID_long of the cell given by x-coordinate x,
      * y-coordinate y even if that cell would not be in the grid.
      * @param x The x-coordinate.
@@ -1869,39 +705,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final Grids_2D_ID_long getCellID(BigDecimal x, BigDecimal y) {
         return new Grids_2D_ID_long(getRow(y), getCol(x));
-    }
-
-    /**
-     * Attempts to write this instance to Files located in the _Directory
-     * returned by getDirectory(). First attempts to do this without swapping
-     * out data, but if this fails because an OutOfMemoryError is encountered
-     * then it retires swapping out chunks as it goes.
-     *
-     * @param swapToFileCache Iff true then
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
-     * File( getDirectory(), "cache" ).
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final void writeToFile(
-            boolean swapToFileCache,
-            boolean hoome) {
-        try {
-            writeToFile(swapToFileCache);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(hoome)) {
-                    throw e;
-                }
-                writeToFileSwapping(swapToFileCache);
-                ge.initMemoryReserve(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -1924,24 +727,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public void writeOutCache() {
         // Write out thisCache
         File f = new File(getDirectory(), "cache");
-        try (ObjectOutputStream oos = Generic_StaticIO.getObjectOutputStream(f)) {
-            oos.writeObject(ChunkIDChunkMap);
-            oos.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Generic_StaticIO.writeObject(ChunkIDChunkMap, f);
     }
 
     public void writeOutThis() {
         // Write out thisCache
         File f = new File(getDirectory(), "thisFile");
-        try (ObjectOutputStream oos = Generic_StaticIO.getObjectOutputStream(f)) {
-            oos.writeObject(this);
-            oos.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        Generic_StaticIO.writeObject(this, f);
     }
 
     /**
@@ -2012,17 +804,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 File file = new File(getDirectory(),
                         chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
-                try {
-                    file.createNewFile();
-                    ObjectOutputStream oos;
-                    oos = Generic_StaticIO.getObjectOutputStream(file);
-                    oos.writeObject(gridChunk);
-                    oos.flush();
-                    oos.close();
-                } catch (IOException ioe0) {
-                    //ioe0.printStackTrace();
-                    System.err.println(ioe0.getMessage());
-                }
+                Generic_StaticIO.writeObject(gridChunk, file);
                 //System.gc();
                 gridChunk.setSwapUpToDate(true);
             }
@@ -2059,11 +841,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      *
      * @param chunkIDs A HashSet containing the Grids_2D_ID_int of the
      * Grids_AbstractGridChunk to be written to file.
-     * @param hoome
      */
     public final void writeToFileChunks(
-            HashSet<Grids_2D_ID_int> chunkIDs,
-            boolean hoome) {
+            HashSet<Grids_2D_ID_int> chunkIDs) {
         Iterator<Grids_2D_ID_int> ite;
         ite = chunkIDs.iterator();
         Grids_2D_ID_int id;
@@ -2151,7 +931,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 return swapChunk_AccountChunk(
                         checkAndMaybeFreeMemory, hoome);
             } else {
@@ -2227,7 +1007,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 return result;
             } else {
                 throw e;
@@ -2344,8 +1124,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             if (hoome) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
-                return swapChunk(checkAndMaybeFreeMemory,
-                        hoome);
+                return swapChunk(checkAndMaybeFreeMemory, hoome);
             } else {
                 throw e;
             }
@@ -2897,7 +1676,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(hoome);
+                ge.initMemoryReserve();
                 return result;
             } else {
                 throw e;
@@ -2975,11 +1754,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(
-                        hoome);
+                partResult = ge.initMemoryReserve_AccountDetail(hoome);
                 ge.combine(result, partResult);
-                partResult = swapChunks_AccountDetail(
-                        checkAndMaybeFreeMemory, hoome);
+                partResult = swapChunks_AccountDetail(checkAndMaybeFreeMemory, hoome);
                 ge.combine(result, partResult);
                 return result;
             } else {
@@ -2989,8 +1766,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to swap seriailsed version of all
-     * _ChunkID_AbstractGrid2DSquareCellChunk_HashMap. This involves writing
+     * Attempts to swap serialised version of all chunks. This involves writing
      * them to files and then clearing them from the cache.
      *
      * @return The number of Grids_AbstractGridChunk swapped.
@@ -3042,8 +1818,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             int cri0, int cci0, int cri1, int cci1,
             boolean hoome) {
         try {
-            long result = swapChunks_Account(
-                    cri0, cci0, cri1, cci1);
+            long result = swapChunks_Account(cri0, cci0, cri1, cci1);
             ge.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
@@ -3053,9 +1828,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                     throw e;
                 }
                 long result = 1;
-                ge.initMemoryReserve(hoome);
-                result += swapChunks_Account(
-                        cri0, cci0, cri1, cci1, hoome);
+                ge.initMemoryReserve();
+                result += swapChunks_Account(cri0, cci0, cri1, cci1, hoome);
                 return result;
             } else {
                 throw e;
@@ -3145,32 +1919,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * For releasing a chunk stored in memory. This is usually only done after
-     * the equivallent of swapToFileChunk(ID) has been called.
-     *
-     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
-     * cleared.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final void clearFromCacheChunk(
-            Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            clearFromCacheChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                clearFromCacheChunk(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * For releasing a grid2DSquareCellChunk stored in memory. This is usually
      * only done after the equivalent of swapToFileChunk(ID) has been called.
      *
@@ -3181,29 +1929,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         ChunkIDChunkMap.replace(chunkID, null);
         ChunkIDsofChunksWorthSwapping.remove(chunkID);
         //System.gc();
-    }
-
-    /**
-     * For releasing all Grids_AbstractGridChunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final void clearFromCacheChunks(boolean hoome) {
-        try {
-            clearFromCacheChunks();
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                clearFromCacheChunks(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3221,67 +1946,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * Attempts to load into the memory cache a Grids_AbstractGridChunk with ID
-     *
-     * @param chunkID The Grids_2D_ID_int of the grid2DSquareCellChunk to be
-     * restored.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final void loadIntoCacheChunk(Grids_2D_ID_int chunkID,
-            boolean hoome) {
-        try {
-            loadIntoCacheChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(chunkID, hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                loadIntoCacheChunk(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Attempts to load into the memory cache the chunk with chunk ID chunkID.
      *
      * @param chunkID The chunk ID of the chunk to be restored.
      */
     public abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
-
-    /**
-     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids are
-     * intersected by circle with centre at x-coordinate x, y-coordinate y, and
-     * radius distance.
-     * @param x the x-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param y the y-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long[] getCellIDs(double x, double y,
-            double distance, boolean hoome) {
-        try {
-            Grids_2D_ID_long[] result = getCellIDs(x, y, distance);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellIDs(x, y, distance, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
 
     /**
      * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids are
@@ -3310,77 +1979,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long[] getCellIDs(long row, long col,
-            double distance, boolean hoome) {
-        try {
-            Grids_2D_ID_long[] result = getCellIDs(row, col, distance);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellIDs(row, col, distance, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids
-     * would be intersected by circle with centre at centroid of cell given by
-     * cell row index _CellRowIndex, cell column index _CellColIndex, and radius
-     * distance.
-     * @param row the row index for the cell thats centroid is the circle centre
-     * from which cell values are returned.
-     * @param col the column index for the cell thats centroid is the circle
-     * centre from which cell values are returned.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
             double distance) {
         return getCellIDs(getCellXDouble(col), getCellYDouble(row), row, col,
                 distance);
-    }
-
-    /**
-     * @return double[] cells - the values for cells thats centroids would be
-     * intersected by circle with centre at x-coordinate x, y-coordinate y, and
-     * radius distance.
-     * @param x the x-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param y the y-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param row the row index at y.
-     * @param col the col index at x.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_2D_ID_long[] getCellIDs(double x, double y, long row, long col,
-            double distance, boolean hoome) {
-        try {
-            Grids_2D_ID_long[] result = getCellIDs(x, y, row, col, distance);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellIDs(x, y, row, col, distance,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3401,7 +2004,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public Grids_2D_ID_long[] getCellIDs(
             double x, double y, long row, long col, double distance) {
         Grids_2D_ID_long[] a_CellIDs0;
-        int cellDistance = (int) Math.ceil(distance / getCellsizeDouble(false));
+        int cellDistance = (int) Math.ceil(distance / getCellsizeDouble());
         int limit = ((2 * cellDistance) + 1) * ((2 * cellDistance) + 1);
         a_CellIDs0 = new Grids_2D_ID_long[limit];
         long p;
@@ -3433,65 +2036,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * to point given by x-coordinate x, y-coordinate y.
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_2D_ID_long getNearestCellID(double x, double y,
-            boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getNearestCellID(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNearestCellID(x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
-     * to point given by x-coordinate x, y-coordinate y.
-     * @param x the x-coordinate of the point.
-     * @param y the y-coordinate of the point.
      */
     public Grids_2D_ID_long getNearestCellID(double x, double y) {
         return getNearestCellID(x, y, getRow(y), getCol(x));
-    }
-
-    /**
-     * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
-     * to point given by cell row index _CellRowIndex, cell column index
-     * _CellColIndex.
-     * @param row the row index from which nearest cell Grids_2D_ID_int is
-     * returned.
-     * @param col the column index from which nearest cell Grids_2D_ID_int is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown. TODO: return Grids_2D_ID_long[]
-     * as could be more than one nearest CellID
-     */
-    public Grids_2D_ID_long getNearestCellID(long row, long col,
-            boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getNearestCellID(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNearestCellID(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3505,35 +2052,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * nearest CellID
      */
     public Grids_2D_ID_long getNearestCellID(long row, long col) {
-        return getNearestCellID(getCellXDouble(col), getCellYDouble(row), row, col);
-    }
-
-    /**
-     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x,
-     * y-coordinate y in position given by _CellRowIndex, _CellColIndex.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param row The cell row index of cell containing point.
-     * @param col The cell column index of cell containing point.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_2D_ID_long getNearestCellID(double x, double y, long row,
-            long col, boolean hoome) {
-        try {
-            Grids_2D_ID_long result = getNearestCellID(x, y, row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getNearestCellID(x, y, row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
+        return getNearestCellID(getCellXDouble(col), getCellYDouble(row), row,
+                col);
     }
 
     /**
@@ -3592,53 +2112,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return Height of the grid.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getHeightDouble(boolean hoome) {
-        try {
-            double result = getHeightDouble();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getHeightDouble(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Height of the grid.
      */
     public final double getHeightDouble() {
         return getHeightBigDecimal().doubleValue();
-    }
-
-    /**
-     * @return Height of the grid.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getHeightBigDecimal(boolean hoome) {
-        try {
-            BigDecimal result = getHeightBigDecimal();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getHeightBigDecimal(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3650,28 +2126,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return Width of the grid as a double.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getWidthDouble(boolean hoome) {
-        try {
-            double result = getWidthDouble();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getWidthDouble(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Width of the grid as a double.
      */
     public final double getWidthDouble() {
         return getWidthBigDecimal().doubleValue();
@@ -3679,57 +2133,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @return Width of the grid as a BigDecimal.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getWidthBigDecimal(boolean hoome) {
-        try {
-            BigDecimal result = getWidthBigDecimal();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getWidthBigDecimal(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return Width of the grid as a BigDecimal.
      */
     public final BigDecimal getWidthBigDecimal() {
         return Dimensions.getXMax().subtract(Dimensions.getXMin());
-    }
-
-    /**
-     * @return true iff point given by x-coordinate x, y-coordinate y is in the
-     * Grid. Anything on the boundary is considered to be in.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(BigDecimal x, BigDecimal y,
-            boolean hoome) {
-        try {
-            boolean result = isInGrid(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3750,59 +2156,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * Grid. Anything on the boundary is considered to be in.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(double x, double y, boolean hoome) {
-        try {
-            boolean result = isInGrid(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return true iff point given by x-coordinate x, y-coordinate y is in the
-     * Grid. Anything on the boundary is considered to be in.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
      */
     public final boolean isInGrid(double x, double y) {
         return isInGrid(BigDecimal.valueOf(x), BigDecimal.valueOf(y));
-    }
-
-    /**
-     * @return true iff position given by cell row index _CellRowIndex, cell
-     * column index _CellColIndex is in the Grid.
-     * @param row The cell row index to test.
-     * @param col The cell column index to test.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(long row, long col, boolean hoome) {
-        try {
-            boolean result = isInGrid(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3830,31 +2186,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return true iff position given by chunk row index _Row, chunk column
      * index _Col is in the Grid.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            boolean result = isInGrid(chunkRow, chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkRow
-     * @param chunkCol
-     * @return true iff position given by chunk row index _Row, chunk column
-     * index _Col is in the Grid.
      */
     public final boolean isInGrid(int chunkRow, int chunkCol) {
         return chunkRow >= 0 && chunkRow < NChunkRows && chunkCol >= 0 && chunkCol < NChunkCols;
@@ -3871,59 +2202,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return true iff cell given by cellID is in the Grid.
-     * @param cellID The Grids_2D_ID_long of a cell to test.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(Grids_2D_ID_long cellID,
-            boolean hoome) {
-        try {
-            boolean result = isInGrid(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(cellID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return true iff cell given by _CellID is in the Grid.
      * @param i The Grids_2D_ID_long of a cell to test.
      */
     public final boolean isInGrid(Grids_2D_ID_long i) {
         return isInGrid(i.getRow(), i.getCol());
-    }
-
-    /**
-     * @return true iff Grids_2D_ID_int _ChunkID is in the Grid.chunkID
-     * @param chunkID The Grids_2D_ID_int of a cell to test.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(Grids_2D_ID_int chunkID,
-            boolean hoome) {
-        try {
-            boolean result = isInGrid(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3934,38 +2217,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         int chunkRow = chunkID.getRow();
         int chunkCol = chunkID.getCol();
         return isInGrid(chunkRow, chunkCol);
-    }
-
-    /**
-     * @param chunkRow
-     * @param chunkCol
-     * @return true iff cell given by _Row, _Col, chunkCellRowIndex,
-     * chunkCellColIndex is in the Grid.
-     * @param chunkCellRowIndex
-     * @param chunkCellColIndex
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final boolean isInGrid(int chunkRow, int chunkCol,
-            int chunkCellRowIndex, int chunkCellColIndex,
-            boolean hoome) {
-        try {
-            boolean result;
-            result = isInGrid(chunkRow, chunkCol, chunkCellRowIndex,
-                    chunkCellColIndex);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return isInGrid(chunkRow, chunkCol, chunkCellRowIndex,
-                        chunkCellColIndex, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -3989,59 +2240,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the x-coordinate of the centroid for cells with column index
-     * _CellColIndex as a BigDecimal.
-     * @param col The cell column index thats centroid x-coordinate is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getCellXBigDecimal(long col, boolean hoome) {
-        try {
-            BigDecimal result = getCellXBigDecimal(col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                return getCellXBigDecimal(col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @param chunkRow
-     * @return x-coordinate of the centroid for cells with column index
-     * _CellColIndex as a BigDecimal.
-     * @param col The cell column index thats centroid x-coordinate is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getCellXBigDecimal(long col, int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            BigDecimal result = getCellXBigDecimal(col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXBigDecimal(col, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param col
      * @return the x-coordinate of the centroid of col as a BigDecimal.
      */
@@ -4051,57 +2249,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 Dimensions.getCellsize().multiply(BigDecimal.valueOf(col)));
         BigDecimal halfCellsize = Dimensions.getHalfCellsize();
         return offSetFromOrigin.add(halfCellsize);
-    }
-
-    /**
-     * @return x-coordinate of the centroid for cells with column index
-     * _CellColIndex as a double.
-     * @param col The cell column index thats centroid x-coordinate is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellXDouble(long col, boolean hoome) {
-        try {
-            double result = getCellXDouble(col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXDouble(col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @param chunkRow
-     * @return x-coordinate of the centroid for cells with column index
-     * _CellColIndex as a double.
-     * @param cellCol The cell column index thats centroid x-coordinate is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellXDouble(int cellCol, int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            double result = getCellXDouble(cellCol, chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXDouble(cellCol, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4125,113 +2272,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return x-coordinate of the centroid for cell.
-     * @param cellID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID, boolean hoome) {
-        try {
-            BigDecimal result = getCellXBigDecimal(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXBigDecimal(cellID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
-     * returned.
-     * @param chunkRow The chunk row index of the Grids_AbstractGridChunk not to
-     * be swapped if an OutOfMemoryError is thrown.
-     * @param chunkCol The chunk column index of the Grids_AbstractGridChunk not
-     * to be swapped if an OutOfMemoryError is thrown.
-     * @param hoome
-     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a getCellXBigDecimal.
-     */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long cellID,
-            int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            BigDecimal result = getCellXBigDecimal(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXBigDecimal(cellID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
      * _CellID as a BigDecimal.
      * @param chunkID
      */
     public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long chunkID) {
         return getCellXBigDecimal(chunkID.getCol());
-    }
-
-    /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
-     * _CellID as a double
-     * @param cellID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellXDouble(Grids_2D_ID_long cellID, boolean hoome) {
-        try {
-            double result = getCellXDouble(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXDouble(cellID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param hoome
-     * @param chunkRow
-     * @param chunkCol
-     * @return x-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a double.
-     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
-     * returned.
-     */
-    public final double getCellXDouble(Grids_2D_ID_long cellID, int chunkRow,
-            int chunkCol, boolean hoome) {
-        try {
-            double result = getCellXDouble(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellXDouble(cellID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4244,55 +2290,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a BigDecimal.
-     * @param row the cell column index thats centroid y-coordinate is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getCellYBigDecimal(long row, boolean hoome) {
-        try {
-            BigDecimal result = getCellYBigDecimal(row);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYBigDecimal(row, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param hoome
-     * @param chunkRow
-     * @param chunkCol
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a BigDecimal.
-     * @param row the cell column index thats centroid y-coordinate is returned.
-     */
-    public final BigDecimal getCellYBigDecimal(long row, int chunkRow,
-            int chunkCol, boolean hoome) {
-        try {
-            BigDecimal result = getCellYBigDecimal(row);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYBigDecimal(row, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param row
      * @return y-coordinate of the centroid for row as a BigDecimal.
      */
@@ -4302,58 +2299,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 Dimensions.getCellsize().multiply(BigDecimal.valueOf(row)));
         BigDecimal halfCellsize = Dimensions.getHalfCellsize();
         return offSetFromOrigin.add(halfCellsize);
-    }
-
-    /**
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a double.
-     * @param row the cell column index thats centroid y-coordinate is returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellYDouble(long row, boolean hoome) {
-        try {
-            double result = getCellYDouble(row);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYDouble(row, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkCol
-     * @param chunkRow
-     * @return y-coordinate of the centroid for cells with row index
-     * _CellRowIndex as a double.
-     * @param cellRow the chunk cell column index thats centroid y-coordinate is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellYDouble(int cellRow, int chunkRow, int chunkCol,
-            boolean hoome) {
-        try {
-            double result = getCellYDouble(cellRow, chunkRow);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYDouble(cellRow, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4376,58 +2321,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a BigDecimal.
-     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
-     * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID,
-            boolean hoome) {
-        try {
-            BigDecimal result = getCellYBigDecimal(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYBigDecimal(cellID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param cellID The Grids_2D_ID_long of the cell thats centroid is
-     * returned.
-     * @param chunkRow
-     * @param chunkCol
-     * @param hoome
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a BigDecimal.
-     */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long cellID,
-            int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            BigDecimal result = getCellYBigDecimal(cellID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYBigDecimal(cellID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkID
      * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
      * _CellID as a BigDecimal.
@@ -4437,91 +2330,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a double.
-     * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double getCellYDouble(Grids_2D_ID_long chunkID,
-            boolean hoome) {
-        try {
-            double result = getCellYDouble(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYDouble(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param hoome
-     * @param chunkRow
-     * @param chunkCol
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a double.
-     * @param chunkID The Grids_2D_ID_long of the cell thats centroid is
-     * returned.
-     */
-    public final double getCellYDouble(Grids_2D_ID_long chunkID, int chunkRow,
-            int chunkCol, boolean hoome) {
-        try {
-            double result = getCellYDouble(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellYDouble(chunkID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkID
      * @return the y-coordinate of the centroid of cell with chunkID
      * Grids_2D_ID_long as a double.
      */
     public final double getCellYDouble(Grids_2D_ID_long chunkID) {
         return getCellYBigDecimal(chunkID).doubleValue();
-    }
-
-    /**
-     * TODO: Are bounds in double range? Is there more than cellsize difference
-     * with precision? Throw appropriate exceptions.
-     *
-     * @return gridBounds (the bounding box of the grid) as a double[] where;
-     * gridBounds[0] xmin, left most x-coordinate of this gridBounds[1] ymin,
-     * lowest y-coordinate of this gridBounds[2] xmax, right most x-coordinate
-     * of this gridBounds[3] ymax, highest y-coordinate of this
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double[] getGridBounds(boolean hoome) {
-        try {
-            double[] result = getGridBounds();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getGridBounds(hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4543,40 +2357,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param halfCellsize
-     * @return double[] where; double[0] xmin, left most x-coordinate of cell at
-     * (rowIndex,colIndex) double[1] ymin, lowest y-coordinate of cell at
-     * (rowIndex,colIndex) double[2] xmax, right most x-coordinate of cell at
-     * (rowIndex,colIndex) double[3] ymax, highest y-coordinate of cell at
-     * (rowIndex,colIndex)
-     * @param row the row index of the cell for which the bounds are returned
-     * @param col the column index of the cell for which the bounds are returned
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double[] getCellBoundsDoubleArray(
-            double halfCellsize,
-            long row,
-            long col,
-            boolean hoome) {
-        try {
-            double[] result = getCellBoundsDoubleArray(halfCellsize, row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellBoundsDoubleArray(
-                        halfCellsize, row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param halfCellsize
      * @param col
      * @return double[] where; double[0] xmin, left most x-coordinate of cell at
      * (rowIndex,colIndex) double[1] ymin, lowest y-coordinate of cell at
@@ -4585,39 +2365,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * (rowIndex,colIndex)
      * @param row the row index of the cell for which the bounds are returned
      */
-    public final double[] getCellBoundsDoubleArray(double halfCellsize, long row, long col) {
-        return getCellBoundsDoubleArray(halfCellsize, getCellXDouble(col), getCellYDouble(row));
-    }
-
-    /**
-     * Precision may compromise result. More precision is available via
-     *
-     * @param halfCellsize
-     * @return double[] where; double[0] xmin, left most x-coordinate of cell
-     * that intersects point at (x,y) double[1] ymin, lowest y-coordinate of
-     * cell that intersects point at (x,y) double[2] xmax, right most
-     * x-coordinate of cell that intersects point at (x,y) double[3] ymax,
-     * highest y-coordinate of cell that intersects point at (x,y)
-     * @param x the x-coordinate in the cell for which the bounds are returned
-     * @param y the y-coordinate in the cell for which the bounds are returned
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final double[] getCellBoundsDoubleArray(double halfCellsize, double x, double y, boolean hoome) {
-        try {
-            double[] result = getCellBoundsDoubleArray(halfCellsize, x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellBoundsDoubleArray(halfCellsize, x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
+    public final double[] getCellBoundsDoubleArray(double halfCellsize,
+            long row, long col) {
+        return getCellBoundsDoubleArray(halfCellsize, getCellXDouble(col),
+                getCellYDouble(row));
     }
 
     /**
@@ -4633,46 +2384,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param x the x-coordinate in the cell for which the bounds are returned
      * @param y the y-coordinate in the cell for which the bounds are returned
      */
-    public final double[] getCellBoundsDoubleArray(double halfCellsize, double x, double y) {
+    public final double[] getCellBoundsDoubleArray(double halfCellsize,
+            double x, double y) {
         double[] cellBounds = new double[4];
         cellBounds[0] = x - halfCellsize;
         cellBounds[1] = y - halfCellsize;
         cellBounds[2] = x + halfCellsize;
         cellBounds[3] = y + halfCellsize;
         return cellBounds;
-    }
-
-    /**
-     * @param hoome
-     * @return BigDecimal[] cellBounds_BigDecimalArray;
-     * cellBounds_BigDecimalArray[0] xmin, left most x-coordinate of cell that
-     * intersects point at (x,y) cellBounds_BigDecimalArray[1] ymin, lowest
-     * y-coordinate of cell that intersects point at (x,y)
-     * cellBounds_BigDecimalArray[2] xmax, right most x-coordinate of cell that
-     * intersects point at (x,y) cellBounds_BigDecimalArray[3] ymax, highest
-     * y-coordinate of cell that intersects point at (x,y)
-     * @param halfCellsize = Dimensions.getCellsize().divide(new
-     * BigDecimal("2.0"));
-     * @param x the centroid x-coordinate of the cell for which the bounds are
-     * returned.
-     * @param y the centroid y-coordinate of the cell for which the bounds are
-     * returned.
-     */
-    public final Grids_Dimensions getCellDimensions(
-            BigDecimal halfCellsize, BigDecimal x, BigDecimal y, boolean hoome) {
-        try {
-            Grids_Dimensions result = getCellDimensions(halfCellsize, x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellDimensions(halfCellsize, x, y, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4692,43 +2411,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, BigDecimal x, BigDecimal y) {
         Grids_Dimensions result;
-        result = new Grids_Dimensions(
-                x.subtract(halfCellsize),
-                x.add(halfCellsize),
-                y.subtract(halfCellsize),
-                y.add(halfCellsize),
-                getCellsize(false));
+        result = new Grids_Dimensions(x.subtract(halfCellsize),
+                x.add(halfCellsize), y.subtract(halfCellsize),
+                y.add(halfCellsize), getCellsize());
         return result;
-    }
-
-    /**
-     * @param halfCellsize
-     * @param row
-     * @param hoome
-     * @param col
-     * @return BigDecimal[] cellBounds_BigDecimalArray;
-     * cellBounds_BigDecimalArray[0] xmin, left most x-coordinate of cell that
-     * intersects point at (x,y) cellBounds_BigDecimalArray[1] ymin, lowest
-     * y-coordinate of cell that intersects point at (x,y)
-     * cellBounds_BigDecimalArray[2] xmax, right most x-coordinate of cell that
-     * intersects point at (x,y) cellBounds_BigDecimalArray[3] ymax, highest
-     * y-coordinate of cell that intersects point at (x,y)
-     */
-    public final Grids_Dimensions getCellDimensions(
-            BigDecimal halfCellsize, long row, long col, boolean hoome) {
-        try {
-            Grids_Dimensions result = getCellDimensions(halfCellsize, row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getCellDimensions(halfCellsize, row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     /**
@@ -4745,9 +2431,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final Grids_Dimensions getCellDimensions(
             BigDecimal halfCellsize, long row, long col) {
-        return getCellDimensions(
-                halfCellsize,
-                getCellXBigDecimal(col),
+        return getCellDimensions(halfCellsize, getCellXBigDecimal(col),
                 getCellYBigDecimal(row));
     }
 
@@ -4757,34 +2441,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkID
      * @param nChunkRows
      * @param nChunkCols
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
-    public Grids_2D_ID_int getNextChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols, boolean hoome) {
-        try {
-            Grids_2D_ID_int result = getNextChunk(chunkID, nChunkRows, nChunkCols);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNextChunk(chunkID, nChunkRows, nChunkCols, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or
-     * null.
-     * @param chunkID
-     * @param nChunkRows
-     * @param nChunkCols
-     */
-    public Grids_2D_ID_int getNextChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols) {
+    public Grids_2D_ID_int getNextChunk(Grids_2D_ID_int chunkID, int nChunkRows,
+            int nChunkCols) {
         int chunkRow = chunkID.getRow();
         int chunkCol = chunkID.getCol();
         if (chunkCol < nChunkCols - 1) {
@@ -4798,37 +2457,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the next Grids_2D_ID_int in row major order from this, or null.
-     * @param chunkID
-     * @param nChunkRows
-     * @param nChunkCols
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_2D_ID_int getPreviousChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols, boolean hoome) {
-        try {
-            Grids_2D_ID_int result = getPreviousChunk(chunkID, nChunkRows, nChunkCols);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getPreviousChunk(chunkID, nChunkRows, nChunkCols, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkID
      * @param nChunkCols
      * @param nChunkRows
      * @return the next Grids_2D_ID_int in row major order from this, or null.
      */
-    public Grids_2D_ID_int getPreviousChunk(Grids_2D_ID_int chunkID, int nChunkRows, int nChunkCols) {
+    public Grids_2D_ID_int getPreviousChunk(Grids_2D_ID_int chunkID,
+            int nChunkRows, int nChunkCols) {
         int chunkRow = chunkID.getRow();
         int chunkCol = chunkID.getCol();
         if (chunkCol > 0) {
@@ -4856,10 +2491,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             g = ite.next();
             chunkIDs = chunksNotToSwapToFile.get(g);
-            if (ge.swapChunkExcept_Account(
-                    g,
-                    chunkIDs,
-                    false) > 0) {
+            if (ge.swapChunkExcept_Account(g, chunkIDs, false) > 0) {
                 ge.initMemoryReserve(chunksNotToSwapToFile, ge.HOOMET);
                 return;
             }
@@ -4897,7 +2529,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         if (!ge.swapChunk(ge.HOOMEF)) {
             throw e;
         }
-        ge.initMemoryReserve(hoome);
+        ge.initMemoryReserve();
     }
 
     public void freeSomeMemoryAndResetReserve(OutOfMemoryError e) {
@@ -4935,13 +2567,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param g
      * @param startRowIndex
      * @param startColIndex
-     * @param hoome
      */
     public void initDimensions(
             Grids_AbstractGridNumber g,
-            long startRowIndex, long startColIndex,
-            boolean hoome) {
-        Dimensions = g.getDimensions(hoome); // temporary assignment
+            long startRowIndex, long startColIndex) {
+        Dimensions = g.getDimensions(); // temporary assignment
         BigDecimal startColIndexBigDecimal = new BigDecimal((long) startColIndex);
         BigDecimal startRowIndexBigDecimal = new BigDecimal((long) startRowIndex);
         BigDecimal nRowsBigDecimal = new BigDecimal(NRows);
@@ -4974,90 +2604,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public abstract Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID);
 
     /**
-     * @return Grids_AbstractGridChunk for the given chunkID.
-     * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID, boolean hoome) {
-        try {
-            Grids_AbstractGridChunk result = getGridChunk(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(chunkID, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * @param chunkRow
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
      */
-    public final Grids_AbstractGridChunk getGridChunk(int chunkRow, int chunkCol) {
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                chunkRow,
-                chunkCol);
-        return getGridChunk(chunkID);
-    }
-
-    /**
-     * @param chunkRow
-     * @param chunkCol
-     * @return Grids_AbstractGridChunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_AbstractGridChunk getGridChunk(int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            Grids_AbstractGridChunk result = getGridChunk(chunkRow, chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(chunkID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param chunkID
-     * @param chunkRow
-     * @param chunkCol
-     * @return Grids_AbstractGridChunk.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_AbstractGridChunk getGridChunk(
-            Grids_2D_ID_int chunkID, int chunkRow, int chunkCol, boolean hoome) {
-        try {
-            Grids_AbstractGridChunk result = getGridChunk(chunkID, chunkRow, chunkCol);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getGridChunk(chunkID, chunkRow, chunkCol, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
+    public abstract Grids_AbstractGridChunk getGridChunk(int chunkRow, 
+            int chunkCol);
 
     /**
      * @param chunkID

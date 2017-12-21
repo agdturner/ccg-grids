@@ -51,7 +51,7 @@ public class Grids_GridChunkDoubleArray
             Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
-        double noDataValue = g.getNoDataValue(false);
+        double noDataValue = g.getNoDataValue();
         Data = new double[ChunkNRows][ChunkNCols];
         int row;
         for (row = 0; row < ChunkNRows; row++) {
@@ -76,13 +76,9 @@ public class Grids_GridChunkDoubleArray
         initData();
         int row;
         int col;
-        boolean hoome = true;
         for (row = 0; row < ChunkNRows; row++) {
             for (col = 0; col < ChunkNCols; col++) {
-                Data[row][col] = chunk.getCell(
-                        row,
-                        col,
-                        hoome);
+                Data[row][col] = chunk.getCell(row, col);
             }
         }
         SwapUpToDate = false;
@@ -159,7 +155,7 @@ public class Grids_GridChunkDoubleArray
      * @return
      */
     @Override
-    protected Grids_GridChunkDoubleArrayOrMapIterator iterator() {
+    public Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }
 

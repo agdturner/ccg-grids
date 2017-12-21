@@ -41,6 +41,6 @@ public abstract class Grids_AbstractGridChunkIntArrayOrMap extends Grids_Abstrac
      * @return
      */
     @Override
-    protected abstract Grids_GridChunkIntArrayOrMapIterator iterator();
+    public abstract Grids_GridChunkIntArrayOrMapIterator iterator();
     
 }

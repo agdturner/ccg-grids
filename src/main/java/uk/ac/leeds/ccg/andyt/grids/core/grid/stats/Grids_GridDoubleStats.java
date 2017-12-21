@@ -229,11 +229,11 @@ public class Grids_GridDoubleStats
      * @return
      */
     @Override
-    protected BigInteger getNonZeroN() {
+    public BigInteger getNonZeroN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         double noDataValue;
-        noDataValue = g.getNoDataValue(ge.HOOME);
+        noDataValue = g.getNoDataValue();
         Iterator<Double> ite;
         ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
@@ -284,7 +284,7 @@ public class Grids_GridDoubleStats
         BigDecimal differenceFromMean;
         Grids_GridDouble g = (Grids_GridDouble) Grid;
         double value;
-        double noDataValue = g.getNoDataValue(ge.HOOME);
+        double noDataValue = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
@@ -324,7 +324,7 @@ public class Grids_GridDoubleStats
         result[0] = minDouble;
         result[1] = maxDouble;
         BigInteger nonZeroN;
-        nonZeroN = getNonZeroN(ge.HOOME);
+        nonZeroN = getNonZeroN();
         long nonZeroNLong = nonZeroN.longValueExact();
         System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroN);
         long numberOfValuesInEachClass;
@@ -333,7 +333,7 @@ public class Grids_GridDoubleStats
             numberOfValuesInEachClass += 1;
         }
         double noDataValue;
-        noDataValue = g.getNoDataValue(ge.HOOME);
+        noDataValue = g.getNoDataValue();
         TreeMap<Integer, Long> classCounts;
         classCounts = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {

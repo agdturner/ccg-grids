@@ -100,8 +100,7 @@ public class Grids_ClipGrid
             //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
             Grids_ImageExporter imageExporter = new Grids_ImageExporter(ge);
-            File workspaceDirectory = new File(
-                    gf.getGeneratedDataDir(),
+            File workspaceDirectory = new File(gf.getGeneratedDataDir(),
                     "/Workspace/");
 
             //String[] imageTypes = new String[0];
@@ -121,24 +120,20 @@ public class Grids_ClipGrid
             boolean notLoadedAsGrid = true;
             if (notLoadedAsGrid) {
                 File dir;
-                dir = new File(
-                        ge.getFiles().getGeneratedGridDoubleDir(),
+                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
                 gridDouble = (Grids_GridDouble) GridDoubleFactory.create(
-                        dir,
-                        input,
-                        HandleOutOfMemoryError);
+                        dir, input, HandleOutOfMemoryError);
 //                System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
 //                System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
 //                System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
                 // clip gridDouble
-                dir = new File(
-                        ge.getFiles().getGeneratedGridDoubleDir(),
+                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         "Clipped" + inputNameWithoutExtension);
-                long nRows = gridDouble.getNRows(HandleOutOfMemoryError);
-                long nCols = gridDouble.getNCols(HandleOutOfMemoryError);
-                int chunkNRows = gridDouble.getChunkNRows(HandleOutOfMemoryError);
-                int chunkNCols = gridDouble.getChunkNCols(HandleOutOfMemoryError);
+                long nRows = gridDouble.getNRows();
+                long nCols = gridDouble.getNCols();
+                int chunkNRows = gridDouble.getChunkNRows();
+                int chunkNCols = gridDouble.getChunkNCols();
                 long startRow;
                 long startCol;
                 long endRow;
@@ -179,24 +174,18 @@ public class Grids_ClipGrid
 //                gridDouble = g;
                 // Cache input
                 boolean swapToFileCache = true;
-                gridDouble.writeToFile(swapToFileCache,
-                        HandleOutOfMemoryError);
+                gridDouble.writeToFile(swapToFileCache);
                 ge.getGrids().add(gridDouble);
                 System.out.println("<outputImage>");
                 System.out.println("outputDirectory " + outputDirectory);
                 gridDouble.setName(
                         inputNameWithoutExtension
                         + "_" + startRow + "_" + "_" + startCol + "_"
-                        + "_" + endRow + "_" + "_" + endCol + "_",
-                        HandleOutOfMemoryError);
-                System.out.println("gridDouble " + gridDouble.toString(HandleOutOfMemoryError));
+                        + "_" + endRow + "_" + "_" + endCol + "_");
+                System.out.println("gridDouble " + gridDouble.toString());
                 try {
-                    outputImage(
-                            gridDouble,
-                            outputDirectory,
-                            imageExporter,
-                            imageTypes,
-                            HandleOutOfMemoryError);
+                    outputImage(gridDouble, outputDirectory, imageExporter, 
+                            imageTypes, HandleOutOfMemoryError);
                 } catch (IOException ex) {
                     Logger.getLogger(Grids_ClipGrid.class.getName()).log(Level.SEVERE, null, ex);
                 }

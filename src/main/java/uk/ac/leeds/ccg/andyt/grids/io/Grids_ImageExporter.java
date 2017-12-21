@@ -36,6 +36,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
@@ -66,42 +67,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png",
      * "jpeg"
-     * @param hoome
      */
     public void toGreyScaleImage(
-            Grids_AbstractGridNumber g,
-            Grids_Processor processor,
-            File file,
-            String type,
-            boolean hoome) {
-        try {
-            toGreyScaleImage(g, processor, file, type);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (java.lang.OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                long swap = ge.swapChunks_Account(hoome);
-                if (swap < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                toGreyScaleImage(g, processor, file, type, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Writes this grid as a Grey scale image
-     *
-     * @param g
-     * @param processor
-     * @param file The File exported to.
-     * @param type The name of the type of image to be written e.g. "png",
-     * "jpeg"
-     */
-    protected void toGreyScaleImage(
             Grids_AbstractGridNumber g,
             Grids_Processor processor,
             File file,
@@ -156,7 +123,12 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         int[] gridImageArray = initGridImageArray(size);
         ge.checkAndMaybeFreeMemory(true);
         // If not already in the range 0 to 255, rescale grid into this range.
-        Grids_GridDouble r = processor.rescale(g, null, 0.0d, 255.0d, true);
+        Grids_GridDouble r;
+        if (g instanceof Grids_GridDouble) {
+         r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
+        } else {
+            r = processor.rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
+        }
         double noDataValue = r.getNoDataValue();
 //        System.out.println("r nrows " + r.getNRows(hoome));
 //        System.out.println("r ncols " + r.getNCols(hoome));
@@ -183,10 +155,9 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(r, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) r.getGridChunk(
-                        chunkID);
+                chunk = r.getGridChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                    row = r.getRow(chunkRow, cellRow, true);
+                    row = r.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                         col = r.getCol(chunkCol, cellCol);
                         v = r.getCell(chunk, cellRow, cellCol);
@@ -226,47 +197,18 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             int duplicationNRows,
             int[] gridImageArray,
             String type,
-            File file,
-            boolean hoome) {
-        try {
-            ge.checkAndMaybeFreeMemory(hoome);
-            write(duplicationNCols, duplicationNRows, gridImageArray, type, file);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunks_Account(hoome) < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                write(duplicationNCols, duplicationNRows, gridImageArray, type, file);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    private void write(
-            int duplicationNCols,
-            int duplicationNRows,
-            int[] gridImageArray,
-            String type,
             File file) {
         // Use gridImageArray to create a MemoryImageSource
         // Construct a BufferedImage using Toolkit
         // because Image class does not implement the RenderedImage
         // interface and imageio needs it.
         MemoryImageSource gridImageSource = new MemoryImageSource(
-                duplicationNCols,
-                duplicationNRows,
-                gridImageArray,
-                0,
+                duplicationNCols, duplicationNRows, gridImageArray, 0, 
                 duplicationNCols);
-        Image tempImage = Toolkit.getDefaultToolkit().createImage(gridImageSource);
-        BufferedImage gridImage = new BufferedImage(
-                duplicationNCols,
-                duplicationNRows,
-                BufferedImage.TYPE_INT_RGB);
+        Image tempImage = Toolkit.getDefaultToolkit().createImage(
+                gridImageSource);
+        BufferedImage gridImage = new BufferedImage(duplicationNCols,
+                duplicationNRows, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = (Graphics2D) gridImage.getGraphics();
         graphics.drawImage(tempImage, 0, 0, new java.awt.Panel());
         try {
@@ -289,47 +231,6 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
     }
 
     /**
-     * Writes this grid as a Colour image using colours in the HashMap
-     *
-     * @param duplication
-     * @param colours
-     * @param noDataValueColour
-     * @param grid
-     * @param file The File exported to.
-     * @param type The name of the type of image to be written e.g. "png",
-     * "jpeg"
-     * @param hoome
-     */
-    public void toColourImage(
-            int duplication,
-            TreeMap<Double, Color> colours,
-            Color noDataValueColour,
-            Grids_GridDouble grid,
-            File file,
-            String type,
-            boolean hoome) {
-        try {
-            ge.checkAndMaybeFreeMemory(hoome);
-            toColourImage(duplication, colours, noDataValueColour, grid, file,
-                    type);
-            grid.ge.checkAndMaybeFreeMemory(hoome);
-        } catch (java.lang.OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                long swap = ge.swapChunks_Account(hoome);
-                if (swap < 1L) {
-                    throw e;
-                }
-                ge.initMemoryReserve(hoome);
-                toColourImage(duplication, colours, noDataValueColour, grid,
-                        file, type, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
      * Writes this grid as a Grey scale image
      *
      * @param duplication This is for resampling, if duplication = 0 then pixels
@@ -343,7 +244,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param type The name of the type of image to be written e.g. "png",
      * "jpeg"
      */
-    protected void toColourImage(
+    public void toColourImage(
             int duplication,
             TreeMap<Double, Color> colours,
             Color noDataValueColour,

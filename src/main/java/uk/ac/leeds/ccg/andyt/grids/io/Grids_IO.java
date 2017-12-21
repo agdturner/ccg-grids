@@ -27,7 +27,6 @@ import java.io.StreamTokenizer;
 import javax.imageio.ImageIO;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
  * This class holds general utility methods for io.
@@ -293,8 +292,7 @@ public class Grids_IO {
                                 break;
                             case 1:
                                 y = st.nval;
-                                grid.addToCell(
-                                        x, y, 1.0d, handleOutOfMemoryError);
+                                grid.addToCell(x, y, 1.0d);
 //                                double current = grid.addToCell(
 //                                        x, y, 1.0d, handleOutOfMemoryError);
 //                                if (current > 0) {

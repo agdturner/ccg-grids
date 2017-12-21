@@ -40,8 +40,8 @@ public abstract class Grids_AbstractGridChunkNumberRowMajorOrderIterator
         super(chunk);
         Row = 0;
         Col = 0;
-        NRows = Grid.getChunkNRows(chunk.ChunkID, ge.HOOME);
-        NCols = Grid.getChunkNCols(chunk.ChunkID, ge.HOOME);
+        NRows = Grid.getChunkNRows(chunk.ChunkID);
+        NCols = Grid.getChunkNCols(chunk.ChunkID);
     }
 
     /**
