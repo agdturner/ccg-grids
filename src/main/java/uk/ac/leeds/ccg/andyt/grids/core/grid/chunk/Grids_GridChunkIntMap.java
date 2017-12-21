@@ -28,24 +28,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_InterfaceStats;
 
 /**
- * Grids_AbstractGridChunkInt extension that stores cell values in: a TreeMap
- * with keys as cell values and values as BitSets giving their locations; a
- * TreeMap with keys as cell values and values as a HashSet&LTGrids_2D_ID_int&GT
- * giving the locations of these values. There is a default value for all values
- * that are not in these maps and that are not no data values. The locations of
- * no data values are given in a BitSet. The complexity of this data store
- * allows for some efficiencies in statistical calculations and storage all
- * depending on the distribution and commonalities in the data values. Until all
- * the data is read in and processed it is not known how is the best way to
- * store it for speed and efficiency. If the chunk values are mutable and do not
- * change it is perhaps worth changing into an efficient data storage in terms
- * of what is stored in each map and what the default value is. It may also be
- * worth considering changing to a different chunk altogether. The class might
- * be improved with the use of more efficient and lightweight collections that
- * might be available from third parties.
+ * Stores cell values in: a TreeMap with keys as cell values and values as
+ * BitSets giving their locations; a TreeMap with keys as cell values and values
+ * as a HashSet&LT;Grids_2D_ID_int&GT; giving the locations of these values. There
+ * is a default value for all values that are not in these maps and that are not
+ * no data values. The locations of no data values are given in a BitSet. The
+ * complexity of this data store allows for some efficiencies in statistical
+ * calculations and storage all depending on the distribution and commonalities
+ * in the data values. Until all the data is read in and processed it is not
+ * known how is the best way to store it for speed and efficiency. If the chunk
+ * values are mutable and do not change it is perhaps worth changing into an
+ * efficient data storage in terms of what is stored in each map and what the
+ * default value is. It may also be worth considering changing to a different
+ * chunk altogether. The class might be improved with the use of more efficient
+ * and lightweight collections that might be available from third parties.
  *
  * In the past GNU Trove was used as it provided a stable lightweight
  * collections framework that was appropriate for storing primitive maps in this
@@ -58,7 +57,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridChunkIntMap
         extends Grids_AbstractGridChunkIntArrayOrMap
-        implements Serializable {
+        implements Serializable, Grids_InterfaceStats {
 
     //private static final long serialVersionUID = 1L;
     /**
@@ -595,8 +594,7 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * value.
+     * Returns the value at position given by: row, col and sets it to value.
      *
      * @param row the chunk row.
      * @param col the chunk column.
@@ -604,12 +602,12 @@ public class Grids_GridChunkIntMap
      * @return
      */
     @Override
-   public int setCell(
+    public int setCell(
             int row,
             int col,
             int value) {
         Grids_2D_ID_int chunkCellID = new Grids_2D_ID_int(row, col);
-        return setCell(                row,                col,                chunkCellID,                value);
+        return setCell(row, col, chunkCellID, value);
     }
 
     /**
@@ -767,8 +765,8 @@ public class Grids_GridChunkIntMap
      *
      * @return
      */
-    protected @Override
-    long getN() {
+     @Override
+    public Long getN() {
         return ((long) ChunkNRows * (long) ChunkNCols) - NoData.cardinality();
     }
 
@@ -793,7 +791,7 @@ public class Grids_GridChunkIntMap
      * @return
      */
     @Override
-    protected BigDecimal getSum() {
+    public BigDecimal getSum() {
         int n = ChunkNRows * ChunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         return getSumBigDecimal(n, numberOfDefaultValues);
@@ -838,12 +836,12 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the minimum of all data values as a int.
+     * Returns the minimum of all data values.
      *
      * @return
      */
     @Override
-    protected int getMinInt() {
+    public Integer getMin() {
         int min;
         int n = ChunkNRows * ChunkNCols;
         if (getNumberOfDefaultValues(n) > 0) {
@@ -861,12 +859,12 @@ public class Grids_GridChunkIntMap
     }
 
     /**
-     * Returns the maximum of all data values as a int.
+     * Returns the maximum of all data values.
      *
      * @return
      */
     @Override
-    protected int getMaxInt() {
+    public Integer getMax() {
         int max;
         int n = ChunkNRows * ChunkNCols;
         if (getNumberOfDefaultValues(n) > 0) {
@@ -881,21 +879,6 @@ public class Grids_GridChunkIntMap
         dataMapHashSet = Data.DataMapHashSet;
         max = Math.max(max, dataMapHashSet.lastKey());
         return max;
-    }
-
-    /**
-     * Returns the Arithmetic Mean of all data values as a double.
-     *
-     * @return
-     */
-    @Override
-    protected double getArithmeticMeanDouble() {
-        double result;
-        int n = ChunkNRows * ChunkNCols;
-        int numberOfDefaultValues = getNumberOfDefaultValues(n);
-        BigDecimal sum = getSumBigDecimal(n, numberOfDefaultValues);
-        result = sum.doubleValue() / (double) numberOfDefaultValues;
-        return result;
     }
 
     /**
@@ -952,9 +935,7 @@ public class Grids_GridChunkIntMap
      * @return
      */
     @Override
-    protected double getMedianDouble() {
-        double result;
-        int scale = 325;
+    public double getMedianDouble() {
         TreeMap<Integer, Integer> valueCount = new TreeMap<>();
         int n = ChunkNCols * ChunkNRows;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
@@ -977,7 +958,6 @@ public class Grids_GridChunkIntMap
         }
         long nonNoDataValueCount = getN();
         if (nonNoDataValueCount > 0) {
-            long index = -1L;
             if (nonNoDataValueCount % 2L == 0L) {
                 // Need arithmetic mean of ( ( nonNoDataValueCount / 2 ) - 1 )th
                 // and ( nonNoDataValueCount / 2 )th values
@@ -1084,7 +1064,7 @@ public class Grids_GridChunkIntMap
     }
 
     @Override
-    public Integer getMin(boolean update, boolean hoome) {
+    public Integer getMin(boolean update) {
         int min = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             min = Math.min(min, DefaultValue);
@@ -1095,7 +1075,7 @@ public class Grids_GridChunkIntMap
     }
 
     @Override
-    public Integer getMax(boolean update, boolean hoome) {
+    public Integer getMax(boolean update) {
         int max = Integer.MIN_VALUE;
         if (DefaultValue != NoDataValue) {
             max = Math.max(max, DefaultValue);

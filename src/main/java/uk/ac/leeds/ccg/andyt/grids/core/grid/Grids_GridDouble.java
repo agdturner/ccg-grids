@@ -1133,20 +1133,20 @@ public class Grids_GridDouble
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Stats.setN(Stats.getN(hoome) - 1);
-                    Stats.setSum(Stats.getSum(hoome).subtract(oldValueBD));
-                    double min = Stats.getMin(false, hoome).doubleValue();
+                    Stats.setN(Stats.getN() - 1L);
+                    Stats.setSum(Stats.getSum().subtract(oldValueBD));
+                    double min = Stats.getMin(false);
                     if (oldValue == min) {
                         Stats.setNMin(Stats.getNMin() - 1);
                     }
-                    double max = Stats.getMax(false, hoome).doubleValue();
+                    double max = Stats.getMax(false);
                     if (oldValue == max) {
                         Stats.setNMax(Stats.getNMax() - 1);
                     }
                 }
                 BigDecimal newValueBD = new BigDecimal(newValue);
-                Stats.setN(Stats.getN(hoome) + 1);
-                Stats.setSum(Stats.getSum(hoome).add(newValueBD));
+                Stats.setN(Stats.getN() + 1);
+                Stats.setSum(Stats.getSum().add(newValueBD));
                 updateStatistics(newValue);
                 if (Stats.getNMin() < 1) {
                     // The Stats need recalculating
@@ -1706,11 +1706,10 @@ public class Grids_GridDouble
 
     protected void updateStatistics(double value) {
         if (!Double.isNaN(value) && Double.isFinite(value)) {
-            boolean h = ge.HOOME;
             BigDecimal valueBD = new BigDecimal(value);
-            Stats.setN(Stats.getN(h) + 1);
-            Stats.setSum(Stats.getSum(h).add(valueBD));
-            double min = Stats.getMin(false, h).doubleValue();
+            Stats.setN(Stats.getN() + 1);
+            Stats.setSum(Stats.getSum().add(valueBD));
+            double min = Stats.getMin(false);
             if (value < min) {
                 Stats.setNMin(1);
                 Stats.setMin(value);
@@ -1719,7 +1718,7 @@ public class Grids_GridDouble
                     Stats.setNMin(Stats.getNMin() + 1);
                 }
             }
-            double max = Stats.getMax(false, h).doubleValue();
+            double max = Stats.getMax(false);
             if (value > max) {
                 Stats.setNMax(1);
                 Stats.setMax(value);

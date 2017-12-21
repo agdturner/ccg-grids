@@ -1143,12 +1143,12 @@ public class Grids_ProcessorDEM
      *
      *
      *
-     * @param _Grid2DSquareCell Grids_AbstractGridNumber to be processed.
+     * @param g Grids_AbstractGridNumber to be processed.
      * @param gdf
      * @param outflowHeight
      * @param maxIterations
      * @param hoome
-     * @param _TreatNoDataValueAsOutflow
+     * @param treatNoDataValueAsOutflow
      * @param outflowCellIDsSet
      * @return Grids_GridDouble which has cell values as in _Grid2DSquareCell
      * except with hollows raised. The attempt to raise hollows may not remove
@@ -1167,53 +1167,53 @@ public class Grids_ProcessorDEM
      * dealing with the situation around each hollow.
      */
     public Grids_GridDouble getHollowFilledDEM(
-            Grids_AbstractGridNumber _Grid2DSquareCell,
+            Grids_AbstractGridNumber g,
             Grids_GridDoubleFactory gdf,
             double outflowHeight,
             int maxIterations,
             HashSet outflowCellIDsSet,
-            boolean _TreatNoDataValueAsOutflow,
+            boolean treatNoDataValueAsOutflow,
             boolean hoome) {
         try {
-            ge.getGrids().add(_Grid2DSquareCell);
+            ge.getGrids().add(g);
             // Intitialise variables
             Grids_GridDouble result;
-            long _NRows;
-            long _NCols;
+            long nRows;
+            long nCols;
 //            int chunkNrows = _Grid2DSquareCell.getChunkNRows(
 //                    hoome );
 //            int chunkNcols = _Grid2DSquareCell.getChunkNCols(
 //                    hoome );
             //String resultName = _Grid2DSquareCell.getName( hoome ) + "_HollowFilledDEM_" + maxIterations;
             String resultName = "_HollowFilledDEM_" + maxIterations;
-            result = (Grids_GridDouble) gdf.create(_Grid2DSquareCell);
+            result = (Grids_GridDouble) gdf.create(g);
             result.setName(resultName, hoome);
-            _NRows = result.getNRows(hoome);
-            _NCols = result.getNCols(hoome);
-            double minHeight = result.getStatistics(hoome).getMin(
-                    true, hoome).doubleValue();
+            nRows = result.getNRows(hoome);
+            nCols = result.getNCols(hoome);
+            double minHeight;
+            minHeight = result.getStats(hoome).getMin(true).doubleValue();
             if (outflowHeight < minHeight) {
                 outflowHeight = minHeight;
             }
-            if (_Grid2DSquareCell.getClass() == Grids_GridInt.class) {
-                Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) _Grid2DSquareCell;
-                int noDataValue = _Grid2DSquareCellInt.getNoDataValue(true);
+            if (g.getClass() == Grids_GridInt.class) {
+                Grids_GridInt gi = (Grids_GridInt) g;
+                int noDataValue = gi.getNoDataValue(true);
                 double height;
                 // Initialise outflowCellIDs
                 HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
                         outflowCellIDsSet,
                         outflowHeight,
-                        _Grid2DSquareCellInt,
-                        _NRows,
-                        _NCols,
-                        _TreatNoDataValueAsOutflow,
+                        gi,
+                        nRows,
+                        nCols,
+                        treatNoDataValueAsOutflow,
                         hoome);
                 // Initialise hollowsHashSet
                 HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                        _Grid2DSquareCellInt,
-                        _NRows,
-                        _NCols,
-                        _TreatNoDataValueAsOutflow,
+                        gi,
+                        nRows,
+                        nCols,
+                        treatNoDataValueAsOutflow,
                         hoome);
                 // Remove outflowCellIDs from hollowsHashSet
                 hollowsHashSet.removeAll(outflowCellIDs);
@@ -1266,7 +1266,7 @@ public class Grids_ProcessorDEM
                             hollowsVisited = new HashSet();
                             //hollowsVisited.addAll( outflowCellIDs );
                             // Raise all hollows by a small amount
-                            setValueALittleBitLarger(
+                            setLarger(
                                     result,
                                     hollows2,
                                     hoome);
@@ -1280,8 +1280,8 @@ public class Grids_ProcessorDEM
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
-                                        if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                            toVisitSet1.add(_Grid2DSquareCell.getCellID(row + p, col + q, hoome));
+                                        if (g.isInGrid(row + p, col + q, hoome)) {
+                                            toVisitSet1.add(g.getCellID(row + p, col + q, hoome));
                                         }
                                         //}
                                     }
@@ -1290,7 +1290,7 @@ public class Grids_ProcessorDEM
                             hollows1 = getHollowsInNeighbourhood(
                                     result,
                                     toVisitSet1,
-                                    _TreatNoDataValueAsOutflow,
+                                    treatNoDataValueAsOutflow,
                                     hoome);
                             hollows1.removeAll(outflowCellIDs);
                             hollows2.clear();
@@ -1314,8 +1314,8 @@ public class Grids_ProcessorDEM
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                                    cellIDs[1] = _Grid2DSquareCell.getCellID(row + p, col + q, hoome);
+                                                if (g.isInGrid(row + p, col + q, hoome)) {
+                                                    cellIDs[1] = g.getCellID(row + p, col + q, hoome);
                                                     toVisitSet1.add(cellIDs[1]);
                                                 }
                                             }
@@ -1338,8 +1338,8 @@ public class Grids_ProcessorDEM
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
-                                                        if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                                            cellIDs[2] = _Grid2DSquareCell.getCellID(row + p, col + q, hoome);
+                                                        if (g.isInGrid(row + p, col + q, hoome)) {
+                                                            cellIDs[2] = g.getCellID(row + p, col + q, hoome);
                                                             visitedSet1.add(cellIDs[2]);
                                                             // If a hollow then add to hollow set and visit neighbours if not done already
                                                             if (hollows1.contains(cellIDs[2])) {
@@ -1347,8 +1347,8 @@ public class Grids_ProcessorDEM
                                                                 for (r = -1; r < 2; r++) {
                                                                     for (s = -1; s < 2; s++) {
                                                                         if (!(r == 0 && s == 0)) { // Is this correct?
-                                                                            if (_Grid2DSquareCell.isInGrid(row + p + r, col + q + s, hoome)) {
-                                                                                toVisitSet2.add(_Grid2DSquareCell.getCellID(row + p + r, col + q + s, hoome));
+                                                                            if (g.isInGrid(row + p + r, col + q + s, hoome)) {
+                                                                                toVisitSet2.add(g.getCellID(row + p + r, col + q + s, hoome));
                                                                             }
                                                                         }
                                                                     }
@@ -1419,8 +1419,8 @@ public class Grids_ProcessorDEM
                                                         for (r = -1; r < 2; r++) {
                                                             for (s = -1; s < 2; s++) {
                                                                 if (!(r == 0L && s == 0L)) {
-                                                                    if (_Grid2DSquareCell.isInGrid(row + r, col + s, hoome)) {
-                                                                        toVisitSet2.add(_Grid2DSquareCell.getCellID(row + r, col + s, hoome));
+                                                                    if (g.isInGrid(row + r, col + s, hoome)) {
+                                                                        toVisitSet2.add(g.getCellID(row + r, col + s, hoome));
                                                                     }
                                                                 }
                                                             }
@@ -1443,7 +1443,7 @@ public class Grids_ProcessorDEM
                                         cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), hoome);
+                                        result.setCell(row, col, Grids_Utilities.getLarger(height0), hoome);
                                     }
                                     hollowsVisited.addAll(hollowSet);
                                     visitedSet1.addAll(hollowSet);
@@ -1452,7 +1452,7 @@ public class Grids_ProcessorDEM
                             hollows2 = getHollowsInNeighbourhood(
                                     result,
                                     visitedSet1,
-                                    _TreatNoDataValueAsOutflow,
+                                    treatNoDataValueAsOutflow,
                                     hoome);
                         } else {
                             calculated1 = true;
@@ -1463,7 +1463,7 @@ public class Grids_ProcessorDEM
                 }
             } else {
                 // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) _Grid2DSquareCell;
+                Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
                 double noDataValue = _Grid2DSquareCellDouble.getNoDataValue(true);
                 double height;
                 double heightDouble;
@@ -1473,16 +1473,16 @@ public class Grids_ProcessorDEM
                         outflowCellIDsSet,
                         outflowHeight,
                         _Grid2DSquareCellDouble,
-                        _NRows,
-                        _NCols,
-                        _TreatNoDataValueAsOutflow,
+                        nRows,
+                        nCols,
+                        treatNoDataValueAsOutflow,
                         hoome);
                 // Initialise hollowsHashSet
                 HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
                         _Grid2DSquareCellDouble,
-                        _NRows,
-                        _NCols,
-                        _TreatNoDataValueAsOutflow,
+                        nRows,
+                        nCols,
+                        treatNoDataValueAsOutflow,
                         hoome);
                 // Remove outflowCellIDs from hollowsHashSet
                 hollowsHashSet.removeAll(outflowCellIDs);
@@ -1538,7 +1538,7 @@ public class Grids_ProcessorDEM
                             hollowsVisited = new HashSet();
                             //hollowsVisited.addAll( outflowCellIDs );
                             // Raise all hollows by a small amount
-                            setValueALittleBitLarger(
+                            setLarger(
                                     result,
                                     hollows2,
                                     hoome);
@@ -1552,8 +1552,8 @@ public class Grids_ProcessorDEM
                                 for (p = -1; p < 2; p++) {
                                     for (q = -1; q < 2; q++) {
                                         //if ( ! ( p == 0 && q == 0 ) ) {
-                                        if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                            toVisitSet1.add(_Grid2DSquareCell.getCellID(row + p, col + q, hoome));
+                                        if (g.isInGrid(row + p, col + q, hoome)) {
+                                            toVisitSet1.add(g.getCellID(row + p, col + q, hoome));
                                         }
                                         //}
                                     }
@@ -1562,7 +1562,7 @@ public class Grids_ProcessorDEM
                             hollows1 = getHollowsInNeighbourhood(
                                     result,
                                     toVisitSet1,
-                                    _TreatNoDataValueAsOutflow,
+                                    treatNoDataValueAsOutflow,
                                     hoome);
                             hollows1.removeAll(outflowCellIDs);
                             hollows2.clear();
@@ -1586,8 +1586,8 @@ public class Grids_ProcessorDEM
                                     for (p = -1; p < 2; p++) {
                                         for (q = -1; q < 2; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                                    cellIDs[1] = _Grid2DSquareCell.getCellID(row + p, col + q, hoome);
+                                                if (g.isInGrid(row + p, col + q, hoome)) {
+                                                    cellIDs[1] = g.getCellID(row + p, col + q, hoome);
                                                     toVisitSet1.add(cellIDs[1]);
                                                 }
                                             }
@@ -1610,8 +1610,8 @@ public class Grids_ProcessorDEM
                                             for (p = -1; p < 2; p++) {
                                                 for (q = -1; q < 2; q++) {
                                                     if (!(p == 0 && q == 0)) {
-                                                        if (_Grid2DSquareCell.isInGrid(row + p, col + q, hoome)) {
-                                                            cellIDs[2] = _Grid2DSquareCell.getCellID(row + p, col + q, hoome);
+                                                        if (g.isInGrid(row + p, col + q, hoome)) {
+                                                            cellIDs[2] = g.getCellID(row + p, col + q, hoome);
                                                             visitedSet1.add(cellIDs[2]);
                                                             // If a hollow then add to hollow set and visit neighbours if not done already
                                                             if (hollows1.contains(cellIDs[2])) {
@@ -1619,8 +1619,8 @@ public class Grids_ProcessorDEM
                                                                 for (r = -1; r < 2; r++) {
                                                                     for (s = -1; s < 2; s++) {
                                                                         if (!(r == 0 && s == 0)) { // Is this correct?
-                                                                            if (_Grid2DSquareCell.isInGrid(row + p + r, col + q + s, hoome)) {
-                                                                                toVisitSet2.add(_Grid2DSquareCell.getCellID(row + p + r, col + q + s, hoome));
+                                                                            if (g.isInGrid(row + p + r, col + q + s, hoome)) {
+                                                                                toVisitSet2.add(g.getCellID(row + p + r, col + q + s, hoome));
                                                                             }
                                                                         }
                                                                     }
@@ -1691,8 +1691,8 @@ public class Grids_ProcessorDEM
                                                         for (r = -1; r < 2; r++) {
                                                             for (s = -1; s < 2; s++) {
                                                                 if (!(r == 0L && s == 0L)) {
-                                                                    if (_Grid2DSquareCell.isInGrid(row + r, col + s, hoome)) {
-                                                                        toVisitSet2.add(_Grid2DSquareCell.getCellID(row + r, col + s, hoome));
+                                                                    if (g.isInGrid(row + r, col + s, hoome)) {
+                                                                        toVisitSet2.add(g.getCellID(row + r, col + s, hoome));
                                                                     }
                                                                 }
                                                             }
@@ -1715,7 +1715,7 @@ public class Grids_ProcessorDEM
                                         cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        result.setCell(row, col, Grids_Utilities.getValueALittleBitLarger(height0), hoome);
+                                        result.setCell(row, col, Grids_Utilities.getLarger(height0), hoome);
                                     }
                                     hollowsVisited.addAll(hollowSet);
                                     visitedSet1.addAll(hollowSet);
@@ -1724,7 +1724,7 @@ public class Grids_ProcessorDEM
                             hollows2 = getHollowsInNeighbourhood(
                                     result,
                                     visitedSet1,
-                                    _TreatNoDataValueAsOutflow,
+                                    treatNoDataValueAsOutflow,
                                     hoome);
                         } else {
                             calculated1 = true;
@@ -1742,12 +1742,12 @@ public class Grids_ProcessorDEM
             }
             ge.initMemoryReserve(hoome);
             return getHollowFilledDEM(
-                    _Grid2DSquareCell,
+                    g,
                     gdf,
                     outflowHeight,
                     maxIterations,
                     outflowCellIDsSet,
-                    _TreatNoDataValueAsOutflow,
+                    treatNoDataValueAsOutflow,
                     hoome);
         }
     }

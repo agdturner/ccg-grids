@@ -111,7 +111,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    protected long getN() {
+    public long getN() {
         update();
         return N;
     }
@@ -122,7 +122,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    protected BigDecimal getSum() {
+    public BigDecimal getSum() {
         update();
         return Sum;
     }
@@ -156,7 +156,7 @@ public class Grids_GridDoubleStatsNotUpdated
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return getClass().getName();
     }
 

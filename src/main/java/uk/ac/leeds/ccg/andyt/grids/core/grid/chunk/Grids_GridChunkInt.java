@@ -123,17 +123,17 @@ public class Grids_GridChunkInt
     }
 
     @Override
-    public Number getMin(boolean update, boolean hoome) {
+    public Number getMin(boolean update) {
         return Value;
     }
 
     @Override
-    public Number getMax(boolean update, boolean hoome) {
+    public Number getMax(boolean update) {
         return Value;
     }
 
     @Override
-    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces, boolean hoome) {
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
         return BigDecimal.valueOf(Value);
     }
 

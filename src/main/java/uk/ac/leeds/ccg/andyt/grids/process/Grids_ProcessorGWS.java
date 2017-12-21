@@ -471,7 +471,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double totalCells = kernelParameters[1];
             double weight;
             double sumWeight;
-            double wMean = 0.0d;
+            double wMean;
             double sDWMean;
             double sDMean;
             double sDWMeanPow2;
@@ -1053,7 +1053,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double sDWMeanPow3;
             double sDWMeanPow4;
             double sumCells;
-            double wMean = 0.0d;
+            double wMean;
             double mean = 0.0d;
             double sDMeanPow2;
             double sDMeanPow3;
@@ -1344,6 +1344,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * actory used to create grids
      * @param weightIntersept
      * @param weightFactor
+     * @param gridFactory
      * @return
      */
     public ArrayList regionUnivariateStatisticsCrossScale(
@@ -1441,13 +1442,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_GridDoubleFactory gridFactory) {
         boolean hoome = true;
         long n;
-        n = grid.getStatistics(hoome).getN(hoome);
+        n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
-        long nrows = grid.getNRows(hoome);
-        long ncols = grid.getNCols(hoome);
+        long nrows = grid.getNRows();
+        long ncols = grid.getNCols();
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );
 
-        Grids_Dimensions dimensions = grid.getDimensions(hoome);
+        Grids_Dimensions dimensions = grid.getDimensions();
         double cellsize = grid.getCellsizeDouble(hoome);
         double noDataValue = grid.getNoDataValue(hoome);
         int cellDistance = (int) Math.ceil(distance / cellsize);
@@ -1763,6 +1764,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * that reasonable answers are returned for grids with different spatial
      * frames. (NB. Sensibly the two grids being correlated should have the same
      * no data space.)
+     * @param gridFactory
      * @return
      */
     public Grids_GridDouble[] regionBivariateStatistics(

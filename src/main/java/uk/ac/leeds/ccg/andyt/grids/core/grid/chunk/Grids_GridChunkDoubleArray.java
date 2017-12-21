@@ -164,17 +164,19 @@ public class Grids_GridChunkDoubleArray
     }
 
     @Override
-    protected double getArithmeticMeanDouble() {
+    public double getArithmeticMeanDouble() {
+        double sum = getSum().doubleValue();
+        double n = getN();
+        return sum / n;
+    }
+
+    @Override
+    public Number getMin(boolean update) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Number getMin(boolean update, boolean hoome) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Number getMax(boolean update, boolean hoome) {
+    public Number getMax(boolean update) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

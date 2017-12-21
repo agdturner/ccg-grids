@@ -56,7 +56,7 @@ public class Grids_Utilities {
      * @param value
      * @return
      */
-    public static double getValueALittleBitLarger(double value) {
+    public static double getLarger(double value) {
         return Math.nextUp(value);
 //        if ( value == Double.MAX_VALUE ) {
 //            return value; // Issue warning?
@@ -92,7 +92,7 @@ public class Grids_Utilities {
      * @param value
      * @return
      */
-    public static double getValueALittleBitSmaller(double value) {
+    public static double getSmaller(double value) {
         return Math.nextAfter(value, Double.NEGATIVE_INFINITY);
 //        if (value == -Double.MAX_VALUE) {
 //            return value; // Issue warning?
@@ -264,10 +264,10 @@ public class Grids_Utilities {
         double yllcorner = dimensions.getYMin().doubleValue();
         double xGridNoDataValue = xGrid.getNoDataValue(hoome);
         double yGridNoDataValue = yGrid.getNoDataValue(hoome);
-        double minx = xGrid.getStatistics(hoome).getMin(true, hoome).doubleValue();
-        double maxx = xGrid.getStatistics(hoome).getMax(true, hoome).doubleValue();
-        double miny = yGrid.getStatistics(hoome).getMin(true, hoome).doubleValue();
-        double maxy = yGrid.getStatistics(hoome).getMax(true, hoome).doubleValue();
+        double minx = xGrid.getStats().getMin(true);
+        double maxx = xGrid.getStats().getMax(true);
+        double miny = yGrid.getStats().getMin(true);
+        double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
         Grids_GridDouble xGridRescaled = null;
         double value;
@@ -283,9 +283,9 @@ public class Grids_Utilities {
                 for (col = 0; col < ncols; col++) {
                     value = xGrid.getCell(row, col, hoome);
                     if (value != yGridNoDataValue) {
-                        v = (((value - minx) / (maxx - minx)) 
+                        v = (((value - minx) / (maxx - minx))
                                 * (maxy - miny)) + miny;
-                        xGridRescaled.setCell(row, col, v                                , hoome);
+                        xGridRescaled.setCell(row, col, v, hoome);
                     }
                 }
             }

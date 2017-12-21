@@ -172,15 +172,14 @@ public class Grids_GridIntStats
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return getClass().getName();
     }
 
     /**
      * @return
      */
-    @Override
-    protected long getN() {
+    public long getN() {
         long result = 0;
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
@@ -191,8 +190,8 @@ public class Grids_GridIntStats
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HOOME);
-            result += chunk.getN(ge.HOOME);
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID);
+            result += chunk.getN();
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HOOME);
@@ -237,8 +236,11 @@ public class Grids_GridIntStats
         return result;
     }
 
-    @Override
-    protected BigDecimal getSum() {
+    /**
+     *
+     * @return
+     */
+    public BigDecimal getSum() {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
@@ -249,8 +251,8 @@ public class Grids_GridIntStats
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
-            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID, ge.HOOME);
-            result = result.add(chunk.getSum(ge.HOOME));
+            chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID);
+            result = result.add(chunk.getSum());
         }
 //        int noDataValue;
 //        noDataValue = g.getNoDataValue(ge.HOOME);
@@ -265,7 +267,6 @@ public class Grids_GridIntStats
         return result;
     }
 
-    @Override
     protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);

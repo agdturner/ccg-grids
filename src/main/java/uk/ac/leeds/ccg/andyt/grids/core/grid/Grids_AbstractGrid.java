@@ -419,6 +419,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             }
         }
     }
+    
+    /**
+     * 
+     * @return Name 
+     */
+    public String getName() {
+        return Name;
+    }
 
     /**
      * Sets Name to be name.

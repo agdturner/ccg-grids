@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
  * more optimally.
  */
 public abstract class Grids_AbstractGridNumberStats extends Grids_Object
-        implements Serializable, Grids_InterfaceStats {
+        implements Serializable {
 
     //private long final long serialVersionUID = 1L;
     /**
@@ -94,17 +94,18 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         Grid = g;
         init();
     }
-    
+
     /**
-     * @return true iff the stats are kept up to date as the underlying data change.
+     * @return true iff the stats are kept up to date as the underlying data
+     * change.
      */
     public abstract boolean isUpdated();
 
     /**
      * Updates from stats.
      *
-     * @param stats the Grids_AbstractGridNumberStats instance which
- fields are used to update this.
+     * @param stats the Grids_AbstractGridNumberStats instance which fields are
+     * used to update this.
      */
     public void update(
             Grids_AbstractGridNumberStats stats) {
@@ -123,9 +124,9 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     /**
      * Returns a String describing this instance
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public String toString(
@@ -155,7 +156,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      *
      * @return
      */
-    protected abstract String getName();
+    public abstract String getName();
 //    {
 //        return getClass().getName();
 //    }
@@ -175,42 +176,40 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         return result;
     }
 
-    /**
-     * For returning the number of cells with data values as a BigInteger.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    @Override
-    public final Long getN(boolean hoome) {
-        try {
-            long result = getN();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(false);
-                return getN(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-    
-    /**
-     * @return The number of cells with finite data values as a BigInteger.
-     */
-    protected abstract long getN();
-
-    
+//    /**
+//     * For returning the number of cells with data values as a BigInteger.
+//     *
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    @Override
+//    public final Long getN(boolean hoome) {
+//        try {
+//            long result = getN();
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(false);
+//                return getN(hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
+//    
+//    /**
+//     * @return The number of cells with finite data values as a BigInteger.
+//     */
+//    protected abstract long getN();
     /**
      * @return The number of cells with finite data values as a BigInteger.
      */
@@ -220,9 +219,9 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      * For returning the number of cells with non zero data values as a
      * BigInteger.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public final BigInteger getNonZeroN(
@@ -252,75 +251,74 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      */
     protected abstract BigInteger getNonZeroN();
 
-    /**
-     * For returning the sum of all finite data values.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    @Override
-    public final BigDecimal getSum(boolean hoome) {
-        try {
-            BigDecimal result = getSum();
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(ge.HOOMEF);
-                return getSum(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * For returning the sum of all finite data values.
-     *
-     * @return
-     */
-    protected abstract BigDecimal getSum();
-
-    /**
-     * For returning the minimum of all data values.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    @Override
-    public Number getMin(
-            boolean update,
-            boolean hoome) {
-        try {
-            Number result = getMin(update);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(ge.HOOMEF);
-                return getMin(update, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
+//    /**
+//     * For returning the sum of all finite data values.
+//     *
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    @Override
+//    public final BigDecimal getSum(boolean hoome) {
+//        try {
+//            BigDecimal result = getSum();
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(ge.HOOMEF);
+//                return getSum(hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
+//
+//    /**
+//     * For returning the sum of all finite data values.
+//     *
+//     * @return
+//     */
+//    protected abstract BigDecimal getSum();
+//    /**
+//     * For returning the minimum of all data values.
+//     *
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    @Override
+//    public Number getMin(
+//            boolean update,
+//            boolean hoome) {
+//        try {
+//            Number result = getMin(update);
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(ge.HOOMEF);
+//                return getMin(update, hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
+//
     /**
      * For returning the minimum of all data values.
      *
@@ -329,41 +327,41 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      */
     public abstract Number getMin(boolean update);
 
-    /**
-     * For returning the maximum of all data values.
-     *
-     * @param update If true then an update of the statistics is made.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    @Override
-    public final Number getMax(
-            boolean update,
-            boolean hoome) {
-        try {
-            Number result = getMax(update);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(ge.HOOMEF);
-                return getMax(
-                        update,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
+//    /**
+//     * For returning the maximum of all data values.
+//     *
+//     * @param update If true then an update of the statistics is made.
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    @Override
+//    public final Number getMax(
+//            boolean update,
+//            boolean hoome) {
+//        try {
+//            Number result = getMax(update);
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(ge.HOOMEF);
+//                return getMax(
+//                        update,
+//                        hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
+//
     /**
      * For returning the maximum of all data values.
      *
@@ -769,41 +767,40 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        }
 //        return count;
 //    }
-    /**
-     * For returning the arithmetic mean of all data values.
-     *
-     * @param numberOfDecimalPlaces The result returned uses BigDecimal
-     * arithmetic to ensure the result is correct given a round scheme to this
-     * many decimal places.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    @Override
-    public BigDecimal getArithmeticMean(
-            int numberOfDecimalPlaces,
-            boolean hoome) {
-        try {
-            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(ge.HOOMEF);
-                return getArithmeticMean(numberOfDecimalPlaces, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
+//    /**
+//     * For returning the arithmetic mean of all data values.
+//     *
+//     * @param numberOfDecimalPlaces The result returned uses BigDecimal
+//     * arithmetic to ensure the result is correct given a round scheme to this
+//     * many decimal places.
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    @Override
+//    public BigDecimal getArithmeticMean(
+//            int numberOfDecimalPlaces,
+//            boolean hoome) {
+//        try {
+//            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(ge.HOOMEF);
+//                return getArithmeticMean(numberOfDecimalPlaces, hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
     /**
      * For returning the arithmetic mean of all data values. Throws an
      * ArithmeticException if N is equal to zero.
@@ -814,54 +811,51 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      *
      * @return
      */
-    protected BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
-        return Sum.divide(new BigDecimal(N),
-                numberOfDecimalPlaces,
+    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
+        return Sum.divide(new BigDecimal(N), numberOfDecimalPlaces, 
                 BigDecimal.ROUND_HALF_EVEN);
     }
 
-    /**
-     * Returns the standard deviation of all data values.
-     *
-     * @param numberOfDecimalPlaces
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public BigDecimal getStandardDeviation(
-            int numberOfDecimalPlaces,
-            boolean hoome) {
-        try {
-            BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
-            ge.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
-                        throw e;
-                    }
-                }
-                ge.initMemoryReserve(ge.HOOMEF);
-                return getStandardDeviation(
-                        numberOfDecimalPlaces,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the standard deviation of all data values.
-     *
-     * @param numberOfDecimalPlaces
-     * @return
-     */
-    protected abstract BigDecimal getStandardDeviation(int numberOfDecimalPlaces);
-
+//    /**
+//     * Returns the standard deviation of all data values.
+//     *
+//     * @param numberOfDecimalPlaces
+//     * @param hoome If true then OutOfMemoryErrors are caught,
+//     * swap operations are initiated, then the method is re-called. If false
+//     * then OutOfMemoryErrors are caught and thrown.
+//     * @return
+//     */
+//    public BigDecimal getStandardDeviation(
+//            int numberOfDecimalPlaces,
+//            boolean hoome) {
+//        try {
+//            BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
+//            ge.checkAndMaybeFreeMemory(hoome);
+//            return result;
+//        } catch (OutOfMemoryError e) {
+//            if (hoome) {
+//                ge.clearMemoryReserve();
+//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                        throw e;
+//                    }
+//                }
+//                ge.initMemoryReserve(ge.HOOMEF);
+//                return getStandardDeviation(
+//                        numberOfDecimalPlaces,
+//                        hoome);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
+//    /**
+//     * Returns the standard deviation of all data values.
+//     *
+//     * @param numberOfDecimalPlaces
+//     * @return
+//     */
+//    protected abstract BigDecimal getStandardDeviation(int numberOfDecimalPlaces);
     public abstract Object[] getQuantileClassMap(int nClasses);
 
 //    private boolean checkMaps(

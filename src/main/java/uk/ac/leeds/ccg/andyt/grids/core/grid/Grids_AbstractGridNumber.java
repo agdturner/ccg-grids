@@ -740,7 +740,7 @@ public abstract class Grids_AbstractGridNumber
      * this._GridStatistics. Or the _GridStatistics need to be made safe in that
      * only copies of fields are passed.
      */
-    public Grids_AbstractGridNumberStats getStatistics(boolean hoome) {
+    public Grids_AbstractGridNumberStats getStats(boolean hoome) {
         try {
             Grids_AbstractGridNumberStats result;
             result = getStats();
@@ -750,7 +750,7 @@ public abstract class Grids_AbstractGridNumber
             if (hoome) {
                 ge.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
-                return getStatistics(hoome);
+                return getStats(hoome);
             } else {
                 throw e;
             }

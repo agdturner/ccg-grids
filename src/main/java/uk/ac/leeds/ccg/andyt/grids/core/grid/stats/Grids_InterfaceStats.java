@@ -25,59 +25,42 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 public interface Grids_InterfaceStats {
 
     /**
-     * For returning the number of cells with noDataValues.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * For returning the number of cells with data values.
      * @return
      */
-    public Number getN(boolean hoome);
+    public Number getN();
 
     /**
      * For returning the sum of all data values.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getSum(boolean hoome);
+    public Number getSum();
 
     /**
      * For returning the minimum of all data values.
      *
      * @param update If true then an update of the statistics is made.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getMin(boolean update, boolean hoome);
+    public Number getMin(boolean update);
 
     /**
      * For returning the maximum of all data values.
      *
      * @param update If true then an update of the statistics is made.
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public Number getMax(boolean update, boolean hoome);
+    public Number getMax(boolean update);
 
     /**
      * For returning the arithmetic mean of all data values.
      *
      * @param numberOfDecimalPlaces The result returned uses BigDecimal 
      * arithmetic to ensure the result is correct given a round scheme to this
-     * many decimal places.  
-     * @param hoome If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
-     * then OutOfMemoryErrors are caught and thrown.
+     * many decimal places.
      * @return
      */
-    public Number getArithmeticMean(int numberOfDecimalPlaces, boolean hoome);
+    public Number getArithmeticMean(int numberOfDecimalPlaces);
 
 //    @TODO
 //    StandardDeviation

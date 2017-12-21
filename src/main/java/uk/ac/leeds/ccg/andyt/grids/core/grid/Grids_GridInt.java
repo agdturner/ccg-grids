@@ -1174,26 +1174,24 @@ public class Grids_GridInt
             int newValue,
             int oldValue) {
         if (Stats.isUpdated()) {
-            boolean hoome;
-            hoome = ge.HOOME;
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    Stats.setN(Stats.getN(hoome) - 1);
-                    Stats.setSum(Stats.getSum(hoome).subtract(oldValueBD));
-                    int min = Stats.getMin(false, hoome).intValue();
+                    Stats.setN(Stats.getN() - 1);
+                    Stats.setSum(Stats.getSum().subtract(oldValueBD));
+                    int min = Stats.getMin(false);
                     if (oldValue == min) {
                         Stats.setNMin(Stats.getNMin() - 1);
                     }
-                    int max = Stats.getMax(false, hoome).intValue();
+                    int max = Stats.getMax(false);
                     if (oldValue == max) {
                         Stats.setNMax(Stats.getNMax() - 1);
                     }
                 }
                 if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    Stats.setN(Stats.getN(hoome) + 1);
-                    Stats.setSum(Stats.getSum(hoome).add(newValueBD));
+                    Stats.setN(Stats.getN() + 1);
+                    Stats.setSum(Stats.getSum().add(newValueBD));
                     updateStats(newValue);
                     if (Stats.getNMin() < 1) {
                         // The Stats need recalculating
@@ -1746,11 +1744,10 @@ public class Grids_GridInt
     }
 
     public void updateStats(int value) {
-        boolean h = ge.HOOME;
         BigDecimal valueBD = new BigDecimal(value);
-        Stats.setN(Stats.getN(h) + 1);
-        Stats.setSum(Stats.getSum(h).add(valueBD));
-        int min = Stats.getMin(false, h).intValue();
+        Stats.setN(Stats.getN() + 1);
+        Stats.setSum(Stats.getSum().add(valueBD));
+        int min = Stats.getMin(false);
         if (value < min) {
             Stats.setNMin(1);
             Stats.setMin(value);
@@ -1759,7 +1756,7 @@ public class Grids_GridInt
                 Stats.setNMin(Stats.getNMin() + 1);
             }
         }
-        int max = Stats.getMax(false, h).intValue();
+        int max = Stats.getMax(false);
         if (value > max) {
             Stats.setNMax(1);
             Stats.setMax(value);

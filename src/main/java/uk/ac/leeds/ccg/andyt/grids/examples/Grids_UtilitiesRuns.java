@@ -127,7 +127,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
     }
 
     public void densityPlot(
-            boolean handleOutOfMemoryError)
+            boolean hoome)
             throws Exception {
         Grids_Files files;
         files = ge.getFiles();
@@ -166,14 +166,13 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         double[] numy = (double[]) result[2];
         Grids_GridDouble densityPlotGrid = (Grids_GridDouble) result[3];
         System.out.println(densityPlotGrid.toString());
-        Grids_GridDoubleStats statistics;
-        statistics = (Grids_GridDoubleStats) xGrid.getStatistics(handleOutOfMemoryError);
+        Grids_GridDoubleStats stats;
+        stats = (Grids_GridDoubleStats) xGrid.getStats(hoome);
         double divx;
-        divx = (statistics.getMax(true, handleOutOfMemoryError).doubleValue()
-                - statistics.getMin(true, handleOutOfMemoryError).doubleValue()) / divisions;
+        divx = (stats.getMax(true) - stats.getMin(true)) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), handleOutOfMemoryError);
+        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"), hoome);
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new FileOutputStream(new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv")));
