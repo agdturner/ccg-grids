@@ -161,7 +161,7 @@ public class Grids_GridChunkDoubleArrayTest {
         boolean handleOutOfMemoryError = false;
         Grids_GridChunkDoubleArray instance = new Grids_GridChunkDoubleArray();
         Number expResult = null;
-        Number result = instance.getMin(update, handleOutOfMemoryError);
+        Number result = instance.getMin(update);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -177,7 +177,7 @@ public class Grids_GridChunkDoubleArrayTest {
         boolean handleOutOfMemoryError = false;
         Grids_GridChunkDoubleArray instance = new Grids_GridChunkDoubleArray();
         Number expResult = null;
-        Number result = instance.getMax(update, handleOutOfMemoryError);
+        Number result = instance.getMax(update);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

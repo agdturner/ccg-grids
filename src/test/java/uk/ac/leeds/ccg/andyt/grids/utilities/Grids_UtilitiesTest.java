@@ -101,7 +101,7 @@ public class Grids_UtilitiesTest {
     }
 
     /**
-     * Test of getValueALittleBitLarger method, of class Grids_Utilities.
+     * Test of getLarger method, of class Grids_Utilities.
      */
     @Test
     public void testGetValueALittleBitLarger() {
@@ -111,74 +111,74 @@ public class Grids_UtilitiesTest {
         double result;
         // Test 1
         value = 0.0d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 4.9E-324d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 2
         value = 4.9E-324d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1.0E-323d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 3
         value = 1.0E-323d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1.5E-323d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 4
         value = 1.0d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1.0000000000000002d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 5
         value = 1.0000000000000002d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1.0000000000000004d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 6
         value = 1000000.0d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1000000.0000000001d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 7
         value = 1000000.0000000001d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = 1000000.0000000002d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 8
         value = -1.0d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = -0.9999999999999999d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 9
         value = -0.9999999999999999d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = -0.9999999999999998d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 10
         value = -1000000.0d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = -999999.9999999999d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 11
         value = -999999.9999999999d;
-        result = Grids_Utilities.getValueALittleBitLarger(value);
+        result = Grids_Utilities.getLarger(value);
         expResult = -999999.9999999998d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
     }
 
     /**
-     * Test of getValueALittleBitSmaller method, of class Grids_Utilities.
+     * Test of getSmaller method, of class Grids_Utilities.
      */
     @Test
     public void testGetValueALittleBitSmaller() {
@@ -188,43 +188,43 @@ public class Grids_UtilitiesTest {
         double result;
         // Test 1
         value = 0.0d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = -4.9E-324d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 2
         value = 4.9E-324d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = 0.0d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 3
         value = 1.0E-323d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = 4.9E-324d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 4
         value = 1.0d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = 0.9999999999999999d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 5
         value = 1000000.0d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = 999999.9999999999d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 6
         value = 1000000.0000000001d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = 1000000.0d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
         // Test 7
         value = -1.0d;
-        result = Grids_Utilities.getValueALittleBitSmaller(value);
+        result = Grids_Utilities.getSmaller(value);
         expResult = -1.0000000000000002d;
         System.out.println(result);
         assertEquals(expResult, result, 0.0);
