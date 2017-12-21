@@ -12,9 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 
 /**
  *
@@ -47,8 +44,8 @@ public class Grids_UtilitiesTest {
     @Test
     public void testGetTime() {
         System.out.println("getTime");
-        long time = 0L;
-        String expResult = "";
+        long time;
+        String expResult;
         String result;
         // Test 1
         time = 0L;
