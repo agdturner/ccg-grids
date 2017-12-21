@@ -1108,33 +1108,15 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_GridDouble to be processed/modified.
      * @param g2 The Grids_GridDouble from which values are added.
      * @param weight The value gridToAdd values are multiplied by.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble g,
             Grids_GridDouble g2,
-            double weight,
-            boolean hoome) {
-        try {
+            double weight) {
             ge.getGrids().add(g);
             ge.getGrids().add(g2);
             addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
-                    g2.getNCols() - 1L, weight, hoome);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                addToGrid(g, g2, weight, hoome);
-            } else {
-                throw e;
-            }
-        }
+                    g2.getNCols() - 1L, weight);
     }
 
     /**
@@ -1165,9 +1147,7 @@ public class Grids_Processor extends Grids_Object {
             long startCol,
             long endRow,
             long endCol,
-            double weight,
-            boolean hoome) {
-        try {
+            double weight) {
             ge.getGrids().add(g);
             ge.getGrids().add(g2);
             Grids_Dimensions dimensions = g2.getDimensions();
@@ -1187,21 +1167,8 @@ public class Grids_Processor extends Grids_Object {
             dimensionConstraints[4] = yMin.add(
                     new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
             addToGrid(g, g2, startRow, startCol, endRow, endCol,
-                    dimensionConstraints, weight, hoome);
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                addToGrid(g, g2, startRow, startCol, endRow, endCol,
-                        weight, hoome);
-            } else {
-                throw e;
-            }
-        }
+                    dimensionConstraints, weight);
+            ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1236,9 +1203,7 @@ public class Grids_Processor extends Grids_Object {
             long endRow,
             long endCol,
             BigDecimal[] constraintDimensions,
-            double weight,
-            boolean hoome) {
-        try {
+            double weight) {
             ge.checkAndMaybeFreeMemory();
             ge.getGrids().add(g);
             ge.getGrids().add(g2);
@@ -1433,20 +1398,7 @@ public class Grids_Processor extends Grids_Object {
                     }
                 }
             }
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                addToGrid(g, g2, startRow, startCol, endRow, endCol,
-                        constraintDimensions, weight, hoome);
-            } else {
-                throw e;
-            }
-        }
+            ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1463,9 +1415,7 @@ public class Grids_Processor extends Grids_Object {
     public void addToGrid(
             Grids_GridDouble grid,
             File file,
-            String type,
-            boolean hoome) {
-        try {
+            String type) {
             ge.getGrids().add(grid);
             if (type.equalsIgnoreCase("xyv")) {
                 try {
@@ -1596,24 +1546,7 @@ public class Grids_Processor extends Grids_Object {
                     e.printStackTrace(System.err);
                 }
             }
-            ge.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace(System.err);
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                addToGrid(
-                        grid,
-                        file,
-                        type,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
+            ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -2274,7 +2207,7 @@ public class Grids_Processor extends Grids_Object {
             if (statistic.equalsIgnoreCase("mean")) {
                 double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
                 Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory, hoome);
-                addToGrid(result, sum, 1.0d / denominator, hoome);
+                addToGrid(result, sum, 1.0d / denominator);
             }
 
             // max
