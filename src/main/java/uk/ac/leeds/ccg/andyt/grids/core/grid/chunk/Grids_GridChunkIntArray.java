@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 
 /**
  * Grids_AbstractGridChunkInt extension that stores cell values in a int[][].
@@ -165,22 +166,6 @@ public class Grids_GridChunkIntArray
         return oldValue;
     }
 
-    @Override
-    public Number getMin(boolean update) {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Number getMax(boolean update) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
      * cells in this in row major order.
@@ -190,6 +175,44 @@ public class Grids_GridChunkIntArray
     @Override
     public Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
+    }
+    
+    @Override
+    public Number getMin(boolean update) {
+        Integer result = Data[0][0];
+        Grids_GridInt g = getGrid();
+        int noDataValue = g.getNoDataValue();
+        int v;
+        int row;
+        int col;
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
+                v = Data[ChunkNRows][ChunkNCols];
+                if (v != noDataValue) {
+                    result = Math.min(result, v);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Integer getMax(boolean update) {
+        Integer result = Data[0][0];
+        Grids_GridInt g = getGrid();
+        int noDataValue = g.getNoDataValue();
+        int v;
+        int row;
+        int col;
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
+                v = Data[ChunkNRows][ChunkNCols];
+                if (v != noDataValue) {
+                    result = Math.min(result, v);
+                }
+            }
+        }
+        return result;
     }
 
 }

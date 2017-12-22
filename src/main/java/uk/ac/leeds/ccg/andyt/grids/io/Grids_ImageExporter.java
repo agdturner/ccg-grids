@@ -125,7 +125,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
-         r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
+            r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
         } else {
             r = processor.rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
         }
@@ -155,7 +155,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(r, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = r.getGridChunk(chunkID);
+                chunk = r.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = r.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -325,7 +325,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(g, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(
+                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(
                         chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);

@@ -25,12 +25,14 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGridChunkDoubleArrayOrMap extends Grids_AbstractGridChunkDouble {
+public abstract class Grids_AbstractGridChunkDoubleArrayOrMap 
+        extends Grids_AbstractGridChunkDouble {
     
     protected Grids_AbstractGridChunkDoubleArrayOrMap() {
     }
 
-    protected Grids_AbstractGridChunkDoubleArrayOrMap(Grids_GridDouble g, Grids_2D_ID_int chunkID) {
+    protected Grids_AbstractGridChunkDoubleArrayOrMap(Grids_GridDouble g, 
+            Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
 

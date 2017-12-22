@@ -43,20 +43,14 @@ public class Grids_GridChunkIntFactory
     public Grids_AbstractGridChunkInt create(
             Grids_GridInt g,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkInt(
-                g,
-                chunkID,
-                DefaultValue);
+        return new Grids_GridChunkInt(g, chunkID, DefaultValue);
     }
 
     @Override
     public Grids_AbstractGridChunkInt create(
             Grids_AbstractGridChunkInt chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_GridChunkInt(
-                chunk.getGrid(),
-                chunkID,
-                DefaultValue);
+        return new Grids_GridChunkInt(chunk.getGrid(), chunkID, DefaultValue);
     }
 
 }

@@ -145,34 +145,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return the Grids_AbstractGridChunk with ID.chunkRow equal to chunkRow
-     * and ID.chunkCol equal to chunkCol.
-     * @param chunkRow The ID.chunkRow of the returned Grids_AbstractGridChunk.
-     * @param chunkCol The ID.chunkCol of the returned Grids_AbstractGridChunk.
-     */
-    public Grids_AbstractGridChunk getChunk(
-            int chunkRow, int chunkCol) {
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        return getChunk(chunkID);
-    }
-
-    /**
-     * @return the Grids_AbstractGridChunk with ChunkID equal to chunkID.
-     *
-     * @param chunkID The ChunkID of the Grids_AbstractGridChunk returned.
-     */
-    public Grids_AbstractGridChunk getChunk(Grids_2D_ID_int chunkID) {
-        boolean isInGrid = isInGrid(chunkID);
-        if (isInGrid) {
-            if (ChunkIDChunkMap.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
-            }
-            return (Grids_AbstractGridChunk) ChunkIDChunkMap.get(chunkID);
-        }
-        return null;
-    }
-
-    /**
      * @return HashSet containing all ChunkIDs.
      */
     public HashSet<Grids_2D_ID_int> getChunkIDs() {
@@ -2601,14 +2573,14 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @return Grids_AbstractGridChunk for the given chunkID.
      * @param chunkID
      */
-    public abstract Grids_AbstractGridChunk getGridChunk(Grids_2D_ID_int chunkID);
+    public abstract Grids_AbstractGridChunk getChunk(Grids_2D_ID_int chunkID);
 
     /**
      * @param chunkRow
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
      */
-    public abstract Grids_AbstractGridChunk getGridChunk(int chunkRow, 
+    public abstract Grids_AbstractGridChunk getChunk(int chunkRow, 
             int chunkCol);
 
     /**
@@ -2617,6 +2589,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
      */
-    public abstract Grids_AbstractGridChunk getGridChunk(
+    public abstract Grids_AbstractGridChunk getChunk(
             Grids_2D_ID_int chunkID, int chunkRow, int chunkCol);
 }

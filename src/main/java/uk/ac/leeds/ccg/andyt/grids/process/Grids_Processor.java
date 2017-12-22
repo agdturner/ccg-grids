@@ -737,7 +737,7 @@ public class Grids_Processor extends Grids_Object {
         int nChunkRows = g.getNChunkRows();
         int chunkNCols;
         int chunkNRows;
-        double noDataValue = g.getNoDataValue();
+        double ndv = g.getNoDataValue();
         double range = max - min;
         Grids_AbstractGridNumberStats stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
@@ -773,12 +773,12 @@ public class Grids_Processor extends Grids_Object {
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
-                        gridChunk = g.getGridChunk(chunkID);
-                        resultChunk = result.getGridChunk(chunkID);
+                        gridChunk = g.getChunk(chunkID);
+                        resultChunk = result.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != noDataValue) {
+                                if (value != ndv) {
                                     result.setCell(resultChunk, cellRow,
                                             cellCol, min);
                                 }
@@ -799,12 +799,12 @@ public class Grids_Processor extends Grids_Object {
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
-                        gridChunk = g.getGridChunk(chunkID);
-                        resultChunk = result.getGridChunk(chunkID);
+                        gridChunk = g.getChunk(chunkID);
+                        resultChunk = result.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != noDataValue) {
+                                if (value != ndv) {
                                     v = (((value - minGrid)
                                             / rangeGrid) * range) + min;
                                     result.setCell(resultChunk, cellRow,
@@ -827,7 +827,7 @@ public class Grids_Processor extends Grids_Object {
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
                         value = g.getCell(row, col);
-                        if (value != noDataValue) {
+                        if (value != ndv) {
                             result.setCell(row, col, Math.log(value));
                         }
                     }
@@ -868,7 +868,7 @@ public class Grids_Processor extends Grids_Object {
         long ncols = g.getNCols();
         int nChunkCols = g.getNChunkCols();
         int nChunkRows = g.getNChunkCols();
-        int noDataValue = g.getNoDataValue();
+        int ndv = g.getNoDataValue();
         double range = max - min;
         Grids_AbstractGridNumberStats stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
@@ -907,13 +907,13 @@ public class Grids_Processor extends Grids_Object {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
-                        gridChunk = g.getGridChunk(chunkID);
+                        gridChunk = g.getChunk(chunkID);
                         Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = outputGrid.getGridChunk(chunkID);
+                        outputGridChunk = outputGrid.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != noDataValue) {
+                                if (value != ndv) {
                                     outputGrid.setCell(outputGridChunk, cellRow,
                                             cellCol, min);
                                 }
@@ -940,13 +940,13 @@ public class Grids_Processor extends Grids_Object {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
-                        gridChunk = g.getGridChunk(chunkID);
+                        gridChunk = g.getChunk(chunkID);
                         Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = outputGrid.getGridChunk(chunkID);
+                        outputGridChunk = outputGrid.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != noDataValue) {
+                                if (value != ndv) {
                                     v = (((value - minGrid) / rangeGrid)
                                             * range) + min;
                                     outputGrid.setCell(outputGridChunk,
@@ -971,7 +971,7 @@ public class Grids_Processor extends Grids_Object {
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
                         value = g.getCell(row, col);
-                        if (value != noDataValue) {
+                        if (value != ndv) {
                             outputGrid.setCell(row, col, Math.log(value));
                         }
                     }

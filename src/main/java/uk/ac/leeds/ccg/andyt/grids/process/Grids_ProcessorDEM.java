@@ -437,7 +437,7 @@ public class Grids_ProcessorDEM
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        chunkDouble = gridDouble.getGridChunk(cri, cci);
+                        chunkDouble = gridDouble.getChunk(cri, cci);
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
@@ -540,7 +540,7 @@ public class Grids_ProcessorDEM
                     chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
-                        chunk = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
+                        chunk = (Grids_AbstractGridChunkInt) gridInt.getChunk(
                                 cri, cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
@@ -2252,7 +2252,7 @@ public class Grids_ProcessorDEM
                         //ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(metrics1, chunkID);
                         ge.checkAndMaybeFreeMemory();
-                        gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getGridChunk(
+                        gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
                                 chunkRow, chunkCol);
                         boolean doLoop = true;
                         if (gridChunkDouble instanceof Grids_GridChunkDouble) {
@@ -2328,7 +2328,7 @@ public class Grids_ProcessorDEM
                         //ge.addToNotToSwap(g, chunkID);
                         ge.addToNotToSwap(metrics1, chunkID);
                         ge.checkAndMaybeFreeMemory();
-                        gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getGridChunk(
+                        gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
                                 chunkRow, chunkCol);
                         boolean doLoop = true;
                         if (gridChunkInt instanceof Grids_GridChunkInt) {

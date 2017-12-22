@@ -129,19 +129,19 @@ public class Grids_GridChunkDoubleArray
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param value the value the cell is to be set to
+     * @param v the value the cell is to be set to
      * @return
      */
     @Override
     public double setCell(
             int row,
             int col,
-            double value) {
+            double v) {
         double oldValue;
         oldValue = Data[row][col];
-        Data[row][col] = value;
+        Data[row][col] = v;
         if (isSwapUpToDate()) {
-            if (value != oldValue) {
+            if (v != oldValue) {
                 setSwapUpToDate(false);
             }
         }
@@ -160,20 +160,41 @@ public class Grids_GridChunkDoubleArray
     }
 
     @Override
-    public double getArithmeticMeanDouble() {
-        double sum = getSum().doubleValue();
-        double n = getN();
-        return sum / n;
-    }
-
-    @Override
-    public Number getMin(boolean update) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Double getMin(boolean update) {
+        Double result = Data[0][0];
+        Grids_GridDouble g = getGrid();
+        double noDataValue = g.getNoDataValue();
+        double v;
+        int row;
+        int col;
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
+                v = Data[ChunkNRows][ChunkNCols];
+                if (v != noDataValue) {
+                    result = Math.min(result, v);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public Number getMax(boolean update) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Double result = Data[0][0];
+        Grids_GridDouble g = getGrid();
+        double noDataValue = g.getNoDataValue();
+        double v;
+        int row;
+        int col;
+        for (row = 0; row < ChunkNRows; row++) {
+            for (col = 0; col < ChunkNCols; col++) {
+                v = Data[ChunkNRows][ChunkNCols];
+                if (v != noDataValue) {
+                    result = Math.max(result, v);
+                }
+            }
+        }
+        return result;
     }
 
 }

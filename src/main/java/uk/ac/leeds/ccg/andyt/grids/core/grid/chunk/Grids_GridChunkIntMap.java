@@ -823,7 +823,6 @@ public class Grids_GridChunkIntMap
          */
         TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         dataMapHashSet = Data.DataMapHashSet;
-        HashSet<Grids_2D_ID_int> cellIDs;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             value = ite.next();
