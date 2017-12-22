@@ -331,32 +331,29 @@ public class Grids_Processor extends Grids_Object {
      * Copies and sets up a new Log.
      *
      * @param newLog
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @throws java.io.IOException
      */
     public void copyAndSetUpNewLog(
             File newLog)
             throws IOException {
-            Log.flush();
-            Log.close();
-            File workspace = getDirectory();
-            File oldLog = new File(workspace, "log.txt");
-            BufferedInputStream bis;
-            bis = Generic_StaticIO.getBufferedInputStream(oldLog);
-            BufferedOutputStream bos;
-            bos = Generic_StaticIO.getBufferedOutputStream(newLog);
-            for (int i = 0; i < oldLog.length(); i++) {
-                bos.write(bis.read());
-            }
-            bos.flush();
-            bos.close();
-            bis.close();
-            Log = Generic_StaticIO.getPrintWriter(newLog, true);
-            log(0, "log file copied from " + oldLog.toString() + " "
-                    + Calendar.getInstance().toString());
-            ge.checkAndMaybeFreeMemory();
+        Log.flush();
+        Log.close();
+        File workspace = getDirectory();
+        File oldLog = new File(workspace, "log.txt");
+        BufferedInputStream bis;
+        bis = Generic_StaticIO.getBufferedInputStream(oldLog);
+        BufferedOutputStream bos;
+        bos = Generic_StaticIO.getBufferedOutputStream(newLog);
+        for (int i = 0; i < oldLog.length(); i++) {
+            bos.write(bis.read());
+        }
+        bos.flush();
+        bos.close();
+        bis.close();
+        Log = Generic_StaticIO.getPrintWriter(newLog, true);
+        log(0, "log file copied from " + oldLog.toString() + " "
+                + Calendar.getInstance().toString());
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -366,7 +363,7 @@ public class Grids_Processor extends Grids_Object {
      * @param logIndentation The indentation of string.
      * @param string The message to Log.
      */
-    public void log(
+    public final void log(
             int logIndentation,
             String string) {
         if (string.endsWith("}")) {
@@ -464,163 +461,162 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g The Grids_AbstractGridNumber that the mask will be applied to.
      * @param mask The Grids_AbstractGridNumber to use as a mask.
-     * @param hoome
      */
     public void mask(
             Grids_AbstractGridNumber g,
             Grids_AbstractGridNumber mask) {
-           ge.checkAndMaybeFreeMemory();
-            ge.getGrids().add(g);
-            ge.getGrids().add(mask);
-            Grids_2D_ID_int chunkID;
-            int chunkNRows;
-            int chunkNCols;
-            int chunkRow;
-            int chunkCol;
-            int cellRow;
-            int cellCol;
-            long row;
-            long col;
-            if (g instanceof Grids_GridInt) {
-                Grids_GridInt grid = (Grids_GridInt) g;
-                int noDataValue = grid.getNoDataValue();
-                if (mask instanceof Grids_GridInt) {
-                    Grids_GridInt maskInt;
-                    maskInt = (Grids_GridInt) mask;
-                    int maskNoDataValue = maskInt.getNoDataValue();
-                    int value;
-                    Iterator ite = maskInt.iterator();
-                    Grids_AbstractGridChunkInt maskIntChunk;
-                    while (ite.hasNext()) {
-                        maskIntChunk = (Grids_AbstractGridChunkInt) ite.next();
-                        chunkID = maskIntChunk.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(mask, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        chunkNRows = maskInt.getChunkNRows(chunkID);
-                        chunkNCols = maskInt.getChunkNCols(chunkID);
-                        chunkRow = chunkID.getRow();
-                        chunkCol = chunkID.getCol();
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = maskIntChunk.getCell(cellRow, cellCol);
-                                if (value == maskNoDataValue) {
-                                    row = ((long) chunkRow * (long) chunkNRows)
-                                            + (long) cellRow;
-                                    col = ((long) chunkCol * (long) chunkNCols)
-                                            + (long) cellCol;
-                                    grid.setCell(row, col, noDataValue);
-                                }
+        ge.checkAndMaybeFreeMemory();
+        ge.getGrids().add(g);
+        ge.getGrids().add(mask);
+        Grids_2D_ID_int chunkID;
+        int chunkNRows;
+        int chunkNCols;
+        int chunkRow;
+        int chunkCol;
+        int cellRow;
+        int cellCol;
+        long row;
+        long col;
+        if (g instanceof Grids_GridInt) {
+            Grids_GridInt grid = (Grids_GridInt) g;
+            int noDataValue = grid.getNoDataValue();
+            if (mask instanceof Grids_GridInt) {
+                Grids_GridInt maskInt;
+                maskInt = (Grids_GridInt) mask;
+                int maskNoDataValue = maskInt.getNoDataValue();
+                int value;
+                Iterator ite = maskInt.iterator();
+                Grids_AbstractGridChunkInt maskIntChunk;
+                while (ite.hasNext()) {
+                    maskIntChunk = (Grids_AbstractGridChunkInt) ite.next();
+                    chunkID = maskIntChunk.getChunkID();
+                    ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(mask, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    chunkNRows = maskInt.getChunkNRows(chunkID);
+                    chunkNCols = maskInt.getChunkNCols(chunkID);
+                    chunkRow = chunkID.getRow();
+                    chunkCol = chunkID.getCol();
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                            value = maskIntChunk.getCell(cellRow, cellCol);
+                            if (value == maskNoDataValue) {
+                                row = ((long) chunkRow * (long) chunkNRows)
+                                        + (long) cellRow;
+                                col = ((long) chunkCol * (long) chunkNCols)
+                                        + (long) cellCol;
+                                grid.setCell(row, col, noDataValue);
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(mask, chunkID);
                     }
-                } else {
-                    // ( mask.getClass() == Grids_GridDouble.class )
-                    Grids_GridDouble maskDouble;
-                    maskDouble = (Grids_GridDouble) mask;
-                    double maskNoDataValue = maskDouble.getNoDataValue();
-                    double value;
-                    Iterator ite = maskDouble.iterator();
-                    Grids_AbstractGridChunkDouble maskChunk;
-                    while (ite.hasNext()) {
-                        maskChunk = (Grids_AbstractGridChunkDouble) ite.next();
-                        chunkID = maskChunk.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(mask, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        chunkNRows = maskDouble.getChunkNRows(chunkID);
-                        chunkNCols = maskDouble.getChunkNCols(chunkID);
-                        chunkRow = chunkID.getRow();
-                        chunkCol = chunkID.getCol();
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = maskChunk.getCell(cellRow, cellCol);
-                                if (value == maskNoDataValue) {
-                                    row = ((long) chunkRow * (long) chunkNRows)
-                                            + (long) cellRow;
-                                    col = ((long) chunkCol * (long) chunkNCols)
-                                            + (long) cellCol;
-                                    grid.setCell(row, col, noDataValue);
-                                }
-                            }
-                        }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(mask, chunkID);
-                    }
+                    ge.removeFromNotToSwap(g, chunkID);
+                    ge.removeFromNotToSwap(mask, chunkID);
                 }
             } else {
-                Grids_GridDouble grid = (Grids_GridDouble) g;
-                double resultNoDataValue;
-                resultNoDataValue = grid.getNoDataValue();
-                if (mask.getClass() == Grids_GridInt.class) {
-                    Grids_GridInt maskInt = (Grids_GridInt) mask;
-                    int maskNoDataValue = maskInt.getNoDataValue();
-                    int value;
-                    Iterator iterator = maskInt.iterator();
-                    Grids_AbstractGridChunkInt maskChunk;
-                    while (iterator.hasNext()) {
-                        maskChunk = (Grids_AbstractGridChunkInt) iterator.next();
-                        chunkID = maskChunk.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(mask, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        chunkNRows = maskInt.getChunkNRows(chunkID);
-                        chunkNCols = maskInt.getChunkNCols(chunkID);
-                        chunkRow = chunkID.getRow();
-                        chunkCol = chunkID.getCol();
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = maskChunk.getCell(cellRow, cellCol);
-                                if (value == maskNoDataValue) {
-                                    row = ((long) chunkRow * (long) chunkNRows)
-                                            + (long) cellRow;
-                                    col = ((long) chunkCol * (long) chunkNCols)
-                                            + (long) cellCol;
-                                    grid.setCell(row, col, resultNoDataValue);
-                                }
+                // ( mask.getClass() == Grids_GridDouble.class )
+                Grids_GridDouble maskDouble;
+                maskDouble = (Grids_GridDouble) mask;
+                double maskNoDataValue = maskDouble.getNoDataValue();
+                double value;
+                Iterator ite = maskDouble.iterator();
+                Grids_AbstractGridChunkDouble maskChunk;
+                while (ite.hasNext()) {
+                    maskChunk = (Grids_AbstractGridChunkDouble) ite.next();
+                    chunkID = maskChunk.getChunkID();
+                    ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(mask, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    chunkNRows = maskDouble.getChunkNRows(chunkID);
+                    chunkNCols = maskDouble.getChunkNCols(chunkID);
+                    chunkRow = chunkID.getRow();
+                    chunkCol = chunkID.getCol();
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                            value = maskChunk.getCell(cellRow, cellCol);
+                            if (value == maskNoDataValue) {
+                                row = ((long) chunkRow * (long) chunkNRows)
+                                        + (long) cellRow;
+                                col = ((long) chunkCol * (long) chunkNCols)
+                                        + (long) cellCol;
+                                grid.setCell(row, col, noDataValue);
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(mask, chunkID);
                     }
-                } else {
-                    // ( mask.getClass() == Grids_GridDouble.class )
-                    Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
-                    double maskNoDataValue = maskDouble.getNoDataValue();
-                    double value;
-                    Iterator ite = maskDouble.getChunkIDs().iterator();
-                    Grids_AbstractGridChunkDouble maskChunk;
-                    while (ite.hasNext()) {
-                        maskChunk = (Grids_AbstractGridChunkDouble) mask.getChunk(
-                                (Grids_2D_ID_int) ite.next());
-                        chunkID = maskChunk.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(mask, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        chunkNRows = maskDouble.getChunkNRows(chunkID);
-                        chunkNCols = maskDouble.getChunkNCols(chunkID);
-                        chunkRow = chunkID.getRow();
-                        chunkCol = chunkID.getCol();
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = maskChunk.getCell(cellRow, cellCol);
-                                if (value == maskNoDataValue) {
-                                    row = ((long) chunkRow * (long) chunkNRows)
-                                            + (long) cellRow;
-                                    col = ((long) chunkCol * (long) chunkNCols)
-                                            + (long) cellCol;
-                                    grid.setCell(row, col, resultNoDataValue);
-                                }
-                            }
-                        }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(mask, chunkID);
-                    }
+                    ge.removeFromNotToSwap(g, chunkID);
+                    ge.removeFromNotToSwap(mask, chunkID);
                 }
             }
-            ge.checkAndMaybeFreeMemory();
+        } else {
+            Grids_GridDouble grid = (Grids_GridDouble) g;
+            double resultNoDataValue;
+            resultNoDataValue = grid.getNoDataValue();
+            if (mask.getClass() == Grids_GridInt.class) {
+                Grids_GridInt maskInt = (Grids_GridInt) mask;
+                int maskNoDataValue = maskInt.getNoDataValue();
+                int value;
+                Iterator iterator = maskInt.iterator();
+                Grids_AbstractGridChunkInt maskChunk;
+                while (iterator.hasNext()) {
+                    maskChunk = (Grids_AbstractGridChunkInt) iterator.next();
+                    chunkID = maskChunk.getChunkID();
+                    ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(mask, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    chunkNRows = maskInt.getChunkNRows(chunkID);
+                    chunkNCols = maskInt.getChunkNCols(chunkID);
+                    chunkRow = chunkID.getRow();
+                    chunkCol = chunkID.getCol();
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                            value = maskChunk.getCell(cellRow, cellCol);
+                            if (value == maskNoDataValue) {
+                                row = ((long) chunkRow * (long) chunkNRows)
+                                        + (long) cellRow;
+                                col = ((long) chunkCol * (long) chunkNCols)
+                                        + (long) cellCol;
+                                grid.setCell(row, col, resultNoDataValue);
+                            }
+                        }
+                    }
+                    ge.removeFromNotToSwap(g, chunkID);
+                    ge.removeFromNotToSwap(mask, chunkID);
+                }
+            } else {
+                // ( mask.getClass() == Grids_GridDouble.class )
+                Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
+                double maskNoDataValue = maskDouble.getNoDataValue();
+                double value;
+                Iterator ite = maskDouble.getChunkIDs().iterator();
+                Grids_AbstractGridChunkDouble maskChunk;
+                while (ite.hasNext()) {
+                    maskChunk = (Grids_AbstractGridChunkDouble) mask.getChunk(
+                            (Grids_2D_ID_int) ite.next());
+                    chunkID = maskChunk.getChunkID();
+                    ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(mask, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    chunkNRows = maskDouble.getChunkNRows(chunkID);
+                    chunkNCols = maskDouble.getChunkNCols(chunkID);
+                    chunkRow = chunkID.getRow();
+                    chunkCol = chunkID.getCol();
+                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                            value = maskChunk.getCell(cellRow, cellCol);
+                            if (value == maskNoDataValue) {
+                                row = ((long) chunkRow * (long) chunkNRows)
+                                        + (long) cellRow;
+                                col = ((long) chunkCol * (long) chunkNCols)
+                                        + (long) cellCol;
+                                grid.setCell(row, col, resultNoDataValue);
+                            }
+                        }
+                    }
+                    ge.removeFromNotToSwap(g, chunkID);
+                    ge.removeFromNotToSwap(mask, chunkID);
+                }
+            }
+        }
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -630,72 +626,69 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_GridDouble to be masked.
      * @param min The minimum value in the range.
      * @param max The maximum value in the range.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
     public void mask(
             Grids_AbstractGridNumber g,
             double min,
             double max) {
-            ge.getGrids().add(g);
-            ge.checkAndMaybeFreeMemory();
-            int cellRow;
-            int cellCol;
-            int chunkNRows;
-            int chunkNCols;
-            Grids_2D_ID_int chunkID;
-            if (g.getClass() == Grids_GridInt.class) {
-                Grids_GridInt gi = (Grids_GridInt) g;
-                int ndv = gi.getNoDataValue();
-                int value;
-                Iterator ite = gi.iterator();
-                Grids_AbstractGridChunkInt chunk;
-                while (ite.hasNext()) {
-                    chunk = (Grids_AbstractGridChunkInt) ite.next();
-                    chunkID = chunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.checkAndMaybeFreeMemory();
-                    chunkNRows = gi.getChunkNRows(chunkID);
-                    chunkNCols = gi.getChunkNCols(chunkID);
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = gi.getCell(chunk, cellRow, cellCol);
-                            if (value >= min && value <= max) {
-                                gi.setCell(chunk, cellRow, cellCol, ndv);
-                            }
+        ge.getGrids().add(g);
+        ge.checkAndMaybeFreeMemory();
+        int cellRow;
+        int cellCol;
+        int chunkNRows;
+        int chunkNCols;
+        Grids_2D_ID_int chunkID;
+        if (g.getClass() == Grids_GridInt.class) {
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int ndv = gi.getNoDataValue();
+            int value;
+            Iterator ite = gi.iterator();
+            Grids_AbstractGridChunkInt chunk;
+            while (ite.hasNext()) {
+                chunk = (Grids_AbstractGridChunkInt) ite.next();
+                chunkID = chunk.getChunkID();
+                ge.addToNotToSwap(g, chunkID);
+                ge.checkAndMaybeFreeMemory();
+                chunkNRows = gi.getChunkNRows(chunkID);
+                chunkNCols = gi.getChunkNCols(chunkID);
+                for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                    for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                        value = gi.getCell(chunk, cellRow, cellCol);
+                        if (value >= min && value <= max) {
+                            gi.setCell(chunk, cellRow, cellCol, ndv);
                         }
                     }
-                    ge.removeFromNotToSwap(g, chunkID);
                 }
-            } else {
-                // ( grid.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble gd = (Grids_GridDouble) g;
-                double ndv = gd.getNoDataValue();
-                double value;
-                Iterator iterator = g.iterator();
-                Grids_AbstractGridChunkDouble gridChunk;
-                //Iterator gridChunkIterator;
-                while (iterator.hasNext()) {
-                    gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
-                    chunkID = gridChunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.checkAndMaybeFreeMemory();
-                    chunkNRows = g.getChunkNRows(chunkID);
-                    chunkNCols = g.getChunkNCols(chunkID);
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = gd.getCell(gridChunk, cellRow, cellCol);
-                            if (value >= min && value <= max) {
-                                gd.setCell(gridChunk, cellRow, cellCol, ndv);
-                            }
-                        }
-                    }
-                    ge.removeFromNotToSwap(g, chunkID);
-                }
+                ge.removeFromNotToSwap(g, chunkID);
             }
-            //grid.setName( grid.getName() + "_mask" );
-            ge.checkAndMaybeFreeMemory();
+        } else {
+            // ( grid.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double ndv = gd.getNoDataValue();
+            double value;
+            Iterator iterator = g.iterator();
+            Grids_AbstractGridChunkDouble gridChunk;
+            //Iterator gridChunkIterator;
+            while (iterator.hasNext()) {
+                gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
+                chunkID = gridChunk.getChunkID();
+                ge.addToNotToSwap(g, chunkID);
+                ge.checkAndMaybeFreeMemory();
+                chunkNRows = g.getChunkNRows(chunkID);
+                chunkNCols = g.getChunkNCols(chunkID);
+                for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                    for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                        value = gd.getCell(gridChunk, cellRow, cellCol);
+                        if (value >= min && value <= max) {
+                            gd.setCell(gridChunk, cellRow, cellCol, ndv);
+                        }
+                    }
+                }
+                ge.removeFromNotToSwap(g, chunkID);
+            }
+        }
+        //grid.setName( grid.getName() + "_mask" );
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -706,8 +699,28 @@ public class Grids_Processor extends Grids_Object {
      * "Log" then a Log rescale is done.
      * @param min The minimum value in the rescaled range.
      * @param max The maximum value in the rescaled range.
-     * @TODO Log rescaling implementation is not brilliant and could be
-     * parametrised.
+     */
+    public Grids_GridDouble rescale(
+            Grids_AbstractGridNumber g,
+            String type,
+            double min,
+            double max) {
+        if (g instanceof Grids_GridDouble) {
+            return rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
+        } else {
+            return rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
+        }
+    }
+
+    /**
+     * @param g
+     * @return a new Grids_GridDouble Values are either linearly rescaled into
+     * the range [min,max]. Or some Log rescaling is done
+     * @param type If type == null then a linear rescale is done. If type ==
+     * "Log" then a Log rescale is done.
+     * @param min The minimum value in the rescaled range.
+     * @param max The maximum value in the rescaled range.
+     * @TODO Improve log rescaling implementation.
      */
     public Grids_GridDouble rescale(
             Grids_GridDouble g,
@@ -731,10 +744,9 @@ public class Grids_Processor extends Grids_Object {
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
-        //outputGrid = (Grids_GridDouble) GridDoubleFactory.create(grid);
-        result = (Grids_GridDouble) GridDoubleFactory.create(
-                new File(Directory, "Rescaled"), g, 0, 0, nrows - 1, ncols - 1,
-                hoome);
+        //outputGrid = GridDoubleFactory.create(grid);
+        result = GridDoubleFactory.create(new File(Directory, "Rescaled"), g, 0,
+                0, nrows - 1, ncols - 1, hoome);
 //        System.out.println("NoDataValue " + result.getNoDataValue(hoome));
 //        System.out.println("r.getCell(0L, 0L) " + result.getCell(0L, 0L, hoome));
         result.setName(g.getName());
@@ -761,13 +773,14 @@ public class Grids_Processor extends Grids_Object {
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
-                        gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(chunkID);
-                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(chunkID);
+                        gridChunk = g.getGridChunk(chunkID);
+                        resultChunk = result.getGridChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != noDataValue) {
-                                    result.setCell(resultChunk, cellRow, cellCol, min);
+                                    result.setCell(resultChunk, cellRow,
+                                            cellCol, min);
                                 }
                             }
                         }
@@ -786,23 +799,16 @@ public class Grids_Processor extends Grids_Object {
                         ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
-                        gridChunk = (Grids_AbstractGridChunkDouble) g.getGridChunk(chunkID);
-                        resultChunk = (Grids_AbstractGridChunkDouble) result.getGridChunk(chunkID);
+                        gridChunk = g.getGridChunk(chunkID);
+                        resultChunk = result.getGridChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-//                                if (!gridChunk.inChunk(cellRow, cellCol, hoome)) {
-//                                    int debug = 1;
-//                                    System.out.println("!gridChunk.inChunk(cellRow, cellCol) cellRow " + cellRow + ", cellCol " + cellCol);
-//                                }
                                 value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != noDataValue) {
-                                    v = (((value - minGrid) / rangeGrid) * range) + min;
-
-                                    if (v < 0.0d || v > 255.0d) {
-                                        int debug = 1;
-                                    }
-
-                                    result.setCell(resultChunk, cellRow, cellCol, v);
+                                    v = (((value - minGrid)
+                                            / rangeGrid) * range) + min;
+                                    result.setCell(resultChunk, cellRow,
+                                            cellCol, v);
                                 }
                             }
                         }
@@ -830,7 +836,12 @@ public class Grids_Processor extends Grids_Object {
                 result.setName(g.getName() + "_logRescale");
                 ge.checkAndMaybeFreeMemory(hoome);
             } else {
-                System.out.println("Unable to rescale: type " + type + "not recognised. Returning a Grid2DSquareCellDouble of _InputGrid.");
+                try {
+                    throw new Exception("Unable to rescale: type " + type
+                            + "not recognised.");
+                } catch (Exception ex) {
+                    Logger.getLogger(Grids_Processor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         return result;
@@ -844,15 +855,13 @@ public class Grids_Processor extends Grids_Object {
      * "Log" then a Log rescale is done.
      * @param min The minimum value in the rescaled range.
      * @param max The maximum value in the rescaled range.
-     * @TODO Log rescaling implementation is not brilliant and could be
-     * parametrised.
+     * @TODO Improve log rescaling implementation.
      */
     public Grids_GridDouble rescale(
             Grids_GridInt g,
             String type,
             double min,
             double max) {
-        //boolean hoome = false;
         ge.checkAndMaybeFreeMemory();
         ge.getGrids().add(g);
         long nrows = g.getNRows();
@@ -1113,10 +1122,10 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble g,
             Grids_GridDouble g2,
             double weight) {
-            ge.getGrids().add(g);
-            ge.getGrids().add(g2);
-            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
-                    g2.getNCols() - 1L, weight);
+        ge.getGrids().add(g);
+        ge.getGrids().add(g2);
+        addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
+                g2.getNCols() - 1L, weight);
     }
 
     /**
@@ -1136,9 +1145,6 @@ public class Grids_Processor extends Grids_Object {
      * @param endCol the index of the final column from which gridToAdd values
      * are added.
      * @param weight The value gridToAdd values are multiplied by.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble g,
@@ -1148,27 +1154,27 @@ public class Grids_Processor extends Grids_Object {
             long endRow,
             long endCol,
             double weight) {
-            ge.getGrids().add(g);
-            ge.getGrids().add(g2);
-            Grids_Dimensions dimensions = g2.getDimensions();
-            BigDecimal xMin;
-            BigDecimal yMin;
-            BigDecimal cellsize;
-            cellsize = dimensions.getCellsize();
-            xMin = dimensions.getXMin();
-            yMin = dimensions.getYMin();
-            BigDecimal[] dimensionConstraints = new BigDecimal[5];
-            dimensionConstraints[1] = xMin.add(
-                    new BigDecimal(startCol).multiply(cellsize));
-            dimensionConstraints[2] = yMin.add(
-                    new BigDecimal(startRow).multiply(cellsize));
-            dimensionConstraints[3] = xMin.add(
-                    new BigDecimal(endCol - startCol + 1L).multiply(cellsize));
-            dimensionConstraints[4] = yMin.add(
-                    new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
-            addToGrid(g, g2, startRow, startCol, endRow, endCol,
-                    dimensionConstraints, weight);
-            ge.checkAndMaybeFreeMemory();
+        ge.getGrids().add(g);
+        ge.getGrids().add(g2);
+        Grids_Dimensions dimensions = g2.getDimensions();
+        BigDecimal xMin;
+        BigDecimal yMin;
+        BigDecimal cellsize;
+        cellsize = dimensions.getCellsize();
+        xMin = dimensions.getXMin();
+        yMin = dimensions.getYMin();
+        BigDecimal[] dimensionConstraints = new BigDecimal[5];
+        dimensionConstraints[1] = xMin.add(
+                new BigDecimal(startCol).multiply(cellsize));
+        dimensionConstraints[2] = yMin.add(
+                new BigDecimal(startRow).multiply(cellsize));
+        dimensionConstraints[3] = xMin.add(
+                new BigDecimal(endCol - startCol + 1L).multiply(cellsize));
+        dimensionConstraints[4] = yMin.add(
+                new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
+        addToGrid(g, g2, startRow, startCol, endRow, endCol,
+                dimensionConstraints, weight);
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1188,10 +1194,6 @@ public class Grids_Processor extends Grids_Object {
      * are added.
      * @param constraintDimensions
      * @param weight The value gridToAdd values are multiplied by.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown. TODO: Check that reasonable
-     * answers are returned for intersections and aggregations.
      *
      * @todo work needed to handle OutOfMemoryErrors...
      */
@@ -1204,201 +1206,201 @@ public class Grids_Processor extends Grids_Object {
             long endCol,
             BigDecimal[] constraintDimensions,
             double weight) {
-            ge.checkAndMaybeFreeMemory();
-            ge.getGrids().add(g);
-            ge.getGrids().add(g2);
-            long nrows = g.getNRows();
-            long ncols = g.getNCols();
-            double noDataValue = g.getNoDataValue();
-            Grids_Dimensions gDimensions = g.getDimensions();
-            double g2NoDataValue = g2.getNoDataValue();
-            Grids_Dimensions g2Dimensions = g2.getDimensions();
-            Grids_GridDoubleFactory gf;
-            gf = new Grids_GridDoubleFactory(
-                    ge,
-                    ge.getFiles().getGeneratedGridDoubleDir(),
-                    GridChunkDoubleFactory,
-                    DefaultGridChunkDoubleFactory,
-                    g.getChunkNCols(),
-                    g.getChunkNRows());
-            if ((constraintDimensions[1].compareTo(gDimensions.getXMax()) == 1)
-                    || (constraintDimensions[3].compareTo(gDimensions.getXMin()) == -1)
-                    || (constraintDimensions[2].compareTo(gDimensions.getYMax()) == 1)
-                    || (constraintDimensions[4].compareTo(gDimensions.getYMin()) == -1)) {
-                return;
-            }
-            BigDecimal g2Cellsize;
-            BigDecimal gCellsize;
-            BigDecimal g2HalfCellsize;
-            BigDecimal gHalfCellsize;
-            g2Cellsize = g2Dimensions.getCellsize();
-            gCellsize = gDimensions.getCellsize();
-            g2HalfCellsize = g2Dimensions.getHalfCellsize();
-            gHalfCellsize = gDimensions.getHalfCellsize();
-            if (g2Cellsize.compareTo(gCellsize) == -1) {
-                throw new UnsupportedOperationException();
-            } else {
-                // If g2Cellsize is the same as gCellsize g and g2 align
-                if ((g2Cellsize.compareTo(gCellsize) == 0)
-                        && ((g2Dimensions.getXMin().remainder(gCellsize)).compareTo((gDimensions.getXMin().remainder(gCellsize))) == 0)
-                        && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo((gDimensions.getYMin().remainder(gCellsize))) == 0)) {
-                    //println( "Grids Align!" );
-                    double x;
-                    double y;
-                    double value;
-                    long row;
-                    long col;
-                    // TODO: Control precision using xBigDecimal and yBigDecimal
-                    // rather than using x and y.
-                    for (row = startRow; row <= endRow; row++) {
-                        ge.checkAndMaybeFreeMemory();
-                        y = g2.getCellYDouble(row);
-                        for (col = startCol; col <= endCol; col++) {
-                            x = g2.getCellXDouble(col);
-                            value = g2.getCell(row, col);
-                            if (value != g2NoDataValue) {
-                                if (value != 0.0d) {
-                                    g.addToCell(x, y, value * weight);
-                                }
-                            }
-                        }
-                    }
-                    return;
-                } else {
-                    // println("Intersection!!!!");
-                    // Need to intersect
-                    // TODO:
-                    // Clipping gridToAdd might improve matters here.
-                    // Check
-                    Grids_GridDouble tg1;
-                    Grids_GridDouble tg2;
-                    tg1 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
-                    tg2 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
-                    // TODO:
-                    // Check scale and rounding appropriate
-                    int scale = 324;
-                    int roundingMode = BigDecimal.ROUND_HALF_EVEN;
-                    BigDecimal g2CellsizeSquared;
-                    g2CellsizeSquared = g2Cellsize.multiply(g2Cellsize);
-                    double[] bounds;
-                    Grids_2D_ID_long cellID1;
-                    Grids_2D_ID_long cellID2;
-                    Grids_2D_ID_long cellID3;
-                    Grids_2D_ID_long cellID4;
-                    double d1;
-                    double d2;
-                    double d3;
-                    double d4;
-                    double x;
-                    double y;
-                    long row;
-                    long col;
-                    double areaProportion;
-                    double halfCellsize = g.getCellsizeDouble() / 2.0d;
-                    // TODO:
-                    // precision checking and use of BigDecimal?
-                    for (row = 0; row < nrows; row++) {
-                        ge.checkAndMaybeFreeMemory();
-                        for (col = 0; col < ncols; col++) {
-                            bounds = g.getCellBoundsDoubleArray(halfCellsize, row, col);
-                            x = g.getCellXDouble(col);
-                            y = g.getCellYDouble(row);
-                            cellID1 = g2.getCellID(bounds[0], bounds[3]);
-                            cellID2 = g2.getCellID(bounds[2], bounds[3]);
-                            cellID3 = g2.getCellID(bounds[0], bounds[1]);
-                            cellID4 = g2.getCellID(bounds[2], bounds[1]);
-                            d1 = g2.getCell(cellID1.getRow(), cellID1.getCol());
-                            if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
-                                if (d1 != g2NoDataValue) {
-                                    areaProportion = (gCellsize.multiply(gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
-                                    tg1.addToCell(row, col, d1 * areaProportion);
-                                    tg2.addToCell(row, col, areaProportion);
-                                }
-                            } else {
-                                d2 = g2.getCell(cellID2.getRow(), cellID2.getCol());
-                                d3 = g2.getCell(cellID3.getRow(), cellID3.getCol());
-                                d4 = g2.getCell(cellID4.getRow(), cellID4.getCol());
-                                if (!g2.isInGrid(cellID1.getRow(), cellID1.getCol()) && d1 != g2NoDataValue) {
-                                    if (cellID1.equals(cellID2) || cellID1.equals(cellID3)) {
-                                        if (cellID1.equals(cellID2)) {
-                                            areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    g2.getCellYBigDecimal(cellID1).subtract(
-                                                            g2HalfCellsize)).multiply(gCellsize)).divide(
-                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        } else {
-                                            areaProportion = Math.abs(((((g2.getCellXBigDecimal(cellID1).add(
-                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
-                                                    gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        }
-                                    } else {
-                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply((g2.getCellXBigDecimal(cellID1).add(g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(g2CellsizeSquared, scale, roundingMode))).doubleValue());
-                                    }
-                                    tg1.addToCell(row, col, d1 * areaProportion);
-                                    tg2.addToCell(row, col, areaProportion);
-                                }
-                                if (!g2.isInGrid(cellID2) && d2 != g2NoDataValue) {
-                                    if (cellID2.equals(cellID1)) {
-                                        if (cellID2.equals(cellID4)) {
-                                            areaProportion = Math.abs((((BigDecimal.valueOf(bounds[2]).subtract(
-                                                    g2.getCellXBigDecimal(cellID2).subtract(
-                                                            g2HalfCellsize))).multiply(gCellsize)).divide(
-                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        } else {
-                                            areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
-                                                    g2.getCellYBigDecimal(cellID2).subtract(
-                                                            g2HalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
-                                                            g2.getCellXBigDecimal(cellID2).subtract(
-                                                                    g2HalfCellsize))).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        }
-                                        tg1.addToCell(row, col, d2 * areaProportion);
-                                        tg2.addToCell(row, col, areaProportion);
-                                    }
-                                }
-                                if (!g2.isInGrid(cellID3) && d3 != g2NoDataValue) {
-                                    if (!cellID3.equals(cellID1)) {
-                                        if (cellID3.equals(cellID4)) {
-                                            areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
-                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
-                                                    gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        } else {
-                                            areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
-                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((g2.getCellXBigDecimal(cellID3).add(
-                                                    g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
-                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        }
-                                        tg1.addToCell(row, col, d3 * areaProportion);
-                                        tg2.addToCell(row, col, areaProportion);
-                                    }
-                                }
-                                if (!g2.isInGrid(cellID4) && d4 != g2NoDataValue) {
-                                    if (cellID4 != cellID2 && cellID4 != cellID3) {
-                                        areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID4).add(g2HalfCellsize)).subtract(
-                                                BigDecimal.valueOf(bounds[1]))).multiply(
-                                                BigDecimal.valueOf(bounds[2]).subtract(
-                                                        (g2.getCellXBigDecimal(cellID4)).subtract(
-                                                                g2HalfCellsize)))).divide(
-                                                        g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                        tg1.addToCell(row, col, d4 * areaProportion);
-                                        tg2.addToCell(row, col, areaProportion);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // The values are normalised by dividing the aggregate Grid sum by the proportion of cells with grid values.
-                    for (row = 0; row <= nrows; row++) {
-                        ge.checkAndMaybeFreeMemory();
-                        for (col = 0; col <= ncols; col++) {
-                            d1 = tg2.getCell(row, col);
-                            if (!(d1 == 0.0d || d1 == noDataValue)) {
-                                g.addToCell(row, col,
-                                        weight * tg1.getCell(row, col) / d1);
+        ge.checkAndMaybeFreeMemory();
+        ge.getGrids().add(g);
+        ge.getGrids().add(g2);
+        long nrows = g.getNRows();
+        long ncols = g.getNCols();
+        double noDataValue = g.getNoDataValue();
+        Grids_Dimensions gDimensions = g.getDimensions();
+        double g2NoDataValue = g2.getNoDataValue();
+        Grids_Dimensions g2Dimensions = g2.getDimensions();
+        Grids_GridDoubleFactory gf;
+        gf = new Grids_GridDoubleFactory(
+                ge,
+                ge.getFiles().getGeneratedGridDoubleDir(),
+                GridChunkDoubleFactory,
+                DefaultGridChunkDoubleFactory,
+                g.getChunkNCols(),
+                g.getChunkNRows());
+        if ((constraintDimensions[1].compareTo(gDimensions.getXMax()) == 1)
+                || (constraintDimensions[3].compareTo(gDimensions.getXMin()) == -1)
+                || (constraintDimensions[2].compareTo(gDimensions.getYMax()) == 1)
+                || (constraintDimensions[4].compareTo(gDimensions.getYMin()) == -1)) {
+            return;
+        }
+        BigDecimal g2Cellsize;
+        BigDecimal gCellsize;
+        BigDecimal g2HalfCellsize;
+        BigDecimal gHalfCellsize;
+        g2Cellsize = g2Dimensions.getCellsize();
+        gCellsize = gDimensions.getCellsize();
+        g2HalfCellsize = g2Dimensions.getHalfCellsize();
+        gHalfCellsize = gDimensions.getHalfCellsize();
+        if (g2Cellsize.compareTo(gCellsize) == -1) {
+            throw new UnsupportedOperationException();
+        } else {
+            // If g2Cellsize is the same as gCellsize g and g2 align
+            if ((g2Cellsize.compareTo(gCellsize) == 0)
+                    && ((g2Dimensions.getXMin().remainder(gCellsize)).compareTo((gDimensions.getXMin().remainder(gCellsize))) == 0)
+                    && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo((gDimensions.getYMin().remainder(gCellsize))) == 0)) {
+                //println( "Grids Align!" );
+                double x;
+                double y;
+                double value;
+                long row;
+                long col;
+                // TODO: Control precision using xBigDecimal and yBigDecimal
+                // rather than using x and y.
+                for (row = startRow; row <= endRow; row++) {
+                    ge.checkAndMaybeFreeMemory();
+                    y = g2.getCellYDouble(row);
+                    for (col = startCol; col <= endCol; col++) {
+                        x = g2.getCellXDouble(col);
+                        value = g2.getCell(row, col);
+                        if (value != g2NoDataValue) {
+                            if (value != 0.0d) {
+                                g.addToCell(x, y, value * weight);
                             }
                         }
                     }
                 }
+                return;
+            } else {
+                // println("Intersection!!!!");
+                // Need to intersect
+                // TODO:
+                // Clipping gridToAdd might improve matters here.
+                // Check
+                Grids_GridDouble tg1;
+                Grids_GridDouble tg2;
+                tg1 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
+                tg2 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
+                // TODO:
+                // Check scale and rounding appropriate
+                int scale = 324;
+                int roundingMode = BigDecimal.ROUND_HALF_EVEN;
+                BigDecimal g2CellsizeSquared;
+                g2CellsizeSquared = g2Cellsize.multiply(g2Cellsize);
+                double[] bounds;
+                Grids_2D_ID_long cellID1;
+                Grids_2D_ID_long cellID2;
+                Grids_2D_ID_long cellID3;
+                Grids_2D_ID_long cellID4;
+                double d1;
+                double d2;
+                double d3;
+                double d4;
+                double x;
+                double y;
+                long row;
+                long col;
+                double areaProportion;
+                double halfCellsize = g.getCellsizeDouble() / 2.0d;
+                // TODO:
+                // precision checking and use of BigDecimal?
+                for (row = 0; row < nrows; row++) {
+                    ge.checkAndMaybeFreeMemory();
+                    for (col = 0; col < ncols; col++) {
+                        bounds = g.getCellBoundsDoubleArray(halfCellsize, row, col);
+                        x = g.getCellXDouble(col);
+                        y = g.getCellYDouble(row);
+                        cellID1 = g2.getCellID(bounds[0], bounds[3]);
+                        cellID2 = g2.getCellID(bounds[2], bounds[3]);
+                        cellID3 = g2.getCellID(bounds[0], bounds[1]);
+                        cellID4 = g2.getCellID(bounds[2], bounds[1]);
+                        d1 = g2.getCell(cellID1.getRow(), cellID1.getCol());
+                        if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
+                            if (d1 != g2NoDataValue) {
+                                areaProportion = (gCellsize.multiply(gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
+                                tg1.addToCell(row, col, d1 * areaProportion);
+                                tg2.addToCell(row, col, areaProportion);
+                            }
+                        } else {
+                            d2 = g2.getCell(cellID2.getRow(), cellID2.getCol());
+                            d3 = g2.getCell(cellID3.getRow(), cellID3.getCol());
+                            d4 = g2.getCell(cellID4.getRow(), cellID4.getCol());
+                            if (!g2.isInGrid(cellID1.getRow(), cellID1.getCol()) && d1 != g2NoDataValue) {
+                                if (cellID1.equals(cellID2) || cellID1.equals(cellID3)) {
+                                    if (cellID1.equals(cellID2)) {
+                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
+                                                g2.getCellYBigDecimal(cellID1).subtract(
+                                                        g2HalfCellsize)).multiply(gCellsize)).divide(
+                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    } else {
+                                        areaProportion = Math.abs(((((g2.getCellXBigDecimal(cellID1).add(
+                                                g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
+                                                gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    }
+                                } else {
+                                    areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply((g2.getCellXBigDecimal(cellID1).add(g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(g2CellsizeSquared, scale, roundingMode))).doubleValue());
+                                }
+                                tg1.addToCell(row, col, d1 * areaProportion);
+                                tg2.addToCell(row, col, areaProportion);
+                            }
+                            if (!g2.isInGrid(cellID2) && d2 != g2NoDataValue) {
+                                if (cellID2.equals(cellID1)) {
+                                    if (cellID2.equals(cellID4)) {
+                                        areaProportion = Math.abs((((BigDecimal.valueOf(bounds[2]).subtract(
+                                                g2.getCellXBigDecimal(cellID2).subtract(
+                                                        g2HalfCellsize))).multiply(gCellsize)).divide(
+                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    } else {
+                                        areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
+                                                g2.getCellYBigDecimal(cellID2).subtract(
+                                                        g2HalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
+                                                        g2.getCellXBigDecimal(cellID2).subtract(
+                                                                g2HalfCellsize))).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    }
+                                    tg1.addToCell(row, col, d2 * areaProportion);
+                                    tg2.addToCell(row, col, areaProportion);
+                                }
+                            }
+                            if (!g2.isInGrid(cellID3) && d3 != g2NoDataValue) {
+                                if (!cellID3.equals(cellID1)) {
+                                    if (cellID3.equals(cellID4)) {
+                                        areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
+                                                g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
+                                                gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    } else {
+                                        areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
+                                                g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((g2.getCellXBigDecimal(cellID3).add(
+                                                g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
+                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    }
+                                    tg1.addToCell(row, col, d3 * areaProportion);
+                                    tg2.addToCell(row, col, areaProportion);
+                                }
+                            }
+                            if (!g2.isInGrid(cellID4) && d4 != g2NoDataValue) {
+                                if (cellID4 != cellID2 && cellID4 != cellID3) {
+                                    areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID4).add(g2HalfCellsize)).subtract(
+                                            BigDecimal.valueOf(bounds[1]))).multiply(
+                                            BigDecimal.valueOf(bounds[2]).subtract(
+                                                    (g2.getCellXBigDecimal(cellID4)).subtract(
+                                                            g2HalfCellsize)))).divide(
+                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                    tg1.addToCell(row, col, d4 * areaProportion);
+                                    tg2.addToCell(row, col, areaProportion);
+                                }
+                            }
+                        }
+                    }
+                }
+                // The values are normalised by dividing the aggregate Grid sum by the proportion of cells with grid values.
+                for (row = 0; row <= nrows; row++) {
+                    ge.checkAndMaybeFreeMemory();
+                    for (col = 0; col <= ncols; col++) {
+                        d1 = tg2.getCell(row, col);
+                        if (!(d1 == 0.0d || d1 == noDataValue)) {
+                            g.addToCell(row, col,
+                                    weight * tg1.getCell(row, col) / d1);
+                        }
+                    }
+                }
             }
-            ge.checkAndMaybeFreeMemory();
+        }
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1407,146 +1409,142 @@ public class Grids_Processor extends Grids_Object {
      * @param grid the Grids_GridDouble to be processed
      * @param file the file contining values to be added.
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
-     * )
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
             Grids_GridDouble grid,
             File file,
             String type) {
-            ge.getGrids().add(grid);
-            if (type.equalsIgnoreCase("xyv")) {
-                try {
-                    StreamTokenizer st;
-                    st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
-                    st.eolIsSignificant(false);
-                    st.parseNumbers();
-                    st.whitespaceChars(',', ',');
-                    st.wordChars('"', '"');
-                    int tokenType = st.nextToken();
-                    String alternator = "x";
-                    double x = 0.0d;
-                    double y = 0.0d;
-                    double value = 0.0d;
-                    while (tokenType != StreamTokenizer.TT_EOF) {
-                        switch (tokenType) {
-                            case StreamTokenizer.TT_NUMBER:
-                                switch (alternator) {
-                                    case "x":
-                                        x = st.nval;
-                                        alternator = "y";
-                                        break;
-                                    case "y":
-                                        y = st.nval;
-                                        alternator = "value";
-                                        break;
-                                    default:
-                                        grid.addToCell(x, y, st.nval);
-                                        alternator = "x";
-                                        break;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        tokenType = st.nextToken();
+        ge.getGrids().add(grid);
+        if (type.equalsIgnoreCase("xyv")) {
+            try {
+                StreamTokenizer st;
+                st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                st.eolIsSignificant(false);
+                st.parseNumbers();
+                st.whitespaceChars(',', ',');
+                st.wordChars('"', '"');
+                int tokenType = st.nextToken();
+                String alternator = "x";
+                double x = 0.0d;
+                double y = 0.0d;
+                double value = 0.0d;
+                while (tokenType != StreamTokenizer.TT_EOF) {
+                    switch (tokenType) {
+                        case StreamTokenizer.TT_NUMBER:
+                            switch (alternator) {
+                                case "x":
+                                    x = st.nval;
+                                    alternator = "y";
+                                    break;
+                                case "y":
+                                    y = st.nval;
+                                    alternator = "value";
+                                    break;
+                                default:
+                                    grid.addToCell(x, y, st.nval);
+                                    alternator = "x";
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                } catch (java.io.IOException e) {
-                    e.printStackTrace(System.err);
+                    tokenType = st.nextToken();
                 }
+            } catch (java.io.IOException e) {
+                e.printStackTrace(System.err);
             }
-            if (type.equalsIgnoreCase("xy")) {
-                try {
-                    StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
-                    st.eolIsSignificant(false);
-                    st.parseNumbers();
-                    st.whitespaceChars(',', ',');
-                    st.wordChars('"', '"');
-                    int tokenType = st.nextToken();
-                    String alternator = "x";
-                    double x = 0.0d;
-                    double y;
-                    while (tokenType != StreamTokenizer.TT_EOF) {
-                        switch (tokenType) {
-                            case StreamTokenizer.TT_NUMBER:
+        }
+        if (type.equalsIgnoreCase("xy")) {
+            try {
+                StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                st.eolIsSignificant(false);
+                st.parseNumbers();
+                st.whitespaceChars(',', ',');
+                st.wordChars('"', '"');
+                int tokenType = st.nextToken();
+                String alternator = "x";
+                double x = 0.0d;
+                double y;
+                while (tokenType != StreamTokenizer.TT_EOF) {
+                    switch (tokenType) {
+                        case StreamTokenizer.TT_NUMBER:
+                            if (alternator.equals("x")) {
+                                x = st.nval;
+                                alternator = "y";
+                            } else {
+                                y = st.nval;
+                                grid.addToCell(x, y, 1.0d);
+                                alternator = "x";
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    tokenType = st.nextToken();
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+        if (type.equalsIgnoreCase("idxy")) {
+            try {
+                StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                st.eolIsSignificant(false);
+                st.parseNumbers();
+                st.ordinaryChar('e');
+                st.ordinaryChar('d');
+                st.ordinaryChar('E');
+                st.ordinaryChar('D');
+                int tokenType = st.nextToken();
+                int nextTokenType;
+                String alternator = "id";
+                double x = 0.0d;
+                double y;
+                while (tokenType != StreamTokenizer.TT_EOF) {
+                    switch (tokenType) {
+                        case StreamTokenizer.TT_NUMBER:
+                            if (alternator.equals("id")) {
+                                //id = (int) st.nval;
+                                alternator = "x";
+                            } else {
                                 if (alternator.equals("x")) {
                                     x = st.nval;
+                                    nextTokenType = st.nextToken();
+                                    if (nextTokenType != StreamTokenizer.TT_NUMBER) {
+                                        st.nextToken();
+                                        st.nextToken();
+                                        x = x * Math.pow(10.0, st.nval);
+                                    } else {
+                                        st.pushBack();
+                                    }
                                     alternator = "y";
                                 } else {
                                     y = st.nval;
-                                    grid.addToCell(x, y, 1.0d);
-                                    alternator = "x";
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        tokenType = st.nextToken();
-                    }
-                } catch (java.io.IOException e) {
-                    e.printStackTrace(System.err);
-                }
-            }
-            if (type.equalsIgnoreCase("idxy")) {
-                try {
-                    StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
-                    st.eolIsSignificant(false);
-                    st.parseNumbers();
-                    st.ordinaryChar('e');
-                    st.ordinaryChar('d');
-                    st.ordinaryChar('E');
-                    st.ordinaryChar('D');
-                    int tokenType = st.nextToken();
-                    int nextTokenType;
-                    String alternator = "id";
-                    double x = 0.0d;
-                    double y;
-                    while (tokenType != StreamTokenizer.TT_EOF) {
-                        switch (tokenType) {
-                            case StreamTokenizer.TT_NUMBER:
-                                if (alternator.equals("id")) {
-                                    //id = (int) st.nval;
-                                    alternator = "x";
-                                } else {
-                                    if (alternator.equals("x")) {
-                                        x = st.nval;
-                                        nextTokenType = st.nextToken();
-                                        if (nextTokenType != StreamTokenizer.TT_NUMBER) {
-                                            st.nextToken();
-                                            st.nextToken();
-                                            x = x * Math.pow(10.0, st.nval);
-                                        } else {
-                                            st.pushBack();
-                                        }
-                                        alternator = "y";
+                                    nextTokenType = st.nextToken();
+                                    if (nextTokenType != StreamTokenizer.TT_NUMBER) {
+                                        st.nextToken();
+                                        st.nextToken();
+                                        y = y * Math.pow(10.0, st.nval);
                                     } else {
-                                        y = st.nval;
-                                        nextTokenType = st.nextToken();
-                                        if (nextTokenType != StreamTokenizer.TT_NUMBER) {
-                                            st.nextToken();
-                                            st.nextToken();
-                                            y = y * Math.pow(10.0, st.nval);
-                                        } else {
-                                            st.pushBack();
-                                        }
-                                        alternator = "id";
-                                        //println( " x, y = " + x + ", " + y );
-                                        grid.addToCell(x, y, 1.0d);
+                                        st.pushBack();
                                     }
+                                    alternator = "id";
+                                    //println( " x, y = " + x + ", " + y );
+                                    grid.addToCell(x, y, 1.0d);
                                 }
-                                break;
-                            default:
-                                break;
-                        }
-                        tokenType = st.nextToken();
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                } catch (java.io.IOException e) {
-                    e.printStackTrace(System.err);
+                    tokenType = st.nextToken();
                 }
+            } catch (java.io.IOException e) {
+                e.printStackTrace(System.err);
             }
-            ge.checkAndMaybeFreeMemory();
+        }
+        ge.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -3002,7 +3000,6 @@ public class Grids_Processor extends Grids_Object {
      * @param ie
      * @param imageTypes
      * @param eage
-     * @param hoome
      * @throws java.io.IOException
      */
     public void output(
@@ -3010,49 +3007,34 @@ public class Grids_Processor extends Grids_Object {
             File outputDirectory,
             Grids_ImageExporter ie,
             String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage,
-            boolean hoome)
+            Grids_ESRIAsciiGridExporter eage)
             throws IOException {
-        try {
-            System.out.println("Output " + grid.toString());
-            if (ie == null) {
-                ie = new Grids_ImageExporter(ge);
-            }
-            if (imageTypes == null) {
-                imageTypes = new String[1];
-                imageTypes[0] = "PNG";
-            }
-            if (eage == null) {
-                eage = new Grids_ESRIAsciiGridExporter(ge);
-            }
-            //int _StringLength = 1000;
-            String dotASC = ".asc";
-            String noDataValue = "-9999.0";
-            String s;
-            File file;
-            int i;
-            int l = imageTypes.length;
-            for (i = 0; i < l; i++) {
-                s = grid.getName() + "." + imageTypes[i];
-                file = ge.initFile(outputDirectory, s);
-                ie.toGreyScaleImage(grid, this, file, imageTypes[i]);
-            }
-            s = grid.getName() + dotASC;
-            file = ge.initFile(outputDirectory, s);
-            eage.toAsciiFile(grid, file, noDataValue);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(grid, hoome) < 1) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                output(grid, outputDirectory, ie, imageTypes, eage,
-                        hoome);
-            } else {
-                throw e;
-            }
+        System.out.println("Output " + grid.toString());
+        if (ie == null) {
+            ie = new Grids_ImageExporter(ge);
         }
+        if (imageTypes == null) {
+            imageTypes = new String[1];
+            imageTypes[0] = "PNG";
+        }
+        if (eage == null) {
+            eage = new Grids_ESRIAsciiGridExporter(ge);
+        }
+        //int _StringLength = 1000;
+        String dotASC = ".asc";
+        String noDataValue = "-9999.0";
+        String s;
+        File file;
+        int i;
+        int l = imageTypes.length;
+        for (i = 0; i < l; i++) {
+            s = grid.getName() + "." + imageTypes[i];
+            file = ge.initFile(outputDirectory, s);
+            ie.toGreyScaleImage(grid, this, file, imageTypes[i]);
+        }
+        s = grid.getName() + dotASC;
+        file = ge.initFile(outputDirectory, s);
+        eage.toAsciiFile(grid, file, noDataValue);
     }
 
     /**
@@ -3087,9 +3069,7 @@ public class Grids_Processor extends Grids_Object {
             int l = imageTypes.length;
             for (i = 0; i < l; i++) {
                 string = grid.getName() + string_DOT + imageTypes[i];
-                file = ge.initFile(
-                        outputDirectory,
-                        string);
+                file = ge.initFile(outputDirectory, string);
                 ie.toGreyScaleImage(grid, this, file, imageTypes[i]);
             }
         } catch (OutOfMemoryError e) {

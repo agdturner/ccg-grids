@@ -100,7 +100,7 @@ public class Grids_GenerateRoofData
 //        long _ColWithRidgeProportion;
 //        long _ColWithRidge;
 //        // ---------------------------
-//        // Because we are rescaling in createGableRoofs and _CreateHippedRoofs and the roofs are non complex this is arbitrary so long as it is a positive non-zero
+//        // Because we are rescaling in createGableRoofs and createHippedRoofs and the roofs are non complex this is arbitrary so long as it is a positive non-zero
 //        double _RowRidgeHeight = 1.0d;
 //        double _ColRidgeHeight = 1.0d;
 //        // ---------------------------
@@ -127,7 +127,7 @@ public class Grids_GenerateRoofData
 //                    for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 2; _ColWithRidgeProportion++) {
 //                        //for (_ColWithRidgeProportion = 2; _ColWithRidgeProportion <= 8; _ColWithRidgeProportion *= 2) {
 //                        _ColWithRidge = ncols / _ColWithRidgeProportion;
-////                        // Because we are rescaling in createGableRoofs and _CreateHippedRoofs and the roofs are non complex we do not need these loops
+////                        // Because we are rescaling in createGableRoofs and createHippedRoofs and the roofs are non complex we do not need these loops
 ////                        for ( _RowRidgeHeight = 2; _RowRidgeHeight <= 8; _RowRidgeHeight *= 2 ) {
 ////                            for ( _ColRidgeHeight = 2; _ColRidgeHeight <= 8; _ColRidgeHeight *= 2 ) {
 //                        createGableRoofs(
@@ -154,7 +154,7 @@ public class Grids_GenerateRoofData
 //                                    //_ColEndRidgeProportion = _ColStartRidgeProportion;
 //                                    for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 4; _ColEndRidgeProportion++) {
 //                                        _ColEndRidge = ncols * (_ColEndRidgeProportion - 1) / _ColEndRidgeProportion;
-//                                        _CreateHippedRoofs(
+//                                        createHippedRoofs(
 //                                                _ResizedGrid2DSquareCellDouble,
 //                                                nrows,
 //                                                ncols,
@@ -291,10 +291,7 @@ public class Grids_GenerateRoofData
     }
 
     /**
-     * Add Row Ridge
-     * <a name="_AddRowRidge(Grid2DSquareCellDouble,double,long,long,long,double,double,boolean,long,long,double)"></a>
-     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#addRowRidge
-     * This method adds a ridge along a row for both hipped and gabled roofs
+     * Adds a ridge along a row for both hipped and gabled roofs.
      *
      * @param g .This is the grid that is to be created.
      * @param rowRidgeHeight .This is the height of the ridge along a row
@@ -305,7 +302,6 @@ public class Grids_GenerateRoofData
      * between the ridge and the left edge of the roof.
      * @param topRowRidgeTanAngle .This is the ridge height over the distance
      * between the ridge and the right edge of the roof.
-     * @param hoome .This is to handle the out of memory error.
      *
      */
     public void addRowRidge(
@@ -315,26 +311,24 @@ public class Grids_GenerateRoofData
             long nrows,
             long rowWithRidge,
             double bottomRowRidgeTanAngle,
-            double topRowRidgeTanAngle,
-            boolean hoome) {
+            double topRowRidgeTanAngle) {
         long row;
         long col;
-        double _HeightToAdd;
+        double h;
         //for (row = 1; row <= _RowWithRidge; row++) {
         for (row = 0; row < rowWithRidge; row++) {
             for (col = 0; col < ncols; col++) {
-                _HeightToAdd = bottomRowRidgeTanAngle * row;
-                //_Grid2DSquareCellDouble.setCell(row - 1, col, _HeightToAdd, HandleOutOfMemoryError);
-                g.setCell(row, col, _HeightToAdd);
+                h = bottomRowRidgeTanAngle * row;
+                g.setCell(row, col, h);
             }
         }
         //for (row = nrows - 1; row >= _RowWithRidge; row--) {
         for (row = nrows - 1; row > rowWithRidge; row--) {
             for (col = 0; col < ncols; col++) {
-                //_HeightToAdd = _TopRowRidgeTanAngle * (nrows - row);
-                _HeightToAdd = topRowRidgeTanAngle * ((nrows - 1) - row);
+                //h = _TopRowRidgeTanAngle * (nrows - row);
+                h = topRowRidgeTanAngle * ((nrows - 1) - row);
                 //System.out.println("" + _HeightToAdd );
-                g.setCell(row, col, _HeightToAdd);
+                g.setCell(row, col, h);
             }
         }
         for (col = 0; col < ncols; col++) {
@@ -343,10 +337,8 @@ public class Grids_GenerateRoofData
     }
 
     /**
-     * <a name="_AddColRidge(Grid2DSquareCellDouble,double,long,long,long,double,double,boolean,long,long,double)"></a>
-     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#_AddColRidge
-     * This method adds a ridge along a column for both hipped and gabled roofs.
-     * Add col ridge
+     * Adds a ridge along a column for both hipped and gabled roofs. Add col
+     * ridge
      *
      * @param g .This is the grid that is to be created.
      * @param colRidgeHeight .This is the height of the ridge along a column
@@ -359,31 +351,29 @@ public class Grids_GenerateRoofData
      * between the ridge and the right edge of the roof.
      * @param hoome .This is to handle the out of memory error.
      */
-    public void _AddColRidge(
+    public void addColRidge(
             Grids_GridDouble g,
             double colRidgeHeight,
             long nrows,
             long ncols,
             long colWithRidge,
             double leftColRidgeTanAngle,
-            double rightColRidgeTanAngle,
-            boolean hoome) {
+            double rightColRidgeTanAngle) {
         long col;
         long row;
-        double _HeightToAdd;
+        double h;
         for (row = 0; row < nrows; row++) {
             //for (col = 1; col <= _ColWithRidge; col++) {
             for (col = 0; col < colWithRidge; col++) {
-                _HeightToAdd = leftColRidgeTanAngle * col;
-                //_Grid2DSquareCellDouble.setCell(row, col - 1, _HeightToAdd, HandleOutOfMemoryError);
-                g.setCell(row, col, _HeightToAdd);
+                h = leftColRidgeTanAngle * col;
+                g.setCell(row, col, h);
             }
         }
         for (row = 0; row < nrows; row++) {
             for (col = ncols - 1; col > colWithRidge; col--) {
                 //_HeightToAdd = _RightColRidgeTanAngle * (ncols - col);
-                _HeightToAdd = rightColRidgeTanAngle * ((ncols - 1) - col);
-                g.setCell(row, col, _HeightToAdd);
+                h = rightColRidgeTanAngle * ((ncols - 1) - col);
+                g.setCell(row, col, h);
             }
         }
         for (row = 0; row < nrows; row++) {
@@ -392,11 +382,8 @@ public class Grids_GenerateRoofData
     }
 
     /**
-     * <a name="_CreateHippedRoofs(BigDecimal[],long,long,long,double,long,long,long,double,long,long)"></a>
-     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#_CreateHippedRoofs
-     * file:///C:/Work/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#_CreateHippedRoofs
      * As
-     * <code>_CreateHippedRoofs(long,long,long,double,long,long,long,double,long,long)</code>
+     * <code>createHippedRoofs(long,long,long,double,long,long,long,double,long,long)</code>
      * except with Resize and Rescale Output to fit _Dimensions
      *
      * @param rg .This is to output the resized grid
@@ -417,7 +404,7 @@ public class Grids_GenerateRoofData
      * ridge along a column
      * @throws java.io.IOException
      */
-    public void _CreateHippedRoofs(
+    public void createHippedRoofs(
             Grids_GridDouble rg,
             long nrows,
             long ncols,
@@ -433,16 +420,25 @@ public class Grids_GenerateRoofData
             throws IOException {
         double heightToAdd;
         // For row ridge hips
-        double bottomRowRidgeTanAngle = rowRidgeHeight / (double) (rowWithRidge - halfCellsize);
-        double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - halfCellsize);
-        double colStartRidgeTanAngle = rowRidgeHeight / (double) (colStartRidge - halfCellsize);
-        double colEndRidgeTanAngle = rowRidgeHeight / (double) ((ncols - colEndRidge) - halfCellsize);
+        double bottomRowRidgeTanAngle = rowRidgeHeight
+                / (double) (rowWithRidge - halfCellsize);
+        double topRowRidgeTanAngle = rowRidgeHeight
+                / (double) ((nrows - rowWithRidge) - halfCellsize);
+        double colStartRidgeTanAngle = rowRidgeHeight
+                / (double) (colStartRidge - halfCellsize);
+        double colEndRidgeTanAngle = rowRidgeHeight
+                / (double) ((ncols - colEndRidge) - halfCellsize);
         // For col ridge hips
-        double leftColRidgeTanAngle = colRidgeHeight / (double) (colWithRidge - halfCellsize);
-        double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
-        double rowStartRidgeTanAngle = colRidgeHeight / (double) (rowStartRidge - halfCellsize);
-        double rowEndRidgeTanAngle = colRidgeHeight / (double) ((nrows - rowEndRidge) - halfCellsize);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        double leftColRidgeTanAngle = colRidgeHeight
+                / (double) (colWithRidge - halfCellsize);
+        double rightColRidgeTanAngle = colRidgeHeight
+                / (double) ((ncols - colWithRidge) - halfCellsize);
+        double rowStartRidgeTanAngle = colRidgeHeight
+                / (double) (rowStartRidge - halfCellsize);
+        double rowEndRidgeTanAngle = colRidgeHeight
+                / (double) ((nrows - rowEndRidge) - halfCellsize);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(
+                nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -452,19 +448,12 @@ public class Grids_GenerateRoofData
             }
         }
         // Add row ridge
-        addRowRidge(g,
-                rowRidgeHeight,
-                ncols,
-                nrows,
-                rowWithRidge,
-                bottomRowRidgeTanAngle,
-                topRowRidgeTanAngle,
-                HandleOutOfMemoryError);
+        addRowRidge(g, rowRidgeHeight, ncols, nrows, rowWithRidge,
+                bottomRowRidgeTanAngle, topRowRidgeTanAngle);
         // Add one hipped end
         for (row = 0; row < nrows; row++) {
             for (col = 1; col <= colStartRidge; col++) {
-                heightToAdd = Math.min(
-                        g.getCell(row, col - 1),
+                heightToAdd = Math.min(g.getCell(row, col - 1),
                         colStartRidgeTanAngle * col);
                 g.setCell(row, col - 1, heightToAdd);
             }
@@ -480,13 +469,8 @@ public class Grids_GenerateRoofData
         g.setName("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge + "_" + colStartRidge
                 + "_" + colEndRidge);
-        resizeRescaleOutput(rg,
-                g,
-                Directory,
-                ImageExporter,
-                ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+        resizeRescaleOutput(rg, g, Directory, ImageExporter, ImageTypes,
+                ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
@@ -494,14 +478,8 @@ public class Grids_GenerateRoofData
             }
         }
         // Add col ridge
-        _AddColRidge(g,
-                colRidgeHeight,
-                nrows,
-                ncols,
-                colWithRidge,
-                leftColRidgeTanAngle,
-                rightColRidgeTanAngle,
-                HandleOutOfMemoryError);
+        addColRidge(g, colRidgeHeight, nrows, ncols, colWithRidge,
+                leftColRidgeTanAngle, rightColRidgeTanAngle);
         // Add one hipped end
         for (row = 1; row <= rowStartRidge; row++) {
             for (col = 0; col < ncols; col++) {
@@ -524,15 +502,14 @@ public class Grids_GenerateRoofData
                 Directory,
                 ImageExporter,
                 ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+                ESRIAsciiGridExporter);
     }
 
     /**
      *
      * <a name="_CreateHippedRoofs(long,long,long,double,long,long,long,double,long,long)"></a>
-     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#_CreateHippedRoofs
-     * file:///C:/Work/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#_CreateHippedRoofs
+     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#createHippedRoofs
+     * file:///C:/Work/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#createHippedRoofs
      *
      * @param nrows .This is the number of rows in the grid
      * @param ncols .This is the number of columns in the grid
@@ -585,25 +562,21 @@ public class Grids_GenerateRoofData
             }
         }
         // Add row ridge
-        addRowRidge(g,
-                rowRidgeHeight,
-                ncols,
-                nrows,
-                rowWithRidge,
-                bottomRowRidgeTanAngle,
-                topRowRidgeTanAngle,
-                HandleOutOfMemoryError);
+        addRowRidge(g, rowRidgeHeight, ncols, nrows, rowWithRidge,
+                bottomRowRidgeTanAngle, topRowRidgeTanAngle);
         // Add one hipped end
         for (row = 0; row < nrows; row++) {
             for (col = 0; col <= colStartRidge; col++) {
-                heightToAdd = Math.min(g.getCell(row, col), colStartRidgeTanAngle * col);
+                heightToAdd = Math.min(g.getCell(row, col),
+                        colStartRidgeTanAngle * col);
                 g.setCell(row, col, heightToAdd);
             }
         }
         // Add other hipped end
         for (row = 0; row < nrows; row++) {
             for (col = ncols - 1; col >= colEndRidge; col--) {
-                heightToAdd = Math.min(g.getCell(row, col), colEndRidgeTanAngle * (ncols - col));
+                heightToAdd = Math.min(g.getCell(row, col),
+                        colEndRidgeTanAngle * (ncols - col));
                 g.setCell(row, col, heightToAdd);
             }
         }
@@ -615,8 +588,7 @@ public class Grids_GenerateRoofData
                 Directory,
                 ImageExporter,
                 ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+                ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
@@ -624,25 +596,21 @@ public class Grids_GenerateRoofData
             }
         }
         // Add col ridge
-        _AddColRidge(g,
-                colRidgeHeight,
-                nrows,
-                ncols,
-                colWithRidge,
-                leftColRidgeTanAngle,
-                rightColRidgeTanAngle,
-                HandleOutOfMemoryError);
+        addColRidge(g, colRidgeHeight, nrows, ncols, colWithRidge,
+                leftColRidgeTanAngle, rightColRidgeTanAngle);
         // Add one hipped end
         for (row = 0; row <= rowStartRidge; row++) {
             for (col = 0; col < ncols; col++) {
-                heightToAdd = Math.min(g.getCell(row, col), rowStartRidgeTanAngle * row);
+                heightToAdd = Math.min(g.getCell(row, col),
+                        rowStartRidgeTanAngle * row);
                 g.setCell(row, col, heightToAdd);
             }
         }
         // Add other hipped end
         for (row = nrows - 1; row >= rowEndRidge; row--) {
             for (col = 0; col < ncols; col++) {
-                heightToAdd = Math.min(g.getCell(row, col), rowEndRidgeTanAngle * (nrows - row));
+                heightToAdd = Math.min(g.getCell(row, col),
+                        rowEndRidgeTanAngle * (nrows - row));
                 g.setCell(row, col, heightToAdd);
             }
         }
@@ -654,15 +622,12 @@ public class Grids_GenerateRoofData
                 Directory,
                 ImageExporter,
                 ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+                ESRIAsciiGridExporter);
     }
 
     /**
-     * <a name="_CreateGableRoofs(Grid2DSquareCellDouble,long,long,double,long,long,double,double)"></a>
- http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#createGableRoofs
- This method is like the other createGableRoofs method except it does the
- conversion to a standard dimension and rescales values from 1 to 10.0d
+     * Like the other createGableRoofs method except it does the conversion to a
+     * standard dimension and rescales values from 1 to 10.0d
      *
      * @param rg. This is to output the resized grid
      * @param nrows .This is the number of rows in the grid
@@ -700,12 +665,11 @@ public class Grids_GenerateRoofData
         }
         // Add row ridge
         addRowRidge(g, rowRidgeHeight, ncols, nrows, rowWithRidge,
-                bottomRowRidgeTanAngle, topRowRidgeTanAngle,
-                HandleOutOfMemoryError);
+                bottomRowRidgeTanAngle, topRowRidgeTanAngle);
         g.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge);
         resizeRescaleOutput(rg, g, Directory, ImageExporter, ImageTypes,
-                ESRIAsciiGridExporter, HandleOutOfMemoryError);
+                ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
@@ -713,92 +677,54 @@ public class Grids_GenerateRoofData
             }
         }
         // Add col ridge
-        _AddColRidge(g,
-                colRidgeHeight,
-                nrows,
-                ncols,
-                colWithRidge,
-                leftColRidgeTanAngle,
-                rightColRidgeTanAngle,
-                HandleOutOfMemoryError);
+        addColRidge(g, colRidgeHeight, nrows, ncols, colWithRidge,
+                leftColRidgeTanAngle, rightColRidgeTanAngle);
         g.setName("GableColRidgedRoof_" + nrows + "_" + ncols + "_"
                 + colRidgeHeight + "_" + colWithRidge);
         resizeRescaleOutput(rg, g, Directory, ImageExporter, ImageTypes,
-                ESRIAsciiGridExporter, HandleOutOfMemoryError);
+                ESRIAsciiGridExporter);
     }
 
     /**
      * This method resizes the grid and rescales the values to between 1 and 10.
      *
-     * @param resizedGrid2DSquareCellDouble This is the resized grid.
+     * @param rg This is the resized grid.
      * @param g This is the original grid.
      * @param outputDirectory This is the output directory of the resized and
      * rescaled grid
      * @param ie .
      * @param imageTypes This is the type of the output image.
      * @param eage .
-     * @param hoome This is to handle out of memory error.
      * @throws java.io.IOException
      */
     public void resizeRescaleOutput(
-            Grids_GridDouble resizedGrid2DSquareCellDouble,
+            Grids_GridDouble rg,
             Grids_GridDouble g,
             File outputDirectory,
             Grids_ImageExporter ie,
             String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage,
-            boolean hoome)
+            Grids_ESRIAsciiGridExporter eage)
             throws IOException {
-        try {
-            // Resize
-            resize(resizedGrid2DSquareCellDouble, g, hoome);
-//            // Try aggregation
-//            Grid2DSquareCellDouble _ResizedGrid2DSquareCellDouble = this.aggregate(
-//                    _Grid2DSquareCellDouble,
-//                    "SUM",
-//                    _Dimensions,
-//                    this.GridDoubleFactory,
-//                    HandleOutOfMemoryError);
-//            // If not aggregation, then disaggregation
-//            if (_ResizedGrid2DSquareCellDouble == null) {
-//                _ResizedGrid2DSquareCellDouble = disaggregate(
-//                        _Dimensions,
-//                        _Grid2DSquareCellDouble,
-//                        this.GridDoubleFactory,
-//                        HandleOutOfMemoryError);
-//            }
-            ge.getGrids().add(resizedGrid2DSquareCellDouble);
-            // Rescale
-            Grids_GridDouble ag = rescale(resizedGrid2DSquareCellDouble, null,
-                    1.0d, 10.0d);
-            ge.getGrids().add(ag);
-            ag.setName(g.getName() + "ResizedRescaled");
-            output(ag, Directory, ie, imageTypes, eage, hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                ge.swapChunks_Account(hoome);
-                ge.initMemoryReserve();
-                resizeRescaleOutput(resizedGrid2DSquareCellDouble, g, 
-                        outputDirectory, ie, imageTypes, eage, hoome);
-            } else {
-                throw e;
-            }
-        }
+        // Resize
+        resize(rg, g);
+        ge.getGrids().add(rg);
+        // Rescale
+        Grids_GridDouble ag = rescale(rg, null, 1.0d, 10.0d);
+        ge.getGrids().add(ag);
+        ag.setName(g.getName() + "ResizedRescaled");
+        output(ag, Directory, ie, imageTypes, eage);
     }
 
     /**
-     * <a name="_CreateGableRoofs(long,long,double,long,long,double,double)"></a>
- http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#createGableRoofs
- This method is used to create gabled roof using the following parameters
+     * Used to create synthetic gabled roof data.
      *
-     * @param nrows .This is the number of rows in the grid
-     * @param ncols .This is the number of cols in the grid
-     * @param halfCellsize .This is to divide the size of the cell by 2
-     * @param rowWithRidge .This is the row that contains the ridge
-     * @param colWithRidge .This is the column that contains the ridge
-     * @param rowRidgeHeight .This is the height of the row ridge
-     * @param colRidgeHeight .This is the height of the column ridge
+     * @param nrows This is the number of rows in the grid.
+     * @param ncols This is the number of cols in the grid.
+     * @param halfCellsize This is to divide the size of the cell by 2.
+     * @param rowWithRidge This is the row that contains the ridge.
+     * @param colWithRidge This is the column that contains the ridge.
+     * @param rowRidgeHeight This is the height of the row ridge.
+     * @param colRidgeHeight This is the height of the column ridge.
      * @throws java.io.IOException
      */
     public void createGableRoofs(
@@ -810,12 +736,17 @@ public class Grids_GenerateRoofData
             double rowRidgeHeight,
             double colRidgeHeight)
             throws IOException {
-        double heightToAdd;
-        double bottomRowRidgeTanAngle = rowRidgeHeight / (double) (rowWithRidge - halfCellsize);
-        double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - halfCellsize);
-        double leftColRidgeTanAngle = colRidgeHeight / (double) (colWithRidge - halfCellsize);
-        double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        //double heightToAdd;
+        double bottomRowRidgeTanAngle = rowRidgeHeight
+                / (double) (rowWithRidge - halfCellsize);
+        double topRowRidgeTanAngle = rowRidgeHeight
+                / (double) ((nrows - rowWithRidge) - halfCellsize);
+        double leftColRidgeTanAngle = colRidgeHeight
+                / (double) (colWithRidge - halfCellsize);
+        double rightColRidgeTanAngle = colRidgeHeight
+                / (double) ((ncols - colWithRidge) - halfCellsize);
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(
+                nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -825,22 +756,11 @@ public class Grids_GenerateRoofData
             }
         }
         // Add row ridge
-        addRowRidge(g,
-                rowRidgeHeight,
-                ncols,
-                nrows,
-                rowWithRidge,
-                bottomRowRidgeTanAngle,
-                topRowRidgeTanAngle,
-                HandleOutOfMemoryError);
-        g.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_" 
+        addRowRidge(g, rowRidgeHeight, ncols, nrows, rowWithRidge,
+                bottomRowRidgeTanAngle, topRowRidgeTanAngle);
+        g.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge);
-        output(g,
-                Directory,
-                ImageExporter,
-                ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+        output(g, Directory, ImageExporter, ImageTypes, ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
@@ -848,22 +768,11 @@ public class Grids_GenerateRoofData
             }
         }
         // Add col ridge
-        _AddColRidge(g,
-                rowRidgeHeight,
-                nrows,
-                ncols,
-                colWithRidge,
-                leftColRidgeTanAngle,
-                rightColRidgeTanAngle,
-                HandleOutOfMemoryError);
-        g.setName("GableColRidgedRoof_" + nrows + "_" + ncols + "_" 
+        addColRidge(g, rowRidgeHeight, nrows, ncols, colWithRidge,
+                leftColRidgeTanAngle, rightColRidgeTanAngle);
+        g.setName("GableColRidgedRoof_" + nrows + "_" + ncols + "_"
                 + colRidgeHeight + "_" + colWithRidge);
-        output(g,
-                Directory,
-                ImageExporter,
-                ImageTypes,
-                ESRIAsciiGridExporter,
-                HandleOutOfMemoryError);
+        output(g, Directory, ImageExporter, ImageTypes, ESRIAsciiGridExporter);
     }
 
     /**
@@ -880,14 +789,11 @@ public class Grids_GenerateRoofData
     public Grids_GridDouble disaggregate(
             Grids_Dimensions dimensions,
             Grids_GridDouble g,
-            Grids_AbstractGridNumberFactory gridFactory,
-            boolean handleOutOfMemoryError) {
+            Grids_AbstractGridNumberFactory gridFactory) {
         long nRows = g.getNRows();
         long nCols = g.getNCols();
         Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
-                nRows,
-                nCols,
-                dimensions);
+                nRows, nCols, dimensions);
         long row;
         long col;
         double x;
@@ -906,40 +812,35 @@ public class Grids_GenerateRoofData
 
     /**
      * <a name="_Resize(Grid2DSquareCellDouble,Grid2DSquareCellDouble,boolean)"></a>
- http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#resize
- This method is to resize the grid _Grid2DSquareCellDouble
+     * http://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/dist/javadoc/uk/ac/leeds/ccg/andyt/grids/examples/Grids_GenerateRoofData.html#resize
+     * This method is to resize the grid _Grid2DSquareCellDouble
      *
      * @param rg This is the grid that will be resized to.
      * @param g This is the original grid.
-     * @param _HandleOutOfMemoryError This is to handle the out of memory error
-     * <a name="resize(Grid2DSquareCellDouble,Grid2DSquareCellDouble"></a>
      */
     public void resize(
             Grids_GridDouble rg,
-            Grids_GridDouble g,
-            boolean _HandleOutOfMemoryError) {
-        long _NRows = g.getNRows();
-        long _ResizeNRows = rg.getNRows();
-        long _NCols = g.getNCols();
-        long _ResizeNCols = rg.getNCols();
-        double _NRows_double = (double) _NRows;
-        double _OutputNRows_double = (double) _ResizeNRows;
-        double _NCols_double = (double) _NCols;
-        double _OutputNCols_double = (double) _ResizeNCols;
-        //double _RowProportion =  _OutputNRows_double / _NRows_double;
-        //double _ColProportion =  _OutputNCols_double / _NCols_double;
-        double _RowProportion = _NRows_double / _OutputNRows_double;
-        double _ColProportion = _NCols_double / _OutputNCols_double;
+            Grids_GridDouble g) {
+        long nRows = g.getNRows();
+        long resizeNRows = rg.getNRows();
+        long nCols = g.getNCols();
+        long resizeNCols = rg.getNCols();
+        double nRowsD = (double) nRows;
+        double outputNRowsD = (double) resizeNRows;
+        double nColsD = (double) nCols;
+        double outputNColsD = (double) resizeNCols;
+        double rowProportion = nRowsD / outputNRowsD;
+        double colProportion = nColsD / outputNColsD;
         double value;
         long row;
         long col;
-        double _X;
-        double _Y;
-        for (row = 0; row < _ResizeNRows; row++) {
-            for (col = 0; col < _ResizeNCols; col++) {
-                _X = _ColProportion * col;
-                _Y = _RowProportion * row;
-                value = g.getCell(_X, _Y);
+        double x;
+        double y;
+        for (row = 0; row < resizeNRows; row++) {
+            for (col = 0; col < resizeNCols; col++) {
+                x = colProportion * col;
+                y = rowProportion * row;
+                value = g.getCell(x, y);
                 rg.setCell(row, col, value);
             }
         }
