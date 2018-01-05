@@ -62,64 +62,64 @@ public class Grids_GridDoubleTest {
 //    }
 //
 //    /**
-//     * Test of getGridChunk method, of class Grids_GridDouble.
+//     * Test of getChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGridChunk_3args() {
-//        System.out.println("getGridChunk");
+//        System.out.println("getChunk");
 //        int chunkRow = 0;
 //        int chunkCol = 0;
 //        boolean handleOutOfMemoryError = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkRow, chunkCol, handleOutOfMemoryError);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkRow, chunkCol, handleOutOfMemoryError);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of getGridChunk method, of class Grids_GridDouble.
+//     * Test of getChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGridChunk_int_int() {
-//        System.out.println("getGridChunk");
+//        System.out.println("getChunk");
 //        int chunkRow = 0;
 //        int chunkCol = 0;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkRow, chunkCol);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkRow, chunkCol);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of getGridChunk method, of class Grids_GridDouble.
+//     * Test of getChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGrid2DSquareCellDoubleChunk_Grids_2D_ID_int_boolean() {
-//        System.out.println("getGridChunk");
+//        System.out.println("getChunk");
 //        Grids_2D_ID_int chunkID = null;
 //        boolean handleOutOfMemoryError = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkID, handleOutOfMemoryError);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkID, handleOutOfMemoryError);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of getGridChunk method, of class Grids_GridDouble.
+//     * Test of getChunk method, of class Grids_GridDouble.
 //     */
 //    @Test
 //    public void testGetGrid2DSquareCellDoubleChunk_Grids_2D_ID_int() {
-//        System.out.println("getGridChunk");
+//        System.out.println("getChunk");
 //        Grids_2D_ID_int chunkID = null;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getGridChunk(chunkID);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkID);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -277,8 +277,7 @@ public class Grids_GridDoubleTest {
                 gridDoubleFactory.GridChunkDoubleFactory,
                 nRows,
                 nCols,
-                dimensions,
-                handleOutOfMemoryError);
+                dimensions);
         return result;
     }
 
