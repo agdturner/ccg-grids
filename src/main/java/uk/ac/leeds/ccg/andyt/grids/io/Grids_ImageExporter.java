@@ -325,8 +325,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(g, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(
-                        chunkID);
+                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(                        chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -337,10 +336,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                         if (v == noDataValue) {
                             pixel = noDataValueColour;
                         } else {
-                            if (Double.isNaN(v)) {
-                                pixel = noDataValueColour;
-                            } else {
+                            if (Double.isFinite(v)) {
                                 pixel = getColor(v, colours);
+                            } else {
+                                pixel = noDataValueColour;
                             }
                         }
                         pixelRGB = pixel.getRGB();
@@ -361,55 +360,6 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 }
             }
         }
-
-// Old more memory intensive way
-//        for (row = 0; row < nrows; row++) {
-//            for (col = 0; col < ncols; col++) {
-//                try {
-//                    v = g.getCell(
-//                            row,
-//                            col,
-//                            hoome);
-//                } catch (OutOfMemoryError e) {
-//                    ge.clearMemoryReserve();
-//                    chunkRow = g.getChunkRow(row, hoome);
-//                    chunkCol = g.getChunkCol(col, hoome);
-//                    chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-//                    ge.swapChunkExcept_Account(
-//                            g, chunkID, hoome);
-//                    v = g.getCell(
-//                            row,
-//                            col,
-//                            hoome);
-//                    ge.initMemoryReserve(hoome);
-//                }
-//                ge.checkAndMaybeFreeMemory(hoome);
-//                if (v == noDataValue) {
-//                    pixel = noDataValueColour;
-//                } else {
-//                    if (Double.isNaN(v)) {
-//                        pixel = noDataValueColour;
-//                    } else {
-//                        pixel = getColor(v, colours);
-//                    }
-//                }
-//                pixelRGB = pixel.getRGB();
-//                if (duplication == 0) {
-//                    p = (int) ((((nrows - 1) - row) * ncols) + col);
-//                    gridImageArray[p] = pixelRGB;
-//                } else {
-//                    for (int i = 0; i <= duplication; i++) {
-//                        duplicationRow = (duplicationnrows - 1) - (((int) row * (duplication + 1)) + i);
-//                        for (int j = 0; j <= duplication; j++) {
-//                            duplicationCol = (int) (col * (duplication + 1)) + j;
-//                            p = (int) ((duplicationRow * duplicationncols) + duplicationCol);
-//                            //pos = (int) ((((nrows - 1) - row + i) * ncols) + col + j);
-//                            gridImageArray[p] = pixel.getRGB();
-//                        }
-//                    }
-//                }
-//            }
-//        }
         System.out.println("Number of NoDataValues " + countNoDataValues);
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
