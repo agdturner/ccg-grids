@@ -46,6 +46,7 @@ public class Grids_GridDoubleStats
      * For storing the minimum value.
      */
     protected double Min;
+
     /**
      * For storing the maximum value.
      */
@@ -59,11 +60,6 @@ public class Grids_GridDoubleStats
         init();
     }
 
-    /**
-     * Creates a new instance of GridStatistics0
-     *
-     * @param g
-     */
     public Grids_GridDoubleStats(Grids_GridDouble g) {
         super(g);
         init();
@@ -73,8 +69,6 @@ public class Grids_GridDoubleStats
      * For initialisation.
      */
     private void init() {
-        //getGrid().initStatistics(this);
-        //super.init();
         Min = Double.MAX_VALUE;
         Max = -Double.MAX_VALUE;
         N = 0;
@@ -84,13 +78,14 @@ public class Grids_GridDoubleStats
     }
 
     /**
-     * @return true iff the stats are kept up to date as the underlying data change.
+     * @return true iff the stats are kept up to date as the underlying data
+     * change.
      */
     @Override
     public boolean isUpdated() {
         return true;
     }
-    
+
     /**
      *
      * @return (Grids_GridDouble) Grid
@@ -101,8 +96,7 @@ public class Grids_GridDoubleStats
     }
 
     /**
-     * Updates by going through all values in Grid if the fields are likely not
-     * be up to date.
+     * Updates by going through all values in Grid.
      */
     @Override
     public void update() {
@@ -111,13 +105,13 @@ public class Grids_GridDoubleStats
         Grids_GridDouble g = getGrid();
         BigDecimal valueBD;
         double value;
-        double noDataValue = g.getNoDataValue();
+        double ndv = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
             value = (Double) ite.next();
-            if (!Double.isNaN(value)) {
-                if (value != noDataValue) {
+            if (Double.isFinite(value)) {
+                if (value != ndv) {
                     valueBD = new BigDecimal(value);
                     update(value, valueBD);
                 }
@@ -232,23 +226,24 @@ public class Grids_GridDoubleStats
     public BigInteger getNonZeroN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
-        double noDataValue;
-        noDataValue = g.getNoDataValue();
+        double ndv = g.getNoDataValue();
         Iterator<Double> ite;
         ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
             double value = ite.next();
-            if (!(value == noDataValue || value == 0)) {
-                if (!Double.isNaN(value)) {
-                    if (Double.isFinite(value)) {
-                        result = result.add(BigInteger.ONE);
-                    }
+            if (!(value == ndv || value == 0)) {
+                if (Double.isFinite(value)) {
+                    result = result.add(BigInteger.ONE);
                 }
             }
         }
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigDecimal getSum() {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
@@ -263,17 +258,6 @@ public class Grids_GridDoubleStats
             chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID);
             result = result.add(chunk.getSum());
         }
-//        double noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HOOME);
-//        Iterator<Double> ite;
-//        ite = g.iterator(ge.HOOME);
-//        while (ite.hasNext()) {
-//            double value = ite.next();
-//            if (value != noDataValue) {
-//                result = result.add(new BigDecimal(value));
-//                //System.out.println(result);
-//            }
-//        }
         return result;
     }
 
@@ -281,30 +265,28 @@ public class Grids_GridDoubleStats
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
-        BigDecimal differenceFromMean;
+        BigDecimal diffFromMean;
         Grids_GridDouble g = (Grids_GridDouble) Grid;
         double value;
-        double noDataValue = g.getNoDataValue();
+        double ndv = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
             value = (Double) ite.next();
-            if (value != noDataValue) {
-                differenceFromMean = new BigDecimal(value).subtract(mean);
-                stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
-                dataValueCount = dataValueCount.add(BigDecimal.ONE);
+            if (value != ndv) {
+                if (Double.isFinite(value)) {
+                    diffFromMean = new BigDecimal(value).subtract(mean);
+                    stdev = stdev.add(diffFromMean.multiply(diffFromMean));
+                    dataValueCount = dataValueCount.add(BigDecimal.ONE);
+                }
             }
         }
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }
-        stdev = stdev.divide(
-                dataValueCount,
-                numberOfDecimalPlaces,
+        stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces, 
                 BigDecimal.ROUND_HALF_EVEN);
-        return Generic_BigDecimal.sqrt(
-                stdev,
-                numberOfDecimalPlaces,
+        return Generic_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
                 ge.get_Generic_BigDecimal().get_RoundingMode());
     }
 

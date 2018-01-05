@@ -728,7 +728,6 @@ public class Grids_Processor extends Grids_Object {
             double min,
             double max) {
         Grids_GridDouble result;
-        boolean hoome = ge.HOOME;
         ge.checkAndMaybeFreeMemory();
         ge.getGrids().add(g);
         long nrows = g.getNRows();
@@ -816,7 +815,7 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             result.setName(g.getName() + "_linearRescale");
-            ge.checkAndMaybeFreeMemory(hoome);
+            ge.checkAndMaybeFreeMemory();
         } else {
             // @TODO this implementation could be much improved...
             int row;
@@ -834,7 +833,7 @@ public class Grids_Processor extends Grids_Object {
                 }
                 result = rescale(result, null, min, max);
                 result.setName(g.getName() + "_logRescale");
-                ge.checkAndMaybeFreeMemory(hoome);
+                ge.checkAndMaybeFreeMemory();
             } else {
                 try {
                     throw new Exception("Unable to rescale: type " + type

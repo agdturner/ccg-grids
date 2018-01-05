@@ -67,14 +67,17 @@ public class Grids_GridIntStats
      * For initialisation.
      */
     private void init() {
-        //getGrid().initStats(this);
-        Min = Integer.MIN_VALUE;
-        Max = Integer.MAX_VALUE;
+        Min = Integer.MAX_VALUE;
+        Max = Integer.MIN_VALUE;
+        N = 0;
+        Sum = BigDecimal.ZERO;
+        NMin = 0;
+        NMax = 0;
     }
 
     /**
-     * @return true iff the stats are kept up to date as the underlying
-     * data change.
+     * @return true iff the stats are kept up to date as the underlying data
+     * change.
      */
     @Override
     public boolean isUpdated() {
@@ -91,21 +94,21 @@ public class Grids_GridIntStats
     }
 
     /**
-     * Updates by going through all values in Grid if the fields are likely not
-     * be up to date.
+     * Updates by going through all values in Grid.
      */
     @Override
     public void update() {
         ge.checkAndMaybeFreeMemory();
+        init();
         Grids_GridInt g = getGrid();
         BigDecimal valueBD;
         int value;
-        int noDataValue = g.getNoDataValue();
+        int ndv = g.getNoDataValue();
         Grids_GridIntIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
             value = (Integer) ite.next();
-            if (value != noDataValue) {
+            if (value != ndv) {
                 valueBD = new BigDecimal(value);
                 update(value, valueBD);
             }
@@ -140,7 +143,7 @@ public class Grids_GridIntStats
      */
     @Override
     public Integer getMin(boolean update) {
-        if (getNMin() < 1) {
+        if (NMin < 1) {
             if (update) {
                 update();
             }
@@ -159,7 +162,7 @@ public class Grids_GridIntStats
      */
     @Override
     public Integer getMax(boolean update) {
-        if (getNMax() < 1) {
+        if (NMax < 1) {
             if (update) {
                 update();
             }
@@ -177,6 +180,9 @@ public class Grids_GridIntStats
     }
 
     /**
+     * @TODO Take advantage of the data structures of some types of chunk to
+     * optimise this. Probably the best way to do this is to iterate over the
+     * chunks and sum all the N from each chunk.
      * @return
      */
     public long getN() {
@@ -207,29 +213,21 @@ public class Grids_GridIntStats
     }
 
     /**
+     * @TODO Take advantage of the data structures of some types of chunk to
+     * optimise this. Probably the best way to do this is to iterate over the
+     * chunks and sum all the N from each chunk.
      * @return
      */
     @Override
     public BigInteger getNonZeroN() {
         BigInteger result = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
-//        Grids_GridIntIterator gridIntIterator;
-//        gridIntIterator = new Grids_GridIntIterator(g);
-//        Grids_AbstractGridChunkNumberRowMajorOrderIterator chunkIterator;
-//        chunkIterator = gridIntIterator.getChunkIterator();
-//        Grids_AbstractGridChunkInt chunkDouble;
-//        while (chunkIterator.hasNext()) {
-//            chunkDouble = (Grids_AbstractGridChunkInt) chunkIterator.next();
-//            result = result.add(
-//                    chunkDouble.getNonZeroN(ge.HOOME));
-//        }
-        int noDataValue;
-        noDataValue = g.getNoDataValue();
+        int ndv = g.getNoDataValue();
         Iterator<Integer> ite;
         ite = g.iterator(ge.HOOME);
         while (ite.hasNext()) {
             int value = ite.next();
-            if (!(value == noDataValue || value == 0)) {
+            if (!(value == ndv || value == 0)) {
                 result = result.add(BigInteger.ONE);
             }
         }
@@ -254,16 +252,6 @@ public class Grids_GridIntStats
             chunk = (Grids_AbstractGridChunkInt) g.getChunk(chunkID);
             result = result.add(chunk.getSum());
         }
-//        int noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HOOME);
-//        Iterator<Integer> ite;
-//        ite = g.iterator(ge.HOOME);
-//        while (ite.hasNext()) {
-//            int value = ite.next();
-//            if (value != noDataValue) {
-//                result = result.add(BigDecimal.valueof(value));
-//            }
-//        }
         return result;
     }
 
@@ -271,7 +259,7 @@ public class Grids_GridIntStats
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
-        BigDecimal differenceFromMean;
+        BigDecimal diffFromMean;
         Grids_GridInt g = (Grids_GridInt) Grid;
         int value;
         int noDataValue = g.getNoDataValue();
@@ -280,21 +268,17 @@ public class Grids_GridIntStats
         while (ite.hasNext()) {
             value = (Integer) ite.next();
             if (value != noDataValue) {
-                differenceFromMean = new BigDecimal(value).subtract(mean);
-                stdev = stdev.add(differenceFromMean.multiply(differenceFromMean));
+                diffFromMean = new BigDecimal(value).subtract(mean);
+                stdev = stdev.add(diffFromMean.multiply(diffFromMean));
                 dataValueCount = dataValueCount.add(BigDecimal.ONE);
             }
         }
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }
-        stdev = stdev.divide(
-                dataValueCount,
-                numberOfDecimalPlaces,
+        stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces, 
                 BigDecimal.ROUND_HALF_EVEN);
-        return Generic_BigDecimal.sqrt(
-                stdev,
-                numberOfDecimalPlaces,
+        return Generic_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
                 ge.get_Generic_BigDecimal().get_RoundingMode());
     }
 
