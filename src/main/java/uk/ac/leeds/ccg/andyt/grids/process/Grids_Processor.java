@@ -746,7 +746,7 @@ public class Grids_Processor extends Grids_Object {
         double value;
         //outputGrid = GridDoubleFactory.create(grid);
         result = GridDoubleFactory.create(new File(Directory, "Rescaled"), g, 0,
-                0, nrows - 1, ncols - 1, hoome);
+                0, nrows - 1, ncols - 1);
 //        System.out.println("NoDataValue " + result.getNoDataValue(hoome));
 //        System.out.println("r.getCell(0L, 0L) " + result.getCell(0L, 0L, hoome));
         result.setName(g.getName());
@@ -1563,7 +1563,7 @@ public class Grids_Processor extends Grids_Object {
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         result = GridDoubleFactory.create(getDirectory(), g0, 0L, 0L,
-                nRows - 1, nCols - 1, hoome);
+                nRows - 1, nCols - 1);
         double v0;
         double v1;
         double noDataValue0 = g0.getNoDataValue();
@@ -1598,7 +1598,7 @@ public class Grids_Processor extends Grids_Object {
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         result = GridDoubleFactory.create(getDirectory(),
-                g0, 0L, 0L, nRows - 1, nCols - 1, hoome);
+                g0, 0L, 0L, nRows - 1, nCols - 1);
         double v0;
         double v1;
         double noDataValue0 = g0.getNoDataValue();

@@ -148,9 +148,6 @@ public class Grids_GridIntFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
@@ -158,10 +155,9 @@ public class Grids_GridIntFactory
             File directory,
             long nRows,
             long nCols,
-            Grids_Dimensions dimensions,
-            boolean hoome) {
+            Grids_Dimensions dimensions) {
         return create(new Grids_GridIntStatsNotUpdated(ge), directory,
-                GridChunkIntFactory, nRows, nCols, dimensions, hoome);
+                GridChunkIntFactory, nRows, nCols, dimensions);
     }
 
     /**
@@ -176,9 +172,6 @@ public class Grids_GridIntFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridInt create(
@@ -187,11 +180,10 @@ public class Grids_GridIntFactory
             Grids_AbstractGridChunkIntFactory chunkFactory,
             long nRows,
             long nCols,
-            Grids_Dimensions dimensions,
-            boolean hoome) {
+            Grids_Dimensions dimensions) {
         return new Grids_GridInt(getStats(stats), directory, chunkFactory,
                 ChunkNRows, ChunkNCols, nRows, nCols, dimensions, NoDataValue,
-                ge, hoome);
+                ge);
     }
 
     //////////////////////////////////////////////////////
@@ -206,7 +198,6 @@ public class Grids_GridIntFactory
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @param hoome
      * @return
      */
     @Override
@@ -216,11 +207,9 @@ public class Grids_GridIntFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return create(new Grids_GridIntStatsNotUpdated(ge), directory, g, 
-                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol, 
-                hoome);
+                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol);
     }
 
     /**
@@ -237,9 +226,6 @@ public class Grids_GridIntFactory
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridInt create(
@@ -250,11 +236,10 @@ public class Grids_GridIntFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return new Grids_GridInt(getStats(stats), directory, g, chunkFactory,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, hoome);
+                NoDataValue);
     }
 
     ////////////////////////
@@ -272,7 +257,6 @@ public class Grids_GridIntFactory
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @param hoome
      * @return
      */
     @Override
@@ -282,11 +266,9 @@ public class Grids_GridIntFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return create(new Grids_GridIntStatsNotUpdated(ge), directory, gridFile,
-                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol,
-                hoome);
+                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol);
     }
 
     /**
@@ -297,15 +279,13 @@ public class Grids_GridIntFactory
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * returned.
-     * @param hoome
      * @return
      */
     @Override
     public Grids_GridInt create(
             File directory,
-            File gridFile,
-            boolean hoome) {
-        return new Grids_GridInt(ge, directory, gridFile, hoome);
+            File gridFile) {
+        return new Grids_GridInt(ge, directory, gridFile);
     }
 
     /**
@@ -324,9 +304,6 @@ public class Grids_GridIntFactory
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridInt create(
@@ -337,11 +314,10 @@ public class Grids_GridIntFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return new Grids_GridInt(getStats(stats), directory, gridFile,
                 chunkFactory, ChunkNRows, ChunkNCols, startRow, startCol,
-                endRow, endCol, NoDataValue, ge, hoome);
+                endRow, endCol, NoDataValue, ge);
     }
 
     /////////////////////////
@@ -354,16 +330,14 @@ public class Grids_GridIntFactory
      * information.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param hoome
      * @return
      */
     public @Override
     Grids_GridInt create(
             File directory,
             File gridFile,
-            ObjectInputStream ois,
-            boolean hoome) {
-        return new Grids_GridInt(directory, gridFile, ois, ge, hoome);
+            ObjectInputStream ois) {
+        return new Grids_GridInt(directory, gridFile, ois, ge);
     }
 
     /**

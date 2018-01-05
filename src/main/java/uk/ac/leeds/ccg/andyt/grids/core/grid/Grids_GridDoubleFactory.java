@@ -148,9 +148,6 @@ public class Grids_GridDoubleFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
@@ -158,10 +155,9 @@ public class Grids_GridDoubleFactory
             File directory,
             long nRows,
             long nCols,
-            Grids_Dimensions dimensions,
-            boolean hoome) {
+            Grids_Dimensions dimensions) {
         return create(new Grids_GridDoubleStatsNotUpdated(ge), directory,
-                GridChunkDoubleFactory, nRows, nCols, dimensions, hoome);
+                GridChunkDoubleFactory, nRows, nCols, dimensions);
     }
 
     /**
@@ -175,9 +171,6 @@ public class Grids_GridDoubleFactory
      * @param nRows The NRows.
      * @param nCols The NCols.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridDouble create(
@@ -186,11 +179,10 @@ public class Grids_GridDoubleFactory
             Grids_AbstractGridChunkDoubleFactory chunkFactory,
             long nRows,
             long nCols,
-            Grids_Dimensions dimensions,
-            boolean hoome) {
+            Grids_Dimensions dimensions) {
         return new Grids_GridDouble(getStats(stats), directory, chunkFactory,
                 ChunkNRows, ChunkNCols, nRows, nCols, dimensions, NoDataValue,
-                ge, hoome);
+                ge);
     }
 
     //////////////////////////////////////////////////////
@@ -205,7 +197,6 @@ public class Grids_GridDoubleFactory
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @param hoome
      * @return
      */
     @Override
@@ -215,11 +206,10 @@ public class Grids_GridDoubleFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return create(new Grids_GridDoubleStatsNotUpdated(ge), directory,
                 g, DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
-                endCol, hoome);
+                endCol);
     }
 
     /**
@@ -235,9 +225,6 @@ public class Grids_GridDoubleFactory
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridDouble create(
@@ -248,11 +235,10 @@ public class Grids_GridDoubleFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return new Grids_GridDouble(getStats(stats), directory, g, chunkFactory,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, hoome);
+                NoDataValue);
     }
 
     ////////////////////////
@@ -270,7 +256,6 @@ public class Grids_GridDoubleFactory
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @param hoome
      * @return
      */
     @Override
@@ -280,11 +265,10 @@ public class Grids_GridDoubleFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return create(new Grids_GridDoubleStatsNotUpdated(ge), directory,
                 gridFile, DefaultGridChunkDoubleFactory, startRow, startCol,
-                endRow, endCol, hoome);
+                endRow, endCol);
     }
 
     /**
@@ -303,9 +287,6 @@ public class Grids_GridDoubleFactory
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public Grids_GridDouble create(
@@ -316,11 +297,10 @@ public class Grids_GridDoubleFactory
             long startRow,
             long startCol,
             long endRow,
-            long endCol,
-            boolean hoome) {
+            long endCol) {
         return new Grids_GridDouble(getStats(stats), directory, gridFile,
                 chunkFactory, ChunkNRows, ChunkNCols, startRow, startCol,
-                endRow, endCol, NoDataValue, ge, hoome);
+                endRow, endCol, NoDataValue, ge);
     }
 
     /**
@@ -331,17 +311,13 @@ public class Grids_GridDoubleFactory
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * returned.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     @Override
     public Grids_GridDouble create(
             File directory,
-            File gridFile,
-            boolean hoome) {
-        return new Grids_GridDouble(ge, directory, gridFile, hoome);
+            File gridFile) {
+        return new Grids_GridDouble(ge, directory, gridFile);
     }
 
     /////////////////////////
@@ -354,16 +330,14 @@ public class Grids_GridDoubleFactory
      * information.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @param hoome
      * @return
      */
     public @Override
     Grids_GridDouble create(
             File directory,
             File gridFile,
-            ObjectInputStream ois,
-            boolean hoome) {
-        return new Grids_GridDouble(directory, gridFile, ois, ge, hoome);
+            ObjectInputStream ois) {
+        return new Grids_GridDouble(directory, gridFile, ois, ge);
     }
     
     /**

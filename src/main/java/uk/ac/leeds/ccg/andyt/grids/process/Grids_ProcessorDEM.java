@@ -240,10 +240,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             this.GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[0] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[0].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[0].writeToFile(swapToFileCache);
@@ -262,10 +259,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[1] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[1].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[1].writeToFile(swapToFileCache);
@@ -283,7 +277,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(
-                    dir, nrows, ncols, dimensions, hoome);
+                    dir, nrows, ncols, dimensions);
             slopeAndAspect[2].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[2].writeToFile(swapToFileCache);
@@ -302,7 +296,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows, ncols, dimensions, hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[3].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[3].writeToFile(swapToFileCache);
@@ -321,7 +315,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows, ncols, dimensions, hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[4].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[4].writeToFile(swapToFileCache);
@@ -340,10 +334,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[5].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[5].writeToFile(swapToFileCache);
@@ -362,10 +353,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows,
-                    ncols,
-                    dimensions,
-                    hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[6].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[6].writeToFile(swapToFileCache);
@@ -384,7 +372,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows, ncols, dimensions, hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[7].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[7].writeToFile(swapToFileCache);
@@ -403,7 +391,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows, ncols, dimensions, hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[8].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[8].writeToFile(swapToFileCache);
@@ -422,7 +410,7 @@ public class Grids_ProcessorDEM
             dir = ge.initFileDirectory(directory, filename);
             GridDoubleFactory.setDirectory(dir);
             slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                    nrows, ncols, dimensions, hoome);
+                    nrows, ncols, dimensions);
             slopeAndAspect[9].setName(filename);
             swapToFileCache = true;
             slopeAndAspect[9].writeToFile(swapToFileCache);
@@ -1907,7 +1895,6 @@ public class Grids_ProcessorDEM
      * @param gif
      * @param swapOutInitialisedFiles
      * @param swapOutProcessedChunks
-     * @param hoome
      * @return
      * @throws java.io.IOException
      */
@@ -1919,87 +1906,61 @@ public class Grids_ProcessorDEM
             Grids_GridDoubleFactory gdf,
             Grids_GridIntFactory gif,
             boolean swapOutInitialisedFiles,
-            boolean swapOutProcessedChunks,
-            boolean hoome)
+            boolean swapOutProcessedChunks)
             throws IOException {
-        try {
-            ge.getGrids().add(g);
-            if (gdf.getChunkNCols() != gif.getChunkNCols()
-                    || gdf.getChunkNRows() != gif.getChunkNRows()) {
-                log(0, "Warning! ((gridDoubleFactory.getChunkNcols() "
-                        + "!= gridIntFactory.getChunkNcols()) || "
-                        + "(gridDoubleFactory.getChunkNrows() != "
-                        + "gridIntFactory.getChunkNrows()))");
-            }
-            Grids_AbstractGridNumber[] metrics1;
-            metrics1 = new Grids_AbstractGridNumber[65];
-            long ncols = g.getNCols();
-            long nrows = g.getNRows();
-            Grids_Dimensions dimensions = g.getDimensions();
-            boolean isInitialised = false;
-            String[] metrics1Names = getMetrics1Names();
-            File file;
-            File directory = getDirectory();
-            for (int i = 0; i < metrics1.length; i++) {
-                file = ge.initFileDirectory(directory, metrics1Names[i]);
-                do {
-                    try {
-                        if (isGridInt(i)) {
-                            metrics1[i] = (Grids_GridInt) gif.create(
-                                    file, nrows, ncols, dimensions, hoome);
-                        } else {
-                            metrics1[i] = (Grids_GridDouble) gdf.create(
-                                    file, nrows, ncols, dimensions, hoome);
-                        }
-                        if (swapOutInitialisedFiles) {
-                            metrics1[i].writeToFile(true);
-                        }
-                        metrics1[i].setName(metrics1Names[i]);
-                        ge.getGrids().add(metrics1[i]);
-                        isInitialised = true;
-                    } catch (OutOfMemoryError e) {
-                        ge.clearMemoryReserve();
-                        System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                        if (!ge.swapChunk(ge.HOOMEF)) {
-                            throw e;
-                        }
-                        ge.initMemoryReserve();
-                    }
-                    System.out.println("Initialised result[" + i + "]");
-                } while (!isInitialised);
-            }
-            return getMetrics1(
-                    metrics1,
-                    g,
-                    dimensions,
-                    distance,
-                    weightIntersect,
-                    weightFactor,
-                    swapOutProcessedChunks,
-                    hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                return getMetrics1(
-                        g,
-                        distance,
-                        weightIntersect,
-                        weightFactor,
-                        gdf,
-                        gif,
-                        swapOutInitialisedFiles,
-                        swapOutProcessedChunks,
-                        hoome);
-            } else {
-                //e.printStackTrace();
-                //println( "getMetrics1(Grids_AbstractGridNumber,double,double,double,Grids_GridDoubleFactory,Grids_GridIntFactory,boolean" );
-                throw e;
-            }
+        ge.getGrids().add(g);
+        if (gdf.getChunkNCols() != gif.getChunkNCols()
+                || gdf.getChunkNRows() != gif.getChunkNRows()) {
+            log(0, "Warning! ((gridDoubleFactory.getChunkNcols() "
+                    + "!= gridIntFactory.getChunkNcols()) || "
+                    + "(gridDoubleFactory.getChunkNrows() != "
+                    + "gridIntFactory.getChunkNrows()))");
         }
+        Grids_AbstractGridNumber[] metrics1;
+        metrics1 = new Grids_AbstractGridNumber[65];
+        long ncols = g.getNCols();
+        long nrows = g.getNRows();
+        Grids_Dimensions dimensions = g.getDimensions();
+        boolean isInitialised = false;
+        String[] metrics1Names = getMetrics1Names();
+        File file;
+        File directory = getDirectory();
+        for (int i = 0; i < metrics1.length; i++) {
+            file = ge.initFileDirectory(directory, metrics1Names[i]);
+            do {
+                try {
+                    if (isGridInt(i)) {
+                        metrics1[i] = (Grids_GridInt) gif.create(
+                                file, nrows, ncols, dimensions);
+                    } else {
+                        metrics1[i] = (Grids_GridDouble) gdf.create(
+                                file, nrows, ncols, dimensions);
+                    }
+                    if (swapOutInitialisedFiles) {
+                        metrics1[i].writeToFile(true);
+                    }
+                    metrics1[i].setName(metrics1Names[i]);
+                    ge.getGrids().add(metrics1[i]);
+                    isInitialised = true;
+                } catch (OutOfMemoryError e) {
+                    ge.clearMemoryReserve();
+                    System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
+                    if (!ge.swapChunk(ge.HOOMEF)) {
+                        throw e;
+                    }
+                    ge.initMemoryReserve();
+                }
+                System.out.println("Initialised result[" + i + "]");
+            } while (!isInitialised);
+        }
+        return getMetrics1(
+                metrics1,
+                g,
+                dimensions,
+                distance,
+                weightIntersect,
+                weightFactor,
+                swapOutProcessedChunks);
     }
 
     /**
@@ -2171,7 +2132,6 @@ public class Grids_ProcessorDEM
      * @param swapOutProcessedChunks If this is true, then intermediate swapping
      * is done to try to prevent OutOfMemoryErrors Being Encountered. Perhaps
      * set this to true for large grids if the process seems to get stuck.
-     * @param hoome
      * @return
      */
     public Grids_AbstractGridNumber[] getMetrics1(
@@ -2181,229 +2141,216 @@ public class Grids_ProcessorDEM
             double distance,
             double weightIntersect,
             double weightFactor,
-            boolean swapOutProcessedChunks,
-            boolean hoome) {
-        try {
-            String methodName;
-            methodName = "getMetrics1("
-                    + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
-                    + "Grids_Dimensions,double,double,double,boolean, boolean)";
-            System.out.println(methodName);
-            ge.checkAndMaybeFreeMemory();
-            String name;
-            String underScore = "_";
-            double cellsize = dimensions.getCellsize().doubleValue();
-            int cellDistance = (int) Math.ceil(distance / cellsize);
-            double[] heights = new double[4];
-            heights[0] = 0.0d;
-            heights[1] = 0.0d;
-            heights[2] = 0.0d;
-            heights[3] = 0.0d;
-            double[] diff = new double[4];
-            diff[0] = 0.0d;
-            diff[1] = 0.0d;
-            diff[2] = 0.0d;
-            diff[3] = 0.0d;
-            double[] dummyDiff = new double[4];
-            dummyDiff[0] = 0.0d;
-            dummyDiff[1] = 0.0d;
-            dummyDiff[2] = 0.0d;
-            dummyDiff[3] = 0.0d;
-            double[][] weights;
-            weights = Grids_Kernel.getNormalDistributionKernelWeights(
-                    g.getCellsizeDouble(), distance);
-            double[] metrics1ForCell = new double[metrics1.length];
-            for (int i = 0; i < metrics1.length; i++) {
-                metrics1ForCell[i] = 0.0d;
-            }
-            long row;
-            long col;
-            double x;
-            double y;
-            Grids_2D_ID_int chunkID;
-            int nChunkRows = g.getNChunkRows();
-            int nChunkCols = g.getNChunkCols();
-            int chunkNRows;
-            int chunkNCols;
-            int chunkRow;
-            int chunkCol;
-            int cellRow;
-            int cellCol;
-            int i;
-            String[] names = getMetrics1Names();
-            int normalChunkNRows = g.getChunkNRows(0);
-            int normalChunkNCols = g.getChunkNCols(0);
+            boolean swapOutProcessedChunks) {
+        String methodName;
+        methodName = "getMetrics1("
+                + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
+                + "Grids_Dimensions,double,double,double,boolean)";
+        System.out.println(methodName);
+        ge.checkAndMaybeFreeMemory();
+        String name;
+        String underScore = "_";
+        double cellsize = dimensions.getCellsize().doubleValue();
+        int cellDistance = (int) Math.ceil(distance / cellsize);
+        double[] heights = new double[4];
+        heights[0] = 0.0d;
+        heights[1] = 0.0d;
+        heights[2] = 0.0d;
+        heights[3] = 0.0d;
+        double[] diff = new double[4];
+        diff[0] = 0.0d;
+        diff[1] = 0.0d;
+        diff[2] = 0.0d;
+        diff[3] = 0.0d;
+        double[] dummyDiff = new double[4];
+        dummyDiff[0] = 0.0d;
+        dummyDiff[1] = 0.0d;
+        dummyDiff[2] = 0.0d;
+        dummyDiff[3] = 0.0d;
+        double[][] weights;
+        weights = Grids_Kernel.getNormalDistributionKernelWeights(
+                g.getCellsizeDouble(), distance);
+        double[] metrics1ForCell = new double[metrics1.length];
+        for (int i = 0; i < metrics1.length; i++) {
+            metrics1ForCell[i] = 0.0d;
+        }
+        long row;
+        long col;
+        double x;
+        double y;
+        Grids_2D_ID_int chunkID;
+        int nChunkRows = g.getNChunkRows();
+        int nChunkCols = g.getNChunkCols();
+        int chunkNRows;
+        int chunkNCols;
+        int chunkRow;
+        int chunkCol;
+        int cellRow;
+        int cellCol;
+        int i;
+        String[] names = getMetrics1Names();
+        int normalChunkNRows = g.getChunkNRows(0);
+        int normalChunkNCols = g.getChunkNCols(0);
 
-            if (g.getClass() == Grids_GridDouble.class) {
-                Grids_GridDouble gridDouble;
-                gridDouble = (Grids_GridDouble) g;
-                double noDataValue = gridDouble.getNoDataValue();
-                double cellHeight;
-                Grids_AbstractGridChunkDouble gridChunkDouble;
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    System.out.println("chunkRow(" + chunkRow + ")");
-                    chunkNRows = g.getChunkNRows(chunkRow);
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        System.out.println("chunkCol(" + chunkCol + ")");
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.initNotToSwap();
-                        ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
-                                normalChunkNRows, normalChunkNCols, cellDistance);
-                        //ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(metrics1, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
-                                chunkRow, chunkCol);
-                        boolean doLoop = true;
-                        if (gridChunkDouble instanceof Grids_GridChunkDouble) {
-                            if (((Grids_GridChunkDouble) gridChunkDouble).Value == noDataValue) {
-                                doLoop = false;
-                            }
+        if (g.getClass() == Grids_GridDouble.class) {
+            Grids_GridDouble gridDouble;
+            gridDouble = (Grids_GridDouble) g;
+            double noDataValue = gridDouble.getNoDataValue();
+            double cellHeight;
+            Grids_AbstractGridChunkDouble gridChunkDouble;
+            for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+                System.out.println("chunkRow(" + chunkRow + ")");
+                chunkNRows = g.getChunkNRows(chunkRow);
+                for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
+                    System.out.println("chunkCol(" + chunkCol + ")");
+                    chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                    ge.initNotToSwap();
+                    ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                            normalChunkNRows, normalChunkNCols, cellDistance);
+                    //ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(metrics1, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
+                            chunkRow, chunkCol);
+                    boolean doLoop = true;
+                    if (gridChunkDouble instanceof Grids_GridChunkDouble) {
+                        if (((Grids_GridChunkDouble) gridChunkDouble).Value == noDataValue) {
+                            doLoop = false;
                         }
-                        if (doLoop) {
-                            chunkNCols = g.getChunkNCols(chunkCol);
-                            for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                                row = g.getRow(chunkRow, cellRow);
-                                y = g.getCellYDouble(row);
-                                for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                    col = g.getCol(chunkCol, cellCol);
-                                    x = gridDouble.getCellXDouble(col);
-                                    //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, hoome );
-                                    cellHeight = gridChunkDouble.getCell(
-                                            cellRow, cellCol);
-                                    if (cellHeight != noDataValue) {
-                                        ge.checkAndMaybeFreeMemory();
-                                        metrics1Calculate_All(
-                                                gridDouble,
-                                                noDataValue,
-                                                row,
-                                                col,
-                                                x,
-                                                y,
-                                                cellHeight,
-                                                cellDistance,
-                                                weights,
-                                                metrics1ForCell,
-                                                heights,
-                                                diff,
-                                                dummyDiff);
-                                        for (i = 0; i < metrics1.length; i++) {
-                                            if (metrics1[i] instanceof Grids_GridInt) {
-                                                ((Grids_GridInt) metrics1[i]).setCell(
-                                                        row, col,
-                                                        (int) metrics1ForCell[i]);
-                                            } else {
-                                                ((Grids_GridDouble) metrics1[i]).setCell(
-                                                        row, col,
-                                                        metrics1ForCell[i]);
-                                            }
+                    }
+                    if (doLoop) {
+                        chunkNCols = g.getChunkNCols(chunkCol);
+                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                            row = g.getRow(chunkRow, cellRow);
+                            y = g.getCellYDouble(row);
+                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                                col = g.getCol(chunkCol, cellCol);
+                                x = gridDouble.getCellXDouble(col);
+                                //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, hoome );
+                                cellHeight = gridChunkDouble.getCell(
+                                        cellRow, cellCol);
+                                if (cellHeight != noDataValue) {
+                                    ge.checkAndMaybeFreeMemory();
+                                    metrics1Calculate_All(
+                                            gridDouble,
+                                            noDataValue,
+                                            row,
+                                            col,
+                                            x,
+                                            y,
+                                            cellHeight,
+                                            cellDistance,
+                                            weights,
+                                            metrics1ForCell,
+                                            heights,
+                                            diff,
+                                            dummyDiff);
+                                    for (i = 0; i < metrics1.length; i++) {
+                                        if (metrics1[i] instanceof Grids_GridInt) {
+                                            ((Grids_GridInt) metrics1[i]).setCell(
+                                                    row, col,
+                                                    (int) metrics1ForCell[i]);
+                                        } else {
+                                            ((Grids_GridDouble) metrics1[i]).setCell(
+                                                    row, col,
+                                                    metrics1ForCell[i]);
                                         }
                                     }
                                 }
                             }
                         }
-                        System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                        if (swapOutProcessedChunks) {
-                            for (i = 0; i < metrics1.length; i++) {
-                                metrics1[i].swapChunk(chunkID, true, hoome);
-                            }
+                    }
+                    System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
+                    if (swapOutProcessedChunks) {
+                        for (i = 0; i < metrics1.length; i++) {
+                            ge.checkAndMaybeFreeMemory();
+                            metrics1[i].swapChunk(chunkID, true, ge.HOOME);
                         }
                     }
                 }
-            } else {
-                // (g.getClass() == Grids_GridInt.class)
-                Grids_GridInt gridInt = (Grids_GridInt) g;
-                int noDataValue = gridInt.getNoDataValue();
-                int cellHeight;
-                Grids_AbstractGridChunkInt gridChunkInt;
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    chunkNRows = g.getChunkNRows(chunkRow);
-                    System.out.println("chunkRow(" + chunkRow + ")");
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        System.out.println("chunkColIndex(" + chunkCol + ")");
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.initNotToSwap();
-                        ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
-                                normalChunkNRows, normalChunkNCols, cellDistance);
-                        //ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(metrics1, chunkID);
-                        ge.checkAndMaybeFreeMemory();
-                        gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
-                                chunkRow, chunkCol);
-                        boolean doLoop = true;
-                        if (gridChunkInt instanceof Grids_GridChunkInt) {
-                            if (((Grids_GridChunkInt) gridChunkInt).Value == noDataValue) {
-                                doLoop = false;
-                            }
+            }
+        } else {
+            // (g.getClass() == Grids_GridInt.class)
+            Grids_GridInt gridInt = (Grids_GridInt) g;
+            int noDataValue = gridInt.getNoDataValue();
+            int cellHeight;
+            Grids_AbstractGridChunkInt gridChunkInt;
+            for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+                chunkNRows = g.getChunkNRows(chunkRow);
+                System.out.println("chunkRow(" + chunkRow + ")");
+                for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
+                    System.out.println("chunkColIndex(" + chunkCol + ")");
+                    chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                    ge.initNotToSwap();
+                    ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                            normalChunkNRows, normalChunkNCols, cellDistance);
+                    //ge.addToNotToSwap(g, chunkID);
+                    ge.addToNotToSwap(metrics1, chunkID);
+                    ge.checkAndMaybeFreeMemory();
+                    gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
+                            chunkRow, chunkCol);
+                    boolean doLoop = true;
+                    if (gridChunkInt instanceof Grids_GridChunkInt) {
+                        if (((Grids_GridChunkInt) gridChunkInt).Value == noDataValue) {
+                            doLoop = false;
                         }
-                        if (doLoop) {
-                            chunkNCols = g.getChunkNCols(chunkCol);
-                            for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                                row = g.getRow(chunkRow, cellRow);
-                                y = g.getCellYDouble(row);
-                                for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                    col = g.getCol(chunkCol, cellCol);
-                                    x = gridInt.getCellXDouble(cellCol);
-                                    cellHeight = gridChunkInt.getCell(cellRow, cellCol);
-                                    if (cellHeight != noDataValue) {
-                                        ge.checkAndMaybeFreeMemory();
-                                        metrics1Calculate_All(
-                                                gridInt,
-                                                noDataValue,
-                                                row,
-                                                col,
-                                                x,
-                                                y,
-                                                cellHeight,
-                                                cellDistance,
-                                                weights,
-                                                metrics1ForCell,
-                                                heights,
-                                                diff,
-                                                dummyDiff);
-                                        for (i = 0; i < metrics1.length; i++) {
-                                            if (metrics1[i] instanceof Grids_GridInt) {
-                                                ((Grids_GridInt) metrics1[i]).setCell(
-                                                        row, col,
-                                                        (int) metrics1ForCell[i]);
-                                            } else {
-                                                ((Grids_GridDouble) metrics1[i]).setCell(
-                                                        row, col,
-                                                        metrics1ForCell[i]);
-                                            }
+                    }
+                    if (doLoop) {
+                        chunkNCols = g.getChunkNCols(chunkCol);
+                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
+                            row = g.getRow(chunkRow, cellRow);
+                            y = g.getCellYDouble(row);
+                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
+                                col = g.getCol(chunkCol, cellCol);
+                                x = gridInt.getCellXDouble(cellCol);
+                                cellHeight = gridChunkInt.getCell(cellRow, cellCol);
+                                if (cellHeight != noDataValue) {
+                                    ge.checkAndMaybeFreeMemory();
+                                    metrics1Calculate_All(
+                                            gridInt,
+                                            noDataValue,
+                                            row,
+                                            col,
+                                            x,
+                                            y,
+                                            cellHeight,
+                                            cellDistance,
+                                            weights,
+                                            metrics1ForCell,
+                                            heights,
+                                            diff,
+                                            dummyDiff);
+                                    for (i = 0; i < metrics1.length; i++) {
+                                        if (metrics1[i] instanceof Grids_GridInt) {
+                                            ((Grids_GridInt) metrics1[i]).setCell(
+                                                    row, col,
+                                                    (int) metrics1ForCell[i]);
+                                        } else {
+                                            ((Grids_GridDouble) metrics1[i]).setCell(
+                                                    row, col,
+                                                    metrics1ForCell[i]);
                                         }
                                     }
                                 }
                             }
                         }
-                        System.out.println(
-                                "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                        if (swapOutProcessedChunks) {
-                            for (i = 0; i < metrics1.length; i++) {
-                                metrics1[i].swapChunk(chunkID, true, hoome);
-                            }
+                    }
+                    System.out.println(
+                            "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
+                    if (swapOutProcessedChunks) {
+                        for (i = 0; i < metrics1.length; i++) {
+                            ge.checkAndMaybeFreeMemory();
+                            metrics1[i].swapChunk(chunkID, true, ge.HOOME);
                         }
                     }
                 }
-            }
-            for (i = 0; i < names.length; i++) {
-                name = names[i] + underScore + distance;
-                metrics1[i].setName(name);
-            }
-            return metrics1;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                return getMetrics1(metrics1, g, dimensions, distance,
-                        weightIntersect, weightFactor, swapOutProcessedChunks,
-                        hoome);
-            } else {
-                throw e;
             }
         }
+        for (i = 0; i < names.length; i++) {
+            name = names[i] + underScore + distance;
+            metrics1[i].setName(name);
+        }
+        return metrics1;
     }
 
     /**
@@ -3973,7 +3920,7 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                return getMaxFlowDirection(                        grid,                        gridFactory,                        hoome);
+                return getMaxFlowDirection(grid, gridFactory, hoome);
             } else {
                 throw e;
 
@@ -4101,7 +4048,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 return getInitialPeaksHashSetAndSetTheirValue(
-                        grid,                        upSlopeAreaMetrics,                        hoome);
+                        grid, upSlopeAreaMetrics, hoome);
 
             } else {
                 throw e;

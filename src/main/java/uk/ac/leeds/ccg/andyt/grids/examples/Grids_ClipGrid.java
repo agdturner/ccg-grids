@@ -123,7 +123,7 @@ public class Grids_ClipGrid
                 dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
                 gridDouble = (Grids_GridDouble) GridDoubleFactory.create(
-                        dir, input, HandleOutOfMemoryError);
+                        dir, input);
 //                System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
 //                System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
 //                System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
