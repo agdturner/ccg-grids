@@ -353,10 +353,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                         if (v == noDataValue) {
                             pixel = noDataValueColour;
                         } else {
-                            if (Double.isNaN(v)) {
-                                pixel = noDataValueColour;
-                            } else {
+                            if (Double.isFinite(v)) {
                                 pixel = getColor(v, colours);
+                            } else {
+                                pixel = noDataValueColour;
                             }
                         }
                         pixelRGB = pixel.getRGB();

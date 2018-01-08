@@ -1426,7 +1426,6 @@ public class Grids_Processor extends Grids_Object {
                 String alternator = "x";
                 double x = 0.0d;
                 double y = 0.0d;
-                double value = 0.0d;
                 while (tokenType != StreamTokenizer.TT_EOF) {
                     switch (tokenType) {
                         case StreamTokenizer.TT_NUMBER:
@@ -1456,7 +1455,8 @@ public class Grids_Processor extends Grids_Object {
         }
         if (type.equalsIgnoreCase("xy")) {
             try {
-                StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                StreamTokenizer st;
+                st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.whitespaceChars(',', ',');
@@ -1558,7 +1558,6 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble g0,
             Grids_GridDouble g1) {
         Grids_GridDouble result;
-        boolean hoome = false;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         result = GridDoubleFactory.create(getDirectory(), g0, 0L, 0L,
@@ -1593,7 +1592,6 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble g0,
             Grids_GridDouble g1) {
         Grids_GridDouble result;
-        boolean hoome = false;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         result = GridDoubleFactory.create(getDirectory(),
@@ -1647,7 +1645,9 @@ public class Grids_Processor extends Grids_Object {
      * noDataValues are simply ignored. Formerly noDataValues were treated as
      * the average of values within a result cell. TODO: implement median, mode
      * and variance aggregations. @return @param colOffset @param gridFactory
-     * @param colOffset @param gridFactory @param hoome @return
+     * @param colOffset 
+     * @param gridFactory 
+     * @return
      */
     public Grids_GridDouble aggregate(
             Grids_AbstractGridNumber grid,
@@ -1655,11 +1655,8 @@ public class Grids_Processor extends Grids_Object {
             String statistic,
             int rowOffset,
             int colOffset,
-            Grids_GridDoubleFactory gridFactory,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(grid);
-            int _MessageLength = 1000;
+            Grids_GridDoubleFactory gridFactory) {
+             ge.getGrids().add(grid);
             // Initial tests
             if (cellFactor <= 0) {
                 System.err.println("Warning!!! cellFactor <= 0 : Returning!");
@@ -1686,8 +1683,7 @@ public class Grids_Processor extends Grids_Object {
                             + grid.toString() + ", cellFactor( " + cellFactor
                             + " ), statistic( " + statistic + " ), rowOffset( "
                             + rowOffset + " ), colOffset( " + colOffset
-                            + " ), gridFactory( " + gridFactory
-                            + " ),  hoome( " + hoome + " ) )");
+                            + " ), gridFactory( " + gridFactory + " ) )");
                 }
             }
             BigDecimal resultCellsize = cellsize.multiply(new BigDecimal(Integer.toString(cellFactor)));
@@ -1753,7 +1749,7 @@ public class Grids_Processor extends Grids_Object {
                         x = grid.getCellXDouble(col);
                         y = grid.getCellYDouble(row);
                         if (result.isInGrid(x, y)) {
-                            value = grid.getCellDouble(row, col, hoome);
+                            value = grid.getCellDouble(row, col);
                             if (value != noDataValue) {
                                 count.addToCell(x, y, 1.0d);
                                 result.addToCell(x, y, value);
@@ -1862,20 +1858,6 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                return aggregate(grid, cellFactor, statistic, rowOffset,
-                        colOffset, gridFactory, hoome);
-            } else {
-                throw e;
-            }
-
-        }
     }
 
     //    /**
@@ -1914,9 +1896,7 @@ public class Grids_Processor extends Grids_Object {
      * @param resultDimensions
      * @param gridFactory The Abstract2DSquareCellDoubleFactory used to create
      * _AbstractGrid2DSquareCell_HashSet
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown. Use this aggregate method if
+     * Use this aggregate method if
      * result is to have a new spatial frame. NB. In the calculation of the sum
      * and the mean if there is a cell in grid which has a data value then the
      * result which incorporates that cell has a data value. For this result
@@ -1933,10 +1913,8 @@ public class Grids_Processor extends Grids_Object {
             Grids_AbstractGridNumber grid,
             String statistic,
             Grids_Dimensions resultDimensions,
-            Grids_GridDoubleFactory gridFactory,
-            boolean hoome) {
-        try {
-            ge.getGrids().add(grid);
+            Grids_GridDoubleFactory gridFactory) {
+           ge.getGrids().add(grid);
             int scale = 325;
             // Initialistaion
             long nrows = grid.getNRows();
@@ -2020,7 +1998,7 @@ public class Grids_Processor extends Grids_Object {
                                     dimensionsCellsize,
                                     scale,
                                     BigDecimal.ROUND_HALF_EVEN)).intValue();
-                    return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gridFactory, hoome);
+                    return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gridFactory);
                 }
             }
             // Calculate resultNrows and resultHeight
@@ -2082,7 +2060,7 @@ public class Grids_Processor extends Grids_Object {
                         cellIDs[1] = result.getCellID(bounds[2], bounds[3]);
                         cellIDs[2] = result.getCellID(bounds[0], bounds[1]);
                         cellIDs[3] = result.getCellID(bounds[2], bounds[1]);
-                        value = grid.getCellDouble(row, col, hoome);
+                        value = grid.getCellDouble(row, col);
                         if (value != noDataValue) {
                             if (cellIDs[0].equals(cellIDs[1]) && cellIDs[1].equals(cellIDs[2])) {
                                 result.addToCell(cellIDs[0], value);
@@ -2203,7 +2181,7 @@ public class Grids_Processor extends Grids_Object {
             // mean
             if (statistic.equalsIgnoreCase("mean")) {
                 double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
-                Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory, hoome);
+                Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory);
                 addToGrid(result, sum, 1.0d / denominator);
             }
 
@@ -2214,7 +2192,7 @@ public class Grids_Processor extends Grids_Object {
                 double halfCellsize = grid.getCellsizeDouble() / 2.0d;
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        value = grid.getCellDouble(row, col, hoome);
+                        value = grid.getCellDouble(row, col);
                         if (value != noDataValue) {
                             x = grid.getCellXDouble(col);
                             y = grid.getCellYDouble(row);
@@ -2255,7 +2233,7 @@ public class Grids_Processor extends Grids_Object {
                 double halfCellsize = grid.getCellsizeDouble() / 2.0d;
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        value = grid.getCellDouble(row, col, hoome);
+                        value = grid.getCellDouble(row, col);
                         if (value != noDataValue) {
                             x = grid.getCellXDouble(col);
                             y = grid.getCellYDouble(row);
@@ -2655,25 +2633,8 @@ public class Grids_Processor extends Grids_Object {
              }
              }
              */
-            ge.checkAndMaybeFreeMemory(hoome);
+            ge.checkAndMaybeFreeMemory();
             return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
-                    throw e;
-                }
-                ge.initMemoryReserve();
-                return aggregate(
-                        grid,
-                        statistic,
-                        resultDimensions,
-                        gridFactory,
-                        hoome);
-            } else {
-                throw e;
-            }
-        }
     }
 
     //    TODO: Move to a Extended Stats class
