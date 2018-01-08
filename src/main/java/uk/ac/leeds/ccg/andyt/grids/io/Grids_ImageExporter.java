@@ -75,6 +75,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             String type) {
         // Initialisation
         ge.initNotToSwap();
+        ge.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
 //        System.out.println("nrows" + nrows);
@@ -121,7 +122,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             return;
         }
         int[] gridImageArray = initGridImageArray(size);
-        ge.checkAndMaybeFreeMemory(true);
+        ge.checkAndMaybeFreeMemory();
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
@@ -189,39 +190,58 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
         }
-        write((int) ncols, (int) nrows, gridImageArray, type, file);
+        write((int) ncols, (int) nrows, gridImageArray, type, file, g, ge.HOOME);
     }
 
     private void write(
-            int duplicationNCols,
-            int duplicationNRows,
+            int nCols,
+            int nRows,
+            int[] gridImageArray,
+            String type,
+            File file,
+            Grids_AbstractGridNumber g,
+            boolean hoome) {
+        try {
+            ge.checkAndMaybeFreeMemory();
+            write(nCols, nRows, gridImageArray, type, file);
+        } catch (OutOfMemoryError e) {
+            if (hoome) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunkExcept_Account(g, ge.HOOMEF) < 1) {
+                    ge.swapChunks(ge.HOOMEF);
+                }
+                ge.initMemoryReserve(g, hoome);
+                ge.checkAndMaybeFreeMemory();
+                write(nCols, nRows, gridImageArray, type, file, g, hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private void write(
+            int nCols,
+            int nRows,
             int[] gridImageArray,
             String type,
             File file) {
-        // Use gridImageArray to create a MemoryImageSource
-        // Construct a BufferedImage using Toolkit
-        // because Image class does not implement the RenderedImage
-        // interface and imageio needs it.
-        MemoryImageSource gridImageSource = new MemoryImageSource(
-                duplicationNCols, duplicationNRows, gridImageArray, 0, 
-                duplicationNCols);
-        Image tempImage = Toolkit.getDefaultToolkit().createImage(
-                gridImageSource);
-        BufferedImage gridImage = new BufferedImage(duplicationNCols,
-                duplicationNRows, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics = (Graphics2D) gridImage.getGraphics();
-        graphics.drawImage(tempImage, 0, 0, new java.awt.Panel());
+        MemoryImageSource mis;
+        mis = new MemoryImageSource(nCols, nRows, gridImageArray, 0, nCols);
+        Image image = Toolkit.getDefaultToolkit().createImage(mis);
+        BufferedImage bi;
+        bi = new BufferedImage(nCols, nRows, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = (Graphics2D) bi.getGraphics();
+        graphics.drawImage(image, 0, 0, new java.awt.Panel());
         try {
-            javax.imageio.ImageIO.write(gridImage, type, file);
+            javax.imageio.ImageIO.write(bi, type, file);
         } catch (java.io.IOException e1) {
             e1.printStackTrace(System.err);
-            System.out.println(
-                    "Warning!!! Failed to write grid as "
-                    + type + " to File(" + file.toString() + ")");
+            System.out.println("Warning!!! Failed to write grid as " + type
+                    + " to File(" + file.toString() + ")");
         }
         graphics.dispose();
-        gridImage.flush();
-        tempImage.flush();
+        bi.flush();
+        image.flush();
     }
 
     private int[] initGridImageArray(int size) {
@@ -241,7 +261,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param noDataValueColour
      * @param g
      * @param file The File exported to.
-     * @param type The name of the type of image to be written e.g. "png",
+     * @param type The name of the type of image to be written e.g. "png", *
      * "jpeg"
      */
     public void toColourImage(
@@ -251,24 +271,22 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             Grids_GridDouble g,
             File file,
             String type) {
-        // Initialisation
+        String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
+                    + "Grids_GridDouble,File,String)";
         ge.initNotToSwap();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         // Check int precision OK here.
         if (nrows * ncols * (duplication + 1) * (duplication + 1) > Integer.MAX_VALUE) {
             System.err.println(
-                    "Unable to export AbstractGrid2DSquareCell "
-                    + g.toString() + " into a "
-                    + "single image using "
-                    + "toGreyScaleImage(AbstractGrid2DSquareCell,File,"
-                    + "String) as _NRows * _Ncols > Integer.MAXVALUE");
+                    "Unable to export Grids_GridDouble " + g.toString()
+                    + " into a single image using " + methodName
+                    + " as (nrows * ncols * (duplication + 1) * (duplication + 1) "
+                            + "> Integer.MAX_VALUE)");
             System.err.println(
                     "This method either needs development, or another does "
-                    + "which should be called instead of this.");
-            System.err.println(
-                    "The images could be created in chunks by fixing the number"
-                    + " range as parameters passed into the method.");
+                    + "which should be called instead of this."
+                    + "The images could be created in chunks?");
             return;
         }
         long row;
@@ -290,9 +308,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         boolean writerAvailable = Grids_IO.isImageWriterAvailable(type);
         if (!writerAvailable) {
             System.out.println(
-                    "Unable to export  using toGreyScaleImage("
-                    + "AbstractGrid2DSquareCell,File,String) "
-                    + "IO.isImageWriterAvailable(" + type + ") is not "
+                    "Unable to export  using " + methodName 
+                    + "Grids_IO.isImageWriterAvailable(" + type + ") is not "
                     + "available.");
             String[] writerTypes = ImageIO.getWriterMIMETypes();
             System.out.println("WriterTypes:");
@@ -325,8 +342,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(g, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(
-                        chunkID);
+                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(                        chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -361,55 +377,6 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 }
             }
         }
-
-// Old more memory intensive way
-//        for (row = 0; row < nrows; row++) {
-//            for (col = 0; col < ncols; col++) {
-//                try {
-//                    v = g.getCell(
-//                            row,
-//                            col,
-//                            hoome);
-//                } catch (OutOfMemoryError e) {
-//                    ge.clearMemoryReserve();
-//                    chunkRow = g.getChunkRow(row, hoome);
-//                    chunkCol = g.getChunkCol(col, hoome);
-//                    chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-//                    ge.swapChunkExcept_Account(
-//                            g, chunkID, hoome);
-//                    v = g.getCell(
-//                            row,
-//                            col,
-//                            hoome);
-//                    ge.initMemoryReserve(hoome);
-//                }
-//                ge.checkAndMaybeFreeMemory(hoome);
-//                if (v == noDataValue) {
-//                    pixel = noDataValueColour;
-//                } else {
-//                    if (Double.isNaN(v)) {
-//                        pixel = noDataValueColour;
-//                    } else {
-//                        pixel = getColor(v, colours);
-//                    }
-//                }
-//                pixelRGB = pixel.getRGB();
-//                if (duplication == 0) {
-//                    p = (int) ((((nrows - 1) - row) * ncols) + col);
-//                    gridImageArray[p] = pixelRGB;
-//                } else {
-//                    for (int i = 0; i <= duplication; i++) {
-//                        duplicationRow = (duplicationnrows - 1) - (((int) row * (duplication + 1)) + i);
-//                        for (int j = 0; j <= duplication; j++) {
-//                            duplicationCol = (int) (col * (duplication + 1)) + j;
-//                            p = (int) ((duplicationRow * duplicationncols) + duplicationCol);
-//                            //pos = (int) ((((nrows - 1) - row + i) * ncols) + col + j);
-//                            gridImageArray[p] = pixel.getRGB();
-//                        }
-//                    }
-//                }
-//            }
-//        }
         System.out.println("Number of NoDataValues " + countNoDataValues);
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
