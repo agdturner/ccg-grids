@@ -126,9 +126,9 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
-            r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
+            r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d, ge.HOOMET);
         } else {
-            r = processor.rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
+            r = processor.rescale((Grids_GridInt) g, null, 0.0d, 255.0d, ge.HOOMET);
         }
         double noDataValue = r.getNoDataValue();
 //        System.out.println("r nrows " + r.getNRows(hoome));

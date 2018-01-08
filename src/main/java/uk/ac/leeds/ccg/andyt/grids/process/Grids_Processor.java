@@ -714,6 +714,39 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param g
+     * @param type If type == null then a linear rescale is done. If type ==
+     * "Log" then a Log rescale is done.
+     * @param min The minimum value in the rescaled range.
+     * @param max The maximum value in the rescaled range.
+     * @param hoome
+     * @return A Grids_GridDouble with values from g either linearly rescaled
+     * into the range [min,max] or scaled using log.
+     * @TODO Improve log rescaling implementation.
+     */
+    public Grids_GridDouble rescale(
+            Grids_GridDouble g,
+            String type,
+            double min,
+            double max,
+            boolean hoome) {
+        try {
+            return rescale(g, type, min, max);
+        } catch (java.lang.OutOfMemoryError e) {
+            if (hoome) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
+                    throw e;
+                }
+                ge.initMemoryReserve();
+                return rescale(g, type, min, max, hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * @param g
      * @return a new Grids_GridDouble Values are either linearly rescaled into
      * the range [min,max]. Or some Log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
@@ -722,7 +755,7 @@ public class Grids_Processor extends Grids_Object {
      * @param max The maximum value in the rescaled range.
      * @TODO Improve log rescaling implementation.
      */
-    public Grids_GridDouble rescale(
+    protected Grids_GridDouble rescale(
             Grids_GridDouble g,
             String type,
             double min,
@@ -848,6 +881,39 @@ public class Grids_Processor extends Grids_Object {
 
     /**
      * @param g
+     * @param type If type == null then a linear rescale is done. If type ==
+     * "Log" then a Log rescale is done.
+     * @param min The minimum value in the rescaled range.
+     * @param max The maximum value in the rescaled range.
+     * @param hoome
+     * @return A Grids_GridDouble with values from g either linearly rescaled
+     * into the range [min,max] or scaled using log.
+     * @TODO Improve log rescaling implementation.
+     */
+    public Grids_GridDouble rescale(
+            Grids_GridInt g,
+            String type,
+            double min,
+            double max,
+            boolean hoome) {
+        try {
+            return rescale(g, type, min, max);
+        } catch (java.lang.OutOfMemoryError e) {
+            if (hoome) {
+                ge.clearMemoryReserve();
+                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
+                    throw e;
+                }
+                ge.initMemoryReserve();
+                return rescale(g, type, min, max, hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+    
+    /**
+     * @param g
      * @return a new Grids_GridDouble Values are either linearly rescaled into
      * the range [min,max]. Or some Log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==
@@ -856,7 +922,7 @@ public class Grids_Processor extends Grids_Object {
      * @param max The maximum value in the rescaled range.
      * @TODO Improve log rescaling implementation.
      */
-    public Grids_GridDouble rescale(
+    protected Grids_GridDouble rescale(
             Grids_GridInt g,
             String type,
             double min,
@@ -1645,9 +1711,7 @@ public class Grids_Processor extends Grids_Object {
      * noDataValues are simply ignored. Formerly noDataValues were treated as
      * the average of values within a result cell. TODO: implement median, mode
      * and variance aggregations. @return @param colOffset @param gridFactory
-     * @param colOffset 
-     * @param gridFactory 
-     * @return
+     * @param colOffset @param gridFactory @return
      */
     public Grids_GridDouble aggregate(
             Grids_AbstractGridNumber grid,
@@ -1656,208 +1720,208 @@ public class Grids_Processor extends Grids_Object {
             int rowOffset,
             int colOffset,
             Grids_GridDoubleFactory gridFactory) {
-             ge.getGrids().add(grid);
-            // Initial tests
-            if (cellFactor <= 0) {
-                System.err.println("Warning!!! cellFactor <= 0 : Returning!");
-                return null;
-            }
-            // Initialisation
-            long nrows = grid.getNRows();
-            long ncols = grid.getNCols();
-            Grids_Dimensions dimensions = grid.getDimensions();
-            BigDecimal cellsize = dimensions.getCellsize();
-            BigDecimal xMin = dimensions.getXMin();
-            BigDecimal yMin = dimensions.getYMin();
-            BigDecimal xMax = dimensions.getXMax();
-            BigDecimal yMax = dimensions.getYMax();
-            double noDataValue = Double.NEGATIVE_INFINITY;
-            if (grid.getClass() == Grids_GridInt.class) {
-                noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue();
+        ge.getGrids().add(grid);
+        // Initial tests
+        if (cellFactor <= 0) {
+            System.err.println("Warning!!! cellFactor <= 0 : Returning!");
+            return null;
+        }
+        // Initialisation
+        long nrows = grid.getNRows();
+        long ncols = grid.getNCols();
+        Grids_Dimensions dimensions = grid.getDimensions();
+        BigDecimal cellsize = dimensions.getCellsize();
+        BigDecimal xMin = dimensions.getXMin();
+        BigDecimal yMin = dimensions.getYMin();
+        BigDecimal xMax = dimensions.getXMax();
+        BigDecimal yMax = dimensions.getYMax();
+        double noDataValue = Double.NEGATIVE_INFINITY;
+        if (grid.getClass() == Grids_GridInt.class) {
+            noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue();
+        } else {
+            if (grid.getClass() == Grids_GridDouble.class) {
+                noDataValue = ((Grids_GridDouble) grid).getNoDataValue();
             } else {
-                if (grid.getClass() == Grids_GridDouble.class) {
-                    noDataValue = ((Grids_GridDouble) grid).getNoDataValue();
-                } else {
-                    System.err.println("Grid2DSquareCellAbstract not recognised"
-                            + " in aggregate( Grid2DSquareCellAbstract( "
-                            + grid.toString() + ", cellFactor( " + cellFactor
-                            + " ), statistic( " + statistic + " ), rowOffset( "
-                            + rowOffset + " ), colOffset( " + colOffset
-                            + " ), gridFactory( " + gridFactory + " ) )");
-                }
+                System.err.println("Grid2DSquareCellAbstract not recognised"
+                        + " in aggregate( Grid2DSquareCellAbstract( "
+                        + grid.toString() + ", cellFactor( " + cellFactor
+                        + " ), statistic( " + statistic + " ), rowOffset( "
+                        + rowOffset + " ), colOffset( " + colOffset
+                        + " ), gridFactory( " + gridFactory + " ) )");
             }
-            BigDecimal resultCellsize = cellsize.multiply(new BigDecimal(Integer.toString(cellFactor)));
-            BigDecimal resultXMin = xMin.add(cellsize.multiply(new BigDecimal(Integer.toString(colOffset))));
-            BigDecimal resultYMin = yMin.add(cellsize.multiply(new BigDecimal(Integer.toString(rowOffset))));
+        }
+        BigDecimal resultCellsize = cellsize.multiply(new BigDecimal(Integer.toString(cellFactor)));
+        BigDecimal resultXMin = xMin.add(cellsize.multiply(new BigDecimal(Integer.toString(colOffset))));
+        BigDecimal resultYMin = yMin.add(cellsize.multiply(new BigDecimal(Integer.toString(rowOffset))));
 
-            //double resultCellsize = cellsize * ( double ) cellFactor;
-            //double width = cellsize * ncols;
-            //double height = cellsize * nrows;
-            //double resultXllcorner = xllcorner + ( colOffset * cellsize );
-            //double resultYllcorner = yllcorner + ( rowOffset * cellsize );
-            // Calculate resultNrows and resultHeight
-            long resultNrows = 1L;
-            BigDecimal resultHeight = new BigDecimal(resultCellsize.toString());
-            //double resultHeight = resultCellsize;
-            while (resultYMin.add(resultHeight).compareTo(yMax) == -1) {
-                resultNrows++;
-                resultHeight = resultHeight.add(resultCellsize);
-            }
-            //while ( ( resultYllcorner + resultHeight ) < ( yllcorner + height ) ) {
-            //    resultNrows ++;
-            //    resultHeight += resultCellsize;
-            //}
-            // Calculate resultNcols and resultWidth
-            long resultNcols = 1L;
-            BigDecimal resultWidth = new BigDecimal(resultCellsize.toString());
-            //double resultWidth = resultCellsize;
-            while (resultXMin.add(resultWidth).compareTo(xMax) == -1) {
-                resultNrows++;
-                resultWidth = resultWidth.add(resultCellsize);
-            }
-            //while ( ( resultXllcorner + resultWidth ) < ( xllcorner + width ) ) {
-            //    resultNcols ++;
-            //    resultWidth += resultCellsize;
-            //}
-            BigDecimal resultXMax = resultXMin.add(resultWidth);
-            BigDecimal resultYMax = resultYMin.add(resultHeight);
-            Grids_Dimensions resultDimensions = new Grids_Dimensions(
-                    resultXMin,
-                    resultXMax,
-                    resultYMin,
-                    resultYMax,
-                    resultCellsize);
-            // Initialise result
-            gridFactory.setNoDataValue(noDataValue);
-            Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
+        //double resultCellsize = cellsize * ( double ) cellFactor;
+        //double width = cellsize * ncols;
+        //double height = cellsize * nrows;
+        //double resultXllcorner = xllcorner + ( colOffset * cellsize );
+        //double resultYllcorner = yllcorner + ( rowOffset * cellsize );
+        // Calculate resultNrows and resultHeight
+        long resultNrows = 1L;
+        BigDecimal resultHeight = new BigDecimal(resultCellsize.toString());
+        //double resultHeight = resultCellsize;
+        while (resultYMin.add(resultHeight).compareTo(yMax) == -1) {
+            resultNrows++;
+            resultHeight = resultHeight.add(resultCellsize);
+        }
+        //while ( ( resultYllcorner + resultHeight ) < ( yllcorner + height ) ) {
+        //    resultNrows ++;
+        //    resultHeight += resultCellsize;
+        //}
+        // Calculate resultNcols and resultWidth
+        long resultNcols = 1L;
+        BigDecimal resultWidth = new BigDecimal(resultCellsize.toString());
+        //double resultWidth = resultCellsize;
+        while (resultXMin.add(resultWidth).compareTo(xMax) == -1) {
+            resultNrows++;
+            resultWidth = resultWidth.add(resultCellsize);
+        }
+        //while ( ( resultXllcorner + resultWidth ) < ( xllcorner + width ) ) {
+        //    resultNcols ++;
+        //    resultWidth += resultCellsize;
+        //}
+        BigDecimal resultXMax = resultXMin.add(resultWidth);
+        BigDecimal resultYMax = resultYMin.add(resultHeight);
+        Grids_Dimensions resultDimensions = new Grids_Dimensions(
+                resultXMin,
+                resultXMax,
+                resultYMin,
+                resultYMax,
+                resultCellsize);
+        // Initialise result
+        gridFactory.setNoDataValue(noDataValue);
+        Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
+                resultNrows, resultNcols, resultDimensions);
+
+        long row;
+        long col;
+        double x;
+        double y;
+        double value;
+
+        // sum
+        if (statistic.equalsIgnoreCase("sum")) {
+            Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
-
-            long row;
-            long col;
-            double x;
-            double y;
-            double value;
-
-            // sum
-            if (statistic.equalsIgnoreCase("sum")) {
-                Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(
-                        resultNrows, resultNcols, resultDimensions);
-                Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(
-                        resultNrows, resultNcols, resultDimensions);
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        x = grid.getCellXDouble(col);
-                        y = grid.getCellYDouble(row);
-                        if (result.isInGrid(x, y)) {
-                            value = grid.getCellDouble(row, col);
-                            if (value != noDataValue) {
-                                count.addToCell(x, y, 1.0d);
-                                result.addToCell(x, y, value);
-                            }
-                            normaliser.addToCell(x, y, 1.0d);
-                        }
-                    }
-                }
-                //            // Add the nearest values for the noDataValues so long as there is a value
-                //            for ( row = 0; row < nrows; row ++ ) {
-                //                for ( col = 0; col < ncols; col ++ ) {
-                //                    x = grid.getCellXDouble( col, hoome );
-                //                    y = grid.getCellYDouble( row, hoome );
-                //                    if ( result.inGrid( x, y, hoome ) ) {
-                //                        if ( dataCount.getCell( x, y, hoome ) != noDataValue ) {
-                //                            result.addToCell( x, y, grid.getNearestValueDouble( row, col, hoome ), hoome );
-                //                        }
-                //                    }
-                //                }
-                //            }
-                // Normalise
-                double count0;
-                for (row = 0; row < resultNrows; row++) {
-                    for (col = 0; col < resultNcols; col++) {
-                        count0 = count.getCell(row, col);
-                        if (count0 != 0.0d) {
-                            result.setCell(row, col,
-                                    ((result.getCell(row, col)
-                                    * normaliser.getCell(row, col)) / count0));
-                        }
-                    }
-                }
-            }
-
-            // mean
-            if (statistic.equalsIgnoreCase("mean")) {
-                Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(
-                        resultNrows, resultNcols, resultDimensions);
-                Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(
-                        resultNrows, resultNcols, resultDimensions);
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        x = grid.getCellXDouble(col);
-                        y = grid.getCellYDouble(row);
-                        if (result.isInGrid(x, y)) {
-                            value = grid.getCellDouble(row, col);
-                            if (value != noDataValue) {
-                                numerator.addToCell(x, y, value);
-                                denominator.addToCell(x, y, 1.0d);
-                            }
-                        }
-                    }
-                }
-                for (row = 0; row < resultNrows; row++) {
-                    for (col = 0; col < resultNcols; col++) {
-                        value = numerator.getCell(row, col);
+            Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(
+                    resultNrows, resultNcols, resultDimensions);
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    x = grid.getCellXDouble(col);
+                    y = grid.getCellYDouble(row);
+                    if (result.isInGrid(x, y)) {
+                        value = grid.getCellDouble(row, col);
                         if (value != noDataValue) {
-                            result.setCell(row, col,
-                                    value / denominator.getCell(row, col));
+                            count.addToCell(x, y, 1.0d);
+                            result.addToCell(x, y, value);
+                        }
+                        normaliser.addToCell(x, y, 1.0d);
+                    }
+                }
+            }
+            //            // Add the nearest values for the noDataValues so long as there is a value
+            //            for ( row = 0; row < nrows; row ++ ) {
+            //                for ( col = 0; col < ncols; col ++ ) {
+            //                    x = grid.getCellXDouble( col, hoome );
+            //                    y = grid.getCellYDouble( row, hoome );
+            //                    if ( result.inGrid( x, y, hoome ) ) {
+            //                        if ( dataCount.getCell( x, y, hoome ) != noDataValue ) {
+            //                            result.addToCell( x, y, grid.getNearestValueDouble( row, col, hoome ), hoome );
+            //                        }
+            //                    }
+            //                }
+            //            }
+            // Normalise
+            double count0;
+            for (row = 0; row < resultNrows; row++) {
+                for (col = 0; col < resultNcols; col++) {
+                    count0 = count.getCell(row, col);
+                    if (count0 != 0.0d) {
+                        result.setCell(row, col,
+                                ((result.getCell(row, col)
+                                * normaliser.getCell(row, col)) / count0));
+                    }
+                }
+            }
+        }
+
+        // mean
+        if (statistic.equalsIgnoreCase("mean")) {
+            Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(
+                    resultNrows, resultNcols, resultDimensions);
+            Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(
+                    resultNrows, resultNcols, resultDimensions);
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    x = grid.getCellXDouble(col);
+                    y = grid.getCellYDouble(row);
+                    if (result.isInGrid(x, y)) {
+                        value = grid.getCellDouble(row, col);
+                        if (value != noDataValue) {
+                            numerator.addToCell(x, y, value);
+                            denominator.addToCell(x, y, 1.0d);
                         }
                     }
                 }
             }
+            for (row = 0; row < resultNrows; row++) {
+                for (col = 0; col < resultNcols; col++) {
+                    value = numerator.getCell(row, col);
+                    if (value != noDataValue) {
+                        result.setCell(row, col,
+                                value / denominator.getCell(row, col));
+                    }
+                }
+            }
+        }
 
-            // min
-            if (statistic.equalsIgnoreCase("min")) {
-                double min;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        x = grid.getCellXDouble(col);
-                        y = grid.getCellYDouble(row);
-                        if (result.isInGrid(x, y)) {
-                            value = grid.getCellDouble(row, col);
-                            if (value != noDataValue) {
-                                min = result.getCell(x, y);
-                                if (min != noDataValue) {
-                                    result.setCell(x, y, Math.min(min, value));
-                                } else {
-                                    result.setCell(x, y, value);
-                                }
+        // min
+        if (statistic.equalsIgnoreCase("min")) {
+            double min;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    x = grid.getCellXDouble(col);
+                    y = grid.getCellYDouble(row);
+                    if (result.isInGrid(x, y)) {
+                        value = grid.getCellDouble(row, col);
+                        if (value != noDataValue) {
+                            min = result.getCell(x, y);
+                            if (min != noDataValue) {
+                                result.setCell(x, y, Math.min(min, value));
+                            } else {
+                                result.setCell(x, y, value);
                             }
                         }
                     }
                 }
             }
+        }
 
-            // max
-            if (statistic.equalsIgnoreCase("max")) {
-                double max;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        x = grid.getCellXDouble(col);
-                        y = grid.getCellYDouble(row);
-                        if (result.isInGrid(x, y)) {
-                            value = grid.getCellDouble(row, col);
-                            if (value != noDataValue) {
-                                max = result.getCell(x, y);
-                                if (max != noDataValue) {
-                                    result.setCell(x, y, Math.max(max, value));
-                                } else {
-                                    result.setCell(x, y, value);
-                                }
+        // max
+        if (statistic.equalsIgnoreCase("max")) {
+            double max;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    x = grid.getCellXDouble(col);
+                    y = grid.getCellYDouble(row);
+                    if (result.isInGrid(x, y)) {
+                        value = grid.getCellDouble(row, col);
+                        if (value != noDataValue) {
+                            max = result.getCell(x, y);
+                            if (max != noDataValue) {
+                                result.setCell(x, y, Math.max(max, value));
+                            } else {
+                                result.setCell(x, y, value);
                             }
                         }
                     }
                 }
             }
-            return result;
+        }
+        return result;
     }
 
     //    /**
@@ -1895,16 +1959,15 @@ public class Grids_Processor extends Grids_Object {
      * aggregate of values are wanted
      * @param resultDimensions
      * @param gridFactory The Abstract2DSquareCellDoubleFactory used to create
-     * _AbstractGrid2DSquareCell_HashSet
-     * Use this aggregate method if
-     * result is to have a new spatial frame. NB. In the calculation of the sum
-     * and the mean if there is a cell in grid which has a data value then the
-     * result which incorporates that cell has a data value. For this result
-     * cell, any of the cells in grid which have noDataValues their value is
-     * taken as that of the average of its nearest cells with a value. In the
-     * calculation of the max and the min noDataValues are simply ignored.
-     * Formerly noDataValues were treated as the average of values within a
-     * result cell. TODO: implement median, mode and variance aggregations.
+     * _AbstractGrid2DSquareCell_HashSet Use this aggregate method if result is
+     * to have a new spatial frame. NB. In the calculation of the sum and the
+     * mean if there is a cell in grid which has a data value then the result
+     * which incorporates that cell has a data value. For this result cell, any
+     * of the cells in grid which have noDataValues their value is taken as that
+     * of the average of its nearest cells with a value. In the calculation of
+     * the max and the min noDataValues are simply ignored. Formerly
+     * noDataValues were treated as the average of values within a result cell.
+     * TODO: implement median, mode and variance aggregations.
      * <a name="aggregate(AbstractGrid2DSquareCell,
      * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
      * @return
@@ -1914,360 +1977,360 @@ public class Grids_Processor extends Grids_Object {
             String statistic,
             Grids_Dimensions resultDimensions,
             Grids_GridDoubleFactory gridFactory) {
-           ge.getGrids().add(grid);
-            int scale = 325;
-            // Initialistaion
-            long nrows = grid.getNRows();
-            long ncols = grid.getNCols();
-            Grids_Dimensions dimensions = grid.getDimensions();
-            double noDataValue = Double.NEGATIVE_INFINITY;
-            if (grid.getClass() == Grids_GridInt.class) {
-                noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue();
-            } else {
-                if (grid.getClass() == Grids_GridDouble.class) {
-                    noDataValue = ((Grids_GridDouble) grid).getNoDataValue();
-                }
+        ge.getGrids().add(grid);
+        int scale = 325;
+        // Initialistaion
+        long nrows = grid.getNRows();
+        long ncols = grid.getNCols();
+        Grids_Dimensions dimensions = grid.getDimensions();
+        double noDataValue = Double.NEGATIVE_INFINITY;
+        if (grid.getClass() == Grids_GridInt.class) {
+            noDataValue = (double) ((Grids_GridInt) grid).getNoDataValue();
+        } else {
+            if (grid.getClass() == Grids_GridDouble.class) {
+                noDataValue = ((Grids_GridDouble) grid).getNoDataValue();
             }
-            BigDecimal resultCellsize = resultDimensions.getCellsize();
-            BigDecimal resultXMin = resultDimensions.getXMin();
-            BigDecimal resultYMin = resultDimensions.getYMin();
-            BigDecimal resultXMax = resultDimensions.getXMax();
-            BigDecimal resultYMax = resultDimensions.getYMax();
+        }
+        BigDecimal resultCellsize = resultDimensions.getCellsize();
+        BigDecimal resultXMin = resultDimensions.getXMin();
+        BigDecimal resultYMin = resultDimensions.getYMin();
+        BigDecimal resultXMax = resultDimensions.getXMax();
+        BigDecimal resultYMax = resultDimensions.getYMax();
 
-            BigDecimal dimensionsCellsize = dimensions.getCellsize();
-            BigDecimal dimensionsXMin = dimensions.getXMin();
-            BigDecimal dimensionsYMin = dimensions.getYMin();
-            BigDecimal dimensionsXMax = dimensions.getXMax();
-            BigDecimal dimensionsYMax = dimensions.getYMax();
-            //double width = cellsize * ncols;
-            //double height = cellsize * nrows;
-            // Test this is an aggregation
-            if (resultCellsize.compareTo(dimensionsCellsize) != 1) {
-                System.err.println(
-                        "!!!Warning: Not an aggregation as "
-                        + "resultCellsize < cellsize. Returning null!");
-                return null;
-            }
-            // Test for intersection
-            if ((resultXMin.compareTo(dimensionsXMin.add(dimensionsCellsize.multiply(new BigDecimal(Long.toString(ncols))))) == 1)
-                    || (resultYMin.compareTo(dimensionsYMin.add(dimensionsCellsize.multiply(new BigDecimal(Long.toString(nrows))))) == 1)) {
-                System.err.println(
-                        "!!!Warning: No intersection for aggregation. Returning null!");
-                return null;
-            }
-            // If resultCellsize is an integer multiple of cellsize and grid aligns with result then use
-            // a cellFactor aggregation as it should be faster.
-            //println("resultCellsize % cellsize == " + ( resultCellsize % cellsize ) );
-            //println("resultXllcorner % cellsize = " + ( resultXllcorner % cellsize ) + ", xllcorner % cellsize = " + ( xllcorner % cellsize ) );
-            //println("resultYllcorner % cellsize = " + ( resultYllcorner % cellsize ) + ", yllcorner % cellsize = " + ( yllcorner % cellsize ) );
-            if (true) {
-                BigDecimal t0 = resultCellsize.divide(
+        BigDecimal dimensionsCellsize = dimensions.getCellsize();
+        BigDecimal dimensionsXMin = dimensions.getXMin();
+        BigDecimal dimensionsYMin = dimensions.getYMin();
+        BigDecimal dimensionsXMax = dimensions.getXMax();
+        BigDecimal dimensionsYMax = dimensions.getYMax();
+        //double width = cellsize * ncols;
+        //double height = cellsize * nrows;
+        // Test this is an aggregation
+        if (resultCellsize.compareTo(dimensionsCellsize) != 1) {
+            System.err.println(
+                    "!!!Warning: Not an aggregation as "
+                    + "resultCellsize < cellsize. Returning null!");
+            return null;
+        }
+        // Test for intersection
+        if ((resultXMin.compareTo(dimensionsXMin.add(dimensionsCellsize.multiply(new BigDecimal(Long.toString(ncols))))) == 1)
+                || (resultYMin.compareTo(dimensionsYMin.add(dimensionsCellsize.multiply(new BigDecimal(Long.toString(nrows))))) == 1)) {
+            System.err.println(
+                    "!!!Warning: No intersection for aggregation. Returning null!");
+            return null;
+        }
+        // If resultCellsize is an integer multiple of cellsize and grid aligns with result then use
+        // a cellFactor aggregation as it should be faster.
+        //println("resultCellsize % cellsize == " + ( resultCellsize % cellsize ) );
+        //println("resultXllcorner % cellsize = " + ( resultXllcorner % cellsize ) + ", xllcorner % cellsize = " + ( xllcorner % cellsize ) );
+        //println("resultYllcorner % cellsize = " + ( resultYllcorner % cellsize ) + ", yllcorner % cellsize = " + ( yllcorner % cellsize ) );
+        if (true) {
+            BigDecimal t0 = resultCellsize.divide(
+                    dimensionsCellsize,
+                    Math.max(resultCellsize.scale(), dimensionsCellsize.scale()) + 2,
+                    BigDecimal.ROUND_HALF_EVEN);
+            BigDecimal t1 = resultXMin.divide(
+                    dimensionsCellsize,
+                    Math.max(resultXMin.scale(), dimensionsCellsize.scale()) + 2,
+                    BigDecimal.ROUND_HALF_EVEN);
+            BigDecimal t2 = dimensionsXMin.divide(
+                    dimensionsCellsize,
+                    Math.max(dimensionsXMin.scale(), dimensionsCellsize.scale()) + 2,
+                    BigDecimal.ROUND_HALF_EVEN);
+            BigDecimal t3 = resultYMin.divide(
+                    dimensionsCellsize,
+                    Math.max(resultYMin.scale(), dimensionsCellsize.scale()) + 2,
+                    BigDecimal.ROUND_HALF_EVEN);
+            BigDecimal t4 = dimensionsYMin.divide(
+                    dimensionsCellsize,
+                    Math.max(dimensionsYMin.scale(), dimensionsCellsize.scale()) + 2,
+                    BigDecimal.ROUND_HALF_EVEN);
+            if ((t0.compareTo(new BigDecimal(t0.toBigInteger().toString())) == 0)
+                    && (t1.compareTo(new BigDecimal(t1.toBigInteger().toString())) == t2.compareTo(new BigDecimal(t2.toBigInteger().toString())))
+                    && (t3.compareTo(new BigDecimal(t3.toBigInteger().toString())) == t4.compareTo(new BigDecimal(t4.toBigInteger().toString())))) {
+                int cellFactor = resultCellsize.divide(
                         dimensionsCellsize,
-                        Math.max(resultCellsize.scale(), dimensionsCellsize.scale()) + 2,
-                        BigDecimal.ROUND_HALF_EVEN);
-                BigDecimal t1 = resultXMin.divide(
-                        dimensionsCellsize,
-                        Math.max(resultXMin.scale(), dimensionsCellsize.scale()) + 2,
-                        BigDecimal.ROUND_HALF_EVEN);
-                BigDecimal t2 = dimensionsXMin.divide(
-                        dimensionsCellsize,
-                        Math.max(dimensionsXMin.scale(), dimensionsCellsize.scale()) + 2,
-                        BigDecimal.ROUND_HALF_EVEN);
-                BigDecimal t3 = resultYMin.divide(
-                        dimensionsCellsize,
-                        Math.max(resultYMin.scale(), dimensionsCellsize.scale()) + 2,
-                        BigDecimal.ROUND_HALF_EVEN);
-                BigDecimal t4 = dimensionsYMin.divide(
-                        dimensionsCellsize,
-                        Math.max(dimensionsYMin.scale(), dimensionsCellsize.scale()) + 2,
-                        BigDecimal.ROUND_HALF_EVEN);
-                if ((t0.compareTo(new BigDecimal(t0.toBigInteger().toString())) == 0)
-                        && (t1.compareTo(new BigDecimal(t1.toBigInteger().toString())) == t2.compareTo(new BigDecimal(t2.toBigInteger().toString())))
-                        && (t3.compareTo(new BigDecimal(t3.toBigInteger().toString())) == t4.compareTo(new BigDecimal(t4.toBigInteger().toString())))) {
-                    int cellFactor = resultCellsize.divide(
-                            dimensionsCellsize,
-                            2,
-                            BigDecimal.ROUND_UNNECESSARY).intValue();
-                    int rowOffset = dimensionsYMin.subtract(
-                            resultYMin.divide(
-                                    dimensionsCellsize,
-                                    scale,
-                                    BigDecimal.ROUND_HALF_EVEN)).intValue();
-                    int colOffset = dimensionsXMin.subtract(
-                            resultXMin.divide(
-                                    dimensionsCellsize,
-                                    scale,
-                                    BigDecimal.ROUND_HALF_EVEN)).intValue();
-                    return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gridFactory);
-                }
+                        2,
+                        BigDecimal.ROUND_UNNECESSARY).intValue();
+                int rowOffset = dimensionsYMin.subtract(
+                        resultYMin.divide(
+                                dimensionsCellsize,
+                                scale,
+                                BigDecimal.ROUND_HALF_EVEN)).intValue();
+                int colOffset = dimensionsXMin.subtract(
+                        resultXMin.divide(
+                                dimensionsCellsize,
+                                scale,
+                                BigDecimal.ROUND_HALF_EVEN)).intValue();
+                return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gridFactory);
             }
-            // Calculate resultNrows and resultHeight
-            long resultNrows = 1L;
-            BigDecimal resultHeight = new BigDecimal(resultCellsize.toString());
-            //double resultHeight = resultCellsize;
-            while (resultYMin.add(resultHeight).compareTo(dimensionsYMax) == -1) {
-                resultNrows++;
-                resultHeight = resultHeight.add(resultCellsize);
-            }
-            //while ( ( resultYllcorner + resultHeight ) < ( yllcorner + height ) ) {
-            //    resultNrows ++;
-            //    resultHeight += resultCellsize;
-            //}
-            // Calculate resultNcols and resultWidth
-            long resultNcols = 1L;
-            BigDecimal resultWidth = new BigDecimal(resultCellsize.toString());
-            //double resultWidth = resultCellsize;
-            while (resultXMin.add(resultWidth).compareTo(dimensionsXMax) == -1) {
-                resultNrows++;
-                resultWidth = resultWidth.add(resultCellsize);
-            }
-            //while ( ( resultXllcorner + resultWidth ) < ( xllcorner + width ) ) {
-            //    resultNcols ++;
-            //    resultWidth += resultCellsize;
-            //}
-            resultXMax = dimensionsXMin.add(resultWidth);
-            resultYMax = dimensionsYMin.add(resultHeight);
+        }
+        // Calculate resultNrows and resultHeight
+        long resultNrows = 1L;
+        BigDecimal resultHeight = new BigDecimal(resultCellsize.toString());
+        //double resultHeight = resultCellsize;
+        while (resultYMin.add(resultHeight).compareTo(dimensionsYMax) == -1) {
+            resultNrows++;
+            resultHeight = resultHeight.add(resultCellsize);
+        }
+        //while ( ( resultYllcorner + resultHeight ) < ( yllcorner + height ) ) {
+        //    resultNrows ++;
+        //    resultHeight += resultCellsize;
+        //}
+        // Calculate resultNcols and resultWidth
+        long resultNcols = 1L;
+        BigDecimal resultWidth = new BigDecimal(resultCellsize.toString());
+        //double resultWidth = resultCellsize;
+        while (resultXMin.add(resultWidth).compareTo(dimensionsXMax) == -1) {
+            resultNrows++;
+            resultWidth = resultWidth.add(resultCellsize);
+        }
+        //while ( ( resultXllcorner + resultWidth ) < ( xllcorner + width ) ) {
+        //    resultNcols ++;
+        //    resultWidth += resultCellsize;
+        //}
+        resultXMax = dimensionsXMin.add(resultWidth);
+        resultYMax = dimensionsYMin.add(resultHeight);
 
-            // Initialise result
-            gridFactory.setNoDataValue(noDataValue);
-            Grids_GridDouble result;
-            result = (Grids_GridDouble) gridFactory.create(
+        // Initialise result
+        gridFactory.setNoDataValue(noDataValue);
+        Grids_GridDouble result;
+        result = (Grids_GridDouble) gridFactory.create(
+                resultNrows, resultNcols, resultDimensions);
+
+        long row;
+        long col;
+        double x;
+        double y;
+        double value;
+
+        double cellsize = dimensionsCellsize.doubleValue();
+        double resultCellsized = resultCellsize.doubleValue();
+
+        // sum
+        if (statistic.equalsIgnoreCase("sum")) {
+            Grids_GridDouble totalValueArea;
+            totalValueArea = (Grids_GridDouble) gridFactory.create(
                     resultNrows, resultNcols, resultDimensions);
+            double areaProportion;
+            double[] bounds;
+            Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
+            double halfCellsize = grid.getCellsizeDouble() / 2.0d;
+            double count0;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
+                    cellIDs[0] = result.getCellID(bounds[0], bounds[3]);
+                    cellIDs[1] = result.getCellID(bounds[2], bounds[3]);
+                    cellIDs[2] = result.getCellID(bounds[0], bounds[1]);
+                    cellIDs[3] = result.getCellID(bounds[2], bounds[1]);
+                    value = grid.getCellDouble(row, col);
+                    if (value != noDataValue) {
+                        if (cellIDs[0].equals(cellIDs[1]) && cellIDs[1].equals(cellIDs[2])) {
+                            result.addToCell(cellIDs[0], value);
+                            totalValueArea.addToCell(cellIDs[0], 1.0d);
+                        } else {
+                            if (cellIDs[0].equals(cellIDs[1]) || cellIDs[0].equals(cellIDs[2])) {
+                                if (cellIDs[0].equals(cellIDs[1])) {
+                                    areaProportion = (Math.abs(bounds[3]
+                                            - (result.getCellYDouble(cellIDs[0]) - (resultCellsized / 2.0d))) * cellsize) / (cellsize * cellsize);
+                                } else {
+                                    areaProportion = (Math.abs((result.getCellXDouble(cellIDs[0]) + (resultCellsized / 2.0d)) - bounds[0]) * cellsize) / (cellsize * cellsize);
+                                }
+                            } else {
+                                areaProportion = ((Math.abs(bounds[3] - (result.getCellYDouble(cellIDs[0]) - (resultCellsized / 2.0d))) * Math.abs((result.getCellXDouble(cellIDs[0]) + (resultCellsized / 2.0d)) - bounds[0])) / (cellsize * cellsize));
+                            }
+                            result.addToCell(cellIDs[0], value * areaProportion);
+                            totalValueArea.addToCell(cellIDs[0], areaProportion);
+                        }
+                        if (!cellIDs[1].equals(cellIDs[0])) {
+                            if (cellIDs[1].equals(cellIDs[3])) {
+                                areaProportion = (Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[1]) - (resultCellsized / 2.0d))) * cellsize) / (cellsize * cellsize);
+                            } else {
+                                areaProportion = ((Math.abs(bounds[3] - (result.getCellYDouble(cellIDs[1]) - (resultCellsized / 2.0d))) * Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[1]) - (resultCellsized / 2.0d)))) / (cellsize * cellsize));
+                            }
+                            result.addToCell(cellIDs[1], value * areaProportion);
+                            totalValueArea.addToCell(cellIDs[0], areaProportion);
+                        }
+                        if (!cellIDs[2].equals(cellIDs[0])) {
+                            if (!cellIDs[2].equals(cellIDs[3])) {
+                                areaProportion = (Math.abs((result.getCellYDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[1]) * cellsize) / (cellsize * cellsize);
+                            } else {
+                                areaProportion = ((Math.abs((result.getCellYDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[1]) * Math.abs((result.getCellXDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[0])) / (cellsize * cellsize));
+                            }
+                            result.addToCell(cellIDs[2], value * areaProportion);
+                        }
+                        if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3].equals(cellIDs[2])) {
+                            areaProportion = ((Math.abs((result.getCellYDouble(cellIDs[3]) + (resultCellsized / 2.0d)) - bounds[1]) * Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[3]) - (resultCellsized / 2.0d)))) / (cellsize * cellsize));
+                            result.addToCell(cellIDs[3], value * areaProportion);
+                            totalValueArea.addToCell(cellIDs[0], areaProportion);
+                        }
+                    }
+                }
+            }
+            // Normalise
+            double totalValueArea0;
+            for (row = 0; row < resultNrows; row++) {
+                for (col = 0; col < resultNcols; col++) {
+                    totalValueArea0 = totalValueArea.getCell(row, col);
+                    if (totalValueArea0 != 0.0d) {
+                        result.setCell(row, col, ((result.getCell(row, col) * ((resultCellsized - cellsize) * (resultCellsized - cellsize))) / totalValueArea.getCell(row, col)));
+                    }
+                }
+            }
 
-            long row;
-            long col;
-            double x;
-            double y;
-            double value;
+        }
+        //        // Add the nearest values for the noDataValues so long as there is a value
+        //            for ( int i = 0; i < nrows; i ++ ) {
+        //                for ( int j = 0; j < ncols; j ++ ) {
+        //                    bounds = grid.getCellBounds( i, j );
+        //                    cellID1 = result.getCellID( bounds[ 0 ], bounds[ 3 ] );
+        //                    cellID2 = result.getCellID( bounds[ 2 ], bounds[ 3 ] );
+        //                    cellID3 = result.getCellID( bounds[ 0 ], bounds[ 1 ] );
+        //                    cellID4 = result.getCellID( bounds[ 2 ], bounds[ 1 ] );
+        //                    if ( dataCount.getCell( bounds[ 0 ], bounds[ 3 ] ) != noDataValue ||
+        //                    dataCount.getCell( bounds[ 2 ], bounds[ 3 ] ) != noDataValue ||
+        //                    dataCount.getCell( bounds[ 0 ], bounds[ 1 ] ) != noDataValue ||
+        //                    dataCount.getCell( bounds[ 2 ], bounds[ 1 ] ) != noDataValue ) {
+        //                        value = grid.getNearestValueDouble( i, j );
+        //                        if ( cellID1 == cellID2 && cellID2 == cellID3 ) {
+        //                            if ( cellID1 != Integer.MIN_VALUE ) {
+        //                                result.addToCell( cellID1, value );
+        //                            }
+        //                        } else {
+        //                            if ( cellID1 != Integer.MIN_VALUE ) {
+        //                                if ( cellID1 == cellID2 || cellID1 == cellID3 ) {
+        //                                    if ( cellID1 == cellID2 ) {
+        //                                        areaProportion = ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
+        //                                    } else {
+        //                                        areaProportion = ( Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) * cellsize ) / ( cellsize * cellsize );
+        //                                    }
+        //                                } else {
+        //                                    areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
+        //                                }
+        //                                result.addToCell( cellID1, value * areaProportion );
+        //                            }
+        //                            if ( cellID2 != Integer.MIN_VALUE ) {
+        //                                if ( cellID2 != cellID1 ) {
+        //                                    if ( cellID2 == cellID4 ) {
+        //                                        areaProportion = ( Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
+        //                                    } else {
+        //                                        areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
+        //                                    }
+        //                                    result.addToCell( cellID2, value * areaProportion );
+        //                                }
+        //                            }
+        //                            if ( cellID3 != Integer.MIN_VALUE ) {
+        //                                if ( cellID3 != cellID1 ) {
+        //                                    if ( cellID3 == cellID4 ) {
+        //                                        areaProportion = ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * cellsize ) / ( cellsize * cellsize );
+        //                                    } else {
+        //                                        areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( ( result.getCellXDouble( cellID3 ) + ( resultCellsize / 2.0d) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
+        //                                    }
+        //                                    result.addToCell( cellID3, value * areaProportion );
+        //                                }
+        //                            }
+        //                            if ( cellID4 != Integer.MIN_VALUE ) {
+        //                                if ( cellID4 != cellID2 && cellID4 != cellID3 ) {
+        //                                    areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID4 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID4 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
+        //                                    result.addToCell( cellID4, value * areaProportion );
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
 
-            double cellsize = dimensionsCellsize.doubleValue();
-            double resultCellsized = resultCellsize.doubleValue();
+        // mean
+        if (statistic.equalsIgnoreCase("mean")) {
+            double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
+            Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory);
+            addToGrid(result, sum, 1.0d / denominator);
+        }
 
-            // sum
-            if (statistic.equalsIgnoreCase("sum")) {
-                Grids_GridDouble totalValueArea;
-                totalValueArea = (Grids_GridDouble) gridFactory.create(
-                        resultNrows, resultNcols, resultDimensions);
-                double areaProportion;
-                double[] bounds;
-                Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
-                double halfCellsize = grid.getCellsizeDouble() / 2.0d;
-                double count0;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
+        // max
+        if (statistic.equalsIgnoreCase("max")) {
+            double max;
+            double[] bounds;
+            double halfCellsize = grid.getCellsizeDouble() / 2.0d;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    value = grid.getCellDouble(row, col);
+                    if (value != noDataValue) {
+                        x = grid.getCellXDouble(col);
+                        y = grid.getCellYDouble(row);
                         bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
-                        cellIDs[0] = result.getCellID(bounds[0], bounds[3]);
-                        cellIDs[1] = result.getCellID(bounds[2], bounds[3]);
-                        cellIDs[2] = result.getCellID(bounds[0], bounds[1]);
-                        cellIDs[3] = result.getCellID(bounds[2], bounds[1]);
-                        value = grid.getCellDouble(row, col);
-                        if (value != noDataValue) {
-                            if (cellIDs[0].equals(cellIDs[1]) && cellIDs[1].equals(cellIDs[2])) {
-                                result.addToCell(cellIDs[0], value);
-                                totalValueArea.addToCell(cellIDs[0], 1.0d);
-                            } else {
-                                if (cellIDs[0].equals(cellIDs[1]) || cellIDs[0].equals(cellIDs[2])) {
-                                    if (cellIDs[0].equals(cellIDs[1])) {
-                                        areaProportion = (Math.abs(bounds[3]
-                                                - (result.getCellYDouble(cellIDs[0]) - (resultCellsized / 2.0d))) * cellsize) / (cellsize * cellsize);
-                                    } else {
-                                        areaProportion = (Math.abs((result.getCellXDouble(cellIDs[0]) + (resultCellsized / 2.0d)) - bounds[0]) * cellsize) / (cellsize * cellsize);
-                                    }
-                                } else {
-                                    areaProportion = ((Math.abs(bounds[3] - (result.getCellYDouble(cellIDs[0]) - (resultCellsized / 2.0d))) * Math.abs((result.getCellXDouble(cellIDs[0]) + (resultCellsized / 2.0d)) - bounds[0])) / (cellsize * cellsize));
-                                }
-                                result.addToCell(cellIDs[0], value * areaProportion);
-                                totalValueArea.addToCell(cellIDs[0], areaProportion);
-                            }
-                            if (!cellIDs[1].equals(cellIDs[0])) {
-                                if (cellIDs[1].equals(cellIDs[3])) {
-                                    areaProportion = (Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[1]) - (resultCellsized / 2.0d))) * cellsize) / (cellsize * cellsize);
-                                } else {
-                                    areaProportion = ((Math.abs(bounds[3] - (result.getCellYDouble(cellIDs[1]) - (resultCellsized / 2.0d))) * Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[1]) - (resultCellsized / 2.0d)))) / (cellsize * cellsize));
-                                }
-                                result.addToCell(cellIDs[1], value * areaProportion);
-                                totalValueArea.addToCell(cellIDs[0], areaProportion);
-                            }
-                            if (!cellIDs[2].equals(cellIDs[0])) {
-                                if (!cellIDs[2].equals(cellIDs[3])) {
-                                    areaProportion = (Math.abs((result.getCellYDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[1]) * cellsize) / (cellsize * cellsize);
-                                } else {
-                                    areaProportion = ((Math.abs((result.getCellYDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[1]) * Math.abs((result.getCellXDouble(cellIDs[2]) + (resultCellsized / 2.0d)) - bounds[0])) / (cellsize * cellsize));
-                                }
-                                result.addToCell(cellIDs[2], value * areaProportion);
-                            }
-                            if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3].equals(cellIDs[2])) {
-                                areaProportion = ((Math.abs((result.getCellYDouble(cellIDs[3]) + (resultCellsized / 2.0d)) - bounds[1]) * Math.abs(bounds[2] - (result.getCellXDouble(cellIDs[3]) - (resultCellsized / 2.0d)))) / (cellsize * cellsize));
-                                result.addToCell(cellIDs[3], value * areaProportion);
-                                totalValueArea.addToCell(cellIDs[0], areaProportion);
-                            }
+                        max = result.getCell(bounds[0], bounds[3]);
+                        if (max != noDataValue) {
+                            result.setCell(bounds[0], bounds[3], Math.max(max, value));
+                        } else {
+                            result.setCell(bounds[0], bounds[3], value);
                         }
-                    }
-                }
-                // Normalise
-                double totalValueArea0;
-                for (row = 0; row < resultNrows; row++) {
-                    for (col = 0; col < resultNcols; col++) {
-                        totalValueArea0 = totalValueArea.getCell(row, col);
-                        if (totalValueArea0 != 0.0d) {
-                            result.setCell(row, col, ((result.getCell(row, col) * ((resultCellsized - cellsize) * (resultCellsized - cellsize))) / totalValueArea.getCell(row, col)));
+                        max = result.getCell(bounds[2], bounds[3]);
+                        if (max != noDataValue) {
+                            result.setCell(bounds[2], bounds[3], Math.max(max, value));
+                        } else {
+                            result.setCell(bounds[2], bounds[3], value);
                         }
-                    }
-                }
-
-            }
-            //        // Add the nearest values for the noDataValues so long as there is a value
-            //            for ( int i = 0; i < nrows; i ++ ) {
-            //                for ( int j = 0; j < ncols; j ++ ) {
-            //                    bounds = grid.getCellBounds( i, j );
-            //                    cellID1 = result.getCellID( bounds[ 0 ], bounds[ 3 ] );
-            //                    cellID2 = result.getCellID( bounds[ 2 ], bounds[ 3 ] );
-            //                    cellID3 = result.getCellID( bounds[ 0 ], bounds[ 1 ] );
-            //                    cellID4 = result.getCellID( bounds[ 2 ], bounds[ 1 ] );
-            //                    if ( dataCount.getCell( bounds[ 0 ], bounds[ 3 ] ) != noDataValue ||
-            //                    dataCount.getCell( bounds[ 2 ], bounds[ 3 ] ) != noDataValue ||
-            //                    dataCount.getCell( bounds[ 0 ], bounds[ 1 ] ) != noDataValue ||
-            //                    dataCount.getCell( bounds[ 2 ], bounds[ 1 ] ) != noDataValue ) {
-            //                        value = grid.getNearestValueDouble( i, j );
-            //                        if ( cellID1 == cellID2 && cellID2 == cellID3 ) {
-            //                            if ( cellID1 != Integer.MIN_VALUE ) {
-            //                                result.addToCell( cellID1, value );
-            //                            }
-            //                        } else {
-            //                            if ( cellID1 != Integer.MIN_VALUE ) {
-            //                                if ( cellID1 == cellID2 || cellID1 == cellID3 ) {
-            //                                    if ( cellID1 == cellID2 ) {
-            //                                        areaProportion = ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
-            //                                    } else {
-            //                                        areaProportion = ( Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) * cellsize ) / ( cellsize * cellsize );
-            //                                    }
-            //                                } else {
-            //                                    areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
-            //                                }
-            //                                result.addToCell( cellID1, value * areaProportion );
-            //                            }
-            //                            if ( cellID2 != Integer.MIN_VALUE ) {
-            //                                if ( cellID2 != cellID1 ) {
-            //                                    if ( cellID2 == cellID4 ) {
-            //                                        areaProportion = ( Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
-            //                                    } else {
-            //                                        areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
-            //                                    }
-            //                                    result.addToCell( cellID2, value * areaProportion );
-            //                                }
-            //                            }
-            //                            if ( cellID3 != Integer.MIN_VALUE ) {
-            //                                if ( cellID3 != cellID1 ) {
-            //                                    if ( cellID3 == cellID4 ) {
-            //                                        areaProportion = ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * cellsize ) / ( cellsize * cellsize );
-            //                                    } else {
-            //                                        areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( ( result.getCellXDouble( cellID3 ) + ( resultCellsize / 2.0d) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
-            //                                    }
-            //                                    result.addToCell( cellID3, value * areaProportion );
-            //                                }
-            //                            }
-            //                            if ( cellID4 != Integer.MIN_VALUE ) {
-            //                                if ( cellID4 != cellID2 && cellID4 != cellID3 ) {
-            //                                    areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID4 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID4 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
-            //                                    result.addToCell( cellID4, value * areaProportion );
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-
-            // mean
-            if (statistic.equalsIgnoreCase("mean")) {
-                double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
-                Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory);
-                addToGrid(result, sum, 1.0d / denominator);
-            }
-
-            // max
-            if (statistic.equalsIgnoreCase("max")) {
-                double max;
-                double[] bounds;
-                double halfCellsize = grid.getCellsizeDouble() / 2.0d;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        value = grid.getCellDouble(row, col);
-                        if (value != noDataValue) {
-                            x = grid.getCellXDouble(col);
-                            y = grid.getCellYDouble(row);
-                            bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
-                            max = result.getCell(bounds[0], bounds[3]);
-                            if (max != noDataValue) {
-                                result.setCell(bounds[0], bounds[3], Math.max(max, value));
-                            } else {
-                                result.setCell(bounds[0], bounds[3], value);
-                            }
-                            max = result.getCell(bounds[2], bounds[3]);
-                            if (max != noDataValue) {
-                                result.setCell(bounds[2], bounds[3], Math.max(max, value));
-                            } else {
-                                result.setCell(bounds[2], bounds[3], value);
-                            }
-                            max = result.getCell(bounds[0], bounds[1]);
-                            if (max != noDataValue) {
-                                result.setCell(bounds[0], bounds[1], Math.max(max, value));
-                            } else {
-                                result.setCell(bounds[0], bounds[1], value);
-                            }
-                            max = result.getCell(bounds[2], bounds[1]);
-                            if (max != noDataValue) {
-                                result.setCell(bounds[2], bounds[1], Math.max(max, value));
-                            } else {
-                                result.setCell(bounds[2], bounds[1], value);
-                            }
+                        max = result.getCell(bounds[0], bounds[1]);
+                        if (max != noDataValue) {
+                            result.setCell(bounds[0], bounds[1], Math.max(max, value));
+                        } else {
+                            result.setCell(bounds[0], bounds[1], value);
+                        }
+                        max = result.getCell(bounds[2], bounds[1]);
+                        if (max != noDataValue) {
+                            result.setCell(bounds[2], bounds[1], Math.max(max, value));
+                        } else {
+                            result.setCell(bounds[2], bounds[1], value);
                         }
                     }
                 }
             }
+        }
 
-            // min
-            if (statistic.equalsIgnoreCase("min")) {
-                double min;
-                double[] bounds;
-                double halfCellsize = grid.getCellsizeDouble() / 2.0d;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        value = grid.getCellDouble(row, col);
-                        if (value != noDataValue) {
-                            x = grid.getCellXDouble(col);
-                            y = grid.getCellYDouble(row);
-                            bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
-                            min = result.getCell(bounds[0], bounds[3]);
-                            if (min != noDataValue) {
-                                result.setCell(bounds[0], bounds[3], Math.min(min, value));
-                            } else {
-                                result.setCell(bounds[0], bounds[3], value);
-                            }
-                            min = result.getCell(bounds[2], bounds[3]);
-                            if (min != noDataValue) {
-                                result.setCell(bounds[2], bounds[3], Math.min(min, value));
-                            } else {
-                                result.setCell(bounds[2], bounds[3], value);
-                            }
-                            min = result.getCell(bounds[0], bounds[1]);
-                            if (min != noDataValue) {
-                                result.setCell(bounds[0], bounds[1], Math.min(min, value));
-                            } else {
-                                result.setCell(bounds[0], bounds[1], value);
-                            }
-                            min = result.getCell(bounds[2], bounds[1]);
-                            if (min != noDataValue) {
-                                result.setCell(bounds[2], bounds[1], Math.min(min, value));
-                            } else {
-                                result.setCell(bounds[2], bounds[1], value);
-                            }
+        // min
+        if (statistic.equalsIgnoreCase("min")) {
+            double min;
+            double[] bounds;
+            double halfCellsize = grid.getCellsizeDouble() / 2.0d;
+            for (row = 0; row < nrows; row++) {
+                for (col = 0; col < ncols; col++) {
+                    value = grid.getCellDouble(row, col);
+                    if (value != noDataValue) {
+                        x = grid.getCellXDouble(col);
+                        y = grid.getCellYDouble(row);
+                        bounds = grid.getCellBoundsDoubleArray(halfCellsize, row, col);
+                        min = result.getCell(bounds[0], bounds[3]);
+                        if (min != noDataValue) {
+                            result.setCell(bounds[0], bounds[3], Math.min(min, value));
+                        } else {
+                            result.setCell(bounds[0], bounds[3], value);
+                        }
+                        min = result.getCell(bounds[2], bounds[3]);
+                        if (min != noDataValue) {
+                            result.setCell(bounds[2], bounds[3], Math.min(min, value));
+                        } else {
+                            result.setCell(bounds[2], bounds[3], value);
+                        }
+                        min = result.getCell(bounds[0], bounds[1]);
+                        if (min != noDataValue) {
+                            result.setCell(bounds[0], bounds[1], Math.min(min, value));
+                        } else {
+                            result.setCell(bounds[0], bounds[1], value);
+                        }
+                        min = result.getCell(bounds[2], bounds[1]);
+                        if (min != noDataValue) {
+                            result.setCell(bounds[2], bounds[1], Math.min(min, value));
+                        } else {
+                            result.setCell(bounds[2], bounds[1], value);
                         }
                     }
                 }
             }
+        }
 
-            /*
+        /*
              // Initialistaion
              int nrows = grid.getNRows();
              int ncols = grid.getNCols();
@@ -2632,250 +2695,32 @@ public class Grids_Processor extends Grids_Object {
              }
              }
              }
-             */
-            ge.checkAndMaybeFreeMemory();
-            return result;
-    }
-
-    //    TODO: Move to a Extended Stats class
-    //    /**
-    //     * Returns a double global statistic for an Grids_GridDouble grid
-    //     * NB. Only for _AbstractGrid2DSquareCell_HashSet in the same spatial frame.
-    //     */
-    //    public double globalBivariateStatistics( Grids_GridDouble grid0, Grids_GridDouble grid1, String comparator  ) {
-    //        // Initialisation
-    //        int grid0Nrows = grid0.getNRows();
-    //        int grid0Ncols = grid0.getNCols();
-    //        double grid0Xllcorner = grid0.getXllcorner();
-    //        double grid0Yllcorner = grid0.getYllcorner();
-    //        double grid0Cellsize = grid0.getCellsize();
-    //        double grid0NoDataValue = grid0.getNoDataValue();
-    //        int grid1Nrows = grid1.getNRows();
-    //        int grid1Ncols = grid1.getNCols();
-    //        double grid1Xllcorner = grid1.getXllcorner();
-    //        double grid1Yllcorner = grid1.getYllcorner();
-    //        double grid1Cellsize = grid1.getCellsize();
-    //        double grid1NoDataValue = grid1.getNoDataValue();
-    //        AbstractGridStatistics grid0Statistics = grid0.getStats();
-    //        AbstractGridStatistics grid1Statistics = grid1.getStats();
-    //        // TODO: Check spatial frame
-    //
-    //        // Calculation
-    //        double thisDistance;
-    //        double x0;
-    //        double x1;
-    //        double y0;
-    //        double y1;
-    //        double value0;
-    //        double value1;
-    //        // diff: The sum of all the differences between the grid cells
-    //        if ( comparator.equalsIgnoreCase( "diff" ) ) {
-    //            double diff = 0.0d;
-    //            for ( int i = 0; i < grid0Nrows; i ++ ) {
-    //                for ( int j = 0; j < grid0Ncols; j ++ ) {
-    //                    value0 = grid0.getCell( i, j );
-    //                    if ( value0 != grid0NoDataValue ) {
-    //                        value1 = grid0.getCell( i, j );
-    //                        if ( value1 != grid1NoDataValue ) {
-    //                            diff += ( value0 - value1 );
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //            return diff;
-    //        }
-    //
-    //        // abs: The sum of all the absolute differences between the grid cells
-    //        if ( comparator.equalsIgnoreCase( "abs" ) ) {
-    //            double abs = 0.0d;
-    //            for ( int i = 0; i < grid0Nrows; i ++ ) {
-    //                for ( int j = 0; j < grid0Ncols; j ++ ) {
-    //                    value0 = grid0.getCell( i, j );
-    //                    if ( value0 != grid0NoDataValue ) {
-    //                        value1 = grid0.getCell( i, j );
-    //                        if ( value1 != grid1NoDataValue ) {
-    //                            abs += Math.abs( value0 - value1 );
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //            return abs;
-    //        }
-    //
-    //        // pearsons: The persons correlation coefficient
-    //        if ( comparator.equalsIgnoreCase( "pearsons" ) ) {
-    //            double pearsons = grid0NoDataValue;
-    //            double sum0 = 0.0d;
-    //            double sum1 = 0.0d;
-    //            double sum0Squared = 0.0d;
-    //            double sum1Squared = 0.0d;
-    //            double sum01 = 0.0d;
-    //            double n = 0.0d;
-    //            for ( int i = 0; i < grid0Nrows; i ++ ) {
-    //                for ( int j = 0; j < grid0Ncols; j ++ ) {
-    //                    value0 = grid0.getCell( i, j );
-    //                    value1 = grid1.getCell( i, j );
-    //                    if ( value0 != grid0NoDataValue && value1 != grid0NoDataValue ) {
-    //                        sum0 += value0;
-    //                        sum1 += value1;
-    //                        sum0Squared += Math.pow( value0, 2.0d );
-    //                        sum1Squared += Math.pow( value1, 2.0d );
-    //                        sum01 += value0 * value1;
-    //                        n += 1.0d;
-    //                    }
-    //                }
-    //            }
-    //            double numerator = ( n * sum01 ) - ( sum0 * sum1 );
-    //            double denominator = Math.sqrt( Math.abs( (  ( n * sum0Squared ) - Math.pow( sum0, 2.0d )  ) * ( ( n * sum1Squared ) - Math.pow( sum1, 2.0d ) ) ) );
-    //            if ( denominator != 0.0d ) {
-    //                pearsons = numerator / denominator;
-    //            }
-    //            return pearsons;
-    //        }
-    //
-    //        // momentcorrelation: The moment correlation coefficient
-    //        if ( comparator.equalsIgnoreCase( "momentCorrelation" ) ) {
-    //            double momentCorrelation = grid0NoDataValue;
-    //            double mean0 = grid0Statistics.getMean();
-    //            double mean1 = grid1Statistics.getMean();
-    //            double sd0 = 0.0d;
-    //            double sd1 = 0.0d;
-    //            double m01 = 0.0d;
-    //            double n = 0.0d;
-    //            double denominator;
-    //            for ( int i = 0; i < grid0Nrows; i ++ ) {
-    //                for ( int j = 0; j < grid0Ncols; j ++ ) {
-    //                    value0 = grid0.getCell( i, j );
-    //                    value1 = grid1.getCell( i, j );
-    //                    if ( value0 != grid0NoDataValue && value1 != grid1NoDataValue ) {
-    //                        n += 1.0d;
-    //                        sd0 += Math.pow( value0 - mean0, 2.0d );
-    //                        sd1 += Math.pow( value1 - mean1, 2.0d );
-    //                        m01 += ( value0 - mean0 ) * ( value1 - mean1 );
-    //                    }
-    //                }
-    //            }
-    //            denominator = Math.sqrt( sd0 ) * Math.sqrt( sd1 );
-    //            if ( denominator != 0.0d ) {
-    //                momentCorrelation = m01 / denominator;
-    //            }
-    //            return momentCorrelation;
-    //        }
-    //        return grid0NoDataValue;
-    //    }
-    //    /**
-    //     * Returns a new Grids_GridDouble the values of which are the distance to the nearest data value
-    //     * TODO: Optimise as it is currently very slow and inefficient!!!
-    //     * @param hoome If true then OutOfMemoryErrors are caught
-    //     *   in this method then swap operations are initiated prior to retrying.
-    //     *   If false then OutOfMemoryErrors are caught and thrown.
-    //     */
-    //    public Grids_GridDouble distanceToDataValue( Grids_GridDouble grid0, Grids_GridDoubleFactory gridFactory, boolean hoome ) {
-    //        long nrows = grid0.getNRows();
-    //        long ncols = grid0.getNCols();
-    //        BigDecimal[] dimensions0 = grid0.getDimensions();
-    //        double noDataValue = grid0.getNoDataValue();
-    //        Grids_GridDouble result = gridFactory.create( grid0.getChunkNRows(hoomeFalse), grid0.getChunkNCols(hoomeFalse), nrows, ncols, dimensions0, noDataValue );
-    //        // Calculate distances
-    //        long row;
-    //        long col;
-    //        for ( row = 0; row < nrows; row ++ ) {
-    //            for ( col = 0; col < ncols; col ++ ) {
-    //                result.setCell( row, col, grid0.getNearestValueDoubleDistance( row, col, hoome ), hoome );
-    //            }
-    //        }
-    //        return result;
-    //    }
-    //    TODO:
-    //    /**
-    //     * Returns a new Grids_GridDouble which is a copy of grid0 but
-    //     * with all noDataValues replaced as follows:
-    //     * At each iteration we deal with the nearest band of noDataValues.
-    //     * (NB. If we dealt only with the nearest noDataValues it may take a very long time to compute!)
-    //     * We replace these nearest noDataValues with the average values within distance.
-    //     * We then repeat until all cells have a value.
-    //     */
-    //    public Grids_GridDouble replaceNoDataValues( Grids_GridDouble grid0, double distance, Grids_GridDoubleFactory gridFactory ) {
-    //        long nrows = grid0.getNRows();
-    //        long ncols = grid0.getNCols();
-    //        BigDecimal[] dimensions = grid0.getDimensions();
-    //        double noDataValue = grid0.getNoDataValue();
-    //        Grids_GridDouble temp1 = gridFactory.createGrid2DSquareCellDouble( grid0 );
-    //        Grids_GridDouble temp2 = gridFactory.createGrid2DSquareCellDouble( grid0 );
-    //        // Get distances
-    //        Grids_GridDouble distanceGrid = distanceToDataValue( grid0, gridFactory );
-    //        AbstractGridStatistics distanceGridStatistics = distanceGrid.getStats();
-    //        double maxDistance = distanceGridStatistics.getMax();
-    //
-    //        AbstractGrid2DSquareCellDouble[] geometricDensity = Grids_ProcessorGWS.geometricDensity( grid0, maxDistance, gridFactory );
-    //        //return geometricDensity[ geometricDensity.length - 1 ];
-    //        return geometricDensity[ geometricDensity.length / 2 ];
-    //        /*
-    //        int maxCellDistance = ( int ) Math.ceil( maxDistance / cellsize );
-    //        boolean alternator = true;
-    //        Grids_GridDouble thisGrid = null;
-    //        Grids_GridDouble thatGrid = null;
-    //        double thisValue;
-    //        double thatValue;
-    //        double thisDistance;
-    //        for ( int iterations = 1; iterations <= maxCellDistance; iterations ++ ) {
-    //            for ( int i = 0; i < nrows; i ++ ) {
-    //                for ( int j = 0; j < ncols; j ++ ) {
-    //                    thisValue = thisGrid.getCell( i, j );
-    //                    thatValue = thatGrid.getCell( i, j );
-    //                    thisDistance = distanceGrid.getCell( i, j );
-    //                    if ( thatValue != noDataValue ) {
-    //                        thisGrid.setCell( i, j, thatValue );
-    //                    } else {
-    //                        if ( thatValue == noDataValue && thisDistance < ( iterations * cellsize ) ) {
-    //                            thisGrid.setCell( i, j, Grids_Processor.regionUnivariateStatistics( thatGrid, i, j, "mean", distance, 1.0d, 1.0d, gridFactory ) );
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        thatGrid.clear();
-    //        return thisGrid;
-    //         */
-    //
-    //    }
-    /**
-     * Shuffles dummyDiff numberOfShuffles places
-     */
-    private void shuffle(double[] dummyDiff, double[] diff, int numberOfShuffles) {
-        for (int i = 0; i < dummyDiff.length - numberOfShuffles; i++) {
-            dummyDiff[i] = diff[i + numberOfShuffles];
-        }
-        for (int i = dummyDiff.length - 1; i > dummyDiff.length - 1 + numberOfShuffles; i--) {
-            dummyDiff[i] = diff[i - dummyDiff.length + numberOfShuffles];
-        }
+         */
+        ge.checkAndMaybeFreeMemory();
+        return result;
     }
 
     /**
      * Returns a double[][] of grid values
      *
-     * @param grid
+     * @param g
      * @param row
      * @param cellDistance
      * @return
      */
     protected double[][] getRowProcessInitialData(
-            Grids_GridDouble grid,
+            Grids_GridDouble g,
             int cellDistance,
             long row) {
-        double[][] result = new double[(cellDistance * 2) + 1][(cellDistance * 2) + 1];
+        int l = (cellDistance * 2) + 1;
+        double[][] result = new double[l][l];
         long col;
         long r;
         for (r = -cellDistance; r <= cellDistance; r++) {
             for (col = -cellDistance; col <= cellDistance; col++) {
-                try {
-                    double value = grid.getCell(r + row, col);
-                    result[(int) r + cellDistance][(int) col + cellDistance]
-                            = value;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    int debug = 1;
-                    double value = grid.getCell(r + row, col);
-                }
+                double value = g.getCell(r + row, col);
+                result[(int) r + cellDistance][(int) col + cellDistance]
+                        = value;
             }
         }
         return result;
@@ -2884,7 +2729,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Returns a double[][] based on previous which has been shuffled
      *
-     * @param grid
+     * @param g
      * @param col
      * @param previous
      * @param cellDistance
@@ -2892,14 +2737,14 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessData(
-            Grids_GridDouble grid,
+            Grids_GridDouble g,
             double[][] previous,
             int cellDistance,
             long row,
             long col) {
         double[][] result = previous;
         if (col == 0) {
-            return getRowProcessInitialData(grid, cellDistance, row);
+            return getRowProcessInitialData(g, cellDistance, row);
         } else {
             // shift columns one left
             for (int i = 0; i <= cellDistance * 2; i++) {
@@ -2910,66 +2755,28 @@ public class Grids_Processor extends Grids_Object {
             // getLastColumn
             for (int i = -cellDistance; i <= cellDistance; i++) {
                 result[i + cellDistance][cellDistance * 2]
-                        = grid.getCell((long) i + row, (long) col + cellDistance);
+                        = g.getCell((long) i + row, (long) col + cellDistance);
             }
         }
         return result;
     }
 
-    //    // TODO:
-    //    // tests
-    //    private double[][] getChunkProcessInitialData( Grids_GridDouble grid, int chunkCells, int rowChunk ) {
-    //        double[][] result = new double[ chunkCells * 3 ][ chunkCells * 3 ];
-    //        for ( int i = -chunkCells; i <= ( chunkCells * 2 ) - 1; i ++ ) {
-    //            for ( int j = -chunkCells; j <= ( chunkCells * 2 ) - 1; j ++ ) {
-    //                result[ i + chunkCells ][ j + chunkCells ] = grid.getCell( i + ( rowChunk * chunkCells ), j );
-    //            }
-    //        }
-    //        return result;
-    //    }
-    //
-    //    // Needs testing!!
-    //    private double[][] getChunkProcessData( Grids_GridDouble grid, double[][] previous, int chunkCells, int rowChunk, int colChunk ) {
-    //        double[][] result = previous;
-    //        if ( colChunk == 0 ) {
-    //            return getRowProcessInitialData( grid, chunkCells, rowChunk );
-    //        } else {
-    //            // shift end columns to start columns
-    //            for ( int i = -chunkCells; i <= ( chunkCells * 2 ) - 1; i ++ ) {
-    //                for ( int j = 0; j <= chunkCells; j ++ ) {
-    //                    result[ i + chunkCells ][ j ] = previous[ i + ( chunkCells * 2 ) ][ j + ( chunkCells * 2 ) ];
-    //                }
-    //            }
-    //            // getOtherData
-    //            for ( int i = -chunkCells; i <= ( chunkCells * 2 ) - 1; i ++ ) {
-    //                for ( int j = 0; i <= ( chunkCells * 2 ) - 1; i ++ ) {
-    //                    result[ i + chunkCells ][ j + chunkCells ] = grid.getCell( i + ( rowChunk * chunkCells ), j + ( colChunk * chunkCells ) );
-    //                }
-    //            }
-    //        }
-    //        return result;
-    //    }
     /**
-     * <a
-     * name="output(AbstractGrid2DSquareCell,File,ImageExporter,String[],ESRIAsciiGridExporter,boolean)"></a>
-     * For outputting _Grid2DSquareCell to various formats of file. It might be
-     * better to have this in exchange.IO class.
+     * For outputting g in various formats.
      *
-     * @param grid
-     * @param outputDirectory
+     * @param g
+     * @param outDir
      * @param ie
      * @param imageTypes
      * @param eage
-     * @throws java.io.IOException
      */
     public void output(
-            Grids_AbstractGridNumber grid,
-            File outputDirectory,
+            Grids_AbstractGridNumber g,
+            File outDir,
             Grids_ImageExporter ie,
             String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage)
-            throws IOException {
-        System.out.println("Output " + grid.toString());
+            Grids_ESRIAsciiGridExporter eage) {
+        System.out.println("Output " + g.toString());
         if (ie == null) {
             ie = new Grids_ImageExporter(ge);
         }
@@ -2988,33 +2795,31 @@ public class Grids_Processor extends Grids_Object {
         int i;
         int l = imageTypes.length;
         for (i = 0; i < l; i++) {
-            s = grid.getName() + "." + imageTypes[i];
-            file = ge.initFile(outputDirectory, s);
-            ie.toGreyScaleImage(grid, this, file, imageTypes[i]);
+            s = g.getName() + "." + imageTypes[i];
+            file = ge.initFile(outDir, s);
+            ie.toGreyScaleImage(g, this, file, imageTypes[i]);
         }
-        s = grid.getName() + dotASC;
-        file = ge.initFile(outputDirectory, s);
-        eage.toAsciiFile(grid, file, noDataValue);
+        s = g.getName() + dotASC;
+        file = ge.initFile(outDir, s);
+        eage.toAsciiFile(g, file, noDataValue);
     }
 
     /**
      *
-     * @param grid
-     * @param outputDirectory
+     * @param g
+     * @param outDir
      * @param ie
      * @param imageTypes
      * @param hoome
-     * @throws IOException
      */
     public void outputImage(
-            Grids_AbstractGridNumber grid,
-            File outputDirectory,
+            Grids_AbstractGridNumber g,
+            File outDir,
             Grids_ImageExporter ie,
             String[] imageTypes,
-            boolean hoome)
-            throws IOException {
+            boolean hoome) {
         try {
-            System.out.println("Output " + grid.toString());
+            System.out.println("Output " + g.toString());
             if (ie == null) {
                 ie = new Grids_ImageExporter(ge);
             }
@@ -3028,18 +2833,18 @@ public class Grids_Processor extends Grids_Object {
             int i;
             int l = imageTypes.length;
             for (i = 0; i < l; i++) {
-                string = grid.getName() + string_DOT + imageTypes[i];
-                file = ge.initFile(outputDirectory, string);
-                ie.toGreyScaleImage(grid, this, file, imageTypes[i]);
+                string = g.getName() + string_DOT + imageTypes[i];
+                    file = ge.initFile(outDir, string);
+                    ie.toGreyScaleImage(g, this, file, imageTypes[i]);
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(grid, hoome) < 1) {
+                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 ge.initMemoryReserve();
-                outputImage(grid, outputDirectory, ie, imageTypes, hoome);
+                outputImage(g, outDir, ie, imageTypes, hoome);
             } else {
                 throw e;
             }

@@ -99,7 +99,7 @@ public class Grids_ClipGrid
 
             //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
-            Grids_ImageExporter imageExporter = new Grids_ImageExporter(ge);
+            Grids_ImageExporter ie = new Grids_ImageExporter(ge);
             File workspaceDirectory = new File(gf.getGeneratedDataDir(),
                     "/Workspace/");
 
@@ -110,8 +110,8 @@ public class Grids_ClipGrid
             inputName = input.getName();
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
-            File outputDirectory;
-            outputDirectory = new File(
+            File outDir;
+            outDir = new File(
                     gf.getOutputDataDir(),
                     getClass().getName());
             Grids_GridDouble gridDouble = null;
@@ -177,18 +177,14 @@ public class Grids_ClipGrid
                 gridDouble.writeToFile(swapToFileCache);
                 ge.getGrids().add(gridDouble);
                 System.out.println("<outputImage>");
-                System.out.println("outputDirectory " + outputDirectory);
+                System.out.println("outputDirectory " + outDir);
                 gridDouble.setName(
                         inputNameWithoutExtension
                         + "_" + startRow + "_" + "_" + startCol + "_"
                         + "_" + endRow + "_" + "_" + endCol + "_");
                 System.out.println("gridDouble " + gridDouble.toString());
-                try {
-                    outputImage(gridDouble, outputDirectory, imageExporter, 
+                    outputImage(gridDouble, outDir, ie, 
                             imageTypes, HandleOutOfMemoryError);
-                } catch (IOException ex) {
-                    Logger.getLogger(Grids_ClipGrid.class.getName()).log(Level.SEVERE, null, ex);
-                }
                 System.out.println("</outputImage>");
             }
         } catch (Exception | Error e) {
