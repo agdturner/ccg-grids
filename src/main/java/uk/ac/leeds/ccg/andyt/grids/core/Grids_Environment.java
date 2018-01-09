@@ -2838,7 +2838,7 @@ public class Grids_Environment
             long partResult;
             Grids_AbstractGrid g;
             g = ite.next();
-            partResult = swapChunks_Account(HOOMEF);
+            partResult = g.swapChunks_Account();
             result += partResult;
         }
         DataToSwap = false;
