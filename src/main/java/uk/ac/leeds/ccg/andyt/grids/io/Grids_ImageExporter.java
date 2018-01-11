@@ -190,7 +190,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         if (countNoDataValues == ncols * nrows) {
             System.out.println("All values seem to be noDataValues!");
         }
-        write((int) ncols, (int) nrows, gridImageArray, type, file, g, ge.HOOME);
+        write((int) ncols, (int) nrows, gridImageArray, type, file, g, ge.HOOMET);
     }
 
     private void write(
