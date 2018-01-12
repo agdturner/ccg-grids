@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,6 +29,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
@@ -126,6 +129,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
+    protected void init() {
+        if (Directory.exists()) {
+            try {
+                throw new IOException("Directory " + Directory.toString()
+                        + " already exists, cannot create grid in this directory!");
+            } catch (IOException ex) {
+                Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            Directory.mkdir();
+        }
+        ge.setDataToSwap(true);
+        ge.addGrid(this);
+    }
+
     /**
      * Initialises non transient Grids_AbstractGrid fields from g.
      *
@@ -141,7 +159,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         NChunkRows = g.NChunkRows;
         NCols = g.NCols;
         NRows = g.NRows;
-        ge.getGrids().add(this);
+        init();
     }
 
     /**
@@ -466,8 +484,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate x.
+     * @return Cell column of the cells that intersect the x axis coordinate x.
      * @param x The x-coordinate of the line intersecting the cell column index
      * returned.
      */
@@ -477,8 +494,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param x
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate x.
+     * @return Cell column of the cells that intersect the x axis coordinate x.
      */
     public final long getCol(BigDecimal x) {
         Grids_Dimensions gd;
@@ -489,15 +505,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         div = Generic_BigDecimal.divideRoundIfNecessary(xMinusXMin,
                 gd.getCellsize(), 0, RoundingMode.DOWN);
         return div.toBigInteger().longValue();
-        //        return xMinusMinX_BigDecimal.divide(
-        //                this.Dimensions[0]).toBigInteger().longValue();
     }
 
     /**
      * @param chunkCol
-     * @return Cell column index for the cells in chunk column index _Col chunk
-     * cell column index chunkCellColIndex.
      * @param cellCol
+     * @return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol
      */
     public final long getCol(int chunkCol, int cellCol) {
         return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol;
@@ -580,8 +593,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param y
-     * @return Cell row Index for the cells that intersect the line with
-     * y-coordinate yBigDecimal.
+     * @return Cell row of the cells that intersect the y axis coordinate y.
      */
     public final long getRow(BigDecimal y) {
         Grids_Dimensions gd;
@@ -596,9 +608,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRow
-     * @return CellRowIndex for the cells in chunk _Row, chunk cell column index
-     * chunkCellRowIndex.
      * @param cellRow
+     * @return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
+     * chunkCellRowIndex.
      */
     public final long getRow(int chunkRow, int cellRow) {
         return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
@@ -630,8 +642,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return Chunk cell row Index of the cells that intersects the line with
-     * y-coordinate y.
+     * @return Cell row of the cells that intersects y axis coordinate y.
      * @param y The y-coordinate of the line for which the chunk cell row index
      * is returned.
      */
@@ -2580,7 +2591,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
      */
-    public abstract Grids_AbstractGridChunk getChunk(int chunkRow, 
+    public abstract Grids_AbstractGridChunk getChunk(int chunkRow,
             int chunkCol);
 
     /**

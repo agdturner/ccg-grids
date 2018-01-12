@@ -69,11 +69,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         init();
     }
 
-    public Grids_AbstractGridNumberStats(Grids_AbstractGridNumber g) {
-        super(g.ge);
-        init(g);
-    }
-
     /**
      * For initialisation.
      */
@@ -92,7 +87,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     public final void init(
             Grids_AbstractGridNumber g) {
         Grid = g;
-        init();
+//        init();
     }
 
     /**

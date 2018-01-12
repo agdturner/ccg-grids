@@ -99,7 +99,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+            File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir, 
+                    nrows, ncols);
             addToGrid(grids[i], 0.0d);
             grids[i].setName("Grid" + i);
         }
@@ -471,7 +473,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
 //                    ncols)
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+            File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
+                nrows, ncols);
         }
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
@@ -509,8 +513,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     public Grids_GridDouble[] generateCatchment(boolean handleOutOfMemoryError) {
         int nrows = 100;
         int ncols = 100;
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
         Grids_GridDouble[] catchment = new Grids_GridDouble[1];
-        catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );
         for (int iterations = 0; iterations < 100; iterations++) {
             for (int row = 0; row < nrows; row++) {

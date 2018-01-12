@@ -60,11 +60,6 @@ public class Grids_GridDoubleStats
         init();
     }
 
-    public Grids_GridDoubleStats(Grids_GridDouble g) {
-        super(g);
-        init();
-    }
-
     /**
      * For initialisation.
      */

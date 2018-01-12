@@ -215,6 +215,11 @@ public class Grids_Files extends Generic_Files {
             File parentDirectory,
             String filename) {
         File file = new File(parentDirectory, filename);
+        String filename0;
+        while (file.exists()) {
+            filename0 = filename + System.currentTimeMillis();
+            file = new File(parentDirectory, filename0);
+        }
         try {
             if (filename.charAt(filename.length() - 4) != '.') {
                 file.mkdir();

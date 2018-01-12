@@ -58,11 +58,6 @@ public class Grids_GridIntStats
         init();
     }
 
-    public Grids_GridIntStats(Grids_GridInt g) {
-        super(g);
-        init();
-    }
-
     /**
      * For initialisation.
      */

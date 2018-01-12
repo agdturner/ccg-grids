@@ -21,7 +21,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
  * Used by Grids_AbstractGridNumber instances to access statistics. This class
@@ -52,16 +51,6 @@ public class Grids_GridIntStatsNotUpdated
      */
     public Grids_GridIntStatsNotUpdated(Grids_Environment ge) {
         super(ge);
-    }
-
-    /**
-     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
-     *
-     * @param g
-     */
-    public Grids_GridIntStatsNotUpdated(
-            Grids_AbstractGridNumber g) {
-        super(g.ge);
     }
 
     /**

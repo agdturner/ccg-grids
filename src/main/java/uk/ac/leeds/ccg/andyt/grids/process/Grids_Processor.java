@@ -213,14 +213,12 @@ public class Grids_Processor extends Grids_Object {
         gf = ge.getFiles();
         GridIntFactory = new Grids_GridIntFactory(
                 ge,
-                gf.getGeneratedGridIntDir(),
                 GridChunkIntFactory,
                 DefaultGridChunkIntFactory,
                 512,
                 512);
         GridDoubleFactory = new Grids_GridDoubleFactory(
                 ge,
-                gf.getGeneratedGridDoubleDir(),
                 GridChunkDoubleFactory,
                 DefaultGridChunkDoubleFactory,
                 512,
@@ -280,8 +278,6 @@ public class Grids_Processor extends Grids_Object {
     protected void setDirectory(
             File directory) {
         Directory = directory;
-        GridDoubleFactory.setDirectory(directory);
-        GridIntFactory.setDirectory(directory);
     }
 
     /**
@@ -323,8 +319,6 @@ public class Grids_Processor extends Grids_Object {
             //ioe0.printStackTrace();
         }
         Directory = directory;
-        GridDoubleFactory.setDirectory(directory);
-        GridIntFactory.setDirectory(directory);
     }
 
     /**
@@ -466,9 +460,6 @@ public class Grids_Processor extends Grids_Object {
             Grids_AbstractGridNumber g,
             Grids_AbstractGridNumber mask) {
         ge.checkAndMaybeFreeMemory();
-        ge.getGrids().add(g);
-        ge.getGrids().add(mask);
-        Grids_2D_ID_int chunkID;
         int chunkNRows;
         int chunkNCols;
         int chunkRow;
@@ -477,6 +468,7 @@ public class Grids_Processor extends Grids_Object {
         int cellCol;
         long row;
         long col;
+        Grids_2D_ID_int chunkID;
         if (g instanceof Grids_GridInt) {
             Grids_GridInt grid = (Grids_GridInt) g;
             int noDataValue = grid.getNoDataValue();
@@ -631,7 +623,6 @@ public class Grids_Processor extends Grids_Object {
             Grids_AbstractGridNumber g,
             double min,
             double max) {
-        ge.getGrids().add(g);
         ge.checkAndMaybeFreeMemory();
         int cellRow;
         int cellCol;
@@ -760,9 +751,8 @@ public class Grids_Processor extends Grids_Object {
             String type,
             double min,
             double max) {
-        Grids_GridDouble result;
         ge.checkAndMaybeFreeMemory();
-        ge.getGrids().add(g);
+        Grids_GridDouble result;
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         int nChunkCols = g.getNChunkCols();
@@ -776,14 +766,12 @@ public class Grids_Processor extends Grids_Object {
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
-        //outputGrid = GridDoubleFactory.create(grid);
-        result = GridDoubleFactory.create(new File(Directory, "Rescaled"), g, 0,
-                0, nrows - 1, ncols - 1);
-//        System.out.println("NoDataValue " + result.getNoDataValue(hoome));
-//        System.out.println("r.getCell(0L, 0L) " + result.getCell(0L, 0L, hoome));
+        result = GridDoubleFactory.create(
+                new File(g.getDirectory().getParentFile(),
+                        "Rescaled" + g.getName()),
+                g, 0, 0, nrows - 1, ncols - 1);
         result.setName(g.getName());
         System.out.println(result.toString());
-        ge.getGrids().add(result);
         int chunkRow;
         int chunkCol;
         int cellRow;
@@ -911,7 +899,7 @@ public class Grids_Processor extends Grids_Object {
             }
         }
     }
-    
+
     /**
      * @param g
      * @return a new Grids_GridDouble Values are either linearly rescaled into
@@ -928,7 +916,6 @@ public class Grids_Processor extends Grids_Object {
             double min,
             double max) {
         ge.checkAndMaybeFreeMemory();
-        ge.getGrids().add(g);
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         int nChunkCols = g.getNChunkCols();
@@ -941,10 +928,13 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         double value;
         double v;
-        Grids_GridDouble outputGrid;
-        outputGrid = (Grids_GridDouble) GridDoubleFactory.create(g);
-        outputGrid.setName(g.getName());
-        ge.getGrids().add(outputGrid);
+        Grids_GridDouble result;
+        result = GridDoubleFactory.create(
+                new File(g.getDirectory().getParentFile(),
+                        "Rescaled" + g.getName()),
+                g, 0, 0, nrows - 1, ncols - 1);
+        result.setName(g.getName());
+        System.out.println(result.toString());
         int chunkNCols;
         int chunkNRows;
         int chunkRow;
@@ -967,25 +957,25 @@ public class Grids_Processor extends Grids_Object {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(outputGrid, chunkID);
+                        ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
                         gridChunk = g.getChunk(chunkID);
                         Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = outputGrid.getChunk(chunkID);
+                        outputGridChunk = result.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != ndv) {
-                                    outputGrid.setCell(outputGridChunk, cellRow,
+                                    result.setCell(outputGridChunk, cellRow,
                                             cellCol, min);
                                 }
                             }
                         }
                         ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(outputGrid, chunkID);
+                        ge.removeFromNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                     }
                 }
@@ -1000,48 +990,48 @@ public class Grids_Processor extends Grids_Object {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                         ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(outputGrid, chunkID);
+                        ge.addToNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
                         gridChunk = g.getChunk(chunkID);
                         Grids_AbstractGridChunkDouble outputGridChunk;
-                        outputGridChunk = outputGrid.getChunk(chunkID);
+                        outputGridChunk = result.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 value = gridChunk.getCell(cellRow, cellCol);
                                 if (value != ndv) {
                                     v = (((value - minGrid) / rangeGrid)
                                             * range) + min;
-                                    outputGrid.setCell(outputGridChunk,
+                                    result.setCell(outputGridChunk,
                                             cellRow, cellCol, v);
                                 }
                             }
                         }
                         ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(outputGrid, chunkID);
+                        ge.removeFromNotToSwap(result, chunkID);
                         ge.checkAndMaybeFreeMemory();
                     }
                 }
             }
-            outputGrid.setName(g.getName() + "_linearRescale");
+            result.setName(g.getName() + "_linearRescale");
             ge.checkAndMaybeFreeMemory();
         } else {
             // @TODO this is not a good implementation
             if (type.equalsIgnoreCase("log")) {
-                outputGrid = rescale(outputGrid, null, 1.0d, 1000000.0d);
+                result = rescale(result, null, 1.0d, 1000000.0d);
                 long row;
                 long col;
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
                         value = g.getCell(row, col);
                         if (value != ndv) {
-                            outputGrid.setCell(row, col, Math.log(value));
+                            result.setCell(row, col, Math.log(value));
                         }
                     }
                 }
-                outputGrid = rescale(outputGrid, null, min, max);
+                result = rescale(result, null, min, max);
                 //grid.setName( grid.getName() + "_logRescale" );
                 ge.checkAndMaybeFreeMemory();
             } else {
@@ -1049,7 +1039,7 @@ public class Grids_Processor extends Grids_Object {
                         + "not recognised. Returning a Grid2DSquareCellDouble.");
             }
         }
-        return outputGrid;
+        return result;
     }
 
     /**
@@ -1112,7 +1102,7 @@ public class Grids_Processor extends Grids_Object {
             double value,
             boolean hoome) {
         try {
-            ge.getGrids().add(grid);
+            ge.checkAndMaybeFreeMemory(hoome);
             Iterator iterator1 = cellIDs.iterator();
             while (iterator1.hasNext()) {
                 //grid.addToCell( ( CellID ) iterator1.next(), value );
@@ -1145,7 +1135,7 @@ public class Grids_Processor extends Grids_Object {
     public void addToGrid(
             Grids_GridDouble grid,
             double value) {
-        ge.getGrids().add(grid);
+        ge.checkAndMaybeFreeMemory();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
         long row;
@@ -1169,7 +1159,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble grid,
             Grids_2D_ID_long[] cellIDs,
             double value) {
-        ge.getGrids().add(grid);
+        ge.checkAndMaybeFreeMemory();
         for (Grids_2D_ID_long cellID : cellIDs) {
             grid.addToCell(cellID.getRow(), cellID.getCol(), value);
         }
@@ -1187,8 +1177,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble g,
             Grids_GridDouble g2,
             double weight) {
-        ge.getGrids().add(g);
-        ge.getGrids().add(g2);
+        ge.checkAndMaybeFreeMemory();
         addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
                 g2.getNCols() - 1L, weight);
     }
@@ -1219,8 +1208,7 @@ public class Grids_Processor extends Grids_Object {
             long endRow,
             long endCol,
             double weight) {
-        ge.getGrids().add(g);
-        ge.getGrids().add(g2);
+        ge.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin;
         BigDecimal yMin;
@@ -1272,8 +1260,6 @@ public class Grids_Processor extends Grids_Object {
             BigDecimal[] constraintDimensions,
             double weight) {
         ge.checkAndMaybeFreeMemory();
-        ge.getGrids().add(g);
-        ge.getGrids().add(g2);
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         double noDataValue = g.getNoDataValue();
@@ -1283,7 +1269,6 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDoubleFactory gf;
         gf = new Grids_GridDoubleFactory(
                 ge,
-                ge.getFiles().getGeneratedGridDoubleDir(),
                 GridChunkDoubleFactory,
                 DefaultGridChunkDoubleFactory,
                 g.getChunkNCols(),
@@ -1339,8 +1324,11 @@ public class Grids_Processor extends Grids_Object {
                 // Check
                 Grids_GridDouble tg1;
                 Grids_GridDouble tg2;
-                tg1 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
-                tg2 = (Grids_GridDouble) gf.create(nrows, ncols, gDimensions);
+                File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+                tg1 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
+                dir = Generic_StaticIO.createNewFile(this.getDirectory());
+                tg2 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
                 // TODO:
                 // Check scale and rounding appropriate
                 int scale = 324;
@@ -1479,7 +1467,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble grid,
             File file,
             String type) {
-        ge.getGrids().add(grid);
+        ge.checkAndMaybeFreeMemory();
         if (type.equalsIgnoreCase("xyv")) {
             try {
                 StreamTokenizer st;
@@ -1626,8 +1614,9 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        result = GridDoubleFactory.create(getDirectory(), g0, 0L, 0L,
-                nRows - 1, nCols - 1);
+        result = GridDoubleFactory.create(
+                new File(getDirectory(), g0.getName() + "multiply" + g1.getName()),
+                g0, 0L, 0L, nRows - 1, nCols - 1);
         double v0;
         double v1;
         double noDataValue0 = g0.getNoDataValue();
@@ -1660,7 +1649,8 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        result = GridDoubleFactory.create(getDirectory(),
+        result = GridDoubleFactory.create(
+                new File(getDirectory(), g0.getName() + "divide" + g1.getName()),
                 g0, 0L, 0L, nRows - 1, nCols - 1);
         double v0;
         double v1;
@@ -1720,7 +1710,7 @@ public class Grids_Processor extends Grids_Object {
             int rowOffset,
             int colOffset,
             Grids_GridDoubleFactory gridFactory) {
-        ge.getGrids().add(grid);
+        ge.checkAndMaybeFreeMemory();
         // Initial tests
         if (cellFactor <= 0) {
             System.err.println("Warning!!! cellFactor <= 0 : Returning!");
@@ -1793,7 +1783,8 @@ public class Grids_Processor extends Grids_Object {
                 resultCellsize);
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
-        Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
         long row;
@@ -1804,9 +1795,13 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(
+            dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+            Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
-            Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(
+            dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+            Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
@@ -1850,9 +1845,13 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(
+            dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+            Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
-            Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(
+            dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+            Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
@@ -1977,7 +1976,7 @@ public class Grids_Processor extends Grids_Object {
             String statistic,
             Grids_Dimensions resultDimensions,
             Grids_GridDoubleFactory gridFactory) {
-        ge.getGrids().add(grid);
+        ge.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
         long nrows = grid.getNRows();
@@ -2093,8 +2092,11 @@ public class Grids_Processor extends Grids_Object {
 
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
         Grids_GridDouble result;
-        result = (Grids_GridDouble) gridFactory.create(
+
+        result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
         long row;
@@ -2109,7 +2111,9 @@ public class Grids_Processor extends Grids_Object {
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
-            totalValueArea = (Grids_GridDouble) gridFactory.create(
+            dir = Generic_StaticIO.createNewFile(this.getDirectory());
+
+            totalValueArea = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
             double areaProportion;
             double[] bounds;
@@ -2834,8 +2838,8 @@ public class Grids_Processor extends Grids_Object {
             int l = imageTypes.length;
             for (i = 0; i < l; i++) {
                 string = g.getName() + string_DOT + imageTypes[i];
-                    file = ge.initFile(outDir, string);
-                    ie.toGreyScaleImage(g, this, file, imageTypes[i]);
+                file = ge.initFile(outDir, string);
+                ie.toGreyScaleImage(g, this, file, imageTypes[i]);
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {

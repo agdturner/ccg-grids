@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -152,9 +153,12 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //                new File(inDataDirectory + xFilename + ".asc"));
 //        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
 //                new File(inDataDirectory + yFilename + ".asc"));
-        Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(
+File dir;
+dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + xFilename + ".asc"));
-        Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(
+        dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + yFilename + ".asc"));
         System.out.println(xGrid.toString());
         System.out.println(yGrid.toString());

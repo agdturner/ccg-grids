@@ -111,10 +111,8 @@ public class Grids_ClipGrid
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
             File outDir;
-            outDir = new File(
-                    gf.getOutputDataDir(),
-                    getClass().getName());
-            Grids_GridDouble gridDouble = null;
+            outDir = new File(                    gf.getOutputDataDir(),                    getClass().getName());
+            Grids_GridDouble gd = null;
             Grids_GridDouble g;
             // Load input
             boolean notLoadedAsGrid = true;
@@ -122,18 +120,14 @@ public class Grids_ClipGrid
                 File dir;
                 dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
-                gridDouble = (Grids_GridDouble) GridDoubleFactory.create(
-                        dir, input);
-//                System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
-//                System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
-//                System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
+                gd = (Grids_GridDouble) GridDoubleFactory.create(                        dir, input);
                 // clip gridDouble
                 dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         "Clipped" + inputNameWithoutExtension);
-                long nRows = gridDouble.getNRows();
-                long nCols = gridDouble.getNCols();
-                int chunkNRows = gridDouble.getChunkNRows();
-                int chunkNCols = gridDouble.getChunkNCols();
+                long nRows = gd.getNRows();
+                long nCols = gd.getNCols();
+                int chunkNRows = gd.getChunkNRows();
+                int chunkNCols = gd.getChunkNCols();
                 long startRow;
                 long startCol;
                 long endRow;
@@ -174,16 +168,15 @@ public class Grids_ClipGrid
 //                gridDouble = g;
                 // Cache input
                 boolean swapToFileCache = true;
-                gridDouble.writeToFile(swapToFileCache);
-                ge.getGrids().add(gridDouble);
+                gd.writeToFile(swapToFileCache);
                 System.out.println("<outputImage>");
                 System.out.println("outputDirectory " + outDir);
-                gridDouble.setName(
+                gd.setName(
                         inputNameWithoutExtension
                         + "_" + startRow + "_" + "_" + startCol + "_"
                         + "_" + endRow + "_" + "_" + endCol + "_");
-                System.out.println("gridDouble " + gridDouble.toString());
-                    outputImage(gridDouble, outDir, ie, 
+                System.out.println("gridDouble " + gd.toString());
+                    outputImage(gd, outDir, ie, 
                             imageTypes, HandleOutOfMemoryError);
                 System.out.println("</outputImage>");
             }

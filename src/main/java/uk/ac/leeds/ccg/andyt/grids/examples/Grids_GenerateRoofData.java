@@ -19,6 +19,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.IOException;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumberFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -349,7 +350,6 @@ public class Grids_GenerateRoofData
      * between the ridge and the left edge of the roof.
      * @param rightColRidgeTanAngle .This is the ridge height over the distance
      * between the ridge and the right edge of the roof.
-     * @param hoome .This is to handle the out of memory error.
      */
     public void addColRidge(
             Grids_GridDouble g,
@@ -437,7 +437,8 @@ public class Grids_GenerateRoofData
                 / (double) (rowStartRidge - halfCellsize);
         double rowEndRidgeTanAngle = colRidgeHeight
                 / (double) ((nrows - rowEndRidge) - halfCellsize);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
         long col;
@@ -552,7 +553,9 @@ public class Grids_GenerateRoofData
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - cellsizeDivideTwo);
         double rowStartRidgeTanAngle = colRidgeHeight / (double) (rowStartRidge - cellsizeDivideTwo);
         double rowEndRidgeTanAngle = colRidgeHeight / (double) ((nrows - rowEndRidge) - cellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
+                nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -654,7 +657,9 @@ public class Grids_GenerateRoofData
         double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - cellsizeDivideTwo);
         double leftColRidgeTanAngle = colRidgeHeight / (double) (colWithRidge - cellsizeDivideTwo);
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - cellsizeDivideTwo);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
+                nrows, ncols);
         long row;
         long col;
         // Row ridged roofs
@@ -707,10 +712,8 @@ public class Grids_GenerateRoofData
             throws IOException {
         // Resize
         resize(rg, g);
-        ge.getGrids().add(rg);
         // Rescale
         Grids_GridDouble ag = rescale(rg, null, 1.0d, 10.0d);
-        ge.getGrids().add(ag);
         ag.setName(g.getName() + "ResizedRescaled");
         output(ag, Directory, ie, imageTypes, eage);
     }
@@ -745,7 +748,8 @@ public class Grids_GenerateRoofData
                 / (double) (colWithRidge - halfCellsize);
         double rightColRidgeTanAngle = colRidgeHeight
                 / (double) ((ncols - colWithRidge) - halfCellsize);
-        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
         long col;
@@ -781,18 +785,18 @@ public class Grids_GenerateRoofData
      *
      * @param dimensions
      * @param g
-     * @param handleOutOfMemoryError
-     * @param gridFactory
+     * @param gf
      * @return
      *
      */
     public Grids_GridDouble disaggregate(
             Grids_Dimensions dimensions,
             Grids_GridDouble g,
-            Grids_AbstractGridNumberFactory gridFactory) {
+            Grids_AbstractGridNumberFactory gf) {
         long nRows = g.getNRows();
         long nCols = g.getNCols();
-        Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(
+        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        Grids_GridDouble result = (Grids_GridDouble) gf.create(dir,
                 nRows, nCols, dimensions);
         long row;
         long col;

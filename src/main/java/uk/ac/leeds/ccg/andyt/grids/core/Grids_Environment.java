@@ -2823,7 +2823,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGridChunk in this.Grids.
+     * Attempts to swap all Grids_AbstractGridChunk in Grids.
      *
      * @return
      */
@@ -3343,7 +3343,7 @@ public class Grids_Environment
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>(1);
         Iterator<Grids_AbstractGrid> ite;
-        ite = getGrids().iterator();
+        ite = Grids.iterator();
         Grids_AbstractGrid gb;
         HashSet<Grids_2D_ID_int> resultPart;
         resultPart = new HashSet<>(1);
@@ -3500,7 +3500,7 @@ public class Grids_Environment
     protected boolean swapChunkExcept(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         Iterator<Grids_AbstractGrid> ite;
-        ite = getGrids().iterator();
+        ite = Grids.iterator();
         Grids_AbstractGrid g;
         HashSet<Grids_2D_ID_int> chunkIDs;
         Grids_2D_ID_int chunkID;
@@ -3588,7 +3588,7 @@ public class Grids_Environment
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         Iterator<Grids_AbstractGrid> ite;
-        ite = getGrids().iterator();
+        ite = Grids.iterator();
         Grids_AbstractGrid gb;
         TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> m;
         Set<Grids_2D_ID_int> chunkIDsb;
@@ -3746,7 +3746,7 @@ public class Grids_Environment
      */
     protected long swapChunkExcept_Account(Grids_AbstractGrid g) {
         Iterator<Grids_AbstractGrid> ite;
-        ite = getGrids().iterator();
+        ite = Grids.iterator();
         Grids_AbstractGrid gb;
         while (ite.hasNext()) {
             gb = ite.next();
