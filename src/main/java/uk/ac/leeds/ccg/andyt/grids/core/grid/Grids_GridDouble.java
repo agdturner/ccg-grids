@@ -135,6 +135,7 @@ public class Grids_GridDouble
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, double noDataValue) {
         super(grid.ge, dir);
+        checkDir();
         init(stats, grid, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
     }
@@ -166,7 +167,7 @@ public class Grids_GridDouble
             File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue,
-            Grids_Environment ge) {
+            Grids_Environment ge) throws IOException {
         super(ge, dir);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
@@ -210,7 +211,7 @@ public class Grids_GridDouble
         super.init(g);
         if (initTransientFields) {
             ChunkIDChunkMap = g.ChunkIDChunkMap;
-            ChunkIDsofChunksWorthSwapping = g.ChunkIDsofChunksWorthSwapping;
+            ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
             // Set the reference to this in the Grid Stats
             Stats.init(this);
         }
@@ -305,7 +306,7 @@ public class Grids_GridDouble
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         int r;
         int c;
         Grids_2D_ID_int chunkID;
@@ -318,7 +319,7 @@ public class Grids_GridDouble
                 chunk = chunkFactory.create(this, chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_GridChunkDouble)) {
-                    ChunkIDsofChunksWorthSwapping.add(chunkID);
+                    ChunkIDsOfChunksWorthSwapping.add(chunkID);
                 }
             }
             System.out.println("Done chunkRow " + r + " out of "
@@ -331,7 +332,7 @@ public class Grids_GridDouble
      *
      * @param stats
      * @param g
-     * @param chunkFactory
+     * @param cf
      * @param chunkNRows
      * @param chunkNCols
      * @param startRow
@@ -341,16 +342,10 @@ public class Grids_GridDouble
      * @param ndv
      */
     private void init(
-            Grids_GridDoubleStats stats,
-            Grids_AbstractGridNumber g,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double ndv) {
+            Grids_GridDoubleStats stats, Grids_AbstractGridNumber g,
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow, 
+            long endCol, double ndv) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -363,7 +358,7 @@ public class Grids_GridDouble
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         initDimensions(g, startRow, startCol);
         int gcr;
         int gcc;
@@ -428,10 +423,10 @@ public class Grids_GridDouble
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 //ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
@@ -512,10 +507,10 @@ public class Grids_GridDouble
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
@@ -614,7 +609,7 @@ public class Grids_GridDouble
             initNChunkRows();
             initNChunkCols();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.Grid = this;
             String filename = gridFile.getName();
@@ -728,7 +723,7 @@ public class Grids_GridDouble
                 g = (Grids_GridDouble) gf.create(Directory, thisFile, ois);
                 init(g);
                 this.ChunkIDChunkMap = g.ChunkIDChunkMap;
-                this.ChunkIDsofChunksWorthSwapping = g.ChunkIDsofChunksWorthSwapping;
+                this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
                 this.NoDataValue = g.NoDataValue;
                 this.Dimensions = g.Dimensions;
                 this.Directory = g.Directory;
@@ -738,9 +733,10 @@ public class Grids_GridDouble
             initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
+            checkDir();
             Name = Directory.getName();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.init(this);
             String filename = gridFile.getName();
@@ -883,7 +879,7 @@ public class Grids_GridDouble
             chunk.initChunkID(chunkID);
             ChunkIDChunkMap.put(chunkID, chunk);
             if (!(chunk instanceof Grids_GridChunkDouble)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
         }
     }
@@ -914,7 +910,7 @@ public class Grids_GridDouble
             gc = new Grids_GridChunkDouble(this, chunkID, value);
             ChunkIDChunkMap.put(chunkID, gc);
             if (!(gc instanceof Grids_GridChunkDouble)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
         } else {
             Grids_AbstractGridChunk c;
@@ -931,7 +927,7 @@ public class Grids_GridDouble
                             chunk, chunkID);
                     ChunkIDChunkMap.put(chunkID, chunk);
                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                     }
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
                 }
@@ -1235,7 +1231,7 @@ public class Grids_GridDouble
         result = f.create(chunk, chunkID);
         ChunkIDChunkMap.put(chunkID, result);
         if (!(chunk instanceof Grids_GridChunkDouble)) {
-            ChunkIDsofChunksWorthSwapping.add(chunkID);
+            ChunkIDsOfChunksWorthSwapping.add(chunkID);
         }
         return result;
     }

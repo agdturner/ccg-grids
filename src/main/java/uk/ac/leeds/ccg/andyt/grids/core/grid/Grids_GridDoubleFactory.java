@@ -20,7 +20,10 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
@@ -153,8 +156,10 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
             Grids_AbstractGridChunkDoubleFactory cf, long nRows, long nCols,
             Grids_Dimensions dimensions) {
-        return new Grids_GridDouble(getStats(stats), dir, cf, ChunkNRows,
+        Grids_GridDouble result;
+        result = new Grids_GridDouble(getStats(stats), dir, cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, NoDataValue, ge);
+        return result;
     }
 
     //////////////////////////////////////////////////////
@@ -193,8 +198,10 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
             Grids_AbstractGridNumber g, Grids_AbstractGridChunkDoubleFactory cf,
             long startRow, long startCol, long endRow, long endCol) {
-        return new Grids_GridDouble(getStats(stats), dir, g, cf, ChunkNRows,
+        Grids_GridDouble result;
+        result = new Grids_GridDouble(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
+        return result;
     }
 
     ////////////////////////
@@ -237,9 +244,17 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
             File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
             long startRow, long startCol, long endRow, long endCol) {
-        return new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
-                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, ge);
+        Grids_GridDouble result = null;
+        try {
+            result = new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
+                    ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
+                    NoDataValue, ge);
+        } catch (IOException ex) {
+            Logger.getLogger(Grids_GridDoubleFactory.class.getName()).log(Level.SEVERE, null, ex);
+            //System.err.println(ex.getMessage());
+            ex.printStackTrace(System.err);
+        }
+        return result;
     }
 
     /**
@@ -251,7 +266,9 @@ public class Grids_GridDoubleFactory
      */
     @Override
     public Grids_GridDouble create(File dir, File gridFile) {
-        return new Grids_GridDouble(ge, dir, gridFile);
+        Grids_GridDouble result;
+        result = new Grids_GridDouble(ge, dir, gridFile);
+        return result;
     }
 
     /////////////////////////

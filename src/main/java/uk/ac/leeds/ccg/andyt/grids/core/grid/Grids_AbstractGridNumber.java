@@ -46,8 +46,8 @@ public abstract class Grids_AbstractGridNumber
     protected Grids_AbstractGridNumber() {
     }
 
-    public Grids_AbstractGridNumber(Grids_Environment ge, File directory) {
-        super(ge, directory);
+    protected Grids_AbstractGridNumber(Grids_Environment ge, File dir) {
+        super(ge, dir);
     }
 
     @Override

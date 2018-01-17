@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,8 +28,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
@@ -67,7 +64,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * The Grids_AbstractGridChunk data cache.
      */
-    protected HashSet<Grids_2D_ID_int> ChunkIDsofChunksWorthSwapping;
+    protected HashSet<Grids_2D_ID_int> ChunkIDsOfChunksWorthSwapping;
     /**
      * For storing the number of chunk rows.
      */
@@ -106,9 +103,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected Grids_AbstractGrid() {
     }
 
-    protected Grids_AbstractGrid(Grids_Environment ge, File directory) {
+    protected Grids_AbstractGrid(Grids_Environment ge, File dir) {
         super(ge);
-        Directory = directory;
+        Directory = dir;
     }
 
     /**
@@ -129,17 +126,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         }
     }
 
-    protected void init() {
+    protected final void checkDir() {
         if (Directory.exists()) {
-            try {
-                throw new IOException("Directory " + Directory.toString()
-                        + " already exists, cannot create grid in this directory!");
-            } catch (IOException ex) {
-                Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            Directory.mkdir();
+            System.err.println("Directory " + Directory + " already exists. "
+                    + "Exiting program to prevent data getting overwritten!");
+            System.exit(0);
         }
+    }
+
+    protected void init() {
+            Directory.mkdir();
         ge.setDataToSwap(true);
         ge.addGrid(this);
     }
@@ -744,12 +740,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * are no suitable chunks to swap.
      */
     public final Grids_2D_ID_int writeToFileChunk() {
-        if (ChunkIDsofChunksWorthSwapping.isEmpty()) {
+        if (ChunkIDsOfChunksWorthSwapping.isEmpty()) {
             return null;
         }
         Grids_2D_ID_int chunkID;
         Iterator<Grids_2D_ID_int> ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
             writeToFileChunk(chunkID);
@@ -803,7 +799,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final void writeToFileChunks() {
         Iterator ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
@@ -1004,7 +1000,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 //        int chunkRow;
 //        int chunkCol;
         Iterator<Grids_2D_ID_int> ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
             if (!chunkIDs.contains(chunkID)) {
@@ -1910,7 +1906,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final void clearFromCacheChunk(Grids_2D_ID_int chunkID) {
         ChunkIDChunkMap.replace(chunkID, null);
-        ChunkIDsofChunksWorthSwapping.remove(chunkID);
+        ChunkIDsOfChunksWorthSwapping.remove(chunkID);
         //System.gc();
     }
 
@@ -1924,7 +1920,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             ChunkIDChunkMap.replace(ite.next(), null);
         }
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         //System.gc();
     }
 
