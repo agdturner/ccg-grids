@@ -222,7 +222,6 @@ public class Grids_GridDoubleTest {
         gp = ge.getProcessor();
         Grids_GridDoubleFactory result;
         result = new Grids_GridDoubleFactory(ge,
-                ge.getFiles().getGeneratedGridDoubleFactoryDir(),
                 gp.GridChunkDoubleFactory,
                 //gp.DefaultGridChunkDoubleFactory,
                 chunkFactory, noDataValue, chunkNRows, chunkNCols,
