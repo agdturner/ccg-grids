@@ -106,24 +106,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         Directory = dir;
     }
 
-    /**
-     * Initialises ChunkIDChunkMap by first attempting to load from new
-     * File(grid_File, "cache");
-     *
-     * @param f The File directory that from which a file called cache is
-     * attempted to be loaded
-     */
-    protected void initChunks(File f) {
-        File cache = new File(f, "cache");
-        if (cache.exists()) {
-            Object o;
-            o = Generic_StaticIO.readObject(cache);
-            ChunkIDChunkMap = (TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) o;
-        } else {
-            ChunkIDChunkMap = new TreeMap<>();
-        }
-    }
-
     protected final void checkDir() {
         if (Directory.exists()) {
             System.err.println("Directory " + Directory + " already exists. "
@@ -687,43 +669,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * Attempts to write this instance to Files located in the Directory
      * returned by getDirectory().
-     *
-     * @param swapToFileCache Iff true then
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
-     * File(getDirectory(),"cache").
      */
-    public void writeToFile(boolean swapToFileCache) {
-        writeToFileChunks();
-        if (swapToFileCache) {
-            // Write out cache
-            writeOutCache();
-        }
-        writeOutThis();
-    }
-
-    public void writeOutCache() {
-        // Write out thisCache
-        File f = new File(getDirectory(), "cache");
-        Generic_StaticIO.writeObject(ChunkIDChunkMap, f);
-    }
-
-    public void writeOutThis() {
-        // Write out thisCache
-        File f = new File(getDirectory(), "thisFile");
+    public void writeToFile() {
+        File dir = getDirectory();
+        dir.mkdirs();
+        File f = new File(dir, "thisFile");
         Generic_StaticIO.writeObject(this, f);
     }
 
     /**
      * Attempts to write this instance to Files located in the _Directory
      * returned by getDirectory(). Chunks are all swapped to file.
-     *
-     * @param swapToFileCache Iff true then
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
-     * File(getDirectory(),"cache").
      */
-    public void writeToFileSwapping(boolean swapToFileCache) {
+    public void writeToFileSwapping() {
         swapChunks();
-        writeToFile(swapToFileCache);
+        writeToFile();
     }
 
     /**

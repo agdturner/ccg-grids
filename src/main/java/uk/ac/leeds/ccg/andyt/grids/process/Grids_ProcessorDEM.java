@@ -242,8 +242,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[0] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[0].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[0].writeToFile(swapToFileCache);
+            slopeAndAspect[0].writeToFile();
             System.out.println(slopeAndAspect[0].toString());
             System.out.println("Initialising _SlopeAndAspect[ 1 ]");
             if (shortName) {
@@ -259,8 +258,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[1] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[1].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[1].writeToFile(swapToFileCache);
+            slopeAndAspect[1].writeToFile();
             System.out.println("Initialising _SlopeAndAspect[ 2 ]");
             if (shortName) {
                 filename = "sin_aspect_N_" + averageDistance;
@@ -275,8 +273,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(
                     dir, nrows, ncols, dimensions);
             slopeAndAspect[2].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[2].writeToFile(swapToFileCache);
+            slopeAndAspect[2].writeToFile();
             System.out.println(slopeAndAspect[2].toString());
             System.out.println("Initialising _SlopeAndAspect[ 3 ]");
             if (shortName) {
@@ -292,8 +289,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[3].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[3].writeToFile(swapToFileCache);
+            slopeAndAspect[3].writeToFile();
             System.out.println(slopeAndAspect[3].toString());
             System.out.println("Initialising _SlopeAndAspect[ 4 ]");
             if (shortName) {
@@ -309,8 +305,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[4].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[4].writeToFile(swapToFileCache);
+            slopeAndAspect[4].writeToFile();
             System.out.println(slopeAndAspect[4].toString());
             System.out.println("Initialising _SlopeAndAspect[ 5 ]");
             if (shortName) {
@@ -326,8 +321,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[5].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[5].writeToFile(swapToFileCache);
+            slopeAndAspect[5].writeToFile();
             System.out.println(slopeAndAspect[5].toString());
             System.out.println("Initialising _SlopeAndAspect[ 6 ]");
             if (shortName) {
@@ -343,8 +337,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[6].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[6].writeToFile(swapToFileCache);
+            slopeAndAspect[6].writeToFile();
             System.out.println(slopeAndAspect[6].toString());
             System.out.println("Initialising _SlopeAndAspect[ 7 ]");
             if (shortName) {
@@ -360,8 +353,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[7].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[7].writeToFile(swapToFileCache);
+            slopeAndAspect[7].writeToFile();
             System.out.println(slopeAndAspect[7].toString());
             System.out.println("Initialising _SlopeAndAspect[ 8 ]");
             if (shortName) {
@@ -377,8 +369,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[8].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[8].writeToFile(swapToFileCache);
+            slopeAndAspect[8].writeToFile();
             System.out.println(slopeAndAspect[8].toString());
             System.out.println("Initialising _SlopeAndAspect[ 9 ]");
             if (shortName) {
@@ -394,8 +385,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[9].setName(filename);
-            swapToFileCache = true;
-            slopeAndAspect[9].writeToFile(swapToFileCache);
+            slopeAndAspect[9].writeToFile();
             System.out.println("Initialised Results");
             System.out.println(g.toString());
 
@@ -1920,7 +1910,7 @@ public class Grids_ProcessorDEM
                                 file, nrows, ncols, dimensions);
                     }
                     if (swapOutInitialisedFiles) {
-                        metrics1[i].writeToFile(true);
+                        metrics1[i].writeToFile();
                     }
                     metrics1[i].setName(metrics1Names[i]);
                     isInitialised = true;

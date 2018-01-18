@@ -209,6 +209,15 @@ public class Grids_GridDouble
         NoDataValue = g.NoDataValue;
         super.init(g);
         ChunkIDChunkMap = g.ChunkIDChunkMap;
+        // Set the reference to this in ChunkIDChunkMap chunks
+        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
+        Grids_2D_ID_int chunkID;
+        Grids_AbstractGridChunk chunk;
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            chunk = ChunkIDChunkMap.get(chunkID);
+            chunk.setGrid(this);
+        }
         ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
         // Set the reference to this in the Grid Stats
         Stats.init(this);
@@ -233,7 +242,6 @@ public class Grids_GridDouble
             init((Grids_GridDouble) ois.readObject());
             ois.close();
             // Set the reference to this in the Grid Chunks
-            initChunks(file);
             Iterator<Grids_AbstractGridChunk> chunkIterator;
             chunkIterator = ChunkIDChunkMap.values().iterator();
             while (chunkIterator.hasNext()) {
@@ -264,7 +272,6 @@ public class Grids_GridDouble
                 Grids_GridDouble gd;
                 gd = (Grids_GridDouble) gdf.create(Directory, gi);
                 init(gd);
-                initChunks(file);
                 // Delete gi
                 gi.Directory.delete();
             } catch (IOException ioe) {
@@ -583,7 +590,6 @@ public class Grids_GridDouble
                 g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
                 init(g2);
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
             ChunkNRows = chunkNRows;
@@ -716,7 +722,6 @@ public class Grids_GridDouble
                 this.Stats = g.Stats;
                 this.Stats.Grid = this;
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
             checkDir();

@@ -166,13 +166,10 @@ public class Grids_ClipGrid
 //                        endCol,
 //                        HandleOutOfMemoryError);
 //                gridDouble = g;
-                // Cache input
-                boolean swapToFileCache = true;
-                gd.writeToFile(swapToFileCache);
+                gd.writeToFile();
                 System.out.println("<outputImage>");
                 System.out.println("outputDirectory " + outDir);
-                gd.setName(
-                        inputNameWithoutExtension
+                gd.setName(                        inputNameWithoutExtension
                         + "_" + startRow + "_" + "_" + startCol + "_"
                         + "_" + endRow + "_" + "_" + endCol + "_");
                 System.out.println("gridDouble " + gd.toString());
