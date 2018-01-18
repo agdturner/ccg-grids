@@ -167,7 +167,7 @@ public class Grids_GridDouble
             File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue,
-            Grids_Environment ge) throws IOException {
+            Grids_Environment ge) {
         super(ge, dir);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
@@ -202,19 +202,16 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @param g The Grids_GridDouble from which the fields of this are set.
-     * @param initTransientFields Iff true then transient fields of this are set
-     * with those of g.
+     * @param g The Grids_GridDouble from which the fields of this are set. with
+     * those of g.
      */
-    private void init(Grids_GridDouble g, boolean initTransientFields) {
+    private void init(Grids_GridDouble g) {
         NoDataValue = g.NoDataValue;
         super.init(g);
-        if (initTransientFields) {
-            ChunkIDChunkMap = g.ChunkIDChunkMap;
-            ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
-            // Set the reference to this in the Grid Stats
-            Stats.init(this);
-        }
+        ChunkIDChunkMap = g.ChunkIDChunkMap;
+        ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+        // Set the reference to this in the Grid Stats
+        Stats.init(this);
         super.init();
     }
 
@@ -233,9 +230,7 @@ public class Grids_GridDouble
         ge.checkAndMaybeFreeMemory();
         File thisFile = new File(file, "thisFile");
         try {
-            boolean initTransientFields = false;
-            init((Grids_GridDouble) ois.readObject(),
-                    initTransientFields);
+            init((Grids_GridDouble) ois.readObject());
             ois.close();
             // Set the reference to this in the Grid Chunks
             initChunks(file);
@@ -268,8 +263,7 @@ public class Grids_GridDouble
                         new Grids_GridDoubleStatsNotUpdated(ge));
                 Grids_GridDouble gd;
                 gd = (Grids_GridDouble) gdf.create(Directory, gi);
-                boolean initTransientFields = false;
-                init(gd, initTransientFields);
+                init(gd);
                 initChunks(file);
                 // Delete gi
                 gi.Directory.delete();
@@ -283,7 +277,10 @@ public class Grids_GridDouble
         }
         //ioe.printStackTrace();
         // Set the reference to this in the Grid Stats
-        this.getStats().init(this);
+        if (getStats() == null) {
+            Stats = new Grids_GridDoubleStatsNotUpdated(ge);
+        }
+        Stats.init(this);
         init();
     }
 
@@ -341,10 +338,9 @@ public class Grids_GridDouble
      * @param endCol
      * @param ndv
      */
-    private void init(
-            Grids_GridDoubleStats stats, Grids_AbstractGridNumber g,
+    private void init(Grids_GridDoubleStats stats, Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow, 
+            int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, double ndv) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
@@ -561,17 +557,10 @@ public class Grids_GridDouble
         init();
     }
 
-    private void init(
-            Grids_GridDoubleStats stats,
-            File gridFile,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double noDataValue) {
+    private void init(Grids_GridDoubleStats stats, File gridFile,
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, double noDataValue) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -583,10 +572,8 @@ public class Grids_GridDouble
                 Grids_Processor gp;
                 gp = ge.getProcessor();
                 Grids_GridDoubleFactory gf;
-                gf = new Grids_GridDoubleFactory(ge,
-                        gp.GridChunkDoubleFactory,
-                        gp.DefaultGridChunkDoubleFactory, noDataValue,
-                        chunkNRows, chunkNCols, null, stats);
+                gf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
+                        cf, noDataValue, chunkNRows, chunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
@@ -594,8 +581,7 @@ public class Grids_GridDouble
                 g = (Grids_GridDouble) gf.create(Directory, thisFile, ois);
                 Grids_GridDouble g2;
                 g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
-                init(g2, false);
-
+                init(g2);
             }
             initChunks(gridFile);
         } else {

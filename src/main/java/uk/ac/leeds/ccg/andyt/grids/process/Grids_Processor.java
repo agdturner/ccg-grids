@@ -746,11 +746,8 @@ public class Grids_Processor extends Grids_Object {
      * @param max The maximum value in the rescaled range.
      * @TODO Improve log rescaling implementation.
      */
-    protected Grids_GridDouble rescale(
-            Grids_GridDouble g,
-            String type,
-            double min,
-            double max) {
+    protected Grids_GridDouble rescale(Grids_GridDouble g, String type,
+            double min, double max) {
         ge.checkAndMaybeFreeMemory();
         Grids_GridDouble result;
         long nrows = g.getNRows();
@@ -766,10 +763,10 @@ public class Grids_Processor extends Grids_Object {
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
-        result = GridDoubleFactory.create(
-                new File(g.getDirectory().getParentFile(),
-                        "Rescaled" + g.getName()),
-                g, 0, 0, nrows - 1, ncols - 1);
+        File dir;
+        dir = new File(g.getDirectory().getParentFile(), 
+                "Rescaled" + g.getName());
+        result = GridDoubleFactory.create(dir, g, 0, 0, nrows - 1, ncols - 1);
         result.setName(g.getName());
         System.out.println(result.toString());
         int chunkRow;

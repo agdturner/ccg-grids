@@ -52,15 +52,13 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     //     */
     //    private static final long serialVersionUID = 1L;
     /**
-     * Local _Directory used for caching. TODO If this were not transient upon
-     * reloading, it would be possible to ascertain what it was which could be
-     * useful.
+     * Directory used for storing grid data.
      */
-    protected transient File Directory;
+    protected File Directory;
     /**
      * The Grids_AbstractGridChunk data cache.
      */
-    protected transient TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
+    protected TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
     /**
      * The Grids_AbstractGridChunk data cache.
      */
@@ -740,6 +738,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * are no suitable chunks to swap.
      */
     public final Grids_2D_ID_int writeToFileChunk() {
+        
+        if (ChunkIDsOfChunksWorthSwapping == null) {
+            int debug = 1;
+        }
+        
         if (ChunkIDsOfChunksWorthSwapping.isEmpty()) {
             return null;
         }

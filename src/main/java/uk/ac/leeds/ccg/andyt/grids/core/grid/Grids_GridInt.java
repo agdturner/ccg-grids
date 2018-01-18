@@ -201,20 +201,14 @@ public class Grids_GridInt
      * Initialises this.
      *
      * @param g The Grids_GridInt from which the fields of this are set.
-     * @param initTransientFields Iff true then transient fields of this are set
-     * with those of g.
      */
-    private void init(
-            Grids_GridInt g,
-            boolean initTransientFields) {
+    private void init(Grids_GridInt g) {
         NoDataValue = g.NoDataValue;
         super.init(g);
-        if (initTransientFields) {
-            ChunkIDChunkMap = g.ChunkIDChunkMap;
-            ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
-            // Set the reference to this in the Grid Stats
-            Stats.init(this);
-        }
+        ChunkIDChunkMap = g.ChunkIDChunkMap;
+        ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+        // Set the reference to this in the Grid Stats
+        Stats.init(this);
         super.init();
         Stats.Grid = this;
     }
@@ -237,14 +231,11 @@ public class Grids_GridInt
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    private void init(
-            File file,
-            ObjectInputStream ois) {
+    private void init(File file, ObjectInputStream ois) {
         ge.checkAndMaybeFreeMemory();
         File thisFile = new File(file, "thisFile");
         try {
-            boolean initTransientFields = false;
-            init((Grids_GridInt) ois.readObject(), initTransientFields);
+            init((Grids_GridInt) ois.readObject());
             ois.close();
             // Set the reference to this in the Grid Chunks
             initChunks(file);
@@ -278,8 +269,7 @@ public class Grids_GridInt
                         new Grids_GridIntStatsNotUpdated(ge));
                 Grids_GridInt gi;
                 gi = (Grids_GridInt) gif.create(Directory, gd);
-                boolean initTransientFields = false;
-                init(gi, initTransientFields);
+                init(gi);
                 initChunks(file);
                 // delete gd
                 gd.Directory.delete();
@@ -292,6 +282,11 @@ public class Grids_GridInt
             System.err.println(e.getLocalizedMessage());
         }
         //ioe.printStackTrace();
+        // Set the reference to this in the Grid Stats
+        if (getStats() == null) {
+            Stats = new Grids_GridIntStatsNotUpdated(ge);
+        }
+        Stats.init(this);
         init();
     }
 
@@ -635,7 +630,7 @@ public class Grids_GridInt
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 Grids_GridInt g2;
                 g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
-                init(g2, false);
+                init(g2);
             }
             initChunks(gridFile);
         } else {
@@ -902,8 +897,8 @@ public class Grids_GridInt
                 chunk = c;
             } else {
                 throw new Error("Unrecognised type of chunk or null "
-                        + this.getClass().getName() 
-                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() 
+                        + this.getClass().getName()
+                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString()
                         + "))");
             }
             chunk.ge = ge;
@@ -938,7 +933,7 @@ public class Grids_GridInt
          */
         ge.addToNotToSwap(this, chunkID);
         if (!ChunkIDChunkMap.containsKey(chunkID)) {
-            Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID, 
+            Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID,
                     value);
             ChunkIDChunkMap.put(chunkID, gc);
             if (!(gc instanceof Grids_GridChunkInt)) {
@@ -1214,10 +1209,10 @@ public class Grids_GridInt
             int value) {
         int v;
         if (chunk instanceof Grids_GridChunkIntArray) {
-            v = ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol, 
+            v = ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol,
                     value);
         } else if (chunk instanceof Grids_GridChunkIntMap) {
-            v = ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol, 
+            v = ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol,
                     value);
         } else {
             Grids_GridChunkInt c;
