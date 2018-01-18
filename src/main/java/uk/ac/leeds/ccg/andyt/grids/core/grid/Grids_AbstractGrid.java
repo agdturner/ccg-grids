@@ -108,9 +108,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected final void checkDir() {
         if (Directory.exists()) {
-            System.err.println("Directory " + Directory + " already exists. "
+            throw new Error("Directory " + Directory + " already exists. "
                     + "Exiting program to prevent data getting overwritten!");
-            System.exit(0);
         }
     }
 
