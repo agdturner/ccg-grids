@@ -19,13 +19,10 @@
 package uk.ac.leeds.ccg.andyt.grids.process;
 
 import java.io.File;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -84,10 +81,14 @@ public class Grids_Processor extends Grids_Object {
     protected int LogIndentation;
 
     /**
-     * Workspace directory for the processing.
+     * For convenience.
      */
-    protected File Directory;
+    protected Grids_Files Files;
 
+//    /**
+//     * Workspace directory for the processing.
+//     */
+//    protected File Directory;
     /**
      * Grids_AbstractGridChunkIntFactory
      */
@@ -162,39 +163,26 @@ public class Grids_Processor extends Grids_Object {
         StartTime = System.currentTimeMillis();
     }
 
-    /*
-     * Creates a new instance of Grids_Processor.
-     **/
-    public Grids_Processor(
-            Grids_Environment ge) {
-        this(ge,
-                new File(ge.getDirectory(),
-                        "Grids_Processor"));
-    }
-
     /**
      * Creates a new instance of Grids_Processor. The Log file in directory will
      * be overwritten if appendToLogFile is false.
      *
      * @param ge
-     * @param directory
      */
-    public Grids_Processor(
-            Grids_Environment ge,
-            File directory) {
+    public Grids_Processor(Grids_Environment ge) {
         super(ge);
         StartTime = System.currentTimeMillis();
+        Files = ge.getFiles();
+        File dir;
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         File logFile;
-        Directory = directory;
-        if (!Directory.exists()) {
-            Directory.mkdirs();
-        }
-        logFile = new File(Directory, "log.txt");
+        logFile = new File(dir, "log.txt");
         if (!logFile.exists()) {
             try {
                 logFile.createNewFile();
             } catch (IOException ex) {
-                Logger.getLogger(Grids_Processor.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Grids_Processor.class.getName()).log(
+                        Level.SEVERE, null, ex);
             }
         }
         Log = Generic_StaticIO.getPrintWriter(logFile, true);
@@ -209,19 +197,10 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories() {
         initChunkFactories();
-        Grids_Files gf;
-        gf = ge.getFiles();
-        GridIntFactory = new Grids_GridIntFactory(
-                ge,
-                GridChunkIntFactory,
-                DefaultGridChunkIntFactory,
-                512,
-                512);
-        GridDoubleFactory = new Grids_GridDoubleFactory(
-                ge,
-                GridChunkDoubleFactory,
-                DefaultGridChunkDoubleFactory,
-                512,
+        GridIntFactory = new Grids_GridIntFactory(ge, GridChunkIntFactory,
+                DefaultGridChunkIntFactory, 512, 512);
+        GridDoubleFactory = new Grids_GridDoubleFactory(ge,
+                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, 512,
                 512);
         initGridStatistics();
     }
@@ -236,7 +215,8 @@ public class Grids_Processor extends Grids_Object {
         DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
         GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
         GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(-Double.MAX_VALUE);
+        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(
+                -Double.MAX_VALUE);
         DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
     }
 
@@ -245,7 +225,8 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initGridStatistics() {
         GridDoubleStatistics = new Grids_GridDoubleStats(ge);
-        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatsNotUpdated(ge);
+        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatsNotUpdated(
+                ge);
         GridIntStatistics = new Grids_GridIntStats(ge);
         GridIntStatisticsNotUpdated = new Grids_GridIntStatsNotUpdated(ge);
     }
@@ -260,107 +241,14 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a copy of Directory
-     *
-     * @return
-     */
-    public File getDirectory() {
-        return new File(Directory.toString());
-    }
-
-    /**
-     * Changes Directory, GridDoubleFactory.Directory, GridIntFactory.Directory
-     * to Directory. Does not copy the logfile from the existing Directory. To
-     * do this use: setDirectory( Directory, true )
-     *
-     * @param directory The Directory to change to.
-     */
-    protected void setDirectory(
-            File directory) {
-        Directory = directory;
-    }
-
-    /**
-     * Changes Directory to that passed in if it can be created. If copyLogFile
-     * is true, this copies the logfile from the existing Directory and sets up
-     * the Log to append in the new location.
-     *
-     * @param directory The Directory to change to.
-     * @param copyLogFile
-     */
-    public void setDirectory(
-            File directory,
-            boolean copyLogFile) {
-//            boolean mkdirSuccess = false;
-        File newLog = new File(directory, "log.txt");
-        try {
-            if (!directory.exists()) {
-//                    mkdirSuccess = directory.mkdir();
-                if (copyLogFile) {
-                    copyAndSetUpNewLog(newLog);
-                } else {
-                    newLog.createNewFile();
-                    Log = Generic_StaticIO.getPrintWriter(newLog, true);
-                }
-            } else {
-                if (!newLog.exists()) {
-                    newLog.createNewFile();
-                    Log = Generic_StaticIO.getPrintWriter(newLog, true);
-                } else {
-                    if (copyLogFile) {
-                        Log = Generic_StaticIO.getPrintWriter(newLog, true);
-                    } else {
-                        Log = Generic_StaticIO.getPrintWriter(newLog, false);
-                    }
-                }
-            }
-        } catch (IOException ioe0) {
-            System.err.println(ioe0.getMessage());
-            //ioe0.printStackTrace();
-        }
-        Directory = directory;
-    }
-
-    /**
-     * Copies and sets up a new Log.
-     *
-     * @param newLog
-     * @throws java.io.IOException
-     */
-    public void copyAndSetUpNewLog(
-            File newLog)
-            throws IOException {
-        Log.flush();
-        Log.close();
-        File workspace = getDirectory();
-        File oldLog = new File(workspace, "log.txt");
-        BufferedInputStream bis;
-        bis = Generic_StaticIO.getBufferedInputStream(oldLog);
-        BufferedOutputStream bos;
-        bos = Generic_StaticIO.getBufferedOutputStream(newLog);
-        for (int i = 0; i < oldLog.length(); i++) {
-            bos.write(bis.read());
-        }
-        bos.flush();
-        bos.close();
-        bis.close();
-        Log = Generic_StaticIO.getPrintWriter(newLog, true);
-        log(0, "log file copied from " + oldLog.toString() + " "
-                + Calendar.getInstance().toString());
-        ge.checkAndMaybeFreeMemory();
-    }
-
-    /**
      * Writes string to Log file and the console (standard output) indenting
      * string by LogIndentation amount of white-space.
      *
      * @param logIndentation The indentation of string.
-     * @param string The message to Log.
+     * @param s The message to Log.
      */
-    public final void log(
-            int logIndentation,
-            String string) {
-        if (string.endsWith("}")) {
+    public final void log(int logIndentation, String s) {
+        if (s.endsWith("}")) {
             logIndentation--;
             LogIndentation--;
         }
@@ -368,10 +256,10 @@ public class Grids_Processor extends Grids_Object {
             System.out.print(" ");
             Log.write(" ");
         }
-        Log.write(string);
+        Log.write(s);
         Log.write(System.getProperty("line.separator"));
         Log.flush();
-        if (string.endsWith("{")) {
+        if (s.endsWith("{")) {
             LogIndentation++;
         }
     }
@@ -385,10 +273,7 @@ public class Grids_Processor extends Grids_Object {
      * @param y2 The y coordinate of another point.
      * @return
      */
-    protected final double distance(
-            double x1,
-            double y1,
-            double x2,
+    protected final double distance(double x1, double y1, double x2,
             double y2) {
         return Math.hypot(x1 - x2, y1 - y2);
     }
@@ -403,11 +288,7 @@ public class Grids_Processor extends Grids_Object {
      * @param y2 The y coordinate of another point.
      * @return
      */
-    protected final double angle(
-            double x1,
-            double y1,
-            double x2,
-            double y2) {
+    protected final double angle(double x1, double y1, double x2, double y2) {
         double xdiff = x1 - x2;
         double ydiff = y1 - y2;
         double angle;
@@ -456,8 +337,7 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_AbstractGridNumber that the mask will be applied to.
      * @param mask The Grids_AbstractGridNumber to use as a mask.
      */
-    public void mask(
-            Grids_AbstractGridNumber g,
+    public void mask(Grids_AbstractGridNumber g,
             Grids_AbstractGridNumber mask) {
         ge.checkAndMaybeFreeMemory();
         int chunkNRows;
@@ -764,8 +644,7 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         double value;
         File dir;
-        dir = new File(g.getDirectory().getParentFile(), 
-                "Rescaled" + g.getName());
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g, 0, 0, nrows - 1, ncols - 1);
         result.setName(g.getName());
         System.out.println(result.toString());
@@ -1321,10 +1200,10 @@ public class Grids_Processor extends Grids_Object {
                 // Check
                 Grids_GridDouble tg1;
                 Grids_GridDouble tg2;
-                File dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
+                File dir;
+                dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
                 tg1 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
-                dir = Generic_StaticIO.createNewFile(this.getDirectory());
+                dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
                 tg2 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
                 // TODO:
                 // Check scale and rounding appropriate
@@ -1605,15 +1484,14 @@ public class Grids_Processor extends Grids_Object {
      * @param g1
      * @return
      */
-    public Grids_GridDouble multiply(
-            Grids_GridDouble g0,
-            Grids_GridDouble g1) {
+    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1) {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        result = GridDoubleFactory.create(
-                new File(getDirectory(), g0.getName() + "multiply" + g1.getName()),
-                g0, 0L, 0L, nRows - 1, nCols - 1);
+        File dir;
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
+                nCols - 1);
         double v0;
         double v1;
         double noDataValue0 = g0.getNoDataValue();
@@ -1646,9 +1524,10 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        result = GridDoubleFactory.create(
-                new File(getDirectory(), g0.getName() + "divide" + g1.getName()),
-                g0, 0L, 0L, nRows - 1, nCols - 1);
+        File dir;
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
+                nCols - 1);
         double v0;
         double v1;
         double noDataValue0 = g0.getNoDataValue();
@@ -1772,15 +1651,12 @@ public class Grids_Processor extends Grids_Object {
         //}
         BigDecimal resultXMax = resultXMin.add(resultWidth);
         BigDecimal resultYMax = resultYMin.add(resultHeight);
-        Grids_Dimensions resultDimensions = new Grids_Dimensions(
-                resultXMin,
-                resultXMax,
-                resultYMin,
-                resultYMax,
-                resultCellsize);
+        Grids_Dimensions resultDimensions = new Grids_Dimensions(resultXMin,
+                resultXMax, resultYMin, resultYMax, resultCellsize);
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
-        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        File dir;
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
@@ -1792,14 +1668,14 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
-            Grids_GridDouble count = (Grids_GridDouble) gridFactory.create(dir,
-                    resultNrows, resultNcols, resultDimensions);
-            dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
-            Grids_GridDouble normaliser = (Grids_GridDouble) gridFactory.create(dir,
-                    resultNrows, resultNcols, resultDimensions);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            Grids_GridDouble count;
+            count = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
+                    resultNcols, resultDimensions);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            Grids_GridDouble normaliser;
+            normaliser = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
+                    resultNcols, resultDimensions);
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
                     x = grid.getCellXDouble(col);
@@ -1842,13 +1718,13 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
-            Grids_GridDouble numerator = (Grids_GridDouble) gridFactory.create(dir,
-                    resultNrows, resultNcols, resultDimensions);
-            dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
-            Grids_GridDouble denominator = (Grids_GridDouble) gridFactory.create(dir,
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            Grids_GridDouble numerator;
+            numerator = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
+                    resultNcols, resultDimensions);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            Grids_GridDouble denominator;
+            denominator = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
@@ -1954,7 +1830,7 @@ public class Grids_Processor extends Grids_Object {
      * @param statistic "sum", "mean", "max", or "min" depending on what
      * aggregate of values are wanted
      * @param resultDimensions
-     * @param gridFactory The Abstract2DSquareCellDoubleFactory used to create
+     * @param gf The Abstract2DSquareCellDoubleFactory used to create
      * _AbstractGrid2DSquareCell_HashSet Use this aggregate method if result is
      * to have a new spatial frame. NB. In the calculation of the sum and the
      * mean if there is a cell in grid which has a data value then the result
@@ -1968,11 +1844,9 @@ public class Grids_Processor extends Grids_Object {
      * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
      * @return
      */
-    public Grids_GridDouble aggregate(
-            Grids_AbstractGridNumber grid,
-            String statistic,
-            Grids_Dimensions resultDimensions,
-            Grids_GridDoubleFactory gridFactory) {
+    public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
+            String statistic, Grids_Dimensions resultDimensions,
+            Grids_GridDoubleFactory gf) {
         ge.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
@@ -2057,7 +1931,7 @@ public class Grids_Processor extends Grids_Object {
                                 dimensionsCellsize,
                                 scale,
                                 BigDecimal.ROUND_HALF_EVEN)).intValue();
-                return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gridFactory);
+                return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gf);
             }
         }
         // Calculate resultNrows and resultHeight
@@ -2086,32 +1960,26 @@ public class Grids_Processor extends Grids_Object {
         //}
         resultXMax = dimensionsXMin.add(resultWidth);
         resultYMax = dimensionsYMin.add(resultHeight);
-
         // Initialise result
-        gridFactory.setNoDataValue(noDataValue);
-        File dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
+        gf.setNoDataValue(noDataValue);
+        File dir;
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         Grids_GridDouble result;
-
-        result = (Grids_GridDouble) gridFactory.create(dir,
-                resultNrows, resultNcols, resultDimensions);
-
+        result = (Grids_GridDouble) gf.create(dir, resultNrows, resultNcols,
+                resultDimensions);
         long row;
         long col;
         double x;
         double y;
         double value;
-
         double cellsize = dimensionsCellsize.doubleValue();
         double resultCellsized = resultCellsize.doubleValue();
-
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
-            dir = Generic_StaticIO.createNewFile(this.getDirectory());
-
-            totalValueArea = (Grids_GridDouble) gridFactory.create(dir,
-                    resultNrows, resultNcols, resultDimensions);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows, 
+                    resultNcols, resultDimensions);
             double areaProportion;
             double[] bounds;
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
@@ -2245,7 +2113,7 @@ public class Grids_Processor extends Grids_Object {
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
             double denominator = (resultCellsize.doubleValue() * resultCellsize.doubleValue()) / (cellsize * cellsize);
-            Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gridFactory);
+            Grids_GridDouble sum = aggregate(grid, "sum", resultDimensions, gf);
             addToGrid(result, sum, 1.0d / denominator);
         }
 
@@ -2709,10 +2577,8 @@ public class Grids_Processor extends Grids_Object {
      * @param cellDistance
      * @return
      */
-    protected double[][] getRowProcessInitialData(
-            Grids_GridDouble g,
-            int cellDistance,
-            long row) {
+    protected double[][] getRowProcessInitialData(Grids_GridDouble g,
+            int cellDistance, long row) {
         int l = (cellDistance * 2) + 1;
         double[][] result = new double[l][l];
         long col;
@@ -2737,12 +2603,8 @@ public class Grids_Processor extends Grids_Object {
      * @param row
      * @return
      */
-    protected double[][] getRowProcessData(
-            Grids_GridDouble g,
-            double[][] previous,
-            int cellDistance,
-            long row,
-            long col) {
+    protected double[][] getRowProcessData(Grids_GridDouble g,
+            double[][] previous, int cellDistance, long row, long col) {
         double[][] result = previous;
         if (col == 0) {
             return getRowProcessInitialData(g, cellDistance, row);
@@ -2771,11 +2633,8 @@ public class Grids_Processor extends Grids_Object {
      * @param imageTypes
      * @param eage
      */
-    public void output(
-            Grids_AbstractGridNumber g,
-            File outDir,
-            Grids_ImageExporter ie,
-            String[] imageTypes,
+    public void output(Grids_AbstractGridNumber g, File outDir,
+            Grids_ImageExporter ie, String[] imageTypes,
             Grids_ESRIAsciiGridExporter eage) {
         System.out.println("Output " + g.toString());
         if (ie == null) {
@@ -2797,11 +2656,11 @@ public class Grids_Processor extends Grids_Object {
         int l = imageTypes.length;
         for (i = 0; i < l; i++) {
             s = g.getName() + "." + imageTypes[i];
-            file = ge.initFile(outDir, s);
+            file = new File(outDir, s);
             ie.toGreyScaleImage(g, this, file, imageTypes[i]);
         }
         s = g.getName() + dotASC;
-        file = ge.initFile(outDir, s);
+        file = new File(outDir, s);
         eage.toAsciiFile(g, file, noDataValue);
     }
 
@@ -2813,12 +2672,8 @@ public class Grids_Processor extends Grids_Object {
      * @param imageTypes
      * @param hoome
      */
-    public void outputImage(
-            Grids_AbstractGridNumber g,
-            File outDir,
-            Grids_ImageExporter ie,
-            String[] imageTypes,
-            boolean hoome) {
+    public void outputImage(Grids_AbstractGridNumber g, File outDir,
+            Grids_ImageExporter ie, String[] imageTypes, boolean hoome) {
         try {
             System.out.println("Output " + g.toString());
             if (ie == null) {
@@ -2835,7 +2690,7 @@ public class Grids_Processor extends Grids_Object {
             int l = imageTypes.length;
             for (i = 0; i < l; i++) {
                 string = g.getName() + string_DOT + imageTypes[i];
-                file = ge.initFile(outDir, string);
+                file = new File(outDir, string);
                 ie.toGreyScaleImage(g, this, file, imageTypes[i]);
             }
         } catch (OutOfMemoryError e) {
@@ -2855,34 +2710,29 @@ public class Grids_Processor extends Grids_Object {
     /**
      *
      * @param g
-     * @param outputDirectory
+     * @param outDir
      * @param eage
      * @param hoome
-     * @throws IOException
      */
-    public void outputESRIAsciiGrid(
-            Grids_AbstractGridNumber g,
-            File outputDirectory,
-            Grids_ESRIAsciiGridExporter eage,
-            boolean hoome)
-            throws IOException {
+    public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, File outDir,
+            Grids_ESRIAsciiGridExporter eage, boolean hoome) {
         try {
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(ge);
             }
             String methodName = "outputESRIAsciiGrid("
                     + g.getClass().getName() + "(" + g.toString() + "),"
-                    + outputDirectory.getClass().getName() + "(" + outputDirectory + "),"
+                    + outDir.getClass().getName() + "(" + outDir + "),"
                     + eage.getClass().getName() + "(" + eage.toString() + "),"
                     + "boolean(" + hoome + "))";
             System.out.println(methodName);
             String string_DotASC = ".asc";
-            String noDataValue = "-9999.0";
+            String ndv = "-9999.0";
             String string;
             File file;
             string = g.getName() + string_DotASC;
-            file = ge.initFile(outputDirectory, string);
-            eage.toAsciiFile(g, file, noDataValue);
+            file = new File(outDir, string);
+            eage.toAsciiFile(g, file, ndv);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
@@ -2890,7 +2740,7 @@ public class Grids_Processor extends Grids_Object {
                     throw e;
                 }
                 ge.initMemoryReserve();
-                outputESRIAsciiGrid(g, outputDirectory, eage, hoome);
+                outputESRIAsciiGrid(g, outDir, eage, hoome);
             } else {
                 throw e;
             }

@@ -111,12 +111,9 @@ public class Grids_Environment
      */
     public Grids_Files getFiles() {
         if (Files == null) {
-            File dataDirectory = new File(
-                    Directory,
-                    getStrings().getString_data());
+            File dataDirectory = new File(Directory, getStrings().getS_data());
             dataDirectory.mkdirs();
-            Files = new Grids_Files(dataDirectory);
-            Files.Strings = Strings;
+            Files = new Grids_Files(this, dataDirectory);
         }
         return Files;
     }

@@ -154,10 +154,10 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
 //                new File(inDataDirectory + yFilename + ".asc"));
 File dir;
-dir = Generic_StaticIO.createNewFile(this.getDirectory());
+dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + xFilename + ".asc"));
-        dir = Generic_StaticIO.createNewFile(this.getDirectory());
+        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + yFilename + ".asc"));
         System.out.println(xGrid.toString());

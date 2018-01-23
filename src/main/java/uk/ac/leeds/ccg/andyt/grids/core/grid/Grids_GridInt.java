@@ -43,6 +43,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStats;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -266,10 +267,11 @@ public class Grids_GridInt
                         gp.DefaultGridChunkDoubleFactory, -Double.MAX_VALUE,
                         ChunkNRows, ChunkNCols, null,
                         new Grids_GridDoubleStatsNotUpdated(ge));
+                Grids_Files files = ge.getFiles();
+                File dir;
+                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
                 Grids_GridDouble gd;
-                gd = (Grids_GridDouble) gdf.create(
-                        Generic_StaticIO.createNewFile(gp.getDirectory()), file,
-                        ois);
+                gd = (Grids_GridDouble) gdf.create(dir, file, ois);
                 Grids_GridIntFactory gif;
                 gif = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,

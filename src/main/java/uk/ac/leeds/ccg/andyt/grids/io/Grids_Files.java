@@ -21,70 +21,62 @@ package uk.ac.leeds.ccg.andyt.grids.io;
 import java.io.File;
 import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
 public class Grids_Files extends Generic_Files {
 
+    private Grids_Environment ge;
+
+    /**
+     * For convenience
+     */
+    private Grids_Strings Strings;
+
     protected File GeneratedGridsDir;
     protected File GeneratedGridIntDir;
     protected File GeneratedGridDoubleDir;
-    protected File GeneratedGridIntFactoryDir;
-    protected File GeneratedGridDoubleFactoryDir;
+    protected File GeneratedProcessorDir;
 
     protected Grids_Files() {
     }
 
-    public Grids_Files(File dataDirectory) {
-        DataDir = dataDirectory;
-    }
-
-    public Grids_Strings getStrings() {
-        return (Grids_Strings) Strings;
+    public Grids_Files(Grids_Environment ge, File dataDir) {
+        this.ge = ge;
+        Strings = ge.getStrings();
+        DataDir = dataDir;
     }
 
     public File getGeneratedGridsDir() {
         if (GeneratedGridsDir == null) {
-            GeneratedGridsDir = new File(
-                    getGeneratedDataDir(),
-                    getStrings().getString_Grids());
+            GeneratedGridsDir = new File(getGeneratedDataDir(Strings),
+                    Strings.getS_Grids());
         }
         return GeneratedGridsDir;
     }
 
     public File getGeneratedGridIntDir() {
         if (GeneratedGridIntDir == null) {
-            GeneratedGridIntDir = new File(
-                    getGeneratedGridsDir(),
-                    getStrings().getString_GridInt());
+            GeneratedGridIntDir = new File(getGeneratedGridsDir(), 
+                    Strings.getS_GridInt());
         }
         return GeneratedGridIntDir;
     }
 
     public File getGeneratedGridDoubleDir() {
         if (GeneratedGridDoubleDir == null) {
-            GeneratedGridDoubleDir = new File(
-                    getGeneratedGridsDir(),
-                    getStrings().getString_GridDouble());
+            GeneratedGridDoubleDir = new File(getGeneratedGridsDir(), 
+                    Strings.getS_GridDouble());
         }
         return GeneratedGridDoubleDir;
     }
 
-    public File getGeneratedGridIntFactoryDir() {
-        if (GeneratedGridIntFactoryDir == null) {
-            GeneratedGridIntFactoryDir = new File(
-                    getGeneratedGridsDir(),
-                    getStrings().getString_GridIntFactory());
+    public File getGeneratedProcessorDir() {
+        if (GeneratedProcessorDir == null) {
+            GeneratedProcessorDir = new File(getGeneratedGridsDir(),
+                    Strings.getS_Processor());
         }
-        return GeneratedGridIntFactoryDir;
-    }
-
-    public File getGeneratedGridDoubleFactoryDir() {
-        if (GeneratedGridDoubleFactoryDir == null) {
-            GeneratedGridDoubleFactoryDir = new File(
-                    getGeneratedGridsDir(),
-                    getStrings().getString_GridDoubleFactory());
-        }
-        return GeneratedGridDoubleFactoryDir;
+        return GeneratedProcessorDir;
     }
 
     /**
@@ -138,37 +130,8 @@ public class Grids_Files extends Generic_Files {
     private File getNewFile(File dir, String prefix, String suffix) {
         File result;
         do {
-            result = new File(dir,
-                    prefix + System.currentTimeMillis() + suffix);
+            result = new File(dir, prefix + System.currentTimeMillis() + suffix);
         } while (result.exists());
-        return result;
-    }
-
-    /**
-     * Returns a newly created File which is a file if the filename. or a
-     * directory.
-     *
-     * @param dir
-     * @param filename
-     * @return
-     */
-    public File createNewFile(File dir, String filename) {
-        File result = new File(dir, filename);
-        String filename0;
-        while (result.exists()) {
-            filename0 = filename + System.currentTimeMillis();
-            result = new File(dir, filename0);
-        }
-        try {
-            if (filename.charAt(filename.length() - 4) != '.') {
-                result.mkdir();
-            } else {
-                result.createNewFile();
-            }
-        } catch (IOException ioe0) {
-            System.out.println("File " + result.toString());
-            ioe0.printStackTrace(System.err);
-        }
         return result;
     }
 }

@@ -43,6 +43,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdat
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -207,6 +208,14 @@ public class Grids_GridDouble
      */
     private void init(Grids_GridDouble g) {
         NoDataValue = g.NoDataValue;
+//        Grids_GridDoubleStats gStats;
+//        gStats = g.getStats();
+//        if (gStats instanceof Grids_GridDoubleStatsNotUpdated) {
+//            Stats = new Grids_GridDoubleStatsNotUpdated(this);
+//        } else {
+//            Stats = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
+//        }
+//        Stats = g.Stats;
         super.init(g);
         ChunkIDChunkMap = g.ChunkIDChunkMap;
         // Set the reference to this in ChunkIDChunkMap chunks
@@ -260,10 +269,11 @@ public class Grids_GridDouble
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         ChunkNRows, ChunkNCols, Dimensions,
                         new Grids_GridIntStatsNotUpdated(ge));
+                Grids_Files files = ge.getFiles();
+                File dir;
+                dir = files.createNewFile(files.getGeneratedGridIntDir());
                 Grids_GridInt gi;
-                gi = (Grids_GridInt) gif.create(
-                        Generic_StaticIO.createNewFile(gp.getDirectory()),
-                        file, ois);
+                gi = (Grids_GridInt) gif.create(dir, file, ois);
                 Grids_GridDoubleFactory gdf;
                 gdf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
                         gp.DefaultGridChunkDoubleFactory, gi.NoDataValue,

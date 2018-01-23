@@ -13,48 +13,40 @@ import uk.ac.leeds.ccg.andyt.generic.core.Generic_Strings;
  */
 public class Grids_Strings extends Generic_Strings {
     
-    protected String String_Grids;
-    protected String String_GridInt;
-    protected String String_GridDouble;
-    protected String String_GridIntFactory;
-    protected String String_GridDoubleFactory;
+    protected String S_Grids;
+    protected String S_GridInt;
+    protected String S_GridDouble;
+    protected String S_Processor;
 
     public Grids_Strings() {
     }
 
-    public String getString_Grids() {
-        if (String_Grids == null) {
-            String_Grids = "Grids";
+    public String getS_Grids() {
+        if (S_Grids == null) {
+            S_Grids = "Grids";
         }
-        return String_Grids;
+        return S_Grids;
     }
 
-    public String getString_GridDouble() {
-        if (String_GridDouble == null) {
-            String_GridDouble = "GridDouble";
+    public String getS_GridDouble() {
+        if (S_GridDouble == null) {
+            S_GridDouble = "GridDouble";
         }
-        return String_GridDouble;
+        return S_GridDouble;
     }
 
-    public String getString_GridInt() {
-        if (String_GridInt == null) {
-            String_GridInt = "GridInt";
+    public String getS_GridInt() {
+        if (S_GridInt == null) {
+            S_GridInt = "GridInt";
         }
-        return String_GridInt;
+        return S_GridInt;
     }
-
-    public String getString_GridDoubleFactory() {
-        if (String_GridDoubleFactory == null) {
-            String_GridDoubleFactory = "GridDoubleFactory";
+    
+    public String getS_Processor() {
+        if (S_Processor == null) {
+            S_Processor = "Processor";
         }
-        return String_GridDoubleFactory;
-    }
-
-    public String getString_GridIntFactory() {
-        if (String_GridIntFactory == null) {
-            String_GridIntFactory = "GridIntFactory";
-        }
-        return String_GridIntFactory;
+        return S_Processor;
     }
     
 }
