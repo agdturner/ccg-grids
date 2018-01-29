@@ -71,25 +71,20 @@ public class Grids_ProcessorDEM
      * to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
      * ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
      * = 0.0d;
-     * @return Grids_GridDouble[] _SlopeAndAspect. /n
+     * @return Grids_GridDouble[] slopeAndAspect. /n
      * @throws java.io.IOException
      */
-    public Grids_GridDouble[] getSlopeAspect(
-            Grids_AbstractGridNumber g)
+    public Grids_GridDouble[] getSlopeAspect(Grids_AbstractGridNumber g)
             throws IOException {
         boolean hoome = true;
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
         Grids_Dimensions dimensions = g.getDimensions();
-        double distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
+        double distance;
+        distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
         double weightIntersect = 1.0d;
         double weightFactor = 0.0d;
-        return getSlopeAspect(
-                g,
-                distance,
-                weightIntersect,
-                weightFactor,
-                hoome);
+        return getSlopeAspect(g, distance, weightIntersect, weightFactor, hoome);
     }
 
     /**
@@ -101,46 +96,42 @@ public class Grids_ProcessorDEM
      * then caching operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown. (NB. There are various
      * strategies to reduce bias caused by noDataValues. Here: If the cell in
-     * grid for which _SlopeAndAspect is being calculated is a noDataValue then
-     * the cells in _SlopeAndAspect are assigned their noDataValue. If one of
-     * the cells in the calculation of slope and aspect is a noDataValue then
-     * its height is taken as the nearest cell value. (Formerly the difference
-     * in its height was taken as the average difference in height for those
-     * cells with values.) )
-     * @return Grids_GridDouble[] _SlopeAndAspect where: _SlopeAndAspect[0] Is
-     * the distance weighted aggregate slope over the region. This is normalised
-     * by the sum of the weights used and the average distance to give a
-     * proportional measure. _SlopeAndAspect[1] Is the distance weighted
-     * aggregate aspect over the region. This is the clockwize angle from the y
-     * axis (usually North). _SlopeAndAspect[2] Is the sine of
-     * _SlopeAndAspect[1]. _SlopeAndAspect[3] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 1 ) / 8). _SlopeAndAspect[4] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 2 ) / 8). _SlopeAndAspect[5] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 3 ) / 8). _SlopeAndAspect[6] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 4 ) / 8). _SlopeAndAspect[7] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 5 ) / 8). _SlopeAndAspect[8] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 6 ) / 8). _SlopeAndAspect[9] Is the sine of _SlopeAndAspect[1]
-     * + ( ( Pi * 7 ) / 8).
+     * grid for which slopeAndAspect is being calculated is a noDataValue then
+     * the cells in slopeAndAspect are assigned their noDataValue. If one of the
+     * cells in the calculation of slope and aspect is a noDataValue then its
+     * height is taken as the nearest cell value. (Formerly the difference in
+     * its height was taken as the average difference in height for those cells
+     * with values.) )
+     * @return Grids_GridDouble[] slopeAndAspect where: slopeAndAspect[0] Is the
+     * distance weighted aggregate slope over the region. This is normalised by
+     * the sum of the weights used and the average distance to give a
+     * proportional measure. slopeAndAspect[1] Is the distance weighted
+     * aggregate aspect over the region. This is the clockwise angle from the y
+     * axis (usually North). slopeAndAspect[2] Is the sine of slopeAndAspect[1].
+     * slopeAndAspect[3] Is the sine of slopeAndAspect[1] + ( ( Pi * 1 ) / 8).
+     * slopeAndAspect[4] Is the sine of slopeAndAspect[1] + ( ( Pi * 2 ) / 8).
+     * slopeAndAspect[5] Is the sine of slopeAndAspect[1] + ( ( Pi * 3 ) / 8).
+     * slopeAndAspect[6] Is the sine of slopeAndAspect[1] + ( ( Pi * 4 ) / 8).
+     * slopeAndAspect[7] Is the sine of slopeAndAspect[1] + ( ( Pi * 5 ) / 8).
+     * slopeAndAspect[8] Is the sine of slopeAndAspect[1] + ( ( Pi * 6 ) / 8).
+     * slopeAndAspect[9] Is the sine of slopeAndAspect[1] + ( ( Pi * 7 ) / 8).
      * @throws java.io.IOException
      */
-    public Grids_GridDouble[] getSlopeAspect(
-            Grids_AbstractGridNumber g,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            boolean hoome)
-            throws IOException {
+    public Grids_GridDouble[] getSlopeAspect(Grids_AbstractGridNumber g,
+            double distance, double weightIntersect, double weightFactor,
+            boolean hoome)            throws IOException {
         try {
             String methodName = "getSlopeAspect(" + g.getClass().getName()
                     + ",double,double,double,boolean)";
             System.out.println(methodName);
             ge.getGrids().add(g);
             Grids_AbstractGridChunkDouble chunkDouble;
-            Grids_GridDouble gridDouble;
+            Grids_GridDouble gd;
             Grids_AbstractGridChunkInt chunk;
             Grids_GridInt gridInt;
             int slopeAndAspectSize = 10;
-            Grids_GridDouble[] slopeAndAspect = new Grids_GridDouble[slopeAndAspectSize];
+            Grids_GridDouble[] slopeAndAspect;
+            slopeAndAspect = new Grids_GridDouble[slopeAndAspectSize];
             boolean shortName = true; // Filenames that are too long are problematic!
             boolean swapToFileCache;
             // Initialisation
@@ -221,18 +212,16 @@ public class Grids_ProcessorDEM
             String gName = g.getName();
             String filename;
             File dir;
-            //Grid2DSquareCellDouble _Grid2DSquareCellDouble = new Grids_GridDouble( _AbstractGrid2DSquareCell_HashSet );
             int noDataValueInt;
             int heightInt;
             int thisHeightInt;
-            Object[] _NewFileResult = new Object[2];
+            Object[] newResult = new Object[2];
             File directory = getDirectory();
-            System.out.println("Initialising _SlopeAndAspect[ 0 ]");
+            System.out.println("Initialising slopeAndAspect[ 0 ]");
             if (shortName) {
                 filename = "slope_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[slope,"
+                filename = gName                        + "slopeAndAspect[slope,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -246,12 +235,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[0].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[0]);
             System.out.println(slopeAndAspect[0].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 1 ]");
+            System.out.println("Initialising slopeAndAspect[ 1 ]");
             if (shortName) {
                 filename = "aspect_N_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[aspect_N,"
+                filename = gName                        + "slopeAndAspect[aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -264,12 +252,11 @@ public class Grids_ProcessorDEM
             swapToFileCache = true;
             slopeAndAspect[1].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[1]);
-            System.out.println("Initialising _SlopeAndAspect[ 2 ]");
+            System.out.println("Initialising slopeAndAspect[ 2 ]");
             if (shortName) {
                 filename = "sin_aspect_N_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_N,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -283,12 +270,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[2].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[2]);
             System.out.println(slopeAndAspect[2].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 3 ]");
+            System.out.println("Initialising slopeAndAspect[ 3 ]");
             if (shortName) {
                 filename = "sin_aspect_NNE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_NNE,"
+                filename = gName + "slopeAndAspect[sin_aspect_NNE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -302,12 +288,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[3].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[3]);
             System.out.println(slopeAndAspect[3].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 4 ]");
+            System.out.println("Initialising slopeAndAspect[ 4 ]");
             if (shortName) {
                 filename = "sin_aspect_NE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_NE,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_NE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -321,12 +306,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[4].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[4]);
             System.out.println(slopeAndAspect[4].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 5 ]");
+            System.out.println("Initialising slopeAndAspect[ 5 ]");
             if (shortName) {
                 filename = "sin_aspect_ENE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_ENE,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_ENE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -340,12 +324,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[5].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[5]);
             System.out.println(slopeAndAspect[5].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 6 ]");
+            System.out.println("Initialising slopeAndAspect[ 6 ]");
             if (shortName) {
                 filename = "sin_aspect_E_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_E,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_E,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -359,12 +342,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[6].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[6]);
             System.out.println(slopeAndAspect[6].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 7 ]");
+            System.out.println("Initialising slopeAndAspect[ 7 ]");
             if (shortName) {
                 filename = "sin_aspect_ESE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_ESE,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_ESE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -378,12 +360,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[7].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[7]);
             System.out.println(slopeAndAspect[7].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 8 ]");
+            System.out.println("Initialising slopeAndAspect[ 8 ]");
             if (shortName) {
                 filename = "sin_aspect_SE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_SE,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_SE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -397,12 +378,11 @@ public class Grids_ProcessorDEM
             slopeAndAspect[8].writeToFile(swapToFileCache);
             ge.getGrids().add(slopeAndAspect[8]);
             System.out.println(slopeAndAspect[8].toString());
-            System.out.println("Initialising _SlopeAndAspect[ 9 ]");
+            System.out.println("Initialising slopeAndAspect[ 9 ]");
             if (shortName) {
                 filename = "sin_aspect_SSE_" + averageDistance;
             } else {
-                filename = gName
-                        + "__SlopeAndAspect[sin_aspect_SSE,"
+                filename = gName                        + "slopeAndAspect[sin_aspect_SSE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -417,21 +397,21 @@ public class Grids_ProcessorDEM
             ge.getGrids().add(slopeAndAspect[9]);
             System.out.println("Initialised Results");
             System.out.println(g.toString());
-
             if (g.getClass() == Grids_GridDouble.class) {
-                gridDouble = (Grids_GridDouble) g;
-                double noDataValue = gridDouble.getNoDataValue();
+                gd = (Grids_GridDouble) g;
+                double noDataValue = gd.getNoDataValue();
                 double h;
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        chunkDouble = gridDouble.getChunk(cri, cci);
+                        chunkDouble = gd.getChunk(cri, cci);
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                                ge.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
                                 x = g.getCellXDouble(col);
                                 h = chunkDouble.getCell(cellRow, cellCol);
@@ -451,7 +431,7 @@ public class Grids_ProcessorDEM
                                                 thisX = g.getCellXDouble(long0);
                                                 thisDistance = distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
-                                                    h2 = gridDouble.getCell(thisX, thisY);
+                                                    h2 = gd.getCell(thisX, thisY);
                                                     if (h2 != noDataValue) {
                                                         long0 = p + cellDistance;
                                                         int0 = (int) long0;
@@ -534,6 +514,7 @@ public class Grids_ProcessorDEM
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
+                                ge.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
                                 x = g.getCellXDouble(col);
                                 heightInt = chunk.getCell(cellRow, cellCol);
@@ -625,27 +606,22 @@ public class Grids_ProcessorDEM
                     throw e;
                 }
                 ge.initMemoryReserve();
-                return getSlopeAspect(
-                        g,
-                        distance,
-                        weightIntersect,
-                        weightFactor,
-                        hoome);
+                return getSlopeAspect(g, distance, weightIntersect, weightFactor, hoome);
             }
             throw e;
         }
     }
 
     /**
-     * Returns a double[] _SlopeAndAspect where: _SlopeAndAspect[0] is the
+     * Returns a double[] slopeAndAspect where: slopeAndAspect[0] is the
      * aggregate slope over the region weighted by distance, weightIntersect and
-     * weightFactor; _SlopeAndAspect[1] is the aggregate aspect over the region
+     * weightFactor; slopeAndAspect[1] is the aggregate aspect over the region
      * weighted by distance, weightIntersect and weightFactor. This is the
-     * clockwize angle from north. _SlopeAndAspect[2] is the aggregate aspect
+     * clockwise angle from north. slopeAndAspect[2] is the aggregate aspect
      * over the region weighted by distance, weightIntersect and weightFactor.
-     * This is the sine of the clockwize angle from north. _SlopeAndAspect[3] is
+     * This is the sine of the clockwise angle from north. slopeAndAspect[3] is
      * the aggregate aspect over the region weighted by distance,
-     * weightIntersect and weightFactor. This is the cosine of the clockwize
+     * weightIntersect and weightFactor. This is the cosine of the clockwise
      * angle from north.
      *
      * @param g the Grids_GridDouble to be processed.
@@ -656,27 +632,23 @@ public class Grids_ProcessorDEM
      * @param weightFactor the kernel weighting distance decay.
      * @return
      */
-    protected double[] getSlopeAspect(
-            Grids_AbstractGridNumber g,
-            double x,
-            double y,
-            double distance,
-            double weightIntersect,
+    protected double[] getSlopeAspect(Grids_AbstractGridNumber g, double x,
+            double y, double distance, double weightIntersect,
             double weightFactor) {
         return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance,
                 weightIntersect, weightFactor);
     }
 
     /**
-     * Returns a double[] _SlopeAndAspect where: _SlopeAndAspect[0] is the
+     * Returns a double[] slopeAndAspect where: slopeAndAspect[0] is the
      * aggregate slope over the region weighted by distance, weightIntersect and
-     * weightFactor; _SlopeAndAspect[1] is the aggregate aspect over the region
+     * weightFactor; slopeAndAspect[1] is the aggregate aspect over the region
      * weighted by distance, weightIntersect and weightFactor. This is the
-     * clockwize angle from north. _SlopeAndAspect[2] is the aggregate aspect
+     * clockwise angle from north. slopeAndAspect[2] is the aggregate aspect
      * over the region weighted by distance, weightIntersect and weightFactor.
-     * This is the sine of the clockwize angle from north. _SlopeAndAspect[3] is
+     * This is the sine of the clockwise angle from north. slopeAndAspect[3] is
      * the aggregate aspect over the region weighted by distance,
-     * weightIntersect and weightFactor. This is the cosine of the clockwize
+     * weightIntersect and weightFactor. This is the cosine of the clockwise
      * angle from north.
      *
      * @param g The Grids_GridDouble to be processed
@@ -692,26 +664,19 @@ public class Grids_ProcessorDEM
      * consider interpolation
      * @return
      */
-    protected double[] getSlopeAspect(
-            Grids_AbstractGridNumber g,
-            long rowIndex,
-            long colIndex,
-            double x,
-            double y,
-            double distance,
-            double weightIntersect,
-            double weightFactor) {
+    protected double[] getSlopeAspect(Grids_AbstractGridNumber g, long rowIndex,
+            long colIndex, double x, double y, double distance,
+            double weightIntersect, double weightFactor) {
         ge.getGrids().add(g);
-
         if (g.getClass() == Grids_GridInt.class) {
-            Grids_GridInt _Grid2DSquareCellInt = (Grids_GridInt) g;
-            int noDataValue = _Grid2DSquareCellInt.getNoDataValue();
-            double[] _SlopeAndAspect = new double[2];
-            _SlopeAndAspect[0] = noDataValue;
-            _SlopeAndAspect[1] = noDataValue;
-            _SlopeAndAspect[2] = noDataValue;
-            _SlopeAndAspect[3] = noDataValue;
-            int height = _Grid2DSquareCellInt.getCell(x, y);
+            Grids_GridInt gi = (Grids_GridInt) g;
+            int noDataValue = gi.getNoDataValue();
+            double[] slopeAndAspect = new double[2];
+            slopeAndAspect[0] = noDataValue;
+            slopeAndAspect[1] = noDataValue;
+            slopeAndAspect[2] = noDataValue;
+            slopeAndAspect[3] = noDataValue;
+            int height = gi.getCell(x, y);
             if (height != noDataValue) {
                 double cellsize = g.getCellsizeDouble();
                 int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
@@ -732,9 +697,10 @@ public class Grids_ProcessorDEM
                         thisX = x + (q * distance);
                         thisDistance = distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
-                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                            thisHeight = _Grid2DSquareCellInt.getCell(thisX, thisY);
-                            //thisHeight = _Grid2DSquareCellInt.getNearestValueDouble( thisX, thisY, hoome );
+                            weight = Grids_Kernel.getKernelWeight(distance,
+                                    weightIntersect, weightFactor, thisDistance);
+                            thisHeight = gi.getCell(thisX, thisY);
+                            //thisHeight = gi.getNearestValueDouble(thisX, thisY, hoome);
                             if (thisHeight != noDataValue) {
                                 diffHeight = (double) (height - thisHeight) * weight;
                                 diffX += (x - thisX) * diffHeight;
@@ -744,23 +710,23 @@ public class Grids_ProcessorDEM
                         }
                     }
                 }
-                _SlopeAndAspect[0] = slope;
-                _SlopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
-                _SlopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
-                _SlopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[0] = slope;
+                slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
+                slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
             }
-            return _SlopeAndAspect;
+            return slopeAndAspect;
         } else {
-            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
-            Grids_GridDouble _Grid2DSquareCellDouble = (Grids_GridDouble) g;
-            double noDataValue = _Grid2DSquareCellDouble.getNoDataValue();
+            // ( g.getClass() == Grids_GridDouble.class )
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double noDataValue = gd.getNoDataValue();
             double value;
             double[] slopeAndAspect = new double[2];
             slopeAndAspect[0] = noDataValue;
             slopeAndAspect[1] = noDataValue;
             slopeAndAspect[2] = noDataValue;
             slopeAndAspect[3] = noDataValue;
-            double height = _Grid2DSquareCellDouble.getCell(x, y);
+            double height = gd.getCell(x, y);
             if (height != noDataValue) {
                 double cellsize = g.getCellsizeDouble();
                 int cellDistance = (int) Math.ceil((distance + cellsize) / cellsize);
@@ -781,9 +747,10 @@ public class Grids_ProcessorDEM
                         thisX = x + (q * distance);
                         thisDistance = distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
-                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                            thisHeight = _Grid2DSquareCellDouble.getCell(thisX, thisY);
-                            //thisHeight = _Grid2DSquareCellDouble.getNearestValueDouble( thisX, thisY, hoome );
+                            weight = Grids_Kernel.getKernelWeight(distance,
+                                    weightIntersect, weightFactor, thisDistance);
+                            thisHeight = gd.getCell(thisX, thisY);
+                            //thisHeight = gd.getNearestValueDouble(thisX, thisY, hoome);
                             if (thisHeight != noDataValue) {
                                 diffHeight = (height - thisHeight) * weight;
                                 diffX += (x - thisX) * diffHeight;
@@ -803,9 +770,6 @@ public class Grids_ProcessorDEM
     }
 
     /**
-     *
-     *
-     *
      * @param g Grids_AbstractGridNumber to be processed.
      * @param gdf
      * @param outflowHeight
@@ -828,24 +792,18 @@ public class Grids_ProcessorDEM
      * This algorithm was optimised by processing each hollow in turn and
      * dealing with the situation around each hollow.
      */
-    public Grids_GridDouble getHollowFilledDEM(
-            Grids_AbstractGridNumber g,
-            Grids_GridDoubleFactory gdf,
-            double outflowHeight,
-            int maxIterations,
-            HashSet outflowCellIDsSet,
-            boolean treatNoDataValueAsOutflow) {
+    public Grids_GridDouble getHollowFilledDEM(Grids_AbstractGridNumber g,
+            Grids_GridDoubleFactory gdf, double outflowHeight, int maxIterations,
+            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) {
         ge.getGrids().add(g);
         // Intitialise variables
         Grids_GridDouble result;
         long nRows;
         long nCols;
-//            int chunkNrows = _Grid2DSquareCell.getChunkNRows(
-//                    hoome );
-//            int chunkNcols = _Grid2DSquareCell.getChunkNCols(
-//                    hoome );
-        //String resultName = _Grid2DSquareCell.getName( hoome ) + "_HollowFilledDEM_" + maxIterations;
-        String resultName = "_HollowFilledDEM_" + maxIterations;
+//        int chunkNrows = g.getChunkNRows();
+//        int chunkNcols = g.getChunkNCols();
+//        String resultName = g.getName() + "HollowFilledDEM_" + maxIterations;
+        String resultName = "HollowFilledDEM_" + maxIterations;
         result = (Grids_GridDouble) gdf.create(g);
         result.setName(resultName);
         nRows = result.getNRows();
@@ -862,18 +820,11 @@ public class Grids_ProcessorDEM
             double height;
             // Initialise outflowCellIDs
             HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
-                    outflowCellIDsSet,
-                    outflowHeight,
-                    gi,
-                    nRows,
-                    nCols,
+                    outflowCellIDsSet, outflowHeight, gi, nRows, nCols,
                     treatNoDataValueAsOutflow);
             // Initialise hollowsHashSet
             HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                    gi,
-                    nRows,
-                    nCols,
-                    treatNoDataValueAsOutflow);
+                    gi, nRows, nCols, treatNoDataValueAsOutflow);
             // Remove outflowCellIDs from hollowsHashSet
             hollowsHashSet.removeAll(outflowCellIDs);
             HashSet hollows2 = hollowsHashSet;
@@ -1116,7 +1067,7 @@ public class Grids_ProcessorDEM
                 }
             }
         } else {
-            // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
+            // ( g.getClass() == Grids_GridDouble.class )
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double noDataValue = gd.getNoDataValue();
             double height;
@@ -3751,7 +3702,7 @@ public class Grids_ProcessorDEM
             Grids_Dimensions dimensions = grid.getDimensions();
             double gridNoDataValue = grid.getNoDataValue();
             Grids_GridDouble[] slopeAndAspect = null;
-            //Grid2DSquareCellDouble[] _SlopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
+            //Grid2DSquareCellDouble[] slopeAndAspect = getSlopeAspect( grid, distance, weightIntersect, weightFactor, grid, gridFactory );
             result[0] = slopeAndAspect[0];
             result[1] = slopeAndAspect[1];
             for (int i = 0; i < result.length; i++) {
@@ -3938,24 +3889,20 @@ public class Grids_ProcessorDEM
      * @param weightFactor
      * @param hoome
      * @param weightIntersect
-     * @param gridFactory
+     * @param gf
      * @return
      */
-    public Grids_GridDouble getUpSlopeAreaMetrics(
-            Grids_GridDouble grid,
-            double distance,
-            double weightFactor,
-            double weightIntersect,
-            Grids_GridDoubleFactory gridFactory,
-            boolean hoome) {
+    public Grids_GridDouble getUpSlopeAreaMetrics(Grids_GridDouble grid,
+            double distance, double weightFactor, double weightIntersect,
+            Grids_GridDoubleFactory gf, boolean hoome) {
         try {
             ge.getGrids().add(grid);
-            Grids_GridDouble upSlopeAreaMetrics = (Grids_GridDouble) gridFactory.create(
-                    grid.getNRows(),
-                    grid.getNCols(),
-                    grid.getDimensions());
+            Grids_GridDouble upSlopeAreaMetrics = (Grids_GridDouble) gf.create(
+                    grid.getNRows(), grid.getNCols(), grid.getDimensions());
             // Get Peaks and set their value to 1.0d
-            HashSet initialPeaksHashSet = getInitialPeaksHashSetAndSetTheirValue(grid, upSlopeAreaMetrics, hoome);
+            HashSet initialPeaksHashSet;
+            initialPeaksHashSet = getInitialPeaksHashSetAndSetTheirValue(grid,
+                    upSlopeAreaMetrics, hoome);
             // For each Peak find its neighbours and add a proportional value to
             // them based on slope. If the slope is zero then the neighbour is still
             // passed a proportion. This can be configured based on infiltration
@@ -3969,23 +3916,14 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
-
                 if (!ge.swapChunk(ge.HOOMEF)) {
                     throw e;
-
                 }
                 ge.initMemoryReserve();
-                getUpSlopeAreaMetrics(
-                        grid,
-                        distance,
-                        weightFactor,
-                        weightIntersect,
-                        gridFactory,
-                        hoome);
-
+                getUpSlopeAreaMetrics(grid, distance, weightFactor,
+                        weightIntersect, gf, hoome);
             }
             throw e;
-
         }
     }
 
@@ -3999,45 +3937,38 @@ public class Grids_ProcessorDEM
      * @param hoome
      * @return
      */
-    public HashSet getInitialPeaksHashSetAndSetTheirValue(
-            Grids_GridDouble grid,
-            Grids_GridDouble upSlopeAreaMetrics,
-            boolean hoome) {
+    public HashSet getInitialPeaksHashSetAndSetTheirValue(Grids_GridDouble grid,
+            Grids_GridDouble upSlopeAreaMetrics, boolean hoome) {
         try {
             ge.getGrids().add(grid);
             HashSet initialPeaksHashSet = new HashSet();
             long nrows = grid.getNRows();
             long ncols = grid.getNCols();
-            double noDataValue = grid.getNoDataValue();
-            double[] heights = new double[9];
+            double ndv = grid.getNoDataValue();
+            double[] h = new double[9];
             int k;
-            for (int row = 0; row
-                    < nrows; row++) {
-                for (int col = 0; col
-                        < ncols; col++) {
-                    heights[0] = grid.getCell(row, col);
-                    if (heights[0] != noDataValue) {
+            for (int row = 0; row < nrows; row++) {
+                for (int col = 0; col < ncols; col++) {
+                    h[0] = grid.getCell(row, col);
+                    if (h[0] != ndv) {
                         k = 0;
-                        for (int p = -1; p
-                                < 2; p++) {
-                            for (int q = -1; q
-                                    < 2; q++) {
+                        for (int p = -1; p < 2; p++) {
+                            for (int q = -1; q < 2; q++) {
                                 if (!(p == 0 && q == 0)) {
                                     k++;
-                                    heights[k] = grid.getCell(row + p, col + q);
-
+                                    h[k] = grid.getCell(row + p, col + q);
                                 }
                             }
                         }
                         // This deals with single isolated cells surrounded by noDataValues
-                        if ((heights[1] <= heights[0] || heights[1] == noDataValue)
-                                && (heights[2] <= heights[0] || heights[2] == noDataValue)
-                                && (heights[3] <= heights[0] || heights[3] == noDataValue)
-                                && (heights[4] <= heights[0] || heights[4] == noDataValue)
-                                && (heights[5] <= heights[0] || heights[5] == noDataValue)
-                                && (heights[6] <= heights[0] || heights[6] == noDataValue)
-                                && (heights[7] <= heights[0] || heights[7] == noDataValue)
-                                && (heights[8] <= heights[0] || heights[8] == noDataValue)) {
+                        if ((h[1] <= h[0] || h[1] == ndv)
+                                && (h[2] <= h[0] || h[2] == ndv)
+                                && (h[3] <= h[0] || h[3] == ndv)
+                                && (h[4] <= h[0] || h[4] == ndv)
+                                && (h[5] <= h[0] || h[5] == ndv)
+                                && (h[6] <= h[0] || h[6] == ndv)
+                                && (h[7] <= h[0] || h[7] == ndv)
+                                && (h[8] <= h[0] || h[8] == ndv)) {
                             initialPeaksHashSet.add(grid.getCellID(row, col));
                             upSlopeAreaMetrics.addToCell(row, col, 1.0d);
                         }
@@ -4047,12 +3978,10 @@ public class Grids_ProcessorDEM
             return initialPeaksHashSet;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                return getInitialPeaksHashSetAndSetTheirValue(
-                        grid, upSlopeAreaMetrics, hoome);
-
+                return getInitialPeaksHashSetAndSetTheirValue(grid,
+                        upSlopeAreaMetrics, hoome);
             } else {
                 throw e;
-
             }
         }
     }
