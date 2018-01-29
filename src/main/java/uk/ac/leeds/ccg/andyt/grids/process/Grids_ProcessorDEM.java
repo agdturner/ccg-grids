@@ -119,7 +119,7 @@ public class Grids_ProcessorDEM
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_AbstractGridNumber g,
             double distance, double weightIntersect, double weightFactor,
-            boolean hoome)            throws IOException {
+            boolean hoome) throws IOException {
         try {
             String methodName = "getSlopeAspect(" + g.getClass().getName()
                     + ",double,double,double,boolean)";
@@ -221,7 +221,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "slope_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[slope,"
+                filename = gName + "slopeAndAspect[slope,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -239,7 +239,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "aspect_N_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[aspect_N,"
+                filename = gName + "slopeAndAspect[aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -256,7 +256,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_N_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_N,"
+                filename = gName + "slopeAndAspect[sin_aspect_N,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -292,7 +292,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_NE_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_NE,"
+                filename = gName + "slopeAndAspect[sin_aspect_NE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -310,7 +310,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_ENE_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_ENE,"
+                filename = gName + "slopeAndAspect[sin_aspect_ENE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -328,7 +328,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_E_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_E,"
+                filename = gName + "slopeAndAspect[sin_aspect_E,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -346,7 +346,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_ESE_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_ESE,"
+                filename = gName + "slopeAndAspect[sin_aspect_ESE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -364,7 +364,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_SE_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_SE,"
+                filename = gName + "slopeAndAspect[sin_aspect_SE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -382,7 +382,7 @@ public class Grids_ProcessorDEM
             if (shortName) {
                 filename = "sin_aspect_SSE_" + averageDistance;
             } else {
-                filename = gName                        + "slopeAndAspect[sin_aspect_SSE,"
+                filename = gName + "slopeAndAspect[sin_aspect_SSE,"
                         + "averageDistance(" + averageDistance + "),"
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
@@ -1055,10 +1055,8 @@ public class Grids_ProcessorDEM
                                 visitedSet1.addAll(hollowSet);
                             }
                         }
-                        hollows2 = getHollowsInNeighbourhood(
-                                result,
-                                visitedSet1,
-                                treatNoDataValueAsOutflow);
+                        hollows2 = getHollowsInNeighbourhood(result,
+                                visitedSet1, treatNoDataValueAsOutflow);
                     } else {
                         calculated1 = true;
                     }
