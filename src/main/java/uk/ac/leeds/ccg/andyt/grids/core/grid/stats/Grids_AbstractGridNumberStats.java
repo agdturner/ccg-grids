@@ -37,11 +37,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 
     //private long final long serialVersionUID = 1L;
     /**
-     * A reference to the Grids_AbstractGridNumber this is for.
-     */
-    public Grids_AbstractGridNumber Grid;
-
-    /**
      * For storing the number of cells with data values.
      */
     protected long N;
@@ -69,11 +64,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         init();
     }
 
-    public Grids_AbstractGridNumberStats(Grids_AbstractGridNumber g) {
-        super(g.ge);
-        init(g);
-    }
-
     /**
      * For initialisation.
      */
@@ -82,17 +72,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         Sum = BigDecimal.ZERO;
         NMin = 0;
         NMax = 0;
-    }
-
-    /**
-     * For initialisation.
-     *
-     * @param g
-     */
-    public final void init(
-            Grids_AbstractGridNumber g) {
-        Grid = g;
-        init();
     }
 
     /**
@@ -138,11 +117,9 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
                     if (!ge.swapChunk(ge.HOOMEF)) {
                         throw e;
                     }
-                }
                 ge.initMemoryReserve();
                 return toString(hoome);
             } else {

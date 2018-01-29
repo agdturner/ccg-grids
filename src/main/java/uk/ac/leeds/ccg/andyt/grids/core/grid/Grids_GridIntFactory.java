@@ -49,29 +49,19 @@ public class Grids_GridIntFactory
     }
 
     /**
-     * Creates a new Grids_GridIntFactory. Directory is defaulted to
-     * ge.getFiles().getGeneratedGridIntFactoryDir(). Dimensions is defaulted to
-     * new Grids_Dimensions(chunkNRows, chunkNCols). Statistics is defaulted to
-     * new Grids_GridStatisticsNotUpdatedAsDataChanged(ge). NoDataValue is
-     * defaulted to Integer.MIN_VALUE. GridChunkIntFactory is defaulted to new
-     * gridChunkIntFactory. DefaultGridChunkIntFactory is defaulted to
-     * defaultGridChunkIntFactory.
+     * Creates a new Grids_GridIntFactory.
      *
      * @param ge
-     * @param directory
      * @param gridChunkIntFactory
      * @param defaultGridChunkIntFactory
      * @param chunkNRows The number of rows chunks have by default.
      * @param chunkNCols The number of columns chunks have by default.
      */
-    public Grids_GridIntFactory(
-            Grids_Environment ge,
-            File directory,
+    public Grids_GridIntFactory(Grids_Environment ge,
             Grids_GridChunkIntFactory gridChunkIntFactory,
             Grids_AbstractGridChunkIntFactory defaultGridChunkIntFactory,
-            int chunkNRows,
-            int chunkNCols) {
-        super(ge, directory, chunkNRows, chunkNCols, null);
+            int chunkNRows, int chunkNCols) {
+        super(ge, chunkNRows, chunkNCols, null);
         GridChunkIntFactory = gridChunkIntFactory;
         DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         Stats = new Grids_GridIntStatsNotUpdated(ge);
@@ -82,8 +72,6 @@ public class Grids_GridIntFactory
      * Creates a new Grids_GridIntFactory.
      *
      * @param ge
-     * @param directory A directory for storing temporary files and caching Grid
-     * data.
      * @param gridChunkIntFactory
      * @param defaultGridChunkIntFactory
      * @param noDataValue
@@ -92,17 +80,12 @@ public class Grids_GridIntFactory
      * @param dimensions
      * @param stats
      */
-    public Grids_GridIntFactory(
-            Grids_Environment ge,
-            File directory,
+    public Grids_GridIntFactory(Grids_Environment ge,
             Grids_GridChunkIntFactory gridChunkIntFactory,
             Grids_AbstractGridChunkIntFactory defaultGridChunkIntFactory,
-            int noDataValue,
-            int chunkNRows,
-            int chunkNCols,
-            Grids_Dimensions dimensions,
-            Grids_GridIntStats stats) {
-        super(ge, directory, chunkNRows, chunkNCols, dimensions);
+            int noDataValue, int chunkNRows, int chunkNCols,
+            Grids_Dimensions dimensions, Grids_GridIntStats stats) {
+        super(ge, chunkNRows, chunkNCols, dimensions);
         GridChunkIntFactory = gridChunkIntFactory;
         DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         Stats = stats;
@@ -110,13 +93,13 @@ public class Grids_GridIntFactory
     }
 
     /**
-     * Set DefaultGridChunkIntFactory to defaultChunkFactory.
+     * Set DefaultGridChunkIntFactory to cf.
      *
-     * @param defaultChunkFactory
+     * @param cf
      */
     public void setDefaultChunkFactory(
-            Grids_AbstractGridChunkIntFactory defaultChunkFactory) {
-        DefaultGridChunkIntFactory = defaultChunkFactory;
+            Grids_AbstractGridChunkIntFactory cf) {
+        DefaultGridChunkIntFactory = cf;
     }
 
     /**
@@ -133,8 +116,7 @@ public class Grids_GridIntFactory
      *
      * @param noDataValue
      */
-    public void setNoDataValue(
-            int noDataValue) {
+    public void setNoDataValue(int noDataValue) {
         NoDataValue = noDataValue;
     }
 
@@ -142,208 +124,153 @@ public class Grids_GridIntFactory
     // Create from scratch //
     /////////////////////////
     /**
-     * Returns a new Grids_GridInt with all values as NoDataValues.
+     * Returns A new Grids_GridInt with all values as NoDataValues.
      *
-     * @param directory The Directory to be used for storing cached data.
-     * @param nRows The NRows.
-     * @param nCols The NCols.
+     * @param dir The Directory to be used for storing grid.
+     * @param nRows The number of rows in the grid.
+     * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return
      */
     @Override
-    public Grids_GridInt create(
-            File directory,
-            long nRows,
-            long nCols,
+    public Grids_GridInt create(File dir, long nRows, long nCols,
             Grids_Dimensions dimensions) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), directory,
+        return create(new Grids_GridIntStatsNotUpdated(ge), dir,
                 GridChunkIntFactory, nRows, nCols, dimensions);
     }
 
     /**
-     * Returns a new Grids_GridInt grid with all values as NoDataValues.
-     *
      * @param stats The type of Grids_GridIntStats to accompany the returned
      * grid.
-     * @param directory The directory to be used for storing cached grid
-     * information.
-     * @param chunkFactory The preferred Grids_AbstractGridChunkIntFactory for
-     * creating chunks that the constructed Grid is to be made of.
-     * @param nRows The NRows.
-     * @param nCols The NCols.
+     * @param dir The Directory to be used for storing grid.
+     * @param cf The preferred Grids_AbstractGridChunkIntFactory for creating
+     * chunks that the constructed Grid is to be made of.
+     * @param nRows The number of rows in the grid.
+     * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @return
+     * @return A new Grids_GridInt grid with all values as NoDataValues.
      */
-    public Grids_GridInt create(
-            Grids_GridIntStats stats,
-            File directory,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            long nRows,
-            long nCols,
+    public Grids_GridInt create(Grids_GridIntStats stats, File dir,
+            Grids_AbstractGridChunkIntFactory cf, long nRows, long nCols,
             Grids_Dimensions dimensions) {
-        return new Grids_GridInt(getStats(stats), directory, chunkFactory,
-                ChunkNRows, ChunkNCols, nRows, nCols, dimensions, NoDataValue,
-                ge);
+        return new Grids_GridInt(getStats(stats), dir, cf, ChunkNRows,
+                ChunkNCols, nRows, nCols, dimensions, NoDataValue, ge);
     }
 
     //////////////////////////////////////////////////////
     // Create from an existing Grids_AbstractGridNumber //
     //////////////////////////////////////////////////////
     /**
-     * Returns a new Grids_GridInt with all values taken from g.
-     *
-     * @param directory The Directory to be used for storing cached data.
+     * @param dir The Directory to be used for storing the grid.
      * @param g The Grids_AbstractGridNumber from which values are used.
      * @param startRow The topmost row index of g.
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @return
+     * @return A new Grids_GridInt with all values taken from g.
      */
     @Override
-    public Grids_GridInt create(
-            File directory,
-            Grids_AbstractGridNumber g,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), directory, g, 
-                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol);
+    public Grids_GridInt create(File dir, Grids_AbstractGridNumber g,
+            long startRow, long startCol, long endRow, long endCol) {
+        return create(new Grids_GridIntStatsNotUpdated(ge), dir, g,
+                DefaultGridChunkIntFactory, startRow, startCol, endRow,
+                endCol);
     }
 
     /**
-     * Returns a new Grids_GridInt with all values taken from g.
-     *
      * @param stats The type of Grids_GridIntStats to accompany the returned
      * grid.
-     * @param directory The directory to be used for storing cached
-     * Grid2DSquareCellInt information.
-     * @param chunkFactory The preferred Grids_AbstractGridChunkIntFactory for
-     * creating chunks that the constructed Grid is to be made of.
+     * @param dir The directory to be used for storing the grid.
+     * @param cf The preferred Grids_AbstractGridChunkIntFactory for creating
+     * chunks that the constructed Grid is to be made of.
      * @param g The Grids_AbstractGridNumber from which grid values are used.
      * @param startRow The topmost row index of g.
      * @param startCol The leftmost column index of g.
      * @param endRow The bottom row index of g.
      * @param endCol The rightmost column index of g.
-     * @return
+     * @return A new Grids_GridInt with all values taken from g.
      */
-    public Grids_GridInt create(
-            Grids_GridIntStats stats,
-            File directory,
-            Grids_AbstractGridNumber g,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol) {
-        return new Grids_GridInt(getStats(stats), directory, g, chunkFactory,
-                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue);
+    public Grids_GridInt create(Grids_GridIntStats stats, File dir,
+            Grids_AbstractGridNumber g, Grids_AbstractGridChunkIntFactory cf,
+            long startRow, long startCol, long endRow, long endCol) {
+        return new Grids_GridInt(getStats(stats), dir, g, cf, ChunkNRows,
+                ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
     }
 
     ////////////////////////
     // Create from a File //
     ////////////////////////
     /**
-     * Returns a new Grids_GridInt with values obtained from gridFile.
-     *
-     * @param directory The Directory to be used for storing cached Grid
-     * information.
+     * @param dir The Directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
-     * returned.
+     * constructed.
      * @param startRow The topmost row index of the grid stored as gridFile.
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @return
+     * @return A new Grids_GridInt with values obtained from gridFile.
      */
     @Override
-    public Grids_GridInt create(
-            File directory,
-            File gridFile,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), directory, gridFile,
-                DefaultGridChunkIntFactory, startRow, startCol, endRow, endCol);
+    public Grids_GridInt create(File dir, File gridFile, long startRow,
+            long startCol, long endRow, long endCol) {
+        return create(new Grids_GridIntStatsNotUpdated(ge), dir,
+                gridFile, DefaultGridChunkIntFactory, startRow, startCol,
+                endRow, endCol);
     }
 
     /**
-     * Returns a new Grids_GridInt with values obtained from gridFile.
-     *
-     * @param directory The Directory to be used for storing cached Grid
-     * information.
-     * @param gridFile Either a directory, or a formatted File with a specific
-     * extension containing the data and information about the grid to be
-     * returned.
-     * @return
-     */
-    @Override
-    public Grids_GridInt create(
-            File directory,
-            File gridFile) {
-        return new Grids_GridInt(ge, directory, gridFile);
-    }
-
-    /**
-     * Returns a new Grids_GridInt with values obtained from gridFile.
-     *
      * @param stats The type of Grids_GridIntStats to accompany the returned
      * grid.
-     * @param directory The Directory to be used for storing cached Grid
-     * information.
-     * @param gridFile Either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grid2DSquareCellInt to be returned.
-     * @param chunkFactory The preferred Grids_AbstractGridChunkIntFactory for
-     * creating chunks that the constructed Grid is to be made of.
+     * @param dir The directory to be used for storing the grid.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be
+     * constructed.
+     * @param cf The preferred factory for creating chunks that the constructed
+     * Grid is to be made of.
      * @param startRow The topmost row index of the grid stored as gridFile.
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @return
+     * @return A new Grids_GridInt with values obtained from gridFile.
      */
-    public Grids_GridInt create(
-            Grids_GridIntStats stats,
-            File directory,
-            File gridFile,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol) {
-        return new Grids_GridInt(getStats(stats), directory, gridFile,
-                chunkFactory, ChunkNRows, ChunkNCols, startRow, startCol,
-                endRow, endCol, NoDataValue, ge);
+    public Grids_GridInt create(Grids_GridIntStats stats, File dir,
+            File gridFile, Grids_AbstractGridChunkIntFactory cf,
+            long startRow, long startCol, long endRow, long endCol) {
+        return new Grids_GridInt(getStats(stats), dir, gridFile, cf,
+                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
+                NoDataValue, ge);
+    }
+
+    /**
+     * @param dir The directory to be used for storing the grid.
+     * @param gridFile Either a directory, or a formatted File with a specific
+     * extension containing the data and information about the grid to be
+     * returned.
+     * @return A new Grids_GridInt with values obtained from gridFile.
+     */
+    @Override
+    public Grids_GridInt create(File dir, File gridFile) {
+        return new Grids_GridInt(ge, dir, gridFile);
     }
 
     /////////////////////////
     // Create from a cache //
     /////////////////////////
     /**
-     * Returns a new Grids_GridInt with values obtained from gridFile.
-     *
-     * @param directory The Directory to be used for storing cached Grid
-     * information.
+     * @param dir The Directory to be used for storing the grid.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
-     * @return
+     * @return A new Grids_GridInt with values obtained from gridFile.
      */
     public @Override
-    Grids_GridInt create(
-            File directory,
-            File gridFile,
-            ObjectInputStream ois) {
-        return new Grids_GridInt(directory, gridFile, ois, ge);
+    Grids_GridInt create(File dir, File gridFile, ObjectInputStream ois) {
+        return new Grids_GridInt(dir, gridFile, ois, ge);
     }
 
     /**
-     *
      * @param stats
-     * @return a new stats of the same type for use.
+     * @return A new Grids_GridIntStats of the same type for use.
      */
     private Grids_GridIntStats getStats(Grids_GridIntStats stats) {
         if (stats instanceof Grids_GridIntStatsNotUpdated) {
@@ -352,5 +279,4 @@ public class Grids_GridIntFactory
             return new Grids_GridIntStats(ge);
         }
     }
-
 }

@@ -43,8 +43,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     }
 
     public Grids_GenerateTestData(Grids_Environment ge) {
-        super(ge);
-        Directory = ge.getDirectory();        
+        super(ge);        
     }
 
     public static void main(String[] args) {
@@ -61,27 +60,27 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     @Override
     public void run() {
         System.out.println("Initialising...");
-        boolean handleOutOfMemoryError = true;
-        //Grids_GridDouble[] testData = generateCatchment(handleOutOfMemoryError);
-        //Grids_GridDouble[] testData = generateSquareData(handleOutOfMemoryError);
-        Grids_GridDouble[] testData = generateCircularData(handleOutOfMemoryError);
+        boolean hoome = true;
+        File outDir = Files.getOutputDataDir(ge.getStrings());
+//        Grids_GridDouble[] testData = generateCatchment(outDir, hoome);
+//        Grids_GridDouble[] testData = generateSquareData(outDir, hoome);
+        Grids_GridDouble[] testData = generateCircularData(outDir, hoome);
         File file;
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
-            file = new File(Directory, testData[i].getName() + ".asc");
+            file = new File(outDir, testData[i].getName() + ".asc");
             new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file);
-            file = new File(Directory, testData[i].getName() + ".png");
+            file = new File(outDir, testData[i].getName() + ".png");
             new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png");
         }
         System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
     }
 
-    public Grids_GridDouble[] generateCircularData(
-            boolean handleOutOfMemoryError) {
-        File d = new File(Directory, "CircularData");
-        d.mkdirs();
+    public Grids_GridDouble[] generateCircularData(File outDir,            boolean hoome) {
+        File outdir2 = new File(outDir, "CircularData");
+        outdir2.mkdirs();
         File f;
-        f = new File(d, "grids.txt");
+        f = new File(outdir2, "grids.txt");
         PrintWriter pw = Generic_StaticIO.getPrintWriter(f, false);
         //         minRadius  maxRadius  elevation             Grids
         //circle1          0          5         -1  1,3,(5-4)
@@ -98,8 +97,11 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int nrows = 100;
         int ncols = 100;
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
+        File dir;
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir, 
+                    nrows, ncols);
             addToGrid(grids[i], 0.0d);
             grids[i].setName("Grid" + i);
         }
@@ -111,9 +113,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         double maxRadius = 5.0d;
         long row = getRandomRow(nrows, maxRadius);
         long col = getRandomCol(ncols, maxRadius);
-        HashSet cellIDs = getCellIDs(grids[0], row, col, minRadius, maxRadius, handleOutOfMemoryError);
+        HashSet cellIDs = getCellIDs(grids[0], row, col, minRadius, maxRadius, hoome);
         double height = -1.0d;
-        addToGrid(grids[0], cellIDs, height, handleOutOfMemoryError);
+        addToGrid(grids[0], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -125,8 +127,8 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[1], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[1], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[1], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[1], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -138,16 +140,16 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = -1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[2], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[2], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[2], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[2], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 0.0d;
         maxRadius = 20.0d;
         height = -2.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[2], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[2], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[2], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[2], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -159,15 +161,15 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[3], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[3], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[3], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[3], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 15.0d;
         maxRadius = 19.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[3], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[3], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[3], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[3], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -179,23 +181,23 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = -1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[4], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[4], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[4], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[4], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[4], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[4], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[4], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[4], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[4], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -207,23 +209,23 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[5], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[5], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[5], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[5], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[5], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[5], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[5], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[5], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[5], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -235,15 +237,15 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[6], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[6], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[6], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[6], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 5.0d;
         maxRadius = 6.0d;
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[6], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[6], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[6], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[6], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -255,15 +257,15 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius);
         col = getRandomCol(ncols, maxRadius);
-        cellIDs = getCellIDs(grids[7], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[7], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[7], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[7], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 5.0d;
         maxRadius = 6.0d;
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[7], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[7], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[7], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[7], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -275,31 +277,31 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius + 20);
         col = getRandomCol(ncols, maxRadius + 20);
-        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[8], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[8], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[8], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[8], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 5.0d;
         maxRadius = 6.0d;
         height = 1.0d;
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[8], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[8], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[8], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[8], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[8], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[8], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[8], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         pw.println();
 
@@ -317,32 +319,32 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = 1.0d;
         row = getRandomRow(nrows, maxRadius + 20);
         col = getRandomCol(ncols, maxRadius + 20);
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 3.0d;
         maxRadius = 6.0d;
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 5.0d;
         maxRadius = 10.0d;
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = 8.0d;
         maxRadius = 11.0d;
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = random(-10.0d, 10.0d);
         maxRadius = minRadius * random(1.0d,
@@ -350,37 +352,37 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = random(-10.0d, 10.0d);
         maxRadius = minRadius * random(1.0d, 10.0d);
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = random(-10.0d, 10.0d);
         maxRadius = minRadius * random(1.0d, 10.0d);
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         minRadius = random(-10.0d, 10.0d);
         maxRadius = minRadius * random(1.0d, 10.0d);
         height = random(-10.0d, 10.0d);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         printCircularFeatureInfo(pw, minRadius, maxRadius, height, row, col);
         row = (long) Math.ceil(row + random(-6.0d, 5.0d));
         col = (long) Math.ceil(col + random(-6.0d, 5.0d));
-        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, handleOutOfMemoryError);
-        addToGrid(grids[9], cellIDs, height, handleOutOfMemoryError);
+        cellIDs = getCellIDs(grids[9], row, col, minRadius, maxRadius, hoome);
+        addToGrid(grids[9], cellIDs, height, hoome);
         minRadius = random(-10.0d, 10.0d);
         maxRadius = minRadius * random(1.0d, 10.0d);
         height = random(-10.0d, 10.0d);
@@ -470,8 +472,11 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
 //                    nrows,
 //                    ncols)
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
+        File dir;
         for (int i = 0; i < ngrids; i++) {
-            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
+                nrows, ncols);
         }
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
@@ -506,11 +511,12 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         return grids;
     }
 
-    public Grids_GridDouble[] generateCatchment(boolean handleOutOfMemoryError) {
+    public Grids_GridDouble[] generateCatchment(boolean hoome) {
         int nrows = 100;
         int ncols = 100;
+        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         Grids_GridDouble[] catchment = new Grids_GridDouble[1];
-        catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(nrows, ncols);
+        catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );
         for (int iterations = 0; iterations < 100; iterations++) {
             for (int row = 0; row < nrows; row++) {

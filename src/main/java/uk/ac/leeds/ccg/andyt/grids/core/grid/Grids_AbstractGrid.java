@@ -52,19 +52,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     //     */
     //    private static final long serialVersionUID = 1L;
     /**
-     * Local _Directory used for caching. TODO If this were not transient upon
-     * reloading, it would be possible to ascertain what it was which could be
-     * useful.
+     * Directory used for storing grid data.
      */
-    protected transient File Directory;
+    protected File Directory;
     /**
      * The Grids_AbstractGridChunk data cache.
      */
-    protected transient TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
+    protected TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> ChunkIDChunkMap;
     /**
      * The Grids_AbstractGridChunk data cache.
      */
-    protected HashSet<Grids_2D_ID_int> ChunkIDsofChunksWorthSwapping;
+    protected HashSet<Grids_2D_ID_int> ChunkIDsOfChunksWorthSwapping;
     /**
      * For storing the number of chunk rows.
      */
@@ -103,27 +101,22 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     protected Grids_AbstractGrid() {
     }
 
-    protected Grids_AbstractGrid(Grids_Environment ge, File directory) {
+    protected Grids_AbstractGrid(Grids_Environment ge, File dir) {
         super(ge);
-        Directory = directory;
+        Directory = dir;
     }
 
-    /**
-     * Initialises ChunkIDChunkMap by first attempting to load from new
-     * File(grid_File, "cache");
-     *
-     * @param f The File directory that from which a file called cache is
-     * attempted to be loaded
-     */
-    protected void initChunks(File f) {
-        File cache = new File(f, "cache");
-        if (cache.exists()) {
-            Object o;
-            o = Generic_StaticIO.readObject(cache);
-            ChunkIDChunkMap = (TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk>) o;
-        } else {
-            ChunkIDChunkMap = new TreeMap<>();
+    protected final void checkDir() {
+        if (Directory.exists()) {
+            throw new Error("Directory " + Directory + " already exists. "
+                    + "Exiting program to prevent data getting overwritten!");
         }
+    }
+
+    protected void init() {
+            Directory.mkdir();
+        ge.setDataToSwap(true);
+        ge.addGrid(this);
     }
 
     /**
@@ -141,7 +134,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         NChunkRows = g.NChunkRows;
         NCols = g.NCols;
         NRows = g.NRows;
-        ge.getGrids().add(this);
+        init();
     }
 
     /**
@@ -466,8 +459,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate x.
+     * @return Cell column of the cells that intersect the x axis coordinate x.
      * @param x The x-coordinate of the line intersecting the cell column index
      * returned.
      */
@@ -477,8 +469,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param x
-     * @return Cell column Index for the cell column that intersect the
-     * x-coordinate x.
+     * @return Cell column of the cells that intersect the x axis coordinate x.
      */
     public final long getCol(BigDecimal x) {
         Grids_Dimensions gd;
@@ -489,15 +480,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         div = Generic_BigDecimal.divideRoundIfNecessary(xMinusXMin,
                 gd.getCellsize(), 0, RoundingMode.DOWN);
         return div.toBigInteger().longValue();
-        //        return xMinusMinX_BigDecimal.divide(
-        //                this.Dimensions[0]).toBigInteger().longValue();
     }
 
     /**
      * @param chunkCol
-     * @return Cell column index for the cells in chunk column index _Col chunk
-     * cell column index chunkCellColIndex.
      * @param cellCol
+     * @return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol
      */
     public final long getCol(int chunkCol, int cellCol) {
         return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol;
@@ -580,8 +568,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param y
-     * @return Cell row Index for the cells that intersect the line with
-     * y-coordinate yBigDecimal.
+     * @return Cell row of the cells that intersect the y axis coordinate y.
      */
     public final long getRow(BigDecimal y) {
         Grids_Dimensions gd;
@@ -596,9 +583,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     /**
      * @param chunkRow
-     * @return CellRowIndex for the cells in chunk _Row, chunk cell column index
-     * chunkCellRowIndex.
      * @param cellRow
+     * @return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
+     * chunkCellRowIndex.
      */
     public final long getRow(int chunkRow, int cellRow) {
         return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
@@ -630,8 +617,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @return Chunk cell row Index of the cells that intersects the line with
-     * y-coordinate y.
+     * @return Cell row of the cells that intersects y axis coordinate y.
      * @param y The y-coordinate of the line for which the chunk cell row index
      * is returned.
      */
@@ -682,43 +668,21 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     /**
      * Attempts to write this instance to Files located in the Directory
      * returned by getDirectory().
-     *
-     * @param swapToFileCache Iff true then
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
-     * File(getDirectory(),"cache").
      */
-    public void writeToFile(boolean swapToFileCache) {
-        writeToFileChunks();
-        if (swapToFileCache) {
-            // Write out cache
-            writeOutCache();
-        }
-        writeOutThis();
-    }
-
-    public void writeOutCache() {
-        // Write out thisCache
-        File f = new File(getDirectory(), "cache");
-        Generic_StaticIO.writeObject(ChunkIDChunkMap, f);
-    }
-
-    public void writeOutThis() {
-        // Write out thisCache
-        File f = new File(getDirectory(), "thisFile");
+    public void writeToFile() {
+        File dir = getDirectory();
+        dir.mkdirs();
+        File f = new File(dir, "thisFile");
         Generic_StaticIO.writeObject(this, f);
     }
 
     /**
      * Attempts to write this instance to Files located in the _Directory
      * returned by getDirectory(). Chunks are all swapped to file.
-     *
-     * @param swapToFileCache Iff true then
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap is written to new
-     * File(getDirectory(),"cache").
      */
-    public void writeToFileSwapping(boolean swapToFileCache) {
+    public void writeToFileSwapping() {
         swapChunks();
-        writeToFile(swapToFileCache);
+        writeToFile();
     }
 
     /**
@@ -733,12 +697,17 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * are no suitable chunks to swap.
      */
     public final Grids_2D_ID_int writeToFileChunk() {
-        if (ChunkIDsofChunksWorthSwapping.isEmpty()) {
+        
+        if (ChunkIDsOfChunksWorthSwapping == null) {
+            int debug = 1;
+        }
+        
+        if (ChunkIDsOfChunksWorthSwapping.isEmpty()) {
             return null;
         }
         Grids_2D_ID_int chunkID;
         Iterator<Grids_2D_ID_int> ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
             writeToFileChunk(chunkID);
@@ -792,7 +761,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final void writeToFileChunks() {
         Iterator ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
             chunkID = (Grids_2D_ID_int) ite.next();
@@ -993,7 +962,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 //        int chunkRow;
 //        int chunkCol;
         Iterator<Grids_2D_ID_int> ite;
-        ite = ChunkIDsofChunksWorthSwapping.iterator();
+        ite = ChunkIDsOfChunksWorthSwapping.iterator();
         while (ite.hasNext()) {
             chunkID = ite.next();
             if (!chunkIDs.contains(chunkID)) {
@@ -1899,7 +1868,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public final void clearFromCacheChunk(Grids_2D_ID_int chunkID) {
         ChunkIDChunkMap.replace(chunkID, null);
-        ChunkIDsofChunksWorthSwapping.remove(chunkID);
+        ChunkIDsOfChunksWorthSwapping.remove(chunkID);
         //System.gc();
     }
 
@@ -1913,7 +1882,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             ChunkIDChunkMap.replace(ite.next(), null);
         }
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         //System.gc();
     }
 
@@ -2580,7 +2549,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param chunkCol
      * @return Grids_AbstractGridChunk.
      */
-    public abstract Grids_AbstractGridChunk getChunk(int chunkRow, 
+    public abstract Grids_AbstractGridChunk getChunk(int chunkRow,
             int chunkCol);
 
     /**

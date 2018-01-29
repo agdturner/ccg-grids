@@ -18,23 +18,13 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
-import uk.ac.leeds.ccg.andyt.grids.process.Grids_ProcessorDEM;
-import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
 /**
  * A class for giving an example of a clip operation on a grid.
@@ -86,10 +76,10 @@ public class Grids_ClipGrid
             ge.setProcessor(this);
             Grids_Files gf;
             gf = ge.getFiles();
+            Grids_Strings gs;
+            gs = ge.getStrings();
             File input;
-            input = new File(
-                    gf.getInputDataDir(),
-                    "p15oct.asc");
+            input = new File(                    gf.getInputDataDir(gs),                    "p15oct.asc");
 //            input = new File(
 //                    gf.getInputDataDir(),
 //                    "RADAR_UK_Composite_Highres_23_6.asc");
@@ -100,7 +90,7 @@ public class Grids_ClipGrid
             //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
             Grids_ImageExporter ie = new Grids_ImageExporter(ge);
-            File workspaceDirectory = new File(gf.getGeneratedDataDir(),
+            File workspaceDirectory = new File(gf.getGeneratedDataDir(gs),
                     "/Workspace/");
 
             //String[] imageTypes = new String[0];
@@ -111,29 +101,23 @@ public class Grids_ClipGrid
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
             File outDir;
-            outDir = new File(
-                    gf.getOutputDataDir(),
-                    getClass().getName());
-            Grids_GridDouble gridDouble = null;
-            Grids_GridDouble g;
+            outDir = new File(gf.getOutputDataDir(gs), getClass().getName());
+            Grids_GridDouble gd;
+            //Grids_GridDouble g;
             // Load input
             boolean notLoadedAsGrid = true;
             if (notLoadedAsGrid) {
                 File dir;
                 dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
-                gridDouble = (Grids_GridDouble) GridDoubleFactory.create(
-                        dir, input);
-//                System.out.println("gridDouble nrows " + gridDouble.getNRows(HandleOutOfMemoryError));
-//                System.out.println("gridDouble ncols " + gridDouble.getNCols(HandleOutOfMemoryError));
-//                System.out.println("gridDouble.getCell(0L, 0L) " + gridDouble.getCell(0L, 0L, HandleOutOfMemoryError));
+                gd = (Grids_GridDouble) GridDoubleFactory.create(dir, input);
                 // clip gridDouble
-                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
-                        "Clipped" + inputNameWithoutExtension);
-                long nRows = gridDouble.getNRows();
-                long nCols = gridDouble.getNCols();
-                int chunkNRows = gridDouble.getChunkNRows();
-                int chunkNCols = gridDouble.getChunkNCols();
+//                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
+//                        "Clipped" + inputNameWithoutExtension);
+                long nRows = gd.getNRows();
+                long nCols = gd.getNCols();
+                int chunkNRows = gd.getChunkNRows();
+                int chunkNCols = gd.getChunkNCols();
                 long startRow;
                 long startCol;
                 long endRow;
@@ -172,19 +156,15 @@ public class Grids_ClipGrid
 //                        endCol,
 //                        HandleOutOfMemoryError);
 //                gridDouble = g;
-                // Cache input
-                boolean swapToFileCache = true;
-                gridDouble.writeToFile(swapToFileCache);
-                ge.getGrids().add(gridDouble);
+                gd.writeToFile();
                 System.out.println("<outputImage>");
                 System.out.println("outputDirectory " + outDir);
-                gridDouble.setName(
-                        inputNameWithoutExtension
+                gd.setName(inputNameWithoutExtension
                         + "_" + startRow + "_" + "_" + startCol + "_"
                         + "_" + endRow + "_" + "_" + endCol + "_");
-                System.out.println("gridDouble " + gridDouble.toString());
-                    outputImage(gridDouble, outDir, ie, 
-                            imageTypes, HandleOutOfMemoryError);
+                System.out.println("gridDouble " + gd.toString());
+                outputImage(gd, outDir, ie,
+                        imageTypes, HandleOutOfMemoryError);
                 System.out.println("</outputImage>");
             }
         } catch (Exception | Error e) {

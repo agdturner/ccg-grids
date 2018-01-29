@@ -46,8 +46,8 @@ public abstract class Grids_AbstractGridNumber
     protected Grids_AbstractGridNumber() {
     }
 
-    public Grids_AbstractGridNumber(Grids_Environment ge, File directory) {
-        super(ge, directory);
+    protected Grids_AbstractGridNumber(Grids_Environment ge, File dir) {
+        super(ge, dir);
     }
 
     @Override
@@ -66,13 +66,6 @@ public abstract class Grids_AbstractGridNumber
      */
     protected void init(Grids_AbstractGridNumber g) {
         super.init(g);
-        Grids_AbstractGridNumberStats s;
-        s = g.getStats();
-//        if (Stats instanceof Grids_GridStatistics) {
-//            Stats = new Grids_GridStatistics(this);
-//        } else {
-//            Stats = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
-//        }
     }
 
     /**

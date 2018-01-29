@@ -43,6 +43,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStats;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -71,21 +72,18 @@ public class Grids_GridInt
     }
 
     /**
-     * Creates a new Grids_GridInt. Warning!! Concurrent modification may occur
-     * if directory is in use.
+     * Creates a new Grids_GridInt.
      *
-     * @param directory The directory to be used for swapping.
+     * @param dir The directory for this.
      * @param gridFile The directory containing the file named "thisFile" that
      * the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param ge
      */
-    protected Grids_GridInt(
-            File directory,
-            File gridFile,
-            ObjectInputStream ois,
+    protected Grids_GridInt(File dir, File gridFile, ObjectInputStream ois,
             Grids_Environment ge) {
-        super(ge, directory);
+        this.ge = ge;
+        this.Directory = dir;
         init(gridFile, ois);
     }
 
@@ -94,72 +92,52 @@ public class Grids_GridInt
      * all chunks of the same type.
      *
      * @param stats The Grids_GridIntStats to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param chunkFactory The Grids_AbstractGridChunkIntFactory preferred for
-     * creating chunks.
+     * @param dir The File _Directory to be used for swapping.
+     * @param cf The factory preferred for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
-     * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The NoDataValue.
+     * @param dims The grid dimensions (cellsize, xmin, ymin, xmax and ymax).
+     * @param ndv The NoDataValue.
      * @param ge
      */
-    protected Grids_GridInt(
-            Grids_GridIntStats stats,
-            File directory,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long nRows,
-            long nCols,
-            Grids_Dimensions dimensions,
-            int noDataValue,
-            Grids_Environment ge) {
-        super(ge, directory);
-        init(stats, directory, chunkFactory, chunkNRows, chunkNCols, nRows,
-                nCols, dimensions, noDataValue);
+    protected Grids_GridInt(Grids_GridIntStats stats, File dir,
+            Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
+            int ndv, Grids_Environment ge) {
+        super(ge, dir);
+        checkDir();
+        init(stats, dir, cf, chunkNRows, chunkNCols, nRows, nCols, dims, ndv);
     }
 
     /**
      * Creates a new Grids_GridInt based on values in grid.
      *
      * @param stats The Grids_GridIntStats to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param grid The Grids_AbstractGridNumber from which this is to be
+     * @param dir The directory for this.
+     * @param g The Grids_AbstractGridNumber from which this is to be
      * constructed.
-     * @param chunkFactory The Grids_AbstractGridChunkIntFactory preferred to
-     * construct chunks of this.
+     * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
-     * @param startRow The Grid2DSquareCell row index which is the bottom most
-     * row of this.
-     * @param startCol The Grid2DSquareCell column index which is the left most
-     * column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most row of
+     * @param startRow The Grid2DSquareCell row which is the bottom most row of
      * this.
-     * @param endCol The Grid2DSquareCell column index which is the right most
-     * column of this.
-     * @param noDataValue The NoDataValue for this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param startCol The Grid2DSquareCell column which is the left most column
+     * of this.
+     * @param endRow The Grid2DSquareCell row which is the top most row of this.
+     * @param endCol The Grid2DSquareCell column which is the right most column
+     * of this.
+     * @param ndv The NoDataValue for this.
      */
-    protected Grids_GridInt(
-            Grids_GridIntStats stats,
-            File directory,
-            Grids_AbstractGridNumber grid,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            int noDataValue) {
-        super(grid.ge, directory);
-        init(stats, grid, chunkFactory, chunkNRows, chunkNCols, startRow,
-                startCol, endRow, endCol, noDataValue);
+    protected Grids_GridInt(Grids_GridIntStats stats, File dir,
+            Grids_AbstractGridNumber g, Grids_AbstractGridChunkIntFactory cf,
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol, int ndv) {
+        super(g.ge, dir);
+        checkDir();
+        init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
+                endRow, endCol, ndv);
     }
 
     /**
@@ -168,44 +146,31 @@ public class Grids_GridInt
      * ESRI Asciigrid format file with a filename ending ".asc" or ".txt".
      *
      * @param stats The Grids_GridIntStats to accompany this.
-     * @param directory The directory to be used for swapping.
+     * @param dir The directory for this.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
-     * @param chunkFactory The Grids_AbstractGridChunkIntFactory preferred to
-     * construct chunks of this.
+     * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows
-     * @param startRow The Grid2DSquareCell row index which is the bottom most
-     * row of this.
-     * @param chunkNCols
-     * @param startCol The Grid2DSquareCell column index which is the left most
-     * column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most row of
+     * @param startRow The Grid2DSquareCell row which is the bottom most row of
      * this.
-     * @param endCol The Grid2DSquareCell column index which is the right most
-     * column of this.
+     * @param chunkNCols
+     * @param startCol The Grid2DSquareCell column which is the left most column
+     * of this.
+     * @param endRow The Grid2DSquareCell row which is the top most row of this.
+     * @param endCol The Grid2DSquareCell column which is the right most column
+     * of this.
      * @param noDataValue The NoDataValue for this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      * @param ge
      */
-    protected Grids_GridInt(
-            Grids_GridIntStats stats,
-            File directory,
-            File gridFile,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            int noDataValue,
-            Grids_Environment ge) {
-        super(ge, directory);
-        init(stats, gridFile, chunkFactory, chunkNRows, chunkNCols, startRow,
-                startCol, endRow, endCol, noDataValue);
+    protected Grids_GridInt(Grids_GridIntStats stats, File dir, File gridFile,
+            Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, int noDataValue, Grids_Environment ge) {
+        super(ge, dir);
+        checkDir();
+        init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
+                endRow, endCol, noDataValue);
     }
 
     /**
@@ -214,16 +179,12 @@ public class Grids_GridInt
      * ESRI Asciigrid format file with a filename ending in ".asc" or ".txt".
      *
      * @param ge
-     * @param directory The directory to be used for storing data about this
-     * grid.
+     * @param dir The directory for this.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      */
-    protected Grids_GridInt(
-            Grids_Environment ge,
-            File directory,
-            File gridFile) {
-        super(ge, directory);
+    protected Grids_GridInt(Grids_Environment ge, File dir, File gridFile) {
+        super(ge, dir);
         init(new Grids_GridIntStatsNotUpdated(ge), gridFile);
     }
 
@@ -241,21 +202,34 @@ public class Grids_GridInt
      * Initialises this.
      *
      * @param g The Grids_GridInt from which the fields of this are set.
-     * @param initTransientFields Iff true then transient fields of this are set
-     * with those of g.
      */
-    private void init(
-            Grids_GridInt g,
-            boolean initTransientFields) {
+    private void init(Grids_GridInt g) {
         NoDataValue = g.NoDataValue;
         super.init(g);
-        if (initTransientFields) {
-            ChunkIDChunkMap = g.ChunkIDChunkMap;
-            ChunkIDsofChunksWorthSwapping = g.ChunkIDsofChunksWorthSwapping;
-            // Set the reference to this in the Grid Stats
-            Stats.init(this);
+        ChunkIDChunkMap = g.ChunkIDChunkMap;
+        // Set the reference to this in ChunkIDChunkMap chunks
+        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
+        Grids_2D_ID_int chunkID;
+        Grids_AbstractGridChunk chunk;
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            chunk = ChunkIDChunkMap.get(chunkID);
+            chunk.setGrid(this);
         }
-        ge.addGrid(this);
+        ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+        // Set the reference to this in the Grid Stats
+        Stats.init(this);
+        super.init();
+        Stats.Grid = this;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if (!Stats.isUpdated()) {
+            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
+        }
+        Stats.Grid = this;
     }
 
     /**
@@ -263,26 +237,17 @@ public class Grids_GridInt
      *
      * @param file The File the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
-     * null null null null null null null null null null null null null null
-     * null null null null null null     <<<<<<< HEAD ======= @param
-     * _AbstractGrid2DSquareCell_HashSet A HashSet of swappable
-     * Grids_AbstractGridNumber instances. >>>>>>>
-     * c0d2aa4510ddc5e5ac4daceec0315b58571d0c99
      * @param hoome If true then OutOfMemoryErrors are caught, swap operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    private void init(
-            File file,
-            ObjectInputStream ois) {
+    private void init(File file, ObjectInputStream ois) {
         ge.checkAndMaybeFreeMemory();
         File thisFile = new File(file, "thisFile");
         try {
-            boolean initTransientFields = false;
-            init((Grids_GridInt) ois.readObject(), initTransientFields);
+            init((Grids_GridInt) ois.readObject());
             ois.close();
             // Set the reference to this in the Grid Chunks
-            initChunks(file);
             Iterator<Grids_AbstractGridChunk> chunkIterator;
             chunkIterator = ChunkIDChunkMap.values().iterator();
             while (chunkIterator.hasNext()) {
@@ -293,29 +258,30 @@ public class Grids_GridInt
             try {
                 ois.close();
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                checkDir();
                 // If the object is a Grids_GridDouble
                 Grids_Processor gp;
                 gp = ge.getProcessor();
                 Grids_GridDoubleFactory gdf;
-                gdf = new Grids_GridDoubleFactory(ge,
-                        gp.GridDoubleFactory.Directory,
-                        gp.GridChunkDoubleFactory,
-                        gp.DefaultGridChunkDoubleFactory,
-                        -Double.MAX_VALUE, ChunkNRows, ChunkNCols, null,
+                gdf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
+                        gp.DefaultGridChunkDoubleFactory, -Double.MAX_VALUE,
+                        ChunkNRows, ChunkNCols, null,
                         new Grids_GridDoubleStatsNotUpdated(ge));
+                Grids_Files files = ge.getFiles();
+                File dir;
+                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
                 Grids_GridDouble gd;
-                gd = (Grids_GridDouble) gdf.create(Directory, file, ois);
+                gd = (Grids_GridDouble) gdf.create(dir, file, ois);
                 Grids_GridIntFactory gif;
-                gif = new Grids_GridIntFactory(ge,
-                        gp.GridIntFactory.Directory, gp.GridChunkIntFactory,
-                        gp.DefaultGridChunkIntFactory,
-                        Integer.MIN_VALUE, gd.ChunkNRows, gd.ChunkNCols,
-                        null, new Grids_GridIntStatsNotUpdated(ge));
+                gif = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
+                        gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
+                        gd.ChunkNRows, gd.ChunkNCols, null,
+                        new Grids_GridIntStatsNotUpdated(ge));
                 Grids_GridInt gi;
-                gi = (Grids_GridInt) gif.create(gd);
-                boolean initTransientFields = false;
-                init(gi, initTransientFields);
-                initChunks(file);
+                gi = (Grids_GridInt) gif.create(Directory, gd);
+                init(gi);
+                // delete gd
+                gd.Directory.delete();
             } catch (IOException ioe) {
                 //ioe.printStackTrace();
                 System.err.println(ioe.getLocalizedMessage());
@@ -326,54 +292,46 @@ public class Grids_GridInt
         }
         //ioe.printStackTrace();
         // Set the reference to this in the Grid Stats
-        getStats().init(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
+        if (getStats() == null) {
+            Stats = new Grids_GridIntStatsNotUpdated(ge);
         }
-        ge.addGrid(this);
+        Stats.init(this);
+        init();
     }
 
     /**
      * Initialises this.
      *
      * @param stats The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
-     * @param grid2DSquareCellIntChunkFactory The
-     * Grids_AbstractGridChunkIntFactory preferred for creating chunks.
+     * @param dir The directory for this.
+     * @param cf The Grids_AbstractGridChunkIntFactory preferred for creating
+     * chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
-     * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The NoDataValue.
+     * @param dim The cellsize, xmin, ymin, xmax and ymax.
+     * @param ndv The NoDataValue.
      */
-    private void init(
-            Grids_GridIntStats stats,
-            File directory,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long nRows,
-            long nCols,
-            Grids_Dimensions dimensions,
-            int noDataValue) {
+    private void init(Grids_GridIntStats stats, File dir,
+            Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dim,
+            int ndv) {
         ge.checkAndMaybeFreeMemory();
-        Directory = directory;
         Stats = stats;
         Stats.init(this);
-        Directory = directory;
+        Directory = dir;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         NRows = nRows;
         NCols = nCols;
-        Dimensions = dimensions;
-        initNoDataValue(noDataValue);
-        Name = directory.getName();
+        Dimensions = dim;
+        initNoDataValue(ndv);
+        Name = dir.getName();
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         int r;
         int c;
         Grids_2D_ID_int chunkID;
@@ -383,57 +341,38 @@ public class Grids_GridInt
                 ge.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 chunkID = new Grids_2D_ID_int(r, c);
-                chunk = chunkFactory.create(this, chunkID);
+                chunk = cf.create(this, chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_GridChunkInt)) {
-                    ChunkIDsofChunksWorthSwapping.add(chunkID);
+                    ChunkIDsOfChunksWorthSwapping.add(chunkID);
                 }
             }
             System.out.println("Done chunkRow " + r + " out of "
                     + NChunkRows);
         }
-        ge.addGrid(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     /**
      * Initialises this.
      *
      * @param stats The AbstractGridStatistics to accompany this.
-     * @param directory gridStatistics File _Directory to be used for swapping.
+     * @param dir The directory for this.
      * @param g The Grids_AbstractGridNumber from which this is to be
      * constructed.
-     * @param chunkFactory The Grids_AbstractGridChunkIntFactory preferred to
-     * construct chunks of this.
+     * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
-     * @param startRow The Grid2DSquareCell row index which is the bottom most
-     * row of this.
-     * @param startCol The Grid2DSquareCell column index which is the left most
-     * column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most row of
-     * this.
-     * @param endCol The Grid2DSquareCell column index which is the right most
-     * column of this.
+     * @param startRow The row of g which is the bottom most row of this.
+     * @param startCol The column of g which is the left most column of this.
+     * @param endRow The row of g which is the top most row of this.
+     * @param endCol The column of g which is the right most column of this.
      * @param ndv The NoDataValue for this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
      */
-    private void init(
-            Grids_GridIntStats stats,
-            Grids_AbstractGridNumber g,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            int ndv) {
+    private void init(Grids_GridIntStats stats, Grids_AbstractGridNumber g,
+            Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, int ndv) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -446,7 +385,7 @@ public class Grids_GridInt
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         initDimensions(g, startRow, startCol);
         int gcr;
         int gcc;
@@ -511,10 +450,10 @@ public class Grids_GridInt
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
@@ -603,10 +542,10 @@ public class Grids_GridInt
                                                         chunkCol);
                                                 ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkInt) ChunkIDChunkMap.get(chunkID);
@@ -655,42 +594,31 @@ public class Grids_GridInt
                         + nChunkRows);
             }
         }
-        ge.addGrid(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     /**
      * Initialises this.
      *
      * @param stats The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
+     * @param dir The File _Directory to be used for swapping.
      * @param gridFile Either a _Directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
-     * @param chunkFactory The Grids_AbstractGridChunkIntFactory preferred to
-     * construct chunks of this.
+     * @param cf The Grids_AbstractGridChunkIntFactory preferred to construct
+     * chunks of this.
      * @param chunkNRows The Grids_GridInt _ChunkNRows.
      * @param chunkNCols The Grids_GridInt _ChunkNCols.
      * @param startRow The topmost row index of the grid stored as gridFile.
      * @param startCol The leftmost column index of the grid stored as gridFile.
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
-     * @param noDataValue The NoDataValue for this.
+     * @param ndv The NoDataValue for this.
      */
-    private void init(
-            Grids_GridIntStats stats,
-            File gridFile,
-            Grids_AbstractGridChunkIntFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            int noDataValue) {
+    private void init(Grids_GridIntStats stats, File gridFile,
+            Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, int ndv) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -702,9 +630,8 @@ public class Grids_GridInt
                 Grids_Processor gp;
                 gp = ge.getProcessor();
                 Grids_GridIntFactory gf;
-                gf = new Grids_GridIntFactory(ge, gp.GridIntFactory.Directory,
-                        gp.GridChunkIntFactory, gp.DefaultGridChunkIntFactory,
-                        noDataValue, chunkNRows, chunkNCols, null, stats);
+                gf = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory, cf,
+                        ndv, chunkNRows, chunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
@@ -712,21 +639,20 @@ public class Grids_GridInt
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 Grids_GridInt g2;
                 g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
-                init(g2, false);
+                init(g2);
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
             NRows = endRow - startRow + 1L;
             NCols = endCol - startCol + 1L;
-            initNoDataValue(noDataValue);
+            initNoDataValue(ndv);
             Name = Directory.getName();
             initNChunkRows();
             initNChunkCols();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.init(this);
             String filename = gridFile.getName();
@@ -809,15 +735,10 @@ public class Grids_GridInt
                 }
             }
         }
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
-    private void init(
-            Grids_GridIntStats stats,
-            File gridFile) {
+    private void init(Grids_GridIntStats stats, File gridFile) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -828,8 +749,8 @@ public class Grids_GridInt
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_GridIntFactory gf;
-                gf = new Grids_GridIntFactory(ge, gp.GridIntFactory.Directory,
-                        gp.GridChunkIntFactory, gp.DefaultGridChunkIntFactory,
+                gf = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
+                        gp.DefaultGridChunkIntFactory,
                         gp.GridIntFactory.NoDataValue,
                         gp.GridIntFactory.ChunkNRows,
                         gp.GridIntFactory.ChunkNCols, null, stats);
@@ -838,13 +759,21 @@ public class Grids_GridInt
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
                 Grids_GridInt g;
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
+                init(g);
+                this.ChunkIDChunkMap = g.ChunkIDChunkMap;
+                this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+                this.NoDataValue = g.NoDataValue;
+                this.Dimensions = g.Dimensions;
+                this.Directory = g.Directory;
+                this.Stats = g.Stats;
+                this.Stats.Grid = this;
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
+            checkDir();
             Name = Directory.getName();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.init(this);
             String filename = gridFile.getName();
@@ -933,16 +862,13 @@ public class Grids_GridInt
                 }
             }
         }
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridIntStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     /**
      * @param chunkRow
      * @param chunkCol
-     * @return Grids_AbstractGridChunkDouble.
+     * @return Grids_AbstractGridChunkInt.
      */
     @Override
     public final Grids_AbstractGridChunkInt getChunk(int chunkRow,
@@ -979,14 +905,15 @@ public class Grids_GridInt
             } else {
                 throw new Error("Unrecognised type of chunk or null "
                         + this.getClass().getName()
-                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString() + "))");
+                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString()
+                        + "))");
             }
             chunk.ge = ge;
             chunk.initGrid(this);
             chunk.initChunkID(chunkID);
             ChunkIDChunkMap.put(chunkID, chunk);
             if (!(chunk instanceof Grids_GridChunkInt)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
             ge.setDataToSwap(true);
         }
@@ -1013,10 +940,11 @@ public class Grids_GridInt
          */
         ge.addToNotToSwap(this, chunkID);
         if (!ChunkIDChunkMap.containsKey(chunkID)) {
-            Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID, value);
+            Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID,
+                    value);
             ChunkIDChunkMap.put(chunkID, gc);
             if (!(gc instanceof Grids_GridChunkInt)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
         } else {
             Grids_AbstractGridChunk c;
@@ -1034,7 +962,7 @@ public class Grids_GridInt
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
                     ChunkIDChunkMap.put(chunkID, chunk);
                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                     }
                 }
             } else {
@@ -1246,7 +1174,8 @@ public class Grids_GridInt
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
         Grids_AbstractGridChunkInt chunk;
-        chunk = (Grids_AbstractGridChunkInt) Grids_GridInt.this.getChunk(chunkRow, chunkCol);
+        chunk = (Grids_AbstractGridChunkInt) Grids_GridInt.this.getChunk(
+                chunkRow, chunkCol);
         setCell(chunk, cellRow, cellCol, value);
     }
 
@@ -1267,7 +1196,8 @@ public class Grids_GridInt
             int cellCol,
             int newValue) {
         Grids_AbstractGridChunkInt chunk;
-        chunk = (Grids_AbstractGridChunkInt) Grids_GridInt.this.getChunk(chunkRow, chunkCol);
+        chunk = (Grids_AbstractGridChunkInt) Grids_GridInt.this.getChunk(
+                chunkRow, chunkCol);
         setCell(chunk, cellRow, cellCol, newValue);
     }
 
@@ -1286,9 +1216,11 @@ public class Grids_GridInt
             int value) {
         int v;
         if (chunk instanceof Grids_GridChunkIntArray) {
-            v = ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol, value);
+            v = ((Grids_GridChunkIntArray) chunk).setCell(cellRow, cellCol,
+                    value);
         } else if (chunk instanceof Grids_GridChunkIntMap) {
-            v = ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol, value);
+            v = ((Grids_GridChunkIntMap) chunk).setCell(cellRow, cellCol,
+                    value);
         } else {
             Grids_GridChunkInt c;
             c = (Grids_GridChunkInt) chunk;

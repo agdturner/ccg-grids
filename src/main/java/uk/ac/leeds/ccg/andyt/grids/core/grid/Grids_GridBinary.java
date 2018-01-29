@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.BitSet;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
 
@@ -48,14 +47,14 @@ public abstract class Grids_GridBinary
      * Creates a new Grids_GridBinary.
      *
      * @param ge
-     * @param directory
+     * @param dir
      */
-    public Grids_GridBinary(Grids_Environment ge, File directory) {
-        super(ge, directory);
+    public Grids_GridBinary(Grids_Environment ge, File dir) {
+        super(ge, dir);
     }
 
     /**
-     * @param directory The directory to be used for swapping.
+     * @param dir The directory to be used for swapping.
      * @param gridFile The directory containing the file "thisFile"
      * from which the ois was constructed.
      * @param ois The ObjectInputStream used in first attempt to construct this.
@@ -65,12 +64,12 @@ public abstract class Grids_GridBinary
      * then OutOfMemoryErrors are caught and thrown.
      */
     protected Grids_GridBinary(
-            File directory,
+            File dir,
             File gridFile,
             ObjectInputStream ois,
             Grids_Environment ge,
             boolean hoome) {
-        super(ge, directory);
+        super(ge, dir);
         // @TODO Code
     }
 

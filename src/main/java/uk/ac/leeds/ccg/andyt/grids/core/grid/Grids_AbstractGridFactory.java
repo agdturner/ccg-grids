@@ -18,10 +18,6 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 public abstract class Grids_AbstractGridFactory extends Grids_Object {
     
     /**
-     * A Directory for swapping.
-     */
-    protected File Directory;
-    /**
      * The number of rows in a chunk.
      */
     protected int ChunkNRows;
@@ -39,24 +35,6 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
 
     public Grids_AbstractGridFactory(Grids_Environment ge) {
         super(ge);
-    }
-
-    /**
-     * Returns Directory.
-     *
-     * @return
-     */
-    public final File getDirectory() {
-        return Directory;
-    }
-
-    /**
-     * Sets Directory to directory.
-     *
-     * @param directory
-     */
-    public void setDirectory(File directory) {
-        Directory = directory;
     }
 
     /**

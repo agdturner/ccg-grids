@@ -15,7 +15,8 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGridChunk extends Grids_Object implements Serializable {
+public abstract class Grids_AbstractGridChunk extends Grids_Object 
+        implements Serializable {
 
     /**
      * A reference to the Grid.
@@ -23,10 +24,9 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object implements Se
     protected transient Grids_AbstractGrid Grid;
 
     /**
-     * For storing the Grids_2D_ID_int of this. TODO: Is this transient for
-     * caching?
+     * For storing the Grids_2D_ID_int of this.
      */
-    protected transient Grids_2D_ID_int ChunkID;
+    protected Grids_2D_ID_int ChunkID;
 
     protected int ChunkNRows;
 

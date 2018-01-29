@@ -43,6 +43,11 @@ public class Grids_GridDoubleStats
         implements Serializable {
 
     /**
+     * A reference to the Grids_GridDouble.
+     */
+    public transient Grids_GridDouble Grid;
+
+    /**
      * For storing the minimum value.
      */
     protected double Min;
@@ -60,9 +65,13 @@ public class Grids_GridDoubleStats
         init();
     }
 
-    public Grids_GridDoubleStats(Grids_GridDouble g) {
-        super(g);
-        init();
+    /**
+     * For initialisation.
+     *
+     * @param g
+     */
+    public final void init(Grids_GridDouble g) {
+        Grid = g;
     }
 
     /**
@@ -284,7 +293,7 @@ public class Grids_GridDoubleStats
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }
-        stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces, 
+        stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
         return Generic_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
                 ge.get_Generic_BigDecimal().get_RoundingMode());

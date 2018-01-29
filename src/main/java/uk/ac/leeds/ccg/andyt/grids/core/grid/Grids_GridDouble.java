@@ -43,6 +43,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdat
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
+import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -72,21 +73,17 @@ public class Grids_GridDouble
     }
 
     /**
-     * Creates a new Grids_GridDouble. Warning!! Concurrent modification may
-     * occur if directory is in use.
+     * Creates a new Grids_GridDouble.
      *
-     * @param directory The directory to be used for swapping.
+     * @param dir The directory for this.
      * @param gridFile The directory containing the File named "thisFile" that
      * the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param ge
      */
-    protected Grids_GridDouble(
-            File directory,
-            File gridFile,
-            ObjectInputStream ois,
+    protected Grids_GridDouble(File dir, File gridFile, ObjectInputStream ois,
             Grids_Environment ge) {
-        super(ge, directory);
+        super(ge, dir);
         init(gridFile, ois);
     }
 
@@ -95,9 +92,8 @@ public class Grids_GridDouble
      * and all chunks of the same type.
      *
      * @param stats The Grids_GridDoubleStats to accompany this.
-     * @param directory The directory to be used for swapping.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory preferred
-     * for creating chunks.
+     * @param dir The directory for this.
+     * @param cf The factory preferred for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
@@ -106,58 +102,43 @@ public class Grids_GridDouble
      * @param noDataValue The NoDataValue.
      * @param ge
      */
-    protected Grids_GridDouble(
-            Grids_GridDoubleStats stats,
-            File directory,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long nRows,
-            long nCols,
-            Grids_Dimensions dimensions,
-            double noDataValue,
-            Grids_Environment ge) {
-        super(ge, directory);
-        init(stats, directory, chunkFactory, chunkNRows, chunkNCols, nRows,
-                nCols, dimensions, noDataValue);
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
+            double noDataValue, Grids_Environment ge) {
+        super(ge, dir);
+        init(stats, dir, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions,
+                noDataValue);
     }
 
     /**
      * Creates a new Grids_GridDouble based on values in grid.
      *
      * @param stats The AbstractGridStatistics to accompany this.
-     * @param directory The File _Directory to be used for swapping.
+     * @param dir The directory for this.
      * @param grid The Grids_AbstractGridNumber from which this is to be
      * constructed.
-     * @param chunkFactory The Grids_AbstractGridChunkDoubleFactory preferred to
-     * construct chunks of this.
+     * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
-     * @param startRow The Grid2DSquareCell row index which is the bottom most
-     * row of this.
-     * @param startCol The Grid2DSquareCell column index which is the left most
-     * column of this.
-     * @param endRow The Grid2DSquareCell row index which is the top most row of
+     * @param startRow The Grid2DSquareCell row which is the bottom most row of
      * this.
-     * @param endCol The Grid2DSquareCell column index which is the right most
-     * column of this.
+     * @param startCol The Grid2DSquareCell column which is the left most column
+     * of this.
+     * @param endRow The Grid2DSquareCell row which is the top most row of this.
+     * @param endCol The Grid2DSquareCell column which is the right most column
+     * of this.
      * @param noDataValue The NoDataValue for this.
      */
-    protected Grids_GridDouble(
-            Grids_GridDoubleStats stats,
-            File directory,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
             Grids_AbstractGridNumber grid,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double noDataValue) {
-        super(grid.ge, directory);
-        init(stats, grid, chunkFactory, chunkNRows, chunkNCols, startRow,
-                startCol, endRow, endCol, noDataValue);
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, double noDataValue) {
+        super(grid.ge, dir);
+        checkDir();
+        init(stats, grid, cf, chunkNRows, chunkNCols, startRow, startCol,
+                endRow, endCol, noDataValue);
     }
 
     /**
@@ -167,11 +148,10 @@ public class Grids_GridDouble
      * ".asc" or ".txt".
      *
      * @param stats The Grids_GridDoubleStats to accompany this.
-     * @param directory The directory to be used for storing data about this
-     * grid.
+     * @param dir The directory for this.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
-     * @param chunkFactory The factory preferred to construct chunks of this.
+     * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows
      * @param chunkNCols
      * @param startRow The row of the input that will be the bottom most row of
@@ -184,22 +164,14 @@ public class Grids_GridDouble
      * @param noDataValue The NoDataValue for this.
      * @param ge
      */
-    protected Grids_GridDouble(
-            Grids_GridDoubleStats stats,
-            File directory,
-            File gridFile,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double noDataValue,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
+            File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol, double noDataValue,
             Grids_Environment ge) {
-        super(ge, directory);
-        init(stats, gridFile, chunkFactory, chunkNRows, chunkNCols, startRow,
-                startCol, endRow, endCol, noDataValue);
+        super(ge, dir);
+        init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
+                endRow, endCol, noDataValue);
     }
 
     /**
@@ -209,16 +181,12 @@ public class Grids_GridDouble
      * ".asc" or ".txt".
      *
      * @param ge
-     * @param directory The directory to be used for storing data about this
-     * grid.
+     * @param dir The directory for this.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      */
-    protected Grids_GridDouble(
-            Grids_Environment ge,
-            File directory,
-            File gridFile) {
-        super(ge, directory);
+    protected Grids_GridDouble(Grids_Environment ge, File dir, File gridFile) {
+        super(ge, dir);
         init(new Grids_GridDoubleStatsNotUpdated(ge), gridFile);
     }
 
@@ -235,40 +203,54 @@ public class Grids_GridDouble
     /**
      * Initialises this.
      *
-     * @param g The Grids_GridDouble from which the fields of this are set.
-     * @param initTransientFields Iff true then transient fields of this are set
-     * with those of g.
+     * @param g The Grids_GridDouble from which the fields of this are set. with
+     * those of g.
      */
-    private void init(
-            Grids_GridDouble g,
-            boolean initTransientFields) {
+    private void init(Grids_GridDouble g) {
         NoDataValue = g.NoDataValue;
+//        Grids_GridDoubleStats gStats;
+//        gStats = g.getStats();
+//        if (gStats instanceof Grids_GridDoubleStatsNotUpdated) {
+//            Stats = new Grids_GridDoubleStatsNotUpdated(this);
+//        } else {
+//            Stats = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
+//        }
+//        Stats = g.Stats;
         super.init(g);
-        if (initTransientFields) {
-            ChunkIDChunkMap = g.ChunkIDChunkMap;
-            ChunkIDsofChunksWorthSwapping = g.ChunkIDsofChunksWorthSwapping;
-            // Set the reference to this in the Grid Stats
-            Stats.init(this);
+        ChunkIDChunkMap = g.ChunkIDChunkMap;
+        // Set the reference to this in ChunkIDChunkMap chunks
+        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
+        Grids_2D_ID_int chunkID;
+        Grids_AbstractGridChunk chunk;
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            chunk = ChunkIDChunkMap.get(chunkID);
+            chunk.setGrid(this);
         }
+        ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+        // Set the reference to this in the Grid Stats
+        Stats.init(this);
+        super.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
         ge.setDataToSwap(true);
+        ge.addGrid(this);
         if (!Stats.isUpdated()) {
             ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
         }
-        ge.addGrid(this);
+        Stats.Grid = this;
     }
 
-    private void init(
-            File file,
-            ObjectInputStream ois) {
+    private void init(File file, ObjectInputStream ois) {
         ge.checkAndMaybeFreeMemory();
         File thisFile = new File(file, "thisFile");
         try {
-            boolean initTransientFields = false;
-            init((Grids_GridDouble) ois.readObject(),
-                    initTransientFields);
+            init((Grids_GridDouble) ois.readObject());
             ois.close();
             // Set the reference to this in the Grid Chunks
-            initChunks(file);
             Iterator<Grids_AbstractGridChunk> chunkIterator;
             chunkIterator = ChunkIDChunkMap.values().iterator();
             while (chunkIterator.hasNext()) {
@@ -283,26 +265,25 @@ public class Grids_GridDouble
                 Grids_Processor gp;
                 gp = ge.getProcessor();
                 Grids_GridIntFactory gif;
-                gif = new Grids_GridIntFactory(ge,
-                        gp.GridIntFactory.Directory, gp.GridChunkIntFactory,
+                gif = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         ChunkNRows, ChunkNCols, Dimensions,
                         new Grids_GridIntStatsNotUpdated(ge));
+                Grids_Files files = ge.getFiles();
+                File dir;
+                dir = files.createNewFile(files.getGeneratedGridIntDir());
                 Grids_GridInt gi;
-                gi = (Grids_GridInt) gif.create(Directory, file, ois);
+                gi = (Grids_GridInt) gif.create(dir, file, ois);
                 Grids_GridDoubleFactory gdf;
-                gdf = new Grids_GridDoubleFactory(ge,
-                        gp.GridDoubleFactory.Directory,
-                        gp.GridChunkDoubleFactory,
-                        gp.DefaultGridChunkDoubleFactory,
-                        gi.NoDataValue, gi.ChunkNRows,
-                        gi.ChunkNCols, gi.Dimensions,
+                gdf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
+                        gp.DefaultGridChunkDoubleFactory, gi.NoDataValue,
+                        gi.ChunkNRows, gi.ChunkNCols, gi.Dimensions,
                         new Grids_GridDoubleStatsNotUpdated(ge));
                 Grids_GridDouble gd;
-                gd = (Grids_GridDouble) gdf.create(gi);
-                boolean initTransientFields = false;
-                init(gd, initTransientFields);
-                initChunks(file);
+                gd = (Grids_GridDouble) gdf.create(Directory, gi);
+                init(gd);
+                // Delete gi
+                gi.Directory.delete();
             } catch (IOException ioe) {
                 //ioe.printStackTrace();
                 System.err.println(ioe.getLocalizedMessage());
@@ -313,23 +294,16 @@ public class Grids_GridDouble
         }
         //ioe.printStackTrace();
         // Set the reference to this in the Grid Stats
-        this.getStats().init(this);
-        ge.addGrid(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
+        if (getStats() == null) {
+            Stats = new Grids_GridDoubleStatsNotUpdated(ge);
         }
+        Stats.init(this);
+        init();
     }
 
-    private void init(
-            Grids_GridDoubleStats stats,
-            File directory,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long nRows,
-            long nCols,
-            Grids_Dimensions dimensions,
+    private void init(Grids_GridDoubleStats stats, File directory,
+            Grids_AbstractGridChunkDoubleFactory chunkFactory, int chunkNRows,
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double noDataValue) {
         ge.checkAndMaybeFreeMemory();
         Directory = directory;
@@ -346,7 +320,7 @@ public class Grids_GridDouble
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         int r;
         int c;
         Grids_2D_ID_int chunkID;
@@ -359,24 +333,20 @@ public class Grids_GridDouble
                 chunk = chunkFactory.create(this, chunkID);
                 ChunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_GridChunkDouble)) {
-                    ChunkIDsofChunksWorthSwapping.add(chunkID);
+                    ChunkIDsOfChunksWorthSwapping.add(chunkID);
                 }
             }
             System.out.println("Done chunkRow " + r + " out of "
                     + NChunkRows);
         }
-        ge.addGrid(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     /**
      *
      * @param stats
      * @param g
-     * @param chunkFactory
+     * @param cf
      * @param chunkNRows
      * @param chunkNCols
      * @param startRow
@@ -385,17 +355,10 @@ public class Grids_GridDouble
      * @param endCol
      * @param ndv
      */
-    private void init(
-            Grids_GridDoubleStats stats,
-            Grids_AbstractGridNumber g,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double ndv) {
+    private void init(Grids_GridDoubleStats stats, Grids_AbstractGridNumber g,
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, double ndv) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -408,7 +371,7 @@ public class Grids_GridDouble
         initNChunkRows();
         initNChunkCols();
         ChunkIDChunkMap = new TreeMap<>();
-        ChunkIDsofChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         initDimensions(g, startRow, startCol);
         int gcr;
         int gcc;
@@ -473,10 +436,10 @@ public class Grids_GridDouble
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 //ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
@@ -557,10 +520,10 @@ public class Grids_GridDouble
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 ge.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
-                                                    chunk = chunkFactory.create(this, chunkID);
+                                                    chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                                                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkDouble) ChunkIDChunkMap.get(chunkID);
@@ -608,24 +571,13 @@ public class Grids_GridDouble
                 System.out.println("Done chunkRow " + gcr + " out of " + nChunkRows);
             }
         }
-        ge.addGrid(this);
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
-    private void init(
-            Grids_GridDoubleStats stats,
-            File gridFile,
-            Grids_AbstractGridChunkDoubleFactory chunkFactory,
-            int chunkNRows,
-            int chunkNCols,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double noDataValue) {
+    private void init(Grids_GridDoubleStats stats, File gridFile,
+            Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, double noDataValue) {
         ge.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
@@ -637,11 +589,8 @@ public class Grids_GridDouble
                 Grids_Processor gp;
                 gp = ge.getProcessor();
                 Grids_GridDoubleFactory gf;
-                gf = new Grids_GridDoubleFactory(ge,
-                        gp.GridDoubleFactory.Directory,
-                        gp.GridChunkDoubleFactory,
-                        gp.DefaultGridChunkDoubleFactory, noDataValue,
-                        chunkNRows, chunkNCols, null, stats);
+                gf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
+                        cf, noDataValue, chunkNRows, chunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
                 ois = Generic_StaticIO.getObjectInputStream(thisFile);
@@ -649,10 +598,8 @@ public class Grids_GridDouble
                 g = (Grids_GridDouble) gf.create(Directory, thisFile, ois);
                 Grids_GridDouble g2;
                 g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
-                init(g2, false);
-
+                init(g2);
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
             ChunkNRows = chunkNRows;
@@ -664,7 +611,7 @@ public class Grids_GridDouble
             initNChunkRows();
             initNChunkCols();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.Grid = this;
             String filename = gridFile.getName();
@@ -749,10 +696,7 @@ public class Grids_GridDouble
                 }
             }
         }
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     private void init(
@@ -769,7 +713,6 @@ public class Grids_GridDouble
             if (true) {
                 Grids_GridDoubleFactory gf;
                 gf = new Grids_GridDoubleFactory(ge,
-                        gp.GridDoubleFactory.Directory,
                         gp.GridChunkDoubleFactory,
                         gp.DefaultGridChunkDoubleFactory,
                         gp.GridIntFactory.NoDataValue,
@@ -781,13 +724,20 @@ public class Grids_GridDouble
                 Grids_GridDouble g;
                 g = (Grids_GridDouble) gf.create(Directory, thisFile, ois);
                 init(g);
+                this.ChunkIDChunkMap = g.ChunkIDChunkMap;
+                this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+                this.NoDataValue = g.NoDataValue;
+                this.Dimensions = g.Dimensions;
+                this.Directory = g.Directory;
+                this.Stats = g.Stats;
+                this.Stats.Grid = this;
             }
-            initChunks(gridFile);
         } else {
             // Assume ESRI AsciiFile
+            checkDir();
             Name = Directory.getName();
             ChunkIDChunkMap = new TreeMap<>();
-            ChunkIDsofChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             Stats = stats;
             Stats.init(this);
             String filename = gridFile.getName();
@@ -880,10 +830,7 @@ public class Grids_GridDouble
                 }
             }
         }
-        ge.setDataToSwap(true);
-        if (!Stats.isUpdated()) {
-            ((Grids_GridDoubleStatsNotUpdated) Stats).setUpToDate(false);
-        }
+        init();
     }
 
     /**
@@ -933,7 +880,7 @@ public class Grids_GridDouble
             chunk.initChunkID(chunkID);
             ChunkIDChunkMap.put(chunkID, chunk);
             if (!(chunk instanceof Grids_GridChunkDouble)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
         }
     }
@@ -964,7 +911,7 @@ public class Grids_GridDouble
             gc = new Grids_GridChunkDouble(this, chunkID, value);
             ChunkIDChunkMap.put(chunkID, gc);
             if (!(gc instanceof Grids_GridChunkDouble)) {
-                ChunkIDsofChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
         } else {
             Grids_AbstractGridChunk c;
@@ -981,7 +928,7 @@ public class Grids_GridDouble
                             chunk, chunkID);
                     ChunkIDChunkMap.put(chunkID, chunk);
                     if (!(chunk instanceof Grids_GridChunkDouble)) {
-                        ChunkIDsofChunksWorthSwapping.add(chunkID);
+                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
                     }
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
                 }
@@ -1285,7 +1232,7 @@ public class Grids_GridDouble
         result = f.create(chunk, chunkID);
         ChunkIDChunkMap.put(chunkID, result);
         if (!(chunk instanceof Grids_GridChunkDouble)) {
-            ChunkIDsofChunksWorthSwapping.add(chunkID);
+            ChunkIDsOfChunksWorthSwapping.add(chunkID);
         }
         return result;
     }
