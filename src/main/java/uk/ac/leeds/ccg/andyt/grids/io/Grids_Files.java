@@ -109,12 +109,17 @@ public class Grids_Files extends Generic_Files {
      * @return
      */
     public File createNewFile(File dir, String prefix, String suffix) {
+        dir.mkdirs();
         File result = null;
         try {
             if ((prefix + suffix).equalsIgnoreCase("")) {
+                boolean success = false;
                 do {
                     result = getNewFile(dir, prefix, suffix);
-                } while (!result.mkdir());
+                    if (! result.exists()) {
+                        success = result.mkdir();
+                    }
+                } while (!success);
             } else {
                 do {
                     result = getNewFile(dir, prefix, suffix);
@@ -128,6 +133,7 @@ public class Grids_Files extends Generic_Files {
     }
 
     private File getNewFile(File dir, String prefix, String suffix) {
+        //dir.mkdirs();
         File result;
         do {
             result = new File(dir, prefix + System.currentTimeMillis() + suffix);

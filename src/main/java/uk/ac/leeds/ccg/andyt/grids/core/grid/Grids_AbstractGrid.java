@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,6 +29,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
@@ -108,13 +111,28 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected final void checkDir() {
         if (Directory.exists()) {
-            throw new Error("Directory " + Directory + " already exists. "
-                    + "Exiting program to prevent data getting overwritten!");
+            if (Directory.isDirectory()) {
+                File lock;
+                lock = new File(Directory, "lock");
+                if (!lock.exists()) {
+                    try {
+                        lock.createNewFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    throw new Error("Lock file " + lock + " already exists. "
+                            + "Exiting program to prevent data getting overwritten!");
+                }
+            } else {
+                throw new Error("Directory " + Directory + " already exists as a file. "
+                        + "Exiting program to prevent data getting overwritten!");
+            }
         }
     }
 
     protected void init() {
-            Directory.mkdir();
+        Directory.mkdir();
         ge.setDataToSwap(true);
         ge.addGrid(this);
     }
@@ -697,11 +715,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * are no suitable chunks to swap.
      */
     public final Grids_2D_ID_int writeToFileChunk() {
-        
+
         if (ChunkIDsOfChunksWorthSwapping == null) {
             int debug = 1;
         }
-        
+
         if (ChunkIDsOfChunksWorthSwapping.isEmpty()) {
             return null;
         }

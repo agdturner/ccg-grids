@@ -116,7 +116,7 @@ public class Grids_GridDouble
      *
      * @param stats The AbstractGridStatistics to accompany this.
      * @param dir The directory for this.
-     * @param grid The Grids_AbstractGridNumber from which this is to be
+     * @param g The Grids_AbstractGridNumber from which this is to be
      * constructed.
      * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
@@ -131,13 +131,13 @@ public class Grids_GridDouble
      * @param noDataValue The NoDataValue for this.
      */
     protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
-            Grids_AbstractGridNumber grid,
+            Grids_AbstractGridNumber g,
             Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, double noDataValue) {
-        super(grid.ge, dir);
+        super(g.ge, dir);
         checkDir();
-        init(stats, grid, cf, chunkNRows, chunkNCols, startRow, startCol,
+        init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
     }
 
