@@ -205,22 +205,16 @@ public class Grids_GridInt
      */
     private void init(Grids_GridInt g) {
         NoDataValue = g.NoDataValue;
+        Stats = g.Stats;
         super.init(g);
         ChunkIDChunkMap = g.ChunkIDChunkMap;
         // Set the reference to this in ChunkIDChunkMap chunks
-        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
-        Grids_2D_ID_int chunkID;
-        Grids_AbstractGridChunk chunk;
-        while (ite.hasNext()) {
-            chunkID = ite.next();
-            chunk = ChunkIDChunkMap.get(chunkID);
-            chunk.setGrid(this);
-        }
+        setReferenceInChunkIDChunkMap();
         ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
         // Set the reference to this in the Grid Stats
         Stats.init(this);
         super.init();
-        Stats.Grid = this;
+        //Stats.Grid = this;
     }
 
     @Override

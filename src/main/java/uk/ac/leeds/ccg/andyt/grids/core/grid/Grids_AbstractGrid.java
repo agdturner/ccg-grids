@@ -156,6 +156,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
+     * 
+     */
+    protected void setReferenceInChunkIDChunkMap() {
+        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
+        Grids_2D_ID_int chunkID;
+        Grids_AbstractGridChunk chunk;
+        while (ite.hasNext()) {
+            chunkID = ite.next();
+            chunk = ChunkIDChunkMap.get(chunkID);
+            chunk.setGrid(this);
+        }
+    }
+    
+    /**
      * @return HashSet containing all ChunkIDs.
      */
     public HashSet<Grids_2D_ID_int> getChunkIDs() {
