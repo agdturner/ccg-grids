@@ -125,15 +125,14 @@ public class Grids_ProcessorDEM
             String methodName = "getSlopeAspect(" + g.getClass().getName()
                     + ",double,double,double,boolean)";
             System.out.println(methodName);
-            Grids_AbstractGridChunkDouble chunkDouble;
+            Grids_AbstractGridChunkDouble cd;
             Grids_GridDouble gd;
-            Grids_AbstractGridChunkInt chunk;
+            Grids_AbstractGridChunkInt ci;
             Grids_GridInt gridInt;
             int slopeAndAspectSize = 10;
             Grids_GridDouble[] slopeAndAspect;
             slopeAndAspect = new Grids_GridDouble[slopeAndAspectSize];
             boolean shortName = true; // Filenames that are too long are problematic!
-            boolean swapToFileCache;
             // Initialisation
             long ncols = g.getNCols();
             long nrows = g.getNRows();
@@ -169,19 +168,11 @@ public class Grids_ProcessorDEM
             int chunkCols = g.getNChunkCols();
             int chunkNrows;
             int chunkNcols;
-            double double0;
+            double d;
             double double1;
             double double3;
             double PI = Math.PI;
-            double doubleOne = 1.0d;
-            double doubleTwo = 2.0d;
-            double doubleThree = 3.0d;
-            double doubleFour = 4.0d;
-            double doubleFive = 5.0d;
-            double doubleSix = 6.0d;
-            double doubleSeven = 7.0d;
-            double doubleEight = 8.0d;
-            double doubleOneHundred = 100.0d;
+            double slopeFactor = 100.0d;
             double weightSum = 0.0d;
             double distanceSum = 0.0d;
             double numberObservations = 0.0d;
@@ -367,6 +358,7 @@ public class Grids_ProcessorDEM
             slopeAndAspect[9].writeToFile();
             System.out.println("Initialised Results");
             System.out.println(g.toString());
+            Grids_2D_ID_int chunkID;
             if (g.getClass() == Grids_GridDouble.class) {
                 gd = (Grids_GridDouble) g;
                 double noDataValue = gd.getNoDataValue();
@@ -374,17 +366,19 @@ public class Grids_ProcessorDEM
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        chunkDouble = gd.getChunk(cri, cci);
+                        cd = gd.getChunk(cri, cci);
+                        chunkID = cd.getChunkID();
+                        ge.addToNotToSwap(g, chunkID);
+                        ge.checkAndMaybeFreeMemory();
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
-                                ge.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
                                 x = g.getCellXDouble(col);
-                                h = chunkDouble.getCell(cellRow, cellCol);
+                                h = cd.getCell(cellRow, cellCol);
                                 if (h != noDataValue) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
@@ -411,12 +405,12 @@ public class Grids_ProcessorDEM
                                                         weightSum += weight;
                                                         distanceSum += thisDistance;
                                                         numberObservations++;
-                                                        double0 = h - h2;
-                                                        diffHeight = double0 * weight;
-                                                        double0 = x - thisX;
-                                                        diffX += double0 * diffHeight;
-                                                        double0 = y - thisY;
-                                                        diffY += double0 * diffHeight;
+                                                        d = h - h2;
+                                                        diffHeight = d * weight;
+                                                        d = x - thisX;
+                                                        diffX += d * diffHeight;
+                                                        d = y - thisY;
+                                                        diffY += d * diffHeight;
                                                         slope += diffHeight;
                                                     }
                                                 }
@@ -425,41 +419,42 @@ public class Grids_ProcessorDEM
                                     }
                                     if (numberObservations > 0) {
                                         averageDistance = (distanceSum / numberObservations);
-                                        double0 = weightSum * averageDistance;
-                                        slope /= double0;
-                                        slope *= doubleOneHundred;
+                                        d = weightSum * averageDistance;
+                                        slope /= d;
+                                        slope *= slopeFactor;
                                         slopeAndAspect[0].setCell(row, col, slope);
-                                        double0 = x + diffX;
+                                        d = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, double0, double1);
+                                        angle = angle(x, y, d, double1);
                                         slopeAndAspect[1].setCell(row, col, angle);
                                         sinAngle = Math.sin(angle);
                                         slopeAndAspect[2].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleEight);
+                                        double3 = angle + (PI / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[3].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleFour);
+                                        double3 = angle + (PI / 4.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[4].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleThree / doubleEight);
+                                        double3 = angle + (PI * 3.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[5].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleTwo);
+                                        double3 = angle + (PI / 2.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[6].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleFive / doubleEight);
+                                        double3 = angle + (PI * 5.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[7].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleSix / doubleEight);
+                                        double3 = angle + (PI * 6.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[8].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleSeven / doubleEight);
+                                        double3 = angle + (PI * 7.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[9].setCell(row, col, sinAngle);
                                     }
                                 }
                             }
                         }
+                        ge.removeFromNotToSwap(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -478,8 +473,10 @@ public class Grids_ProcessorDEM
                     chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
-                        chunk = (Grids_AbstractGridChunkInt) gridInt.getChunk(
-                                cri, cci);
+                        ci = gridInt.getChunk(                                cri, cci);
+                        chunkID = ci.getChunkID();
+                        ge.addToNotToSwap(g, chunkID);
+                        ge.checkAndMaybeFreeMemory();                        
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
@@ -487,7 +484,7 @@ public class Grids_ProcessorDEM
                                 ge.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
                                 x = g.getCellXDouble(col);
-                                heightInt = chunk.getCell(cellRow, cellCol);
+                                heightInt = ci.getCell(cellRow, cellCol);
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
                                     diffY = 0.0d;
@@ -515,12 +512,12 @@ public class Grids_ProcessorDEM
                                                         weightSum += weight;
                                                         distanceSum += thisDistance;
                                                         numberObservations++;
-                                                        double0 = (double) heightInt - thisHeightInt;
-                                                        diffHeight = double0 * weight;
-                                                        double0 = x - thisX;
-                                                        diffX += double0 * diffHeight;
-                                                        double0 = y - thisY;
-                                                        diffY += double0 * diffHeight;
+                                                        d = (double) heightInt - thisHeightInt;
+                                                        diffHeight = d * weight;
+                                                        d = x - thisX;
+                                                        diffX += d * diffHeight;
+                                                        d = y - thisY;
+                                                        diffY += d * diffHeight;
                                                         slope += diffHeight;
                                                     }
                                                 }
@@ -529,41 +526,42 @@ public class Grids_ProcessorDEM
                                     }
                                     if (numberObservations > 0) {
                                         averageDistance = (distanceSum / numberObservations);
-                                        double0 = weightSum * averageDistance;
-                                        slope /= double0;
-                                        slope *= doubleOneHundred;
+                                        d = weightSum * averageDistance;
+                                        slope /= d;
+                                        slope *= slopeFactor;
                                         slopeAndAspect[0].setCell(row, col, slope);
-                                        double0 = x + diffX;
+                                        d = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, double0, double1);
+                                        angle = angle(x, y, d, double1);
                                         slopeAndAspect[1].setCell(row, col, angle);
                                         sinAngle = Math.sin(angle);
                                         slopeAndAspect[2].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleEight);
+                                        double3 = angle + (PI / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[3].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleFour);
+                                        double3 = angle + (PI / 4.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[4].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleThree / doubleEight);
+                                        double3 = angle + (PI * 3.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[5].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI / doubleTwo);
+                                        double3 = angle + (PI / 2.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[6].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleFive / doubleEight);
+                                        double3 = angle + (PI * 5.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[7].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleSix / doubleEight);
+                                        double3 = angle + (PI * 6.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[8].setCell(row, col, sinAngle);
-                                        double3 = angle + (PI * doubleSeven / doubleEight);
+                                        double3 = angle + (PI * 7.0d / 8.0d);
                                         sinAngle = Math.sin(double3);
                                         slopeAndAspect[9].setCell(row, col, sinAngle);
                                     }
                                 }
                             }
                         }
+                        ge.removeFromNotToSwap(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
