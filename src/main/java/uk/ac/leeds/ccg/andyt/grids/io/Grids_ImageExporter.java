@@ -233,6 +233,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         Graphics2D graphics = (Graphics2D) bi.getGraphics();
         graphics.drawImage(image, 0, 0, new java.awt.Panel());
         try {
+            file.getParentFile().mkdirs();
             javax.imageio.ImageIO.write(bi, type, file);
         } catch (java.io.IOException e1) {
             e1.printStackTrace(System.err);

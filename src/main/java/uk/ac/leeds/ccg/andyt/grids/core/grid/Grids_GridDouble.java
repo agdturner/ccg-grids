@@ -716,7 +716,7 @@ public class Grids_GridDouble
                 Grids_GridDouble g;
                 g = (Grids_GridDouble) gf.create(Directory, thisFile, ois);
                 init(g);
-                this.ChunkIDChunkMap = g.ChunkIDChunkMap;
+                //this.ChunkIDChunkMap = g.ChunkIDChunkMap;
                 this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
                 this.NoDataValue = g.NoDataValue;
                 this.Dimensions = g.Dimensions;
