@@ -576,6 +576,9 @@ public class Grids_GridDouble
         // Set to report every 10%
         int reportN;
         reportN = (int) (endRow - startRow) / 10;
+        if (reportN == 0) {
+            reportN = 1;
+        }
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_Processor gp;
@@ -748,6 +751,9 @@ public class Grids_GridDouble
                 initNChunkCols();
                 initDimensions(header, 0, 0);
                 reportN = (int) (NRows - 1) / 10;
+                if (reportN == 0) {
+                    reportN = 1;
+                }
                 double gridFileNoDataValue = header.NoDataValue.doubleValue();
                 Grids_AbstractGridChunkDouble chunk;
                 Grids_GridChunkDouble gridChunk;
