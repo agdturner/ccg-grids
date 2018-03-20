@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Andy Turner, CCG, University of Leeds, UK
+ * Copyright (C) 2018 Andy Turner, CCG, University of Leeds, UK
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,40 +19,37 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.sql.Time;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
 import uk.ac.leeds.ccg.andyt.generic.utilities.time.Generic_Time;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
- * A class for giving an example of a clip operation on a grid.
+ * Converts a series of NIMROD derived ASCIIGRID files into a time series format
+ * for a landscape evolution model. Originally developed for Eleanor Pearson.
  *
- * @author geoagdt
+ * @author Andy Turner
  */
-public class Grids_ConvertToTimeSeries
-        extends Grids_Processor {
+public class Grids_ConvertToTimeSeries extends Grids_Processor {
 
     private long Time;
     boolean HandleOutOfMemoryError;
     String Filename;
     Generic_Environment e;
 
+    /**
+     * 
+     */
     protected Grids_ConvertToTimeSeries() {
     }
 
     /**
-     * Creates a new RoofGeneralisation using specified Directory. WARNING:
-     * Files in the specified Directory may get overwritten.
      *
      * @param ge
      */
@@ -118,12 +115,12 @@ public class Grids_ConvertToTimeSeries
             File dir;
             Long nrows = null;
             Long ncols = null;
-            for (int i = 0; i < files.length; i++) {
-                fn = files[i].getName();
+            for (File file : files) {
+                fn = file.getName();
                 if (fn.endsWith(".asc")) {
                     System.out.println(fn);
                     dir = new File(gendir, fn);
-                    split = fn.split("Grid_");
+                    split = fn.split("rid_");
                     time = split[1].substring(0, split[1].length() - 4);
                     year = Integer.valueOf(time.substring(0, 4));
                     month = Integer.valueOf(time.substring(4, 6));
@@ -132,7 +129,7 @@ public class Grids_ConvertToTimeSeries
                     minute = Integer.valueOf(time.substring(10, 12));
                     System.out.println("" + year + " " + month + " " + day + " " + hour + " " + minute);
                     t = new Generic_Time(e, year, month, day, hour, minute, second);
-                    g = GridDoubleFactory.create(dir, files[i]);
+                    g = GridDoubleFactory.create(dir, file);
                     if (nrows == null) {
                         nrows = g.getNRows();
                     } else {
@@ -152,7 +149,6 @@ public class Grids_ConvertToTimeSeries
             }
             Iterator<Generic_Time> ite;
             // Write header
-            pw = Generic_StaticIO.getPrintWriter(outf, false);
             pw.print("ID,row,col");
             ite = grids.keySet().iterator();
             while (ite.hasNext()) {
@@ -160,9 +156,9 @@ public class Grids_ConvertToTimeSeries
                 pw.print("," + t.getYYYYMMDDHHMM());
             }
             pw.println();
-            Grids_2D_ID_long ID;
             double v;
             boolean writeIDRC = true;
+            double ndv;
             // Write values
             for (long r = 0; r < nrows; r++) {
                 for (long c = 0; c < ncols; c++) {
@@ -171,12 +167,16 @@ public class Grids_ConvertToTimeSeries
                         t = ite.next();
                         g = grids.get(t);
                         if (writeIDRC) {
-                            ID = g.getCellID(r, c);
-                            pw.print(ID.toString() + "," + r + "," + c);
+                            pw.print((r * ncols + c) + "," + r + "," + c);
                             writeIDRC = false;
                         }
                         v = g.getCell(r, c);
-                        pw.print("," + v);
+                        ndv = g.getNoDataValue();
+                        if (v == ndv) {
+                            pw.print(",0");
+                        } else {
+                            pw.print("," + v);
+                        }
                     }
                     pw.println();
                 }
