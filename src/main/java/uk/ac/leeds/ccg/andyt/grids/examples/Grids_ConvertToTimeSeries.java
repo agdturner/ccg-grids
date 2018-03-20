@@ -91,7 +91,7 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
             File outdir;
             outdir = new File(gf.getOutputDataDir(gs), name);
             File outf;
-            outf = new File(outdir, name + "timeseries.txt");
+            outf = new File(outdir, name + "timeseries.csv");
             outdir.mkdirs();
             PrintWriter pw;
             pw = Generic_StaticIO.getPrintWriter(outf, false);
@@ -178,9 +178,9 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
                             pw.print("," + v);
                         }
                     }
+                    writeIDRC = true;
                     pw.println();
                 }
-                writeIDRC = true;
             }
             pw.close();
         } catch (Exception | Error e) {
