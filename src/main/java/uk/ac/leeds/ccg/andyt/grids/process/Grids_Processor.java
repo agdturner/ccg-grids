@@ -1043,47 +1043,35 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Add gridToAdd to grid with values from gridToAdd multiplied by weight.
+     * Add g2 to g with values from g2 multiplied by w.
      *
-     * @param g The Grids_GridDouble to be processed/modified.
-     * @param g2 The Grids_GridDouble from which values are added.
-     * @param weight The value gridToAdd values are multiplied by.
+     * @param g Grid to be processed/modified.
+     * @param g2 Grid from which values are added.
+     * @param w Value g2 values are multiplied by.
      */
-    public void addToGrid(
-            Grids_GridDouble g,
-            Grids_GridDouble g2,
-            double weight) {
+    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w) {
         ge.checkAndMaybeFreeMemory();
-        addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
-                g2.getNCols() - 1L, weight);
+        if (g2 != null) {
+            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
+                    g2.getNCols() - 1L, w);
+        }
     }
 
     /**
-     * Add gridToAdd to grid with values from gridToAdd multiplied by weight.
-     * Only values of gridToAdd with row index between startRowIndex and
-     * endRowIndex, and column index between startColIndex and endColIndex are
-     * added.
+     * Add g2 to g with values from g2 multiplied by w. Only values of g2 with
+     * row between startRow and endRow, and column between startCol and endCol
+     * are added.
      *
-     * @param g The Grids_GridDouble to be processed.
-     * @param g2 The Grids_GridDouble from which values are added.
-     * @param startRow The index of the first row from which gridToAdd values
-     * are added.
-     * @param startCol the index of the first column from which gridToAdd values
-     * are added.
-     * @param endRow the index of the final row from which gridToAdd values are
-     * added.
-     * @param endCol the index of the final column from which gridToAdd values
-     * are added.
-     * @param weight The value gridToAdd values are multiplied by.
+     * @param g Grid to be processed.
+     * @param g2 Grid from which values are added.
+     * @param startRow Index of the first row from which g2 values are added.
+     * @param startCol Index of the first column from which g2 values are added.
+     * @param endRow Index of the final row from which g2 values are added.
+     * @param endCol Index of the final column from which g2 values are added.
+     * @param w Value g2 values are multiplied by.
      */
-    public void addToGrid(
-            Grids_GridDouble g,
-            Grids_GridDouble g2,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            double weight) {
+    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
+            long startRow, long startCol, long endRow, long endCol, double w) {
         ge.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin;
@@ -1092,49 +1080,35 @@ public class Grids_Processor extends Grids_Object {
         cellsize = dimensions.getCellsize();
         xMin = dimensions.getXMin();
         yMin = dimensions.getYMin();
-        BigDecimal[] dimensionConstraints = new BigDecimal[5];
-        dimensionConstraints[1] = xMin.add(
-                new BigDecimal(startCol).multiply(cellsize));
-        dimensionConstraints[2] = yMin.add(
-                new BigDecimal(startRow).multiply(cellsize));
-        dimensionConstraints[3] = xMin.add(
+        BigDecimal[] dc = new BigDecimal[5];
+        dc[1] = xMin.add(new BigDecimal(startCol).multiply(cellsize));
+        dc[2] = yMin.add(new BigDecimal(startRow).multiply(cellsize));
+        dc[3] = xMin.add(
                 new BigDecimal(endCol - startCol + 1L).multiply(cellsize));
-        dimensionConstraints[4] = yMin.add(
+        dc[4] = yMin.add(
                 new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
-        addToGrid(g, g2, startRow, startCol, endRow, endCol,
-                dimensionConstraints, weight);
+        addToGrid(g, g2, startRow, startCol, endRow, endCol, dc, w);
         ge.checkAndMaybeFreeMemory();
     }
 
     /**
-     * Returns a Grids_GridDouble with values of grid added with values from
-     * gridToAdd (with row index between startRowIndex, endRowIndex and column
-     * index between startColIndex, endColIndex) multiplied by weight.
+     * Returns a Grids_GridDouble with values of g added with values from g2
+     * (with row between startRow, endRow and column index between startCol,
+     * endCol) multiplied by w.
      *
-     * @param g The Grids_GridDouble to be processed.
-     * @param g2 The Grids_GridDouble from which values are added.
-     * @param startRow The index of the first row from which gridToAdd values
-     * are added.
-     * @param startCol The index of the first column from which gridToAdd values
-     * are added.
-     * @param endRow The index of the final row from which gridToAdd values are
-     * added.
-     * @param endCol The index of the final column from which gridToAdd values
-     * are added.
-     * @param constraintDimensions
-     * @param weight The value gridToAdd values are multiplied by.
-     *
-     * @todo work needed to handle OutOfMemoryErrors...
+     * @param g Grid to be modified.
+     * @param g2 Grid from which values are added.
+     * @param startRow Index of the first row from which g2 values are added.
+     * @param startCol Index of the first column from which g2 values are added.
+     * @param endRow Index of the final row from which g2 values are added.
+     * @param endCol Index of the final column from which g2 values are added.
+     * @param dc Dimension constraints: XMin, YMin, XMax, YMax of the region of
+     * g2 to be added.
+     * @param w Value g2 values are multiplied by.
      */
-    public void addToGrid(
-            Grids_GridDouble g,
-            Grids_GridDouble g2,
-            long startRow,
-            long startCol,
-            long endRow,
-            long endCol,
-            BigDecimal[] constraintDimensions,
-            double weight) {
+    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
+            long startRow, long startCol, long endRow, long endCol,
+            BigDecimal[] dc, double w) {
         ge.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -1143,33 +1117,33 @@ public class Grids_Processor extends Grids_Object {
         double g2NoDataValue = g2.getNoDataValue();
         Grids_Dimensions g2Dimensions = g2.getDimensions();
         Grids_GridDoubleFactory gf;
-        gf = new Grids_GridDoubleFactory(
-                ge,
-                GridChunkDoubleFactory,
-                DefaultGridChunkDoubleFactory,
-                g.getChunkNCols(),
+        gf = new Grids_GridDoubleFactory(ge, GridChunkDoubleFactory,
+                DefaultGridChunkDoubleFactory, g.getChunkNCols(),
                 g.getChunkNRows());
-        if ((constraintDimensions[1].compareTo(gDimensions.getXMax()) == 1)
-                || (constraintDimensions[3].compareTo(gDimensions.getXMin()) == -1)
-                || (constraintDimensions[2].compareTo(gDimensions.getYMax()) == 1)
-                || (constraintDimensions[4].compareTo(gDimensions.getYMin()) == -1)) {
+        // If the region to be added is outside g then return.
+        if ((dc[1].compareTo(gDimensions.getXMax()) == 1)
+                || (dc[3].compareTo(gDimensions.getXMin()) == -1)
+                || (dc[2].compareTo(gDimensions.getYMax()) == 1)
+                || (dc[4].compareTo(gDimensions.getYMin()) == -1)) {
             return;
         }
         BigDecimal g2Cellsize;
         BigDecimal gCellsize;
         BigDecimal g2HalfCellsize;
-        BigDecimal gHalfCellsize;
+        //BigDecimal gHalfCellsize;
         g2Cellsize = g2Dimensions.getCellsize();
         gCellsize = gDimensions.getCellsize();
         g2HalfCellsize = g2Dimensions.getHalfCellsize();
-        gHalfCellsize = gDimensions.getHalfCellsize();
+        //gHalfCellsize = gDimensions.getHalfCellsize();
         if (g2Cellsize.compareTo(gCellsize) == -1) {
             throw new UnsupportedOperationException();
         } else {
             // If g2Cellsize is the same as gCellsize g and g2 align
             if ((g2Cellsize.compareTo(gCellsize) == 0)
-                    && ((g2Dimensions.getXMin().remainder(gCellsize)).compareTo((gDimensions.getXMin().remainder(gCellsize))) == 0)
-                    && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo((gDimensions.getYMin().remainder(gCellsize))) == 0)) {
+                    && ((g2Dimensions.getXMin().remainder(gCellsize)).compareTo(
+                            (gDimensions.getXMin().remainder(gCellsize))) == 0)
+                    && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo(
+                            (gDimensions.getYMin().remainder(gCellsize))) == 0)) {
                 //println( "Grids Align!" );
                 double x;
                 double y;
@@ -1186,7 +1160,7 @@ public class Grids_Processor extends Grids_Object {
                         value = g2.getCell(row, col);
                         if (value != g2NoDataValue) {
                             if (value != 0.0d) {
-                                g.addToCell(x, y, value * weight);
+                                g.addToCell(x, y, value * w);
                             }
                         }
                     }
@@ -1220,20 +1194,20 @@ public class Grids_Processor extends Grids_Object {
                 double d2;
                 double d3;
                 double d4;
-                double x;
-                double y;
-                long row;
-                long col;
+                //double x;
+                //double y;
+                long r;
+                long c;
                 double areaProportion;
                 double halfCellsize = g.getCellsizeDouble() / 2.0d;
                 // TODO:
                 // precision checking and use of BigDecimal?
-                for (row = 0; row < nrows; row++) {
+                for (r = 0; r < nrows; r++) {
                     ge.checkAndMaybeFreeMemory();
-                    for (col = 0; col < ncols; col++) {
-                        bounds = g.getCellBoundsDoubleArray(halfCellsize, row, col);
-                        x = g.getCellXDouble(col);
-                        y = g.getCellYDouble(row);
+                    for (c = 0; c < ncols; c++) {
+                        bounds = g.getCellBoundsDoubleArray(halfCellsize, r, c);
+                        //x = g.getCellXDouble(col);
+                        //y = g.getCellYDouble(row);
                         cellID1 = g2.getCellID(bounds[0], bounds[3]);
                         cellID2 = g2.getCellID(bounds[2], bounds[3]);
                         cellID3 = g2.getCellID(bounds[0], bounds[1]);
@@ -1241,9 +1215,10 @@ public class Grids_Processor extends Grids_Object {
                         d1 = g2.getCell(cellID1.getRow(), cellID1.getCol());
                         if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
                             if (d1 != g2NoDataValue) {
-                                areaProportion = (gCellsize.multiply(gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
-                                tg1.addToCell(row, col, d1 * areaProportion);
-                                tg2.addToCell(row, col, areaProportion);
+                                areaProportion = (gCellsize.multiply(
+                                        gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
+                                tg1.addToCell(r, c, d1 * areaProportion);
+                                tg2.addToCell(r, c, areaProportion);
                             }
                         } else {
                             d2 = g2.getCell(cellID2.getRow(), cellID2.getCol());
@@ -1262,10 +1237,15 @@ public class Grids_Processor extends Grids_Object {
                                                 gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                     }
                                 } else {
-                                    areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply((g2.getCellXBigDecimal(cellID1).add(g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(g2CellsizeSquared, scale, roundingMode))).doubleValue());
+                                    areaProportion = Math.abs(
+                                            ((BigDecimal.valueOf(bounds[3]).subtract(
+                                                    g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply(
+                                                    (g2.getCellXBigDecimal(cellID1).add(
+                                                            g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(
+                                                            g2CellsizeSquared, scale, roundingMode))).doubleValue());
                                 }
-                                tg1.addToCell(row, col, d1 * areaProportion);
-                                tg2.addToCell(row, col, areaProportion);
+                                tg1.addToCell(r, c, d1 * areaProportion);
+                                tg2.addToCell(r, c, areaProportion);
                             }
                             if (!g2.isInGrid(cellID2) && d2 != g2NoDataValue) {
                                 if (cellID2.equals(cellID1)) {
@@ -1281,8 +1261,8 @@ public class Grids_Processor extends Grids_Object {
                                                         g2.getCellXBigDecimal(cellID2).subtract(
                                                                 g2HalfCellsize))).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                     }
-                                    tg1.addToCell(row, col, d2 * areaProportion);
-                                    tg2.addToCell(row, col, areaProportion);
+                                    tg1.addToCell(r, c, d2 * areaProportion);
+                                    tg2.addToCell(r, c, areaProportion);
                                 }
                             }
                             if (!g2.isInGrid(cellID3) && d3 != g2NoDataValue) {
@@ -1297,8 +1277,8 @@ public class Grids_Processor extends Grids_Object {
                                                 g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
                                                 g2CellsizeSquared, scale, roundingMode)).doubleValue());
                                     }
-                                    tg1.addToCell(row, col, d3 * areaProportion);
-                                    tg2.addToCell(row, col, areaProportion);
+                                    tg1.addToCell(r, c, d3 * areaProportion);
+                                    tg2.addToCell(r, c, areaProportion);
                                 }
                             }
                             if (!g2.isInGrid(cellID4) && d4 != g2NoDataValue) {
@@ -1309,21 +1289,21 @@ public class Grids_Processor extends Grids_Object {
                                                     (g2.getCellXBigDecimal(cellID4)).subtract(
                                                             g2HalfCellsize)))).divide(
                                                     g2CellsizeSquared, scale, roundingMode)).doubleValue());
-                                    tg1.addToCell(row, col, d4 * areaProportion);
-                                    tg2.addToCell(row, col, areaProportion);
+                                    tg1.addToCell(r, c, d4 * areaProportion);
+                                    tg2.addToCell(r, c, areaProportion);
                                 }
                             }
                         }
                     }
                 }
                 // The values are normalised by dividing the aggregate Grid sum by the proportion of cells with grid values.
-                for (row = 0; row <= nrows; row++) {
+                for (r = 0; r <= nrows; r++) {
                     ge.checkAndMaybeFreeMemory();
-                    for (col = 0; col <= ncols; col++) {
-                        d1 = tg2.getCell(row, col);
+                    for (c = 0; c <= ncols; c++) {
+                        d1 = tg2.getCell(r, c);
                         if (!(d1 == 0.0d || d1 == noDataValue)) {
-                            g.addToCell(row, col,
-                                    weight * tg1.getCell(row, col) / d1);
+                            g.addToCell(r, c,
+                                    w * tg1.getCell(r, c) / d1);
                         }
                     }
                 }
@@ -1335,14 +1315,11 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Returns grid with values added from a file.
      *
-     * @param grid the Grids_GridDouble to be processed
+     * @param g the Grids_GridDouble to be processed
      * @param file the file contining values to be added.
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
      */
-    public void addToGrid(
-            Grids_GridDouble grid,
-            File file,
-            String type) {
+    public void addToGrid(Grids_GridDouble g, File file, String type) {
         ge.checkAndMaybeFreeMemory();
         if (type.equalsIgnoreCase("xyv")) {
             try {
@@ -1369,7 +1346,7 @@ public class Grids_Processor extends Grids_Object {
                                     alternator = "value";
                                     break;
                                 default:
-                                    grid.addToCell(x, y, st.nval);
+                                    g.addToCell(x, y, st.nval);
                                     alternator = "x";
                                     break;
                             }
@@ -1403,7 +1380,7 @@ public class Grids_Processor extends Grids_Object {
                                 alternator = "y";
                             } else {
                                 y = st.nval;
-                                grid.addToCell(x, y, 1.0d);
+                                g.addToCell(x, y, 1.0d);
                                 alternator = "x";
                             }
                             break;
@@ -1460,7 +1437,7 @@ public class Grids_Processor extends Grids_Object {
                                     }
                                     alternator = "id";
                                     //println( " x, y = " + x + ", " + y );
-                                    grid.addToCell(x, y, 1.0d);
+                                    g.addToCell(x, y, 1.0d);
                                 }
                             }
                             break;
@@ -1978,7 +1955,7 @@ public class Grids_Processor extends Grids_Object {
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
             dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
-            totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows, 
+            totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows,
                     resultNcols, resultDimensions);
             double areaProportion;
             double[] bounds;

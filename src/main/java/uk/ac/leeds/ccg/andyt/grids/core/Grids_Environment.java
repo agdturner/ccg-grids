@@ -470,13 +470,21 @@ public class Grids_Environment
     }
 
     /**
+     * Remove g from Grids.
+     *
+     * @param g
+     */
+    public void removeGrid(Grids_AbstractGrid g) {
+        Grids.remove(g);
+    }
+    
+    /**
      * Initialises grids and memory reserve.
      *
      * @param grids
      * @param hoome
      */
-    public void initGridsAndMemoryReserve(
-            HashSet<Grids_AbstractGrid> grids,
+    public void initGridsAndMemoryReserve(HashSet<Grids_AbstractGrid> grids,
             boolean hoome) {
         try {
             initGridsAndMemoryReserve(grids);
@@ -530,6 +538,8 @@ public class Grids_Environment
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunk_AccountDetail();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = checkAndMaybeFreeMemory_AccountDetail(hoome);
+                combine(result, partResult);
                 partResult = initMemoryReserve_AccountDetail(hoome);
                 combine(result, partResult);
                 return result;
@@ -558,6 +568,7 @@ public class Grids_Environment
                     throw e;
                 }
                 long result = 1;
+                result += checkAndMaybeFreeMemory_Account(hoome);
                 result += initMemoryReserve_Account(hoome);
                 return result;
             } else {
@@ -589,6 +600,7 @@ public class Grids_Environment
                 if (swapChunkExcept_Account(g) < 1L) {
                     throw e;
                 }
+                checkAndMaybeFreeMemory(g, hoome);
                 initMemoryReserve(g, hoome);
             } else {
                 throw e;
@@ -619,6 +631,7 @@ public class Grids_Environment
                 if (swapChunkExcept_Account(chunkID) < 1L) {
                     throw e;
                 }
+                checkAndMaybeFreeMemory(chunkID, hoome);
                 initMemoryReserve(chunkID, hoome);
             } else {
                 throw e;
@@ -697,8 +710,7 @@ public class Grids_Environment
 
     /**
      * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then the chunk with chunkID in g is not swapped. An account of
-     * swapping is returned.
+     * this then the chunk with chunkID in g is not swapped.
      *
      * @param g
      * @param chunkID
@@ -707,19 +719,18 @@ public class Grids_Environment
      * OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public final void initMemoryReserve(
-            Grids_AbstractGrid g,
-            Grids_2D_ID_int chunkID,
-            boolean hoome) {
+    public final void initMemoryReserve(Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID, boolean hoome) {
         try {
             initMemoryReserve();
-            checkAndMaybeFreeMemory(hoome);
+            checkAndMaybeFreeMemory(g, chunkID, hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
                 if (swapChunkExcept_Account(g, chunkID) < 1L) {
                     throw e;
                 }
+                checkAndMaybeFreeMemory(g, chunkID, hoome);
                 initMemoryReserve(g, chunkID, hoome);
             } else {
                 throw e;
@@ -738,10 +749,8 @@ public class Grids_Environment
      * @return
      */
     @Override
-    public long initMemoryReserve_Account(
-            Grids_AbstractGrid g,
-            Grids_2D_ID_int chunkID,
-            boolean hoome) {
+    public long initMemoryReserve_Account(Grids_AbstractGrid g,
+            Grids_2D_ID_int chunkID, boolean hoome) {
         try {
             initMemoryReserve();
             return checkAndMaybeFreeMemory_Account(g, chunkID, hoome);
@@ -752,6 +761,7 @@ public class Grids_Environment
                 if (result < 1L) {
                     throw e;
                 }
+                result += checkAndMaybeFreeMemory_Account(g, chunkID, hoome);
                 result += initMemoryReserve_Account(g, chunkID, hoome);
                 return result;
             } else {
@@ -790,9 +800,10 @@ public class Grids_Environment
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = checkAndMaybeFreeMemory_AccountDetail(g, chunkID, hoome);
+                combine(result, partResult);
                 partResult = initMemoryReserve_AccountDetail(g, chunkID, hoome);
-                combine(result,
-                        partResult);
+                combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -828,6 +839,8 @@ public class Grids_Environment
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = checkAndMaybeFreeMemory_AccountDetail(g, chunkIDs, hoome);
+                combine(result, partResult);
                 partResult = initMemoryReserve_AccountDetail(g, chunkIDs, hoome);
                 combine(result, partResult);
                 return result;
@@ -860,6 +873,8 @@ public class Grids_Environment
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
+                combine(result, partResult);
                 partResult = initMemoryReserve_AccountDetail(g, hoome);
                 combine(result, partResult);
                 return result;
@@ -892,6 +907,7 @@ public class Grids_Environment
                     throw e;
                 }
                 long result = 1;
+                result += checkAndMaybeFreeMemory_Account(m, hoome);
                 result += initMemoryReserve_Account(m, hoome);
                 return result;
             } else {
@@ -922,6 +938,7 @@ public class Grids_Environment
                 if (result < 1L) {
                     throw e;
                 }
+                result += checkAndMaybeFreeMemory_Account(g, hoome);
                 result += initMemoryReserve_Account(g, hoome);
                 return result;
             } else {
@@ -955,6 +972,7 @@ public class Grids_Environment
                 if (result < 1L) {
                     throw e;
                 }
+                result += checkAndMaybeFreeMemory_Account(g, chunkIDs, hoome);
                 result += initMemoryReserve_Account(g, chunkIDs, hoome);
                 return result;
             } else {
@@ -988,6 +1006,7 @@ public class Grids_Environment
                 if (swapChunkExcept_Account(g, chunkIDs) < 1L) {
                     throw e;
                 }
+                checkAndMaybeFreeMemory(g, chunkIDs, hoome);
                 initMemoryReserve(g, chunkIDs, hoome);
             } else {
                 throw e;
@@ -1017,6 +1036,7 @@ public class Grids_Environment
                 if (!swapChunkExcept(m)) {
                     throw e;
                 }
+                checkAndMaybeFreeMemory(m, hoome);
                 initMemoryReserve(m, hoome);
             } else {
                 throw e;
@@ -1049,6 +1069,8 @@ public class Grids_Environment
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                partResult = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
+                combine(result, partResult);
                 partResult = initMemoryReserve_AccountDetail(m, hoome);
                 combine(result, partResult);
                 return result;
