@@ -146,10 +146,12 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     @Override
     public String toString() {
         String result = getName();
-        result += "N(" + N + " ),"
-                + "NMax(" + NMax + " ),"
-                + "NMin(" + NMin + " ),"
-                + "Sum(" + Sum.toString() + ")";
+        result += "(N(" + N + "),"
+                + "Max(" + getMax(false) + "),"
+                + "Min(" + getMin(false) + "),"
+                + "NMax(" + NMax + "),"
+                + "NMin(" + NMin + "),"
+                + "Sum(" + Sum.toString() + "))";
         return result;
     }
 

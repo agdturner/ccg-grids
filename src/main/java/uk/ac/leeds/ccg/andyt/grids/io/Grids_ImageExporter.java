@@ -193,14 +193,18 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         write((int) ncols, (int) nrows, gridImageArray, type, file, g, ge.HOOMET);
     }
 
-    private void write(
-            int nCols,
-            int nRows,
-            int[] gridImageArray,
-            String type,
-            File file,
-            Grids_AbstractGridNumber g,
-            boolean hoome) {
+    /**
+     *
+     * @param nCols
+     * @param nRows
+     * @param gridImageArray
+     * @param type
+     * @param file
+     * @param g Grid not to swap from if possible.
+     * @param hoome
+     */
+    private void write(int nCols, int nRows, int[] gridImageArray,
+            String type, File file, Grids_AbstractGridNumber g, boolean hoome) {
         try {
             ge.checkAndMaybeFreeMemory();
             write(nCols, nRows, gridImageArray, type, file);
@@ -219,12 +223,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         }
     }
 
-    private void write(
-            int nCols,
-            int nRows,
-            int[] gridImageArray,
-            String type,
-            File file) {
+    private void write(int nCols, int nRows, int[] gridImageArray,
+            String type, File file) {
         MemoryImageSource mis;
         mis = new MemoryImageSource(nCols, nRows, gridImageArray, 0, nCols);
         Image image = Toolkit.getDefaultToolkit().createImage(mis);
@@ -265,15 +265,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param type The name of the type of image to be written e.g. "png", *
      * "jpeg"
      */
-    public void toColourImage(
-            int duplication,
-            TreeMap<Double, Color> colours,
-            Color noDataValueColour,
-            Grids_GridDouble g,
-            File file,
-            String type) {
+    public void toColourImage(int duplication, TreeMap<Double, Color> colours,
+            Color noDataValueColour, Grids_GridDouble g, File file, String type) {
         String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
-                    + "Grids_GridDouble,File,String)";
+                + "Grids_GridDouble,File,String)";
         ge.initNotToSwap();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -283,7 +278,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                     "Unable to export Grids_GridDouble " + g.toString()
                     + " into a single image using " + methodName
                     + " as (nrows * ncols * (duplication + 1) * (duplication + 1) "
-                            + "> Integer.MAX_VALUE)");
+                    + "> Integer.MAX_VALUE)");
             System.err.println(
                     "This method either needs development, or another does "
                     + "which should be called instead of this."
@@ -309,7 +304,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         boolean writerAvailable = Grids_IO.isImageWriterAvailable(type);
         if (!writerAvailable) {
             System.out.println(
-                    "Unable to export  using " + methodName 
+                    "Unable to export  using " + methodName
                     + "Grids_IO.isImageWriterAvailable(" + type + ") is not "
                     + "available.");
             String[] writerTypes = ImageIO.getWriterMIMETypes();
@@ -343,7 +338,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 ge.addToNotToSwap(g, chunkID);
                 ge.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(                        chunkID);
+                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {

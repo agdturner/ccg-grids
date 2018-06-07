@@ -281,7 +281,8 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                 positiveExponent = true;
                                 tokenSplit[1] = tokenSplit[1].substring(1);
                             } else {
-                                throw new NumberFormatException();
+                                positiveExponent = true;
+                                //throw new NumberFormatException();
                             }
                         }
                         exponent = Integer.valueOf(tokenSplit[1]);
@@ -301,7 +302,8 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                     positiveExponent = true;
                                     tokenSplit[1] = tokenSplit[1].substring(1);
                                 } else {
-                                    throw new NumberFormatException();
+                                    positiveExponent = true;
+                                    //throw new NumberFormatException();
                                 }
                             }
                             exponent = Integer.valueOf(tokenSplit[1]);
@@ -321,7 +323,8 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                         positiveExponent = true;
                                         tokenSplit[1] = tokenSplit[1].substring(1);
                                     } else {
-                                        throw new NumberFormatException();
+                                        positiveExponent = true;
+                                        //throw new NumberFormatException();
                                     }
                                 }
                                 exponent = Integer.valueOf(tokenSplit[1]);
@@ -341,7 +344,8 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                             positiveExponent = true;
                                             tokenSplit[1] = tokenSplit[1].substring(1);
                                         } else {
-                                            throw new NumberFormatException();
+                                            positiveExponent = true;
+                                            //throw new NumberFormatException();
                                         }
                                     }
                                     exponent = Integer.valueOf(tokenSplit[1]);

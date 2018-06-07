@@ -112,7 +112,21 @@ public class Grids_GridDoubleStatsNotUpdated
      */
     @Override
     public BigDecimal getSum() {
-        update();
+        return Sum;
+    }
+
+    /**
+     * For returning the sum of all data values.
+     *
+     * @param update If true then an update() is called.
+     *
+     * @return
+     */
+    @Override
+    public BigDecimal getSum(boolean update) {
+        if (update) {
+            update();
+        }
         return Sum;
     }
 

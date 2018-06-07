@@ -619,6 +619,9 @@ public class Grids_GridInt
         // Set to report every 10%
         int reportN;
         reportN = (int) (endRow - startRow) / 10;
+        if (reportN == 0) {
+            reportN = 1;
+        }
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_Processor gp;
@@ -787,6 +790,9 @@ public class Grids_GridInt
                 initDimensions(header, 0, 0);
                 // Set to report every 10%
                 reportN = (int) (NRows - 1) / 10;
+                if (reportN == 0) {
+                    reportN = 1;
+                }
                 double gridFileNoDataValue = header.NoDataValue.doubleValue();
                 long row;
                 long col;

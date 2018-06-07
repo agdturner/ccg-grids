@@ -50,50 +50,41 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * Writes grid2DSquareCell out to file in ESRI Asciigrid format and returns
      * a the File to which it was written.
      *
-     * @param g TheAbstractGrid2DSquareCelll for export.
+     * @param g Grid for export.
      * @return
      */
-    public File toAsciiFile(
-            Grids_AbstractGridNumber g) {
+    public File toAsciiFile(Grids_AbstractGridNumber g) {
         File directory = g.getDirectory();
         File file = new File(directory.getParentFile(), g.getName() + ".asc");
         return toAsciiFile(g, file);
     }
 
     /**
-     * Writes _Grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * file.
+     * Writes g out to file in ESRI Asciigrid format and returns file.
      *
      * @param g TheAbstractGrid2DSquareCelll for export.
      * @param file The File to export to.
      * @return
      */
-    public File toAsciiFile(
-            Grids_AbstractGridNumber g,
-            File file) {
+    public File toAsciiFile(Grids_AbstractGridNumber g, File file) {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
             noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue();
         } else if (g instanceof Grids_GridInt) {
             noDataValue = "" + ((Grids_GridInt) g).getNoDataValue();
         }
-        return toAsciiFile(                g,                file,                noDataValue);
+        return toAsciiFile(g, file, noDataValue);
     }
 
     /**
-     * Writes _Grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * file.
+     * Writes grid out to file in ESRI Asciigrid format and returns file.
      *
-     * @param g Grids_AbstractGridNumber for export.
+     * @param g Grid for export.
      * @param file The File to export to.
-     * @param noDataValue The value to be used or substituted as a noDataValue
-     * for g.
+     * @param ndv The value to be used or substituted as a noDataValue for g.
      * @return
      */
-    public File toAsciiFile(
-            Grids_AbstractGridNumber g,
-            File file,
-            String noDataValue) {
+    public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) {
         ge.initNotToSwap();
         ge.checkAndMaybeFreeMemory();
         try (PrintWriter pw = Generic_StaticIO.getPrintWriter(file, false)) {
@@ -115,7 +106,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             if (g.getClass() == Grids_GridInt.class) {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
                 int gridNoDataValue = gridInt.getNoDataValue();
-                pw.println("NODATA_Value " + noDataValue);
+                pw.println("NODATA_Value " + ndv);
                 int value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     chunkRow = g.getChunkRow(row);
@@ -129,7 +120,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         //try {
                         value = gridInt.getCell(row, col);
                         if (value == gridNoDataValue) {
-                            pw.print(noDataValue + " ");
+                            pw.print(ndv + " ");
                         } else {
                             pw.print(value + " ");
                         }
@@ -161,7 +152,6 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     pw.println("");
                 }
             } else {
-                //_Grid2DSquareCell.getClass() == Grids_GridDouble.class
                 Grids_GridDouble gridDouble = (Grids_GridDouble) g;
                 double gridNoDataValue = gridDouble.getNoDataValue();
                 if (!Double.isFinite(gridNoDataValue)) {
@@ -172,7 +162,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             + "(" + gridDouble.toString() + "),"
                             + "File(" + file.toString() + "))");
                 }
-                pw.println("NODATA_Value " + noDataValue);
+                pw.println("NODATA_Value " + ndv);
                 double value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     for (col = 0; col < ncols; col++) {
@@ -187,15 +177,15 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         //pw.print( grid.getCell( row, col ) + " " );
                         value = gridDouble.getCell(row, col);
                         if (!Double.isFinite(value)) {
-                            pw.print(noDataValue + " ");
+                            pw.print(ndv + " ");
                             System.out.println(
                                     "Warning!!! Infinitity or NaN encountered at "
                                     + "row " + row + ","
                                     + " column " + col + ""
-                                    + " set to noDataValue " + noDataValue + ".");
+                                    + " set to noDataValue " + ndv + ".");
                         } else {
                             if (value == gridNoDataValue) {
-                                pw.print(noDataValue + " ");
+                                pw.print(ndv + " ");
                             } else {
                                 pw.print(value + " ");
                             }
@@ -226,9 +216,10 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     pw.println("");
                 }
             }
-            // Close output
+            // Flush output
             pw.flush();
         }
+        // No need to close pw as it implements AutoCloseable.
         return file;
     }
 }
