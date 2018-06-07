@@ -473,10 +473,10 @@ public class Grids_ProcessorDEM
                     chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
-                        ci = gridInt.getChunk(                                cri, cci);
+                        ci = gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
                         ge.addToNotToSwap(g, chunkID);
-                        ge.checkAndMaybeFreeMemory();                        
+                        ge.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
@@ -3643,14 +3643,9 @@ public class Grids_ProcessorDEM
      * @param gf
      * @return
      */
-    public Grids_GridDouble[] getMetrics2(
-            Grids_GridDouble g,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            int samplingDensity,
-            Grids_GridDoubleFactory gf,
-            boolean hoome) {
+    public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, double distance,
+            double weightIntersect, double weightFactor, int samplingDensity,
+            Grids_GridDoubleFactory gf, boolean hoome) {
         try {
             ge.checkAndMaybeFreeMemory();
             Grids_GridDouble[] result = new Grids_GridDouble[7];
@@ -3716,27 +3711,17 @@ public class Grids_ProcessorDEM
      *
      *
      */
-    private Point2D.Double[] getMetrics2Points(
-            Grids_GridDouble[] slopeAndAspect,
-            double distance,
-            int samplingDensity) {
+    private Point2D.Double[] getMetrics2Points(Grids_GridDouble[] slopeAndAspect,
+            double distance, int samplingDensity) {
         Point2D.Double[] metrics2Points = null;
-
         return metrics2Points;
-
     }
 
-    private double[] getMetrics2(
-            Grids_GridDouble grid,
-            long row,
-            long col,
-            Grids_GridDouble[] slopeAndAspect,
-            double distance,
+    private double[] getMetrics2(Grids_GridDouble g, long row, long col,
+            Grids_GridDouble[] slopeAndAspect, double distance, 
             double[] weights) {
         double[] metrics2 = null;
-
         return metrics2;
-
     }
 
     /**
@@ -3745,24 +3730,22 @@ public class Grids_ProcessorDEM
      * neighbourhood. 1 2 3 4 0 5 6 7 8 If there is no downhill slope then the
      * flow direction is 0.
      *
-     * @param grid the Grids_GridDouble to be processed
-     * @param gridFactory the Grids_GridDoubleFactory used to create result
+     * @param g the Grids_GridDouble to be processed
+     * @param gf the Grids_GridDoubleFactory used to create result
      * @param hoome
      * @return
      */
-    public Grids_GridDouble getMaxFlowDirection(
-            Grids_GridDouble grid,
-            Grids_GridDoubleFactory gridFactory,
-            boolean hoome) {
+    public Grids_GridDouble getMaxFlowDirection(            Grids_GridDouble g,
+            Grids_GridDoubleFactory gf,            boolean hoome) {
         try {
             ge.checkAndMaybeFreeMemory();
-            long nrows = grid.getNRows();
-            long ncols = grid.getNCols();
-            double noDataValue = grid.getNoDataValue();
+            long nrows = g.getNRows();
+            long ncols = g.getNCols();
+            double noDataValue = g.getNoDataValue();
             File dir;
             dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
-            Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
-                    nrows, ncols, grid.getDimensions());
+            Grids_GridDouble result = (Grids_GridDouble) gf.create(dir,
+                    nrows, ncols, g.getDimensions());
             Grids_2D_ID_long cellID;
             long row;
             long col;
@@ -3777,7 +3760,7 @@ public class Grids_ProcessorDEM
             long q;
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
-                    z[0] = grid.getCell(row, col);
+                    z[0] = g.getCell(row, col);
                     if (z[0] != noDataValue) {
                         minz = Double.MAX_VALUE;
                         minzCount = 0;
@@ -3788,7 +3771,7 @@ public class Grids_ProcessorDEM
                             for (q = -1; q < 2; q++) {
                                 if (!(p == 0 && q == 0)) {
                                     k++;
-                                    z[k] = grid.getCell(row + p, col + q);
+                                    z[k] = g.getCell(row + p, col + q);
                                     if (z[k] != noDataValue) {
                                         if (z[k] <= minz && z[k] < z[0]) {
                                             if (z[k] == minz) {
@@ -3825,10 +3808,9 @@ public class Grids_ProcessorDEM
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                return getMaxFlowDirection(grid, gridFactory, hoome);
+                return getMaxFlowDirection(g, gf, hoome);
             } else {
                 throw e;
-
             }
         }
     }
