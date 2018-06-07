@@ -112,38 +112,38 @@ public class Grids_GridDoubleStats
         ge.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
-        BigDecimal valueBD;
-        double value;
+        BigDecimal vBD;
+        double v;
         double ndv = g.getNoDataValue();
         Grids_GridDoubleIterator ite;
         ite = g.iterator();
         while (ite.hasNext()) {
-            value = (Double) ite.next();
-            if (Double.isFinite(value)) {
-                if (value != ndv) {
-                    valueBD = new BigDecimal(value);
-                    update(value, valueBD);
+            v = (Double) ite.next();
+            if (Double.isFinite(v)) {
+                if (v != ndv) {
+                    vBD = new BigDecimal(v);
+                    update(v, vBD);
                 }
             }
         }
     }
 
-    protected void update(double value, BigDecimal valueBD) {
+    protected void update(double v, BigDecimal vBD) {
         N++;
-        setSum(Sum.add(valueBD));
-        if (value < Min) {
-            NMin++;
-            Min = value;
+        setSum(Sum.add(vBD));
+        if (v < Min) {
+            NMin = 1;
+            Min = v;
         } else {
-            if (value == Min) {
-                NMin = 1;
+            if (v == Min) {
+                NMin++;
             }
         }
-        if (value > Max) {
-            NMax++;
-            Max = value;
+        if (v > Max) {
+            NMax = 1;
+            Max = v;
         } else {
-            if (value == Max) {
+            if (v == Max) {
                 NMax++;
             }
         }
@@ -249,6 +249,15 @@ public class Grids_GridDoubleStats
         return result;
     }
 
+    /**
+     * For returning the minimum of all data values.
+     * @param update Is ignored.
+     * @return
+     */
+    public BigDecimal getSum(boolean update) {
+        return getSum();
+    }
+    
     /**
      *
      * @return

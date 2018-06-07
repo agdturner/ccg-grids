@@ -1085,9 +1085,7 @@ public class Grids_GridDouble
      * column index cellCol.
      *
      */
-    public double getCell(
-            Grids_AbstractGridChunkDouble chunk,
-            int cellRow,
+    public double getCell(Grids_AbstractGridChunkDouble chunk, int cellRow,
             int cellCol) {
         if (chunk.getClass() == Grids_GridChunkDoubleArray.class) {
             return ((Grids_GridChunkDoubleArray) chunk).getCell(cellRow, cellCol);
@@ -1105,9 +1103,7 @@ public class Grids_GridDouble
      * @param y the y-coordinate of the point.
      * @return
      */
-    public final double getCell(
-            double x,
-            double y) {
+    public final double getCell(double x, double y) {
         long row = getRow(y);
         long col = getCol(x);
         boolean isInGrid = isInGrid(row, col);
@@ -1123,8 +1119,7 @@ public class Grids_GridDouble
      * @param cellID the Grids_2D_ID_long of the cell.
      * @return
      */
-    public final double getCell(
-            Grids_2D_ID_long cellID) {
+    public final double getCell(Grids_2D_ID_long cellID) {
         return getCell(cellID.getRow(), cellID.getCol());
     }
 
@@ -1135,10 +1130,7 @@ public class Grids_GridDouble
      * @param y the y-coordinate of the point.
      * @param value
      */
-    public final void setCell(
-            double x,
-            double y,
-            double value) {
+    public final void setCell(double x, double y, double value) {
         setCell(getRow(x), getCol(y), value);
     }
 
@@ -1149,16 +1141,13 @@ public class Grids_GridDouble
      * @param col
      * @param value
      */
-    public void setCell(
-            long row,
-            long col,
-            double value) {
+    public void setCell(long row, long col, double value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
         Grids_AbstractGridChunkDouble chunk;
-        chunk = (Grids_AbstractGridChunkDouble) Grids_GridDouble.this.getChunk(chunkRow, chunkCol);
+        chunk = (Grids_AbstractGridChunkDouble) getChunk(chunkRow, chunkCol);
         setCell(chunk, cellRow, cellCol, value);
     }
 
