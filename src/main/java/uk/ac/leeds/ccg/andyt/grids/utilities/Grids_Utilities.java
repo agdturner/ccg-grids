@@ -20,7 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.utilities;
 
 import java.awt.geom.Point2D;
 import java.io.File;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
@@ -277,7 +277,7 @@ public class Grids_Utilities {
         long row;
         long col;
 //        if (minx == miny && maxx == maxy) {
-//            File dir = Generic_StaticIO.createNewFile(this.getDirectory());
+//            File dir = Generic_IO.createNewFile(this.getDirectory());
 //            xGridRescaled = (Grids_GridDouble) factory.create(dir,yGrid);
 //        } else {
 //            xGridRescaled = (Grids_GridDouble) factory.create(xGrid);

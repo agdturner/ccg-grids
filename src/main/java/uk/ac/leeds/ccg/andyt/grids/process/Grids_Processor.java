@@ -27,8 +27,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
-import uk.ac.leeds.ccg.andyt.generic.utilities.Generic_Time;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.andyt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -185,7 +185,7 @@ public class Grids_Processor extends Grids_Object {
                         Level.SEVERE, null, ex);
             }
         }
-        Log = Generic_StaticIO.getPrintWriter(logFile, true);
+        Log = Generic_IO.getPrintWriter(logFile, true);
         LogIndentation = 0;
         log(LogIndentation, this.getClass().getName() + " set up "
                 + Generic_Time.getTime(StartTime));
@@ -1324,7 +1324,7 @@ public class Grids_Processor extends Grids_Object {
         if (type.equalsIgnoreCase("xyv")) {
             try {
                 StreamTokenizer st;
-                st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.whitespaceChars(',', ',');
@@ -1363,7 +1363,7 @@ public class Grids_Processor extends Grids_Object {
         if (type.equalsIgnoreCase("xy")) {
             try {
                 StreamTokenizer st;
-                st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.whitespaceChars(',', ',');
@@ -1395,7 +1395,7 @@ public class Grids_Processor extends Grids_Object {
         }
         if (type.equalsIgnoreCase("idxy")) {
             try {
-                StreamTokenizer st = new StreamTokenizer(Generic_StaticIO.getBufferedReader(file));
+                StreamTokenizer st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.ordinaryChar('e');

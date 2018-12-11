@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
@@ -81,7 +81,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         outdir2.mkdirs();
         File f;
         f = new File(outdir2, "grids.txt");
-        PrintWriter pw = Generic_StaticIO.getPrintWriter(f, false);
+        PrintWriter pw = Generic_IO.getPrintWriter(f, false);
         //         minRadius  maxRadius  elevation             Grids
         //circle1          0          5         -1  1,3,(5-4)
         //circle2          5          6          1  2,4,(6-4),7,8,(9-3)

@@ -19,7 +19,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.IOException;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumberFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;

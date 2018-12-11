@@ -20,7 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.io;
 
 import java.io.File;
 import java.io.PrintWriter;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -87,7 +87,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
     public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) {
         ge.initNotToSwap();
         ge.checkAndMaybeFreeMemory();
-        try (PrintWriter pw = Generic_StaticIO.getPrintWriter(file, false)) {
+        try (PrintWriter pw = Generic_IO.getPrintWriter(file, false)) {
             Grids_Dimensions dimensions;
             dimensions = g.getDimensions();
             long nrows = g.getNRows();

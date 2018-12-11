@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
-import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.andyt.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -705,7 +705,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         File dir = getDirectory();
         dir.mkdirs();
         File f = new File(dir, "thisFile");
-        Generic_StaticIO.writeObject(this, f);
+        Generic_IO.writeObject(this, f);
     }
 
     /**
@@ -777,7 +777,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 File file = new File(getDirectory(),
                         chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
-                Generic_StaticIO.writeObject(gridChunk, file);
+                Generic_IO.writeObject(gridChunk, file);
                 //System.gc();
                 gridChunk.setSwapUpToDate(true);
             }

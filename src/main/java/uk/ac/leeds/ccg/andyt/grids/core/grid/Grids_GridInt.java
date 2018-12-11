@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_StaticIO;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -251,7 +251,7 @@ public class Grids_GridInt
         } catch (ClassCastException e) {
             try {
                 ois.close();
-                ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                ois = Generic_IO.getObjectInputStream(thisFile);
                 checkDir();
                 // If the object is a Grids_GridDouble
                 Grids_Processor gp;
@@ -631,7 +631,7 @@ public class Grids_GridInt
                         ndv, chunkNRows, chunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
-                ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                ois = Generic_IO.getObjectInputStream(thisFile);
                 Grids_GridInt g;
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 Grids_GridInt g2;
@@ -753,7 +753,7 @@ public class Grids_GridInt
                         gp.GridIntFactory.ChunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
-                ois = Generic_StaticIO.getObjectInputStream(thisFile);
+                ois = Generic_IO.getObjectInputStream(thisFile);
                 Grids_GridInt g;
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 init(g);
@@ -888,7 +888,7 @@ public class Grids_GridInt
         if (!isInCache) {
             File f = new File(getDirectory(),
                     "" + chunkID.getRow() + "_" + chunkID.getCol());
-            Object o = Generic_StaticIO.readObject(f);
+            Object o = Generic_IO.readObject(f);
             Grids_AbstractGridChunkInt chunk = null;
             if (o.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray c;

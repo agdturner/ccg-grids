@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.generic.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.math.Generic_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
@@ -111,7 +111,7 @@ public class Grids_Environment
      */
     public Grids_Files getFiles() {
         if (Files == null) {
-            File dataDirectory = new File(Directory, getStrings().getS_data());
+            File dataDirectory = new File(Directory, getStrings().s_data);
             dataDirectory.mkdirs();
             Files = new Grids_Files(this, dataDirectory);
         }
