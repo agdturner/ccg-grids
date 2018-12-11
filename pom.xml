@@ -2,27 +2,67 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.leeds.ccg.andyt</groupId>
-    <artifactId>grids</artifactId>
+    <artifactId>agdt-grids</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    
+    <name>agdt-grids</name>
+    <url>https://github.com/agdturner/agdt-grids</url>
+    <description>A Java Library for handling 2D square celled raster data.</description>
+    <scm>
+        <url>git@github.com:agdturner/agdt-grids.git</url>
+        <connection>scm:git:git@github.com:agdturner/agdt-grids.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/agdt-grids</developerConnection>
+    </scm>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://github.com/agdturner/agdt-grids/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>Centre for Computational Geography</name>
+        <url>http://www.ccg.leeds.ac.uk/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>agdturner</id>
+            <name>Andy Turner</name>
+            <email>a.g.d.turner@leeds.ac.uk</email>
+            <organization>University of Leeds</organization>
+            <organizationUrl>http://www.leeds.ac.uk</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <generic.version>1.0-SNAPSHOT</generic.version>
+        <agdt-generic.version>1.0-SNAPSHOT</agdt-generic.version>
+        <agdt-math.version>0.1-SNAPSHOT</agdt-math.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>uk.ac.leeds.ccg.andyt</groupId>
-            <artifactId>generic</artifactId>
-            <version>${generic.version}</version>
+            <artifactId>agdt-generic</artifactId>
+            <version>${agdt-generic.version}</version>
         </dependency>
+        <dependency>
+            <groupId>uk.ac.leeds.ccg.andyt</groupId>
+            <artifactId>agdt-math</artifactId>
+            <version>${agdt-math.version}</version>
+        </dependency>        
         <dependency>
             <groupId>trove</groupId>
             <artifactId>trove</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections-api</artifactId>
@@ -33,6 +73,7 @@
             <artifactId>eclipse-collections</artifactId>
             <version>9.0.0</version>
         </dependency>
+        -->
         <!--
         <dependency>
             <groupId>it.unimi.dsi</groupId>
@@ -58,17 +99,19 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+                -->
     </dependencies>
     
     <repositories>
         <repository>
-            <id>math</id>
+            <id>commons-math</id>
             <name>Apache Commons Math</name>
             <url>http://repo.maven.apache.org/maven2/</url>
         </repository>
