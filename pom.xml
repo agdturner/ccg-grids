@@ -2,22 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.leeds.ccg.andyt</groupId>
-    <artifactId>agdt-grids</artifactId>
+    <artifactId>agdt-java-generic-grids</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
-    <name>agdt-grids</name>
-    <url>https://github.com/agdturner/agdt-grids</url>
+    <name>agdt-java-generic-grids</name>
+    <url>https://github.com/agdturner/agdt-java-generic-grids</url>
     <description>A Java Library for handling 2D square celled raster data.</description>
     <scm>
-        <url>git@github.com:agdturner/agdt-grids.git</url>
-        <connection>scm:git:git@github.com:agdturner/agdt-grids.git</connection>
-        <developerConnection>scm:git:git@github.com:agdturner/agdt-grids</developerConnection>
+        <url>git@github.com:agdturner/agdt-java-generic-grids.git</url>
+        <connection>scm:git:git@github.com:agdturner/agdt-java-generic-grids.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/agdt-java-generic-grids</developerConnection>
     </scm>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
-            <url>https://github.com/agdturner/agdt-grids/LICENSE.txt</url>
+            <url>https://github.com/agdturner/agdt-java-generic-grids/LICENSE.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -42,20 +42,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <agdt-generic.version>1.0-SNAPSHOT</agdt-generic.version>
-        <agdt-math.version>0.1-SNAPSHOT</agdt-math.version>
+        <agdt-java-generic.version>1.0.0</agdt-java-generic.version>
+        <!--
+        <agdt-java-generic.version>1.0-SNAPSHOT</agdt-java-generic.version>
+        -->
+        <agdt-java-generic-math.version>0.1-SNAPSHOT</agdt-java-generic-math.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>uk.ac.leeds.ccg.andyt</groupId>
-            <artifactId>agdt-generic</artifactId>
-            <version>${agdt-generic.version}</version>
+            <artifactId>agdt-java-generic</artifactId>
+            <version>${agdt-java-generic.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.leeds.ccg.andyt</groupId>
-            <artifactId>agdt-math</artifactId>
-            <version>${agdt-math.version}</version>
+            <artifactId>agdt-java-generic-math</artifactId>
+            <version>${agdt-java-generic-math.version}</version>
         </dependency>        
         <dependency>
             <groupId>trove</groupId>
@@ -110,6 +113,19 @@
     </dependencies>
     
     <repositories>
+        <!--
+        <repository>
+            <id>agdt-java-generic</id>
+            <name>GitHub agdturner agdt-java-generic Repository</name>
+            <url>https://github.com/agdturner/agdt-java-generic/tree/master/target/mvn-repo/uk/ac/leeds/ccg/andyt/agdt-java-generic</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        -->
         <repository>
             <id>commons-math</id>
             <name>Apache Commons Math</name>
@@ -155,4 +171,11 @@
             <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
         </pluginRepository>
     </pluginRepositories>
+    
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
 </project>
