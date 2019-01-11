@@ -61,7 +61,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     public void run() {
         System.out.println("Initialising...");
         boolean hoome = true;
-        File outDir = Files.getOutputDataDir(ge.getStrings());
+        File outDir = Files.getOutputDataDir();
 //        Grids_GridDouble[] testData = generateCatchment(outDir, hoome);
 //        Grids_GridDouble[] testData = generateSquareData(outDir, hoome);
         Grids_GridDouble[] testData = generateCircularData(outDir, hoome);

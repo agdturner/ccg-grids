@@ -28,11 +28,6 @@ public class Grids_Files extends Generic_Files {
 
     private Grids_Environment ge;
 
-    /**
-     * For convenience
-     */
-    private Grids_Strings Strings;
-
     protected File GeneratedGridsDir;
     protected File GeneratedGridIntDir;
     protected File GeneratedGridDoubleDir;
@@ -49,8 +44,8 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedGridsDir() {
         if (GeneratedGridsDir == null) {
-            GeneratedGridsDir = new File(getGeneratedDataDir(Strings),
-                    Strings.getS_Grids());
+            GeneratedGridsDir = new File(getGeneratedDataDir(),
+                    getStrings().getS_Grids());
         }
         return GeneratedGridsDir;
     }
@@ -58,7 +53,7 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedGridIntDir() {
         if (GeneratedGridIntDir == null) {
             GeneratedGridIntDir = new File(getGeneratedGridsDir(), 
-                    Strings.getS_GridInt());
+                    getStrings().getS_GridInt());
         }
         return GeneratedGridIntDir;
     }
@@ -66,7 +61,7 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedGridDoubleDir() {
         if (GeneratedGridDoubleDir == null) {
             GeneratedGridDoubleDir = new File(getGeneratedGridsDir(), 
-                    Strings.getS_GridDouble());
+                    getStrings().getS_GridDouble());
         }
         return GeneratedGridDoubleDir;
     }
@@ -74,9 +69,13 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedProcessorDir() {
         if (GeneratedProcessorDir == null) {
             GeneratedProcessorDir = new File(getGeneratedGridsDir(),
-                    Strings.getS_Processor());
+                    getStrings().getS_Processor());
         }
         return GeneratedProcessorDir;
+    }
+    
+    public Grids_Strings getStrings() {
+        return (Grids_Strings) Strings;
     }
 
     /**

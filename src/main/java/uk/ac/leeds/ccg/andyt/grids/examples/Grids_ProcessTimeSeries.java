@@ -32,7 +32,7 @@ public class Grids_ProcessTimeSeries extends Grids_Processor {
     
     public void run(){
         File indir;
-        indir = Files.getInputDataDir(ge.getStrings());
+        indir = Files.getInputDataDir();
         indir = new File(indir, "NIMROD_ASCII");
         System.out.println(indir);
         File[] files = indir.listFiles();

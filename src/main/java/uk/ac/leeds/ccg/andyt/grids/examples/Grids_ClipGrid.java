@@ -79,7 +79,7 @@ public class Grids_ClipGrid
             Grids_Strings gs;
             gs = ge.getStrings();
             File input;
-            input = new File(                    gf.getInputDataDir(gs),                    "p15oct.asc");
+            input = new File(                    gf.getInputDataDir(),                    "p15oct.asc");
 //            input = new File(
 //                    gf.getInputDataDir(),
 //                    "RADAR_UK_Composite_Highres_23_6.asc");
@@ -90,7 +90,7 @@ public class Grids_ClipGrid
             //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
             Grids_ImageExporter ie = new Grids_ImageExporter(ge);
-            File workspaceDirectory = new File(gf.getGeneratedDataDir(gs),
+            File workspaceDirectory = new File(gf.getGeneratedDataDir(),
                     "/Workspace/");
 
             //String[] imageTypes = new String[0];
@@ -101,7 +101,7 @@ public class Grids_ClipGrid
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
             File outDir;
-            outDir = new File(gf.getOutputDataDir(gs), getClass().getName());
+            outDir = new File(gf.getOutputDataDir(), getClass().getName());
             Grids_GridDouble gd;
             //Grids_GridDouble g;
             // Load input

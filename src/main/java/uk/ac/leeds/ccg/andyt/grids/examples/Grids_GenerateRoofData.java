@@ -578,7 +578,7 @@ public class Grids_GenerateRoofData
         g.setName("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge + "_" + colStartRidge
                 + "_" + colEndRidge);
-        output(g, Files.getOutputDataDir(strings), ImageExporter, ImageTypes,
+        output(g, Files.getOutputDataDir(), ImageExporter, ImageTypes,
                 ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
@@ -608,7 +608,7 @@ public class Grids_GenerateRoofData
         g.setName("HippedColRidgedRoof_" + nrows + "_" + ncols + "_"
                 + colRidgeHeight + "_" + colWithRidge + "_" + rowStartRidge
                 + "_" + rowEndRidge);
-        output(g, Files.getOutputDataDir(strings), ImageExporter, ImageTypes,
+        output(g, Files.getOutputDataDir(), ImageExporter, ImageTypes,
                 ESRIAsciiGridExporter);
     }
 
@@ -686,7 +686,7 @@ public class Grids_GenerateRoofData
         // Rescale
         Grids_GridDouble ag = rescale(rg, null, 1.0d, 10.0d);
         ag.setName(g.getName() + "ResizedRescaled");
-        output(ag, Files.getOutputDataDir(ge.getStrings()), ie, imageTypes, 
+        output(ag, Files.getOutputDataDir(), ie, imageTypes, 
                 eage);
     }
 
@@ -736,7 +736,7 @@ public class Grids_GenerateRoofData
                 bottomRowRidgeTanAngle, topRowRidgeTanAngle);
         g.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge);
-        File outdir = Files.getOutputDataDir(ge.getStrings());
+        File outdir = Files.getOutputDataDir();
         output(g, outdir, ImageExporter, ImageTypes, ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
