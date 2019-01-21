@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.generic.time.Generic_Time;
@@ -57,7 +58,7 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
         super(ge);
         Time = System.currentTimeMillis();
         HandleOutOfMemoryError = true;
-        e = new Generic_Environment(ge.getFiles(), ge.getStrings());
+        e = new Generic_Environment(ge.getFiles(), Level.FINE, 100);
     }
 
     /**
