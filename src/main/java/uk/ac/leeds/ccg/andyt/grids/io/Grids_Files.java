@@ -38,8 +38,8 @@ public class Grids_Files extends Generic_Files {
 
     public Grids_Files(Grids_Environment ge, File dataDir) {
         this.ge = ge;
-        Strings = ge.getStrings();
-        DataDir = dataDir;
+        strings = ge.getStrings();
+        this.dataDir = dataDir;
     }
 
     public File getGeneratedGridsDir() {
@@ -75,7 +75,7 @@ public class Grids_Files extends Generic_Files {
     }
     
     public Grids_Strings getStrings() {
-        return (Grids_Strings) Strings;
+        return (Grids_Strings) strings;
     }
 
     /**

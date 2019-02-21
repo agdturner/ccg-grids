@@ -32,7 +32,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
-import uk.ac.leeds.ccg.andyt.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -509,7 +509,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         BigDecimal xMinusXMin;
         xMinusXMin = x.subtract(gd.getXMin());
         BigDecimal div;
-        div = Generic_BigDecimal.divideRoundIfNecessary(xMinusXMin,
+        div = Math_BigDecimal.divideRoundIfNecessary(xMinusXMin,
                 gd.getCellsize(), 0, RoundingMode.DOWN);
         return div.toBigInteger().longValue();
     }
@@ -608,7 +608,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         BigDecimal yMinusYMin;
         yMinusYMin = y.subtract(gd.getYMin());
         BigDecimal div;
-        div = Generic_BigDecimal.divideRoundIfNecessary(yMinusYMin,
+        div = Math_BigDecimal.divideRoundIfNecessary(yMinusYMin,
                 gd.getCellsize(), 0, RoundingMode.DOWN);
         return div.toBigInteger().longValue();
     }

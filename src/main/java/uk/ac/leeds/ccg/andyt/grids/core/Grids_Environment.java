@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.math.Generic_BigDecimal;
+import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
@@ -57,9 +57,9 @@ public class Grids_Environment
     protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> NotToSwap;
 
     /**
-     * For storing an instance of Generic_BigDecimal.
+     * For storing an instance of Math_BigDecimal.
      */
-    protected transient Generic_BigDecimal _Generic_BigDecimal;
+    protected transient Math_BigDecimal _Generic_BigDecimal;
 
     /**
      * For storing a Grids_Processor.
@@ -131,7 +131,7 @@ public class Grids_Environment
     /**
      * @return the _Generic_BigDecimal
      */
-    public Generic_BigDecimal get_Generic_BigDecimal() {
+    public Math_BigDecimal get_Generic_BigDecimal() {
         if (_Generic_BigDecimal == null) {
             init_Generic_BigDecimal();
         }
@@ -142,7 +142,7 @@ public class Grids_Environment
      * @return the _Generic_BigDecimal
      */
     private void init_Generic_BigDecimal() {
-        _Generic_BigDecimal = new Generic_BigDecimal();
+        _Generic_BigDecimal = new Math_BigDecimal();
     }
 
     /**
