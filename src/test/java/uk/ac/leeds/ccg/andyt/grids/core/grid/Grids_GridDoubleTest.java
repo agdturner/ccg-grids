@@ -52,10 +52,10 @@ public class Grids_GridDoubleTest {
 //    @Test
 //    public void testToString() {
 //        System.out.println("toString");
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        String expResult = "";
-//        String result = instance.toString(handleOutOfMemoryError);
+//        String result = instance.toString(HOOME);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -69,10 +69,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getChunk");
 //        int chunkRow = 0;
 //        int chunkCol = 0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkRow, chunkCol, handleOutOfMemoryError);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkRow, chunkCol, HOOME);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -101,10 +101,10 @@ public class Grids_GridDoubleTest {
 //    public void testGetGrid2DSquareCellDoubleChunk_Grids_2D_ID_int_boolean() {
 //        System.out.println("getChunk");
 //        Grids_2D_ID_int chunkID = null;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_AbstractGridChunkDouble expResult = null;
-//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkID, handleOutOfMemoryError);
+//        Grids_AbstractGridChunkDouble result = instance.getChunk(chunkID, HOOME);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -131,10 +131,10 @@ public class Grids_GridDoubleTest {
 //    @Test
 //    public void testGetNoDataValue() {
 //        System.out.println("getNoDataValue");
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNoDataValue(handleOutOfMemoryError);
+//        double result = instance.getNoDataValue(HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -146,10 +146,10 @@ public class Grids_GridDoubleTest {
 //    @Test
 //    public void testGetNoDataValueBigDecimal() {
 //        System.out.println("getNoDataValueBigDecimal");
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        BigDecimal expResult = null;
-//        BigDecimal result = instance.getNoDataValueBigDecimal(handleOutOfMemoryError);
+//        BigDecimal result = instance.getNoDataValueBigDecimal(HOOME);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -281,7 +281,7 @@ public class Grids_GridDoubleTest {
     }
 
     double noDataValue;
-    boolean handleOutOfMemoryError;
+    boolean HOOME;
     Grids_GridChunkDoubleArrayFactory chunkFactory;
     Grids_Environment ge;
 
@@ -290,83 +290,70 @@ public class Grids_GridDoubleTest {
      */
     @Test
     public void test1() {
-        noDataValue = -9999.0d;
-        handleOutOfMemoryError = true;
-        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
-        initDir();
-        ge = new Grids_Environment(dir);
-        Grids_GridDoubleFactory gridFactory;
-
-        int chunkNRows;
-        int chunkNCols;
-        long nRows;
-        long nCols;
-        String name;
-
-        chunkNRows = 10;
-        chunkNCols = 10;
-        nRows = 1000;
-        nCols = 1000;
-        name = "TestGrid2";
-
-        gridFactory = getFactory(
-                ge,
-                dir,
-                chunkNRows,
-                chunkNCols,
-                nRows,
-                nCols,
-                noDataValue,
-                chunkFactory,
-                handleOutOfMemoryError);
-
-        Grids_GridDouble g = getGridDouble(
-                dir,
-                name,
-                gridFactory,
-                nRows,
-                nCols,
-                handleOutOfMemoryError);
-
-        int nChunkRows;
-        int nChunkCols;
-        nChunkRows = g.getNChunkRows();
-        nChunkCols = g.getNChunkCols();
-
-        int chunkRow;
-        int chunkCol;
-        int row;
-        int col;
-
-        // Set all values to 20.
-        double value;
-        value = 20d;
-
-        for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-            chunkNRows = g.getChunkNRows(chunkRow);
-            System.out.println("chunkNRows " + chunkNRows);
-            for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                System.out.println("chunkCol " + chunkCol);
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                chunkNCols = g.getChunkNCols(chunkCol);
-                System.out.println("chunkNCols " + chunkNCols);
-                for (row = 0; row < chunkNRows; row++) {
-                    for (col = 0; col < chunkNCols; col++) {
-                        g.setCell(chunkRow, chunkCol, row, col, value);
-                    }
-                }
-                System.out.println("Done " + chunkID.toString());
-            }
-        }
-        double expResult;
-        double result;
-
-        row = 100;
-        col = 100;
-        expResult = value;
-        result = g.getCell(row, col);
-        assertEquals(expResult, result, value);
+//        noDataValue = -9999.0d;
+//        HOOME = true;
+//        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
+//        initDir();
+//        ge = new Grids_Environment(dir);
+//        Grids_GridDoubleFactory gridFactory;
+//
+//        int chunkNRows;
+//        int chunkNCols;
+//        long nRows;
+//        long nCols;
+//        String name;
+//
+//        chunkNRows = 10;
+//        chunkNCols = 10;
+//        nRows = 1000;
+//        nCols = 1000;
+//        name = "TestGrid2";
+//
+//        gridFactory = getFactory(ge, dir, chunkNRows, chunkNCols, nRows, nCols, 
+//                noDataValue, chunkFactory, HOOME);
+//
+//        Grids_GridDouble g;
+//        g = getGridDouble(dir, name, gridFactory, nRows, nCols, HOOME);
+//
+//        int nChunkRows;
+//        int nChunkCols;
+//        nChunkRows = g.getNChunkRows();
+//        nChunkCols = g.getNChunkCols();
+//
+//        int chunkRow;
+//        int chunkCol;
+//        int row;
+//        int col;
+//
+//        // Set all values to 20.
+//        double value;
+//        value = 20d;
+//
+//        for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+//            chunkNRows = g.getChunkNRows(chunkRow);
+//            System.out.println("chunkNRows " + chunkNRows);
+//            for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
+//                System.out.println("chunkCol " + chunkCol);
+//                Grids_2D_ID_int chunkID;
+//                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+//                chunkNCols = g.getChunkNCols(chunkCol);
+//                System.out.println("chunkNCols " + chunkNCols);
+//                for (row = 0; row < chunkNRows; row++) {
+//                    for (col = 0; col < chunkNCols; col++) {
+//                        g.setCell(chunkRow, chunkCol, row, col, value);
+//                    }
+//                }
+//                System.out.println("Done " + chunkID.toString());
+//            }
+//        }
+//        double expResult;
+//        double result;
+//
+//        row = 100;
+//        col = 100;
+//        expResult = value;
+//        result = g.getCell(row, col);
+//        assertEquals(expResult, result, value);
 
     }
 
@@ -375,80 +362,67 @@ public class Grids_GridDoubleTest {
      */
     @Test
     public void testGetCell_3args_1() {
-        System.out.println("getCell");
-        noDataValue = -9999.0d;
-        handleOutOfMemoryError = true;
-        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
-        initDir();
-        ge = new Grids_Environment(dir);
-        Grids_GridDoubleFactory gridFactory;
-
-        int chunkNRows;
-        int chunkNCols;
-        long nRows;
-        long nCols;
-        long cellRowIndex;
-        long cellColIndex;
-        String name;
-
-        chunkNRows = 24;
-        chunkNCols = 49;
-        nRows = 101;
-        nCols = 100;
-        name = "TestGrid1";
-
-        gridFactory = getFactory(
-                ge,
-                dir,
-                chunkNRows,
-                chunkNCols,
-                nRows,
-                nCols,
-                noDataValue,
-                chunkFactory,
-                handleOutOfMemoryError);
-
-        Grids_GridDouble instance = getGridDouble(
-                dir,
-                name,
-                gridFactory,
-                nRows,
-                nCols,
-                handleOutOfMemoryError);
-
-        double value;
-        double expResult;
-        double result;
-
-        value = 20d;
-
-        cellRowIndex = 0L;
-        cellColIndex = 0L;
-        instance.setCell(cellRowIndex, cellColIndex, value);
-        expResult = value;
-        result = instance.getCell(cellRowIndex, cellColIndex);
-        assertEquals(expResult, result, 0.0);
-
-        cellRowIndex = nRows - 1;
-        cellColIndex = nCols - 1;
-        instance.setCell(cellRowIndex, cellColIndex, value);
-        expResult = value;
-        result = instance.getCell(cellRowIndex, cellColIndex);
-        assertEquals(expResult, result, 0.0);
-
-        cellRowIndex = nRows;
-        cellColIndex = nCols - 1;
-        instance.setCell(cellRowIndex, cellColIndex, value);
-        expResult = noDataValue;
-        result = instance.getCell(cellRowIndex, cellColIndex);
-        assertEquals(expResult, result, 0.0);
-
-        cellRowIndex = nRows - 1;
-        cellColIndex = nCols;
-        instance.setCell(cellRowIndex, cellColIndex, value);
-        expResult = noDataValue;
-        result = instance.getCell(cellRowIndex, cellColIndex);
-        assertEquals(expResult, result, 0.0);
+//        System.out.println("getCell");
+//        noDataValue = -9999.0d;
+//        HOOME = true;
+//        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
+//        initDir();
+//        ge = new Grids_Environment(dir);
+//        Grids_GridDoubleFactory gridFactory;
+//
+//        int chunkNRows;
+//        int chunkNCols;
+//        long nRows;
+//        long nCols;
+//        long cellRowIndex;
+//        long cellColIndex;
+//        String name;
+//
+//        chunkNRows = 24;
+//        chunkNCols = 49;
+//        nRows = 101;
+//        nCols = 100;
+//        name = "TestGrid1";
+//
+//        gridFactory = getFactory(ge, dir, chunkNRows, chunkNCols, nRows, nCols,
+//                noDataValue, chunkFactory, HOOME);
+//
+//        Grids_GridDouble g;
+//        g = getGridDouble(dir, name, gridFactory, nRows, nCols, HOOME);
+//
+//        double value;
+//        double expResult;
+//        double result;
+//
+//        value = 20d;
+//
+//        cellRowIndex = 0L;
+//        cellColIndex = 0L;
+//        g.setCell(cellRowIndex, cellColIndex, value);
+//        expResult = value;
+//        result = g.getCell(cellRowIndex, cellColIndex);
+//        assertEquals(expResult, result, 0.0);
+//
+//        cellRowIndex = nRows - 1;
+//        cellColIndex = nCols - 1;
+//        g.setCell(cellRowIndex, cellColIndex, value);
+//        expResult = value;
+//        result = g.getCell(cellRowIndex, cellColIndex);
+//        assertEquals(expResult, result, 0.0);
+//
+//        cellRowIndex = nRows;
+//        cellColIndex = nCols - 1;
+//        g.setCell(cellRowIndex, cellColIndex, value);
+//        expResult = noDataValue;
+//        result = g.getCell(cellRowIndex, cellColIndex);
+//        assertEquals(expResult, result, 0.0);
+//
+//        cellRowIndex = nRows - 1;
+//        cellColIndex = nCols;
+//        g.setCell(cellRowIndex, cellColIndex, value);
+//        expResult = noDataValue;
+//        result = g.getCell(cellRowIndex, cellColIndex);
+//        assertEquals(expResult, result, 0.0);
 
     }
 
@@ -479,10 +453,10 @@ public class Grids_GridDoubleTest {
 //        int chunkCol = 0;
 //        int chunkCellRowIndex = 0;
 //        int chunkCellColIndex = 0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getCell(grid2DSquareCellChunk, chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, handleOutOfMemoryError);
+//        double result = instance.getCell(grid2DSquareCellChunk, chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -515,10 +489,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getCell");
 //        double x = 0.0;
 //        double y = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getCell(x, y, handleOutOfMemoryError);
+//        double result = instance.getCell(x, y, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -547,10 +521,10 @@ public class Grids_GridDoubleTest {
 //    public void testGetCell_Grids_2D_ID_long_boolean() {
 //        System.out.println("getCell");
 //        Grids_2D_ID_long cellID = null;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getCell(cellID, handleOutOfMemoryError);
+//        double result = instance.getCell(cellID, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -565,10 +539,10 @@ public class Grids_GridDoubleTest {
 //        double x = 0.0;
 //        double y = 0.0;
 //        double newValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.setCell(x, y, newValue, handleOutOfMemoryError);
+//        double result = instance.setCell(x, y, newValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -599,10 +573,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("setCell");
 //        Grids_2D_ID_long cellID = null;
 //        double newValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.setCell(cellID, newValue, handleOutOfMemoryError);
+//        double result = instance.setCell(cellID, newValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -636,10 +610,10 @@ public class Grids_GridDoubleTest {
 //        int chunkCellRowIndex = 0;
 //        int chunkCellColIndex = 0;
 //        double newValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.setCell(chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, newValue, handleOutOfMemoryError);
+//        double result = instance.setCell(chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, newValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -676,10 +650,10 @@ public class Grids_GridDoubleTest {
 //        int chunkCellRowIndex = 0;
 //        int chunkCellColIndex = 0;
 //        double newValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.setCell(chunk, chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, newValue, handleOutOfMemoryError);
+//        double result = instance.setCell(chunk, chunkRow, chunkCol, chunkCellRowIndex, chunkCellColIndex, newValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -714,9 +688,9 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double valueToInitialise = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
-//        instance.initCell(cellRowIndex, cellColIndex, valueToInitialise, handleOutOfMemoryError);
+//        instance.initCell(cellRowIndex, cellColIndex, valueToInitialise, HOOME);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
@@ -745,9 +719,9 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double valueToInitialise = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
-//        instance.initCellFast(cellRowIndex, cellColIndex, valueToInitialise, handleOutOfMemoryError);
+//        instance.initCellFast(cellRowIndex, cellColIndex, valueToInitialise, HOOME);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
@@ -776,10 +750,10 @@ public class Grids_GridDoubleTest {
 //        double x = 0.0;
 //        double y = 0.0;
 //        double distance = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double[] expResult = null;
-//        double[] result = instance.getCells(x, y, distance, handleOutOfMemoryError);
+//        double[] result = instance.getCells(x, y, distance, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -811,10 +785,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double distance = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double[] expResult = null;
-//        double[] result = instance.getCells(cellRowIndex, cellColIndex, distance, handleOutOfMemoryError);
+//        double[] result = instance.getCells(cellRowIndex, cellColIndex, distance, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -848,10 +822,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double distance = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double[] expResult = null;
-//        double[] result = instance.getCells(x, y, cellRowIndex, cellColIndex, distance, handleOutOfMemoryError);
+//        double[] result = instance.getCells(x, y, cellRowIndex, cellColIndex, distance, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -884,10 +858,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValueDouble");
 //        double x = 0.0;
 //        double y = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDouble(x, y, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDouble(x, y, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -917,10 +891,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValueDouble");
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDouble(cellRowIndex, cellColIndex, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDouble(cellRowIndex, cellColIndex, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -953,10 +927,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double noDataValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDouble(x, y, cellRowIndex, cellColIndex, noDataValue, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDouble(x, y, cellRowIndex, cellColIndex, noDataValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -989,10 +963,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValuesCellIDs");
 //        double x = 0.0;
 //        double y = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(x, y, handleOutOfMemoryError);
+//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(x, y, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1022,10 +996,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValuesCellIDs");
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(cellRowIndex, cellColIndex, handleOutOfMemoryError);
+//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(cellRowIndex, cellColIndex, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1058,10 +1032,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double _NoDataValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(x, y, cellRowIndex, cellColIndex, _NoDataValue, handleOutOfMemoryError);
+//        Grids_2D_ID_long[] result = instance.getNearestValuesCellIDs(x, y, cellRowIndex, cellColIndex, _NoDataValue, HOOME);
 //        assertArrayEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1094,10 +1068,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValueDoubleDistance");
 //        double x = 0.0;
 //        double y = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDoubleDistance(x, y, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDoubleDistance(x, y, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1127,10 +1101,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("getNearestValueDoubleDistance");
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDoubleDistance(cellRowIndex, cellColIndex, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDoubleDistance(cellRowIndex, cellColIndex, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1163,10 +1137,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double noDataValue = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.getNearestValueDoubleDistance(x, y, cellRowIndex, cellColIndex, noDataValue, handleOutOfMemoryError);
+//        double result = instance.getNearestValueDoubleDistance(x, y, cellRowIndex, cellColIndex, noDataValue, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1200,10 +1174,10 @@ public class Grids_GridDoubleTest {
 //        double x = 0.0;
 //        double y = 0.0;
 //        double valueToAdd = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.addToCell(x, y, valueToAdd, handleOutOfMemoryError);
+//        double result = instance.addToCell(x, y, valueToAdd, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1234,10 +1208,10 @@ public class Grids_GridDoubleTest {
 //        System.out.println("addToCell");
 //        Grids_2D_ID_long cellID = null;
 //        double valueToAdd = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.addToCell(cellID, valueToAdd, handleOutOfMemoryError);
+//        double result = instance.addToCell(cellID, valueToAdd, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1268,10 +1242,10 @@ public class Grids_GridDoubleTest {
 //        long cellRowIndex = 0L;
 //        long cellColIndex = 0L;
 //        double valueToAdd = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        double expResult = 0.0;
-//        double result = instance.addToCell(cellRowIndex, cellColIndex, valueToAdd, handleOutOfMemoryError);
+//        double result = instance.addToCell(cellRowIndex, cellColIndex, valueToAdd, HOOME);
 //        assertEquals(expResult, result, 0.0);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1301,9 +1275,9 @@ public class Grids_GridDoubleTest {
 //    public void testInitCells_double_boolean() {
 //        System.out.println("initCells");
 //        double value = 0.0;
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
-//        instance.initCells(value, handleOutOfMemoryError);
+//        instance.initCells(value, HOOME);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
@@ -1327,10 +1301,10 @@ public class Grids_GridDoubleTest {
 //    @Test
 //    public void testIterator() {
 //        System.out.println("iterator");
-//        boolean handleOutOfMemoryError = false;
+//        boolean HOOME = false;
 //        Grids_GridDouble instance = new Grids_GridDouble();
 //        Iterator<Double> expResult = null;
-//        Iterator<Double> result = instance.iterator(handleOutOfMemoryError);
+//        Iterator<Double> result = instance.iterator(HOOME);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

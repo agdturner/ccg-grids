@@ -56,23 +56,23 @@ public class Grids_2D_ID_intTest {
     @Test
     public void testGetRow() {
         System.out.println("getRow");
-        Grids_2D_ID_int instance;
+        Grids_2D_ID_int i;
         int expResult;
         int result;
         // Test 1
-        instance = new Grids_2D_ID_int(6, 5);
+        i = new Grids_2D_ID_int(6, 5);
         expResult = 6;
-        result = instance.getRow();
+        result = i.getRow();
         assertEquals(expResult, result);
         // Test 2
-        instance = new Grids_2D_ID_int(instance);
+        i = new Grids_2D_ID_int(i);
         expResult = 6;
-        result = instance.getRow();
+        result = i.getRow();
         assertEquals(expResult, result);
         // Test 3
-        instance = new Grids_2D_ID_int(-1, -2);
+        i = new Grids_2D_ID_int(-1, -2);
         expResult = -1;
-        result = instance.getRow();
+        result = i.getRow();
         assertEquals(expResult, result);
     }
 
@@ -82,23 +82,23 @@ public class Grids_2D_ID_intTest {
     @Test
     public void testGetCol() {
         System.out.println("getCol");
-        Grids_2D_ID_int instance;
+        Grids_2D_ID_int i;
         int expResult;
         int result;
         // Test 1
-        instance = new Grids_2D_ID_int(6, 5);
+        i = new Grids_2D_ID_int(6, 5);
         expResult = 5;
-        result = instance.getCol();
+        result = i.getCol();
         assertEquals(expResult, result);
         // Test 2
-        instance = new Grids_2D_ID_int(instance);
+        i = new Grids_2D_ID_int(i);
         expResult = 5;
-        result = instance.getCol();
+        result = i.getCol();
         assertEquals(expResult, result);
         // Test 3
-        instance = new Grids_2D_ID_int(-1, -2);
+        i = new Grids_2D_ID_int(-1, -2);
         expResult = -2;
-        result = instance.getCol();
+        result = i.getCol();
         assertEquals(expResult, result);
     }
 
