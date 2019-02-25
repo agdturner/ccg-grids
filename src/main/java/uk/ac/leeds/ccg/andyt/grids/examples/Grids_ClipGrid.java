@@ -31,8 +31,7 @@ import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
  *
  * @author geoagdt
  */
-public class Grids_ClipGrid
-        extends Grids_Processor {
+public class Grids_ClipGrid        extends Grids_Processor {
 
     private long Time;
     boolean HandleOutOfMemoryError;
@@ -76,8 +75,6 @@ public class Grids_ClipGrid
             ge.setProcessor(this);
             Grids_Files gf;
             gf = ge.getFiles();
-            Grids_Strings gs;
-            gs = ge.getStrings();
             File input;
             input = new File(                    gf.getInputDataDir(),                    "p15oct.asc");
 //            input = new File(

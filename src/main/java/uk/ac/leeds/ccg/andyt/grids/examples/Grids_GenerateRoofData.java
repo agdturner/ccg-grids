@@ -19,12 +19,10 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.IOException;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumberFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
@@ -533,7 +531,6 @@ public class Grids_GenerateRoofData
             long rowWithRidge, double rowRidgeHeight, long colStartRidge,
             long colEndRidge, long colWithRidge, double colRidgeHeight,
             long rowStartRidge, long rowEndRidge) throws IOException {
-        Grids_Strings strings = ge.getStrings();
         double heightToAdd;
         // For row ridge hips
         double bottomRowRidgeTanAngle = rowRidgeHeight / (double) (rowWithRidge - halfCellsize);

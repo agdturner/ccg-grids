@@ -21,12 +21,9 @@ package uk.ac.leeds.ccg.andyt.grids.io;
 import java.io.File;
 import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
 public class Grids_Files extends Generic_Files {
-
-    private Grids_Environment ge;
 
     protected File GeneratedGridsDir;
     protected File GeneratedGridIntDir;
@@ -34,18 +31,17 @@ public class Grids_Files extends Generic_Files {
     protected File GeneratedProcessorDir;
 
     protected Grids_Files() {
+        super();
     }
 
-    public Grids_Files(Grids_Environment ge, File dataDir) {
-        this.ge = ge;
-        strings = ge.getStrings();
-        this.dataDir = dataDir;
+    public Grids_Files(File dataDir) {
+        super(dataDir);
     }
 
     public File getGeneratedGridsDir() {
         if (GeneratedGridsDir == null) {
             GeneratedGridsDir = new File(getGeneratedDataDir(),
-                    getStrings().getS_Grids());
+                    Grids_Strings.s_Grids);
         }
         return GeneratedGridsDir;
     }
@@ -53,7 +49,7 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedGridIntDir() {
         if (GeneratedGridIntDir == null) {
             GeneratedGridIntDir = new File(getGeneratedGridsDir(), 
-                    getStrings().getS_GridInt());
+                    Grids_Strings.s_GridInt);
         }
         return GeneratedGridIntDir;
     }
@@ -61,7 +57,7 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedGridDoubleDir() {
         if (GeneratedGridDoubleDir == null) {
             GeneratedGridDoubleDir = new File(getGeneratedGridsDir(), 
-                    getStrings().getS_GridDouble());
+                    Grids_Strings.s_GridDouble);
         }
         return GeneratedGridDoubleDir;
     }
@@ -69,13 +65,9 @@ public class Grids_Files extends Generic_Files {
     public File getGeneratedProcessorDir() {
         if (GeneratedProcessorDir == null) {
             GeneratedProcessorDir = new File(getGeneratedGridsDir(),
-                    getStrings().getS_Processor());
+                    Grids_Strings.s_Processor);
         }
         return GeneratedProcessorDir;
-    }
-    
-    public Grids_Strings getStrings() {
-        return (Grids_Strings) strings;
     }
 
     /**
@@ -109,34 +101,34 @@ public class Grids_Files extends Generic_Files {
      */
     public File createNewFile(File dir, String prefix, String suffix) {
         dir.mkdirs();
-        File result = null;
+        File r = null;
         try {
             if ((prefix + suffix).equalsIgnoreCase("")) {
                 boolean success = false;
                 do {
-                    result = getNewFile(dir, prefix, suffix);
-                    if (! result.exists()) {
-                        success = result.mkdir();
+                    r = getNewFile(dir, prefix, suffix);
+                    if (! r.exists()) {
+                        success = r.mkdir();
                     }
                 } while (!success);
             } else {
                 do {
-                    result = getNewFile(dir, prefix, suffix);
-                } while (!result.createNewFile());
+                    r = getNewFile(dir, prefix, suffix);
+                } while (!r.createNewFile());
             }
         } catch (IOException ioe0) {
-            System.out.println("File " + result.toString());
+            System.out.println("File " + r.toString());
             ioe0.printStackTrace(System.err);
         }
-        return result;
+        return r;
     }
 
     private File getNewFile(File dir, String prefix, String suffix) {
         //dir.mkdirs();
-        File result;
+        File r;
         do {
-            result = new File(dir, prefix + System.currentTimeMillis() + suffix);
-        } while (result.exists());
-        return result;
+            r = new File(dir, prefix + System.currentTimeMillis() + suffix);
+        } while (r.exists());
+        return r;
     }
 }

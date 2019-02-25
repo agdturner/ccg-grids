@@ -83,8 +83,6 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
             ge.setProcessor(this);
             Grids_Files gf;
             gf = ge.getFiles();
-            Grids_Strings gs;
-            gs = ge.getStrings();
             String name;
             name = "NIMROD_ASCII";
             File indir;

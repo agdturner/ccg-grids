@@ -71,11 +71,6 @@ public class Grids_Environment
      */
     protected transient Grids_Files Files;
 
-    /**
-     * For storing an instance of Grids_Strings.
-     */
-    protected transient Grids_Strings Strings;
-
     protected Grids_Environment() {
     }
 
@@ -111,21 +106,11 @@ public class Grids_Environment
      */
     public Grids_Files getFiles() {
         if (Files == null) {
-            File dataDirectory = new File(Directory, getStrings().s_data);
+            File dataDirectory = new File(Directory, Grids_Strings.s_data);
             dataDirectory.mkdirs();
-            Files = new Grids_Files(this, dataDirectory);
+            Files = new Grids_Files(dataDirectory);
         }
         return Files;
-    }
-
-    /**
-     * @return Strings initialising first if it is null.
-     */
-    public Grids_Strings getStrings() {
-        if (Strings == null) {
-            Strings = new Grids_Strings();
-        }
-        return Strings;
     }
 
     /**

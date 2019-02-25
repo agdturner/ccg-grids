@@ -13,40 +13,11 @@ import uk.ac.leeds.ccg.andyt.generic.core.Generic_Strings;
  */
 public class Grids_Strings extends Generic_Strings {
     
-    protected String S_Grids;
-    protected String S_GridInt;
-    protected String S_GridDouble;
-    protected String S_Processor;
+    public static final String s_Grids = "Grids";
+    public static final  String s_GridInt = "GridInt";
+    public static final  String s_GridDouble = "GridDouble";
+    public static final  String s_Processor = "Processor";
 
     public Grids_Strings() {
     }
-
-    public String getS_Grids() {
-        if (S_Grids == null) {
-            S_Grids = "Grids";
-        }
-        return S_Grids;
-    }
-
-    public String getS_GridDouble() {
-        if (S_GridDouble == null) {
-            S_GridDouble = "GridDouble";
-        }
-        return S_GridDouble;
-    }
-
-    public String getS_GridInt() {
-        if (S_GridInt == null) {
-            S_GridInt = "GridInt";
-        }
-        return S_GridInt;
-    }
-    
-    public String getS_Processor() {
-        if (S_Processor == null) {
-            S_Processor = "Processor";
-        }
-        return S_Processor;
-    }
-    
 }
