@@ -44,7 +44,7 @@ public abstract class Grids_AbstractGridNumberIterator
     }
 
     public Grids_AbstractGridNumberIterator(Grids_AbstractGridNumber grid) {
-        super(grid.ge);
+        super(grid.env);
         Grid = grid;
     }
 
@@ -100,14 +100,14 @@ public abstract class Grids_AbstractGridNumberIterator
             return ChunkIterator.next();
         } else {
             if (GridIterator.hasNext()) {
-                ge.removeFromNotToSwap(Grid, ChunkID);
+                env.removeFromNotToSwap(Grid, ChunkID);
                 ChunkID = (Grids_2D_ID_int) GridIterator.next();
                 Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
                 if (Chunk == null) {
                     Grid.loadIntoCacheChunk(ChunkID);
                 }
                 Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
-                ge.addToNotToSwap(Grid, ChunkID);
+                env.addToNotToSwap(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {
                     return ChunkIterator.next();

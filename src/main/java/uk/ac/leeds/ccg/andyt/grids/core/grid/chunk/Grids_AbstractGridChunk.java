@@ -46,7 +46,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
 
     protected Grids_AbstractGridChunk(Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
-        super(g.ge);
+        super(g.env);
         Grid = g;
         ChunkID = chunkID;
         ChunkNRows = Grid.getChunkNRows(ChunkID);

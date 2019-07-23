@@ -135,7 +135,7 @@ public class Grids_GridIntFactory
     @Override
     public Grids_GridInt create(File dir, long nRows, long nCols,
             Grids_Dimensions dimensions) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), dir,
+        return create(new Grids_GridIntStatsNotUpdated(env), dir,
                 GridChunkIntFactory, nRows, nCols, dimensions);
     }
 
@@ -154,7 +154,7 @@ public class Grids_GridIntFactory
             Grids_AbstractGridChunkIntFactory cf, long nRows, long nCols,
             Grids_Dimensions dimensions) {
         return new Grids_GridInt(getStats(stats), dir, cf, ChunkNRows,
-                ChunkNCols, nRows, nCols, dimensions, NoDataValue, ge);
+                ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
     }
 
     //////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ public class Grids_GridIntFactory
     @Override
     public Grids_GridInt create(File dir, Grids_AbstractGridNumber g,
             long startRow, long startCol, long endRow, long endCol) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), dir, g,
+        return create(new Grids_GridIntStatsNotUpdated(env), dir, g,
                 DefaultGridChunkIntFactory, startRow, startCol, endRow,
                 endCol);
     }
@@ -214,7 +214,7 @@ public class Grids_GridIntFactory
     @Override
     public Grids_GridInt create(File dir, File gridFile, long startRow,
             long startCol, long endRow, long endCol) {
-        return create(new Grids_GridIntStatsNotUpdated(ge), dir,
+        return create(new Grids_GridIntStatsNotUpdated(env), dir,
                 gridFile, DefaultGridChunkIntFactory, startRow, startCol,
                 endRow, endCol);
     }
@@ -239,7 +239,7 @@ public class Grids_GridIntFactory
             long startRow, long startCol, long endRow, long endCol) {
         return new Grids_GridInt(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, ge);
+                NoDataValue, env);
     }
 
     /**
@@ -251,7 +251,7 @@ public class Grids_GridIntFactory
      */
     @Override
     public Grids_GridInt create(File dir, File gridFile) {
-        return new Grids_GridInt(ge, dir, gridFile);
+        return new Grids_GridInt(env, dir, gridFile);
     }
 
     /////////////////////////
@@ -265,7 +265,7 @@ public class Grids_GridIntFactory
      */
     public @Override
     Grids_GridInt create(File dir, File gridFile, ObjectInputStream ois) {
-        return new Grids_GridInt(dir, gridFile, ois, ge);
+        return new Grids_GridInt(dir, gridFile, ois, env);
     }
 
     /**
@@ -274,9 +274,9 @@ public class Grids_GridIntFactory
      */
     private Grids_GridIntStats getStats(Grids_GridIntStats stats) {
         if (stats instanceof Grids_GridIntStatsNotUpdated) {
-            return new Grids_GridIntStatsNotUpdated(ge);
+            return new Grids_GridIntStatsNotUpdated(env);
         } else {
-            return new Grids_GridIntStats(ge);
+            return new Grids_GridIntStats(env);
         }
     }
 }

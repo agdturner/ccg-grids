@@ -73,15 +73,15 @@ public abstract class Grids_AbstractGridChunkNumber
 //    public Long getN(boolean hoome) {
 //        try {
 //            long result = getN();
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
-//                ge.initMemoryReserve(Grid, ChunkID, hoome);
+//                env.initMemoryReserve(Grid, ChunkID, hoome);
 //                return Grids_AbstractGridChunkNumber.this.getN(hoome);
 //            } else {
 //                throw e;
@@ -109,15 +109,15 @@ public abstract class Grids_AbstractGridChunkNumber
 //    public BigDecimal getSum(boolean handleOutOfMemoryError) {
 //        try {
 //            BigDecimal result = getSum();
-//            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+//            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (handleOutOfMemoryError) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
-//                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+//                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
 //                return Grids_AbstractGridChunkNumber.this.getSum(handleOutOfMemoryError);
 //            } else {
 //                throw e;
@@ -150,15 +150,15 @@ public abstract class Grids_AbstractGridChunkNumber
 //            boolean hoome) {
 //        try {
 //            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
-//                ge.initMemoryReserve(Grid, ChunkID, hoome);
+//                env.initMemoryReserve(Grid, ChunkID, hoome);
 //                return getArithmeticMean(numberOfDecimalPlaces, hoome);
 //            } else {
 //                throw e;
@@ -198,15 +198,15 @@ public abstract class Grids_AbstractGridChunkNumber
 //    public double getArithmeticMeanDouble(boolean hoome) {
 //        try {
 //            double result = getArithmeticMeanDouble();
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
-//                ge.initMemoryReserve(Grid, ChunkID, hoome);
+//                env.initMemoryReserve(Grid, ChunkID, hoome);
 //                return getArithmeticMeanDouble(hoome);
 //            } else {
 //                throw e;
@@ -238,15 +238,15 @@ public abstract class Grids_AbstractGridChunkNumber
     public double getMedianDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getMedianDouble();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+                env.clearMemoryReserve();
+                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getMedianDouble(handleOutOfMemoryError);
             } else {
                 throw e;
@@ -273,15 +273,15 @@ public abstract class Grids_AbstractGridChunkNumber
     public double getStandardDeviationDouble(boolean handleOutOfMemoryError) {
         try {
             double result = getStandardDeviationDouble();
-            ge.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
             return result;
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                env.clearMemoryReserve();
+                if (env.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
-                ge.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
+                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
                 return getStandardDeviationDouble(handleOutOfMemoryError);
             } else {
                 throw e;

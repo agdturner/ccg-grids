@@ -23,18 +23,18 @@ import java.io.Serializable;
  *
  * @author geoagdt
  */
-public abstract class Grids_Object implements Serializable{
+public abstract class Grids_Object implements Serializable {
     
     /**
      * A reference to Grids_Environment.
      */
-    public transient Grids_Environment ge;
+    public transient Grids_Environment env;
 
     public Grids_Object() {
     }
     
-    public Grids_Object(Grids_Environment ge) {
-        this.ge = ge;
+    public Grids_Object(Grids_Environment e) {
+        this.env = e;
     }
     
     

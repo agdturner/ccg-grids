@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
@@ -185,7 +184,7 @@ public class Grids_Processor extends Grids_Object {
                         Level.SEVERE, null, ex);
             }
         }
-        Log = Generic_IO.getPrintWriter(logFile, true);
+        Log = env.env.io.getPrintWriter(logFile, true);
         LogIndentation = 0;
         log(LogIndentation, this.getClass().getName() + " set up "
                 + Generic_Time.getTime(StartTime));
@@ -197,9 +196,9 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories() {
         initChunkFactories();
-        GridIntFactory = new Grids_GridIntFactory(ge, GridChunkIntFactory,
+        GridIntFactory = new Grids_GridIntFactory(env, GridChunkIntFactory,
                 DefaultGridChunkIntFactory, 512, 512);
-        GridDoubleFactory = new Grids_GridDoubleFactory(ge,
+        GridDoubleFactory = new Grids_GridDoubleFactory(env,
                 GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, 512,
                 512);
         initGridStatistics();
@@ -224,11 +223,11 @@ public class Grids_Processor extends Grids_Object {
      * Initialises Stats.
      */
     private void initGridStatistics() {
-        GridDoubleStatistics = new Grids_GridDoubleStats(ge);
+        GridDoubleStatistics = new Grids_GridDoubleStats(env);
         GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatsNotUpdated(
-                ge);
-        GridIntStatistics = new Grids_GridIntStats(ge);
-        GridIntStatisticsNotUpdated = new Grids_GridIntStatsNotUpdated(ge);
+                env);
+        GridIntStatistics = new Grids_GridIntStats(env);
+        GridIntStatisticsNotUpdated = new Grids_GridIntStatsNotUpdated(env);
     }
 
     /**
@@ -339,7 +338,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void mask(Grids_AbstractGridNumber g,
             Grids_AbstractGridNumber mask) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         int chunkNRows;
         int chunkNCols;
         int chunkRow;
@@ -362,9 +361,9 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     maskIntChunk = (Grids_AbstractGridChunkInt) ite.next();
                     chunkID = maskIntChunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(mask, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(g, chunkID);
+                    env.addToNotToSwap(mask, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
                     chunkRow = chunkID.getRow();
@@ -381,8 +380,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    ge.removeFromNotToSwap(g, chunkID);
-                    ge.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToSwap(g, chunkID);
+                    env.removeFromNotToSwap(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -395,9 +394,9 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     maskChunk = (Grids_AbstractGridChunkDouble) ite.next();
                     chunkID = maskChunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(mask, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(g, chunkID);
+                    env.addToNotToSwap(mask, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
                     chunkRow = chunkID.getRow();
@@ -414,8 +413,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    ge.removeFromNotToSwap(g, chunkID);
-                    ge.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToSwap(g, chunkID);
+                    env.removeFromNotToSwap(mask, chunkID);
                 }
             }
         } else {
@@ -431,9 +430,9 @@ public class Grids_Processor extends Grids_Object {
                 while (iterator.hasNext()) {
                     maskChunk = (Grids_AbstractGridChunkInt) iterator.next();
                     chunkID = maskChunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(mask, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(g, chunkID);
+                    env.addToNotToSwap(mask, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
                     chunkRow = chunkID.getRow();
@@ -450,8 +449,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    ge.removeFromNotToSwap(g, chunkID);
-                    ge.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToSwap(g, chunkID);
+                    env.removeFromNotToSwap(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -464,9 +463,9 @@ public class Grids_Processor extends Grids_Object {
                     maskChunk = (Grids_AbstractGridChunkDouble) mask.getChunk(
                             (Grids_2D_ID_int) ite.next());
                     chunkID = maskChunk.getChunkID();
-                    ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(mask, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(g, chunkID);
+                    env.addToNotToSwap(mask, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
                     chunkRow = chunkID.getRow();
@@ -483,12 +482,12 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    ge.removeFromNotToSwap(g, chunkID);
-                    ge.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToSwap(g, chunkID);
+                    env.removeFromNotToSwap(mask, chunkID);
                 }
             }
         }
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -503,7 +502,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_AbstractGridNumber g,
             double min,
             double max) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         int cellRow;
         int cellCol;
         int chunkNRows;
@@ -518,8 +517,8 @@ public class Grids_Processor extends Grids_Object {
             while (ite.hasNext()) {
                 chunk = (Grids_AbstractGridChunkInt) ite.next();
                 chunkID = chunk.getChunkID();
-                ge.addToNotToSwap(g, chunkID);
-                ge.checkAndMaybeFreeMemory();
+                env.addToNotToSwap(g, chunkID);
+                env.checkAndMaybeFreeMemory();
                 chunkNRows = gi.getChunkNRows(chunkID);
                 chunkNCols = gi.getChunkNCols(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
@@ -530,7 +529,7 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                ge.removeFromNotToSwap(g, chunkID);
+                env.removeFromNotToSwap(g, chunkID);
             }
         } else {
             // ( grid.getClass() == Grids_GridDouble.class )
@@ -543,8 +542,8 @@ public class Grids_Processor extends Grids_Object {
             while (iterator.hasNext()) {
                 gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
                 chunkID = gridChunk.getChunkID();
-                ge.addToNotToSwap(g, chunkID);
-                ge.checkAndMaybeFreeMemory();
+                env.addToNotToSwap(g, chunkID);
+                env.checkAndMaybeFreeMemory();
                 chunkNRows = g.getChunkNRows(chunkID);
                 chunkNCols = g.getChunkNCols(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
@@ -555,11 +554,11 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                ge.removeFromNotToSwap(g, chunkID);
+                env.removeFromNotToSwap(g, chunkID);
             }
         }
         //grid.setName( grid.getName() + "_mask" );
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -604,11 +603,11 @@ public class Grids_Processor extends Grids_Object {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
+                env.clearMemoryReserve();
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return rescale(g, type, min, max, hoome);
             } else {
                 throw e;
@@ -628,7 +627,7 @@ public class Grids_Processor extends Grids_Object {
      */
     protected Grids_GridDouble rescale(Grids_GridDouble g, String type,
             double min, double max) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Grids_GridDouble result;
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -665,9 +664,9 @@ public class Grids_Processor extends Grids_Object {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = g.getChunk(chunkID);
                         resultChunk = result.getChunk(chunkID);
@@ -691,9 +690,9 @@ public class Grids_Processor extends Grids_Object {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = g.getChunk(chunkID);
                         resultChunk = result.getChunk(chunkID);
@@ -712,7 +711,7 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
             result.setName(g.getName() + "_linearRescale");
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
         } else {
             // @TODO this implementation could be much improved...
             int row;
@@ -730,7 +729,7 @@ public class Grids_Processor extends Grids_Object {
                 }
                 result = rescale(result, null, min, max);
                 result.setName(g.getName() + "_logRescale");
-                ge.checkAndMaybeFreeMemory();
+                env.checkAndMaybeFreeMemory();
             } else {
                 try {
                     throw new Exception("Unable to rescale: type " + type
@@ -764,11 +763,11 @@ public class Grids_Processor extends Grids_Object {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
+                env.clearMemoryReserve();
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return rescale(g, type, min, max, hoome);
             } else {
                 throw e;
@@ -791,7 +790,7 @@ public class Grids_Processor extends Grids_Object {
             String type,
             double min,
             double max) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         int nChunkCols = g.getNChunkCols();
@@ -832,9 +831,9 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
@@ -850,9 +849,9 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                     }
                 }
             } else {
@@ -865,9 +864,9 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.addToNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
                         Grids_AbstractGridChunkInt gridChunk;
@@ -885,14 +884,14 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
-                        ge.removeFromNotToSwap(result, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToSwap(result, chunkID);
+                        env.checkAndMaybeFreeMemory();
                     }
                 }
             }
             result.setName(g.getName() + "_linearRescale");
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
         } else {
             // @TODO this is not a good implementation
             if (type.equalsIgnoreCase("log")) {
@@ -909,7 +908,7 @@ public class Grids_Processor extends Grids_Object {
                 }
                 result = rescale(result, null, min, max);
                 //grid.setName( grid.getName() + "_logRescale" );
-                ge.checkAndMaybeFreeMemory();
+                env.checkAndMaybeFreeMemory();
             } else {
                 System.out.println("Unable to rescale: type " + type
                         + "not recognised. Returning a Grid2DSquareCellDouble.");
@@ -978,7 +977,7 @@ public class Grids_Processor extends Grids_Object {
             double value,
             boolean hoome) {
         try {
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             Iterator iterator1 = cellIDs.iterator();
             while (iterator1.hasNext()) {
                 //grid.addToCell( ( CellID ) iterator1.next(), value );
@@ -987,14 +986,14 @@ public class Grids_Processor extends Grids_Object {
                     grid.addToCell(cellID, value);
                 }
             }
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
+                env.clearMemoryReserve();
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 addToGrid(grid, cellIDs, value, hoome);
             } else {
                 throw e;
@@ -1011,7 +1010,7 @@ public class Grids_Processor extends Grids_Object {
     public void addToGrid(
             Grids_GridDouble grid,
             double value) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
         long row;
@@ -1021,7 +1020,7 @@ public class Grids_Processor extends Grids_Object {
                 grid.addToCell(row, col, value);
             }
         }
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1035,11 +1034,11 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble grid,
             Grids_2D_ID_long[] cellIDs,
             double value) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         for (Grids_2D_ID_long cellID : cellIDs) {
             grid.addToCell(cellID.getRow(), cellID.getCol(), value);
         }
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1050,7 +1049,7 @@ public class Grids_Processor extends Grids_Object {
      * @param w Value g2 values are multiplied by.
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         if (g2 != null) {
             addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
                     g2.getNCols() - 1L, w);
@@ -1072,7 +1071,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
             long startRow, long startCol, long endRow, long endCol, double w) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin;
         BigDecimal yMin;
@@ -1088,7 +1087,7 @@ public class Grids_Processor extends Grids_Object {
         dc[4] = yMin.add(
                 new BigDecimal(endRow - startRow + 1L).multiply(cellsize));
         addToGrid(g, g2, startRow, startCol, endRow, endCol, dc, w);
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1109,7 +1108,7 @@ public class Grids_Processor extends Grids_Object {
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
             long startRow, long startCol, long endRow, long endCol,
             BigDecimal[] dc, double w) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         double noDataValue = g.getNoDataValue();
@@ -1117,7 +1116,7 @@ public class Grids_Processor extends Grids_Object {
         double g2NoDataValue = g2.getNoDataValue();
         Grids_Dimensions g2Dimensions = g2.getDimensions();
         Grids_GridDoubleFactory gf;
-        gf = new Grids_GridDoubleFactory(ge, GridChunkDoubleFactory,
+        gf = new Grids_GridDoubleFactory(env, GridChunkDoubleFactory,
                 DefaultGridChunkDoubleFactory, g.getChunkNCols(),
                 g.getChunkNRows());
         // If the region to be added is outside g then return.
@@ -1153,7 +1152,7 @@ public class Grids_Processor extends Grids_Object {
                 // TODO: Control precision using xBigDecimal and yBigDecimal
                 // rather than using x and y.
                 for (row = startRow; row <= endRow; row++) {
-                    ge.checkAndMaybeFreeMemory();
+                    env.checkAndMaybeFreeMemory();
                     y = g2.getCellYDouble(row);
                     for (col = startCol; col <= endCol; col++) {
                         x = g2.getCellXDouble(col);
@@ -1203,7 +1202,7 @@ public class Grids_Processor extends Grids_Object {
                 // TODO:
                 // precision checking and use of BigDecimal?
                 for (r = 0; r < nrows; r++) {
-                    ge.checkAndMaybeFreeMemory();
+                    env.checkAndMaybeFreeMemory();
                     for (c = 0; c < ncols; c++) {
                         bounds = g.getCellBoundsDoubleArray(halfCellsize, r, c);
                         //x = g.getCellXDouble(col);
@@ -1298,7 +1297,7 @@ public class Grids_Processor extends Grids_Object {
                 }
                 // The values are normalised by dividing the aggregate Grid sum by the proportion of cells with grid values.
                 for (r = 0; r <= nrows; r++) {
-                    ge.checkAndMaybeFreeMemory();
+                    env.checkAndMaybeFreeMemory();
                     for (c = 0; c <= ncols; c++) {
                         d1 = tg2.getCell(r, c);
                         if (!(d1 == 0.0d || d1 == noDataValue)) {
@@ -1309,7 +1308,7 @@ public class Grids_Processor extends Grids_Object {
                 }
             }
         }
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1320,11 +1319,11 @@ public class Grids_Processor extends Grids_Object {
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
      */
     public void addToGrid(Grids_GridDouble g, File file, String type) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         if (type.equalsIgnoreCase("xyv")) {
             try {
                 StreamTokenizer st;
-                st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
+                st = new StreamTokenizer(env.env.io.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.whitespaceChars(',', ',');
@@ -1363,7 +1362,7 @@ public class Grids_Processor extends Grids_Object {
         if (type.equalsIgnoreCase("xy")) {
             try {
                 StreamTokenizer st;
-                st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
+                st = new StreamTokenizer(env.env.io.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.whitespaceChars(',', ',');
@@ -1395,7 +1394,7 @@ public class Grids_Processor extends Grids_Object {
         }
         if (type.equalsIgnoreCase("idxy")) {
             try {
-                StreamTokenizer st = new StreamTokenizer(Generic_IO.getBufferedReader(file));
+                StreamTokenizer st = new StreamTokenizer(env.env.io.getBufferedReader(file));
                 st.eolIsSignificant(false);
                 st.parseNumbers();
                 st.ordinaryChar('e');
@@ -1450,7 +1449,7 @@ public class Grids_Processor extends Grids_Object {
                 e.printStackTrace(System.err);
             }
         }
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
     }
 
     /**
@@ -1563,7 +1562,7 @@ public class Grids_Processor extends Grids_Object {
             int rowOffset,
             int colOffset,
             Grids_GridDoubleFactory gridFactory) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         // Initial tests
         if (cellFactor <= 0) {
             System.err.println("Warning!!! cellFactor <= 0 : Returning!");
@@ -1824,7 +1823,7 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
             String statistic, Grids_Dimensions resultDimensions,
             Grids_GridDoubleFactory gf) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
         long nrows = grid.getNRows();
@@ -2542,7 +2541,7 @@ public class Grids_Processor extends Grids_Object {
              }
              }
          */
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         return result;
     }
 
@@ -2615,14 +2614,14 @@ public class Grids_Processor extends Grids_Object {
             Grids_ESRIAsciiGridExporter eage) {
         System.out.println("Output " + g.toString());
         if (ie == null) {
-            ie = new Grids_ImageExporter(ge);
+            ie = new Grids_ImageExporter(env);
         }
         if (imageTypes == null) {
             imageTypes = new String[1];
             imageTypes[0] = "PNG";
         }
         if (eage == null) {
-            eage = new Grids_ESRIAsciiGridExporter(ge);
+            eage = new Grids_ESRIAsciiGridExporter(env);
         }
         //int _StringLength = 1000;
         String dotASC = ".asc";
@@ -2654,7 +2653,7 @@ public class Grids_Processor extends Grids_Object {
         try {
             System.out.println("Output " + g.toString());
             if (ie == null) {
-                ie = new Grids_ImageExporter(ge);
+                ie = new Grids_ImageExporter(env);
             }
             if (imageTypes == null) {
                 imageTypes = new String[1];
@@ -2672,11 +2671,11 @@ public class Grids_Processor extends Grids_Object {
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (ge.swapChunksExcept_Account(g, hoome) < 1) {
+                env.clearMemoryReserve();
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 outputImage(g, outDir, ie, imageTypes, hoome);
             } else {
                 throw e;
@@ -2695,7 +2694,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_ESRIAsciiGridExporter eage, boolean hoome) {
         try {
             if (eage == null) {
-                eage = new Grids_ESRIAsciiGridExporter(ge);
+                eage = new Grids_ESRIAsciiGridExporter(env);
             }
             String methodName = "outputESRIAsciiGrid("
                     + g.getClass().getName() + "(" + g.toString() + "),"
@@ -2712,11 +2711,11 @@ public class Grids_Processor extends Grids_Object {
             eage.toAsciiFile(g, file, ndv);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
+                env.clearMemoryReserve();
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 outputESRIAsciiGrid(g, outDir, eage, hoome);
             } else {
                 throw e;

@@ -80,26 +80,17 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
 
     public void run() {
         try {
-            ge.setProcessor(this);
-            Grids_Files gf;
-            gf = ge.getFiles();
-            String name;
-            name = "NIMROD_ASCII";
-            File indir;
-            indir = new File(gf.getInputDataDir(), name);
-            File outdir;
-            outdir = new File(gf.getOutputDataDir(), name);
-            File outf;
-            outf = new File(outdir, name + "timeseries.csv");
+            env.setProcessor(this);
+            Grids_Files gf = env.getFiles();
+            String name = "NIMROD_ASCII";
+            File indir  = new File(gf.getInputDataDir(), name);
+            File outdir  = new File(gf.getOutputDataDir(), name);
+            File outf  = new File(outdir, name + "timeseries.csv");
             outdir.mkdirs();
-            PrintWriter pw;
-            pw = Generic_IO.getPrintWriter(outf, false);
-            File gendir;
-            gendir = new File(gf.getGeneratedDataDir(), name);
-            File[] files;
-            files = indir.listFiles();
-            TreeMap<Generic_Time, Grids_GridDouble> grids;
-            grids = new TreeMap<>();
+            PrintWriter pw = env.env.io.getPrintWriter(outf, false);
+            File gendir  = new File(gf.getGeneratedDataDir(), name);
+            File[] files  = indir.listFiles();
+            TreeMap<Generic_Time, Grids_GridDouble> grids  = new TreeMap<>();
             String time;
             int year;
             int month;

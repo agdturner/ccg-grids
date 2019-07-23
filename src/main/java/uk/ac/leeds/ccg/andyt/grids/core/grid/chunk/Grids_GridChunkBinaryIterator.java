@@ -38,7 +38,7 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
     }
 
     public Grids_GridChunkBinaryIterator(Grids_GridChunkBinary chunk) {
-        super(chunk.ge);
+        super(chunk.env);
         Data = chunk.getData();
         Row = 0;
         Col = 0;

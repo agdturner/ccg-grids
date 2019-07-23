@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -59,7 +60,7 @@ public class Grids_Environment
     /**
      * For storing an instance of Math_BigDecimal.
      */
-    protected transient Math_BigDecimal _Generic_BigDecimal;
+    protected transient Math_BigDecimal bd;
 
     /**
      * For storing a Grids_Processor.
@@ -70,8 +71,11 @@ public class Grids_Environment
      * For storing an instance of Grids_Files.
      */
     protected transient Grids_Files Files;
+    
+    public transient final Generic_Environment env;
 
     protected Grids_Environment() {
+        env = new Generic_Environment();
     }
 
     public Grids_Environment(File directory) {
@@ -82,6 +86,7 @@ public class Grids_Environment
             directory.mkdirs();
         }
         Directory = directory;
+        env = new Generic_Environment();
     }
 
     /**
@@ -114,20 +119,20 @@ public class Grids_Environment
     }
 
     /**
-     * @return the _Generic_BigDecimal
+     * @return the bd
      */
     public Math_BigDecimal get_Generic_BigDecimal() {
-        if (_Generic_BigDecimal == null) {
+        if (bd == null) {
             init_Generic_BigDecimal();
         }
-        return _Generic_BigDecimal;
+        return bd;
     }
 
     /**
-     * @return the _Generic_BigDecimal
+     * @return the bd
      */
     private void init_Generic_BigDecimal() {
-        _Generic_BigDecimal = new Math_BigDecimal();
+        bd = new Math_BigDecimal();
     }
 
     /**
@@ -497,7 +502,7 @@ public class Grids_Environment
         initGrids(grids);
         Iterator<Grids_AbstractGrid> ite = Grids.iterator();
         if (ite.hasNext()) {
-            ite.next().ge.setMemoryReserve(MemoryReserve);
+            ite.next().env.setMemoryReserve(MemoryReserve);
         } else {
             initMemoryReserve();
         }
@@ -2724,7 +2729,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all chunks in ge.
+     * Attempts to swap all chunks in env.
      *
      * @param hoome If true then OutOfMemoryErrors are caught in this method
      * then swap operations are initiated prior to retrying. If false then
@@ -2770,7 +2775,7 @@ public class Grids_Environment
     }
 
     /**
-     * Attempts to swap all chunks in ge.
+     * Attempts to swap all chunks in env.
      *
      * @return
      */
@@ -3982,7 +3987,7 @@ public class Grids_Environment
         while (ite.hasNext()) {
             gb = ite.next();
             if (gb != g) {
-                result += gb.ge.swapChunks_Account();
+                result += gb.env.swapChunks_Account();
             }
         }
         return result;

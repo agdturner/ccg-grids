@@ -109,7 +109,7 @@ public class Grids_GridDoubleStats
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
         BigDecimal vBD;
@@ -213,9 +213,9 @@ public class Grids_GridDoubleStats
             result += chunk.getN();
         }
 //        double noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HOOME);
+//        noDataValue = g.getNoDataValue(env.HOOME);
 //        Iterator<Double> ite;
-//        ite = g.iterator(ge.HOOME);
+//        ite = g.iterator(env.HOOME);
 //        while (ite.hasNext()) {
 //            double value = ite.next();
 //            if (value != noDataValue) {
@@ -237,7 +237,7 @@ public class Grids_GridDoubleStats
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
         Iterator<Double> ite;
-        ite = g.iterator(ge.HOOME);
+        ite = g.iterator(env.HOOME);
         while (ite.hasNext()) {
             double value = ite.next();
             if (!(value == ndv || value == 0)) {
@@ -305,7 +305,7 @@ public class Grids_GridDoubleStats
         stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
         return Math_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
-                ge.get_Generic_BigDecimal().getRoundingMode());
+                env.get_Generic_BigDecimal().getRoundingMode());
     }
 
     @Override
@@ -350,7 +350,7 @@ public class Grids_GridDoubleStats
         int count = 0;
         //long valueID = 0;
         Iterator<Double> ite;
-        ite = g.iterator(ge.HOOME);
+        ite = g.iterator(env.HOOME);
         while (ite.hasNext()) {
             double value;
             value = ite.next();

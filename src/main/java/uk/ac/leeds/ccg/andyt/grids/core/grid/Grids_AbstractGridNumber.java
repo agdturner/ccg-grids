@@ -81,11 +81,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             double result = getCellDouble(point);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(point.getY()),
                         getChunkCol(point.getX()));
@@ -132,11 +132,11 @@ public abstract class Grids_AbstractGridNumber
             double result = getCellDouble(
                     x,
                     y);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(y),
                         getChunkCol(x));
@@ -184,11 +184,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             double result = getCellDouble(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                         getChunkRow(row),
                         getChunkCol(col));
@@ -236,11 +236,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             double result = getCellDouble(chunkRow, chunkCol, cellRow, cellCol);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -314,11 +314,11 @@ public abstract class Grids_AbstractGridNumber
         try {
             double result;
             result = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -360,11 +360,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -407,11 +407,11 @@ public abstract class Grids_AbstractGridNumber
             long row, long col, boolean hoome) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y, row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -446,11 +446,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -481,11 +481,11 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDouble(double x, double y, boolean hoome) {
         try {
             double result = getNearestValueDouble(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -524,7 +524,7 @@ public abstract class Grids_AbstractGridNumber
             return getNearestValueDouble(x, y, row, col);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -563,11 +563,11 @@ public abstract class Grids_AbstractGridNumber
     public final double getNearestValueDouble(long row, long col, boolean hoome) {
         try {
             double result = getNearestValueDouble(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -601,11 +601,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             double result = getNearestValueDoubleDistance(x, y);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -642,11 +642,11 @@ public abstract class Grids_AbstractGridNumber
             long row, long col, boolean hoome) {
         try {
             double result = getNearestValueDoubleDistance(x, y, row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -686,11 +686,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             double result = getNearestValueDoubleDistance(row, col);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID;
                 chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
@@ -712,11 +712,11 @@ public abstract class Grids_AbstractGridNumber
             boolean hoome) {
         try {
             Iterator result = iterator();
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
                 return iterator(hoome);
             } else {
@@ -737,11 +737,11 @@ public abstract class Grids_AbstractGridNumber
         try {
             Grids_AbstractGridNumberStats result;
             result = getStats();
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
                 return getStats(hoome);
             } else {

@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -82,7 +81,7 @@ public class Grids_GridInt
      */
     protected Grids_GridInt(File dir, File gridFile, ObjectInputStream ois,
             Grids_Environment ge) {
-        this.ge = ge;
+        this.env = ge;
         this.Directory = dir;
         init(gridFile, ois);
     }
@@ -134,7 +133,7 @@ public class Grids_GridInt
             Grids_AbstractGridNumber g, Grids_AbstractGridChunkIntFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int ndv) {
-        super(g.ge, dir);
+        super(g.env, dir);
         checkDir();
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
@@ -236,7 +235,7 @@ public class Grids_GridInt
      * OutOfMemoryErrors are caught and thrown.
      */
     private void init(File file, ObjectInputStream ois) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         File thisFile = new File(file, "thisFile");
         try {
             init((Grids_GridInt) ois.readObject());
@@ -251,26 +250,26 @@ public class Grids_GridInt
         } catch (ClassCastException e) {
             try {
                 ois.close();
-                ois = Generic_IO.getObjectInputStream(thisFile);
+                ois = env.env.io.getObjectInputStream(thisFile);
                 checkDir();
                 // If the object is a Grids_GridDouble
                 Grids_Processor gp;
-                gp = ge.getProcessor();
+                gp = env.getProcessor();
                 Grids_GridDoubleFactory gdf;
-                gdf = new Grids_GridDoubleFactory(ge, gp.GridChunkDoubleFactory,
+                gdf = new Grids_GridDoubleFactory(env, gp.GridChunkDoubleFactory,
                         gp.DefaultGridChunkDoubleFactory, -Double.MAX_VALUE,
                         ChunkNRows, ChunkNCols, null,
-                        new Grids_GridDoubleStatsNotUpdated(ge));
-                Grids_Files files = ge.getFiles();
+                        new Grids_GridDoubleStatsNotUpdated(env));
+                Grids_Files files = env.getFiles();
                 File dir;
                 dir = files.createNewFile(files.getGeneratedGridDoubleDir());
                 Grids_GridDouble gd;
                 gd = (Grids_GridDouble) gdf.create(dir, file, ois);
                 Grids_GridIntFactory gif;
-                gif = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
+                gif = new Grids_GridIntFactory(env, gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         gd.ChunkNRows, gd.ChunkNCols, null,
-                        new Grids_GridIntStatsNotUpdated(ge));
+                        new Grids_GridIntStatsNotUpdated(env));
                 Grids_GridInt gi;
                 gi = (Grids_GridInt) gif.create(Directory, gd);
                 init(gi);
@@ -287,7 +286,7 @@ public class Grids_GridInt
         //ioe.printStackTrace();
         // Set the reference to this in the Grid Stats
         if (getStats() == null) {
-            Stats = new Grids_GridIntStatsNotUpdated(ge);
+            Stats = new Grids_GridIntStatsNotUpdated(env);
         }
         Stats.init(this);
         init();
@@ -311,7 +310,7 @@ public class Grids_GridInt
             Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dim,
             int ndv) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
         Directory = dir;
@@ -332,7 +331,7 @@ public class Grids_GridInt
         Grids_AbstractGridChunkInt chunk;
         for (r = 0; r < NChunkRows; r++) {
             for (c = 0; c < NChunkCols; c++) {
-                ge.checkAndMaybeFreeMemory();
+                env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 chunkID = new Grids_2D_ID_int(r, c);
                 chunk = cf.create(this, chunkID);
@@ -367,7 +366,7 @@ public class Grids_GridInt
             Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
         ChunkNRows = chunkNRows;
@@ -419,8 +418,8 @@ public class Grids_GridInt
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            ge.addToNotToSwap(g, gChunkID);
-                            ge.checkAndMaybeFreeMemory();
+                            env.addToNotToSwap(g, gChunkID);
+                            env.checkAndMaybeFreeMemory();
                             c = gd.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
                             for (cellRow = 0; cellRow < gChunkNRows; cellRow++) {
@@ -442,7 +441,7 @@ public class Grids_GridInt
                                              */
                                             if (isInGrid(row, col)) {
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                                                ge.addToNotToSwap(this, chunkID);
+                                                env.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
@@ -470,14 +469,14 @@ public class Grids_GridInt
                                 }
                             }
                             isLoadedChunk = true;
-                            ge.removeFromNotToSwap(g, gChunkID);
-                            ge.checkAndMaybeFreeMemory();
+                            env.removeFromNotToSwap(g, gChunkID);
+                            env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
-                            if (ge.HOOME) {
-                                ge.clearMemoryReserve();
+                            if (env.HOOME) {
+                                env.clearMemoryReserve();
                                 freeSomeMemoryAndResetReserve(e);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (ge.swapChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**
                                      * TODO: Should also not swap out the chunk
                                      * of grid thats values are being used to
@@ -485,7 +484,7 @@ public class Grids_GridInt
                                      */
                                     throw e;
                                 }
-                                ge.initMemoryReserve(this, chunkID, ge.HOOME);
+                                env.initMemoryReserve(this, chunkID, env.HOOME);
                             } else {
                                 throw e;
                             }
@@ -509,8 +508,8 @@ public class Grids_GridInt
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            ge.addToNotToSwap(g, gChunkID);
-                            ge.checkAndMaybeFreeMemory();
+                            env.addToNotToSwap(g, gChunkID);
+                            env.checkAndMaybeFreeMemory();
                             c = gi.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
                             for (cellRow = 0; cellRow < gChunkNRows; cellRow++) {
@@ -534,7 +533,7 @@ public class Grids_GridInt
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRow,
                                                         chunkCol);
-                                                ge.addToNotToSwap(this, chunkID);
+                                                env.addToNotToSwap(this, chunkID);
                                                 if (!ChunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     ChunkIDChunkMap.put(chunkID, chunk);
@@ -555,20 +554,20 @@ public class Grids_GridInt
                                                         initCell(chunk, chunkID, row, col, ndv);
                                                     }
                                                 }
-                                                ge.removeFromNotToSwap(this, chunkID);
+                                                env.removeFromNotToSwap(this, chunkID);
                                             }
                                         }
                                     }
                                 }
                             }
                             isLoadedChunk = true;
-                            ge.removeFromNotToSwap(g, gChunkID);
-                            ge.checkAndMaybeFreeMemory();
+                            env.removeFromNotToSwap(g, gChunkID);
+                            env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
-                            if (ge.HOOME) {
-                                ge.clearMemoryReserve();
+                            if (env.HOOME) {
+                                env.clearMemoryReserve();
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (ge.swapChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**
                                      * TODO: Should also not swap out the chunk
                                      * of grid thats values are being used to
@@ -576,7 +575,7 @@ public class Grids_GridInt
                                      */
                                     throw e;
                                 }
-                                ge.initMemoryReserve(this, chunkID, ge.HOOME);
+                                env.initMemoryReserve(this, chunkID, env.HOOME);
                             } else {
                                 throw e;
                             }
@@ -613,7 +612,7 @@ public class Grids_GridInt
             Grids_AbstractGridChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
         // Set to report every 10%
@@ -625,13 +624,13 @@ public class Grids_GridInt
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_Processor gp;
-                gp = ge.getProcessor();
+                gp = env.getProcessor();
                 Grids_GridIntFactory gf;
-                gf = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory, cf,
+                gf = new Grids_GridIntFactory(env, gp.GridChunkIntFactory, cf,
                         ndv, chunkNRows, chunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
-                ois = Generic_IO.getObjectInputStream(thisFile);
+                ois = env.env.io.getObjectInputStream(thisFile);
                 Grids_GridInt g;
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 Grids_GridInt g2;
@@ -656,7 +655,7 @@ public class Grids_GridInt
             int value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile, ge);
+                eagi = new Grids_ESRIAsciiGridImporter(gridFile, env);
                 Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
@@ -670,8 +669,8 @@ public class Grids_GridInt
                 if ((int) gridFileNoDataValue == NoDataValue) {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 initCell(row, col, value, false);
@@ -679,12 +678,12 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
@@ -695,14 +694,14 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     }
                 } else {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
@@ -713,12 +712,12 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 initCell(row, col, value, true);
@@ -726,7 +725,7 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     }
                 }
@@ -736,24 +735,24 @@ public class Grids_GridInt
     }
 
     private void init(Grids_GridIntStats stats, File gridFile) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         Stats = stats;
         Stats.init(this);
         // For reporting
         int reportN;
         Grids_Processor gp;
-        gp = ge.getProcessor();
+        gp = env.getProcessor();
         if (gridFile.isDirectory()) {
             if (true) {
                 Grids_GridIntFactory gf;
-                gf = new Grids_GridIntFactory(ge, gp.GridChunkIntFactory,
+                gf = new Grids_GridIntFactory(env, gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory,
                         gp.GridIntFactory.NoDataValue,
                         gp.GridIntFactory.ChunkNRows,
                         gp.GridIntFactory.ChunkNCols, null, stats);
                 File thisFile = new File(gridFile, "thisFile");
                 ObjectInputStream ois;
-                ois = Generic_IO.getObjectInputStream(thisFile);
+                ois = env.env.io.getObjectInputStream(thisFile);
                 Grids_GridInt g;
                 g = (Grids_GridInt) gf.create(Directory, thisFile, ois);
                 init(g);
@@ -777,7 +776,7 @@ public class Grids_GridInt
             int value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile, ge);
+                eagi = new Grids_ESRIAsciiGridImporter(gridFile, env);
                 Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
@@ -800,8 +799,8 @@ public class Grids_GridInt
                 if (gridFileNoDataValue == NoDataValue) {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 initCell(row, col, value, false);
@@ -809,12 +808,12 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -825,14 +824,14 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     }
                 } else {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -843,12 +842,12 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
-                            ge.checkAndMaybeFreeMemory();
-                            ge.initNotToSwap();
+                            env.checkAndMaybeFreeMemory();
+                            env.initNotToSwap();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 initCell(row, col, value, true);
@@ -856,7 +855,7 @@ public class Grids_GridInt
                             if (row % reportN == 0) {
                                 System.out.println("Done row " + row);
                             }
-                            ge.checkAndMaybeFreeMemory();
+                            env.checkAndMaybeFreeMemory();
                         }
                     }
                 }
@@ -888,7 +887,7 @@ public class Grids_GridInt
         if (!isInCache) {
             File f = new File(getDirectory(),
                     "" + chunkID.getRow() + "_" + chunkID.getCol());
-            Object o = Generic_IO.readObject(f);
+            Object o = env.env.io.readObject(f);
             Grids_AbstractGridChunkInt chunk = null;
             if (o.getClass() == Grids_GridChunkIntArray.class) {
                 Grids_GridChunkIntArray c;
@@ -908,14 +907,14 @@ public class Grids_GridInt
                         + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString()
                         + "))");
             }
-            chunk.ge = ge;
+            chunk.env = env;
             chunk.initGrid(this);
             chunk.initChunkID(chunkID);
             ChunkIDChunkMap.put(chunkID, chunk);
             if (!(chunk instanceof Grids_GridChunkInt)) {
                 ChunkIDsOfChunksWorthSwapping.add(chunkID);
             }
-            ge.setDataToSwap(true);
+            env.setDataToSwap(true);
         }
     }
 
@@ -938,7 +937,7 @@ public class Grids_GridInt
          * Ensure this chunkID is not swapped and initialise it if it does not
          * already exist.
          */
-        ge.addToNotToSwap(this, chunkID);
+        env.addToNotToSwap(this, chunkID);
         if (!ChunkIDChunkMap.containsKey(chunkID)) {
             Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID,
                     value);
@@ -957,7 +956,7 @@ public class Grids_GridInt
                 Grids_GridChunkInt gc = (Grids_GridChunkInt) chunk;
                 if (value != gc.Value) {
                     // Convert chunk to another type
-                    chunk = ge.getProcessor().DefaultGridChunkIntFactory.create(
+                    chunk = env.getProcessor().DefaultGridChunkIntFactory.create(
                             chunk, chunkID);
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
                     ChunkIDChunkMap.put(chunkID, chunk);
@@ -1250,7 +1249,7 @@ public class Grids_GridInt
             Grids_2D_ID_int chunkID) {
         Grids_AbstractGridChunkInt result;
         Grids_AbstractGridChunkIntFactory f;
-        f = ge.getProcessor().DefaultGridChunkIntFactory;
+        f = env.getProcessor().DefaultGridChunkIntFactory;
         result = f.create(chunk, chunkID);
         ChunkIDChunkMap.put(chunkID, result);
         return result;
@@ -2006,7 +2005,7 @@ public class Grids_GridInt
         Grids_2D_ID_int chunkID;
         int counter = 0;
         while (ite.hasNext()) {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             System.out.println("Initialising Chunk " + counter + " out of "
                     + nChunks);
             counter++;

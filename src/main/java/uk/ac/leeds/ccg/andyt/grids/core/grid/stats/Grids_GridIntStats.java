@@ -107,7 +107,7 @@ public class Grids_GridIntStats
      */
     @Override
     public void update() {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         init();
         Grids_GridInt g = getGrid();
         BigDecimal valueBD;
@@ -209,9 +209,9 @@ public class Grids_GridIntStats
             result += chunk.getN();
         }
 //        int noDataValue;
-//        noDataValue = g.getNoDataValue(ge.HOOME);
+//        noDataValue = g.getNoDataValue(env.HOOME);
 //        Iterator<Integer> ite;
-//        ite = g.iterator(ge.HOOME);
+//        ite = g.iterator(env.HOOME);
 //        while (ite.hasNext()) {
 //            int value = ite.next();
 //            if (value != noDataValue) {
@@ -233,7 +233,7 @@ public class Grids_GridIntStats
         Grids_GridInt g = getGrid();
         int ndv = g.getNoDataValue();
         Iterator<Integer> ite;
-        ite = g.iterator(ge.HOOME);
+        ite = g.iterator(env.HOOME);
         while (ite.hasNext()) {
             int value = ite.next();
             if (!(value == ndv || value == 0)) {
@@ -288,7 +288,7 @@ public class Grids_GridIntStats
         stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
         return Math_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
-                ge.get_Generic_BigDecimal().getRoundingMode());
+                env.get_Generic_BigDecimal().getRoundingMode());
     }
 
     @Override

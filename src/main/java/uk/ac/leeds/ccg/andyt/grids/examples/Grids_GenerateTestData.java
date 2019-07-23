@@ -69,9 +69,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         for (int i = 0; i < testData.length; i++) {
             System.out.println(testData[i].toString());
             file = new File(outDir, testData[i].getName() + ".asc");
-            new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(testData[i], file);
+            new Grids_ESRIAsciiGridExporter(env).toAsciiFile(testData[i], file);
             file = new File(outDir, testData[i].getName() + ".png");
-            new Grids_ImageExporter(ge).toGreyScaleImage(testData[i], this, file, "png");
+            new Grids_ImageExporter(env).toGreyScaleImage(testData[i], this, file, "png");
         }
         System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
     }
@@ -81,7 +81,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         outdir2.mkdirs();
         File f;
         f = new File(outdir2, "grids.txt");
-        PrintWriter pw = Generic_IO.getPrintWriter(f, false);
+        PrintWriter pw = env.env.io.getPrintWriter(f, false);
         //         minRadius  maxRadius  elevation             Grids
         //circle1          0          5         -1  1,3,(5-4)
         //circle2          5          6          1  2,4,(6-4),7,8,(9-3)
@@ -467,7 +467,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         int ncols = 100;
         Grids_GridDoubleFactory factory;
 //        factory = new Grids_GridDoubleFactory(
-//                    ge,
+//                    env,
 //                Directory, GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, nrows, ncols)
 //                    nrows,
 //                    ncols)

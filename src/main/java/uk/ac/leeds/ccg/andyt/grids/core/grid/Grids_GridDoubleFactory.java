@@ -135,7 +135,7 @@ public class Grids_GridDoubleFactory
     @Override
     public Grids_GridDouble create(File dir, long nRows, long nCols,
             Grids_Dimensions dimensions) {
-        return create(new Grids_GridDoubleStatsNotUpdated(ge), dir,
+        return create(new Grids_GridDoubleStatsNotUpdated(env), dir,
                 GridChunkDoubleFactory, nRows, nCols, dimensions);
     }
 
@@ -155,7 +155,7 @@ public class Grids_GridDoubleFactory
             Grids_Dimensions dimensions) {
         Grids_GridDouble result;
         result = new Grids_GridDouble(getStats(stats), dir, cf, ChunkNRows,
-                ChunkNCols, nRows, nCols, dimensions, NoDataValue, ge);
+                ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
         return result;
     }
 
@@ -174,7 +174,7 @@ public class Grids_GridDoubleFactory
     @Override
     public Grids_GridDouble create(File dir, Grids_AbstractGridNumber g,
             long startRow, long startCol, long endRow, long endCol) {
-        return create(new Grids_GridDoubleStatsNotUpdated(ge), dir, g,
+        return create(new Grids_GridDoubleStatsNotUpdated(env), dir, g,
                 DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
                 endCol);
     }
@@ -218,7 +218,7 @@ public class Grids_GridDoubleFactory
     @Override
     public Grids_GridDouble create(File dir, File gridFile, long startRow,
             long startCol, long endRow, long endCol) {
-        return create(new Grids_GridDoubleStatsNotUpdated(ge), dir,
+        return create(new Grids_GridDoubleStatsNotUpdated(env), dir,
                 gridFile, DefaultGridChunkDoubleFactory, startRow, startCol,
                 endRow, endCol);
     }
@@ -244,7 +244,7 @@ public class Grids_GridDoubleFactory
         Grids_GridDouble result;
         result = new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, ge);
+                NoDataValue, env);
         return result;
     }
 
@@ -258,7 +258,7 @@ public class Grids_GridDoubleFactory
     @Override
     public Grids_GridDouble create(File dir, File gridFile) {
         Grids_GridDouble result;
-        result = new Grids_GridDouble(ge, dir, gridFile);
+        result = new Grids_GridDouble(env, dir, gridFile);
         return result;
     }
 
@@ -273,7 +273,7 @@ public class Grids_GridDoubleFactory
      */
     public @Override
     Grids_GridDouble create(File dir, File gridFile, ObjectInputStream ois) {
-        return new Grids_GridDouble(dir, gridFile, ois, ge);
+        return new Grids_GridDouble(dir, gridFile, ois, env);
     }
 
     /**
@@ -282,9 +282,9 @@ public class Grids_GridDoubleFactory
      */
     private Grids_GridDoubleStats getStats(Grids_GridDoubleStats stats) {
         if (stats instanceof Grids_GridDoubleStatsNotUpdated) {
-            return new Grids_GridDoubleStatsNotUpdated(ge);
+            return new Grids_GridDoubleStatsNotUpdated(env);
         } else {
-            return new Grids_GridDoubleStats(ge);
+            return new Grids_GridDoubleStats(env);
         }
     }
 }

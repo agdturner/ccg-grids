@@ -72,9 +72,9 @@ public class Grids_ClipGrid        extends Grids_Processor {
 
     public void run() {
         try {
-            ge.setProcessor(this);
+            env.setProcessor(this);
             Grids_Files gf;
-            gf = ge.getFiles();
+            gf = env.getFiles();
             File input;
             input = new File(                    gf.getInputDataDir(),                    "p15oct.asc");
 //            input = new File(
@@ -85,8 +85,8 @@ public class Grids_ClipGrid        extends Grids_Processor {
 //                    "2017-08-02RADAR_UK_Composite_Highres.asc");
 
             //C:\Users\geoagdt\src\grids\data\input
-            Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(ge);
-            Grids_ImageExporter ie = new Grids_ImageExporter(ge);
+            Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(env);
+            Grids_ImageExporter ie = new Grids_ImageExporter(env);
             File workspaceDirectory = new File(gf.getGeneratedDataDir(),
                     "/Workspace/");
 
@@ -105,11 +105,11 @@ public class Grids_ClipGrid        extends Grids_Processor {
             boolean notLoadedAsGrid = true;
             if (notLoadedAsGrid) {
                 File dir;
-                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
+                dir = new File(env.getFiles().getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
                 gd = (Grids_GridDouble) GridDoubleFactory.create(dir, input);
                 // clip gridDouble
-//                dir = new File(ge.getFiles().getGeneratedGridDoubleDir(),
+//                dir = new File(env.getFiles().getGeneratedGridDoubleDir(),
 //                        "Clipped" + inputNameWithoutExtension);
                 long nRows = gd.getNRows();
                 long nCols = gd.getNCols();

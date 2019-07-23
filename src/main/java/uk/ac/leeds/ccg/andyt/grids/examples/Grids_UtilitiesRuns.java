@@ -131,7 +131,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
             boolean hoome)
             throws Exception {
         Grids_Files files;
-        files = ge.getFiles();
+        files = env.getFiles();
         int divisions = 100;
         String resolution = "" + divisions;
         //File dataDir = files.getDataDir();
@@ -141,13 +141,13 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         String yFilename = "casnullm";
 //        Grids_GridDoubleFactory gf;
 //        gf = new Grids_GridDoubleFactory(
-//                ge,
+//                env,
 //                files.getGeneratedGridDoubleFactoryDir(),
 //                -Double.MAX_VALUE,
 //                divisions,
 //                divisions,
 //                new Grids_Dimensions(divisions, divisions),
-//                new Grids_GridDoubleStatsNotUpdated(ge),
+//                new Grids_GridDoubleStatsNotUpdated(env),
 //                new Grids_GridChunkDoubleArrayFactory());
 //        Grids_GridDouble xGrid = (Grids_GridDouble) gf.create(
 //                new File(inDataDirectory + xFilename + ".asc"));
@@ -176,7 +176,7 @@ dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
         divx = (stats.getMax(true) - stats.getMin(true)) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(ge).toAsciiFile(densityPlotGrid, 
+        new Grids_ESRIAsciiGridExporter(env).toAsciiFile(densityPlotGrid, 
                 new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"));
         PrintWriter pw = null;
         try {

@@ -269,10 +269,10 @@ public class Grids_GridDoubleTest {
         Grids_Dimensions dimensions;
         dimensions = getDimensions(nRows, nCols);
         Grids_GridDoubleStats gridStatistics;
-        gridStatistics = new Grids_GridDoubleStats(gridDoubleFactory.ge);
+        gridStatistics = new Grids_GridDoubleStats(gridDoubleFactory.env);
         result = gridDoubleFactory.create(
                 gridStatistics,
-                gridDoubleFactory.ge.getFiles().getGeneratedGridDoubleDir(),
+                gridDoubleFactory.env.getFiles().getGeneratedGridDoubleDir(),
                 gridDoubleFactory.GridChunkDoubleFactory,
                 nRows,
                 nCols,
@@ -294,7 +294,7 @@ public class Grids_GridDoubleTest {
 //        HOOME = true;
 //        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
 //        initDir();
-//        ge = new Grids_Environment(dir);
+//        env = new Grids_Environment(dir);
 //        Grids_GridDoubleFactory gridFactory;
 //
 //        int chunkNRows;
@@ -309,7 +309,7 @@ public class Grids_GridDoubleTest {
 //        nCols = 1000;
 //        name = "TestGrid2";
 //
-//        gridFactory = getFactory(ge, dir, chunkNRows, chunkNCols, nRows, nCols, 
+//        gridFactory = getFactory(env, dir, chunkNRows, chunkNCols, nRows, nCols, 
 //                noDataValue, chunkFactory, HOOME);
 //
 //        Grids_GridDouble g;
@@ -367,7 +367,7 @@ public class Grids_GridDoubleTest {
 //        HOOME = true;
 //        chunkFactory = new Grids_GridChunkDoubleArrayFactory();
 //        initDir();
-//        ge = new Grids_Environment(dir);
+//        env = new Grids_Environment(dir);
 //        Grids_GridDoubleFactory gridFactory;
 //
 //        int chunkNRows;
@@ -384,7 +384,7 @@ public class Grids_GridDoubleTest {
 //        nCols = 100;
 //        name = "TestGrid1";
 //
-//        gridFactory = getFactory(ge, dir, chunkNRows, chunkNCols, nRows, nCols,
+//        gridFactory = getFactory(env, dir, chunkNRows, chunkNCols, nRows, nCols,
 //                noDataValue, chunkFactory, HOOME);
 //
 //        Grids_GridDouble g;

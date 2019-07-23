@@ -20,7 +20,7 @@ public abstract class Grids_AbstractGridChunkNumberIterator extends Grids_Abstra
     protected Grids_AbstractGridChunkNumberIterator(){}
     
     public Grids_AbstractGridChunkNumberIterator(Grids_AbstractGridChunkNumber chunk) {
-        super(chunk.ge);
+        super(chunk.env);
         Chunk = chunk;
         Grid = Chunk.getGrid();        
     }

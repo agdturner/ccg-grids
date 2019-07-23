@@ -23,7 +23,6 @@ import java.io.StreamTokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -57,14 +56,14 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     public Grids_ESRIAsciiGridImporter(
             File f,
             Grids_Processor processor) {
-        super(processor.ge);
+        super(processor.env);
         this.Processor = processor;
         init(f);
     }
 
     private void init(File f) {
         file = f;
-        BR = Generic_IO.getBufferedReader(file);
+        BR = env.env.io.getBufferedReader(file);
         ST = new StreamTokenizer(BR);
     }
 

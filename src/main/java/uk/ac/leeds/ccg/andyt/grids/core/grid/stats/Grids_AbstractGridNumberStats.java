@@ -112,15 +112,15 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
             boolean hoome) {
         try {
             String result = toString();
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                    if (!ge.swapChunk(ge.HOOMEF)) {
+                env.clearMemoryReserve();
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return toString(hoome);
             } else {
                 throw e;
@@ -167,17 +167,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //    public final Long getN(boolean hoome) {
 //        try {
 //            long result = getN();
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(false);
+//                env.initMemoryReserve(false);
 //                return getN(hoome);
 //            } else {
 //                throw e;
@@ -211,17 +211,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //    public final BigDecimal getSum(boolean hoome) {
 //        try {
 //            BigDecimal result = getSum();
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return getSum(hoome);
 //            } else {
 //                throw e;
@@ -249,17 +249,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            boolean hoome) {
 //        try {
 //            Number result = getMin(update);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return getMin(update, hoome);
 //            } else {
 //                throw e;
@@ -290,17 +290,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            boolean hoome) {
 //        try {
 //            Number result = getMax(update);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return getMax(
 //                        update,
 //                        hoome);
@@ -330,7 +330,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        if (Grid instanceof Grids_GridInt) {
 //            Grids_GridInt g = (Grids_GridInt) Grid;
 //            HashSet<Integer> mode = new HashSet<>();
-//            int noDataValue = g.getNoDataValue(ge.HOOME);
+//            int noDataValue = g.getNoDataValue(env.HOOME);
 //            Object[] tmode = initMode(
 //                    g,
 //                    noDataValue);
@@ -347,7 +347,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //                // Do remainder of the row
 //                row = cellID.getRow();
 //                for (col = cellID.getCol() + 1; col < nCols; col++) {
-//                    value = g.getCell(row, col, ge.HOOME);
+//                    value = g.getCell(row, col, env.HOOME);
 //                    if (value != noDataValue) {
 //                        count = count(g, row, col, nRows, nCols, value);
 //                        if (count > modeCount) {
@@ -364,7 +364,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //                // Do remainder of the grid
 //                for (row++; row < nRows; row++) {
 //                    for (col = 0; col < nCols; col++) {
-//                        value = g.getCell(row, col, ge.HOOME);
+//                        value = g.getCell(row, col, env.HOOME);
 //                        if (value != noDataValue) {
 //                            count = count(
 //                                    g,
@@ -392,7 +392,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            Grids_GridDouble g = (Grids_GridDouble) Grid;
 //            //TDoubleHashSet mode = new TDoubleHashSet();
 //            HashSet<Double> mode = new HashSet<>();
-//            double noDataValue = g.getNoDataValue(ge.HOOME);
+//            double noDataValue = g.getNoDataValue(env.HOOME);
 //            Object[] tmode = initMode(g, nRows, nCols, noDataValue);
 //            if (tmode[0] == null) {
 //                return mode;
@@ -405,7 +405,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //                // Do remainder of the row
 //                row = cellID.getRow();
 //                for (col = cellID.getCol() + 1; col < nCols; col++) {
-//                    value = g.getCell(row, col, ge.HOOME);
+//                    value = g.getCell(row, col, env.HOOME);
 //                    if (value != noDataValue) {
 //                        count = count(g, row, col, nRows, nCols, value);
 //                        if (count > modeCount) {
@@ -422,7 +422,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //                // Do remainder of the grid
 //                for (row++; row < nRows; row++) {
 //                    for (col = 0; col < nCols; col++) {
-//                        value = g.getCell(row, col, ge.HOOME);
+//                        value = g.getCell(row, col, env.HOOME);
 //                        if (value != noDataValue) {
 //                            count = count(g, row, col, nRows, nCols, value);
 //                            if (count > modeCount) {
@@ -565,17 +565,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //                    nRows,
 //                    nCols,
 //                    value);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (ge.swapChunk_Account(hoome) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (env.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return count(
 //                        g,
 //                        row,
@@ -656,17 +656,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            boolean hoome) {
 //        try {
 //            long result = count(g, row, col, nRows, nCols, value);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (ge.swapChunk_Account(hoome) < 1L) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (env.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return count(g, row, col, nRows, nCols, value, hoome);
 //            } else {
 //                throw e;
@@ -732,17 +732,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            boolean hoome) {
 //        try {
 //            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return getArithmeticMean(numberOfDecimalPlaces, hoome);
 //            } else {
 //                throw e;
@@ -778,17 +778,17 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            boolean hoome) {
 //        try {
 //            BigDecimal result = getStandardDeviation(numberOfDecimalPlaces);
-//            ge.checkAndMaybeFreeMemory(hoome);
+//            env.checkAndMaybeFreeMemory(hoome);
 //            return result;
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
-//                ge.clearMemoryReserve();
-//                if (ge.swapChunkExcept_Account(Grid, hoome) < 1L) {
-//                    if (!ge.swapChunk(ge.HOOMEF)) {
+//                env.clearMemoryReserve();
+//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
 //                }
-//                ge.initMemoryReserve(ge.HOOMEF);
+//                env.initMemoryReserve(env.HOOMEF);
 //                return getStandardDeviation(
 //                        numberOfDecimalPlaces,
 //                        hoome);

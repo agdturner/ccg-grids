@@ -133,8 +133,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     protected void init() {
         Directory.mkdir();
-        ge.setDataToSwap(true);
-        ge.addGrid(this);
+        env.setDataToSwap(true);
+        env.addGrid(this);
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             result += ",ChunkIDChunkMap.size(" + ChunkIDChunkMap.size() + ")";
         }
         HashSet<Grids_AbstractGrid> grids;
-        grids = ge.getGrids();
+        grids = env.getGrids();
         if (grids == null) {
             result += ",Grids(null)";
         } else {
@@ -705,7 +705,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         File dir = getDirectory();
         dir.mkdirs();
         File f = new File(dir, "thisFile");
-        Generic_IO.writeObject(this, f);
+        env.env.io.writeObject(this, f);
     }
 
     /**
@@ -777,7 +777,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
                 File file = new File(getDirectory(),
                         chunkID.getRow() + "_" + chunkID.getCol());
                 file.getParentFile().mkdirs();
-                Generic_IO.writeObject(gridChunk, file);
+                env.env.io.writeObject(gridChunk, file);
                 //System.gc();
                 gridChunk.setSwapUpToDate(true);
             }
@@ -843,22 +843,22 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunk_AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-            partResult = ge.checkAndMaybeFreeMemory_AccountDetail(hoome);
-            ge.combine(result, partResult);
+            partResult = env.checkAndMaybeFreeMemory_AccountDetail(hoome);
+            env.combine(result, partResult);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunk_AccountDetail();
                 if (result.isEmpty()) {
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(hoome);
-                ge.combine(result, partResult);
+                partResult = env.initMemoryReserve_AccountDetail(hoome);
+                env.combine(result, partResult);
                 partResult = swapChunk_AccountDetail(hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -891,20 +891,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             Grids_2D_ID_int result;
             result = swapChunk_AccountChunk();
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int result;
                 result = swapChunk_AccountChunk();
                 if (result == null) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return swapChunk_AccountChunk(
                         checkAndMaybeFreeMemory, hoome);
             } else {
@@ -967,20 +967,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             Grids_2D_ID_int result;
             result = swapChunkExcept_AccountChunk(chunkIDs);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int result;
                 result = swapChunkExcept_AccountChunk(chunkIDs);
                 if (result == null) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return result;
             } else {
                 throw e;
@@ -1044,11 +1044,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             swapChunk(chunkID);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
                 swapChunk(chunkID, checkAndMaybeFreeMemory,
                         hoome);
@@ -1090,12 +1090,12 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             boolean result = swapChunk();
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
                 return swapChunk(checkAndMaybeFreeMemory, hoome);
             } else {
@@ -1140,23 +1140,23 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkID);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunkExcept_AccountDetail(chunkID);
                 if (result.isEmpty()) {
-                    result = ge.swapChunkExcept_AccountDetail(
+                    result = env.swapChunkExcept_AccountDetail(
                             this, chunkID, false);
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(this, chunkID, hoome);
-                ge.combine(result, partResult);
+                partResult = env.initMemoryReserve_AccountDetail(this, chunkID, hoome);
+                env.combine(result, partResult);
                 partResult = swapChunkExcept_AccountDetail(chunkID);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -1204,20 +1204,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             Grids_2D_ID_int result = swapChunkExcept_AccountChunk(chunkID);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 Grids_2D_ID_int result;
                 result = swapChunkExcept_AccountChunk(chunkID);
                 if (result == null) {
-                    if (ge.swapChunkExcept_Account(this, chunkID, false) < 1L) {
+                    if (env.swapChunkExcept_Account(this, chunkID, false) < 1L) {
                         throw e;
                     }
                 }
-                ge.initMemoryReserve(this, chunkID, hoome);
+                env.initMemoryReserve(this, chunkID, hoome);
                 return result;
             } else {
                 throw e;
@@ -1265,28 +1265,28 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkID);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunkExcept_AccountDetail(chunkID);
                 if (result.isEmpty()) {
-                    result = ge.swapChunkExcept_AccountDetail(
+                    result = env.swapChunkExcept_AccountDetail(
                             this, chunkID, false);
                     if (result.isEmpty()) {
                         throw e;
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(
+                partResult = env.initMemoryReserve_AccountDetail(
                         this, chunkID, hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 partResult = swapChunksExcept_AccountDetail(
                         chunkID, checkAndMaybeFreeMemory, hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -1329,10 +1329,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public void swapChunks(boolean hoome) {
         try {
             swapChunks();
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 freeSomeMemoryAndResetReserve(hoome, e);
                 swapChunks(hoome);
             } else {
@@ -1374,20 +1374,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             long result = swapChunksExcept_Account(chunks);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                long result = ge.swapChunkExcept_Account(this, chunks, false);
+                env.clearMemoryReserve();
+                long result = env.swapChunkExcept_Account(this, chunks, false);
                 if (result < 1L) {
-                    result = ge.swapChunkExcept_Account(this, chunks, false);
+                    result = env.swapChunkExcept_Account(this, chunks, false);
                     if (result < 1L) {
                         throw e;
                     }
                 }
-                result += ge.initMemoryReserve_Account(
+                result += env.initMemoryReserve_Account(
                         this, chunks, hoome);
                 result += swapChunksExcept_Account(chunks,
                         checkAndMaybeFreeMemory, hoome);
@@ -1418,29 +1418,29 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunksExcept_AccountDetail(chunkIDs);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunkExcept_AccountDetail(chunkIDs);
                 if (result.isEmpty()) {
-                    ge.addToNotToSwap(this, chunkIDs);
-                    result = ge.swapChunk_AccountDetail(ge.HOOMEF);
+                    env.addToNotToSwap(this, chunkIDs);
+                    result = env.swapChunk_AccountDetail(env.HOOMEF);
                     if (result.isEmpty()) {
                         throw e;
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(
+                partResult = env.initMemoryReserve_AccountDetail(
                         this, chunkIDs, hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 partResult = swapChunksExcept_AccountDetail(
                         chunkIDs, checkAndMaybeFreeMemory,
                         hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -1497,20 +1497,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         try {
             long result = swapChunkExcept_Account(chunkID);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                long result = ge.swapChunkExcept_Account(this, chunkID, false);
+                env.clearMemoryReserve();
+                long result = env.swapChunkExcept_Account(this, chunkID, false);
                 if (result < 1L) {
-                    result = ge.swapChunkExcept_Account(this, chunkID, false);
+                    result = env.swapChunkExcept_Account(this, chunkID, false);
                     if (result < 1L) {
                         throw e;
                     }
                 }
-                result += ge.initMemoryReserve_Account(this, chunkID, hoome);
+                result += env.initMemoryReserve_Account(this, chunkID, hoome);
                 result += swapChunksExcept_Account(chunkID, hoome);
                 return result;
             } else {
@@ -1559,19 +1559,19 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean hoome) {
         try {
             long result = swapChunksExcept_Account(chunkID);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                long result = ge.swapChunkExcept_Account(this, chunkID, false);
+                env.clearMemoryReserve();
+                long result = env.swapChunkExcept_Account(this, chunkID, false);
                 if (result < 1L) {
-                    result = ge.swapChunkExcept_Account(this, chunkID, false);
+                    result = env.swapChunkExcept_Account(this, chunkID, false);
                     if (result < 1L) {
                         throw e;
                     }
                 }
-                result += ge.initMemoryReserve_Account(this, chunkID, hoome);
+                result += env.initMemoryReserve_Account(this, chunkID, hoome);
                 result += swapChunksExcept_Account(chunkID, hoome);
                 return result;
             } else {
@@ -1636,20 +1636,20 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunkExcept_AccountDetail(chunkIDs);
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunkExcept_AccountDetail(chunkIDs);
                 if (result == null) {
-                    if (!ge.swapChunk(ge.HOOMEF)) {
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return result;
             } else {
                 throw e;
@@ -1712,25 +1712,25 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
             result = swapChunks_AccountDetail();
             if (checkAndMaybeFreeMemory) {
-                ge.checkAndMaybeFreeMemory(hoome);
+                env.checkAndMaybeFreeMemory(hoome);
             }
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
                 result = swapChunks_AccountDetail();
                 if (result.isEmpty()) {
-                    result = ge.swapChunk_AccountDetail(false);
+                    result = env.swapChunk_AccountDetail(false);
                     if (result.isEmpty()) {
                         throw e;
                     }
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-                partResult = ge.initMemoryReserve_AccountDetail(hoome);
-                ge.combine(result, partResult);
+                partResult = env.initMemoryReserve_AccountDetail(hoome);
+                env.combine(result, partResult);
                 partResult = swapChunks_AccountDetail(checkAndMaybeFreeMemory, hoome);
-                ge.combine(result, partResult);
+                env.combine(result, partResult);
                 return result;
             } else {
                 throw e;
@@ -1792,16 +1792,16 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             boolean hoome) {
         try {
             long result = swapChunks_Account(cri0, cci0, cri1, cci1);
-            ge.checkAndMaybeFreeMemory(hoome);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
+                env.clearMemoryReserve();
                 if (!swapChunk()) {
                     throw e;
                 }
                 long result = 1;
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 result += swapChunks_Account(cri0, cci0, cri1, cci1, hoome);
                 return result;
             } else {
@@ -2464,8 +2464,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
         while (ite.hasNext()) {
             g = ite.next();
             chunkIDs = chunksNotToSwapToFile.get(g);
-            if (ge.swapChunkExcept_Account(g, chunkIDs, false) > 0) {
-                ge.initMemoryReserve(chunksNotToSwapToFile, ge.HOOMET);
+            if (env.swapChunkExcept_Account(g, chunkIDs, false) > 0) {
+                env.initMemoryReserve(chunksNotToSwapToFile, env.HOOMET);
                 return;
             }
         }
@@ -2481,35 +2481,35 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
 
     public void freeSomeMemoryAndResetReserve(
             HashSet<Grids_2D_ID_int> chunkIDs, OutOfMemoryError e) {
-        if (ge.swapChunkExcept_Account(this, chunkIDs, false) < 1L) {
+        if (env.swapChunkExcept_Account(this, chunkIDs, false) < 1L) {
             throw e;
         }
-        ge.initMemoryReserve(this, chunkIDs, ge.HOOMET);
+        env.initMemoryReserve(this, chunkIDs, env.HOOMET);
     }
 
     public void freeSomeMemoryAndResetReserve(
             Grids_2D_ID_int chunkID, OutOfMemoryError e) {
-        if (ge.swapChunkExcept_Account(this, false) < 1L) {
-            if (ge.swapChunkExcept_Account(this, chunkID, false) < 1L) {
+        if (env.swapChunkExcept_Account(this, false) < 1L) {
+            if (env.swapChunkExcept_Account(this, chunkID, false) < 1L) {
                 throw e;
             }
         }
-        ge.initMemoryReserve(this, chunkID, ge.HOOMET);
+        env.initMemoryReserve(this, chunkID, env.HOOMET);
     }
 
     public void freeSomeMemoryAndResetReserve(
             boolean hoome, OutOfMemoryError e) {
-        if (!ge.swapChunk(ge.HOOMEF)) {
+        if (!env.swapChunk(env.HOOMEF)) {
             throw e;
         }
-        ge.initMemoryReserve();
+        env.initMemoryReserve();
     }
 
     public void freeSomeMemoryAndResetReserve(OutOfMemoryError e) {
-        if (ge.swapChunkExcept_Account(this, false) < 1L) {
+        if (env.swapChunkExcept_Account(this, false) < 1L) {
             throw e;
         }
-        ge.initMemoryReserve(this, ge.HOOMET);
+        env.initMemoryReserve(this, env.HOOMET);
     }
 
     /**

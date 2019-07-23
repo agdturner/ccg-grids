@@ -121,7 +121,7 @@ public class Grids_ProcessorDEM
             double distance, double weightIntersect, double weightFactor,
             boolean hoome) throws IOException {
         try {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             String methodName = "getSlopeAspect(" + g.getClass().getName()
                     + ",double,double,double,boolean)";
             System.out.println(methodName);
@@ -236,7 +236,7 @@ public class Grids_ProcessorDEM
                     nrows, ncols, dimensions);
             slopeAndAspect[1].setName(filename);
             slopeAndAspect[1].writeToFile();
-            ge.getGrids().add(slopeAndAspect[1]);
+            env.getGrids().add(slopeAndAspect[1]);
             System.out.println("Initialising slopeAndAspect[ 2 ]");
             if (shortName) {
                 filename = "sin_aspect_N_" + averageDistance;
@@ -368,8 +368,8 @@ public class Grids_ProcessorDEM
                     for (cci = 0; cci < chunkCols; cci++) {
                         cd = gd.getChunk(cri, cci);
                         chunkID = cd.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
@@ -454,7 +454,7 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToSwap(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -475,13 +475,13 @@ public class Grids_ProcessorDEM
                         chunkNcols = g.getChunkNCols(cci);
                         ci = gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
-                        ge.addToNotToSwap(g, chunkID);
-                        ge.checkAndMaybeFreeMemory();
+                        env.addToNotToSwap(g, chunkID);
+                        env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
                             y = g.getCellYDouble(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
-                                ge.checkAndMaybeFreeMemory();
+                                env.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
                                 x = g.getCellXDouble(col);
                                 heightInt = ci.getCell(cellRow, cellCol);
@@ -561,7 +561,7 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         }
-                        ge.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToSwap(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -569,11 +569,11 @@ public class Grids_ProcessorDEM
             return slopeAndAspect;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
+                env.clearMemoryReserve();
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 return getSlopeAspect(g, distance, weightIntersect, weightFactor, hoome);
             }
             throw e;
@@ -635,7 +635,7 @@ public class Grids_ProcessorDEM
     protected double[] getSlopeAspect(Grids_AbstractGridNumber g, long rowIndex,
             long colIndex, double x, double y, double distance,
             double weightIntersect, double weightFactor) {
-        ge.getGrids().add(g);
+        env.getGrids().add(g);
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
             int noDataValue = gi.getNoDataValue();
@@ -763,7 +763,7 @@ public class Grids_ProcessorDEM
     public Grids_GridDouble getHollowFilledDEM(Grids_AbstractGridNumber g,
             Grids_GridDoubleFactory gdf, double outflowHeight, int maxIterations,
             HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) {
-        ge.getGrids().add(g);
+        env.getGrids().add(g);
         // Intitialise variables
         Grids_GridDouble result;
         long nRows;
@@ -972,7 +972,7 @@ public class Grids_ProcessorDEM
                                         }
                                     }
                                     if (noDataCount + outflowCellCount == toVisitSet3.size()) {
-                                        // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
+                                        // env.println("Hollow surrounded by noDataValue or outflow cells!!!");
                                         // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
                                         outflowCellIDs.addAll(hollowSet);
                                         calculated2 = true;
@@ -1228,7 +1228,7 @@ public class Grids_ProcessorDEM
                                         }
                                     }
                                     if (noDataCount + outflowCellCount == toVisitSet3.size()) {
-                                        // ge.println("Hollow surrounded by noDataValue or outflow cells!!!");
+                                        // env.println("Hollow surrounded by noDataValue or outflow cells!!!");
                                         // Add _CellIDs of this hollow to outflowCellIDs so that it is not revisited.
                                         outflowCellIDs.addAll(hollowSet);
                                         calculated2 = true;
@@ -1316,7 +1316,7 @@ public class Grids_ProcessorDEM
             long nrows,
             long ncols,
             boolean treatNoDataValueAsOutflow) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         HashSet outflowCellIDs = new HashSet();
         if (!(outflowCellIDsSet == null)) {
             outflowCellIDs.addAll(outflowCellIDsSet);
@@ -1386,7 +1386,7 @@ public class Grids_ProcessorDEM
             long nrows,
             long ncols,
             boolean treatNoDataValueAsOutflow) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         HashSet initialHollowsHashSet = new HashSet();
         int k;
         // Initialise hollows
@@ -1499,7 +1499,7 @@ public class Grids_ProcessorDEM
             Grids_AbstractGridNumber g,
             HashSet cellIDs,
             boolean treatNoDataValueAsOutflow) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         HashSet result = new HashSet();
         HashSet visited1 = new HashSet();
         Grids_2D_ID_long cellID;
@@ -1627,7 +1627,7 @@ public class Grids_ProcessorDEM
     private HashSet getHollowFilledDEMCalculateHollows(
             Grids_AbstractGridNumber g,
             HashSet cellIDs) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         if ((g.getNCols() * g.getNRows()) / 4 < cellIDs.size()) {
             // return getInitialHollowsHashSet( grid );
         }
@@ -1818,7 +1818,7 @@ public class Grids_ProcessorDEM
             double distance, double weightIntersect, double weightFactor,
             Grids_GridDoubleFactory gdf, Grids_GridIntFactory gif,
             boolean swapOutInitialisedFiles, boolean swapOutProcessedChunks) {
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
                 || gdf.getChunkNRows() != gif.getChunkNRows()) {
             log(0, "Warning! ((gridDoubleFactory.getChunkNcols() "
@@ -1836,7 +1836,7 @@ public class Grids_ProcessorDEM
         File file;
         File dir;
         for (int i = 0; i < metrics1.length; i++) {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             if (isGridInt(i)) {
                 dir = Files.createNewFile(Files.getGeneratedGridIntDir());
             } else {
@@ -1857,12 +1857,12 @@ public class Grids_ProcessorDEM
                     metrics1[i].setName(metrics1Names[i]);
                     isInitialised = true;
                 } catch (OutOfMemoryError e) {
-                    ge.clearMemoryReserve();
+                    env.clearMemoryReserve();
                     System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                    if (!ge.swapChunk(ge.HOOMEF)) {
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
-                    ge.initMemoryReserve();
+                    env.initMemoryReserve();
                 }
                 System.out.println("Initialised result[" + i + "]");
             } while (!isInitialised);
@@ -2055,7 +2055,7 @@ public class Grids_ProcessorDEM
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
                 + "Grids_Dimensions,double,double,double,boolean)";
         System.out.println(methodName);
-        ge.checkAndMaybeFreeMemory();
+        env.checkAndMaybeFreeMemory();
         String name;
         String underScore = "_";
         double cellsize = dimensions.getCellsize().doubleValue();
@@ -2112,12 +2112,12 @@ public class Grids_ProcessorDEM
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkCol(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    ge.initNotToSwap();
-                    ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToSwap();
+                    env.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
                     //ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(metrics1, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(metrics1, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
                             chunkRow, chunkCol);
                     boolean doLoop = true;
@@ -2138,7 +2138,7 @@ public class Grids_ProcessorDEM
                                 cellHeight = gridChunkDouble.getCell(
                                         cellRow, cellCol);
                                 if (cellHeight != noDataValue) {
-                                    ge.checkAndMaybeFreeMemory();
+                                    env.checkAndMaybeFreeMemory();
                                     metrics1Calculate_All(
                                             gridDouble,
                                             noDataValue,
@@ -2171,8 +2171,8 @@ public class Grids_ProcessorDEM
                     System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
                     if (swapOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
-                            ge.checkAndMaybeFreeMemory();
-                            metrics1[i].swapChunk(chunkID, true, ge.HOOME);
+                            env.checkAndMaybeFreeMemory();
+                            metrics1[i].swapChunk(chunkID, true, env.HOOME);
                         }
                     }
                 }
@@ -2189,12 +2189,12 @@ public class Grids_ProcessorDEM
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkColIndex(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    ge.initNotToSwap();
-                    ge.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToSwap();
+                    env.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
                     //ge.addToNotToSwap(g, chunkID);
-                    ge.addToNotToSwap(metrics1, chunkID);
-                    ge.checkAndMaybeFreeMemory();
+                    env.addToNotToSwap(metrics1, chunkID);
+                    env.checkAndMaybeFreeMemory();
                     gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
                             chunkRow, chunkCol);
                     boolean doLoop = true;
@@ -2213,7 +2213,7 @@ public class Grids_ProcessorDEM
                                 x = gridInt.getCellXDouble(cellCol);
                                 cellHeight = gridChunkInt.getCell(cellRow, cellCol);
                                 if (cellHeight != noDataValue) {
-                                    ge.checkAndMaybeFreeMemory();
+                                    env.checkAndMaybeFreeMemory();
                                     metrics1Calculate_All(
                                             gridInt,
                                             noDataValue,
@@ -2247,8 +2247,8 @@ public class Grids_ProcessorDEM
                             "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
                     if (swapOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
-                            ge.checkAndMaybeFreeMemory();
-                            metrics1[i].swapChunk(chunkID, true, ge.HOOME);
+                            env.checkAndMaybeFreeMemory();
+                            metrics1[i].swapChunk(chunkID, true, env.HOOME);
                         }
                     }
                 }
@@ -3647,7 +3647,7 @@ public class Grids_ProcessorDEM
             double weightIntersect, double weightFactor, int samplingDensity,
             Grids_GridDoubleFactory gf, boolean hoome) {
         try {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             Grids_GridDouble[] result = new Grids_GridDouble[7];
             long ncols = g.getNCols();
             long nrows = g.getNRows();
@@ -3738,7 +3738,7 @@ public class Grids_ProcessorDEM
     public Grids_GridDouble getMaxFlowDirection(            Grids_GridDouble g,
             Grids_GridDoubleFactory gf,            boolean hoome) {
         try {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             long nrows = g.getNRows();
             long ncols = g.getNCols();
             double noDataValue = g.getNoDataValue();
@@ -3832,7 +3832,7 @@ public class Grids_ProcessorDEM
             double distance, double weightFactor, double weightIntersect,
             Grids_GridDoubleFactory gf, boolean hoome) {
         try {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             File dir;
             dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
             Grids_GridDouble upSlopeAreaMetrics;
@@ -3852,11 +3852,11 @@ public class Grids_ProcessorDEM
             return upSlopeAreaMetrics;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                ge.clearMemoryReserve();
-                if (!ge.swapChunk(ge.HOOMEF)) {
+                env.clearMemoryReserve();
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
-                ge.initMemoryReserve();
+                env.initMemoryReserve();
                 getUpSlopeAreaMetrics(grid, distance, weightFactor,
                         weightIntersect, gf, hoome);
             }
@@ -3877,7 +3877,7 @@ public class Grids_ProcessorDEM
     public HashSet getInitialPeaksHashSetAndSetTheirValue(Grids_GridDouble grid,
             Grids_GridDouble upSlopeAreaMetrics, boolean hoome) {
         try {
-            ge.checkAndMaybeFreeMemory();
+            env.checkAndMaybeFreeMemory();
             HashSet initialPeaksHashSet = new HashSet();
             long nrows = grid.getNRows();
             long ncols = grid.getNCols();
@@ -4007,8 +4007,8 @@ public class Grids_ProcessorDEM
 //            Grids_GridDoubleFactory gridFactory,
 //            boolean hoome ) {
 //        int _MessageLength = 1000;
-//        String _Message0 = ge.initString( _MessageLength, hoome );
-//        String _Message = ge.initString( _MessageLength, hoome );
+//        String _Message0 = env.initString( _MessageLength, hoome );
+//        String _Message = env.initString( _MessageLength, hoome );
 //        Grids_GridDouble flowAccumulation = getInitialFlowAccumulation(
 //                grid,
 //                precipitation,
@@ -4016,9 +4016,9 @@ public class Grids_ProcessorDEM
 //                gridFactory,
 //                hoome );
 //        _Message = "intitialFlowAccumulation";
-//        _Message = ge.println( _Message, _Message0 );
+//        _Message = env.println( _Message, _Message0 );
 //        _Message = flowAccumulation.toString();
-//        _Message = ge.println( _Message, _Message0 );
+//        _Message = env.println( _Message, _Message0 );
 //        for ( int iteration = 0; iteration < iterations; iteration ++ ) {
 //            doFlowAccumulation(
 //                    flowAccumulation,
@@ -4028,9 +4028,9 @@ public class Grids_ProcessorDEM
 //                    gridFactory,
 //                    hoome );
 //            _Message = "flowAccumulation iteration " + ( iteration + 1 );
-//            _Message = ge.println( _Message, _Message0 );
+//            _Message = env.println( _Message, _Message0 );
 //            _Message = flowAccumulation.toString();
-//            _Message = ge.println( _Message, _Message0 );
+//            _Message = env.println( _Message, _Message0 );
 //        }
 //        return flowAccumulation;
 //    }

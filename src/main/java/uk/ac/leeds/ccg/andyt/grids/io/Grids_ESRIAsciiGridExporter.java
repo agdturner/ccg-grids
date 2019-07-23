@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.io;
 
 import java.io.File;
 import java.io.PrintWriter;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -42,7 +41,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param env
      */
     public Grids_ESRIAsciiGridExporter(Grids_Environment env) {
-        this.ge = env;
+        this.env = env;
         //this.initMemoryReserve( hoome );
     }
 
@@ -85,9 +84,9 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @return
      */
     public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) {
-        ge.initNotToSwap();
-        ge.checkAndMaybeFreeMemory();
-        try (PrintWriter pw = Generic_IO.getPrintWriter(file, false)) {
+        env.initNotToSwap();
+        env.checkAndMaybeFreeMemory();
+        try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {
             Grids_Dimensions dimensions;
             dimensions = g.getDimensions();
             long nrows = g.getNRows();
@@ -101,7 +100,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             long row;
             long col;
             int chunkRow0 = g.getChunkRow(nrows_minus_1);
-            ge.addToNotToSwap(g, chunkRow0);
+            env.addToNotToSwap(g, chunkRow0);
             int chunkRow;
             if (g.getClass() == Grids_GridInt.class) {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
@@ -111,9 +110,9 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 for (row = nrows_minus_1; row >= 0; row--) {
                     chunkRow = g.getChunkRow(row);
                     if (chunkRow0 != chunkRow) {
-                        ge.removeFromNotToSwap(g, chunkRow0);
-                        ge.addToNotToSwap(g, chunkRow);
-                        ge.checkAndMaybeFreeMemory();
+                        env.removeFromNotToSwap(g, chunkRow0);
+                        env.addToNotToSwap(g, chunkRow);
+                        env.checkAndMaybeFreeMemory();
                         chunkRow0 = chunkRow;
                     }
                     for (col = 0; col < ncols; col++) {
@@ -125,17 +124,17 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             pw.print(value + " ");
                         }
 //                        } catch (OutOfMemoryError e) {
-//                            g.ge.clearMemoryReserve();
+//                            g.env.clearMemoryReserve();
 //                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
 //                                    g.getChunkRow(row, hoome),
 //                                    g.getChunkCol(col, hoome));
-//                            if (g.ge.swapChunksExcept_Account(
+//                            if (g.env.swapChunksExcept_Account(
 //                                    g,
 //                                    chunkID,
 //                                    hoome) < 1L) {
 //                                throw e;
 //                            }
-//                            g.ge.initMemoryReserve(hoome);
+//                            g.env.initMemoryReserve(hoome);
 //
 //                            //pw.print( grid.getCell( row, col ) + " " );
 //                            value = gridInt.getCell(
@@ -168,9 +167,9 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     for (col = 0; col < ncols; col++) {
                         chunkRow = g.getChunkRow(row);
                         if (chunkRow0 != chunkRow) {
-                            ge.removeFromNotToSwap(g, chunkRow0);
-                            ge.addToNotToSwap(g, chunkRow);
-                            ge.checkAndMaybeFreeMemory();
+                            env.removeFromNotToSwap(g, chunkRow0);
+                            env.addToNotToSwap(g, chunkRow);
+                            env.checkAndMaybeFreeMemory();
                             chunkRow0 = chunkRow;
                         }
 //                        try {
@@ -191,17 +190,17 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             }
                         }
 //                        } catch (OutOfMemoryError e) {
-//                            g.ge.clearMemoryReserve();
+//                            g.env.clearMemoryReserve();
 //                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
 //                                    g.getChunkRow(row, hoome),
 //                                    g.getChunkCol(col, hoome));
-//                            if (g.ge.swapChunksExcept_Account(
+//                            if (g.env.swapChunksExcept_Account(
 //                                    g,
 //                                    chunkID,
 //                                    hoome) < 1L) {
 //                                throw e;
 //                            }
-//                            g.ge.initMemoryReserve(hoome);
+//                            g.env.initMemoryReserve(hoome);
 //                            value = gridDouble.getCell(
 //                                    row,
 //                                    col,

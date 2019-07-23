@@ -84,7 +84,7 @@ public class Grids_GenerateRoofData
 //    public void run_2()
 //            throws IOException {
 //        Grids_Dimensions _Dimensions = new Grids_Dimensions(
-//                ge,
+//                env,
 //        new BigDecimal("0"),
 //                new BigDecimal("0"),
 //                new BigDecimal("64"),
@@ -437,7 +437,7 @@ public class Grids_GenerateRoofData
                 / (double) (rowStartRidge - halfCellsize);
         double rowEndRidgeTanAngle = colRidgeHeight
                 / (double) ((nrows - rowEndRidge) - halfCellsize);
-        Grids_Files files = ge.getFiles();
+        Grids_Files files = env.getFiles();
         File dir;
         dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
