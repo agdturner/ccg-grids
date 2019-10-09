@@ -45,7 +45,10 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinaryFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
@@ -96,6 +99,11 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_GridChunkIntFactory
      */
+    public Grids_GridChunkBinaryFactory GridChunkBinaryFactory;
+
+    /**
+     * Grids_GridChunkIntFactory
+     */
     public Grids_GridChunkIntFactory GridChunkIntFactory;
 
     /**
@@ -107,6 +115,11 @@ public class Grids_Processor extends Grids_Object {
      * Grids_GridChunkIntMapFactory
      */
     public Grids_GridChunkIntMapFactory GridChunkIntMapFactory;
+
+    /**
+     * Grids_GridBinaryFactory
+     */
+    public Grids_GridBinaryFactory GridBinaryFactory;
 
     /**
      * Grids_GridIntFactory
@@ -196,6 +209,8 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories() {
         initChunkFactories();
+        GridBinaryFactory = new Grids_GridBinaryFactory(env,
+                GridChunkBinaryFactory, 512, 512, Grids_GridBinary.DefaultValue);
         GridIntFactory = new Grids_GridIntFactory(env, GridChunkIntFactory,
                 DefaultGridChunkIntFactory, 512, 512);
         GridDoubleFactory = new Grids_GridDoubleFactory(env,

@@ -366,7 +366,7 @@ public class Grids_ProcessorDEM
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        cd = gd.getChunk(cri, cci);
+                        cd = (Grids_AbstractGridChunkDouble) gd.getChunk(cri, cci);
                         chunkID = cd.getChunkID();
                         env.addToNotToSwap(g, chunkID);
                         env.checkAndMaybeFreeMemory();
@@ -473,7 +473,7 @@ public class Grids_ProcessorDEM
                     chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
-                        ci = gridInt.getChunk(cri, cci);
+                        ci = (Grids_AbstractGridChunkInt) gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
                         env.addToNotToSwap(g, chunkID);
                         env.checkAndMaybeFreeMemory();

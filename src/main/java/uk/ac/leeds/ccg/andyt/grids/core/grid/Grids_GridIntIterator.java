@@ -19,9 +19,9 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkRowMajorOrderIterator;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntArrayOrMapIterator;
@@ -34,7 +34,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkIntMap;
  * returned in row major order.
  */
 public class Grids_GridIntIterator
-        extends Grids_AbstractGridNumberIterator {
+        extends Grids_AbstractGridIterator {
 
     protected Grids_GridIntIterator() {
     }
@@ -80,8 +80,8 @@ public class Grids_GridIntIterator
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
-            Grids_AbstractGridChunkNumber chunk) {
+    public Grids_AbstractGridChunkRowMajorOrderIterator getChunkIterator(
+            Grids_AbstractGridChunk chunk) {
         if (chunk instanceof Grids_GridChunkIntArray) {
             return new Grids_GridChunkIntArrayOrMapIterator(
                     (Grids_GridChunkIntArray) chunk);

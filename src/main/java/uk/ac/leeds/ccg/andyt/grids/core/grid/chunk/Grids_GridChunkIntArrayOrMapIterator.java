@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
  * The values are not returned in any particular order.
  */
 public class Grids_GridChunkIntArrayOrMapIterator
-        extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
+        extends Grids_AbstractGridChunkRowMajorOrderIterator {
 
     protected int[][] Data;
 

@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
  * The values are not returned in any particular order.
  */
 public class Grids_GridChunkDoubleArrayOrMapIterator
-        extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
+        extends Grids_AbstractGridChunkRowMajorOrderIterator {
 
     protected double[][] Data;
 

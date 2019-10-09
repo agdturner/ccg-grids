@@ -21,8 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumber;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkNumberRowMajorOrderIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
@@ -30,33 +29,33 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
  * chunk in row major order. The values within each chunk are also returned in
  * row major order.
  */
-public abstract class Grids_AbstractGridNumberIterator
+public abstract class Grids_AbstractGridIterator
         extends Grids_AbstractIterator {
 
-    protected Grids_AbstractGridNumber Grid;
-    protected Grids_AbstractGridChunkNumber Chunk;
+    protected Grids_AbstractGrid Grid;
+    protected Grids_AbstractGridChunk Chunk;
     protected Grids_2D_ID_int ChunkID;
 //    protected Iterator<Grids_AbstractGridChunk> GridIterator;
     protected Iterator<Grids_2D_ID_int> GridIterator;
-    protected Grids_AbstractGridChunkNumberRowMajorOrderIterator ChunkIterator;
+    protected Grids_AbstractIterator ChunkIterator;
 
-    protected Grids_AbstractGridNumberIterator() {
+    protected Grids_AbstractGridIterator() {
     }
 
-    public Grids_AbstractGridNumberIterator(Grids_AbstractGridNumber grid) {
+    public Grids_AbstractGridIterator(Grids_AbstractGrid grid) {
         super(grid.env);
         Grid = grid;
     }
 
     protected abstract void initChunkIterator();
 
-    public abstract Grids_AbstractGridNumber getGrid();
+    public abstract Grids_AbstractGrid getGrid();
 
     public Iterator<Grids_2D_ID_int> getGridIterator() {
         return GridIterator;
     }
 
-    public Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator() {
+    public Grids_AbstractIterator getChunkIterator() {
         return ChunkIterator;
     }
 
@@ -66,8 +65,8 @@ public abstract class Grids_AbstractGridNumberIterator
      * @param chunk
      * @return
      */
-    public abstract Grids_AbstractGridChunkNumberRowMajorOrderIterator getChunkIterator(
-            Grids_AbstractGridChunkNumber chunk);
+    public abstract Grids_AbstractIterator getChunkIterator(
+            Grids_AbstractGridChunk chunk);
 
     /**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
@@ -102,11 +101,11 @@ public abstract class Grids_AbstractGridNumberIterator
             if (GridIterator.hasNext()) {
                 env.removeFromNotToSwap(Grid, ChunkID);
                 ChunkID = (Grids_2D_ID_int) GridIterator.next();
-                Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_AbstractGridChunk) Grid.ChunkIDChunkMap.get(ChunkID);
                 if (Chunk == null) {
                     Grid.loadIntoCacheChunk(ChunkID);
                 }
-                Chunk = (Grids_AbstractGridChunkNumber) Grid.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_AbstractGridChunk) Grid.ChunkIDChunkMap.get(ChunkID);
                 env.addToNotToSwap(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {

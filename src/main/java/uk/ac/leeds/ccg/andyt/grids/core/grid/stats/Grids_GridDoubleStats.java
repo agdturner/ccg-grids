@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
@@ -38,14 +37,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble
  * standard deviation would always require going through all the data again if
  * the values have changed.)
  */
-public class Grids_GridDoubleStats
-        extends Grids_AbstractGridNumberStats
-        implements Serializable {
-
-    /**
-     * A reference to the Grids_GridDouble.
-     */
-    public transient Grids_GridDouble Grid;
+public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
 
     /**
      * For storing the minimum value.
@@ -57,33 +49,19 @@ public class Grids_GridDoubleStats
      */
     protected double Max;
 
-    protected Grids_GridDoubleStats() {
-    }
-
     public Grids_GridDoubleStats(Grids_Environment ge) {
         super(ge);
-        init();
-    }
-
-    /**
-     * For initialisation.
-     *
-     * @param g
-     */
-    public final void init(Grids_GridDouble g) {
-        Grid = g;
-    }
-
-    /**
-     * For initialisation.
-     */
-    private void init() {
         Min = Double.MAX_VALUE;
         Max = -Double.MAX_VALUE;
-        N = 0;
         Sum = BigDecimal.ZERO;
-        NMin = 0;
-        NMax = 0;
+    }
+    
+    @Override
+    protected void init(){
+        super.init();
+        Min = Double.MAX_VALUE;
+        Max = -Double.MAX_VALUE;
+        Sum = BigDecimal.ZERO;
     }
 
     /**
@@ -97,15 +75,15 @@ public class Grids_GridDoubleStats
 
     /**
      *
-     * @return (Grids_GridDouble) Grid
+     * @return (Grids_GridDouble) grid
      */
     @Override
     public Grids_GridDouble getGrid() {
-        return (Grids_GridDouble) Grid;
+        return (Grids_GridDouble) grid;
     }
 
     /**
-     * Updates by going through all values in Grid.
+     * Updates by going through all values in grid.
      */
     @Override
     public void update() {
@@ -115,8 +93,7 @@ public class Grids_GridDoubleStats
         BigDecimal vBD;
         double v;
         double ndv = g.getNoDataValue();
-        Grids_GridDoubleIterator ite;
-        ite = g.iterator();
+        Grids_GridDoubleIterator ite = g.iterator();
         while (ite.hasNext()) {
             v = (Double) ite.next();
             if (Double.isFinite(v)) {
@@ -129,7 +106,7 @@ public class Grids_GridDoubleStats
     }
 
     protected void update(double v, BigDecimal vBD) {
-        N++;
+        n++;
         setSum(Sum.add(vBD));
         if (v < Min) {
             NMin = 1;
@@ -185,11 +162,6 @@ public class Grids_GridDoubleStats
 
     public void setMax(double max) {
         Max = max;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getName();
     }
 
     /**
@@ -284,7 +256,7 @@ public class Grids_GridDoubleStats
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
         BigDecimal diffFromMean;
-        Grids_GridDouble g = (Grids_GridDouble) Grid;
+        Grids_GridDouble g = (Grids_GridDouble) grid;
         double value;
         double ndv = g.getNoDataValue();
         Grids_GridDoubleIterator ite;

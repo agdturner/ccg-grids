@@ -18,40 +18,26 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
+
 /**
- * For iterating through the values in a Grids_GridChunkInt
- * instance. The values are not returned in any particular order.
+ * A factory for constructing Grids_AbstractGridChunkDouble instances.
  */
-public class Grids_GridChunkIntIterator extends Grids_AbstractGridChunkRowMajorOrderIterator {
+public class Grids_GridChunkBinaryFactory
+        extends Grids_AbstractGridChunkFactory {
 
-    protected int Value;
-
-    protected Grids_GridChunkIntIterator() {
+    public Grids_GridChunkBinaryFactory() {
     }
 
-    /**
-     * Creates a new instance of Grids_GridChunkIntIterator
-     *
-     * @param chunk The Grids_GridChunkInt to iterate over.
-     */
-    public Grids_GridChunkIntIterator(Grids_GridChunkInt chunk) {
-        super(chunk);
-        Value = chunk.getValue();
+    public Grids_GridChunkBinary create(Grids_GridBinary grid,
+            Grids_2D_ID_int chunkID) {
+        return new Grids_GridChunkBinary(grid, chunkID);
     }
 
-    /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration.
-     */
-    @Override
-    public Object next() {
-        next0();
-        return Value;
+    public Grids_GridChunkBinary create(Grids_GridChunkBinary chunk,
+            Grids_2D_ID_int chunkID) {
+        return new Grids_GridChunkBinary(chunk.getGrid(), chunkID);
     }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
 }

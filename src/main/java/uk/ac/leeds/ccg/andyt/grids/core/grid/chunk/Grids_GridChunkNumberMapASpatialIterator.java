@@ -22,7 +22,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
  * For iterating through the values in a Grids_GridChunkNumberMap instance. The
  * values are returned in no particular spatial order.
  */
-public abstract class Grids_GridChunkNumberMapASpatialIterator extends Grids_AbstractGridChunkNumberIterator {
+public abstract class Grids_GridChunkNumberMapASpatialIterator extends Grids_AbstractGridChunkIterator {
 
     protected int NumberOfCells;
     protected int NumberOfDefaultValues;

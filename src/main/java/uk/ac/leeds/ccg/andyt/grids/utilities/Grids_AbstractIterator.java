@@ -24,8 +24,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 /**
  * A basic wrapper for the interface.
  */
-public abstract class Grids_AbstractIterator
-        extends Grids_Object
+public abstract class Grids_AbstractIterator extends Grids_Object
         implements Iterator {
 
     protected Grids_AbstractIterator(){}

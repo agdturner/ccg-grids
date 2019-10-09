@@ -20,7 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 import java.io.File;
 import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumberFactory;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
@@ -760,7 +760,7 @@ public class Grids_GenerateRoofData
      *
      */
     public Grids_GridDouble disaggregate(Grids_Dimensions dimensions,
-            Grids_GridDouble g, Grids_AbstractGridNumberFactory gf) {
+            Grids_GridDouble g, Grids_AbstractGridFactory gf) {
         long nRows = g.getNRows();
         long nCols = g.getNCols();
         File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());

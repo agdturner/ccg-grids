@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdat
  * A factory for constructing Grids_GridDouble instances.
  */
 public class Grids_GridDoubleFactory
-        extends Grids_AbstractGridNumberFactory {
+        extends Grids_AbstractGridFactory {
 
     /**
      * The NoDataValue for creating chunks.
@@ -172,7 +172,7 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with all values taken from g.
      */
     @Override
-    public Grids_GridDouble create(File dir, Grids_AbstractGridNumber g,
+    public Grids_GridDouble create(File dir, Grids_AbstractGrid g,
             long startRow, long startCol, long endRow, long endCol) {
         return create(new Grids_GridDoubleStatsNotUpdated(env), dir, g,
                 DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
@@ -193,12 +193,10 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with all values taken from g.
      */
     public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
-            Grids_AbstractGridNumber g, Grids_AbstractGridChunkDoubleFactory cf,
+            Grids_AbstractGrid g, Grids_AbstractGridChunkDoubleFactory cf,
             long startRow, long startCol, long endRow, long endCol) {
-        Grids_GridDouble result;
-        result = new Grids_GridDouble(getStats(stats), dir, g, cf, ChunkNRows,
+        return new Grids_GridDouble(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
-        return result;
     }
 
     ////////////////////////
@@ -241,11 +239,9 @@ public class Grids_GridDoubleFactory
     public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
             File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
             long startRow, long startCol, long endRow, long endCol) {
-        Grids_GridDouble result;
-        result = new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
+        return new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
-        return result;
     }
 
     /**
@@ -257,9 +253,7 @@ public class Grids_GridDoubleFactory
      */
     @Override
     public Grids_GridDouble create(File dir, File gridFile) {
-        Grids_GridDouble result;
-        result = new Grids_GridDouble(env, dir, gridFile);
-        return result;
+        return new Grids_GridDouble(env, dir, gridFile);
     }
 
     /////////////////////////

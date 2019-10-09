@@ -40,12 +40,6 @@ public class Grids_GridIntStatsNotUpdated
 
     /**
      * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
-     */
-    protected Grids_GridIntStatsNotUpdated() {
-    }
-
-    /**
-     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
      *
      * @param ge
      */
@@ -102,7 +96,7 @@ public class Grids_GridIntStatsNotUpdated
     @Override
     public long getN() {
         update();
-        return N;
+        return n;
     }
 
     /**
@@ -142,11 +136,6 @@ public class Grids_GridIntStatsNotUpdated
             update();
         }
         return Max;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getName();
     }
 
 //    @Override

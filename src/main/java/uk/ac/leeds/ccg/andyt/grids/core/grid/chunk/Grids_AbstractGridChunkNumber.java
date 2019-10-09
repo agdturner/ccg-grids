@@ -18,7 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -34,7 +33,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_InterfaceStats;
  */
 public abstract class Grids_AbstractGridChunkNumber 
         extends Grids_AbstractGridChunk 
-        implements Serializable, Grids_InterfaceStats {
+        implements Grids_InterfaceStats {
     
     protected Grids_AbstractGridChunkNumber() {
     }
@@ -88,15 +87,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //            }
 //        }
 //    }
-//    
-    /**
-     * Returns the number of cells with data values.
-     *
-     * @return
-     */
-    @Override
-    public abstract Long getN();
-    
+//
 //    /**
 //     * Returns the sum of all data values.
 //     *

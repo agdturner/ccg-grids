@@ -18,14 +18,13 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  *
  * @author geoagdt
  */
-public class Grids_Dimensions implements Serializable {
+public class Grids_Dimensions extends Grids_Object {
 
     private final BigDecimal XMin;
     private final BigDecimal XMax;
@@ -38,29 +37,19 @@ public class Grids_Dimensions implements Serializable {
     private final BigDecimal Area;
 
     public Grids_Dimensions(int nRows, int nCols) {
-        this(BigDecimal.ZERO,
-                new BigDecimal(nCols),
-                BigDecimal.ZERO,
-                new BigDecimal(nRows),
-                BigDecimal.ONE);
+        this(BigDecimal.ZERO, new BigDecimal(nCols), BigDecimal.ZERO,
+                new BigDecimal(nRows), BigDecimal.ONE);
     }
-    
+
     public Grids_Dimensions(long nRows, long nCols) {
-        this(BigDecimal.ZERO,
-                BigDecimal.valueOf(nCols),
-                BigDecimal.ZERO,
-                BigDecimal.valueOf(nRows),
-                BigDecimal.ONE);
+        this(BigDecimal.ZERO, BigDecimal.valueOf(nCols), BigDecimal.ZERO,
+                BigDecimal.valueOf(nRows), BigDecimal.ONE);
     }
 
     public Grids_Dimensions(BigDecimal width, BigDecimal height) {
-        this(BigDecimal.ZERO,
-                width,
-                BigDecimal.ZERO,
-                height,
-                BigDecimal.ONE);
+        this(BigDecimal.ZERO, width, BigDecimal.ZERO, height, BigDecimal.ONE);
     }
-    
+
     /**
      * DimensionsScale will default to the maximum scale in any of the
      * BigDecimal inputs.
@@ -71,12 +60,8 @@ public class Grids_Dimensions implements Serializable {
      * @param yMax The maximum y coordinate.
      * @param cellsize The cellsize.
      */
-    public Grids_Dimensions(
-            BigDecimal xMin,
-            BigDecimal xMax,
-            BigDecimal yMin,
-            BigDecimal yMax,
-            BigDecimal cellsize) {
+    public Grids_Dimensions(BigDecimal xMin, BigDecimal xMax, BigDecimal yMin, 
+            BigDecimal yMax, BigDecimal cellsize) {
         this.XMin = xMin;
         this.XMax = xMax;
         this.YMin = yMin;
@@ -88,16 +73,14 @@ public class Grids_Dimensions implements Serializable {
         HalfCellsize = Cellsize.divide(BigDecimal.valueOf(2L));
     }
 
+    /**
+     * @return a description of this
+     */
     @Override
     public String toString() {
-        String result;
-        result = "Dimensions("
-                + "XMin(" + XMin + "),"
-                + "XMax(" + XMax + "),"
-                + "YMin(" + YMin + "),"
-                + "YMax(" + YMax + "),"
-                + "Cellsize(" + Cellsize + "))";
-        return result;
+        return getClass().getSimpleName() + "[XMin=" + XMin + ", XMax=" + XMax 
+                + ", YMin=" + YMin + ", YMax=" + YMax + ", Cellsize=" + Cellsize 
+                + "]";
     }
 
     /**

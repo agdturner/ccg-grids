@@ -30,8 +30,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 /**
  * A factory for constructing Grids_GridInt instances.
  */
-public class Grids_GridIntFactory
-        extends Grids_AbstractGridNumberFactory {
+public class Grids_GridIntFactory extends Grids_AbstractGridFactory {
 
     /**
      * The NoDataValue for creating chunks.
@@ -170,7 +169,7 @@ public class Grids_GridIntFactory
      * @return A new Grids_GridInt with all values taken from g.
      */
     @Override
-    public Grids_GridInt create(File dir, Grids_AbstractGridNumber g,
+    public Grids_GridInt create(File dir, Grids_AbstractGrid g,
             long startRow, long startCol, long endRow, long endCol) {
         return create(new Grids_GridIntStatsNotUpdated(env), dir, g,
                 DefaultGridChunkIntFactory, startRow, startCol, endRow,
@@ -191,7 +190,7 @@ public class Grids_GridIntFactory
      * @return A new Grids_GridInt with all values taken from g.
      */
     public Grids_GridInt create(Grids_GridIntStats stats, File dir,
-            Grids_AbstractGridNumber g, Grids_AbstractGridChunkIntFactory cf,
+            Grids_AbstractGrid g, Grids_AbstractGridChunkIntFactory cf,
             long startRow, long startCol, long endRow, long endCol) {
         return new Grids_GridInt(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);

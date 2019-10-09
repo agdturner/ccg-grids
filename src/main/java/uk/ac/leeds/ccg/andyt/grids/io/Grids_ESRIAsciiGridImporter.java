@@ -23,6 +23,7 @@ import java.io.StreamTokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
@@ -142,7 +143,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
             result.cellsize = cellsize;
             // adjust xllcorner
             if (!b1 || !b2) {
-                BigDecimal halfCellsize = cellsize.divide(new BigDecimal("2"), cellsize.scale() + 4, BigDecimal.ROUND_HALF_EVEN);
+                BigDecimal halfCellsize = cellsize.divide(new BigDecimal("2"), cellsize.scale() + 4, RoundingMode.HALF_EVEN);
                 if (!b1) {
                     result.xllcorner = ((BigDecimal) result.xllcorner).subtract(halfCellsize);
                 }

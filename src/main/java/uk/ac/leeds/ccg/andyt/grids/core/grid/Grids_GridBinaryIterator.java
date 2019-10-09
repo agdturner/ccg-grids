@@ -20,38 +20,35 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayOrMapIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkRowMajorOrderIterator;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinary;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinaryIterator;
+import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_AbstractIterator;
 
 /**
- * For iterating through the values in a Grids_GridDouble. The values are
+ * For iterating through the values in a Grids_GridBinary. The values are
  * returned chunk by chunk in row major order. The values within each chunk are
  * also returned in row major order.
  */
-public class Grids_GridDoubleIterator
-        extends Grids_AbstractGridIterator {
+public class Grids_GridBinaryIterator extends Grids_AbstractGridIterator {
 
-    protected Grids_GridDoubleIterator() {
+    protected Grids_GridBinaryIterator() {
     }
 
     /**
-     * @param g The Grids_GridDouble to iterate over.
+     * @param g The Grids_GridBinary to iterate over.
      */
-    public Grids_GridDoubleIterator(
-            Grids_GridDouble g) {
+    public Grids_GridBinaryIterator(
+            Grids_GridBinary g) {
         super(g);
         GridIterator = g.ChunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = (Grids_2D_ID_int) GridIterator.next();
-            Chunk = (Grids_AbstractGridChunkDouble) g.ChunkIDChunkMap.get(ChunkID);
+            Chunk = (Grids_GridChunkBinary) g.ChunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_AbstractGridChunkDouble) g.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_GridChunkBinary) g.ChunkIDChunkMap.get(ChunkID);
             }
             initChunkIterator();
         }
@@ -62,15 +59,9 @@ public class Grids_GridDoubleIterator
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_GridChunkDoubleArray) {
-            ChunkIterator = new Grids_GridChunkDoubleArrayOrMapIterator(
-                    (Grids_GridChunkDoubleArray) Chunk);
-        } else if (Chunk instanceof Grids_GridChunkDoubleMap) {
-            ChunkIterator = new Grids_GridChunkDoubleArrayOrMapIterator(
-                    (Grids_GridChunkDoubleMap) Chunk);
-        } else {
-            ChunkIterator = new Grids_GridChunkDoubleIterator(
-                    (Grids_GridChunkDouble) Chunk);
+        if (Chunk instanceof Grids_GridChunkBinary) {
+            ChunkIterator = new Grids_GridChunkBinaryIterator(
+                    (Grids_GridChunkBinary) Chunk);
         }
     }
 
@@ -79,17 +70,11 @@ public class Grids_GridDoubleIterator
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractGridChunkRowMajorOrderIterator getChunkIterator(
+    public Grids_AbstractIterator getChunkIterator(
             Grids_AbstractGridChunk chunk) {
-        if (chunk instanceof Grids_GridChunkDoubleArray) {
-            return new Grids_GridChunkDoubleArrayOrMapIterator(
-                    (Grids_GridChunkDoubleArray) chunk);
-        } else if (chunk instanceof Grids_GridChunkDoubleMap) {
-            return new Grids_GridChunkDoubleArrayOrMapIterator(
-                    (Grids_GridChunkDoubleMap) chunk);
-        } else if (chunk instanceof Grids_GridChunkDouble) {
-            return new Grids_GridChunkDoubleIterator( 
-                    (Grids_GridChunkDouble) chunk);
+        if (chunk instanceof Grids_GridChunkBinary) {
+            return new Grids_GridChunkBinaryIterator(
+                    (Grids_GridChunkBinary) chunk);
         } else {
             throw new Error("Unrecognised type of chunk "
                         + this.getClass().getName()
@@ -98,7 +83,7 @@ public class Grids_GridDoubleIterator
     }
 
     @Override
-    public Grids_GridDouble getGrid() {
-        return (Grids_GridDouble) Grid;
+    public Grids_GridBinary getGrid() {
+        return (Grids_GridBinary) Grid;
     }
 }

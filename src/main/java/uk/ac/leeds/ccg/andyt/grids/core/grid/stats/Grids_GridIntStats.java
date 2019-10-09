@@ -42,48 +42,30 @@ public class Grids_GridIntStats
         implements Serializable {
 
     /**
-     * A reference to the Grids_GridInt.
-     */
-    public transient Grids_GridInt Grid;
-
-    /**
      * For storing the minimum value.
      */
     protected int Min;
+    
     /**
      * For storing the maximum value.
      */
     protected int Max;
 
-    protected Grids_GridIntStats() {
-    }
-
     public Grids_GridIntStats(Grids_Environment ge) {
         super(ge);
-        init();
-    }
-
-    /**
-     * For initialisation.
-     *
-     * @param g
-     */
-    public final void init(Grids_GridInt g) {
-        Grid = g;
-    }
-
-    /**
-     * For initialisation.
-     */
-    private void init() {
         Min = Integer.MAX_VALUE;
         Max = Integer.MIN_VALUE;
-        N = 0;
         Sum = BigDecimal.ZERO;
-        NMin = 0;
-        NMax = 0;
     }
 
+    @Override
+    protected void init(){
+        super.init();
+        Min = Integer.MAX_VALUE;
+        Max = Integer.MIN_VALUE;
+        Sum = BigDecimal.ZERO;
+    }
+    
     /**
      * @return true iff the stats are kept up to date as the underlying data
      * change.
@@ -95,15 +77,15 @@ public class Grids_GridIntStats
 
     /**
      *
-     * @return (Grids_GridInt) Grid
+     * @return (Grids_GridInt) grid
      */
     @Override
     public Grids_GridInt getGrid() {
-        return (Grids_GridInt) Grid;
+        return (Grids_GridInt) grid;
     }
 
     /**
-     * Updates by going through all values in Grid.
+     * Updates by going through all values in grid.
      */
     @Override
     public void update() {
@@ -125,7 +107,7 @@ public class Grids_GridIntStats
     }
 
     protected void update(int value, BigDecimal valueBD) {
-        N++;
+        n++;
         setSum(Sum.add(valueBD));
         if (value < Min) {
             NMin++;
@@ -181,11 +163,6 @@ public class Grids_GridIntStats
 
     public void setMax(int max) {
         Max = max;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getName();
     }
 
     /**
@@ -269,7 +246,7 @@ public class Grids_GridIntStats
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
         BigDecimal diffFromMean;
-        Grids_GridInt g = (Grids_GridInt) Grid;
+        Grids_GridInt g = (Grids_GridInt) grid;
         int value;
         int noDataValue = g.getNoDataValue();
         Grids_GridIntIterator ite;

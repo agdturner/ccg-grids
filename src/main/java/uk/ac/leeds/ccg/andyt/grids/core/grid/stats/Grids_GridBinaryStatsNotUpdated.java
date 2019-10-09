@@ -18,20 +18,17 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
-import java.math.BigDecimal;
-import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 
 /**
- * Used by Grids_AbstractGridNumber instances to access statistics. This class
- * is to be instantiated for Grids_AbstractGridNumber that do not keep all
+ * Used by Grids_AbstractGrid instances (grids) to access statistics. This class
+ * is to be instantiated for grids that do not keep all
  * statistic fields up to date as the underlying data is changed. (Keeping
  * statistic fields up to date as the underlying data is changed can be
  * expensive, but also it can be expensive to calculate statistics often!)
  */
-public class Grids_GridDoubleStatsNotUpdated
-        extends Grids_GridDoubleStats
-        implements Serializable {
+public class Grids_GridBinaryStatsNotUpdated
+        extends Grids_GridBinaryStats {
 
     /**
      * Is true iff fields are upToDate else is false.
@@ -39,11 +36,11 @@ public class Grids_GridDoubleStatsNotUpdated
     protected boolean UpToDate;
 
     /**
-     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     * Creates a new instance of Grids_GridBinaryStatsNotUpdated.
      *
      * @param ge
      */
-    public Grids_GridDoubleStatsNotUpdated(Grids_Environment ge) {
+    public Grids_GridBinaryStatsNotUpdated(Grids_Environment ge) {
         super(ge);
     }
 
@@ -76,7 +73,7 @@ public class Grids_GridDoubleStatsNotUpdated
     }
 
     /**
-     * Updates by going through all values in Grid if the fields are likely not
+     * Updates by going through all values in {@link #grid} if the fields are likely not
      * be up to date. (NB. After calling this it is inexpensive to convert to
      * Grids_GridIntStatistics.)
      */
@@ -98,67 +95,4 @@ public class Grids_GridDoubleStatsNotUpdated
         update();
         return n;
     }
-
-    /**
-     * For returning the sum of all data values.
-     *
-     * @return
-     */
-    @Override
-    public BigDecimal getSum() {
-        return Sum;
-    }
-
-    /**
-     * For returning the sum of all data values.
-     *
-     * @param update If true then an update() is called.
-     *
-     * @return
-     */
-    @Override
-    public BigDecimal getSum(boolean update) {
-        if (update) {
-            update();
-        }
-        return Sum;
-    }
-
-    /**
-     * For returning the minimum of all data values.
-     *
-     * @param update If true then an update() is called.
-     * @return
-     */
-    @Override
-    public Double getMin(boolean update) {
-        if (update) {
-            update();
-        }
-        return Min;
-    }
-
-    /**
-     * For returning the maximum of all data values.
-     *
-     * @param update If true then update() is called.
-     * @return
-     */
-    @Override
-    public Double getMax(boolean update) {
-        if (update) {
-            update();
-        }
-        return Max;
-    }
-
-//    @Override
-//    protected BigInteger getNonZeroN() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//
-//    @Override
-//    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 }

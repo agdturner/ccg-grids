@@ -24,19 +24,19 @@ import java.util.NoSuchElementException;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGridChunkNumberRowMajorOrderIterator 
-        extends Grids_AbstractGridChunkNumberIterator {
+public abstract class Grids_AbstractGridChunkRowMajorOrderIterator 
+        extends Grids_AbstractGridChunkIterator {
 
     protected int Row;
     protected int Col;
     protected int NRows;
     protected int NCols;
 
-    protected Grids_AbstractGridChunkNumberRowMajorOrderIterator() {
+    protected Grids_AbstractGridChunkRowMajorOrderIterator() {
     }
 
-    protected Grids_AbstractGridChunkNumberRowMajorOrderIterator(
-            Grids_AbstractGridChunkNumber chunk) {
+    protected Grids_AbstractGridChunkRowMajorOrderIterator(
+            Grids_AbstractGridChunk chunk) {
         super(chunk);
         Row = 0;
         Col = 0;

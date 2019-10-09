@@ -18,24 +18,29 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
-import java.io.Serializable;
+import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 
 /**
  * For binary grid chunks..
  */
-public class Grids_GridChunkBinary
-        extends Grids_AbstractGridChunk
-        implements Serializable {
+public class Grids_GridChunkBinary extends Grids_AbstractGridChunk {
 
     //private static final long serialVersionUID = 1L;
     boolean[][] data;
 
-    protected Grids_GridChunkBinary() {
+    protected Grids_GridChunkBinary() {}
+
+    public Grids_GridChunkBinary(Grids_GridBinary g, Grids_2D_ID_int chunkID) {
+        this.Grid = g;
+        ChunkID = chunkID;
+        initData();
     }
 
     @Override
-    protected void initData() {
+    protected final void initData() {
         Grids_GridBinary g = getGrid();
         int chunkNrows = g.getChunkNRows(ChunkID);
         int chunkNcols = g.getChunkNCols(ChunkID);
@@ -57,10 +62,28 @@ public class Grids_GridChunkBinary
      * @param col The column of the cell w.r.t. the origin of this chunk.
      * @return
      */
-    public boolean getCell(
-            int row,
-            int col) {
+    public boolean getCell(int row, int col) {
         return this.data[row][col];
+    }
+
+    /**
+     * Returns the value at position given by: row, col and sets it to value.
+     *
+     * @param row the row index of the cell w.r.t. the origin of this chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
+     * @param v the value the cell is to be set to
+     * @return
+     */
+    public boolean setCell(int row, int col, boolean v) {
+        boolean oldValue;
+        oldValue = this.data[row][col];
+        this.data[row][col] = v;
+        if (isSwapUpToDate()) {
+            if (v != oldValue) {
+                setSwapUpToDate(false);
+            }
+        }
+        return oldValue;
     }
 
     /**
@@ -68,13 +91,10 @@ public class Grids_GridChunkBinary
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @param v the value with which the cell is initialised
+     * @param value
      */
-    protected void initCell(
-            int row,
-            int col,
-            boolean v) {
-        this.data[row][col] = v;
+    public void initCell(int row, int col, boolean value) {
+        this.data[row][col] = value;
     }
 
     /**
@@ -92,6 +112,18 @@ public class Grids_GridChunkBinary
     @Override
     public Grids_GridChunkBinaryIterator iterator() {
         return new Grids_GridChunkBinaryIterator(this);
+    }
+
+    @Override
+    public Long getN() {
+        long n = 0;
+        Grids_GridChunkBinaryIterator ite = iterator();
+        while (ite.hasNext()) {
+            if ((Boolean) ite.next()) {
+                n++;
+            }
+        }
+        return n;
     }
 
 }

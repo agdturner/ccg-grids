@@ -18,12 +18,11 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
-import java.io.Serializable;
-
 /**
  * A simple ID class for distinguishing chunks or cells within chunks.
  */
-public class Grids_2D_ID_int extends Object implements Serializable, Comparable<Grids_2D_ID_int> {
+public class Grids_2D_ID_int extends Object 
+        implements Comparable<Grids_2D_ID_int> {
 
     /**
      * For storing the row.
@@ -47,9 +46,7 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable<
      * @param row The row.
      * @param col The column.
      */
-    public Grids_2D_ID_int(
-            int row,
-            int col) {
+    public Grids_2D_ID_int(int row, int col) {
         Row = row;
         Col = col;
     }
@@ -73,9 +70,7 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable<
      */
     @Override
     public String toString() {
-        return "Grids_2D_ID_int( "
-                + "Row(" + Row + "), "
-                + "Col(" + Col + "))";
+        return getClass().getSimpleName() + "[Row=" + Row + ", Col=" + Col + "]";
     }
 
     @Override
@@ -109,7 +104,7 @@ public class Grids_2D_ID_int extends Object implements Serializable, Comparable<
      * Method required by Comparable.
      *
      * @param t
-     * @return 
+     * @return
      */
     @Override
     public int compareTo(Grids_2D_ID_int t) {

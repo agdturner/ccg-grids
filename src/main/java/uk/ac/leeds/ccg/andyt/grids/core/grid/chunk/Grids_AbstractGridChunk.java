@@ -167,4 +167,10 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
         Grid = grid;
     }
 
+    /**
+     * Returns the number of cells with data values or values of true.
+     *
+     * @return
+     */
+    public abstract Long getN();
 }

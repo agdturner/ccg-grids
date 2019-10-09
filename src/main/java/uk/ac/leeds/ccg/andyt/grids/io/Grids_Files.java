@@ -28,6 +28,7 @@ public class Grids_Files extends Generic_Files {
     protected File GeneratedGridsDir;
     protected File GeneratedGridIntDir;
     protected File GeneratedGridDoubleDir;
+    protected File GeneratedGridBinaryDir;
     protected File GeneratedProcessorDir;
 
     protected Grids_Files() {
@@ -60,6 +61,14 @@ public class Grids_Files extends Generic_Files {
                     Grids_Strings.s_GridDouble);
         }
         return GeneratedGridDoubleDir;
+    }
+
+    public File getGeneratedGridBinaryDir() {
+        if (GeneratedGridBinaryDir == null) {
+            GeneratedGridBinaryDir = new File(getGeneratedGridsDir(), 
+                    Grids_Strings.s_GridBinary);
+        }
+        return GeneratedGridBinaryDir;
     }
 
     public File getGeneratedProcessorDir() {

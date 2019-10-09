@@ -18,28 +18,20 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core.grid.stats;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
 
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
  * more optimally.
  */
-public abstract class Grids_AbstractGridNumberStats extends Grids_Object
-        implements Serializable {
+public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridStats {
 
     //private long final long serialVersionUID = 1L;
-    /**
-     * For storing the number of cells with data values.
-     */
-    protected long N;
 
     /**
      * For storing the sum of all non data values.
@@ -56,103 +48,44 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      */
     protected long NMax;
 
-    protected Grids_AbstractGridNumberStats() {
-    }
-
     public Grids_AbstractGridNumberStats(Grids_Environment ge) {
         super(ge);
-        init();
-    }
-
-    /**
-     * For initialisation.
-     */
-    private void init() {
-        N = 0;
         Sum = BigDecimal.ZERO;
         NMin = 0;
         NMax = 0;
     }
 
-    /**
-     * @return true iff the stats are kept up to date as the underlying data
-     * change.
-     */
-    public abstract boolean isUpdated();
-
+    @Override
+    protected void init() {
+        super.init();
+        Sum = BigDecimal.ZERO;
+        NMin = 0;
+        NMax = 0;
+    }
+    
     /**
      * Updates from stats.
      *
      * @param stats the Grids_AbstractGridNumberStats instance which fields are
      * used to update this.
      */
-    public void update(
-            Grids_AbstractGridNumberStats stats) {
-        N = stats.N;
+    public void update(Grids_AbstractGridNumberStats stats) {
+        super.update(stats);
         Sum = stats.Sum;
         NMin = stats.NMin;
         NMax = stats.NMax;
     }
 
     /**
-     * Updates by going through all values in Grid if the fields are likely not
-     * be up to date.
-     */
-    protected abstract void update();
-
-    /**
-     * Returns a String describing this instance
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public String toString(
-            boolean hoome) {
-        try {
-            String result = toString();
-            env.checkAndMaybeFreeMemory();
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                    if (!env.swapChunk(env.HOOMEF)) {
-                        throw e;
-                    }
-                env.initMemoryReserve();
-                return toString(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the name of the this class.
-     *
-     * @return
-     */
-    public abstract String getName();
-//    {
-//        return getClass().getName();
-//    }
-
-    /**
-     * Returns a string describing this instance.
+     * Override to provide a more detailed fields description.
      *
      * @return
      */
     @Override
-    public String toString() {
-        String result = getName();
-        result += "(N(" + N + "),"
-                + "Max(" + getMax(false) + "),"
-                + "Min(" + getMin(false) + "),"
-                + "NMax(" + NMax + "),"
-                + "NMin(" + NMin + "),"
-                + "Sum(" + Sum.toString() + "))";
-        return result;
+    public String getFieldsDescription() {
+        return super.getFieldsDescription() 
+                + ", Max=" + getMax(false) + ", Min=" + getMin(false)
+                + ", NMax=" + NMax + ", NMin=" + NMin + ", Sum=" + Sum;
     }
 
 //    /**
@@ -172,7 +105,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -189,10 +122,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //     * @return The number of cells with finite data values as a BigInteger.
 //     */
 //    protected abstract long getN();
-    /**
-     * @return The number of cells with finite data values as a BigInteger.
-     */
-    public abstract Grids_AbstractGridNumber getGrid();
 
     /**
      * @return The number of cells with finite non zero data values.
@@ -216,7 +145,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -254,7 +183,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -295,7 +224,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -327,8 +256,8 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        long row;
 //        long col;
 //        boolean calculated = false;
-//        if (Grid instanceof Grids_GridInt) {
-//            Grids_GridInt g = (Grids_GridInt) Grid;
+//        if (grid instanceof Grids_GridInt) {
+//            Grids_GridInt g = (Grids_GridInt) grid;
 //            HashSet<Integer> mode = new HashSet<>();
 //            int noDataValue = g.getNoDataValue(env.HOOME);
 //            Object[] tmode = initMode(
@@ -389,7 +318,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //            return mode;
 //        } else {
 //            //getClass() == Grids_GridDouble.class
-//            Grids_GridDouble g = (Grids_GridDouble) Grid;
+//            Grids_GridDouble g = (Grids_GridDouble) grid;
 //            //TDoubleHashSet mode = new TDoubleHashSet();
 //            HashSet<Double> mode = new HashSet<>();
 //            double noDataValue = g.getNoDataValue(env.HOOME);
@@ -570,7 +499,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (env.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
@@ -661,7 +590,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (env.swapChunk_Account(hoome) < 1L) {
 //                        throw e;
 //                    }
@@ -737,7 +666,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -760,7 +689,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
      * @return
      */
     public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
-        return Sum.divide(new BigDecimal(N), numberOfDecimalPlaces, 
+        return Sum.divide(new BigDecimal(n), numberOfDecimalPlaces, 
                 BigDecimal.ROUND_HALF_EVEN);
     }
 
@@ -783,7 +712,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, hoome) < 1L) {
+//                if (env.swapChunkExcept_Account(grid, hoome) < 1L) {
 //                    if (!env.swapChunk(env.HOOMEF)) {
 //                        throw e;
 //                    }
@@ -1181,13 +1110,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     }
 
     /**
-     * @param n to set N to.
-     */
-    public void setN(long n) {
-        N = n;
-    }
-
-    /**
      * @param sum to set Sum to.
      */
     public void setSum(BigDecimal sum) {
@@ -1221,4 +1143,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_Object
     public long getNMax() {
         return NMax;
     }
+    
+    
 }

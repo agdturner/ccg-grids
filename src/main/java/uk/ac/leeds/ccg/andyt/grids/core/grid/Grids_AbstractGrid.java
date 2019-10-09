@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
@@ -41,6 +39,7 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkInt;
+import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridStats;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -48,7 +47,8 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGrid extends Grids_Object implements Serializable {
+public abstract class Grids_AbstractGrid extends Grids_Object 
+        implements Grids_InterfaceGrid {
 
     //    /**
     //     * A version number for confidence in reloading serialised instances.
@@ -101,6 +101,11 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     protected Grids_Dimensions Dimensions;
 
+    /**
+     * A reference to the grid stats.
+     */
+    protected Grids_AbstractGridStats stats;
+    
     protected Grids_AbstractGrid() {
     }
 
@@ -156,7 +161,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * 
+     *
      */
     protected void setReferenceInChunkIDChunkMap() {
         Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
@@ -168,7 +173,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
             chunk.setGrid(this);
         }
     }
-    
+
     /**
      * @return HashSet containing all ChunkIDs.
      */
@@ -179,40 +184,40 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     }
 
     /**
-     * @param hoome
-     * @return Iterator over the cell values in this.
+     * Override to provide a more detailed fields description.
+     * @return 
      */
-    public abstract Iterator iterator(boolean hoome);
-
+    public String getFieldsDescription(){
+        String r = "ChunkNcols=" + ChunkNCols + ", ";
+        r += "ChunkNrows=" + ChunkNRows + ", ";
+        r += "NChunkCols=" + NChunkCols + ", ";
+        r += "NChunkRows=" + NChunkRows + ", ";
+        r += "NCols=" + NCols + ", ";
+        r += "NRows=" + NRows + ", ";
+        r += "Directory=" + Directory + ", ";
+        r += "Name=" + Name + ", ";
+        r += "Dimensions=" + getDimensions().toString() + ", ";
+        if (ChunkIDChunkMap == null) {
+            r += "ChunkIDChunkMap=null, ";
+        } else {
+            r += "ChunkIDChunkMap.size()=" + ChunkIDChunkMap.size() + ", ";
+        }
+        HashSet<Grids_AbstractGrid> grids = env.getGrids();
+        if (grids == null) {
+            r += "Grids=null, ";
+        } else {
+            r += "Grids.size()=" + grids.size() + ", ";
+        }
+        r += getStats().toString();
+        return r;
+    }
+    
     /**
      * @return a string description of the Abstract fields of this instance.
      */
     @Override
     public String toString() {
-        String result;
-        result = "Grid(ChunkNcols(" + ChunkNCols + "),"
-                + "ChunkNrows(" + ChunkNRows + "),"
-                + "NChunkCols(" + NChunkCols + "),"
-                + "NChunkRows(" + NChunkRows + "),"
-                + "NCols(" + NCols + "),"
-                + "NRows(" + NRows + "),"
-                + "Directory( " + Directory + "),"
-                + "Name( " + Name + "),"
-                + getDimensions().toString();
-        if (ChunkIDChunkMap == null) {
-            result += ",ChunkIDChunkMap==null";
-        } else {
-            result += ",ChunkIDChunkMap.size(" + ChunkIDChunkMap.size() + ")";
-        }
-        HashSet<Grids_AbstractGrid> grids;
-        grids = env.getGrids();
-        if (grids == null) {
-            result += ",Grids(null)";
-        } else {
-            result += ",Grids.size(" + grids.size() + ")";
-        }
-        result += ")";
-        return result;
+        return getClass().getSimpleName() + "[" + getFieldsDescription() + "]";
     }
 
     /**
@@ -237,18 +242,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public void setName(String name) {
         Name = name;
-    }
-
-    /**
-     * @return a basic description of this instance.
-     */
-    public String getBasicDescription() {
-        return "className(" + this.getClass().getName() + "),"
-                + "Directory(" + this.getDirectory() + "),"
-                + "nrows(" + NRows + "),"
-                + "ncols(" + NCols + "),"
-                + "chunkNrows(" + ChunkNRows + "),"
-                + "chunkNcols(" + ChunkNCols + ")";
     }
 
     /**
@@ -1923,7 +1916,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      *
      * @param chunkID The chunk ID of the chunk to be restored.
      */
-    public abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
+    //public abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
 
     /**
      * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids are
@@ -2541,9 +2534,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      * @param startRowIndex
      * @param startColIndex
      */
-    public void initDimensions(
-            Grids_AbstractGridNumber g,
-            long startRowIndex, long startColIndex) {
+    public void initDimensions(Grids_AbstractGrid g, long startRowIndex, 
+            long startColIndex) {
         Dimensions = g.getDimensions(); // temporary assignment
         BigDecimal startColIndexBigDecimal = new BigDecimal((long) startColIndex);
         BigDecimal startRowIndexBigDecimal = new BigDecimal((long) startRowIndex);
@@ -2577,13 +2569,51 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
     public abstract Grids_AbstractGridChunk getChunk(Grids_2D_ID_int chunkID);
 
     /**
+     * Attempts to load into the memory cache the chunk with chunk ID chunkID.
+     *
+     * @param chunkID The chunk ID of the chunk to be restored.
+     */
+    public void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
+        boolean isInCache = isInCache(chunkID);
+        if (!isInCache) {
+            File f = new File(getDirectory(),
+                    "" + chunkID.getRow() + "_" + chunkID.getCol());
+            if (f.exists()) {
+                //System.out.println("Loading chunk from file" + f);
+                Object o = env.env.io.readObject(f);
+                Grids_AbstractGridChunk chunk = (Grids_AbstractGridChunk) o;
+                chunk.env = env;
+                chunk.initGrid(this);
+                chunk.initChunkID(chunkID);
+                ChunkIDChunkMap.put(chunkID, chunk);
+            } else {
+                /**
+                 * It is assumed that the chunk is all noDataValues so if this
+                 * is called in a process which is attempting to set a value,
+                 * then the chunk and value should be created without trying to
+                 * load from the file.
+                 */
+            }
+        }
+    }
+//    /**
+//     * @param chunkRow
+//     * @param chunkCol
+//     * @return Grids_AbstractGridChunk.
+//     */
+//    public abstract Grids_AbstractGridChunk getChunk(int chunkRow, int chunkCol);
+
+    /**
      * @param chunkRow
      * @param chunkCol
-     * @return Grids_AbstractGridChunk.
+     * @return Grids_AbstractGridChunkDouble.
      */
-    public abstract Grids_AbstractGridChunk getChunk(int chunkRow,
-            int chunkCol);
-
+    public final Grids_AbstractGridChunk getChunk(int chunkRow,
+            int chunkCol) {
+        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+        return getChunk(chunkID);
+    }
+    
     /**
      * @param chunkID
      * @param chunkRow
@@ -2592,4 +2622,54 @@ public abstract class Grids_AbstractGrid extends Grids_Object implements Seriali
      */
     public abstract Grids_AbstractGridChunk getChunk(
             Grids_2D_ID_int chunkID, int chunkRow, int chunkCol);
+    
+    public abstract Grids_AbstractGridStats getStats();
+    
+    /**
+     * @return An Iterator for iterating over the cell values in this.
+     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * are initiated, then the method is re-called. If false then
+     * OutOfMemoryErrors are caught and thrown.
+     */
+    public final Iterator iterator(
+            boolean hoome) {
+        try {
+            Iterator result = iterator();
+            env.checkAndMaybeFreeMemory(hoome);
+            return result;
+        } catch (OutOfMemoryError e) {
+            if (hoome) {
+                env.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(hoome, e);
+                return iterator(hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+    
+    /**
+     * @param hoome
+     * @return this._GridStatistics TODO: For safety, this method should either
+     * be removed and this class be made implement GridStatisticsInterface. This
+     * done the methods introduced would be made to call the relevant ones in
+     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
+     * only copies of fields are passed.
+     */
+    public Grids_AbstractGridStats getStats(boolean hoome) {
+        try {
+            Grids_AbstractGridStats r = getStats();
+            env.checkAndMaybeFreeMemory(hoome);
+            return r;
+        } catch (OutOfMemoryError e) {
+            if (hoome) {
+                env.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(hoome, e);
+                return getStats(hoome);
+            } else {
+                throw e;
+            }
+        }
+    }
+    
 }

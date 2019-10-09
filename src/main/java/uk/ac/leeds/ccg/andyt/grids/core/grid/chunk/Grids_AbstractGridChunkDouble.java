@@ -19,7 +19,6 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -30,15 +29,13 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
  * implement acting as an interface.
  */
 public abstract class Grids_AbstractGridChunkDouble
-        extends Grids_AbstractGridChunkNumber
-        implements Serializable {
+        extends Grids_AbstractGridChunkNumber {
 
     //private static final long serialVersionUID = 1L;
     protected Grids_AbstractGridChunkDouble() {
     }
 
-    protected Grids_AbstractGridChunkDouble(
-            Grids_GridDouble g,
+    protected Grids_AbstractGridChunkDouble(Grids_GridDouble g,
             Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }

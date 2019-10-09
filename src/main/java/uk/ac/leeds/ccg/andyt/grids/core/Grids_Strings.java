@@ -16,6 +16,8 @@ public class Grids_Strings extends Generic_Strings {
     public static final String s_Grids = "Grids";
     public static final  String s_GridInt = "GridInt";
     public static final  String s_GridDouble = "GridDouble";
+    public static final  String s_GridBinary = "GridBinary";
+    
     public static final  String s_Processor = "Processor";
 
     public Grids_Strings() {

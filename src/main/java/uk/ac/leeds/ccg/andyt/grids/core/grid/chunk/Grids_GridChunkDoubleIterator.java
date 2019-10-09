@@ -22,7 +22,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
  * For iterating through the values in a Grids_GridChunkDouble
  * instance. The values are not returned in any particular order.
  */
-public class Grids_GridChunkDoubleIterator extends Grids_AbstractGridChunkNumberRowMajorOrderIterator {
+public class Grids_GridChunkDoubleIterator extends Grids_AbstractGridChunkRowMajorOrderIterator {
 
     protected double Value;
 

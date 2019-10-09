@@ -20,7 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.util.Iterator;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
@@ -40,32 +39,13 @@ import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_AbstractGridNumberStats
  * TODO: Handling for NumberFormatExceptions and ArithmeticExceptions in
  * calculations
  */
-public abstract class Grids_AbstractGridNumber
-        extends Grids_AbstractGrid implements Grids_InterfaceGridNumber {
+public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
 
     protected Grids_AbstractGridNumber() {
     }
 
     protected Grids_AbstractGridNumber(Grids_Environment ge, File dir) {
         super(ge, dir);
-    }
-
-    @Override
-    public String toString() {
-        String result;
-        result = super.toString();
-//        result += "," + Stats.toString(true);
-        return result;
-    }
-
-    /**
-     * Initialises non transient Grids_AbstractGrid fields from g.
-     *
-     * @param g The Grids_AbstractGrid from which the non transient
-     * Grids_AbstractGrid fields of this are set.
-     */
-    protected void init(Grids_AbstractGridNumber g) {
-        super.init(g);
     }
 
     /**
@@ -76,23 +56,18 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(
-            Point2D.Double point,
-            boolean hoome) {
+    public final double getCellDouble(Point2D.Double point, boolean hoome) {
         try {
-            double result = getCellDouble(point);
+            double r = getCellDouble(point);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(point.getY()),
-                        getChunkCol(point.getX()));
+                        getChunkRow(point.getY()), getChunkCol(point.getX()));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellDouble(
-                        point,
-                        hoome);
+                return getCellDouble(point, hoome);
             } else {
                 throw e;
             }
@@ -104,12 +79,9 @@ public abstract class Grids_AbstractGridNumber
      * a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
-    public double getCellDouble(
-            Point2D.Double point) {
-        return getCellDouble(
-                getChunkRow(point.getY()),
-                getChunkCol(point.getX()),
-                getCellRow(point.getY()),
+    public double getCellDouble(Point2D.Double point) {
+        return getCellDouble(getChunkRow(point.getY()),
+                getChunkCol(point.getX()), getCellRow(point.getY()),
                 getCellCol(point.getX()));
     }
 
@@ -124,27 +96,18 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public double getCellDouble(
-            double x,
-            double y,
-            boolean hoome) {
+    public double getCellDouble(double x, double y, boolean hoome) {
         try {
-            double result = getCellDouble(
-                    x,
-                    y);
+            double r = getCellDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(y),
-                        getChunkCol(x));
+                        getChunkRow(y), getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
-                return getCellDouble(
-                        x,
-                        y,
-                        hoome);
+                return getCellDouble(x, y, hoome);
             } else {
                 throw e;
             }
@@ -159,13 +122,8 @@ public abstract class Grids_AbstractGridNumber
      * @param y The y coordinate of the point at which the cell value is
      * returned.
      */
-    public double getCellDouble(
-            double x,
-            double y) {
-        return getCellDouble(
-                getChunkRow(y),
-                getChunkCol(x),
-                getCellRow(y),
+    public double getCellDouble(double x, double y) {
+        return getCellDouble(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
     }
 
@@ -178,25 +136,20 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(
-            long row,
-            long col,
-            boolean hoome) {
+    public final double getCellDouble(long row, long col, boolean hoome) {
         try {
-            double result = getCellDouble(row, col);
+            double r = getCellDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                        getChunkRow(row),
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row),
                         getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getCellDouble(row, col, hoome);
             } else {
                 throw e;
-
             }
         }
     }
@@ -207,14 +160,9 @@ public abstract class Grids_AbstractGridNumber
      * @return Grids_AbstractGridChunk cell value at cell row index equal to
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      */
-    public double getCellDouble(
-            long row,
-            long col) {
-        return getCellDouble(
-                getChunkRow(row),
-                getChunkCol(col),
-                getCellRow(row),
-                getCellCol(col));
+    public double getCellDouble(long row, long col) {
+        return getCellDouble(getChunkRow(row), getChunkCol(col),
+                getCellRow(row), getCellCol(col));
     }
 
     /**
@@ -228,16 +176,12 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(
-            int chunkRow,
-            int chunkCol,
-            int cellRow,
-            int cellCol,
-            boolean hoome) {
+    public final double getCellDouble(int chunkRow, int chunkCol, int cellRow,
+            int cellCol, boolean hoome) {
         try {
-            double result = getCellDouble(chunkRow, chunkCol, cellRow, cellCol);
+            double r = getCellDouble(chunkRow, chunkCol, cellRow, cellCol);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
@@ -262,10 +206,7 @@ public abstract class Grids_AbstractGridNumber
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
      */
-    public double getCellDouble(
-            int chunkRow,
-            int chunkCol,
-            int cellRow,
+    public double getCellDouble(int chunkRow, int chunkCol, int cellRow,
             int cellCol) {
         if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
             if (this instanceof Grids_GridDouble) {
@@ -274,8 +215,7 @@ public abstract class Grids_AbstractGridNumber
                 return ((Grids_GridInt) this).NoDataValue;
             }
         }
-        Grids_AbstractGridChunk gridChunk;
-        gridChunk = getChunk(chunkRow, chunkCol);
+        Grids_AbstractGridChunk gridChunk = getChunk(chunkRow, chunkCol);
         if (gridChunk == null) {
             if (this instanceof Grids_GridDouble) {
                 return ((Grids_GridDouble) this).NoDataValue;
@@ -283,12 +223,7 @@ public abstract class Grids_AbstractGridNumber
                 return ((Grids_GridInt) this).NoDataValue;
             }
         }
-        return getCellDouble(
-                gridChunk,
-                chunkRow,
-                chunkCol,
-                cellRow,
-                cellCol);
+        return getCellDouble(gridChunk, chunkRow, chunkCol, cellRow, cellCol);
     }
 
     /**
@@ -304,18 +239,14 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(
-            Grids_AbstractGridChunk chunk,
-            int chunkRow,
-            int chunkCol,
-            int cellRow,
-            int cellCol,
+    public final double getCellDouble(Grids_AbstractGridChunk chunk,
+            int chunkRow, int chunkCol, int cellRow, int cellCol,
             boolean hoome) {
         try {
-            double result;
-            result = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
+            double r;
+            r = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
@@ -340,12 +271,8 @@ public abstract class Grids_AbstractGridNumber
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
      */
-    public abstract double getCellDouble(
-            Grids_AbstractGridChunk chunk,
-            int chunkRow,
-            int chunkCol,
-            int cellRow,
-            int cellCol);
+    public abstract double getCellDouble(Grids_AbstractGridChunk chunk,
+            int chunkRow, int chunkCol, int cellRow, int cellCol);
 
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
@@ -359,9 +286,9 @@ public abstract class Grids_AbstractGridNumber
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
             boolean hoome) {
         try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y);
+            Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
@@ -406,14 +333,14 @@ public abstract class Grids_AbstractGridNumber
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
             long row, long col, boolean hoome) {
         try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(x, y, row, col);
+            Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y, row, col);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), 
+                        getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValuesCellIDs(x, y, row, col, hoome);
             } else {
@@ -451,8 +378,8 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), 
+                        getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValuesCellIDs(row, col, hoome);
             } else {
@@ -467,7 +394,8 @@ public abstract class Grids_AbstractGridNumber
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      */
-    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y);
+    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x, 
+            double y);
 
     /**
      * @return the average of the nearest data values to point given by
@@ -478,16 +406,17 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDouble(double x, double y, boolean hoome) {
+    public final double getNearestValueDouble(double x, double y, 
+            boolean hoome) {
         try {
-            double result = getNearestValueDouble(x, y);
+            double r = getNearestValueDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(getChunkRow(y), getChunkCol(x));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(y), 
+                        getChunkCol(x));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(x, y, hoome);
             } else {
@@ -518,15 +447,15 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDouble(double x, double y, long row, 
+    public final double getNearestValueDouble(double x, double y, long row,
             long col, boolean hoome) {
         try {
             return getNearestValueDouble(x, y, row, col);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row), 
+                        getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(x, y, row, col, hoome);
             } else {
@@ -546,7 +475,7 @@ public abstract class Grids_AbstractGridNumber
      * @param col the column index from which average of the nearest data values
      * is returned
      */
-    protected abstract double getNearestValueDouble(double x, double y, 
+    protected abstract double getNearestValueDouble(double x, double y,
             long row, long col);
 
     /**
@@ -560,7 +489,8 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDouble(long row, long col, boolean hoome) {
+    public final double getNearestValueDouble(long row, long col, 
+            boolean hoome) {
         try {
             double result = getNearestValueDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -568,8 +498,8 @@ public abstract class Grids_AbstractGridNumber
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID;
-                chunkID = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+                Grids_2D_ID_int chunkID  = new Grids_2D_ID_int(getChunkRow(row),
+                        getChunkCol(col));
                 freeSomeMemoryAndResetReserve(chunkID, e);
                 return getNearestValueDouble(row, col, hoome);
             } else {
@@ -597,12 +527,12 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDoubleDistance(double x, double y, 
+    public final double getNearestValueDoubleDistance(double x, double y,
             boolean hoome) {
         try {
-            double result = getNearestValueDoubleDistance(x, y);
+            double r = getNearestValueDoubleDistance(x, y);
             env.checkAndMaybeFreeMemory(hoome);
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
@@ -638,7 +568,7 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDoubleDistance(double x, double y, 
+    public final double getNearestValueDoubleDistance(double x, double y,
             long row, long col, boolean hoome) {
         try {
             double result = getNearestValueDoubleDistance(x, y, row, col);
@@ -668,7 +598,7 @@ public abstract class Grids_AbstractGridNumber
      * @param col The cell column index of the cell from which the distance
      * nearest to the nearest cell value is returned.
      */
-    protected abstract double getNearestValueDoubleDistance(double x, double y, 
+    protected abstract double getNearestValueDoubleDistance(double x, double y,
             long row, long col);
 
     /**
@@ -682,7 +612,7 @@ public abstract class Grids_AbstractGridNumber
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getNearestValueDoubleDistance(long row, long col, 
+    public final double getNearestValueDoubleDistance(long row, long col,
             boolean hoome) {
         try {
             double result = getNearestValueDoubleDistance(row, col);
@@ -701,55 +631,8 @@ public abstract class Grids_AbstractGridNumber
         }
     }
 
-    /**
-     * @return An Iterator for iterating over the cell values in this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
     @Override
-    public final Iterator iterator(
-            boolean hoome) {
-        try {
-            Iterator result = iterator();
-            env.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return iterator(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param hoome
-     * @return this._GridStatistics TODO: For safety, this method should either
-     * be removed and this class be made implement GridStatisticsInterface. This
-     * done the methods introduced would be made to call the relevant ones in
-     * this._GridStatistics. Or the _GridStatistics need to be made safe in that
-     * only copies of fields are passed.
-     */
     public Grids_AbstractGridNumberStats getStats(boolean hoome) {
-        try {
-            Grids_AbstractGridNumberStats result;
-            result = getStats();
-            env.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return getStats(hoome);
-            } else {
-                throw e;
-            }
-        }
+        return (Grids_AbstractGridNumberStats) super.getStats(hoome);
     }
-
-    public abstract Grids_AbstractGridNumberStats getStats();
-
 }
