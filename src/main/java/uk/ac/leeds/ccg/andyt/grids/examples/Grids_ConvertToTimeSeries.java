@@ -42,7 +42,6 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
     private long Time;
     boolean HandleOutOfMemoryError;
     String Filename;
-    Generic_Environment e;
 
     /**
      * 
@@ -51,29 +50,19 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
     }
 
     /**
-     *
-     * @param ge
+     * @param e
      */
-    public Grids_ConvertToTimeSeries(Grids_Environment ge) {
-        super(ge);
+    public Grids_ConvertToTimeSeries(Grids_Environment e) {
+        super(e);
         Time = System.currentTimeMillis();
         HandleOutOfMemoryError = true;
-        e = new Generic_Environment(ge.getFiles(), Level.FINE, 100);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        File dir = new File(System.getProperty("user.dir"));
-        System.out.print("" + dir.toString());
-        if (dir.exists()) {
-            System.out.println(" exists.");
-            dir.mkdirs();
-        } else {
-            System.out.println(" does not exist.");
-        }
-        Grids_Environment ge = new Grids_Environment(dir);
+        Grids_Environment ge = new Grids_Environment(new Generic_Environment());
         Grids_ConvertToTimeSeries t = new Grids_ConvertToTimeSeries(ge);
         t.run();
     }
@@ -118,7 +107,7 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
                     hour = Integer.valueOf(time.substring(8, 10));
                     minute = Integer.valueOf(time.substring(10, 12));
                     System.out.println("" + year + " " + month + " " + day + " " + hour + " " + minute);
-                    t = new Generic_Time(e, year, month, day, hour, minute, second);
+                    t = new Generic_Time(env.env, year, month, day, hour, minute, second);
                     g = GridDoubleFactory.create(dir, file);
                     if (nrows == null) {
                         nrows = g.getNRows();

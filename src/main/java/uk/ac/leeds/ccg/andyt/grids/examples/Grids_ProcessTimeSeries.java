@@ -6,6 +6,7 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
@@ -23,10 +24,9 @@ public class Grids_ProcessTimeSeries extends Grids_Processor {
     }
 
     public static void main(String[] args) {
-        Grids_Environment ge;
-        ge = new Grids_Environment(new File(System.getProperty("user.dir")));
+        Grids_Environment e = new Grids_Environment(new Generic_Environment());
         Grids_ProcessTimeSeries p;
-        p = new Grids_ProcessTimeSeries(ge);
+        p = new Grids_ProcessTimeSeries(e);
         p.run();
     }
     

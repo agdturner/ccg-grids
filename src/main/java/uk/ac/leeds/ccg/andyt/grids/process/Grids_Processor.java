@@ -185,8 +185,7 @@ public class Grids_Processor extends Grids_Object {
         super(ge);
         StartTime = System.currentTimeMillis();
         Files = ge.getFiles();
-        File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridsDir());
+        File dir = Files.createNewFile(Files.getGeneratedGridsDir());
         File logFile;
         logFile = new File(dir, "log.txt");
         if (!logFile.exists()) {

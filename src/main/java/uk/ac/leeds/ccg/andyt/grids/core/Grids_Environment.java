@@ -21,7 +21,6 @@ package uk.ac.leeds.ccg.andyt.grids.core;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.File;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,7 +37,7 @@ import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
  */
 public class Grids_Environment
         extends Grids_OutOfMemoryErrorHandler
-        implements Serializable, Grids_OutOfMemoryErrorHandlerInterface {
+        implements Grids_OutOfMemoryErrorHandlerInterface {
 
     /**
      * Local Directory used for caching.
@@ -78,7 +77,12 @@ public class Grids_Environment
         env = new Generic_Environment();
     }
 
-    public Grids_Environment(File directory) {
+    public Grids_Environment(Generic_Environment env) {
+        this(env, env.files.getDataDir());
+    }
+    
+    public Grids_Environment(Generic_Environment env, File directory) {
+        this.env = env;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
         initNotToSwap();
@@ -86,7 +90,6 @@ public class Grids_Environment
             directory.mkdirs();
         }
         Directory = directory;
-        env = new Generic_Environment();
     }
 
     /**

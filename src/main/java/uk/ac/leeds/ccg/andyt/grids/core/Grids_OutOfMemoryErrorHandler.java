@@ -18,7 +18,6 @@
  */
 package uk.ac.leeds.ccg.andyt.grids.core;
 
-import java.io.Serializable;
 import uk.ac.leeds.ccg.andyt.generic.memory.Generic_OutOfMemoryErrorHandler;
 
 /**
@@ -26,7 +25,7 @@ import uk.ac.leeds.ccg.andyt.generic.memory.Generic_OutOfMemoryErrorHandler;
  */
 public abstract class Grids_OutOfMemoryErrorHandler
         extends Generic_OutOfMemoryErrorHandler
-        implements Serializable, Grids_OutOfMemoryErrorHandlerInterface {
+        implements Grids_OutOfMemoryErrorHandlerInterface {
 
     public long Memory_Threshold = 10000000;
 

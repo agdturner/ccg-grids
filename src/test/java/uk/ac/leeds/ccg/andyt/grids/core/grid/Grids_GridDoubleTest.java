@@ -181,20 +181,6 @@ public class Grids_GridDoubleTest {
     }
 
     /**
-     * Gets a Grids_Environment.
-     *
-     * @param dir
-     * @return A new Grids_Environment with a directory et in the current users
-     * working directory.
-     *
-     */
-    protected Grids_Environment getEnvironment(File dir) {
-        Grids_Environment result;
-        result = new Grids_Environment(new File(dir, "Grids_Environment"));
-        return result;
-    }
-
-    /**
      * Gets a Grids_Factory.
      *
      * @param ge

@@ -18,6 +18,7 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
@@ -56,17 +57,9 @@ public class Grids_ClipGrid        extends Grids_Processor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        File dir = new File(
-                System.getProperty("user.dir"));
-        System.out.print("" + dir.toString());
-        if (dir.exists()) {
-            System.out.println(" exists.");
-            dir.mkdirs();
-        } else {
-            System.out.println(" does not exist.");
-        }
-        Grids_Environment ge = new Grids_Environment(dir);
-        Grids_ClipGrid t = new Grids_ClipGrid(ge);
+        Generic_Environment ge = new Generic_Environment();
+        Grids_Environment e = new Grids_Environment(ge);
+        Grids_ClipGrid t = new Grids_ClipGrid(e);
         t.run();
     }
 

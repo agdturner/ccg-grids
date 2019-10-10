@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDoubleFactory;
@@ -47,11 +47,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     }
 
     public static void main(String[] args) {
-        File dir = new File(
-                System.getProperty("user.dir"),
-        Grids_GenerateTestData.class.getName());
-        Grids_Environment ge;
-        ge = new Grids_Environment(dir);
+        Grids_Environment ge = new Grids_Environment(new Generic_Environment());
         Grids_GenerateTestData p = new Grids_GenerateTestData(ge);
         p.time0 = System.currentTimeMillis();
         p.run();

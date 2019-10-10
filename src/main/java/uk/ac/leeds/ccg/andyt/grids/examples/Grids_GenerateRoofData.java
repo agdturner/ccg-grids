@@ -19,6 +19,7 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.IOException;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -59,12 +60,10 @@ public class Grids_GenerateRoofData
      */
     public static void main(String[] args) {
         try {
-            File Directory = new File(
-                    "C:/Work/People/Sadhvi Selvaraj/Roofs/data/synthetic/");
-            Grids_Environment ge;
-            ge = new Grids_Environment(Directory);
+            Grids_Environment e = new Grids_Environment(
+                    new Generic_Environment());
             Grids_GenerateRoofData p;
-            p = new Grids_GenerateRoofData(ge);
+            p = new Grids_GenerateRoofData(e);
             p.ImageExporter = null;
             p.ImageTypes = null;
             p.ESRIAsciiGridExporter = null;
