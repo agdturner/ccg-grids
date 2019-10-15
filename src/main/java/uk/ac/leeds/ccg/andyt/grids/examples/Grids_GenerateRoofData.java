@@ -29,8 +29,7 @@ import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
-public class Grids_GenerateRoofData
-        extends Grids_Processor {
+public class Grids_GenerateRoofData extends Grids_Processor {
 
     private long Time;
     boolean HandleOutOfMemoryError;
@@ -43,6 +42,7 @@ public class Grids_GenerateRoofData
     Grids_ESRIAsciiGridExporter ESRIAsciiGridExporter;
 
     protected Grids_GenerateRoofData() {
+        super();
     }
 
     public Grids_GenerateRoofData(Grids_Environment ge) {
@@ -60,10 +60,7 @@ public class Grids_GenerateRoofData
      */
     public static void main(String[] args) {
         try {
-            Grids_Environment e = new Grids_Environment(
-                    new Generic_Environment());
-            Grids_GenerateRoofData p;
-            p = new Grids_GenerateRoofData(e);
+            Grids_GenerateRoofData p = new Grids_GenerateRoofData();
             p.ImageExporter = null;
             p.ImageTypes = null;
             p.ESRIAsciiGridExporter = null;
@@ -436,9 +433,8 @@ public class Grids_GenerateRoofData
                 / (double) (rowStartRidge - halfCellsize);
         double rowEndRidgeTanAngle = colRidgeHeight
                 / (double) ((nrows - rowEndRidge) - halfCellsize);
-        Grids_Files files = env.getFiles();
-        File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        Grids_Files gf = env.files;
+        File dir = gf.createNewFile(gf.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -541,7 +537,7 @@ public class Grids_GenerateRoofData
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
         double rowStartRidgeTanAngle = colRidgeHeight / (double) (rowStartRidge - halfCellsize);
         double rowEndRidgeTanAngle = colRidgeHeight / (double) ((nrows - rowEndRidge) - halfCellsize);
-        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g;
         g = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         long row;
@@ -574,7 +570,7 @@ public class Grids_GenerateRoofData
         g.setName("HippedRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge + "_" + colStartRidge
                 + "_" + colEndRidge);
-        output(g, Files.getOutputDataDir(), ImageExporter, ImageTypes,
+        output(g, files.getOutputDir(), ImageExporter, ImageTypes,
                 ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
@@ -604,7 +600,7 @@ public class Grids_GenerateRoofData
         g.setName("HippedColRidgedRoof_" + nrows + "_" + ncols + "_"
                 + colRidgeHeight + "_" + colWithRidge + "_" + rowStartRidge
                 + "_" + rowEndRidge);
-        output(g, Files.getOutputDataDir(), ImageExporter, ImageTypes,
+        output(g, files.getOutputDir(), ImageExporter, ImageTypes,
                 ESRIAsciiGridExporter);
     }
 
@@ -631,7 +627,7 @@ public class Grids_GenerateRoofData
         double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - halfCellsize);
         double leftColRidgeTanAngle = colRidgeHeight / (double) (colWithRidge - halfCellsize);
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
-        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -682,7 +678,7 @@ public class Grids_GenerateRoofData
         // Rescale
         Grids_GridDouble ag = rescale(rg, null, 1.0d, 10.0d);
         ag.setName(g.getName() + "ResizedRescaled");
-        output(ag, Files.getOutputDataDir(), ie, imageTypes, 
+        output(ag, files.getOutputDir(), ie, imageTypes, 
                 eage);
     }
 
@@ -716,7 +712,7 @@ public class Grids_GenerateRoofData
                 / (double) (colWithRidge - halfCellsize);
         double rightColRidgeTanAngle = colRidgeHeight
                 / (double) ((ncols - colWithRidge) - halfCellsize);
-        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -732,7 +728,7 @@ public class Grids_GenerateRoofData
                 bottomRowRidgeTanAngle, topRowRidgeTanAngle);
         g.setName("GableRowRidgedRoof_" + nrows + "_" + ncols + "_"
                 + rowRidgeHeight + "_" + rowWithRidge);
-        File outdir = Files.getOutputDataDir();
+        File outdir = files.getOutputDir();
         output(g, outdir, ImageExporter, ImageTypes, ESRIAsciiGridExporter);
         // Col ridged roofs
         for (row = 0; row < nrows; row++) {
@@ -762,7 +758,7 @@ public class Grids_GenerateRoofData
             Grids_GridDouble g, Grids_AbstractGridFactory gf) {
         long nRows = g.getNRows();
         long nCols = g.getNCols();
-        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result = (Grids_GridDouble) gf.create(dir,
                 nRows, nCols, dimensions);
         long row;

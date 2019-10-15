@@ -57,7 +57,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     public void run() {
         System.out.println("Initialising...");
         boolean hoome = true;
-        File outDir = Files.getOutputDataDir();
+        File outDir = files.getOutputDir();
 //        Grids_GridDouble[] testData = generateCatchment(outDir, hoome);
 //        Grids_GridDouble[] testData = generateSquareData(outDir, hoome);
         Grids_GridDouble[] testData = generateCircularData(outDir, hoome);
@@ -78,7 +78,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         File f;
         f = new File(outdir2, "grids.txt");
         PrintWriter pw = env.env.io.getPrintWriter(f, false);
-        //         minRadius  maxRadius  elevation             Grids
+        //         minRadius  maxRadius  elevation             grids
         //circle1          0          5         -1  1,3,(5-4)
         //circle2          5          6          1  2,4,(6-4),7,8,(9-3)
         //circle3          0         20         -2  3,8
@@ -95,7 +95,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         File dir;
         for (int i = 0; i < ngrids; i++) {
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir, 
                     nrows, ncols);
             addToGrid(grids[i], 0.0d);
@@ -470,7 +470,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         File dir;
         for (int i = 0; i < ngrids; i++) {
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         }
@@ -510,7 +510,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
     public Grids_GridDouble[] generateCatchment(boolean hoome) {
         int nrows = 100;
         int ncols = 100;
-        File dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble[] catchment = new Grids_GridDouble[1];
         catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );

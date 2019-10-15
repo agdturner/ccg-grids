@@ -248,9 +248,8 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                         gp.DefaultGridChunkDoubleFactory, -Double.MAX_VALUE,
                         ChunkNRows, ChunkNCols, null,
                         new Grids_GridDoubleStatsNotUpdated(env));
-                Grids_Files files = env.getFiles();
                 File dir;
-                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+                dir = env.files.createNewFile(env.files.getGeneratedGridDoubleDir());
                 Grids_GridDouble gd;
                 gd = (Grids_GridDouble) gdf.create(dir, file, ois);
                 Grids_GridIntFactory gif;

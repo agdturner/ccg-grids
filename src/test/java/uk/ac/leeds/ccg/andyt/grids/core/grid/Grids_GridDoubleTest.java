@@ -258,7 +258,7 @@ public class Grids_GridDoubleTest {
         gridStatistics = new Grids_GridDoubleStats(gridDoubleFactory.env);
         result = gridDoubleFactory.create(
                 gridStatistics,
-                gridDoubleFactory.env.getFiles().getGeneratedGridDoubleDir(),
+                gridDoubleFactory.env.files.getGeneratedGridDoubleDir(),
                 gridDoubleFactory.GridChunkDoubleFactory,
                 nRows,
                 nCols,

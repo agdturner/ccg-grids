@@ -21,29 +21,21 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinary;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinary;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridBinaryStats;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridBinaryStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
 
@@ -114,6 +106,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
+     * @param v
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, File dir,
             Grids_AbstractGrid g, Grids_GridChunkBinaryFactory cf,
@@ -126,10 +119,9 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * Creates a new Grids_GridBinary with values obtained from gridFile.
-     * Currently gridFile must be a directory of a Grids_GridDouble or
-     * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
-     * ".asc" or ".txt".
+     * Creates a new Grids_GridBinary with values obtained from gridFile.Currently gridFile must be a directory of a Grids_GridDouble or
+ Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
+ ".asc" or ".txt".
      *
      * @param stats The Grids_GridBinaryStats to accompany this.
      * @param dir The directory for this.
@@ -146,6 +138,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param endCol The column of the input that will be the right most column
      * of this.
      * @param ge
+     * @param v
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, File dir,
             File gridFile, Grids_GridChunkBinaryFactory cf,
@@ -255,9 +248,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         ChunkNRows, ChunkNCols, Dimensions,
                         new Grids_GridIntStatsNotUpdated(env));
-                Grids_Files files = env.getFiles();
-                File dir;
-                dir = files.createNewFile(files.getGeneratedGridIntDir());
+                File dir = env.files.getGeneratedGridIntDir();
                 Grids_GridInt gi;
                 gi = (Grids_GridInt) gif.create(dir, file, ois);
                 Grids_GridBinaryFactory gdf;
@@ -870,7 +861,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param y the y-coordinate of the point.
      * @param value
      */
-    public final void setCell(double x, double y, double value) {
+    public final void setCell(Double x, Double y, boolean value) {
         setCell(getRow(x), getCol(y), value);
     }
 
@@ -881,7 +872,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param col
      * @param value
      */
-    public void setCell(long row, long col, boolean value) {
+    public void setCell(Long row, Long col, boolean value) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
@@ -927,6 +918,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param chunkID
      * @param row
      * @param col
+     * @param value
      */
     protected void initCell(Grids_GridChunkBinary chunk,
             Grids_2D_ID_int chunkID, long row, long col, boolean value) {

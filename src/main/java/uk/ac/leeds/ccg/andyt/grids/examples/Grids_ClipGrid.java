@@ -18,13 +18,10 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
-import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ESRIAsciiGridExporter;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
@@ -32,13 +29,14 @@ import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
  *
  * @author geoagdt
  */
-public class Grids_ClipGrid        extends Grids_Processor {
+public class Grids_ClipGrid extends Grids_Processor {
 
-    private long Time;
     boolean HandleOutOfMemoryError;
     String Filename;
 
     protected Grids_ClipGrid() {
+        super();
+        HandleOutOfMemoryError = true;
     }
 
     /**
@@ -49,7 +47,6 @@ public class Grids_ClipGrid        extends Grids_Processor {
      */
     public Grids_ClipGrid(Grids_Environment ge) {
         super(ge);
-        Time = System.currentTimeMillis();
         HandleOutOfMemoryError = true;
     }
 
@@ -57,19 +54,14 @@ public class Grids_ClipGrid        extends Grids_Processor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Generic_Environment ge = new Generic_Environment();
-        Grids_Environment e = new Grids_Environment(ge);
-        Grids_ClipGrid t = new Grids_ClipGrid(e);
+        Grids_ClipGrid t = new Grids_ClipGrid();
         t.run();
     }
 
     public void run() {
         try {
             env.setProcessor(this);
-            Grids_Files gf;
-            gf = env.getFiles();
-            File input;
-            input = new File(                    gf.getInputDataDir(),                    "p15oct.asc");
+            File input = new File(files.getInputDir(), "p15oct.asc");
 //            input = new File(
 //                    gf.getInputDataDir(),
 //                    "RADAR_UK_Composite_Highres_23_6.asc");
@@ -80,9 +72,6 @@ public class Grids_ClipGrid        extends Grids_Processor {
             //C:\Users\geoagdt\src\grids\data\input
             Grids_ESRIAsciiGridExporter eage = new Grids_ESRIAsciiGridExporter(env);
             Grids_ImageExporter ie = new Grids_ImageExporter(env);
-            File workspaceDirectory = new File(gf.getGeneratedDataDir(),
-                    "/Workspace/");
-
             //String[] imageTypes = new String[0];
             String[] imageTypes = new String[1];
             imageTypes[0] = "PNG";
@@ -91,18 +80,17 @@ public class Grids_ClipGrid        extends Grids_Processor {
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
             File outDir;
-            outDir = new File(gf.getOutputDataDir(), getClass().getName());
+            outDir = new File(files.getOutputDir(), getClass().getName());
             Grids_GridDouble gd;
             //Grids_GridDouble g;
             // Load input
             boolean notLoadedAsGrid = true;
             if (notLoadedAsGrid) {
-                File dir;
-                dir = new File(env.getFiles().getGeneratedGridDoubleDir(),
+                File dir = new File(files.getGeneratedGridDoubleDir(),
                         inputNameWithoutExtension);
                 gd = (Grids_GridDouble) GridDoubleFactory.create(dir, input);
                 // clip gridDouble
-//                dir = new File(env.getFiles().getGeneratedGridDoubleDir(),
+//                dir = new File(files.getGeneratedGridDoubleDir(),
 //                        "Clipped" + inputNameWithoutExtension);
                 long nRows = gd.getNRows();
                 long nCols = gd.getNCols();
@@ -160,9 +148,5 @@ public class Grids_ClipGrid        extends Grids_Processor {
         } catch (Exception | Error e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    public long getTime() {
-        return Time;
     }
 }

@@ -170,6 +170,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * chunks and sum all the N from each chunk.
      * @return
      */
+    @Override
     public long getN() {
         long result = 0;
         Grids_GridDouble g = getGrid();
@@ -277,7 +278,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
         stdev = stdev.divide(dataValueCount, numberOfDecimalPlaces,
                 BigDecimal.ROUND_HALF_EVEN);
         return Math_BigDecimal.sqrt(stdev, numberOfDecimalPlaces,
-                env.get_Generic_BigDecimal().getRoundingMode());
+                env.bd.getRoundingMode());
     }
 
     @Override

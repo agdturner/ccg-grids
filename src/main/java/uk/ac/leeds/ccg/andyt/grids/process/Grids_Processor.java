@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
@@ -85,7 +86,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * For convenience.
      */
-    protected Grids_Files Files;
+    protected Grids_Files files;
 
 //    /**
 //     * Workspace directory for the processing.
@@ -172,7 +173,7 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridIntStatsNotUpdated GridIntStatisticsNotUpdated;
 
     protected Grids_Processor() {
-        StartTime = System.currentTimeMillis();
+        this(new Grids_Environment(new Generic_Environment()));
     }
 
     /**
@@ -184,8 +185,8 @@ public class Grids_Processor extends Grids_Object {
     public Grids_Processor(Grids_Environment ge) {
         super(ge);
         StartTime = System.currentTimeMillis();
-        Files = ge.getFiles();
-        File dir = Files.createNewFile(Files.getGeneratedGridsDir());
+        files = ge.files;
+        File dir = files.createNewFile(files.getGeneratedDir());
         File logFile;
         logFile = new File(dir, "log.txt");
         if (!logFile.exists()) {
@@ -657,7 +658,7 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         double value;
         File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g, 0, 0, nrows - 1, ncols - 1);
         result.setName(g.getName());
         System.out.println(result.toString());
@@ -1157,7 +1158,7 @@ public class Grids_Processor extends Grids_Object {
                             (gDimensions.getXMin().remainder(gCellsize))) == 0)
                     && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo(
                             (gDimensions.getYMin().remainder(gCellsize))) == 0)) {
-                //println( "Grids Align!" );
+                //println( "grids Align!" );
                 double x;
                 double y;
                 double value;
@@ -1188,9 +1189,9 @@ public class Grids_Processor extends Grids_Object {
                 Grids_GridDouble tg1;
                 Grids_GridDouble tg2;
                 File dir;
-                dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
                 tg1 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
-                dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
                 tg2 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
                 // TODO:
                 // Check scale and rounding appropriate
@@ -1479,7 +1480,7 @@ public class Grids_Processor extends Grids_Object {
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
         double v0;
@@ -1515,7 +1516,7 @@ public class Grids_Processor extends Grids_Object {
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
         double v0;
@@ -1646,7 +1647,7 @@ public class Grids_Processor extends Grids_Object {
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
         File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
@@ -1658,11 +1659,11 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble count;
             count = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble normaliser;
             normaliser = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
@@ -1708,11 +1709,11 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble numerator;
             numerator = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble denominator;
             denominator = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
@@ -1953,7 +1954,7 @@ public class Grids_Processor extends Grids_Object {
         // Initialise result
         gf.setNoDataValue(noDataValue);
         File dir;
-        dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result;
         result = (Grids_GridDouble) gf.create(dir, resultNrows, resultNcols,
                 resultDimensions);
@@ -1967,7 +1968,7 @@ public class Grids_Processor extends Grids_Object {
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
-            dir = Files.createNewFile(Files.getGeneratedGridDoubleDir());
+            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
             totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows,
                     resultNcols, resultDimensions);
             double areaProportion;

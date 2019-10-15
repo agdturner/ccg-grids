@@ -21,14 +21,10 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.andyt.generic.time.Generic_Time;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
-import uk.ac.leeds.ccg.andyt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
@@ -70,15 +66,14 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
     public void run() {
         try {
             env.setProcessor(this);
-            Grids_Files gf = env.getFiles();
             String name = "NIMROD_ASCII";
-            File indir  = new File(gf.getInputDataDir(), name);
-            File outdir  = new File(gf.getOutputDataDir(), name);
+            File indir  = new File(files.getInputDir(), name);
+            File outdir  = new File(files.getOutputDir(), name);
             File outf  = new File(outdir, name + "timeseries.csv");
             outdir.mkdirs();
             PrintWriter pw = env.env.io.getPrintWriter(outf, false);
-            File gendir  = new File(gf.getGeneratedDataDir(), name);
-            File[] files  = indir.listFiles();
+            File gendir  = new File(files.getGeneratedDir(), name);
+            File[] fs  = indir.listFiles();
             TreeMap<Generic_Time, Grids_GridDouble> grids  = new TreeMap<>();
             String time;
             int year;
@@ -94,7 +89,7 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
             File dir;
             Long nrows = null;
             Long ncols = null;
-            for (File file : files) {
+            for (File file : fs) {
                 fn = file.getName();
                 if (fn.endsWith(".asc")) {
                     System.out.println(fn);

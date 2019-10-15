@@ -25,31 +25,32 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
 public class Grids_Files extends Generic_Files {
 
-    protected File GeneratedGridsDir;
     protected File GeneratedGridIntDir;
     protected File GeneratedGridDoubleDir;
     protected File GeneratedGridBinaryDir;
     protected File GeneratedProcessorDir;
 
     protected Grids_Files() {
-        super();
+        super(getDefaultDir());
     }
 
-    public Grids_Files(File dataDir) {
-        super(dataDir);
+    public Grids_Files(File dir) {
+        super(dir);
     }
-
-    public File getGeneratedGridsDir() {
-        if (GeneratedGridsDir == null) {
-            GeneratedGridsDir = new File(getGeneratedDataDir(),
-                    Grids_Strings.s_Grids);
-        }
-        return GeneratedGridsDir;
+    
+    /**
+     * {@code return new File(System.getProperty("user.dir"), "data");}
+     *
+     * @return A default directory called data in the user.dir.
+     */
+    public static File getDefaultDir() {
+        return new File(Generic_Files.getDefaultDir(), 
+                Grids_Strings.s_Grids);
     }
 
     public File getGeneratedGridIntDir() {
         if (GeneratedGridIntDir == null) {
-            GeneratedGridIntDir = new File(getGeneratedGridsDir(), 
+            GeneratedGridIntDir = new File(getGeneratedDir(), 
                     Grids_Strings.s_GridInt);
         }
         return GeneratedGridIntDir;
@@ -57,7 +58,7 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedGridDoubleDir() {
         if (GeneratedGridDoubleDir == null) {
-            GeneratedGridDoubleDir = new File(getGeneratedGridsDir(), 
+            GeneratedGridDoubleDir = new File(getGeneratedDir(), 
                     Grids_Strings.s_GridDouble);
         }
         return GeneratedGridDoubleDir;
@@ -65,7 +66,7 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedGridBinaryDir() {
         if (GeneratedGridBinaryDir == null) {
-            GeneratedGridBinaryDir = new File(getGeneratedGridsDir(), 
+            GeneratedGridBinaryDir = new File(getGeneratedDir(), 
                     Grids_Strings.s_GridBinary);
         }
         return GeneratedGridBinaryDir;
@@ -73,12 +74,12 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedProcessorDir() {
         if (GeneratedProcessorDir == null) {
-            GeneratedProcessorDir = new File(getGeneratedGridsDir(),
+            GeneratedProcessorDir = new File(getGeneratedDir(),
                     Grids_Strings.s_Processor);
         }
         return GeneratedProcessorDir;
     }
-
+    
     /**
      * Returns a newly created file in System.getProperty("user.dir").
      *
@@ -126,7 +127,13 @@ public class Grids_Files extends Generic_Files {
                 } while (!r.createNewFile());
             }
         } catch (IOException ioe0) {
-            System.out.println("File " + r.toString());
+            String methodName = this.getClass().getName() 
+                    + ".createNewFile(File,String,String)";
+            if (r != null) {
+                System.out.println("File " + r.toString() + " in " + methodName);
+            } else {
+                System.out.println("File null in " + methodName);
+            }
             ioe0.printStackTrace(System.err);
         }
         return r;

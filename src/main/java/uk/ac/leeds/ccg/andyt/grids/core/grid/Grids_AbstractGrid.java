@@ -47,7 +47,7 @@ import uk.ac.leeds.ccg.andyt.grids.utilities.Grids_Utilities;
  *
  * @author geoagdt
  */
-public abstract class Grids_AbstractGrid extends Grids_Object 
+public abstract class Grids_AbstractGrid extends Grids_Object
         implements Grids_InterfaceGrid {
 
     //    /**
@@ -105,7 +105,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * A reference to the grid stats.
      */
     protected Grids_AbstractGridStats stats;
-    
+
     protected Grids_AbstractGrid() {
     }
 
@@ -185,9 +185,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object
 
     /**
      * Override to provide a more detailed fields description.
-     * @return 
+     *
+     * @return
      */
-    public String getFieldsDescription(){
+    public String getFieldsDescription() {
         String r = "ChunkNcols=" + ChunkNCols + ", ";
         r += "ChunkNrows=" + ChunkNRows + ", ";
         r += "NChunkCols=" + NChunkCols + ", ";
@@ -211,7 +212,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
         r += getStats().toString();
         return r;
     }
-    
+
     /**
      * @return a string description of the Abstract fields of this instance.
      */
@@ -587,7 +588,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * y-coordinate y.
      * @param y The y-coordinate of the line thats cell row index is returned.
      */
-    public final long getRow(double y) {
+    public final Long getRow(double y) {
         return getRow(BigDecimal.valueOf(y));
     }
 
@@ -595,13 +596,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * @param y
      * @return Cell row of the cells that intersect the y axis coordinate y.
      */
-    public final long getRow(BigDecimal y) {
-        Grids_Dimensions gd;
-        gd = getDimensions();
-        BigDecimal yMinusYMin;
-        yMinusYMin = y.subtract(gd.getYMin());
-        BigDecimal div;
-        div = Math_BigDecimal.divideRoundIfNecessary(yMinusYMin,
+    public final Long getRow(BigDecimal y) {
+        Grids_Dimensions gd = getDimensions();
+        BigDecimal yMinusYMin = y.subtract(gd.getYMin());
+        BigDecimal div = Math_BigDecimal.divideRoundIfNecessary(yMinusYMin,
                 gd.getCellsize(), 0, RoundingMode.DOWN);
         return div.toBigInteger().longValue();
     }
@@ -612,7 +610,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * @return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
      * chunkCellRowIndex.
      */
-    public final long getRow(int chunkRow, int cellRow) {
+    public final Long getRow(int chunkRow, int cellRow) {
         return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
     }
 
@@ -620,9 +618,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * @param random
      * @return A Random CellRowIndex.
      */
-    public final long getRow(Random random) {
+    public final Long getRow(Random random) {
         if (NRows < Integer.MAX_VALUE) {
-            return random.nextInt((int) NRows);
+            return (long) random.nextInt((int) NRows);
         } else {
             long row = 0;
             long rowMax = 0;
@@ -691,8 +689,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     }
 
     /**
-     * Attempts to write this instance to Files located in the Directory
-     * returned by getDirectory().
+     * Attempts to write this instance to files located in the Directory
+ returned by getDirectory().
      */
     public void writeToFile() {
         File dir = getDirectory();
@@ -1917,7 +1915,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * @param chunkID The chunk ID of the chunk to be restored.
      */
     //public abstract void loadIntoCacheChunk(Grids_2D_ID_int chunkID);
-
     /**
      * @return a Grids_2D_ID_long[] - the cell IDs for cells thats centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
@@ -2534,7 +2531,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * @param startRowIndex
      * @param startColIndex
      */
-    public void initDimensions(Grids_AbstractGrid g, long startRowIndex, 
+    public void initDimensions(Grids_AbstractGrid g, long startRowIndex,
             long startColIndex) {
         Dimensions = g.getDimensions(); // temporary assignment
         BigDecimal startColIndexBigDecimal = new BigDecimal((long) startColIndex);
@@ -2613,7 +2610,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         return getChunk(chunkID);
     }
-    
+
     /**
      * @param chunkID
      * @param chunkRow
@@ -2622,9 +2619,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      */
     public abstract Grids_AbstractGridChunk getChunk(
             Grids_2D_ID_int chunkID, int chunkRow, int chunkCol);
-    
+
     public abstract Grids_AbstractGridStats getStats();
-    
+
     /**
      * @return An Iterator for iterating over the cell values in this.
      * @param hoome If true then OutOfMemoryErrors are caught, swap operations
@@ -2647,7 +2644,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
             }
         }
     }
-    
+
     /**
      * @param hoome
      * @return this._GridStatistics TODO: For safety, this method should either
@@ -2671,5 +2668,5 @@ public abstract class Grids_AbstractGrid extends Grids_Object
             }
         }
     }
-    
+
 }
