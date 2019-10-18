@@ -19,9 +19,12 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -39,40 +42,52 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
 
     long time0;
 
-    protected Grids_GenerateTestData() {
+    /**
+     * @throws IOException
+     */
+    protected Grids_GenerateTestData() throws IOException {
+        super();
     }
 
-    public Grids_GenerateTestData(Grids_Environment ge) {
-        super(ge);        
+    public Grids_GenerateTestData(Grids_Environment ge) throws IOException {
+        super(ge);
     }
 
     public static void main(String[] args) {
-        Grids_Environment ge = new Grids_Environment(new Generic_Environment());
-        Grids_GenerateTestData p = new Grids_GenerateTestData(ge);
-        p.time0 = System.currentTimeMillis();
-        p.run();
+        try {
+            Grids_Environment ge = new Grids_Environment(new Generic_Environment());
+            Grids_GenerateTestData p = new Grids_GenerateTestData(ge);
+            p.time0 = System.currentTimeMillis();
+            p.run();
+        } catch (IOException | Error e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     @Override
     public void run() {
-        System.out.println("Initialising...");
-        boolean hoome = true;
-        File outDir = files.getOutputDir();
+        try {
+            System.out.println("Initialising...");
+            boolean hoome = true;
+            File outDir = files.getOutputDir();
 //        Grids_GridDouble[] testData = generateCatchment(outDir, hoome);
 //        Grids_GridDouble[] testData = generateSquareData(outDir, hoome);
-        Grids_GridDouble[] testData = generateCircularData(outDir, hoome);
-        File file;
-        for (int i = 0; i < testData.length; i++) {
-            System.out.println(testData[i].toString());
-            file = new File(outDir, testData[i].getName() + ".asc");
-            new Grids_ESRIAsciiGridExporter(env).toAsciiFile(testData[i], file);
-            file = new File(outDir, testData[i].getName() + ".png");
-            new Grids_ImageExporter(env).toGreyScaleImage(testData[i], this, file, "png");
+            Grids_GridDouble[] testData = generateCircularData(outDir, hoome);
+            File file;
+            for (int i = 0; i < testData.length; i++) {
+                System.out.println(testData[i].toString());
+                file = new File(outDir, testData[i].getName() + ".asc");
+                new Grids_ESRIAsciiGridExporter(env).toAsciiFile(testData[i], file);
+                file = new File(outDir, testData[i].getName() + ".png");
+                new Grids_ImageExporter(env).toGreyScaleImage(testData[i], this, file, "png");
+            }
+            System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
+        } catch (IOException | Error e) {
+            e.printStackTrace(System.err);
         }
-        System.out.println("Processing complete in " + Grids_Utilities.getTime(System.currentTimeMillis() - time0));
     }
 
-    public Grids_GridDouble[] generateCircularData(File outDir,            boolean hoome) {
+    public Grids_GridDouble[] generateCircularData(File outDir, boolean hoome) throws IOException {
         File outdir2 = new File(outDir, "CircularData");
         outdir2.mkdirs();
         File f;
@@ -95,8 +110,8 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         File dir;
         for (int i = 0; i < ngrids; i++) {
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
-        grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir, 
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols);
             addToGrid(grids[i], 0.0d);
             grids[i].setName("Grid" + i);
@@ -457,7 +472,7 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         return (Math.random() * (max - min)) + min;
     }
 
-    public Grids_GridDouble[] generateSquareData(boolean handleOutOfMemoryError) {
+    public Grids_GridDouble[] generateSquareData(boolean handleOutOfMemoryError) throws IOException {
         int ngrids = 5;
         int nrows = 100;
         int ncols = 100;
@@ -470,9 +485,9 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         Grids_GridDouble[] grids = new Grids_GridDouble[ngrids];
         File dir;
         for (int i = 0; i < ngrids; i++) {
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
-        grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                nrows, ncols);
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            grids[i] = (Grids_GridDouble) GridDoubleFactory.create(dir,
+                    nrows, ncols);
         }
         // grids[ 0 ]
         for (int i = 0; i < nrows; i++) {
@@ -507,10 +522,10 @@ public class Grids_GenerateTestData extends Grids_Processor implements Runnable 
         return grids;
     }
 
-    public Grids_GridDouble[] generateCatchment(boolean hoome) {
+    public Grids_GridDouble[] generateCatchment(boolean hoome) throws IOException {
         int nrows = 100;
         int ncols = 100;
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble[] catchment = new Grids_GridDouble[1];
         catchment[0] = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         //catchment[0].setNoDataValue( -9999.0d );

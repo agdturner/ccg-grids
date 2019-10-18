@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
@@ -174,7 +175,7 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      */
     @Override
     public Grids_GridBinary create(File dir, File gridFile, long startRow,
-            long startCol, long endRow, long endCol) {
+            long startCol, long endRow, long endCol) throws IOException {
         return create(new Grids_GridBinaryStatsNotUpdated(env), dir, gridFile, 
                 new Grids_GridChunkBinaryFactory(), startRow, startCol, endRow,
                 endCol, v);
@@ -197,7 +198,7 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      */
     public Grids_GridBinary create(Grids_GridBinaryStats stats, File dir,
             File gridFile, Grids_GridChunkBinaryFactory cf,
-            long startRow, long startCol, long endRow, long endCol, double v) {
+            long startRow, long startCol, long endRow, long endCol, double v) throws IOException {
         return new Grids_GridBinary(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 env, v);
@@ -211,7 +212,7 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridBinary with values obtained from gridFile.
      */
     @Override
-    public Grids_GridBinary create(File dir, File gridFile) {
+    public Grids_GridBinary create(File dir, File gridFile) throws IOException {
         return new Grids_GridBinary(env, dir, gridFile, v);
     }
 

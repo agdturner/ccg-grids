@@ -76,7 +76,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      */
     public Grids_ESRIAsciiGridImporter(
             File f,
-            Grids_Environment ge) {
+            Grids_Environment ge) throws IOException {
         super(ge);
         Processor = ge.getProcessor();
         init(f);

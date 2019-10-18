@@ -127,9 +127,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //        pw.close();
     }
 
-    public void densityPlot(
-            boolean hoome)
-            throws Exception {
+    public void densityPlot(            boolean hoome)            throws IOException {
         Grids_Files gf = env.files;
         int divisions = 100;
         String resolution = "" + divisions;
@@ -153,10 +151,10 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
 //                new File(inDataDirectory + yFilename + ".asc"));
 File dir;
-dir = this.files.createNewFile(this.files.getGeneratedGridDoubleDir());
+dir = env.env.io.createNewFile(this.files.getGeneratedGridDoubleDir());
         Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + xFilename + ".asc"));
-        dir = this.files.createNewFile(this.files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(this.files.getGeneratedGridDoubleDir());
         Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 new File(inDataDirectory + yFilename + ".asc"));
         System.out.println(xGrid.toString());

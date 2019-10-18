@@ -18,9 +18,12 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.generic.time.Generic_Time;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -40,15 +43,16 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
     String Filename;
 
     /**
-     * 
+     * @throws IOException 
      */
-    protected Grids_ConvertToTimeSeries() {
+    protected Grids_ConvertToTimeSeries() throws IOException {
+        super();
     }
 
     /**
      * @param e
      */
-    public Grids_ConvertToTimeSeries(Grids_Environment e) {
+    public Grids_ConvertToTimeSeries(Grids_Environment e) throws IOException {
         super(e);
         Time = System.currentTimeMillis();
         HandleOutOfMemoryError = true;
@@ -58,9 +62,13 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Grids_Environment ge = new Grids_Environment(new Generic_Environment());
-        Grids_ConvertToTimeSeries t = new Grids_ConvertToTimeSeries(ge);
-        t.run();
+        try {
+            Grids_Environment ge = new Grids_Environment(new Generic_Environment());
+            Grids_ConvertToTimeSeries t = new Grids_ConvertToTimeSeries(ge);
+            t.run();
+        } catch (IOException | Error e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     public void run() {

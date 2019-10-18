@@ -20,6 +20,7 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
@@ -212,7 +213,7 @@ public class Grids_GridIntFactory extends Grids_AbstractGridFactory {
      */
     @Override
     public Grids_GridInt create(File dir, File gridFile, long startRow,
-            long startCol, long endRow, long endCol) {
+            long startCol, long endRow, long endCol) throws IOException {
         return create(new Grids_GridIntStatsNotUpdated(env), dir,
                 gridFile, DefaultGridChunkIntFactory, startRow, startCol,
                 endRow, endCol);
@@ -235,7 +236,7 @@ public class Grids_GridIntFactory extends Grids_AbstractGridFactory {
      */
     public Grids_GridInt create(Grids_GridIntStats stats, File dir,
             File gridFile, Grids_AbstractGridChunkIntFactory cf,
-            long startRow, long startCol, long endRow, long endCol) {
+            long startRow, long startCol, long endRow, long endCol) throws IOException {
         return new Grids_GridInt(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
@@ -249,7 +250,7 @@ public class Grids_GridIntFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridInt with values obtained from gridFile.
      */
     @Override
-    public Grids_GridInt create(File dir, File gridFile) {
+    public Grids_GridInt create(File dir, File gridFile) throws IOException {
         return new Grids_GridInt(env, dir, gridFile);
     }
 

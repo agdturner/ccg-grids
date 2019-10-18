@@ -143,7 +143,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     protected Grids_GridBinary(Grids_GridBinaryStats stats, File dir,
             File gridFile, Grids_GridChunkBinaryFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, Grids_Environment ge, double v) {
+            long endRow, long endCol, Grids_Environment ge, double v) throws IOException {
         super(ge, dir);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, v);
@@ -161,7 +161,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * extension containing the data for this.
      * @param v
      */
-    protected Grids_GridBinary(Grids_Environment ge, File dir, File gridFile, double v) {
+    protected Grids_GridBinary(Grids_Environment ge, File dir, File gridFile, double v) throws IOException {
         super(ge, dir);
         init(new Grids_GridBinaryStatsNotUpdated(ge), gridFile, v);
     }
@@ -204,7 +204,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
 //        }
         stats = g.stats;
         super.init(g);
-        ChunkIDChunkMap = g.ChunkIDChunkMap;
+        chunkIDChunkMap = g.chunkIDChunkMap;
         setReferenceInChunkIDChunkMap();
         ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
         // Set the reference to this in stats
@@ -215,8 +215,6 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     @Override
     protected void init() {
         super.init();
-        env.setDataToSwap(true);
-        env.addGrid(this);
         if (!stats.isUpdated()) {
             ((Grids_GridBinaryStatsNotUpdated) stats).setUpToDate(false);
         }
@@ -231,7 +229,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             ois.close();
             // Set the reference to this in the grid Chunks
             Iterator<Grids_AbstractGridChunk> chunkIterator;
-            chunkIterator = ChunkIDChunkMap.values().iterator();
+            chunkIterator = chunkIDChunkMap.values().iterator();
             while (chunkIterator.hasNext()) {
                 Grids_AbstractGridChunk chunk = chunkIterator.next();
                 chunk.setGrid(this);
@@ -256,10 +254,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                         gi.ChunkNRows, gi.ChunkNCols, gi.Dimensions,
                         new Grids_GridBinaryStatsNotUpdated(env), DefaultValue);
                 Grids_GridBinary gd;
-                gd = (Grids_GridBinary) gdf.create(Directory, gi);
+                gd = (Grids_GridBinary) gdf.create(this.dir, gi);
                 init(gd);
                 // Delete gi
-                gi.Directory.delete();
+                gi.dir.delete();
             } catch (IOException ioe) {
                 //ioe.printStackTrace();
                 System.err.println(ioe.getLocalizedMessage());
@@ -281,10 +279,9 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             Grids_GridChunkBinaryFactory chunkFactory, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions) {
         env.checkAndMaybeFreeMemory();
-        Directory = directory;
+        dir = directory;
         this.stats = stats;
         this.stats.setGrid(this);
-        Directory = directory;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         NRows = nRows;
@@ -293,7 +290,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         Name = directory.getName();
         initNChunkRows();
         initNChunkCols();
-        ChunkIDChunkMap = new TreeMap<>();
+        chunkIDChunkMap = new TreeMap<>();
         ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         int r;
         int c;
@@ -305,7 +302,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                 // Try to load chunk.
                 chunkID = new Grids_2D_ID_int(r, c);
                 chunk = chunkFactory.create(this, chunkID);
-                ChunkIDChunkMap.put(chunkID, chunk);
+                chunkIDChunkMap.put(chunkID, chunk);
             }
             System.out.println("Done chunkRow " + r + " out of "
                     + NChunkRows);
@@ -336,10 +333,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         ChunkNCols = chunkNCols;
         NRows = endRow - startRow + 1L;
         NCols = endCol - startCol + 1L;
-        Name = Directory.getName();
+        Name = dir.getName();
         initNChunkRows();
         initNChunkCols();
-        ChunkIDChunkMap = new TreeMap<>();
+        chunkIDChunkMap = new TreeMap<>();
         ChunkIDsOfChunksWorthSwapping = new HashSet<>();
         initDimensions(g, startRow, startCol);
         int gcr;
@@ -403,11 +400,11 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                                             if (isInGrid(row, col)) {
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 //ge.addToNotToSwap(this, chunkID);
-                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
+                                                if (!chunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
-                                                    ChunkIDChunkMap.put(chunkID, chunk);
+                                                    chunkIDChunkMap.put(chunkID, chunk);
                                                 } else {
-                                                    chunk = (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+                                                    chunk = (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
                                                 }
                                                 gValue = gd.getCell(c, cellRow, cellCol);
                                                 if (gValue) {
@@ -477,14 +474,14 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
 //                                            if (isInGrid(row, col)) {
 //                                                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
 //                                                env.addToNotToSwap(this, chunkID);
-//                                                if (!ChunkIDChunkMap.containsKey(chunkID)) {
+//                                                if (!chunkIDChunkMap.containsKey(chunkID)) {
 //                                                    chunk = cf.create(this, chunkID);
-//                                                    ChunkIDChunkMap.put(chunkID, chunk);
+//                                                    chunkIDChunkMap.put(chunkID, chunk);
 //                                                    if (!(chunk instanceof Grids_GridChunkDouble)) {
 //                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
 //                                                    }
 //                                                } else {
-//                                                    chunk = (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+//                                                    chunk = (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
 //                                                }
 //                                                gValue = gi.getCell(c, cellRow, cellCol);
 //                                                // Initialise value
@@ -535,7 +532,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     private void init(Grids_GridBinaryStats stats, File gridFile,
             Grids_GridChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, double v) {
+            long endCol, double v) throws IOException {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -556,9 +553,9 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                 ObjectInputStream ois;
                 ois = env.env.io.getObjectInputStream(thisFile);
                 Grids_GridBinary g;
-                g = (Grids_GridBinary) gf.create(Directory, thisFile, ois);
+                g = (Grids_GridBinary) gf.create(dir, thisFile, ois);
                 Grids_GridBinary g2;
-                g2 = gf.create(Directory, g, startRow, startCol, endRow, endCol);
+                g2 = gf.create(dir, g, startRow, startCol, endRow, endCol);
                 init(g2);
             }
         } else {
@@ -567,10 +564,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             ChunkNCols = chunkNCols;
             NRows = endRow - startRow + 1L;
             NCols = endCol - startCol + 1L;
-            Name = Directory.getName();
+            Name = dir.getName();
             initNChunkRows();
             initNChunkCols();
-            ChunkIDChunkMap = new TreeMap<>();
+            chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             this.stats = stats;
             this.stats.grid = this;
@@ -609,7 +606,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         init();
     }
 
-    private void init(Grids_GridBinaryStats stats, File gridFile, double v) {
+    private void init(Grids_GridBinaryStats stats, File gridFile, double v) throws IOException {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -629,20 +626,20 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                 ObjectInputStream ois;
                 ois = env.env.io.getObjectInputStream(thisFile);
                 Grids_GridBinary g;
-                g = (Grids_GridBinary) gf.create(Directory, thisFile, ois);
+                g = (Grids_GridBinary) gf.create(dir, thisFile, ois);
                 init(g);
-                //this.ChunkIDChunkMap = g.ChunkIDChunkMap;
+                //this.chunkIDChunkMap = g.chunkIDChunkMap;
                 this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
                 this.Dimensions = g.Dimensions;
-                this.Directory = g.Directory;
+                this.dir = g.dir;
                 this.stats = stats;
                 this.stats.grid = this;
             }
         } else {
             // Assume ESRI AsciiFile
             checkDir();
-            Name = Directory.getName();
-            ChunkIDChunkMap = new TreeMap<>();
+            Name = dir.getName();
+            chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthSwapping = new HashSet<>();
             this.stats = stats;
             this.stats.setGrid(this);
@@ -716,15 +713,15 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
          * already exist.
          */
         env.addToNotToSwap(this, chunkID);
-        if (!ChunkIDChunkMap.containsKey(chunkID)) {
+        if (!chunkIDChunkMap.containsKey(chunkID)) {
             Grids_GridChunkBinary gc = new Grids_GridChunkBinary(this, chunkID);
-            ChunkIDChunkMap.put(chunkID, gc);
+            chunkIDChunkMap.put(chunkID, gc);
         } else {
-            Grids_AbstractGridChunk c = ChunkIDChunkMap.get(chunkID);
+            Grids_AbstractGridChunk c = chunkIDChunkMap.get(chunkID);
             if (c == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            chunk = (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+            chunk = (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
             if (fast) {
                 initCellFast(chunk, row, col, value);
             } else {
@@ -740,10 +737,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     @Override
     public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID) {
         if (isInGrid(chunkID)) {
-            if (ChunkIDChunkMap.get(chunkID) == null) {
+            if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+            return (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
         }
         return null;
     }
@@ -756,10 +753,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID,
             int chunkRow, int chunkCol) {
         if (isInGrid(chunkRow, chunkCol)) {
-            if (ChunkIDChunkMap.get(chunkID) == null) {
+            if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+            return (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
         }
         return null;
     }
@@ -1019,8 +1016,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param value
      */
     public void initCells(boolean value) {
-        Iterator<Grids_2D_ID_int> ite = ChunkIDChunkMap.keySet().iterator();
-        int nChunks = ChunkIDChunkMap.size();
+        Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
+        int nChunks = chunkIDChunkMap.size();
         Grids_GridChunkBinary chunk;
         int chunkNRows;
         int chunkNCols;
@@ -1033,7 +1030,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             System.out.println("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             chunkID = ite.next();
-            chunk = (Grids_GridChunkBinary) ChunkIDChunkMap.get(chunkID);
+            chunk = (Grids_GridChunkBinary) chunkIDChunkMap.get(chunkID);
             chunkNRows = getChunkNRows(chunkID);
             chunkNCols = getChunkNCols(chunkID);
             for (row = 0; row <= chunkNRows; row++) {

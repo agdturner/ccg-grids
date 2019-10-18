@@ -172,7 +172,10 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridIntStatsNotUpdated GridIntStatisticsNotUpdated;
 
-    protected Grids_Processor() {
+    /**
+     * @throws IOException 
+     */
+    protected Grids_Processor() throws IOException {
         this(new Grids_Environment(new Generic_Environment()));
     }
 
@@ -182,11 +185,11 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param ge
      */
-    public Grids_Processor(Grids_Environment ge) {
+    public Grids_Processor(Grids_Environment ge) throws IOException {
         super(ge);
         StartTime = System.currentTimeMillis();
         files = ge.files;
-        File dir = files.createNewFile(files.getGeneratedDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedDir());
         File logFile;
         logFile = new File(dir, "log.txt");
         if (!logFile.exists()) {
@@ -589,7 +592,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_AbstractGridNumber g,
             String type,
             double min,
-            double max) {
+            double max) throws IOException {
         if (g instanceof Grids_GridDouble) {
             return rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
         } else {
@@ -613,7 +616,7 @@ public class Grids_Processor extends Grids_Object {
             String type,
             double min,
             double max,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
@@ -641,7 +644,7 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Improve log rescaling implementation.
      */
     protected Grids_GridDouble rescale(Grids_GridDouble g, String type,
-            double min, double max) {
+            double min, double max) throws IOException {
         env.checkAndMaybeFreeMemory();
         Grids_GridDouble result;
         long nrows = g.getNRows();
@@ -658,7 +661,7 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         double value;
         File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g, 0, 0, nrows - 1, ncols - 1);
         result.setName(g.getName());
         System.out.println(result.toString());
@@ -773,7 +776,7 @@ public class Grids_Processor extends Grids_Object {
             String type,
             double min,
             double max,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
@@ -804,7 +807,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridInt g,
             String type,
             double min,
-            double max) {
+            double max) throws IOException {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -1063,7 +1066,7 @@ public class Grids_Processor extends Grids_Object {
      * @param g2 Grid from which values are added.
      * @param w Value g2 values are multiplied by.
      */
-    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w) {
+    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w) throws IOException {
         env.checkAndMaybeFreeMemory();
         if (g2 != null) {
             addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
@@ -1085,7 +1088,7 @@ public class Grids_Processor extends Grids_Object {
      * @param w Value g2 values are multiplied by.
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
-            long startRow, long startCol, long endRow, long endCol, double w) {
+            long startRow, long startCol, long endRow, long endCol, double w) throws IOException {
         env.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin;
@@ -1122,7 +1125,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
             long startRow, long startCol, long endRow, long endCol,
-            BigDecimal[] dc, double w) {
+            BigDecimal[] dc, double w) throws IOException {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -1189,9 +1192,9 @@ public class Grids_Processor extends Grids_Object {
                 Grids_GridDouble tg1;
                 Grids_GridDouble tg2;
                 File dir;
-                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
                 tg1 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
-                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
                 tg2 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
                 // TODO:
                 // Check scale and rounding appropriate
@@ -1475,12 +1478,12 @@ public class Grids_Processor extends Grids_Object {
      * @param g1
      * @return
      */
-    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1) {
+    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1) throws IOException {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
         double v0;
@@ -1511,12 +1514,12 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridDouble divide(
             Grids_GridDouble g0,
-            Grids_GridDouble g1) {
+            Grids_GridDouble g1) throws IOException {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
         double v0;
@@ -1576,7 +1579,7 @@ public class Grids_Processor extends Grids_Object {
             String statistic,
             int rowOffset,
             int colOffset,
-            Grids_GridDoubleFactory gridFactory) {
+            Grids_GridDoubleFactory gridFactory) throws IOException {
         env.checkAndMaybeFreeMemory();
         // Initial tests
         if (cellFactor <= 0) {
@@ -1647,7 +1650,7 @@ public class Grids_Processor extends Grids_Object {
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
         File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
@@ -1659,11 +1662,11 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble count;
             count = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble normaliser;
             normaliser = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
@@ -1709,11 +1712,11 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble numerator;
             numerator = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble denominator;
             denominator = (Grids_GridDouble) gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
@@ -1837,7 +1840,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
             String statistic, Grids_Dimensions resultDimensions,
-            Grids_GridDoubleFactory gf) {
+            Grids_GridDoubleFactory gf) throws IOException {
         env.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
@@ -1954,7 +1957,7 @@ public class Grids_Processor extends Grids_Object {
         // Initialise result
         gf.setNoDataValue(noDataValue);
         File dir;
-        dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result;
         result = (Grids_GridDouble) gf.create(dir, resultNrows, resultNcols,
                 resultDimensions);
@@ -1968,7 +1971,7 @@ public class Grids_Processor extends Grids_Object {
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows,
                     resultNcols, resultDimensions);
             double areaProportion;
@@ -2626,7 +2629,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void output(Grids_AbstractGridNumber g, File outDir,
             Grids_ImageExporter ie, String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage) {
+            Grids_ESRIAsciiGridExporter eage) throws IOException {
         System.out.println("Output " + g.toString());
         if (ie == null) {
             ie = new Grids_ImageExporter(env);
@@ -2664,7 +2667,7 @@ public class Grids_Processor extends Grids_Object {
      * @param hoome
      */
     public void outputImage(Grids_AbstractGridNumber g, File outDir,
-            Grids_ImageExporter ie, String[] imageTypes, boolean hoome) {
+            Grids_ImageExporter ie, String[] imageTypes, boolean hoome) throws IOException {
         try {
             System.out.println("Output " + g.toString());
             if (ie == null) {

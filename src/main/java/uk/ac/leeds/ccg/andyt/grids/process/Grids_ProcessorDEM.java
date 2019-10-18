@@ -47,9 +47,10 @@ public class Grids_ProcessorDEM
         extends Grids_Processor {
 
     /**
-     * Creates a new Grids_ProcessorDEM
+     * @throws IOException 
      */
-    protected Grids_ProcessorDEM() {
+    protected Grids_ProcessorDEM() throws IOException {
+        super();
     }
 
     /**
@@ -59,7 +60,7 @@ public class Grids_ProcessorDEM
      *
      * @param ge
      */
-    public Grids_ProcessorDEM(Grids_Environment ge) {
+    public Grids_ProcessorDEM(Grids_Environment ge) throws IOException {
         super(ge);
     }
 
@@ -216,7 +217,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[0] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[0].setName(filename);
@@ -231,7 +232,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[1] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[1].setName(filename);
@@ -246,7 +247,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(
                     dir, nrows, ncols, dimensions);
             slopeAndAspect[2].setName(filename);
@@ -261,7 +262,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[3].setName(filename);
@@ -276,7 +277,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[4].setName(filename);
@@ -291,7 +292,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[5].setName(filename);
@@ -306,7 +307,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[6].setName(filename);
@@ -321,7 +322,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[7].setName(filename);
@@ -336,7 +337,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[8].setName(filename);
@@ -351,7 +352,7 @@ public class Grids_ProcessorDEM
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
             slopeAndAspect[9].setName(filename);
@@ -762,7 +763,7 @@ public class Grids_ProcessorDEM
      */
     public Grids_GridDouble getHollowFilledDEM(Grids_AbstractGridNumber g,
             Grids_GridDoubleFactory gdf, double outflowHeight, int maxIterations,
-            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) {
+            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) throws IOException {
         env.getGrids().add(g);
         // Intitialise variables
         Grids_GridDouble result;
@@ -772,7 +773,7 @@ public class Grids_ProcessorDEM
 //        int chunkNcols = g.getChunkNCols();
 //        String resultName = g.getName() + "HollowFilledDEM_" + maxIterations;
         String resultName = "HollowFilledDEM_" + maxIterations;
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         result = (Grids_GridDouble) gdf.create(dir, g);
         result.setName(resultName);
         nRows = result.getNRows();
@@ -1817,7 +1818,7 @@ public class Grids_ProcessorDEM
     public Grids_AbstractGridNumber[] getMetrics1(Grids_AbstractGridNumber g,
             double distance, double weightIntersect, double weightFactor,
             Grids_GridDoubleFactory gdf, Grids_GridIntFactory gif,
-            boolean swapOutInitialisedFiles, boolean swapOutProcessedChunks) {
+            boolean swapOutInitialisedFiles, boolean swapOutProcessedChunks)  throws IOException{
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
                 || gdf.getChunkNRows() != gif.getChunkNRows()) {
@@ -1838,9 +1839,9 @@ public class Grids_ProcessorDEM
         for (int i = 0; i < metrics1.length; i++) {
             env.checkAndMaybeFreeMemory();
             if (isGridInt(i)) {
-                dir = files.createNewFile(files.getGeneratedGridIntDir());
+                dir = env.env.io.createNewFile(files.getGeneratedGridIntDir());
             } else {
-                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             }
             do {
                 try {
@@ -3645,7 +3646,7 @@ public class Grids_ProcessorDEM
      */
     public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, double distance,
             double weightIntersect, double weightFactor, int samplingDensity,
-            Grids_GridDoubleFactory gf, boolean hoome) {
+            Grids_GridDoubleFactory gf, boolean hoome)  throws IOException{
         try {
             env.checkAndMaybeFreeMemory();
             Grids_GridDouble[] result = new Grids_GridDouble[7];
@@ -3660,7 +3661,7 @@ public class Grids_ProcessorDEM
             result[1] = slopeAndAspect[1];
             File dir;
             for (int i = 0; i < result.length; i++) {
-                dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
                 result[i] = (Grids_GridDouble) gf.create(dir, nrows,
                         ncols, dimensions);
             }
@@ -3736,14 +3737,14 @@ public class Grids_ProcessorDEM
      * @return
      */
     public Grids_GridDouble getMaxFlowDirection(            Grids_GridDouble g,
-            Grids_GridDoubleFactory gf,            boolean hoome) {
+            Grids_GridDoubleFactory gf,            boolean hoome)  throws IOException{
         try {
             env.checkAndMaybeFreeMemory();
             long nrows = g.getNRows();
             long ncols = g.getNCols();
             double noDataValue = g.getNoDataValue();
             File dir;
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble result = (Grids_GridDouble) gf.create(dir,
                     nrows, ncols, g.getDimensions());
             Grids_2D_ID_long cellID;
@@ -3830,11 +3831,11 @@ public class Grids_ProcessorDEM
      */
     public Grids_GridDouble getUpSlopeAreaMetrics(Grids_GridDouble grid,
             double distance, double weightFactor, double weightIntersect,
-            Grids_GridDoubleFactory gf, boolean hoome) {
+            Grids_GridDoubleFactory gf, boolean hoome)  throws IOException{
         try {
             env.checkAndMaybeFreeMemory();
             File dir;
-            dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
             Grids_GridDouble upSlopeAreaMetrics;
             upSlopeAreaMetrics = (Grids_GridDouble) gf.create(dir,
                     grid.getNRows(), grid.getNCols(), grid.getDimensions());

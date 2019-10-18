@@ -45,13 +45,13 @@ public class Grids_GridDoubleIterator
     public Grids_GridDoubleIterator(
             Grids_GridDouble g) {
         super(g);
-        GridIterator = g.ChunkIDChunkMap.keySet().iterator();
+        GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = (Grids_2D_ID_int) GridIterator.next();
-            Chunk = (Grids_AbstractGridChunkDouble) g.ChunkIDChunkMap.get(ChunkID);
+            Chunk = (Grids_AbstractGridChunkDouble) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_AbstractGridChunkDouble) g.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_AbstractGridChunkDouble) g.chunkIDChunkMap.get(ChunkID);
             }
             initChunkIterator();
         }

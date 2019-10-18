@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -72,7 +73,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             Grids_AbstractGridNumber g,
             Grids_Processor processor,
             File file,
-            String type) {
+            String type) throws IOException {
         // Initialisation
         env.initNotToSwap();
         env.checkAndMaybeFreeMemory();

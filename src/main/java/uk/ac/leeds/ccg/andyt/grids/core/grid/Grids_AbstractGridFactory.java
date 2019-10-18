@@ -6,6 +6,7 @@
 package uk.ac.leeds.ccg.andyt.grids.core.grid;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
@@ -64,7 +65,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param nRows The NRows for the construct.
      * @param nCols The NCols for the construct.
      */
-    public Grids_AbstractGrid create(File dir, long nRows, long nCols) {
+    public Grids_AbstractGrid create(File dir, long nRows, long nCols) throws IOException {
         return create(dir, nRows, nCols, getDimensions(nRows, nCols));
     }
 
@@ -76,7 +77,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param dimensions
      */
     public abstract Grids_AbstractGrid create(File directory, long nRows,
-            long nCols, Grids_Dimensions dimensions);
+            long nCols, Grids_Dimensions dimensions) throws IOException ;
 
     ////////////////////////////////////////////////
     // Create from an existing Grids_AbstractGrid //
@@ -86,7 +87,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param dir The Directory to be used for storing the grid.
      * @param g The Grids_AbstractGridNumber from which values are obtained.
      */
-    public Grids_AbstractGrid create(File dir, Grids_AbstractGrid g) {
+    public Grids_AbstractGrid create(File dir, Grids_AbstractGrid g) throws IOException {
         return create(dir, g, 0L, 0L, g.getNRows() - 1L, g.getNCols() - 1L);
     }
 
@@ -104,7 +105,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * are used.
      */
     public abstract Grids_AbstractGrid create(File dir, Grids_AbstractGrid g, 
-            long startRow, long startCol,            long endRow, long endCol);
+            long startRow, long startCol,            long endRow, long endCol) throws IOException ;
 
     ////////////////////////
     // Create from a File //
@@ -119,7 +120,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * extension containing the data and information about the
      * Grids_AbstractGridNumber to be returned.
      */
-    public abstract Grids_AbstractGrid create(File dir, File gridFile);
+    public abstract Grids_AbstractGrid create(File dir, File gridFile)throws IOException ;
 //    {
 //        if (gridFile.isDirectory()) {
 //            // Initialise from File(gridFile,"this")
@@ -172,7 +173,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * gridFile thats values are used.
      */
     public abstract Grids_AbstractGrid create(File dir, File gridFile,
-            long startRow, long startCol, long endRow, long endCol);
+            long startRow, long startCol, long endRow, long endCol)throws IOException ;
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.

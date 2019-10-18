@@ -21,6 +21,7 @@ package uk.ac.leeds.ccg.andyt.grids.core;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,16 +66,34 @@ public class Grids_Environment extends Grids_OutOfMemoryErrorHandler
      */
     public transient Grids_Files files;
 
+    /**
+     * For storing an instance of Generic_Environment.
+     */
     public transient final Generic_Environment env;
 
-    protected Grids_Environment() {
+    /**
+     * Defaults Generic_Environment to: {@code new Generic_Environment()).
+     * {@link #Grids_Environment(Generic_Environment)}
+     * @throws IOException 
+     */
+    public Grids_Environment() throws IOException {
         this(new Generic_Environment());
     }
 
+    /**
+     * Defaults dir to: {@link Grids_Files.getDefaultDir()).
+     * {@link #Grids_Environment(Generic_Environment,File)}
+     * @param env The default.
+     */
     public Grids_Environment(Generic_Environment env) {
         this(env, Grids_Files.getDefaultDir());
     }
 
+    /**
+     * 
+     * @param env What {@link #env} is set to. 
+     * @param dir Used to initialise {@link #files} using {@link Grids_Files(File)}. 
+     */
     public Grids_Environment(Generic_Environment env, File dir) {
         this.env = env;
         initMemoryReserve(Default_Memory_Threshold);
@@ -91,7 +110,11 @@ public class Grids_Environment extends Grids_OutOfMemoryErrorHandler
      */
     public Grids_Processor getProcessor() {
         if (processor == null) {
-            processor = new Grids_Processor(this);
+            try {
+                processor = new Grids_Processor(this);
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
         }
         return processor;
     }

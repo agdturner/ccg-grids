@@ -19,7 +19,6 @@ package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
 import java.io.IOException;
-import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridFactory;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
@@ -41,11 +40,14 @@ public class Grids_GenerateRoofData extends Grids_Processor {
     String[] ImageTypes;
     Grids_ESRIAsciiGridExporter ESRIAsciiGridExporter;
 
-    protected Grids_GenerateRoofData() {
+    /**
+     * @throws IOException 
+     */
+    protected Grids_GenerateRoofData() throws IOException {
         super();
     }
 
-    public Grids_GenerateRoofData(Grids_Environment ge) {
+    public Grids_GenerateRoofData(Grids_Environment ge) throws IOException {
         super(ge);
         this.Time = System.currentTimeMillis();
         this.HandleOutOfMemoryError = true;
@@ -434,7 +436,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
         double rowEndRidgeTanAngle = colRidgeHeight
                 / (double) ((nrows - rowEndRidge) - halfCellsize);
         Grids_Files gf = env.files;
-        File dir = gf.createNewFile(gf.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(gf.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -537,7 +539,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
         double rowStartRidgeTanAngle = colRidgeHeight / (double) (rowStartRidge - halfCellsize);
         double rowEndRidgeTanAngle = colRidgeHeight / (double) ((nrows - rowEndRidge) - halfCellsize);
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g;
         g = (Grids_GridDouble) GridDoubleFactory.create(dir, nrows, ncols);
         long row;
@@ -627,7 +629,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
         double topRowRidgeTanAngle = rowRidgeHeight / (double) ((nrows - rowWithRidge) - halfCellsize);
         double leftColRidgeTanAngle = colRidgeHeight / (double) (colWithRidge - halfCellsize);
         double rightColRidgeTanAngle = colRidgeHeight / (double) ((ncols - colWithRidge) - halfCellsize);
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -712,7 +714,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
                 / (double) (colWithRidge - halfCellsize);
         double rightColRidgeTanAngle = colRidgeHeight
                 / (double) ((ncols - colWithRidge) - halfCellsize);
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble g = (Grids_GridDouble) GridDoubleFactory.create(dir,
                 nrows, ncols);
         long row;
@@ -755,10 +757,10 @@ public class Grids_GenerateRoofData extends Grids_Processor {
      *
      */
     public Grids_GridDouble disaggregate(Grids_Dimensions dimensions,
-            Grids_GridDouble g, Grids_AbstractGridFactory gf) {
+            Grids_GridDouble g, Grids_AbstractGridFactory gf) throws IOException {
         long nRows = g.getNRows();
         long nCols = g.getNCols();
-        File dir = files.createNewFile(files.getGeneratedGridDoubleDir());
+        File dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
         Grids_GridDouble result = (Grids_GridDouble) gf.create(dir,
                 nRows, nCols, dimensions);
         long row;

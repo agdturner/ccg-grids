@@ -18,6 +18,7 @@
 package uk.ac.leeds.ccg.andyt.grids.examples;
 
 import java.io.File;
+import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.io.Grids_ImageExporter;
@@ -34,7 +35,10 @@ public class Grids_ClipGrid extends Grids_Processor {
     boolean HandleOutOfMemoryError;
     String Filename;
 
-    protected Grids_ClipGrid() {
+    /**
+     * @throws IOException 
+     */
+    protected Grids_ClipGrid() throws IOException {
         super();
         HandleOutOfMemoryError = true;
     }
@@ -45,7 +49,7 @@ public class Grids_ClipGrid extends Grids_Processor {
      *
      * @param ge
      */
-    public Grids_ClipGrid(Grids_Environment ge) {
+    public Grids_ClipGrid(Grids_Environment ge) throws IOException {
         super(ge);
         HandleOutOfMemoryError = true;
     }
@@ -54,8 +58,12 @@ public class Grids_ClipGrid extends Grids_Processor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Grids_ClipGrid t = new Grids_ClipGrid();
-        t.run();
+        try {
+            Grids_ClipGrid t = new Grids_ClipGrid();
+            t.run();
+        } catch (IOException | Error e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     public void run() {

@@ -42,13 +42,13 @@ public class Grids_GridBinaryIterator extends Grids_AbstractGridIterator {
     public Grids_GridBinaryIterator(
             Grids_GridBinary g) {
         super(g);
-        GridIterator = g.ChunkIDChunkMap.keySet().iterator();
+        GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = (Grids_2D_ID_int) GridIterator.next();
-            Chunk = (Grids_GridChunkBinary) g.ChunkIDChunkMap.get(ChunkID);
+            Chunk = (Grids_GridChunkBinary) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_GridChunkBinary) g.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_GridChunkBinary) g.chunkIDChunkMap.get(ChunkID);
             }
             initChunkIterator();
         }

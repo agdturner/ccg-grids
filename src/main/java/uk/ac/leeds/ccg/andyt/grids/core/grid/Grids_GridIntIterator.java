@@ -46,13 +46,13 @@ public class Grids_GridIntIterator
     public Grids_GridIntIterator(
             Grids_GridInt g) {
         super(g);
-        GridIterator = g.ChunkIDChunkMap.keySet().iterator();
+        GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = (Grids_2D_ID_int) GridIterator.next();
-            Chunk = (Grids_AbstractGridChunkInt) g.ChunkIDChunkMap.get(ChunkID);
+            Chunk = (Grids_AbstractGridChunkInt) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_AbstractGridChunkInt) g.ChunkIDChunkMap.get(ChunkID);
+                Chunk = (Grids_AbstractGridChunkInt) g.chunkIDChunkMap.get(ChunkID);
             }
             initChunkIterator();
         }

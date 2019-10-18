@@ -19,7 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.io;
 
 import java.io.File;
-import java.io.IOException;
+import uk.ac.leeds.ccg.andyt.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
 
@@ -30,8 +30,8 @@ public class Grids_Files extends Generic_Files {
     protected File GeneratedGridBinaryDir;
     protected File GeneratedProcessorDir;
 
-    protected Grids_Files() {
-        super(getDefaultDir());
+    public Grids_Files() {
+        super();
     }
 
     public Grids_Files(File dir) {
@@ -39,13 +39,23 @@ public class Grids_Files extends Generic_Files {
     }
     
     /**
-     * {@code return new File(System.getProperty("user.dir"), "data");}
+     * {@code return new File(Generic_Files.getDefaultDir(), Grids_Strings.s_Grids);}
      *
-     * @return A default directory called data in the user.dir.
+     * @return A default directory called Grids in {@link Generic_Files.getDefaultDir()}.
      */
     public static File getDefaultDir() {
-        return new File(Generic_Files.getDefaultDir(), 
-                Grids_Strings.s_Grids);
+        return new File(Generic_Defaults.getDefaultDir(), Grids_Strings.s_Grids);
+    }
+    
+    /**
+     * @param dataDir
+     * @return A directory called {@link Grids_Strings#s_Grids} 
+     * in {@code dataDir}.
+     */
+    public static File getDir(File dataDir) {
+        File r = new File(dataDir, Grids_Strings.s_Grids);
+        r.mkdir();
+        return r;
     }
 
     public File getGeneratedGridIntDir() {
@@ -78,73 +88,5 @@ public class Grids_Files extends Generic_Files {
                     Grids_Strings.s_Processor);
         }
         return GeneratedProcessorDir;
-    }
-    
-    /**
-     * Returns a newly created file in System.getProperty("user.dir").
-     *
-     * @return
-     */
-    public File createNewFile() {
-        //return createNewFile(new File(System.getProperty("java.io.tmpdir")));
-        //return createNewFile(new File(System.getProperty("user.home")));
-        return createNewFile(new File(System.getProperty("user.dir")));
-    }
-
-    /**
-     * Returns a newly created File.
-     *
-     * @param dir
-     * @return
-     */
-    public File createNewFile(File dir) {
-        return createNewFile(dir, "", "");
-    }
-
-    /**
-     * Returns a newly created File.
-     *
-     * @param dir
-     * @param prefix
-     * @param suffix
-     * @return
-     */
-    public File createNewFile(File dir, String prefix, String suffix) {
-        dir.mkdirs();
-        File r = null;
-        try {
-            if ((prefix + suffix).equalsIgnoreCase("")) {
-                boolean success = false;
-                do {
-                    r = getNewFile(dir, prefix, suffix);
-                    if (! r.exists()) {
-                        success = r.mkdir();
-                    }
-                } while (!success);
-            } else {
-                do {
-                    r = getNewFile(dir, prefix, suffix);
-                } while (!r.createNewFile());
-            }
-        } catch (IOException ioe0) {
-            String methodName = this.getClass().getName() 
-                    + ".createNewFile(File,String,String)";
-            if (r != null) {
-                System.out.println("File " + r.toString() + " in " + methodName);
-            } else {
-                System.out.println("File null in " + methodName);
-            }
-            ioe0.printStackTrace(System.err);
-        }
-        return r;
-    }
-
-    private File getNewFile(File dir, String prefix, String suffix) {
-        //dir.mkdirs();
-        File r;
-        do {
-            r = new File(dir, prefix + System.currentTimeMillis() + suffix);
-        } while (r.exists());
-        return r;
     }
 }
