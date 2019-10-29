@@ -249,7 +249,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     /**
      * Beware OutOfMemoryErrors calling this method.
      *
-     * @return NCols.
+     * @return ncols.
      */
     public final long getNCols() {
         return NCols;
@@ -258,7 +258,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     /**
      * Beware OutOfMemoryErrors calling this method.
      *
-     * @return NRows.
+     * @return nrows.
      */
     public final long getNRows() {
         return NRows;
@@ -2137,10 +2137,10 @@ public abstract class Grids_AbstractGrid extends Grids_Object
 //        if (col < 0) {
 //            return false;
 //        }
-//        if (row >= NRows) {
+//        if (row >= nrows) {
 //            return false;
 //        }
-//        return col < NCols;
+//        return col < ncols;
     }
 
     /**
@@ -2516,15 +2516,15 @@ public abstract class Grids_AbstractGrid extends Grids_Object
         BigDecimal yMax;
         BigDecimal cellsize;
         cellsize = header.cellsize;
-        xMin = ((BigDecimal) header.xllcorner).add(cellsize.multiply(new BigDecimal(startColIndex)));
-        yMin = ((BigDecimal) header.yllcorner).add(cellsize.multiply(new BigDecimal(startRowIndex)));
+        xMin = ((BigDecimal) header.xll).add(cellsize.multiply(new BigDecimal(startColIndex)));
+        yMin = ((BigDecimal) header.yll).add(cellsize.multiply(new BigDecimal(startRowIndex)));
         xMax = xMin.add(new BigDecimal(Long.toString(NCols)).multiply(cellsize));
         yMax = yMin.add(new BigDecimal(Long.toString(NRows)).multiply(cellsize));
         Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
     /**
-     * Assumes NRows and NCols are already initialised.
+     * Assumes nrows and ncols are already initialised.
      *
      * @param g
      * @param startRowIndex

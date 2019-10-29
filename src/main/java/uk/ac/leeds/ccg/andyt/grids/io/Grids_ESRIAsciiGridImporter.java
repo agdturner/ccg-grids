@@ -21,178 +21,191 @@ package uk.ac.leeds.ccg.andyt.grids.io;
 import java.io.File;
 import java.io.StreamTokenizer;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
 
 /**
  * Class for importing ESRI Asciigrid.
  */
 public class Grids_ESRIAsciiGridImporter extends Grids_Object {
 
-    public Grids_Processor Processor;
-
     /**
-     * For storing ESRIAsciigrid File
+     * The ESRIAsciigrid File
      */
     private File file;
 
     /**
-     * For storing ESRIAsciigrid BufferedReader
+     * The ESRIAsciigrid BufferedReader.
      */
-    private BufferedReader BR;
+    private BufferedReader br;
 
     /**
-     * For storing ESRIAsciigrid StreamTokenizer
+     * The ESRIAsciigrid StreamTokenizer.
      */
-    private StreamTokenizer ST;
+    private StreamTokenizer st;
 
     /**
-     * @param f
-     * @param processor
+     * For storing the header.
      */
-    public Grids_ESRIAsciiGridImporter(
-            File f,
-            Grids_Processor processor) {
-        super(processor.env);
-        this.Processor = processor;
+    private Grids_ESRIAsciiGridHeader header;
+
+    /**
+     * @param f The File.
+     * @param e The Grids_Environment.
+     * @throws java.io.FileNotFoundException If f does not exist.
+     */
+    public Grids_ESRIAsciiGridImporter(Grids_Environment e, File f)
+            throws FileNotFoundException {
+        super(e);
         init(f);
     }
 
-    private void init(File f) {
+    private void init(File f) throws FileNotFoundException {
         file = f;
-        BR = env.env.io.getBufferedReader(file);
-        ST = new StreamTokenizer(BR);
-    }
-
-    /**
-     * Creates a new instance of ESRIAsciiGridImporter
-     *
-     * @param f
-     * @param ge
-     */
-    public Grids_ESRIAsciiGridImporter(
-            File f,
-            Grids_Environment ge) throws IOException {
-        super(ge);
-        Processor = ge.getProcessor();
-        init(f);
+        br = env.env.io.getBufferedReader(file);
+        st = new StreamTokenizer(br);
     }
 
     public class Grids_ESRIAsciiGridHeader {
 
-        public long NCols;
-        public long NRows;
-        public BigDecimal xllcorner;
-        public BigDecimal yllcorner;
+        /**
+         * For storing the number of columns.
+         */
+        public long ncols;
+        
+        /**
+         * For storing the number of rows.
+         */
+        public long nrows;
+
+        /**
+         * For storing the lower left corner x.
+         */
+        public BigDecimal xll;
+        
+        /**
+         * For storing the lower left corner y.
+         */
+        public BigDecimal yll;
+        
+        /**
+         * For storing the cellsize.
+         */
         public BigDecimal cellsize;
-        public BigDecimal NoDataValue;
+        
+        /**
+         * For storing the NODATA value.
+         */
+        public BigDecimal ndv;
 
         public Grids_ESRIAsciiGridHeader() {
         }
     }
 
     /**
-     * Reads the header of the file and returns a Object[] where; [0] = Long(
-     * ncols ); [1] = (double) nrows; [2] = xllcorner; [3] = yllcorner; [4] =
-     * cellsize; [5] = noDataValue if it exists or Double.NEGATIVE_INFINITY
-     * otherwise
-     *
-     * @return
+     * If {@link #header} is null, this reads the header of the file and returns 
+     * a {@link Grids_ESRIAsciiGridHeader}. Otherwise this returns {@link #header}.
+     * @return a {@link Grids_ESRIAsciiGridHeader}.
      */
-    public Grids_ESRIAsciiGridHeader readHeaderObject() {
-        Grids_ESRIAsciiGridHeader result = new Grids_ESRIAsciiGridHeader();
-        try {
-            setSyntax0();
-            this.ST.wordChars('0', '9');
-            this.ST.wordChars('.', '.');
-            this.ST.wordChars('-', '-');
-            this.ST.eolIsSignificant(false);
-            // ncols
-            this.ST.nextToken();
-            this.ST.nextToken();
-            result.NCols = new Long(this.ST.sval);
-            // nrows
-            this.ST.nextToken();
-            this.ST.nextToken();
-            result.NRows = new Long(this.ST.sval);
-            // xllcorner
-            this.ST.nextToken();
-            boolean b1 = true;
-            if (this.ST.sval.equalsIgnoreCase("xllcenter") || this.ST.sval.equalsIgnoreCase("xllcentre")) {
-                b1 = false;
-            }
-            this.ST.nextToken();
-            result.xllcorner = new BigDecimal(this.ST.sval);
-
-            // yllcorner
-            this.ST.nextToken();
-            boolean b2 = true;
-            if (this.ST.sval.equalsIgnoreCase("yllcenter") || this.ST.sval.equalsIgnoreCase("yllcentre")) {
-                b2 = false;
-            }
-            this.ST.nextToken();
-            result.yllcorner = new BigDecimal(this.ST.sval);
-            // cellsize
-            this.ST.nextToken();
-            this.ST.nextToken();
-            BigDecimal cellsize = new BigDecimal(this.ST.sval);
-            result.cellsize = cellsize;
-            // adjust xllcorner
-            if (!b1 || !b2) {
-                BigDecimal halfCellsize = cellsize.divide(new BigDecimal("2"), cellsize.scale() + 4, RoundingMode.HALF_EVEN);
-                if (!b1) {
-                    result.xllcorner = ((BigDecimal) result.xllcorner).subtract(halfCellsize);
+    public Grids_ESRIAsciiGridHeader getHeader() {
+        if (header == null) {
+            header = new Grids_ESRIAsciiGridHeader();
+            try {
+                setSyntax0();
+                this.st.wordChars('0', '9');
+                this.st.wordChars('.', '.');
+                this.st.wordChars('-', '-');
+                this.st.eolIsSignificant(false);
+                // ncols
+                this.st.nextToken();
+                this.st.nextToken();
+                header.ncols = new Long(this.st.sval);
+                // nrows
+                this.st.nextToken();
+                this.st.nextToken();
+                header.nrows = new Long(this.st.sval);
+                // xll
+                this.st.nextToken();
+                boolean b1 = true;
+                if (this.st.sval.equalsIgnoreCase("xllcenter") 
+                        || this.st.sval.equalsIgnoreCase("xllcentre")) {
+                    b1 = false;
                 }
-                // adjust yllcorner
-                if (!b2) {
-                    result.yllcorner = ((BigDecimal) result.yllcorner).subtract(halfCellsize);
-                }
-            }
-            // noDataValue
-            this.BR.mark(100);
-            this.ST.wordChars('_', '_');
-            this.ST.nextToken();
-            result.NoDataValue = BigDecimal.valueOf(-Double.MAX_VALUE);
-            if (this.ST.ttype == StreamTokenizer.TT_NUMBER) {
-                this.BR.reset();
-            } else {
-                if (ST.sval.startsWith("n") || ST.sval.startsWith("N")) {
-                    setSyntax0();
-                    this.ST.wordChars('0', '9');
-                    this.ST.wordChars('-', '-');
-                    this.ST.wordChars('+', '+');
-                    this.ST.wordChars('.', '.');
+                this.st.nextToken();
+                header.xll = new BigDecimal(this.st.sval);
 
-//                this.streamTokenizer.ordinaryChar( 'e' );
-//                this.streamTokenizer.ordinaryChar( 'd' );
-//                this.streamTokenizer.ordinaryChar( 'E' );
-//                this.streamTokenizer.ordinaryChar( 'D' );
-//                this.streamTokenizer.parseNumbers();
-                    //result[ 5 ] = new Double( readHeaderDoubleValue() );
-                    result.NoDataValue = BigDecimal.valueOf(readDouble());
+                // yll
+                this.st.nextToken();
+                boolean b2 = true;
+                if (this.st.sval.equalsIgnoreCase("yllcenter") 
+                        || this.st.sval.equalsIgnoreCase("yllcentre")) {
+                    b2 = false;
+                }
+                this.st.nextToken();
+                header.yll = new BigDecimal(this.st.sval);
+                // cellsize
+                this.st.nextToken();
+                this.st.nextToken();
+                BigDecimal cellsize = new BigDecimal(this.st.sval);
+                header.cellsize = cellsize;
+                // adjust xll
+                if (!b1 || !b2) {
+                    BigDecimal halfCellsize = cellsize.divide(
+                            new BigDecimal("2"),
+                            cellsize.scale() + 4, RoundingMode.HALF_EVEN);
+                    if (!b1) {
+                        header.xll = ((BigDecimal) header.xll).subtract(halfCellsize);
+                    }
+                    // adjust yll
+                    if (!b2) {
+                        header.yll = ((BigDecimal) header.yll).subtract(halfCellsize);
+                    }
+                }
+                // noDataValue
+                this.br.mark(100);
+                this.st.wordChars('_', '_');
+                this.st.nextToken();
+                header.ndv = BigDecimal.valueOf(-Double.MAX_VALUE);
+                if (this.st.ttype == StreamTokenizer.TT_NUMBER) {
+                    this.br.reset();
                 } else {
-                    this.BR.reset();
+                    if (st.sval.startsWith("n") || st.sval.startsWith("N")) {
+                        setSyntax0();
+                        this.st.wordChars('0', '9');
+                        this.st.wordChars('-', '-');
+                        this.st.wordChars('+', '+');
+                        this.st.wordChars('.', '.');
+//                this.st.ordinaryChar( 'e' );
+//                this.st.ordinaryChar( 'd' );
+//                this.st.ordinaryChar( 'E' );
+//                this.st.ordinaryChar( 'D' );
+//                this.st.parseNumbers();
+                        //header[ 5 ] = new Double( readHeaderDoubleValue() );
+                        header.ndv = BigDecimal.valueOf(readDouble());
+                    } else {
+                        this.br.reset();
+                    }
                 }
+                setSyntax0();
+                this.st.wordChars('0', '9');
+                this.st.wordChars('-', '-');
+                this.st.wordChars('+', '+');
+                this.st.wordChars('.', '.');
+//            this.st.ordinaryChar( 'e' );
+//            this.st.ordinaryChar( 'd' );
+//            this.st.ordinaryChar( 'E' );
+//            this.st.ordinaryChar( 'D' );
+//            this.st.parseNumbers();
+            } catch (IOException e) {
+                System.out.println(e);
+                e.printStackTrace(System.err);
             }
-            setSyntax0();
-            this.ST.wordChars('0', '9');
-            this.ST.wordChars('-', '-');
-            this.ST.wordChars('+', '+');
-            this.ST.wordChars('.', '.');
-//            this.streamTokenizer.ordinaryChar( 'e' );
-//            this.streamTokenizer.ordinaryChar( 'd' );
-//            this.streamTokenizer.ordinaryChar( 'E' );
-//            this.streamTokenizer.ordinaryChar( 'D' );
-//            this.streamTokenizer.parseNumbers();
-        } catch (IOException e) {
-            System.out.println(e);
-            e.printStackTrace(System.err);
         }
-        return result;
+        return header;
     }
 
     /**
@@ -205,48 +218,14 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      * this.streamTokenizer.parseNumbers();
      */
     private void setSyntax0() {
-        this.ST.resetSyntax();
-        this.ST.whitespaceChars('\u0000', '\u0020');
-        this.ST.wordChars('A', 'Z');
-        this.ST.wordChars('a', 'z');
-        this.ST.wordChars('\u00A0', '\u00FF');
-        this.ST.eolIsSignificant(false);
+        this.st.resetSyntax();
+        this.st.whitespaceChars('\u0000', '\u0020');
+        this.st.wordChars('A', 'Z');
+        this.st.wordChars('a', 'z');
+        this.st.wordChars('\u00A0', '\u00FF');
+        this.st.eolIsSignificant(false);
     }
 
-//    /**
-//     * Returns the next value as a double or Double.NEGATIVE_INFINITY
-//     */
-//    public double readDouble() {
-//        double result = Double.NEGATIVE_INFINITY;
-//        try {
-//            this.streamTokenizer.nextToken();
-//            this.bufferedReader.mark( 100 );
-//            result = ( double ) this.streamTokenizer.nval;
-//            this.streamTokenizer.nextToken();
-//            if ( this.streamTokenizer.ttype != StreamTokenizer.TT_EOF ) {
-//                //if ( this.streamTokenizer.ttype != StreamTokenizer.TT_EOL ) {
-//                //if ( this.streamTokenizer.ttype == StreamTokenizer.TT_WORD ) {
-//                if ( this.streamTokenizer.ttype == 'e' || this.streamTokenizer.ttype == 'd' || this.streamTokenizer.ttype == 'E' || this.streamTokenizer.ttype == 'D' ) {
-//                //if ( this.streamTokenizer.ttype != StreamTokenizer.TT_NUMBER ) {
-//                        // Either encountered an exponent term or something else
-//                        // Treat as an exponent: grab the second part and compute
-//                        this.streamTokenizer.nextToken();
-//                        if ( this.streamTokenizer.ttype != StreamTokenizer.TT_NUMBER ) {
-//                        //if ( this.streamTokenizer.ttype == '+' ) {
-//                            // this is probably a + so ignore and get the next token
-//                            this.streamTokenizer.nextToken();
-//                        }
-//                        result *= Math.pow( 10.0, this.streamTokenizer.nval );
-//                    } else {
-//                        this.bufferedReader.reset();
-//                    }
-//                //}
-//            }
-//        } catch ( IOException e ) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
     /**
      * Returns the next value as a double or Double.NEGATIVE_INFINITY
      *
@@ -255,9 +234,9 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     public double readDouble() {
         double result = Double.NEGATIVE_INFINITY;
         try {
-            this.ST.nextToken();
-            if (this.ST.ttype != StreamTokenizer.TT_EOF) {
-                String token = this.ST.sval;
+            this.st.nextToken();
+            if (this.st.ttype != StreamTokenizer.TT_EOF) {
+                String token = this.st.sval;
                 int exponent = 0;
                 boolean positive;
                 if (token.startsWith("-")) {
@@ -370,32 +349,6 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         return result;
     }
 
-//    /**
-//     * Returns the next value as a double or Double.NEGATIVE_INFINITY
-//     * TODO: Not sure this is completely correct, but it seems to work....
-//     */
-//    public double readHeaderDoubleValue() {
-//        double result = Double.NEGATIVE_INFINITY;
-//        try {
-//            this.streamTokenizer.nextToken();
-//            this.bufferedReader.mark( 100 );
-//            result = ( double ) this.streamTokenizer.nval;
-//            this.streamTokenizer.nextToken();
-//            if ( this.streamTokenizer.ttype != StreamTokenizer.TT_EOF ) {
-//                if ( this.streamTokenizer.ttype != StreamTokenizer.TT_NUMBER ) {
-//                    // Either encountered an exponent term or something else
-//                    // Treat as an exponent: grab the second part and compute
-//                    this.streamTokenizer.nextToken();
-//                    result *= Math.pow( 10.0, this.streamTokenizer.nval );
-//                } else {
-//                    this.bufferedReader.reset();
-//                }
-//            }
-//        } catch ( IOException e ) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
     /**
      * Returns the next value as a int or Integer.MIN_VALUE
      *
@@ -404,19 +357,19 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     public int readInt() {
         int result = Integer.MIN_VALUE;
         try {
-            this.ST.nextToken();
-            this.BR.mark(100);
-            double number = this.ST.nval;
-            this.ST.nextToken();
-            if (this.ST.ttype != StreamTokenizer.TT_EOF) {
-                if (this.ST.ttype != StreamTokenizer.TT_NUMBER) {
+            this.st.nextToken();
+            this.br.mark(100);
+            double number = this.st.nval;
+            this.st.nextToken();
+            if (this.st.ttype != StreamTokenizer.TT_EOF) {
+                if (this.st.ttype != StreamTokenizer.TT_NUMBER) {
                     // Either encountered an exponent term or something else
                     // Treat as an exponent: grab the second part and compute
-                    this.ST.nextToken();
-                    result = (int) (number * Math.pow(10.0, this.ST.nval));
+                    this.st.nextToken();
+                    result = (int) (number * Math.pow(10.0, this.st.nval));
                 } else {
                     result = (int) number;
-                    this.BR.reset();
+                    this.br.reset();
                 }
             }
         } catch (IOException e) {
@@ -430,7 +383,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      */
     public void close() {
         try {
-            this.BR.close();
+            this.br.close();
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

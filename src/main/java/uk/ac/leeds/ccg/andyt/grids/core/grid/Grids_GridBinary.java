@@ -67,8 +67,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * Creates a new Grids_GridBinary with each cell value equal to NoDataValue
-     * and all chunks of the same type.
+     * Creates a new Grids_GridBinary with each cell value equal to ndv
+ and all chunks of the same type.
      *
      * @param stats The Grids_GridBinaryStats to accompany this.
      * @param dir The directory for this.
@@ -78,7 +78,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The NoDataValue.
+     * @param noDataValue The ndv.
      * @param ge
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, File dir,
@@ -167,8 +167,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * Creates a new Grids_GridDouble with each cell value equal to NoDataValue
-     * and all chunks of the same type.
+     * Creates a new Grids_GridDouble with each cell value equal to ndv
+ and all chunks of the same type.
      *
      * @param stats The Grids_GridDoubleStats to accompany this.
      * @param dir The directory for this.
@@ -574,12 +574,12 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             String filename = gridFile.getName();
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile, env);
-                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Grids_ESRIAsciiGridHeader header = eagi.getHeader();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
                 initDimensions(header, startRow, startCol);
-                double gridFileNoDataValue = header.NoDataValue.doubleValue();
+                double gridFileNoDataValue = header.ndv.doubleValue();
                 long row;
                 long col;
 //                Grids_GridChunkBinary chunk;
@@ -646,12 +646,12 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             String filename = gridFile.getName();
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile, env);
-                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Grids_ESRIAsciiGridHeader header = eagi.getHeader();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
-                NCols = header.NCols;
-                NRows = header.NRows;
+                NCols = header.ncols;
+                NRows = header.nrows;
                 ChunkNRows = gp.GridDoubleFactory.ChunkNRows;
                 ChunkNCols = gp.GridDoubleFactory.ChunkNCols;
                 initNChunkRows();
@@ -661,7 +661,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                 if (reportN == 0) {
                     reportN = 1;
                 }
-                double gridFileNoDataValue = header.NoDataValue.doubleValue();
+                double gridFileNoDataValue = header.ndv.doubleValue();
                 long row;
                 long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.

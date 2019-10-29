@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.io;
 
 import java.io.File;
+import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Strings;
@@ -30,11 +31,7 @@ public class Grids_Files extends Generic_Files {
     protected File GeneratedGridBinaryDir;
     protected File GeneratedProcessorDir;
 
-    public Grids_Files() {
-        super();
-    }
-
-    public Grids_Files(File dir) {
+    public Grids_Files(File dir) throws IOException {
         super(dir);
     }
     

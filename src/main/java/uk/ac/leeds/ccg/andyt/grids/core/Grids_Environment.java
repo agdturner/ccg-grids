@@ -85,7 +85,7 @@ public class Grids_Environment extends Grids_OutOfMemoryErrorHandler
      * {@link #Grids_Environment(Generic_Environment,File)}
      * @param env The default.
      */
-    public Grids_Environment(Generic_Environment env) {
+    public Grids_Environment(Generic_Environment env) throws IOException {
         this(env, Grids_Files.getDefaultDir());
     }
 
@@ -94,7 +94,7 @@ public class Grids_Environment extends Grids_OutOfMemoryErrorHandler
      * @param env What {@link #env} is set to. 
      * @param dir Used to initialise {@link #files} using {@link Grids_Files(File)}. 
      */
-    public Grids_Environment(Generic_Environment env, File dir) {
+    public Grids_Environment(Generic_Environment env, File dir) throws IOException {
         this.env = env;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();

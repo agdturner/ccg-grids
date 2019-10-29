@@ -19,6 +19,7 @@
 package uk.ac.leeds.ccg.andyt.grids.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGridNumber;
@@ -52,7 +53,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param g Grid for export.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g) {
+    public File toAsciiFile(Grids_AbstractGridNumber g) throws IOException {
         File directory = g.getDirectory();
         File file = new File(directory.getParentFile(), g.getName() + ".asc");
         return toAsciiFile(g, file);
@@ -65,7 +66,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param file The File to export to.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g, File file) {
+    public File toAsciiFile(Grids_AbstractGridNumber g, File file) throws IOException {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
             noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue();
@@ -83,7 +84,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param ndv The value to be used or substituted as a noDataValue for g.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) {
+    public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) 
+            throws IOException {
         env.initNotToSwap();
         env.checkAndMaybeFreeMemory();
         try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {

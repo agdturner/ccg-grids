@@ -78,8 +78,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
     }
 
     /**
-     * Creates a new Grids_GridDouble with each cell value equal to NoDataValue
-     * and all chunks of the same type.
+     * Creates a new Grids_GridDouble with each cell value equal to ndv and all
+     * chunks of the same type.
      *
      * @param stats The Grids_GridDoubleStats to accompany this.
      * @param dir The directory for this.
@@ -89,7 +89,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The NoDataValue.
+     * @param noDataValue The ndv.
      * @param ge
      */
     protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
@@ -118,7 +118,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
-     * @param noDataValue The NoDataValue for this.
+     * @param noDataValue The ndv for this.
      */
     protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
             Grids_AbstractGrid g,
@@ -151,7 +151,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param endRow The row of the input that will be the top most row of this.
      * @param endCol The column of the input that will be the right most column
      * of this.
-     * @param noDataValue The NoDataValue for this.
+     * @param noDataValue The ndv for this.
      * @param ge
      */
     protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
@@ -165,8 +165,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
     }
 
     /**
-     * Creates a new Grids_GridDouble with values obtained from gridFile.
-     * Currently gridFile must be a directory of a Grids_GridDouble or
+     * Creates a new Grids_GridDouble with values obtained from
+     * gridFile.Currently gridFile must be a directory of a Grids_GridDouble or
      * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
      *
@@ -174,6 +174,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param dir The directory for this.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
+     * @throws java.io.IOException
      */
     protected Grids_GridDouble(Grids_Environment ge, File dir, File gridFile) throws IOException {
         super(ge, dir);
@@ -181,8 +182,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
     }
 
     @Override
-    public String getFieldsDescription(){
-        return "NoDataValue=" + NoDataValue + ", " 
+    public String getFieldsDescription() {
+        return "NoDataValue=" + NoDataValue + ", "
                 + super.getFieldsDescription();
     }
 
@@ -240,15 +241,15 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
                 ois.close();
                 ois = env.env.io.getObjectInputStream(thisFile);
                 // If the object is a Grids_GridInt
-                Grids_Processor gp  = env.getProcessor();
-                Grids_GridIntFactory gif  = new Grids_GridIntFactory(env, 
+                Grids_Processor gp = env.getProcessor();
+                Grids_GridIntFactory gif = new Grids_GridIntFactory(env,
                         gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         ChunkNRows, ChunkNCols, Dimensions,
                         new Grids_GridIntStatsNotUpdated(env));
                 File idir = env.env.io.createNewFile(env.files.getGeneratedGridIntDir());
-                Grids_GridInt gi  = (Grids_GridInt) gif.create(idir, file, ois);
-                Grids_GridDoubleFactory gdf  = new Grids_GridDoubleFactory(env, 
+                Grids_GridInt gi = (Grids_GridInt) gif.create(idir, file, ois);
+                Grids_GridDoubleFactory gdf = new Grids_GridDoubleFactory(env,
                         gp.GridChunkDoubleFactory,
                         gp.DefaultGridChunkDoubleFactory, gi.NoDataValue,
                         gi.ChunkNRows, gi.ChunkNCols, gi.Dimensions,
@@ -594,12 +595,12 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
             double value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile,                        env);
-                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Grids_ESRIAsciiGridHeader header = eagi.getHeader();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
                 initDimensions(header, startRow, startCol);
-                double gridFileNoDataValue = header.NoDataValue.doubleValue();
+                double gridFileNoDataValue = header.ndv.doubleValue();
                 long row;
                 long col;
 //                Grids_AbstractGridChunkDouble chunk;
@@ -716,12 +717,12 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
             double value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
-                eagi = new Grids_ESRIAsciiGridImporter(gridFile, env);
-                Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Grids_ESRIAsciiGridHeader header = eagi.getHeader();
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
-                NCols = header.NCols;
-                NRows = header.NRows;
+                NCols = header.ncols;
+                NRows = header.nrows;
                 ChunkNRows = gp.GridDoubleFactory.ChunkNRows;
                 ChunkNCols = gp.GridDoubleFactory.ChunkNCols;
                 initNChunkRows();
@@ -731,7 +732,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
                 if (reportN == 0) {
                     reportN = 1;
                 }
-                double gridFileNoDataValue = header.NoDataValue.doubleValue();
+                double gridFileNoDataValue = header.ndv.doubleValue();
                 Grids_AbstractGridChunkDouble chunk;
                 Grids_GridChunkDouble gridChunk;
                 long row;
@@ -847,7 +848,6 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
 //            }
 //        }
 //    }
-
     /**
      *
      * @param row
@@ -984,7 +984,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
     }
 
     /**
-     * @return NoDataValue.
+     * @return ndv.
      */
     public final double getNoDataValue() {
         return NoDataValue;
@@ -996,7 +996,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * Double.POSITIVE_INFINITY then NoDataValue is left as the default of
      * Integer.MIN_VALUE and a warning message is written to std.out.
      *
-     * @param ndv The value NoDataValue is initialised to.
+     * @param ndv The value ndv is initialised to.
      */
     protected final void initNoDataValue(double ndv) {
         if (Double.isNaN(ndv)) {
@@ -1025,7 +1025,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
         int cellCol = getCellCol(col);
         return getCell(c, cellRow, cellCol);
 //        }
-//        return NoDataValue;
+//        return ndv;
     }
 
     /**
@@ -1228,7 +1228,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
 
     /**
      * Initialises the value at _CellRowIndex, _CellColIndex and does nothing
- about stats
+     * about stats
      *
      * @param chunk
      * @param row
@@ -1264,9 +1264,9 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
      * @param row the row index for the cell that'stats centroid is the circle
- centre from which cell values are returned.
+     * centre from which cell values are returned.
      * @param col the column index for the cell that'stats centroid is the
- circle centre from which cell values are returned.
+     * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
@@ -1840,8 +1840,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
     /**
      * @param row the row index of the cell.
      * @param col the column index of the cell.
-     * @param valueToAdd the value to be added to the cell. If the value is
-     * NoDataValue the adding is done as if adding to a cell with value of 0.
+     * @param valueToAdd the value to be added to the cell. If the value is ndv
+     * the adding is done as if adding to a cell with value of 0.
      */
     public void addToCell(long row, long col, double valueToAdd) {
         boolean isInGrid = isInGrid(row, col);

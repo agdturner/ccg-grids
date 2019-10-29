@@ -2709,7 +2709,7 @@ public class Grids_Processor extends Grids_Object {
      * @param hoome
      */
     public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, File outDir,
-            Grids_ESRIAsciiGridExporter eage, boolean hoome) {
+            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException {
         try {
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(env);
