@@ -82,7 +82,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
  all chunks of the same type.
      *
      * @param stats The Grids_GridIntStats to accompany this.
-     * @param dir The File _Directory to be used for swapping.
+     * @param dir The File _Directory to be used for cacheping.
      * @param cf The factory preferred for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
@@ -196,7 +196,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
         chunkIDChunkMap = g.chunkIDChunkMap;
         // Set the reference to this in chunkIDChunkMap chunks
         setReferenceInChunkIDChunkMap();
-        ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+        ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
         // Set the reference to this in the grid stats
         stats.setGrid(this);
         super.init();
@@ -217,7 +217,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      *
      * @param file The File the ois was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -306,7 +306,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
-        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthCaching = new HashSet<>();
         int r;
         int c;
         Grids_2D_ID_int chunkID;
@@ -319,7 +319,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                 chunk = cf.create(this, chunkID);
                 chunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_GridChunkInt)) {
-                    ChunkIDsOfChunksWorthSwapping.add(chunkID);
+                    ChunkIDsOfChunksWorthCaching.add(chunkID);
                 }
             }
             System.out.println("Done chunkRow " + r + " out of "
@@ -359,7 +359,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
-        ChunkIDsOfChunksWorthSwapping = new HashSet<>();
+        ChunkIDsOfChunksWorthCaching = new HashSet<>();
         initDimensions(g, startRow, startCol);
         int gcr;
         int gcc;
@@ -399,7 +399,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            env.addToNotToSwap(g, gChunkID);
+                            env.addToNotToCache(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                             c = gd.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
@@ -422,12 +422,12 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                                              */
                                             if (isInGrid(row, col)) {
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                                                env.addToNotToSwap(this, chunkID);
+                                                env.addToNotToCache(this, chunkID);
                                                 if (!chunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     chunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthCaching.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(chunkID);
@@ -443,24 +443,24 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                                                         initCell(chunk, chunkID, row, col, ndv);
                                                     }
                                                 }
-                                                //ge.removeFromNotToSwap(this, chunkID);
+                                                //ge.removeFromNotToCache(this, chunkID);
                                             }
                                         }
                                     }
                                 }
                             }
                             isLoadedChunk = true;
-                            env.removeFromNotToSwap(g, gChunkID);
+                            env.removeFromNotToCache(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
                                 env.clearMemoryReserve();
                                 freeSomeMemoryAndResetReserve(e);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**
-                                     * TODO: Should also not swap out the chunk
-                                     * of grid thats values are being used to
+                                     * TODO: Should also not cache out the chunk
+                                     * of grid that's values are being used to
                                      * initialise this.
                                      */
                                     throw e;
@@ -489,7 +489,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            env.addToNotToSwap(g, gChunkID);
+                            env.addToNotToCache(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                             c = gi.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
@@ -514,12 +514,12 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                                                 chunkID = new Grids_2D_ID_int(
                                                         chunkRow,
                                                         chunkCol);
-                                                env.addToNotToSwap(this, chunkID);
+                                                env.addToNotToCache(this, chunkID);
                                                 if (!chunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     chunkIDChunkMap.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                                                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
+                                                        ChunkIDsOfChunksWorthCaching.add(chunkID);
                                                     }
                                                 } else {
                                                     chunk = (Grids_AbstractGridChunkInt) chunkIDChunkMap.get(chunkID);
@@ -535,22 +535,22 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                                                         initCell(chunk, chunkID, row, col, ndv);
                                                     }
                                                 }
-                                                env.removeFromNotToSwap(this, chunkID);
+                                                env.removeFromNotToCache(this, chunkID);
                                             }
                                         }
                                     }
                                 }
                             }
                             isLoadedChunk = true;
-                            env.removeFromNotToSwap(g, gChunkID);
+                            env.removeFromNotToCache(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
                                 env.clearMemoryReserve();
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**
-                                     * TODO: Should also not swap out the chunk
+                                     * TODO: Should also not cache out the chunk
                                      * of grid thats values are being used to
                                      * initialise this.
                                      */
@@ -575,7 +575,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * Initialises this.
      *
      * @param stats The AbstractGridStatistics to accompany this.
-     * @param dir The File _Directory to be used for swapping.
+     * @param dir The File _Directory to be used for cacheping.
      * @param gridFile Either a _Directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
@@ -629,7 +629,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             initNChunkRows();
             initNChunkCols();
             chunkIDChunkMap = new TreeMap<>();
-            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;
             this.stats.setGrid(this);
             String filename = gridFile.getName();
@@ -651,7 +651,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 initCell(row, col, value, false);
@@ -664,7 +664,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
@@ -682,7 +682,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
@@ -698,7 +698,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readInt();
                                 initCell(row, col, value, true);
@@ -738,7 +738,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                 g = (Grids_GridInt) gf.create(dir, thisFile, ois);
                 init(g);
                 this.chunkIDChunkMap = g.chunkIDChunkMap;
-                this.ChunkIDsOfChunksWorthSwapping = g.ChunkIDsOfChunksWorthSwapping;
+                this.ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
                 this.NoDataValue = g.NoDataValue;
                 this.Dimensions = g.Dimensions;
                 this.dir = g.dir;
@@ -750,7 +750,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             checkDir();
             Name = dir.getName();
             chunkIDChunkMap = new TreeMap<>();
-            ChunkIDsOfChunksWorthSwapping = new HashSet<>();
+            ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;
             this.stats.setGrid(this);
             String filename = gridFile.getName();
@@ -781,7 +781,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 initCell(row, col, value, false);
@@ -794,7 +794,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -812,7 +812,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -828,7 +828,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToSwap();
+                            env.initNotToCache();
                             for (col = 0; col < NCols; col++) {
                                 value = (int) eagi.readDouble();
                                 initCell(row, col, value, true);
@@ -881,9 +881,9 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
 //            chunk.initChunkID(chunkID);
 //            chunkIDChunkMap.put(chunkID, chunk);
 //            if (!(chunk instanceof Grids_GridChunkInt)) {
-//                ChunkIDsOfChunksWorthSwapping.add(chunkID);
+//                ChunkIDsOfChunksWorthCaching.add(chunkID);
 //            }
-//            env.setDataToSwap(true);
+//            env.setDataToCache(true);
 //        }
 //    }
     /**
@@ -902,16 +902,16 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
         chunkCol = getChunkCol(col);
         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         /**
-         * Ensure this chunkID is not swapped and initialise it if it does not
+         * Ensure this chunkID is not cacheped and initialise it if it does not
          * already exist.
          */
-        env.addToNotToSwap(this, chunkID);
+        env.addToNotToCache(this, chunkID);
         if (!chunkIDChunkMap.containsKey(chunkID)) {
             Grids_GridChunkInt gc = new Grids_GridChunkInt(this, chunkID,
                     value);
             chunkIDChunkMap.put(chunkID, gc);
             if (!(gc instanceof Grids_GridChunkInt)) {
-                ChunkIDsOfChunksWorthSwapping.add(chunkID);
+                ChunkIDsOfChunksWorthCaching.add(chunkID);
             }
         } else {
             Grids_AbstractGridChunk c;
@@ -929,7 +929,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                     chunk.initCell(getCellRow(row), getCellCol(col), value);
                     chunkIDChunkMap.put(chunkID, chunk);
                     if (!(chunk instanceof Grids_GridChunkInt)) {
-                        ChunkIDsOfChunksWorthSwapping.add(chunkID);
+                        ChunkIDsOfChunksWorthCaching.add(chunkID);
                     }
                 }
             } else {
@@ -1185,8 +1185,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             c = (Grids_GridChunkInt) chunk;
             if (value != c.Value) {
                 // Convert chunk to another type
-                Grids_2D_ID_int chunkID;
-                chunkID = chunk.getChunkID();
+                Grids_2D_ID_int chunkID = chunk.getChunkID();
                 chunk = convertToAnotherTypeOfChunk(chunk, chunkID);
                 v = chunk.setCell(cellRow, cellCol, value);
             } else {

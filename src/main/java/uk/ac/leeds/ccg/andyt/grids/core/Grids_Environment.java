@@ -41,15 +41,15 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A HashSet of Grids_AbstractGrid objects that may have data that can be
-     * swapped to release memory for processing.
+     * cacheped to release memory for processing.
      */
     protected transient HashSet<Grids_AbstractGrid> grids;
 
     /**
-     * For indicating which chunks are not swapped to release memory for
+     * For indicating which chunks are not cacheped to release memory for
      * processing unless desperate.
      */
-    protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToSwap;
+    protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToCache;
 
     /**
      * For storing an instance of Math_BigDecimal.
@@ -98,7 +98,7 @@ public class Grids_Environment extends Grids_MemoryManager
         this.env = env;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
-        initNotToSwap();
+        initNotToCache();
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -137,186 +137,186 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * Initialise or re-initialise a store of references to data that would
-     * ideally not be swapped.
+     * ideally not be cacheped.
      */
-    public final void initNotToSwap() {
-        notToSwap = new HashMap<>();
+    public final void initNotToCache() {
+        notToCache = new HashMap<>();
     }
 
     /**
-     * Adds all the chunkIDs of g to notToSwap.
+     * Adds all the chunkIDs of g to notToCache.
      *
      * @param g
      */
-    public final void addToNotToSwap(Grids_AbstractGrid g) {
-        notToSwap.put(g, g.getChunkIDs());
+    public final void addToNotToCache(Grids_AbstractGrid g) {
+        notToCache.put(g, g.getChunkIDs());
     }
 
     /**
-     * Removes g from the notToSwap.
+     * Removes g from the notToCache.
      *
      * @param g
      */
-    public final void removeFromNotToSwap(Grids_AbstractGrid g) {
-        notToSwap.remove(g);
+    public final void removeFromNotToCache(Grids_AbstractGrid g) {
+        notToCache.remove(g);
     }
 
     /**
-     * Adds the chunkID of g to notToSwap.
-     *
-     * @param g
-     * @param chunkRow
-     */
-    public final void addToNotToSwap(Grids_AbstractGrid g, int chunkRow) {
-        int n = g.getNChunkCols();
-        for (int c = 0; c < n; c++) {
-            addToNotToSwap(g, new Grids_2D_ID_int(chunkRow, c));
-        }
-    }
-
-    /**
-     * Removes the chunkID of g to notToSwap.
+     * Adds the chunkID of g to notToCache.
      *
      * @param g
      * @param chunkRow
      */
-    public final void removeFromNotToSwap(Grids_AbstractGrid g, int chunkRow) {
+    public final void addToNotToCache(Grids_AbstractGrid g, int chunkRow) {
         int n = g.getNChunkCols();
         for (int c = 0; c < n; c++) {
-            removeFromNotToSwap(g, new Grids_2D_ID_int(chunkRow, c));
+            addToNotToCache(g, new Grids_2D_ID_int(chunkRow, c));
         }
     }
 
     /**
-     * Adds the chunkID of g to notToSwap.
+     * Removes the chunkID of g to notToCache.
+     *
+     * @param g
+     * @param chunkRow
+     */
+    public final void removeFromNotToCache(Grids_AbstractGrid g, int chunkRow) {
+        int n = g.getNChunkCols();
+        for (int c = 0; c < n; c++) {
+            removeFromNotToCache(g, new Grids_2D_ID_int(chunkRow, c));
+        }
+    }
+
+    /**
+     * Adds the chunkID of g to notToCache.
      *
      * @param g
      * @param chunkID
      */
-    public final void addToNotToSwap(
+    public final void addToNotToCache(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
-        if (notToSwap.containsKey(g)) {
-            notToSwap.get(g).add(chunkID);
+        if (notToCache.containsKey(g)) {
+            notToCache.get(g).add(chunkID);
         } else {
             HashSet<Grids_2D_ID_int> chunkIDs;
             chunkIDs = new HashSet<>();
             chunkIDs.add(chunkID);
-            notToSwap.put(g, chunkIDs);
+            notToCache.put(g, chunkIDs);
         }
     }
 
     /**
-     * Adds the chunkID of each grid in g to notToSwap.
+     * Adds the chunkID of each grid in g to notToCache.
      *
      * @param g
      * @param chunkID
      */
-    public final void addToNotToSwap(
+    public final void addToNotToCache(
             Grids_AbstractGrid[] g,
             Grids_2D_ID_int chunkID) {
         for (Grids_AbstractGrid g1 : g) {
-            addToNotToSwap(g1, chunkID);
+            addToNotToCache(g1, chunkID);
         }
     }
 
     /**
-     * Adds m to notToSwap.
+     * Adds m to notToCache.
      *
      * @param m
      */
-    public final void addToNotToSwap(
+    public final void addToNotToCache(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         Iterator<Grids_AbstractGrid> ite;
         ite = m.keySet().iterator();
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            if (notToSwap.containsKey(g)) {
-                notToSwap.get(g).addAll(m.get(g));
+            if (notToCache.containsKey(g)) {
+                notToCache.get(g).addAll(m.get(g));
             } else {
-                notToSwap.put(g, m.get(g));
+                notToCache.put(g, m.get(g));
             }
         }
     }
 
     /**
-     * Remove the chunkID of each grid in g[] from notToSwap.
+     * Remove the chunkID of each grid in g[] from notToCache.
      *
      * @param g
      * @param chunkID
      */
-    public final void removeFromNotToSwap(
+    public final void removeFromNotToCache(
             Grids_AbstractGrid[] g,
             Grids_2D_ID_int chunkID) {
         for (Grids_AbstractGrid g1 : g) {
-            removeFromNotToSwap(g1, chunkID);
+            removeFromNotToCache(g1, chunkID);
         }
     }
 
     /**
-     * Removes m from notToSwap.
+     * Removes m from notToCache.
      *
      * @param m
      */
-    public final void removeFromNotToSwap(
+    public final void removeFromNotToCache(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         Iterator<Grids_AbstractGrid> ite;
         ite = m.keySet().iterator();
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            if (notToSwap.containsKey(g)) {
-                notToSwap.get(g).removeAll(m.get(g));
+            if (notToCache.containsKey(g)) {
+                notToCache.get(g).removeAll(m.get(g));
             }
         }
     }
 
     /**
-     * Adds all the chunkIDs of g to notToSwap.
+     * Adds all the chunkIDs of g to notToCache.
      *
      * @param g
      * @param chunkIDs
      */
-    public final void addToNotToSwap(
+    public final void addToNotToCache(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
-        if (notToSwap.containsKey(g)) {
-            notToSwap.get(g).addAll(chunkIDs);
+        if (notToCache.containsKey(g)) {
+            notToCache.get(g).addAll(chunkIDs);
         } else {
-            notToSwap.put(g, chunkIDs);
+            notToCache.put(g, chunkIDs);
         }
     }
 
     /**
-     * Remove all the chunkID of g to notToSwap.
+     * Remove all the chunkID of g to notToCache.
      *
      * @param g
      * @param chunkID
      */
-    public final void removeFromNotToSwap(
+    public final void removeFromNotToCache(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
-        if (notToSwap.containsKey(g)) {
+        if (notToCache.containsKey(g)) {
             /**
-             * Decided that it is best not to remove g from NotToSwap if
-             * NotToSwap.get(g).isEmpty(). So the empty HashSet remains and this
+             * Decided that it is best not to remove g from NotToCache if
+             * NotToCache.get(g).isEmpty(). So the empty HashSet remains and this
              * takes up a small amount of resource, but it is probably better to
              * keep it in case it is re-used rather than destroying it.
              */
-            notToSwap.get(g).remove(chunkID);
+            notToCache.get(g).remove(chunkID);
 //            HashSet<Grids_2D_ID_int> chunkIDs;
-//            chunkIDs = notToSwap.get(g);
+//            chunkIDs = notToCache.get(g);
 //            chunkIDs.remove(chunkID);
 //            if (chunkIDs.isEmpty()) {
-//                notToSwap.remove(g);
+//                notToCache.remove(g);
 //            }
         }
     }
 
     /**
      * Adds all the ChunkIDs of g that are within cellDistance of the chunk with
-     * ChunkID to notToSwap.
+     * ChunkID to notToCache.
      *
      * @param g The Grid.
      * @param chunkID Central ChunkID.
@@ -327,9 +327,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkNCols The normal number of columns in a chunk. (Sometimes the
      * last column has fewer.)
      * @param cellDistance The distance over which we want to be sure to include
-     * all chunks in notToSwap.
+     * all chunks in notToCache.
      */
-    public final void addToNotToSwap(
+    public final void addToNotToCache(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID,
             int chunkRow,
@@ -338,11 +338,11 @@ public class Grids_Environment extends Grids_MemoryManager
             int chunkNCols,
             int cellDistance) {
         HashSet<Grids_2D_ID_int> chunkIDs;
-        if (notToSwap.containsKey(g)) {
-            chunkIDs = notToSwap.get(g);
+        if (notToCache.containsKey(g)) {
+            chunkIDs = notToCache.get(g);
         } else {
             chunkIDs = new HashSet<>();
-            notToSwap.put(g, chunkIDs);
+            notToCache.put(g, chunkIDs);
         }
         int t;
         int i = 0;
@@ -413,7 +413,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     throw e;
                 }
                 initMemoryReserve();
@@ -456,7 +456,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     throw e;
                 }
                 initGridsAndMemoryReserve(grids, hoome);
@@ -483,9 +483,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. An account of swapping is returned.
+     * Initialises MemoryReserve. An account of cacheping is returned.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return
@@ -500,7 +500,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunk_AccountDetail();
+                result = cacheChunk_AccountDetail();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
                 partResult = checkAndMaybeFreeMemory_AccountDetail(hoome);
                 combine(result, partResult);
@@ -514,7 +514,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. An account of swapping is returned.
+     * Initialises MemoryReserve. An account of cacheping is returned.
      *
      * @param hoome
      * @return
@@ -528,7 +528,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     throw e;
                 }
                 long result = 1;
@@ -542,12 +542,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then no chunks are swapped from g. An account of swapping is
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then no chunks are cacheped from g. An account of cacheping is
      * returned.
      *
      * @param g
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -561,7 +561,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (swapChunkExcept_Account(g) < 1L) {
+                if (cacheChunkExcept_Account(g) < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, hoome);
@@ -573,12 +573,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then no chunks are swapped from grids that have chunkID. An account
-     * of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then no chunks are cacheped from grids that have chunkID. An account
+     * of cacheping is returned.
      *
      * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -592,7 +592,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (swapChunkExcept_Account(chunkID) < 1L) {
+                if (cacheChunkExcept_Account(chunkID) < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(chunkID, hoome);
@@ -604,12 +604,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then no chunks are swapped from grids that have chunkID. An account
-     * of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then no chunks are cacheped from grids that have chunkID. An account
+     * of cacheping is returned.
      *
      * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return
@@ -627,7 +627,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunkExcept_AccountDetail(chunkID);
+                result = cacheChunkExcept_AccountDetail(chunkID);
                 if (result.isEmpty()) {
                     throw e;
                 }
@@ -642,9 +642,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then no chunks are swapped from grids that have chunkID. An account
-     * of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then no chunks are cacheped from grids that have chunkID. An account
+     * of cacheping is returned.
      *
      * @param chunkID
      * @param hoome
@@ -660,7 +660,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long result = swapChunkExcept_Account(chunkID);
+                long result = cacheChunkExcept_Account(chunkID);
                 if (result < 1L) {
                     throw e;
                 }
@@ -673,12 +673,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then the chunk with chunkID in g is not swapped.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then the chunk with chunkID in g is not cacheped.
      *
      * @param g
      * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -691,7 +691,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (swapChunkExcept_Account(g, chunkID) < 1L) {
+                if (cacheChunkExcept_Account(g, chunkID) < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, chunkID, hoome);
@@ -703,9 +703,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then the chunk with chunkID in g is not swapped. An account of
-     * swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then the chunk with chunkID in g is not cacheped. An account of
+     * cacheping is returned.
      *
      * @param g
      * @param chunkID
@@ -721,7 +721,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long result = swapChunkExcept_Account(g, chunkID);
+                long result = cacheChunkExcept_Account(g, chunkID);
                 if (result < 1L) {
                     throw e;
                 }
@@ -735,13 +735,13 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then the chunk with chunkID in g is not swapped. An account of
-     * swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then the chunk with chunkID in g is not cacheped. An account of
+     * cacheping is returned.
      *
      * @param g
      * @param chunkID
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return
@@ -759,7 +759,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunkExcept_AccountDetail(g, chunkID);
+                result = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (result.isEmpty()) {
                     throw e;
                 }
@@ -776,9 +776,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this then chunks with chunkID in chunkIDs in g are not swapped and. An
-     * account of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this then chunks with chunkID in chunkIDs in g are not cacheped and. An
+     * account of cacheping is returned.
      *
      * @param g
      * @param chunkIDs
@@ -798,7 +798,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunkExcept_AccountDetail(g, chunkIDs);
+                result = cacheChunkExcept_AccountDetail(g, chunkIDs);
                 if (result.isEmpty()) {
                     throw e;
                 }
@@ -815,8 +815,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks from g are swapped. An account of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks from g are cacheped. An account of cacheping is returned.
      *
      * @param g
      * @param hoome
@@ -832,7 +832,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunkExcept_AccountDetail(g);
+                result = cacheChunkExcept_AccountDetail(g);
                 if (result.isEmpty()) {
                     throw e;
                 }
@@ -849,8 +849,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks given by m are swapped. An account of swapping is
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks given by m are cacheped. An account of cacheping is
      * returned.
      *
      * @param m
@@ -867,7 +867,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunkExcept(m)) {
+                if (!cacheChunkExcept(m)) {
                     throw e;
                 }
                 long result = 1;
@@ -881,8 +881,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks from g are swapped. An account of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks from g are cacheped. An account of cacheping is returned.
      *
      * @param g
      * @param hoome
@@ -898,7 +898,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long result = swapChunkExcept_Account(g);
+                long result = cacheChunkExcept_Account(g);
                 if (result < 1L) {
                     throw e;
                 }
@@ -912,9 +912,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks with ChunkIDs in chunkIDs from g are swapped. An account
-     * of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks with ChunkIDs in chunkIDs from g are cacheped. An account
+     * of cacheping is returned.
      *
      * @param g
      * @param chunkIDs
@@ -932,7 +932,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long result = swapChunkExcept_Account(g, chunkIDs);
+                long result = cacheChunkExcept_Account(g, chunkIDs);
                 if (result < 1L) {
                     throw e;
                 }
@@ -946,13 +946,13 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks with ChunkIDs in chunkIDs from g are swapped. An account
-     * of swapping is returned.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks with ChunkIDs in chunkIDs from g are cacheped. An account
+     * of cacheping is returned.
      *
      * @param g
      * @param chunkIDs
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -967,7 +967,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (swapChunkExcept_Account(g, chunkIDs) < 1L) {
+                if (cacheChunkExcept_Account(g, chunkIDs) < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, chunkIDs, hoome);
@@ -979,11 +979,11 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks given by m are swapped.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks given by m are cacheped.
      *
      * @param m
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
@@ -997,7 +997,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunkExcept(m)) {
+                if (!cacheChunkExcept(m)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(m, hoome);
@@ -1009,8 +1009,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Initialises MemoryReserve. If any swapping has to be done in order to do
-     * this no chunks given by m are swapped.
+     * Initialises MemoryReserve. If any cacheping has to be done in order to do
+     * this no chunks given by m are cacheped.
      *
      * @param m
      * @param hoome
@@ -1028,7 +1028,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-                result = swapChunkExcept_AccountDetail(m);
+                result = cacheChunkExcept_AccountDetail(m);
                 if (result.isEmpty()) {
                     throw e;
                 }
@@ -1048,8 +1048,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * If not enough data is found to swap then an OutOfMemoryError is thrown.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * If not enough data is found to cache then an OutOfMemoryError is thrown.
      *
      * @param hoome
      * @return true if there is sufficient memory to continue and throws an
@@ -1061,7 +1061,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (checkAndMaybeFreeMemory()) {
                 return true;
             } else {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory(boolean)";
                 System.out.println(message);
@@ -1087,18 +1087,18 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
      *
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
     @Override
     public boolean checkAndMaybeFreeMemory() {
-        if (notToSwap.isEmpty()) {
-            return checkAndMaybeFreeMemory_SwapAny();
+        if (notToCache.isEmpty()) {
+            return checkAndMaybeFreeMemory_CacheAny();
         } else {
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1106,7 +1106,7 @@ public class Grids_Environment extends Grids_MemoryManager
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
-            return checkAndMaybeFreeMemory_SwapAny();
+            return checkAndMaybeFreeMemory_CacheAny();
         }
     }
 
@@ -1114,15 +1114,15 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
      *
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
-    protected boolean checkAndMaybeFreeMemory_SwapAny() {
+    protected boolean checkAndMaybeFreeMemory_CacheAny() {
         if (getTotalFreeMemory() < Memory_Threshold) {
             do {
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1136,8 +1136,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk in g is swapped. If not enough data is found to swap then an
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk in g is cacheped. If not enough data is found to cache then an
      * OutOfMemoryError is thrown.
      *
      * @param g
@@ -1151,7 +1151,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) {
         try {
             if (!checkAndMaybeFreeMemory(g)) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory(" + g.getClass().getName()
                         + ",boolean)";
@@ -1181,8 +1181,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk in g is swapped.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk in g is cacheped.
      *
      * @param g
      * @return true if there is sufficient memory to continue and false
@@ -1190,14 +1190,14 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected boolean checkAndMaybeFreeMemory(Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            notToSwap.put(g, g.getChunkIDs());
+            notToCache.put(g, g.getChunkIDs());
             do {
-                if (!swapChunkExcept(notToSwap)) {
+                if (!cacheChunkExcept(notToCache)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (!swapChunkExcept(g)) {
+                if (!cacheChunkExcept(g)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1211,8 +1211,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk with chunkId in g is swapped. If there is not enough free memory
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk with chunkId in g is cacheped. If there is not enough free memory
      * then an OutOfMemoryError is thrown.
      *
      * @param g
@@ -1228,7 +1228,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) {
         try {
             if (!checkAndMaybeFreeMemory(g, chunkID)) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory(" + g.getClass().getName()
                         + ",Grids_2D_ID_int,boolean)";
@@ -1258,8 +1258,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk with chunkId in g is swapped.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk with chunkId in g is cacheped.
      *
      * @param g
      * @param chunkID
@@ -1270,14 +1270,14 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            addToNotToSwap(g, chunkID);
+            addToNotToCache(g, chunkID);
             do {
-                if (!swapChunkExcept(notToSwap)) {
+                if (!cacheChunkExcept(notToCache)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(g, chunkID) < 1) {
+                if (cacheChunkExcept_Account(g, chunkID) < 1) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1291,8 +1291,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk with chunkID is swapped. If there is not enough free memory then
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk with chunkID is cacheped. If there is not enough free memory then
      * an OutOfMemoryError is thrown.
      *
      * @param chunkID
@@ -1306,7 +1306,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) {
         try {
             if (!checkAndMaybeFreeMemory(chunkID)) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory(Grids_2D_ID_int,boolean)";
                 System.out.println(message);
@@ -1334,8 +1334,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
-     * swap some chunks. Chunks in NotToSwap are not swapped unless desperate.
-     * No chunk with chunkID is swapped.
+     * cache some chunks. Chunks in NotToCache are not cacheped unless desperate.
+     * No chunk with chunkID is cacheped.
      *
      * @param chunkID
      * @return true if there is sufficient memory to continue and false
@@ -1349,8 +1349,8 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 g = ite.next();
-                addToNotToSwap(g, chunkID);
-                if (swapChunkExcept(notToSwap)) {
+                addToNotToCache(g, chunkID);
+                if (cacheChunkExcept(notToCache)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1358,7 +1358,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             ite = grids.iterator();
             while (ite.hasNext()) {
-                if (swapChunkExcept(chunkID)) {
+                if (cacheChunkExcept(chunkID)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1372,8 +1372,8 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to check and maybe free fast access memory by writing chunks to
-     * file. No data is swapped as identified by m and no data is swapped from
-     * NotToSwap unless desperate. If not enough data is found to swap then an
+     * file. No data is cacheped as identified by m and no data is cacheped from
+     * NotToCache unless desperate. If not enough data is found to cache then an
      * OutOfMemoryError is thrown.
      *
      * @param m
@@ -1387,7 +1387,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) {
         try {
             if (!checkAndMaybeFreeMemory(m)) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory(" + m.getClass().getName()
                         + ",boolean)";
@@ -1414,8 +1414,8 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to check and maybe free fast access memory by writing chunks to
-     * file. No data is swapped as identified by m and no data is swapped from
-     * NotToSwap unless desperate. If no data is found to swap then false is
+     * file. No data is cacheped as identified by m and no data is cacheped from
+     * NotToCache unless desperate. If no data is found to cache then false is
      * returned otherwise true is returned.
      *
      * @param m
@@ -1425,14 +1425,14 @@ public class Grids_Environment extends Grids_MemoryManager
     protected boolean checkAndMaybeFreeMemory(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            addToNotToSwap(m);
+            addToNotToCache(m);
             do {
-                if (!swapChunkExcept(notToSwap)) {
+                if (!cacheChunkExcept(notToCache)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(m) < 1) {
+                if (cacheChunkExcept_Account(m) < 1) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1444,8 +1444,8 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to check and maybe free fast access memory by writing chunks to
-     * file. No data is swapped as identified by m and no data is swapped from
-     * NotToSwap unless desperate. If no data is found to swap then false is
+     * file. No data is cacheped as identified by m and no data is cacheped from
+     * NotToCache unless desperate. If no data is found to cache then false is
      * returned otherwise true is returned.
      *
      * @param g
@@ -1461,9 +1461,9 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) {
         try {
             while (getTotalFreeMemory() < Memory_Threshold) {
-                if (swapChunkExcept_Account(g, chunkIDs) < 1) {
+                if (cacheChunkExcept_Account(g, chunkIDs) < 1) {
                     System.out.println(
-                            "Warning! Nothing to swap in "
+                            "Warning! Nothing to cache in "
                             + this.getClass().getName()
                             + ".checkAndMaybeFreeMemory(" + g.getClass().getName()
                             + ",HashSet<ChunkID>,boolean)");
@@ -1478,9 +1478,9 @@ public class Grids_Environment extends Grids_MemoryManager
                 clearMemoryReserve();
                 boolean createdRoom = false;
                 while (!createdRoom) {
-                    if (swapChunkExcept_Account(g, chunkIDs) < 1L) {
+                    if (cacheChunkExcept_Account(g, chunkIDs) < 1L) {
                         System.out.println(
-                                "Warning! Nothing to swap in "
+                                "Warning! Nothing to cache in "
                                 + this.getClass().getName()
                                 + ".checkAndMaybeFreeMemory(" + g.getClass().getName()
                                 + ",HashSet<ChunkID>,boolean) after encountering "
@@ -1501,8 +1501,8 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to check and maybe free fast access memory by writing chunks to
-     * file. No chunks are swapped from g that have ChunkIDs in chunkIDs. If no
-     * data is found to swap then false is returned otherwise true is returned.
+     * file. No chunks are cacheped from g that have ChunkIDs in chunkIDs. If no
+     * data is found to cache then false is returned otherwise true is returned.
      *
      * @param g
      * @param chunkIDs
@@ -1513,9 +1513,9 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            addToNotToSwap(g, chunkIDs);
+            addToNotToCache(g, chunkIDs);
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1524,7 +1524,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(g, chunkIDs) < 1) {
+                if (cacheChunkExcept_Account(g, chunkIDs) < 1) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1542,7 +1542,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids.
+     * an OutOfMemoryError if there is not enough data to cache in Grids.
      *
      * @param hoome
      * @return true if there is sufficient memory to continue and false
@@ -1557,7 +1557,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return 0;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account(boolean)";
                 System.out.println(message);
@@ -1583,13 +1583,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file.
      *
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     protected Account checkAndMaybeFreeMemory_Account() {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account result = new Account();
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     result.detail++;
                 } else {
                     break;
@@ -1599,7 +1599,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 result.success = true;
             } else {
                 do {
-                    if (swapChunk()) {
+                    if (cacheChunk()) {
                         result.detail++;
                     } else {
                         break;
@@ -1617,12 +1617,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids. No data
-     * is swapped from g.
+     * an OutOfMemoryError if there is not enough data to cache in Grids. No data
+     * is cacheped from g.
      *
      * @param g
      * @param hoome
-     * @return Number of chunks swapped.
+     * @return Number of chunks cacheped.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1634,7 +1634,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return 0;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account(" + g.getClass().getName()
                         + ",boolean)";
@@ -1661,19 +1661,19 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids. No data
-     * is swapped from g.
+     * an OutOfMemoryError if there is not enough data to cache in Grids. No data
+     * is cacheped from g.
      *
      * @param g
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     protected Account checkAndMaybeFreeMemory_Account(
             Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account result = new Account();
-            addToNotToSwap(g);
+            addToNotToCache(g);
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     result.detail++;
                 } else {
                     break;
@@ -1683,7 +1683,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 result.success = true;
             } else {
                 do {
-                    if (swapChunkExcept(g)) {
+                    if (cacheChunkExcept(g)) {
                         result.detail++;
                     } else {
                         break;
@@ -1700,13 +1700,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids. The
-     * Chunk with chunkID from g is not swapped.
+     * an OutOfMemoryError if there is not enough data to cache in Grids. The
+     * Chunk with chunkID from g is not cacheped.
      *
      * @param g
      * @param hoome
      * @param chunkID
-     * @return Number of chunks swapped.
+     * @return Number of chunks cacheped.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1720,7 +1720,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return 0;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account("
                         + g.getClass().getName() + ","
@@ -1747,21 +1747,21 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids. The
-     * Chunk with chunkID from g is not swapped.
+     * an OutOfMemoryError if there is not enough data to cache in Grids. The
+     * Chunk with chunkID from g is not cacheped.
      *
      * @param g
      * @param chunkID
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     public Account checkAndMaybeFreeMemory_Account(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account result = new Account();
-            addToNotToSwap(g, chunkID);
+            addToNotToCache(g, chunkID);
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     result.detail++;
                 } else {
                     break;
@@ -1771,11 +1771,11 @@ public class Grids_Environment extends Grids_MemoryManager
                 result.success = true;
             } else {
                 do {
-                    long swaps = swapChunkExcept_Account(g, chunkID);
-                    if (swaps < 1L) {
+                    long caches = cacheChunkExcept_Account(g, chunkID);
+                    if (caches < 1L) {
                         break;
                     } else {
-                        result.detail += swaps;
+                        result.detail += caches;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 result.success = getTotalFreeMemory() < Memory_Threshold;
@@ -1789,12 +1789,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. This method may throw
-     * an OutOfMemoryError if there is not enough data to swap in Grids. No
-     * Chunk with chunkID is not swapped.
+     * an OutOfMemoryError if there is not enough data to cache in Grids. No
+     * Chunk with chunkID is not cacheped.
      *
      * @param chunkID
      * @param hoome
-     * @return Number of chunks swapped.
+     * @return Number of chunks cacheped.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1806,7 +1806,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return 0;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account("
                         + chunkID.getClass().getName() + ",boolean)";
@@ -1832,10 +1832,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
      * OutOfMemoryError is encountered and hoome is true. No Chunk with chunkID
-     * is not swapped.
+     * is not cacheped.
      *
      * @param chunkID
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     public Account checkAndMaybeFreeMemory_Account(
             Grids_2D_ID_int chunkID) {
@@ -1846,11 +1846,11 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 g = ite.next();
-                addToNotToSwap(g, chunkID);
-                long swap;
-                swap = swapChunkExcept_Account(notToSwap);
-                result.detail += swap;
-                if (swap > 0L) {
+                addToNotToCache(g, chunkID);
+                long cache;
+                cache = cacheChunkExcept_Account(notToCache);
+                result.detail += cache;
+                if (cache > 0L) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         result.success = true;
                         return result;
@@ -1860,10 +1860,10 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 g = ite.next();
-                long swap;
-                swap = swapChunkExcept_Account(g, chunkID);
-                result.detail += swap;
-                if (swap > 0L) {
+                long cache;
+                cache = cacheChunkExcept_Account(g, chunkID);
+                result.detail += cache;
+                if (cache > 0L) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         result.success = true;
                         return result;
@@ -1877,12 +1877,12 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
-     * OutOfMemoryError is encountered and hoome is true. No data is swapped as
+     * OutOfMemoryError is encountered and hoome is true. No data is cacheped as
      * identified by m.
      *
      * @param m
      * @param hoome
-     * @return Number of chunks swapped.
+     * @return Number of chunks cacheped.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1894,7 +1894,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return 0;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account("
                         + m.getClass().getName() + ",boolean)";
@@ -1919,19 +1919,19 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
-     * OutOfMemoryError is encountered and hoome is true. No data is swapped as
+     * OutOfMemoryError is encountered and hoome is true. No data is cacheped as
      * identified by m.
      *
      * @param m
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     public Account checkAndMaybeFreeMemory_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account result = new Account();
-            addToNotToSwap(m);
+            addToNotToCache(m);
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     result.detail++;
                 } else {
                     break;
@@ -1941,11 +1941,11 @@ public class Grids_Environment extends Grids_MemoryManager
                 result.success = true;
             } else {
                 do {
-                    long swaps = swapChunkExcept_Account(m);
-                    if (swaps < 1L) {
+                    long caches = cacheChunkExcept_Account(m);
+                    if (caches < 1L) {
                         break;
                     } else {
-                        result.detail += swaps;
+                        result.detail += caches;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 result.success = getTotalFreeMemory() < Memory_Threshold;
@@ -1958,13 +1958,13 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
-     * OutOfMemoryError is encountered and hoome is true. No data is swapped as
-     * identified by m. No data is swapped from chunks in g.
+     * OutOfMemoryError is encountered and hoome is true. No data is cacheped as
+     * identified by m. No data is cacheped from chunks in g.
      *
      * @param g
      * @param hoome
      * @param chunks
-     * @return Number of chunks swapped.
+     * @return Number of chunks cacheped.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1978,7 +1978,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             if (!test.success) {
                 String message;
-                message = "Warning! Not enough data to swap in "
+                message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account("
                         + g.getClass().getName() + ","
@@ -2002,21 +2002,21 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * A method to check and maybe free fast access memory by writing chunks to
      * file. An attempt at Grids internal memory handling is performed if an
-     * OutOfMemoryError is encountered and hoome is true. No data is swapped as
-     * identified by m. No data is swapped from chunks in g.
+     * OutOfMemoryError is encountered and hoome is true. No data is cacheped as
+     * identified by m. No data is cacheped from chunks in g.
      *
      * @param g
      * @param chunkIDs
-     * @return Account of data swapped.
+     * @return Account of data cacheped.
      */
     public Account checkAndMaybeFreeMemory_Account(
             Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account result = new Account();
-            addToNotToSwap(g, chunkIDs);
+            addToNotToCache(g, chunkIDs);
             do {
-                if (swapChunkExcept(notToSwap)) {
+                if (cacheChunkExcept(notToCache)) {
                     result.detail++;
                 } else {
                     break;
@@ -2026,11 +2026,11 @@ public class Grids_Environment extends Grids_MemoryManager
                 result.success = true;
             } else {
                 do {
-                    long swaps = swapChunkExcept_Account(g, chunkIDs);
-                    if (swaps < 1L) {
+                    long caches = cacheChunkExcept_Account(g, chunkIDs);
+                    if (caches < 1L) {
                         break;
                     } else {
-                        result.detail += swaps;
+                        result.detail += caches;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 result.success = getTotalFreeMemory() < Memory_Threshold;
@@ -2044,10 +2044,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * A method to ensure there is enough memory to continue. An attempt at
      * Grids internal memory handling is performed if an OutOfMemoryError is
      * encountered and hoome is true. This method may throw an OutOfMemoryError
-     * if there is no grid chunk to swap in Grids.
+     * if there is no grid chunk to cache in Grids.
      *
      * @param hoome
-     * @return A map of the grid chunks swapped.
+     * @return A map of the grid chunks cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2061,7 +2061,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean test0 = test.success;
             if (!test0) {
                 String message;
-                message = "Warning! Not enough data to swap in "
+                message = "Warning! Not enough data to cache in "
                         + getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + "boolean)";
@@ -2095,7 +2095,7 @@ public class Grids_Environment extends Grids_MemoryManager
             AccountDetail result = new AccountDetail();
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             do {
-                partResult = swapChunkExcept_AccountDetail(notToSwap);
+                partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2107,7 +2107,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                partResult = swapChunk_AccountDetail();
+                partResult = cacheChunk_AccountDetail();
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2131,12 +2131,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * back a detailed account of this and an indication if there is enough
      * memory to continue. An attempt at Grids internal memory handling is
      * performed if an OutOfMemoryError is encountered and hoome is true. This
-     * method may throw an OutOfMemoryError if there is not enough data to swap
-     * in Grids. No data is swapped from g.
+     * method may throw an OutOfMemoryError if there is not enough data to cache
+     * in Grids. No data is cacheped from g.
      *
      * @param g
      * @param hoome
-     * @return HashMap identifying chunks swapped.
+     * @return HashMap identifying chunks cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2149,7 +2149,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return null;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + g.getClass().getName() + ",boolean)";
@@ -2174,7 +2174,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. No data is swapped from g.
+     * memory to continue. No data is cacheped from g.
      *
      * @param g
      * @return
@@ -2183,10 +2183,10 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail result = new AccountDetail();
-            addToNotToSwap(g);
+            addToNotToCache(g);
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             do {
-                partResult = swapChunkExcept_AccountDetail(notToSwap);
+                partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2198,7 +2198,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                partResult = swapChunkExcept_AccountDetail(g);
+                partResult = cacheChunkExcept_AccountDetail(g);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2220,12 +2220,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped.
+     * memory to continue. The Chunk with chunkID from g is not cacheped.
      *
      * @param g
      * @param hoome
      * @param chunkID
-     * @return HashMap identifying chunks swapped.
+     * @return HashMap identifying chunks cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2240,7 +2240,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return null;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + g.getClass().getName() + ","
@@ -2271,7 +2271,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped.
+     * memory to continue. The Chunk with chunkID from g is not cacheped.
      *
      * @param g
      * @param chunkID
@@ -2282,10 +2282,10 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_2D_ID_int chunkID) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail result = new AccountDetail();
-            addToNotToSwap(g, chunkID);
+            addToNotToCache(g, chunkID);
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             do {
-                partResult = swapChunkExcept_AccountDetail(notToSwap);
+                partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2297,7 +2297,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                partResult = swapChunkExcept_AccountDetail(g, chunkID);
+                partResult = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2319,12 +2319,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No data
-     * is swapped with chunkID.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No data
+     * is cacheped with chunkID.
      *
      * @param chunkID
      * @param hoome
-     * @return HashMap identifying chunks swapped.
+     * @return HashMap identifying chunks cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2339,7 +2339,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             boolean resultPart0 = result.success;
             if (!resultPart0) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + chunkID.getClass().getName() + ",boolean)";
@@ -2369,8 +2369,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No data
-     * is swapped with chunkID.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No data
+     * is cacheped with chunkID.
      *
      * @param chunkID
      * @return
@@ -2384,10 +2384,10 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 g = ite.next();
-                addToNotToSwap(g, chunkID);
+                addToNotToCache(g, chunkID);
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
                 do {
-                    partResult = swapChunkExcept_AccountDetail(notToSwap);
+                    partResult = cacheChunkExcept_AccountDetail(notToCache);
                     if (partResult.isEmpty()) {
                         break;
                     } else {
@@ -2404,7 +2404,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 g = ite.next();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
                 do {
-                    partResult = swapChunkExcept_AccountDetail(g, chunkID);
+                    partResult = cacheChunkExcept_AccountDetail(g, chunkID);
                     if (partResult.isEmpty()) {
                         break;
                     } else {
@@ -2427,13 +2427,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No data
-     * is swapped as identified by m.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No data
+     * is cacheped as identified by m.
      *
-     * @param m Identifies data not to be swapped.
+     * @param m Identifies data not to be cacheped.
      * @param hoome If true then if an OutOfMemoryError is encountered then an
      * attempt is made to handle this otherwise not and the error is thrown.
-     * @return HashMap identifying chunks swapped or null if nothing is swapped.
+     * @return HashMap identifying chunks cacheped or null if nothing is cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2447,7 +2447,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return null;
             }
             if (test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + m.getClass().getName() + ",boolean)";
@@ -2477,20 +2477,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No data
-     * is swapped as identified by m.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No data
+     * is cacheped as identified by m.
      *
-     * @param m Identifies data not to be swapped.
-     * @return HashMap identifying chunks swapped or null if nothing is swapped.
+     * @param m Identifies data not to be cacheped.
+     * @return HashMap identifying chunks cacheped or null if nothing is cacheped.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail result = new AccountDetail();
-            addToNotToSwap(m);
+            addToNotToCache(m);
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             do {
-                partResult = swapChunkExcept_AccountDetail(notToSwap);
+                partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2502,7 +2502,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                partResult = swapChunkExcept_AccountDetail(m);
+                partResult = cacheChunkExcept_AccountDetail(m);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2524,13 +2524,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No
-     * chunks with ChunkID in chunkIDs are swapped from g.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No
+     * chunks with ChunkID in chunkIDs are cacheped from g.
      *
      * @param g
      * @param hoome
      * @param chunkIDs
-     * @return HashMap identifying chunks swapped.
+     * @return HashMap identifying chunks cacheped.
      */
     @Override
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -2545,7 +2545,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return null;
             }
             if (!test.success) {
-                String message = "Warning! Not enough data to swap in "
+                String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + g.getClass().getName() + ","
@@ -2571,8 +2571,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * quickly return null if there is enough memory to continue. If there is
      * not enough memory to continue it will attempt to make room and will pass
      * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not swapped. No
-     * chunks with ChunkID in chunkIDs are swapped from g.
+     * memory to continue. The Chunk with chunkID from g is not cacheped. No
+     * chunks with ChunkID in chunkIDs are cacheped from g.
      *
      * @param g
      * @param chunkIDs
@@ -2583,10 +2583,10 @@ public class Grids_Environment extends Grids_MemoryManager
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail result = new AccountDetail();
-            addToNotToSwap(g, chunkIDs);
+            addToNotToCache(g, chunkIDs);
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
             do {
-                partResult = swapChunkExcept_AccountDetail(notToSwap);
+                partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2598,7 +2598,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                partResult = swapChunkExcept_AccountDetail(g, chunkIDs);
+                partResult = cacheChunkExcept_AccountDetail(g, chunkIDs);
                 if (partResult.isEmpty()) {
                     break;
                 } else {
@@ -2616,18 +2616,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap all chunks in grids.
+     * Attempts to cache all chunks in grids.
      *
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
+     * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunks_AccountDetail(boolean hoome) {
+            cacheChunks_AccountDetail(boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-            result = swapChunks_AccountDetail(notToSwap);
+            result = cacheChunks_AccountDetail(notToCache);
             try {
                 if (result.isEmpty()) {
                     AccountDetail account;
@@ -2654,7 +2654,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 freeSomeMemoryAndResetReserve_AccountDetails(e, hoome);
-                return swapChunks_AccountDetail(hoome);
+                return cacheChunks_AccountDetail(hoome);
             } else {
                 throw e;
             }
@@ -2662,18 +2662,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
      *
      * @return
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunks_AccountDetail() {
+            cacheChunks_AccountDetail() {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>();
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
-            partResult = ite.next().swapChunks_AccountDetail();
+            partResult = ite.next().cacheChunks_AccountDetail();
             combine(result,
                     partResult);
         }
@@ -2681,13 +2681,13 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
      *
      * @param m
      * @return
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunks_AccountDetail(
+            cacheChunks_AccountDetail(
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>();
@@ -2696,26 +2696,26 @@ public class Grids_Environment extends Grids_MemoryManager
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             g = ite.next();
-            partResult = g.swapChunksExcept_AccountDetail(m.get(g));
+            partResult = g.cacheChunksExcept_AccountDetail(m.get(g));
             combine(result, partResult);
         }
         return result;
     }
 
     /**
-     * Attempts to swap all chunks in env.
+     * Attempts to cache all chunks in env.
      *
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
+     * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
-     * @return A count of the number of chunks swapped.
+     * @return A count of the number of chunks cacheped.
      */
-    public long swapChunks_Account(
+    public long cacheChunks_Account(
             boolean hoome) {
         try {
             long result;
             try {
-                result = swapChunks_Account();
+                result = cacheChunks_Account();
                 if (result < 1) {
                     Account account = checkAndMaybeFreeMemory_Account();
                     if (account != null) {
@@ -2740,7 +2740,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 long result = freeSomeMemoryAndResetReserve_Account(e, hoome);
-                result += swapChunks_Account(hoome);
+                result += cacheChunks_Account(hoome);
                 return result;
             } else {
                 throw e;
@@ -2749,11 +2749,11 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap all chunks in env.
+     * Attempts to cache all chunks in env.
      *
      * @return
      */
-    protected long swapChunks_Account() {
+    protected long cacheChunks_Account() {
         long result = 0L;
         Iterator<Grids_AbstractGrid> ite;
         ite = grids.iterator();
@@ -2761,23 +2761,23 @@ public class Grids_Environment extends Grids_MemoryManager
             long partResult;
             Grids_AbstractGrid g;
             g = ite.next();
-            partResult = g.swapChunks_Account();
+            partResult = g.cacheChunks_Account();
             result += partResult;
         }
-        dataToSwap = false;
+        dataToCache = false;
         return result;
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
      *
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
+     * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public void swapChunks(boolean hoome) {
+    public void cacheChunks(boolean hoome) {
         try {
-            boolean success = swapChunks();
+            boolean success = cacheChunks();
             try {
                 if (!success) {
                     checkAndMaybeFreeMemory();
@@ -2794,11 +2794,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     throw e;
                 }
                 initMemoryReserve();
-                swapChunks();
+                cacheChunks();
             } else {
                 throw e;
             }
@@ -2806,35 +2806,35 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap all Grids_AbstractGridChunk in grids.
+     * Attempts to cache all Grids_AbstractGridChunk in grids.
      *
      * @return
      */
-    protected boolean swapChunks() {
+    protected boolean cacheChunks() {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
-            ite.next().swapChunks();
+            ite.next().cacheChunks();
         }
-        dataToSwap = false;
+        dataToCache = false;
         return true;
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGridChunk in this.Grids. This is the
+     * Attempts to cache any Grids_AbstractGridChunk in this.Grids. This is the
      * lowest level of OutOfMemoryError handling in this class.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
+     * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunk_AccountDetail(boolean hoome) {
+            cacheChunk_AccountDetail(boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
-            result = swapChunk_AccountDetail();
+            result = cacheChunk_AccountDetail();
             try {
                 if (result.isEmpty()) {
                     AccountDetail account;
@@ -2868,15 +2868,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap any chunk in grids trying first not to swap any in
-     * notToSwap.
+     * Attempts to cache any chunk in grids trying first not to cache any in
+     * notToCache.
      *
      * @param hoome
      * @return
      */
-    public boolean swapChunk(boolean hoome) {
+    public boolean cacheChunk(boolean hoome) {
         try {
-            boolean success = swapChunk();
+            boolean success = cacheChunk();
             try {
                 if (!success) {
                     Account account = checkAndMaybeFreeMemory_Account();
@@ -2897,11 +2897,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunk()) {
+                if (!cacheChunk()) {
                     throw e;
                 }
                 initMemoryReserve();
-                // No need for recursive call: swapChunk(hoome);
+                // No need for recursive call: cacheChunk(hoome);
                 return true;
             } else {
                 throw e;
@@ -2910,36 +2910,36 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap any chunk in grids trying first not to swap any in
-     * notToSwap.
+     * Attempts to cache any chunk in grids trying first not to cache any in
+     * notToCache.
      *
      * @return
      */
-    protected boolean swapChunk() {
+    protected boolean cacheChunk() {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         Grids_AbstractGrid g;
         while (ite.hasNext()) {
             g = ite.next();
-            if (swapChunkExcept(notToSwap)) {
+            if (cacheChunkExcept(notToCache)) {
                 return true;
             }
-            if (g.swapChunk()) {
+            if (g.cacheChunk()) {
                 return true;
             }
         }
-        dataToSwap = false;
+        dataToCache = false;
         return false;
     }
 
     /**
-     * Swap to File any GridChunk in grids except one in g.
+     * Cache to File any GridChunk in grids except one in g.
      *
      * @param g
      * @param hoome
      */
-    public void swapChunkExcept(Grids_AbstractGrid g, boolean hoome) {
+    public void cacheChunkExcept(Grids_AbstractGrid g, boolean hoome) {
         try {
-            boolean success = swapChunkExcept(g);
+            boolean success = cacheChunkExcept(g);
             try {
                 if (!success) {
                     Account account = checkAndMaybeFreeMemory_Account(g);
@@ -2959,7 +2959,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (swapChunkExcept_Account(g) < 1L) {
+                if (cacheChunkExcept_Account(g) < 1L) {
                     throw e;
                 }
                 initMemoryReserve(g, hoome);
@@ -2970,17 +2970,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Swap to File any GridChunk in grids except one in g.
+     * Cache to File any GridChunk in grids except one in g.
      *
      * @param g
      * @return
      */
-    protected boolean swapChunkExcept(Grids_AbstractGrid g) {
+    protected boolean cacheChunkExcept(Grids_AbstractGrid g) {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid bg = ite.next();
             if (bg != g) {
-                if (bg.swapChunk()) {
+                if (bg.cacheChunk()) {
                     return true;
                 }
             }
@@ -3017,46 +3017,46 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to swap any Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache any Grids_AbstractGridChunk in this.grids.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunk_AccountDetail() {
+            cacheChunk_AccountDetail() {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            if (notToSwap.containsKey(g)) {
+            if (notToCache.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs;
-                chunkIDs = notToSwap.get(g);
-                result = g.swapChunkExcept_AccountDetail(chunkIDs);
+                chunkIDs = notToCache.get(g);
+                result = g.cacheChunkExcept_AccountDetail(chunkIDs);
                 if (!result.isEmpty()) {
                     return result;
                 }
             }
         }
-        dataToSwap = false;
+        dataToCache = false;
         return null;
     }
 
     /**
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in with
      * Grids_AbstractGrid.ID = _ChunkID.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID,
+            cacheChunkExcept_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunkExcept_AccountDetail(chunkID);
+            r = cacheChunkExcept_AccountDetail(chunkID);
             try {
                 if (r.isEmpty()) {
                     AccountDetail account;
@@ -3083,7 +3083,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-                r = swapChunkExcept_AccountDetail(chunkID);
+                r = cacheChunkExcept_AccountDetail(chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
@@ -3099,19 +3099,19 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in with
      * Grids_AbstractGrid.ID = _ChunkID.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID) {
+            cacheChunkExcept_AccountDetail(Grids_2D_ID_int chunkID) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            r = g.swapChunkExcept_AccountDetail(chunkID);
+            r = g.cacheChunkExcept_AccountDetail(chunkID);
             if (!r.isEmpty()) {
                 HashSet<Grids_2D_ID_int> chunkIDs = new HashSet<>(1);
                 chunkIDs.add(chunkID);
@@ -3128,9 +3128,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome
      * @return
      */
-    public long swapChunkExcept_Account(Grids_2D_ID_int chunkID, boolean hoome) {
+    public long cacheChunkExcept_Account(Grids_2D_ID_int chunkID, boolean hoome) {
         try {
-            long r = swapChunkExcept_Account(chunkID);
+            long r = cacheChunkExcept_Account(chunkID);
             try {
                 if (r < 1) {
                     Account account = checkAndMaybeFreeMemory_Account(chunkID);
@@ -3154,7 +3154,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(chunkID);
+                long r = cacheChunkExcept_Account(chunkID);
                 if (r < 1L) {
                     throw e;
                 }
@@ -3167,17 +3167,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param chunkID The id of the GridChunk not to be swapped.
+     * @param chunkID The id of the GridChunk not to be cacheped.
      * @return
      */
-    protected long swapChunkExcept_Account(Grids_2D_ID_int chunkID) {
+    protected long cacheChunkExcept_Account(Grids_2D_ID_int chunkID) {
         long r = 0L;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            addToNotToSwap(g, chunkID);
-            if (!swapChunkExcept(notToSwap)) {
-                r += swapChunkExcept_Account(chunkID);
+            addToNotToCache(g, chunkID);
+            if (!cacheChunkExcept(notToCache)) {
+                r += cacheChunkExcept_Account(chunkID);
             } else {
                 r += 1L;
             }
@@ -3189,14 +3189,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param chunkID The ID of the chunk not to be swapped.
+     * @param chunkID The ID of the chunk not to be cacheped.
      * @return
      */
-    protected boolean swapChunkExcept(Grids_2D_ID_int chunkID) {
+    protected boolean cacheChunkExcept(Grids_2D_ID_int chunkID) {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            if (swapChunkExcept_Account(g, chunkID) > 0) {
+            if (cacheChunkExcept_Account(g, chunkID) > 0) {
                 return true;
             }
         }
@@ -3206,21 +3206,21 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
      * @param m HashMap with Grids_AbstractGrid as keys and a respective HashSet
      * of Grids_AbstractGrid.ChunkIDs as values. Collectively these identifying
-     * those chunks not to be swapped from the Grids_AbstractGrid.
+     * those chunks not to be cacheped from the Grids_AbstractGrid.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(
+            cacheChunkExcept_AccountDetail(
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
                     boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunkExcept_AccountDetail(m);
+            r = cacheChunkExcept_AccountDetail(m);
             try {
                 if (r.isEmpty()) {
                     AccountDetail account;
@@ -3247,7 +3247,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-                r = swapChunkExcept_AccountDetail(m);
+                r = cacheChunkExcept_AccountDetail(m);
                 if (r.isEmpty()) {
                     throw e;
                 }
@@ -3262,13 +3262,13 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param m
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(
+            cacheChunkExcept_AccountDetail(
                     HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
@@ -3279,21 +3279,21 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
-                chunkID = g.swapChunkExcept_AccountChunk(chunkIDs);
+                chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
                 if (chunkID != null) {
                     s.add(chunkID);
                     r.put(g, s);
                     return r;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk();
+            chunkID = g.cacheChunk_AccountChunk();
             if (chunkID != null) {
                 s.add(chunkID);
                 r.put(g, s);
                 return r;
             }
         }
-        return r; // If here then nothing could be swapped!
+        return r; // If here then nothing could be cacheped!
     }
 
     /**
@@ -3303,7 +3303,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
                     HashSet<Grids_2D_ID_int> chunkIDs) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
@@ -3313,14 +3313,14 @@ public class Grids_Environment extends Grids_MemoryManager
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (g == gb) {
-                chunkID = gb.swapChunkExcept_AccountChunk(chunkIDs);
+                chunkID = gb.cacheChunkExcept_AccountChunk(chunkIDs);
                 if (chunkID != null) {
                     rp.add(chunkID);
                     r.put(g, rp);
                     return r;
                 }
             } else {
-                chunkID = g.swapChunk_AccountChunk();
+                chunkID = g.cacheChunk_AccountChunk();
                 if (chunkID != null) {
                     rp.add(chunkID);
                     r.put(g, rp);
@@ -3328,7 +3328,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             }
         }
-        return r; // If here then nothing could be swapped!
+        return r; // If here then nothing could be cacheped!
     }
 
     /**
@@ -3338,7 +3338,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
                     Grids_2D_ID_int chunkID) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
@@ -3348,14 +3348,14 @@ public class Grids_Environment extends Grids_MemoryManager
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (g == gb) {
-                chunkIDb = gb.swapChunkExcept_AccountChunk(chunkID);
+                chunkIDb = gb.cacheChunkExcept_AccountChunk(chunkID);
                 if (chunkIDb != null) {
                     rp.add(chunkIDb);
                     r.put(g, rp);
                     return r;
                 }
             } else {
-                chunkIDb = g.swapChunk_AccountChunk();
+                chunkIDb = g.cacheChunk_AccountChunk();
                 if (chunkIDb != null) {
                     rp.add(chunkIDb);
                     r.put(g, rp);
@@ -3363,7 +3363,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             }
         }
-        return r; // If here then nothing could be swapped!
+        return r; // If here then nothing could be cacheped!
     }
 
     /**
@@ -3374,17 +3374,17 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
                     Grids_2D_ID_int chunkID, boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunkExcept_AccountDetail(g, chunkID);
+            r = cacheChunkExcept_AccountDetail(g, chunkID);
             return r;
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
-                rp = swapChunkExcept_AccountDetail(g, chunkID);
+                rp = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (rp.isEmpty()) {
                     throw e;
                 }
@@ -3404,7 +3404,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Grids_AbstractGrid g) {
+            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
@@ -3412,7 +3412,7 @@ public class Grids_Environment extends Grids_MemoryManager
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (g != gb) {
-                Grids_2D_ID_int chunkID = gb.swapChunk_AccountChunk();
+                Grids_2D_ID_int chunkID = gb.cacheChunk_AccountChunk();
                 if (chunkID != null) {
                     rp.add(chunkID);
                     r.put(g, rp);
@@ -3420,7 +3420,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             }
         }
-        return r; // If here then nothing could be swapped!
+        return r; // If here then nothing could be cacheped!
     }
 
     /**
@@ -3428,7 +3428,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      * @return
      */
-    protected long swapChunkExcept_Account(
+    protected long cacheChunkExcept_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         Grids_2D_ID_int chunkID;
@@ -3436,20 +3436,20 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
-                chunkID = g.swapChunkExcept_AccountChunk(chunkIDs);
+                chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
                 if (chunkID != null) {
                     return 1L;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk();
+            chunkID = g.cacheChunk_AccountChunk();
             if (chunkID != null) {
                 return 1L;
             }
         }
-        return 0L; // If here then nothing could be swapped!
+        return 0L; // If here then nothing could be cacheped!
     }
 
-    protected boolean swapChunkExcept(
+    protected boolean cacheChunkExcept(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         Iterator<Grids_AbstractGrid> ite;
         ite = grids.iterator();
@@ -3458,12 +3458,12 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
-                chunkID = g.swapChunkExcept_AccountChunk(chunkIDs);
+                chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
                 if (chunkID != null) {
                     return true;
                 }
             }
-            chunkID = g.swapChunk_AccountChunk();
+            chunkID = g.cacheChunk_AccountChunk();
             if (chunkID != null) {
                 return true;
             }
@@ -3475,16 +3475,16 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome
      * @param chunkIDs
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
      */
-    public long swapChunkExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunkExcept_Account(Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs, boolean hoome) {
         try {
-            long r = swapChunkExcept_Account(g, chunkIDs);
+            long r = cacheChunkExcept_Account(g, chunkIDs);
             try {
                 if (r < 1) {
                     Account account;
@@ -3510,7 +3510,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(g, chunkIDs);
+                long r = cacheChunkExcept_Account(g, chunkIDs);
                 if (r < 1L) {
                     throw e;
                 }
@@ -3525,13 +3525,13 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param chunkIDs
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
      */
-    protected long swapChunkExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunkExcept_Account(Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
@@ -3544,10 +3544,10 @@ public class Grids_Environment extends Grids_MemoryManager
                 while (iteb.hasNext()) {
                     Grids_2D_ID_int chunkID = iteb.next();
                     if (!chunkIDs.contains(chunkID)) {
-                        //Check it can be swapped
+                        //Check it can be cacheped
                         Grids_AbstractGridChunk chunkb = m.get(chunkID);
                         if (chunkb != null) {
-                            gb.swapChunk(chunkID);
+                            gb.cacheChunk(chunkID);
                             return 1;
                         }
                     }
@@ -3560,19 +3560,19 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for that in
      * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
-    public long swapChunkExcept_Account(
+    public long cacheChunkExcept_Account(
             Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID,
             boolean hoome) {
         try {
-            long r = swapChunkExcept_Account(g, chunkID);
+            long r = cacheChunkExcept_Account(g, chunkID);
             try {
                 if (r < 1) {
                     Account account;
@@ -3596,7 +3596,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(g, chunkID);
+                long r = cacheChunkExcept_Account(g, chunkID);
                 if (r < 1L) {
                     throw e;
                 }
@@ -3610,18 +3610,18 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for that in
      * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
-    protected long swapChunkExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunkExcept_Account(Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
-        long r = swapChunkExcept_Account(g);
+        long r = cacheChunkExcept_Account(g);
         if (r < 1L) {
-            r = g.swapChunkExcept_Account(chunkID);
+            r = g.cacheChunkExcept_Account(chunkID);
         }
         return r;
     }
@@ -3629,15 +3629,15 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in g.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
      */
-    public long swapChunkExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunkExcept_Account(Grids_AbstractGrid g,
             boolean hoome) {
         try {
-            long r = swapChunkExcept_Account(g);
+            long r = cacheChunkExcept_Account(g);
             try {
                 if (r < 1) {
                     Account account = checkAndMaybeFreeMemory_Account(g);
@@ -3660,7 +3660,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(g);
+                long r = cacheChunkExcept_Account(g);
                 if (r < 1L) {
                     throw e;
                 }
@@ -3674,18 +3674,18 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped. Attempts to swap any
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped. Attempts to cache any
      * Grids_AbstractGridChunk in this.grids except for those in
      * _Grid2DSquareCell.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
      */
-    protected long swapChunkExcept_Account(Grids_AbstractGrid g) {
+    protected long cacheChunkExcept_Account(Grids_AbstractGrid g) {
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (gb != g) {
-                Grids_2D_ID_int chunkID = gb.swapChunk_AccountChunk();
+                Grids_2D_ID_int chunkID = gb.cacheChunk_AccountChunk();
                 if (chunkID != null) {
                     return 1L;
                 }
@@ -3695,21 +3695,21 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID,
+            cacheChunksExcept_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunksExcept_AccountDetail(chunkID);
+            r = cacheChunksExcept_AccountDetail(chunkID);
             try {
                 if (r.isEmpty()) {
                     AccountDetail account;
@@ -3736,14 +3736,14 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-                r = swapChunkExcept_AccountDetail(chunkID);
+                r = cacheChunkExcept_AccountDetail(chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(chunkID, hoome);
                 combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(chunkID, hoome);
+                rp = cacheChunksExcept_AccountDetail(chunkID, hoome);
                 combine(r, rp);
                 return r;
             } else {
@@ -3753,42 +3753,42 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) {
+            cacheChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            combine(r, g.swapChunksExcept_AccountDetail(chunkID));
+            combine(r, g.cacheChunksExcept_AccountDetail(chunkID));
         }
         return r;
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped. swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped. cacheped.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
                     boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunksExcept_AccountDetail(g);
+            r = cacheChunksExcept_AccountDetail(g);
             try {
                 if (r.isEmpty()) {
                     AccountDetail account;
@@ -3815,14 +3815,14 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-                r = swapChunkExcept_AccountDetail(g);
+                r = cacheChunkExcept_AccountDetail(g);
                 if (r.isEmpty()) {
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(g, hoome);
                 combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(g, hoome);
+                rp = cacheChunksExcept_AccountDetail(g, hoome);
                 combine(r, rp);
                 return r;
             } else {
@@ -3832,31 +3832,31 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_AbstractGrid g) {
+            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (gb != g) {
-                combine(r, gb.swapChunks_AccountDetail());
+                combine(r, gb.cacheChunks_AccountDetail());
             }
         }
         return r;
     }
 
-    public long swapChunksExcept_Account(Grids_AbstractGrid g, boolean hoome) {
+    public long cacheChunksExcept_Account(Grids_AbstractGrid g, boolean hoome) {
         try {
-            long r = swapChunksExcept_Account(g);
+            long r = cacheChunksExcept_Account(g);
             try {
                 if (r < 1) {
                     Account account = checkAndMaybeFreeMemory_Account(g);
@@ -3879,12 +3879,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(g);
+                long r = cacheChunkExcept_Account(g);
                 if (r < 1L) {
                     throw e;
                 }
                 r += initMemoryReserve_Account(g, hoome);
-                r += swapChunksExcept_Account(g, hoome);
+                r += cacheChunksExcept_Account(g, hoome);
                 return r;
             } else {
                 throw e;
@@ -3892,35 +3892,35 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    protected long swapChunksExcept_Account(Grids_AbstractGrid g) {
+    protected long cacheChunksExcept_Account(Grids_AbstractGrid g) {
         long r = 0L;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid gb = ite.next();
             if (gb != g) {
-                r += gb.env.swapChunks_Account();
+                r += gb.env.cacheChunks_Account();
             }
         }
         return r;
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @param hoome
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
                     Grids_2D_ID_int chunkID, boolean hoome) {
         try {
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-            r = swapChunksExcept_AccountDetail(g, chunkID);
+            r = cacheChunksExcept_AccountDetail(g, chunkID);
             try {
                 if (r.isEmpty()) {
                     AccountDetail account;
@@ -3947,14 +3947,14 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve();
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-                r = swapChunkExcept_AccountDetail(g, chunkID);
+                r = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(g, chunkID, hoome);
                 combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(g, chunkID, hoome);
+                rp = cacheChunksExcept_AccountDetail(g, chunkID, hoome);
                 combine(r, rp);
                 return r;
             } else {
@@ -3963,10 +3963,10 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    public long swapChunksExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunksExcept_Account(Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID, boolean hoome) {
         try {
-            long r = swapChunksExcept_Account(g, chunkID);
+            long r = cacheChunksExcept_Account(g, chunkID);
             try {
                 if (r < 1) {
                     Account account;
@@ -3990,12 +3990,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = swapChunkExcept_Account(g, chunkID);
+                long r = cacheChunkExcept_Account(g, chunkID);
                 if (r < 1L) {
                     throw e;
                 }
                 r += initMemoryReserve_Account(chunkID, hoome);
-                r += swapChunkExcept_Account(g, chunkID);
+                r += cacheChunkExcept_Account(g, chunkID);
                 return r;
             } else {
                 throw e;
@@ -4003,7 +4003,7 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    protected long swapChunksExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunksExcept_Account(Grids_AbstractGrid g,
             Grids_2D_ID_int chunkID) {
         long r = 0L;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
@@ -4014,26 +4014,26 @@ public class Grids_Environment extends Grids_MemoryManager
                 int cci0 = 0;
                 int cri1 = gb.getNChunkRows() - 1;
                 int cci1 = gb.getNChunkCols() - 1;
-                r += gb.swapChunks_Account(cri0, cci0, cri1, cci1);
+                r += gb.cacheChunks_Account(cri0, cci0, cri1, cci1);
             } else {
-                r += gb.swapChunksExcept_Account(chunkID);
+                r += gb.cacheChunksExcept_Account(chunkID);
             }
         }
         return r;
     }
 
     /**
-     * Attempts to Swap all Grids_AbstractGrid.ChunkIDs in this.grids except
+     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
      * those with Grids_AbstractGrid.ID _ChunkID.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
-     * @param chunkID The Grids_AbstractGrid.ID not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
+     * @param chunkID The Grids_AbstractGrid.ID not to be cacheped.
      */
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
                     Grids_2D_ID_int chunkID) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
@@ -4043,10 +4043,10 @@ public class Grids_Environment extends Grids_MemoryManager
         while (ite.hasNext()) {
             bg = ite.next();
             if (bg == g) {
-                rp = bg.swapChunksExcept_AccountDetail(chunkID);
+                rp = bg.cacheChunksExcept_AccountDetail(chunkID);
                 combine(r, rp);
             } else {
-                rp = bg.swapChunks_AccountDetail(false, HOOMEF);
+                rp = bg.cacheChunks_AccountDetail(false, HOOMEF);
                 combine(r, rp);
             }
         }
@@ -4054,7 +4054,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_AbstractGrid g,
+            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
                     HashSet<Grids_2D_ID_int> chunkIDs) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
@@ -4063,7 +4063,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AbstractGrid gb = ite.next();
             if (gb != g) {
                 HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
-                pr = gb.swapChunks_AccountDetail();
+                pr = gb.cacheChunks_AccountDetail();
                 combine(r, pr);
             } else {
                 HashSet<Grids_2D_ID_int> chunks;
@@ -4075,7 +4075,7 @@ public class Grids_Environment extends Grids_MemoryManager
                     chunkID = ite2.next();
                     if (!chunkIDs.contains(chunkID)) {
                         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
-                        pr = swapChunksExcept_AccountDetail(chunkID);
+                        pr = cacheChunksExcept_AccountDetail(chunkID);
                         combine(r, pr);
                     }
                 }
@@ -4085,15 +4085,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Swap all chunks except those in g with Chunk IDs in chunkIDs.
+     * Attempts to Cache all chunks except those in g with Chunk IDs in chunkIDs.
      *
      * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was swapped; and, value as the
-     * Grids_AbstractGridChunk._ChunkID swapped.
-     * @param g Grids_AbstractGrid that's chunks are not to be swapped.
-     * @param chunkIDs The chunk IDs in g not to be swapped.
+     * Grids_AbstractGridChunk was cacheped; and, value as the
+     * Grids_AbstractGridChunk._ChunkID cacheped.
+     * @param g Grids_AbstractGrid that's chunks are not to be cacheped.
+     * @param chunkIDs The chunk IDs in g not to be cacheped.
      */
-    protected long swapChunksExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunksExcept_Account(Grids_AbstractGrid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         long r = 0L;
         Iterator<Grids_AbstractGrid> ite;
@@ -4106,9 +4106,9 @@ public class Grids_Environment extends Grids_MemoryManager
                 int cri1 = gb.getNChunkRows() - 1;
                 int cci0 = 0;
                 int cci1 = gb.getNChunkCols() - 1;
-                r += gb.swapChunks_Account(cri0, cci0, cri1, cci1);
+                r += gb.cacheChunks_Account(cri0, cci0, cri1, cci1);
             } else {
-                r += gb.swapChunksExcept_Account(chunkIDs);
+                r += gb.cacheChunksExcept_Account(chunkIDs);
             }
         }
         return r;
@@ -4119,11 +4119,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome
      * @return
      */
-    public long swapChunksExcept_Account(
+    public long cacheChunksExcept_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) {
         try {
-            long r = swapChunksExcept_Account(m);
+            long r = cacheChunksExcept_Account(m);
             try {
                 if (r < 1) {
                     Account account = checkAndMaybeFreeMemory_Account(m);
@@ -4146,12 +4146,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                if (!swapChunkExcept(m)) {
+                if (!cacheChunkExcept(m)) {
                     throw e;
                 }
                 long r = 1L;
                 r += initMemoryReserve_Account(m, hoome);
-                r += swapChunksExcept_Account(m);
+                r += cacheChunksExcept_Account(m);
                 return r;
             } else {
                 throw e;
@@ -4159,29 +4159,29 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    protected long swapChunksExcept_Account(
+    protected long cacheChunksExcept_Account(
             HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
         long r = 0L;
         Iterator<Grids_AbstractGrid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_AbstractGrid g = ite.next();
-            r += g.swapChunksExcept_Account(m.get(g));
+            r += g.cacheChunksExcept_Account(m.get(g));
         }
         return r;
     }
 
-    public void swapData() {
-        swapChunks();
+    public void cacheData() {
+        cacheChunks();
     }
 
-    public void swapData(boolean hoome) {
-        swapChunks();
+    public void cacheData(boolean hoome) {
+        cacheChunks();
     }
 
     @Override
-    public boolean swapDataAny(boolean hoome) {
+    public boolean cacheDataAny(boolean hoome) {
         try {
-            boolean r = swapChunk();
+            boolean r = cacheChunk();
             try {
                 if (!checkAndMaybeFreeMemory()) {
                     throw new OutOfMemoryError();
@@ -4195,7 +4195,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                boolean r = swapDataAny();
+                boolean r = cacheDataAny();
                 initMemoryReserve();
                 return r;
             } else {
@@ -4205,18 +4205,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     @Override
-    public boolean swapDataAny() {
-        return swapChunk();
+    public boolean cacheDataAny() {
+        return cacheChunk();
     }
 
-    private boolean dataToSwap = true;
+    private boolean dataToCache = true;
 
-    public boolean isDataToSwap() {
-        return dataToSwap;
+    public boolean isDataToCache() {
+        return dataToCache;
     }
 
-    public void setDataToSwap(boolean dataToSwap) {
-        this.dataToSwap = dataToSwap;
+    public void setDataToCache(boolean dataToCache) {
+        this.dataToCache = dataToCache;
     }
 
     protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
@@ -4247,7 +4247,7 @@ public class Grids_Environment extends Grids_MemoryManager
             freeSomeMemoryAndResetReserve_AccountDetails(
                     OutOfMemoryError e, boolean hoome) {
         HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-        r = swapChunk_AccountDetail();
+        r = cacheChunk_AccountDetail();
         if (r.isEmpty()) {
             throw e;
         }
@@ -4277,7 +4277,7 @@ public class Grids_Environment extends Grids_MemoryManager
 
     protected long freeSomeMemoryAndResetReserve_Account(OutOfMemoryError e,
             boolean hoome) {
-        if (!swapChunk()) {
+        if (!cacheChunk()) {
             throw e;
         }
         long r = 1;
@@ -4286,14 +4286,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return the notToSwap
+     * @return the notToCache
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> getNotToSwap() {
-        return notToSwap;
+    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> getNotToCache() {
+        return notToCache;
     }
 
     /**
-     * Simple inner class for accounting memory swapping detail.
+     * Simple inner class for accounting memory cacheping detail.
      */
     protected class AccountDetail {
 
@@ -4307,7 +4307,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Simple inner class for accounting memory swapping.
+     * Simple inner class for accounting memory cacheping.
      */
     protected class Account {
 

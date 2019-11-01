@@ -20,8 +20,6 @@ package uk.ac.leeds.ccg.andyt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.andyt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridBinary;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_GridInt;
 
 /**
  * For binary grid chunks..
@@ -78,9 +76,9 @@ public class Grids_GridChunkBinary extends Grids_AbstractGridChunk {
         boolean oldValue;
         oldValue = this.data[row][col];
         this.data[row][col] = v;
-        if (isSwapUpToDate()) {
+        if (isCacheUpToDate()) {
             if (v != oldValue) {
-                setSwapUpToDate(false);
+                setCacheUpToDate(false);
             }
         }
         return oldValue;

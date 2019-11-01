@@ -379,8 +379,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     maskIntChunk = (Grids_AbstractGridChunkInt) ite.next();
                     chunkID = maskIntChunk.getChunkID();
-                    env.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(mask, chunkID);
+                    env.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
@@ -398,8 +398,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToSwap(g, chunkID);
-                    env.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToCache(g, chunkID);
+                    env.removeFromNotToCache(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -412,8 +412,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     maskChunk = (Grids_AbstractGridChunkDouble) ite.next();
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(mask, chunkID);
+                    env.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
@@ -431,8 +431,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToSwap(g, chunkID);
-                    env.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToCache(g, chunkID);
+                    env.removeFromNotToCache(mask, chunkID);
                 }
             }
         } else {
@@ -448,8 +448,8 @@ public class Grids_Processor extends Grids_Object {
                 while (iterator.hasNext()) {
                     maskChunk = (Grids_AbstractGridChunkInt) iterator.next();
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(mask, chunkID);
+                    env.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
@@ -467,8 +467,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToSwap(g, chunkID);
-                    env.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToCache(g, chunkID);
+                    env.removeFromNotToCache(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -481,8 +481,8 @@ public class Grids_Processor extends Grids_Object {
                     maskChunk = (Grids_AbstractGridChunkDouble) mask.getChunk(
                             (Grids_2D_ID_int) ite.next());
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(mask, chunkID);
+                    env.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
@@ -500,8 +500,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToSwap(g, chunkID);
-                    env.removeFromNotToSwap(mask, chunkID);
+                    env.removeFromNotToCache(g, chunkID);
+                    env.removeFromNotToCache(mask, chunkID);
                 }
             }
         }
@@ -535,7 +535,7 @@ public class Grids_Processor extends Grids_Object {
             while (ite.hasNext()) {
                 chunk = (Grids_AbstractGridChunkInt) ite.next();
                 chunkID = chunk.getChunkID();
-                env.addToNotToSwap(g, chunkID);
+                env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = gi.getChunkNRows(chunkID);
                 chunkNCols = gi.getChunkNCols(chunkID);
@@ -547,7 +547,7 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                env.removeFromNotToSwap(g, chunkID);
+                env.removeFromNotToCache(g, chunkID);
             }
         } else {
             // ( grid.getClass() == Grids_GridDouble.class )
@@ -560,7 +560,7 @@ public class Grids_Processor extends Grids_Object {
             while (iterator.hasNext()) {
                 gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
                 chunkID = gridChunk.getChunkID();
-                env.addToNotToSwap(g, chunkID);
+                env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = g.getChunkNRows(chunkID);
                 chunkNCols = g.getChunkNCols(chunkID);
@@ -572,7 +572,7 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                env.removeFromNotToSwap(g, chunkID);
+                env.removeFromNotToCache(g, chunkID);
             }
         }
         //grid.setName( grid.getName() + "_mask" );
@@ -622,7 +622,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (env.swapChunksExcept_Account(g, hoome) < 1) {
+                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve();
@@ -682,8 +682,8 @@ public class Grids_Processor extends Grids_Object {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToSwap(g, chunkID);
-                        env.addToNotToSwap(result, chunkID);
+                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = g.getChunk(chunkID);
@@ -708,8 +708,8 @@ public class Grids_Processor extends Grids_Object {
                     chunkNRows = g.getChunkNRows(chunkRow);
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToSwap(g, chunkID);
-                        env.addToNotToSwap(result, chunkID);
+                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         gridChunk = g.getChunk(chunkID);
@@ -782,7 +782,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (env.swapChunksExcept_Account(g, hoome) < 1) {
+                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve();
@@ -849,8 +849,8 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToSwap(g, chunkID);
-                        env.addToNotToSwap(result, chunkID);
+                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
@@ -867,8 +867,8 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        env.removeFromNotToSwap(g, chunkID);
-                        env.removeFromNotToSwap(result, chunkID);
+                        env.removeFromNotToCache(g, chunkID);
+                        env.removeFromNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                     }
                 }
@@ -882,8 +882,8 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToSwap(g, chunkID);
-                        env.addToNotToSwap(result, chunkID);
+                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
@@ -902,8 +902,8 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        env.removeFromNotToSwap(g, chunkID);
-                        env.removeFromNotToSwap(result, chunkID);
+                        env.removeFromNotToCache(g, chunkID);
+                        env.removeFromNotToCache(result, chunkID);
                         env.checkAndMaybeFreeMemory();
                     }
                 }
@@ -986,7 +986,7 @@ public class Grids_Processor extends Grids_Object {
      * @param cellIDs A HashSet containing CellIDs.
      * @param value The value to be added.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then swap operations are initiated prior to retrying. If false then
+     * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
     public void addToGrid(
@@ -1008,7 +1008,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (!env.swapChunk(env.HOOMEF)) {
+                if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve();
@@ -1561,7 +1561,7 @@ public class Grids_Processor extends Grids_Object {
      * gridFactory the Abstract2DSquareCell DoubleFactory used to create result
      * and temporary AbstractGrid2DSquareCellDoubles. @param colOffset @param
      * gridFactory @param hoome If true then OutOfMemoryErrors are caught in
-     * this method then swap operations are initiated prior to ret r y ing. If
+     * this method then cache operations are initiated prior to ret r y ing. If
      * false then OutOfMemoryErrors are caught and thrown. NB. In the
      * calculation of the sum and the mean if there is a cell in grid which has
      * a data value then the result which incorporates that cell has a data
@@ -2690,7 +2690,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (env.swapChunksExcept_Account(g, hoome) < 1) {
+                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve();
@@ -2730,7 +2730,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (!env.swapChunk(env.HOOMEF)) {
+                if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve();

@@ -57,7 +57,7 @@ public class Grids_GridChunkDoubleArray
         for (row = 0; row < ChunkNRows; row++) {
             Arrays.fill(Data[row], noDataValue);
         }
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -81,7 +81,7 @@ public class Grids_GridChunkDoubleArray
                 Data[row][col] = chunk.getCell(row, col);
             }
         }
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -140,9 +140,9 @@ public class Grids_GridChunkDoubleArray
         double oldValue;
         oldValue = Data[row][col];
         Data[row][col] = v;
-        if (isSwapUpToDate()) {
+        if (isCacheUpToDate()) {
             if (v != oldValue) {
-                setSwapUpToDate(false);
+                setCacheUpToDate(false);
             }
         }
         return oldValue;

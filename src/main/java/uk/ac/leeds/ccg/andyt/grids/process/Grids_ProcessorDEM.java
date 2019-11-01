@@ -369,7 +369,7 @@ public class Grids_ProcessorDEM
                     for (cci = 0; cci < chunkCols; cci++) {
                         cd = (Grids_AbstractGridChunkDouble) gd.getChunk(cri, cci);
                         chunkID = cd.getChunkID();
-                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToCache(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
@@ -455,7 +455,7 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         }
-                        env.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToCache(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -476,7 +476,7 @@ public class Grids_ProcessorDEM
                         chunkNcols = g.getChunkNCols(cci);
                         ci = (Grids_AbstractGridChunkInt) gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
-                        env.addToNotToSwap(g, chunkID);
+                        env.addToNotToCache(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
@@ -562,7 +562,7 @@ public class Grids_ProcessorDEM
                                 }
                             }
                         }
-                        env.removeFromNotToSwap(g, chunkID);
+                        env.removeFromNotToCache(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -571,7 +571,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (!env.swapChunk(env.HOOMEF)) {
+                if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve();
@@ -1811,14 +1811,14 @@ public class Grids_ProcessorDEM
      * @param weightFactor kernel parameter ( distance decay )
      * @param gdf The Grids_GridDoubleFactory for creating grids
      * @param gif
-     * @param swapOutInitialisedFiles
-     * @param swapOutProcessedChunks
+     * @param cacheOutInitialisedFiles
+     * @param cacheOutProcessedChunks
      * @return
      */
     public Grids_AbstractGridNumber[] getMetrics1(Grids_AbstractGridNumber g,
             double distance, double weightIntersect, double weightFactor,
             Grids_GridDoubleFactory gdf, Grids_GridIntFactory gif,
-            boolean swapOutInitialisedFiles, boolean swapOutProcessedChunks)  throws IOException{
+            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks)  throws IOException{
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
                 || gdf.getChunkNRows() != gif.getChunkNRows()) {
@@ -1852,7 +1852,7 @@ public class Grids_ProcessorDEM
                         metrics1[i] = (Grids_GridDouble) gdf.create(dir, nrows,
                                 ncols, dimensions);
                     }
-                    if (swapOutInitialisedFiles) {
+                    if (cacheOutInitialisedFiles) {
                         metrics1[i].writeToFile();
                     }
                     metrics1[i].setName(metrics1Names[i]);
@@ -1860,7 +1860,7 @@ public class Grids_ProcessorDEM
                 } catch (OutOfMemoryError e) {
                     env.clearMemoryReserve();
                     System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                    if (!env.swapChunk(env.HOOMEF)) {
+                    if (!env.cacheChunk(env.HOOMEF)) {
                         throw e;
                     }
                     env.initMemoryReserve();
@@ -1869,7 +1869,7 @@ public class Grids_ProcessorDEM
             } while (!isInitialised);
         }
         return getMetrics1(metrics1, g, dimensions, distance, weightIntersect,
-                weightFactor, swapOutProcessedChunks);
+                weightFactor, cacheOutProcessedChunks);
     }
 
     /**
@@ -2038,7 +2038,7 @@ public class Grids_ProcessorDEM
      * @param weightFactor kernel parameter ( distance decay ) \n Going directly
      * to this method is useful if the initialisation of the metrics1 is slow
      * and has already been done.
-     * @param swapOutProcessedChunks If this is true, then intermediate swapping
+     * @param cacheOutProcessedChunks If this is true, then intermediate cacheping
      * is done to try to prevent OutOfMemoryErrors Being Encountered. Perhaps
      * set this to true for large grids if the process seems to get stuck.
      * @return
@@ -2050,7 +2050,7 @@ public class Grids_ProcessorDEM
             double distance,
             double weightIntersect,
             double weightFactor,
-            boolean swapOutProcessedChunks) {
+            boolean cacheOutProcessedChunks) {
         String methodName;
         methodName = "getMetrics1("
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
@@ -2113,11 +2113,11 @@ public class Grids_ProcessorDEM
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkCol(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    env.initNotToSwap();
-                    env.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToCache();
+                    env.addToNotToCache(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
-                    //ge.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(metrics1, chunkID);
+                    //ge.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
                     gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
                             chunkRow, chunkCol);
@@ -2170,10 +2170,10 @@ public class Grids_ProcessorDEM
                         }
                     }
                     System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                    if (swapOutProcessedChunks) {
+                    if (cacheOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
-                            metrics1[i].swapChunk(chunkID, true, env.HOOME);
+                            metrics1[i].cacheChunk(chunkID, true, env.HOOME);
                         }
                     }
                 }
@@ -2190,11 +2190,11 @@ public class Grids_ProcessorDEM
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkColIndex(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    env.initNotToSwap();
-                    env.addToNotToSwap(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToCache();
+                    env.addToNotToCache(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
-                    //ge.addToNotToSwap(g, chunkID);
-                    env.addToNotToSwap(metrics1, chunkID);
+                    //ge.addToNotToCache(g, chunkID);
+                    env.addToNotToCache(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
                     gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
                             chunkRow, chunkCol);
@@ -2246,10 +2246,10 @@ public class Grids_ProcessorDEM
                     }
                     System.out.println(
                             "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                    if (swapOutProcessedChunks) {
+                    if (cacheOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
-                            metrics1[i].swapChunk(chunkID, true, env.HOOME);
+                            metrics1[i].cacheChunk(chunkID, true, env.HOOME);
                         }
                     }
                 }
@@ -2364,7 +2364,7 @@ public class Grids_ProcessorDEM
      * @param distance the distance within which metrics1 will be calculated
      * @param weights an array of kernel weights for weighting metrics1
      * @param chunkID This is a ID for those AbstractGrid2DSquareCells not to be
-     * swapped if possible when an OutOfMemoryError is encountered.
+     * cacheped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
             Grids_AbstractGridNumber g,
@@ -3854,7 +3854,7 @@ public class Grids_ProcessorDEM
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (!env.swapChunk(env.HOOMEF)) {
+                if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve();

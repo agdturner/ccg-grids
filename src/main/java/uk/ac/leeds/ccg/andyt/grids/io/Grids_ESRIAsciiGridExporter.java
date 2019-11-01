@@ -86,7 +86,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      */
     public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) 
             throws IOException {
-        env.initNotToSwap();
+        env.initNotToCache();
         env.checkAndMaybeFreeMemory();
         try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {
             Grids_Dimensions dimensions;
@@ -102,7 +102,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             long row;
             long col;
             int chunkRow0 = g.getChunkRow(nrows_minus_1);
-            env.addToNotToSwap(g, chunkRow0);
+            env.addToNotToCache(g, chunkRow0);
             int chunkRow;
             if (g.getClass() == Grids_GridInt.class) {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
@@ -112,8 +112,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 for (row = nrows_minus_1; row >= 0; row--) {
                     chunkRow = g.getChunkRow(row);
                     if (chunkRow0 != chunkRow) {
-                        env.removeFromNotToSwap(g, chunkRow0);
-                        env.addToNotToSwap(g, chunkRow);
+                        env.removeFromNotToCache(g, chunkRow0);
+                        env.addToNotToCache(g, chunkRow);
                         env.checkAndMaybeFreeMemory();
                         chunkRow0 = chunkRow;
                     }
@@ -169,8 +169,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                     for (col = 0; col < ncols; col++) {
                         chunkRow = g.getChunkRow(row);
                         if (chunkRow0 != chunkRow) {
-                            env.removeFromNotToSwap(g, chunkRow0);
-                            env.addToNotToSwap(g, chunkRow);
+                            env.removeFromNotToCache(g, chunkRow0);
+                            env.addToNotToCache(g, chunkRow);
                             env.checkAndMaybeFreeMemory();
                             chunkRow0 = chunkRow;
                         }

@@ -58,7 +58,7 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
     public void update(Grids_AbstractGridStats stats) {
         n = stats.n;
     }
-        
+
     /**
      * @return {@link #grid} cast accordingly.
      */
@@ -75,21 +75,20 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
     /**
      * Returns a String describing this instance
      *
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
+     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public String toString(
-            boolean hoome) {
+    public String toString(boolean hoome) {
         try {
-            String result = toString();
+            String r = toString();
             env.checkAndMaybeFreeMemory();
-            return result;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve();
-                if (!env.swapChunk(env.HOOMEF)) {
+                if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve();

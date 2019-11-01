@@ -133,7 +133,7 @@ public class Grids_GridChunkDoubleMap
         DefaultValue = defaultValue;
         NoDataValue = g.getNoDataValue();
         initData();
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -161,7 +161,7 @@ public class Grids_GridChunkDoubleMap
                 initCell(row, col, value);
             }
         }
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -739,8 +739,8 @@ public class Grids_GridChunkDoubleMap
                 }
             }
         }
-        if (isSwapUpToDate()) {
-            setSwapUpToDate(false);
+        if (isCacheUpToDate()) {
+            setCacheUpToDate(false);
         }
         return result;
     }

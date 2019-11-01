@@ -64,7 +64,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //     * Returns the number of cells with data values.
 //     *
 //     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * swap operations are initiated, then the method is re-called. If false
+//     * cache operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
 //     */
@@ -77,7 +77,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
 //                env.initMemoryReserve(Grid, ChunkID, hoome);
@@ -92,7 +92,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //     * Returns the sum of all data values.
 //     *
 //     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-//     * swap operations are initiated, then the method is re-called. If false
+//     * cache operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
 //     */
@@ -105,7 +105,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //        } catch (OutOfMemoryError e) {
 //            if (handleOutOfMemoryError) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
 //                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
@@ -131,7 +131,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //     * @param numberOfDecimalPlaces The number of decimal places to which the
 //     * result is precise.
 //     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * swap operations are initiated, then the method is re-called. If false
+//     * cache operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
 //     */
@@ -146,7 +146,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
 //                env.initMemoryReserve(Grid, ChunkID, hoome);
@@ -182,7 +182,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //     * cells are NoDataValues, then Grid.NoDataValue is returned.
 //     *
 //     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * swap operations are initiated, then the method is re-called. If false
+//     * cache operations are initiated, then the method is re-called. If false
 //     * then OutOfMemoryErrors are caught and thrown.
 //     * @return
 //     */
@@ -194,7 +194,7 @@ public abstract class Grids_AbstractGridChunkNumber
 //        } catch (OutOfMemoryError e) {
 //            if (hoome) {
 //                env.clearMemoryReserve();
-//                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
 //                    throw e;
 //                }
 //                env.initMemoryReserve(Grid, ChunkID, hoome);
@@ -222,7 +222,7 @@ public abstract class Grids_AbstractGridChunkNumber
      * Returns the median of all data values as a double.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
+     * cache operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
@@ -234,7 +234,7 @@ public abstract class Grids_AbstractGridChunkNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 env.clearMemoryReserve();
-                if (env.swapChunkExcept_Account(Grid, ChunkID, false) < 1L) {
+                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
                 env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
@@ -257,7 +257,7 @@ public abstract class Grids_AbstractGridChunkNumber
      * Returns the standard deviation of all data values as a double.
      *
      * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-     * swap operations are initiated, then the method is re-called. If false
+     * cache operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
@@ -269,7 +269,7 @@ public abstract class Grids_AbstractGridChunkNumber
         } catch (OutOfMemoryError e) {
             if (handleOutOfMemoryError) {
                 env.clearMemoryReserve();
-                if (env.swapChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                if (env.cacheChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
                     throw e;
                 }
                 env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);

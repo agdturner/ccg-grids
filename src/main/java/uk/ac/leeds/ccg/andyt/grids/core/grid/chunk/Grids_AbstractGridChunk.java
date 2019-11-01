@@ -38,8 +38,8 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
      * TODO: This adds a small amount of weight, so for 64CellMap
      * implementations it may be undesirable?
      */
-    protected transient boolean SwapUpToDate;
-    //protected boolean SwapUpToDate;
+    protected transient boolean CacheUpToDate;
+    //protected boolean CacheUpToDate;
 
     protected Grids_AbstractGridChunk() {
     }
@@ -51,7 +51,7 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
         ChunkID = chunkID;
         ChunkNRows = Grid.getChunkNRows(ChunkID);
         ChunkNCols = Grid.getChunkNCols(ChunkID);
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -90,22 +90,22 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
     }
 
     /**
-     * Returns SwapUpToDate. This method is public so that it can be accessed in
+     * Returns CacheUpToDate. This method is public so that it can be accessed in
      * memory management without checking there is enough memory to continue.
      *
      * @return
      */
-    public boolean isSwapUpToDate() {
-        return SwapUpToDate;
+    public boolean isCacheUpToDate() {
+        return CacheUpToDate;
     }
 
     /**
-     * Returns this.SwapUpToDate
+     * Sets {@link #CacheUpToDate} to b. 
      *
-     * @param swapUpToDate
+     * @param b
      */
-    public void setSwapUpToDate(boolean swapUpToDate) {
-        SwapUpToDate = swapUpToDate;
+    public void setCacheUpToDate(boolean b) {
+        CacheUpToDate = b;
     }
 
     /**

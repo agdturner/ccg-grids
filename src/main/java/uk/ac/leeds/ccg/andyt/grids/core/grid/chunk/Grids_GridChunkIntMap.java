@@ -129,7 +129,7 @@ public class Grids_GridChunkIntMap
         DefaultValue = defaultValue;
         NoDataValue = g.getNoDataValue();
         initData();
-        SwapUpToDate = false;
+        CacheUpToDate = false;
     }
 
     /**
@@ -157,7 +157,7 @@ public class Grids_GridChunkIntMap
                 initCell(row, col, value);
             }
         }
-        this.SwapUpToDate = false;
+        this.CacheUpToDate = false;
     }
 
     /**
@@ -753,8 +753,8 @@ public class Grids_GridChunkIntMap
                 }
             }
         }
-        if (isSwapUpToDate()) {
-            setSwapUpToDate(false);
+        if (isCacheUpToDate()) {
+            setCacheUpToDate(false);
         }
         return result;
     }
