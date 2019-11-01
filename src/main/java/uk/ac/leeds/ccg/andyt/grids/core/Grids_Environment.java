@@ -36,8 +36,8 @@ import uk.ac.leeds.ccg.andyt.grids.process.Grids_Processor;
  * This is for a shared object amongst all classes that handle
  * OutOfMemoryErrors.
  */
-public class Grids_Environment extends Grids_OutOfMemoryErrorHandler
-        implements Grids_OutOfMemoryErrorHandlerInterface {
+public class Grids_Environment extends Grids_MemoryManager
+        implements Grids_Memory {
 
     /**
      * A HashSet of Grids_AbstractGrid objects that may have data that can be

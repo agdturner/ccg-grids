@@ -31,6 +31,10 @@ public class Grids_Files extends Generic_Files {
     protected File GeneratedGridBinaryDir;
     protected File GeneratedProcessorDir;
 
+    public Grids_Files() throws IOException {
+        this(getDefaultDir());
+    }
+            
     public Grids_Files(File dir) throws IOException {
         super(dir);
     }

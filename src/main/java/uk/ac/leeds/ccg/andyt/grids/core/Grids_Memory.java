@@ -19,16 +19,15 @@
 package uk.ac.leeds.ccg.andyt.grids.core;
 
 import uk.ac.leeds.ccg.andyt.grids.core.grid.Grids_AbstractGrid;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import uk.ac.leeds.ccg.andyt.generic.memory.Generic_Memory;
 
 /**
  *
  * @author Andy
  */
-public interface Grids_OutOfMemoryErrorHandlerInterface
-        extends Serializable {
+public interface Grids_Memory extends Generic_Memory {
 
     boolean checkAndMaybeFreeMemory(boolean hoome);
 
