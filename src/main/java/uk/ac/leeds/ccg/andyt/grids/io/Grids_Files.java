@@ -45,7 +45,7 @@ public class Grids_Files extends Generic_Files {
      * @return A default directory called Grids in {@link Generic_Files.getDefaultDir()}.
      */
     public static File getDefaultDir() {
-        return new File(Generic_Defaults.getDefaultDir(), Grids_Strings.s_Grids);
+        return new File(getDefaultGenericDir(), Grids_Strings.s_Grids);
     }
     
     /**

@@ -131,7 +131,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
         Grids_Files gf = env.files;
         int divisions = 100;
         String resolution = "" + divisions;
-        //File dataDir = files.getDataDir();
+        //File dataDir = files.getDefaultDir();
         String inDataDirectory = "d:/andyt/projects/phd/data/arc/leeds/grids/" + resolution + "/";
         String outDataDirectory = "d:/andyt/projects/phd/data/plots/" + resolution + "/";
         String xFilename = "roadm";
