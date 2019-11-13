@@ -34,34 +34,37 @@ public class Grids_Files extends Generic_Files {
     public Grids_Files() throws IOException {
         this(getDefaultDir());
     }
-            
+
     public Grids_Files(File dir) throws IOException {
         super(dir);
     }
-    
+
     /**
-     * {@code return new File(Generic_Files.getDefaultDir(), Grids_Strings.s_Grids);}
-     *
-     * @return A default directory called Grids in {@link Generic_Files.getDefaultDir()}.
+     * @return
+     * {@code return new File(getDefaultGenericDir(), Grids_Strings.s_grids)}
      */
     public static File getDefaultDir() {
-        return new File(getDefaultGenericDir(), Grids_Strings.s_Grids);
+        return new File(getDefaultGenericDir(), Grids_Strings.s_grids);
     }
-    
+
     /**
-     * @param dataDir
-     * @return A directory called {@link Grids_Strings#s_Grids} 
-     * in {@code dataDir}.
+     * Make and return a directory called {@link Grids_Strings#s_grids} in
+     * {@code dataDir}.
+     *
+     * @param dataDir The directory in which to make a new directory called
+     * {@link Grids_Strings#s_grids}.
+     * @return A directory called {@link Grids_Strings#s_grids} in
+     * {@code dataDir}.
      */
     public static File getDir(File dataDir) {
-        File r = new File(dataDir, Grids_Strings.s_Grids);
+        File r = new File(dataDir, Grids_Strings.s_grids);
         r.mkdir();
         return r;
     }
 
     public File getGeneratedGridIntDir() {
         if (GeneratedGridIntDir == null) {
-            GeneratedGridIntDir = new File(getGeneratedDir(), 
+            GeneratedGridIntDir = new File(getGeneratedDir(),
                     Grids_Strings.s_GridInt);
         }
         return GeneratedGridIntDir;
@@ -69,7 +72,7 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedGridDoubleDir() {
         if (GeneratedGridDoubleDir == null) {
-            GeneratedGridDoubleDir = new File(getGeneratedDir(), 
+            GeneratedGridDoubleDir = new File(getGeneratedDir(),
                     Grids_Strings.s_GridDouble);
         }
         return GeneratedGridDoubleDir;
@@ -77,7 +80,7 @@ public class Grids_Files extends Generic_Files {
 
     public File getGeneratedGridBinaryDir() {
         if (GeneratedGridBinaryDir == null) {
-            GeneratedGridBinaryDir = new File(getGeneratedDir(), 
+            GeneratedGridBinaryDir = new File(getGeneratedDir(),
                     Grids_Strings.s_GridBinary);
         }
         return GeneratedGridBinaryDir;

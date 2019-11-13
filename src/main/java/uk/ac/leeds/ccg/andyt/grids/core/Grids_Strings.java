@@ -14,6 +14,7 @@ import uk.ac.leeds.ccg.andyt.generic.core.Generic_Strings;
 public class Grids_Strings extends Generic_Strings {
     
     public static final String s_Grids = "Grids";
+    public static final String s_grids = "grids";
     public static final  String s_GridInt = "GridInt";
     public static final  String s_GridDouble = "GridDouble";
     public static final  String s_GridBinary = "GridBinary";
