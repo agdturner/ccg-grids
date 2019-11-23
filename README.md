@@ -16,7 +16,7 @@ The library has evolved since around the year 2000 and is actively being develop
 1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were used in various projects for a range of geographical modelling tasks and to explore for evidence of geographical clustering. In this respect it has most recently been used in the Digital Welfare Project to reveal a change in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
 2. Processing digital elevation data into geomorphometrics - see: https://github.com/agdturner/agdt-java-project-Geomorphometrics.
 3. Producing density plots of lines and points to help reveal relationships between variables.
-4. The library has a general utility and might work well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-generic-vector
+4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-generic-vector
 
 More example usages are wanted. If you use this library please add to this list.
 
