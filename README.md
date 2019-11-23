@@ -10,7 +10,7 @@ Each chunk of each grid may be stored either in the fast access memeory or on th
 
 Most of the methods attempt to prevent OutOfMemoryErrors being thrown and also recover if they are. This happens by attempting to swap chunks between the fast access memory and disk as necessary.
 
-The library has evolved since arund the year 2000 and is actively being developed.
+The library has evolved since arund the year 2000 and is actively being developed. Some more details about the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
 
 ## Usages
 1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were used in various projects for a range of geographical modelling tasks and to explore for evidence of geographical clustering. In this respect it has most recently been used in the Digital Welfare Project to reveal a change in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
