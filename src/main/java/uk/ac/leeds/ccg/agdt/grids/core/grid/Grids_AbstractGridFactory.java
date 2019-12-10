@@ -98,7 +98,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      */
     public Grids_AbstractGrid create(Generic_Path dir, long nRows, long nCols)
             throws IOException {
-        return create(dir, nRows, nCols, getDimensions(nRows, nCols));
+        setDimensions(nRows, nCols);
+        return create(dir, nRows, nCols, Dimensions);
     }
 
     /**
