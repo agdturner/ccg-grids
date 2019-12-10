@@ -565,7 +565,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
             ChunkNCols = chunkNCols;
             NRows = endRow - startRow + 1L;
             NCols = endCol - startCol + 1L;
-            Name = dir.getName();
+            Name = dir.getFileName().toString();
             initNChunkRows();
             initNChunkCols();
             chunkIDChunkMap = new TreeMap<>();
@@ -639,7 +639,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         } else {
             // Assume ESRI AsciiFile
             checkDir();
-            Name = dir.getName();
+            Name = dir.getFileName().toString();
             chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;

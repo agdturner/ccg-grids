@@ -19,175 +19,161 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 
 /**
  * Grids_AbstractGridFactory.
- * 
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
 public abstract class Grids_AbstractGridFactory extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The number of rows in a chunk.
      */
     protected int ChunkNRows;
+
     /**
      * The number of columns in a chunk.
      */
     protected int ChunkNCols;
+
     /**
-     * The Dimensions
+     * The dimensions of the grid.
      */
     protected Grids_Dimensions Dimensions;
 
+    /**
+     * Creates a new Grids_AbstractGridFactory.
+     */
     public Grids_AbstractGridFactory() {
     }
 
-    public Grids_AbstractGridFactory(Grids_Environment ge) {
-        super(ge);
+    /**
+     * Creates a new Grids_AbstractGridFactory.
+     *
+     * @param e What {@link #env} is set to.
+     */
+    public Grids_AbstractGridFactory(Grids_Environment e) {
+        super(e);
     }
 
-    public Grids_AbstractGridFactory(Grids_Environment ge, int chunkNRows,
+    /**
+     * Creates a new Grids_AbstractGridFactory.
+     *
+     * @param e What {@link #env} is set to.
+     * @param chunkNRows What {@link #ChunkNRows} is set to.
+     * @param chunkNCols What {@link #ChunkNCols} is set to.
+     * @param dimensions What {@link #Dimensions} is set to.
+     */
+    public Grids_AbstractGridFactory(Grids_Environment e, int chunkNRows,
             int chunkNCols, Grids_Dimensions dimensions) {
-        super(ge);
+        super(e);
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         Dimensions = dimensions;
     }
 
     /**
-     * Sets Dimensions to dimensions.
+     * Set Dimensions.
      *
-     * @param dimensions
+     * @param d What {@link #Dimensions} is set to.
      */
-    public void setDimensions(Grids_Dimensions dimensions) {
-        Dimensions = dimensions;
+    public void setDimensions(Grids_Dimensions d) {
+        Dimensions = d;
     }
 
-    /////////////////////////
-    // Create from scratch //
-    /////////////////////////
     /**
-     * @return Grids_AbstractGrid grid with all values as false or NoDataValues.
-     * @param dir The Directory for storing the grid.
-     * @param nRows The NRows for the construct.
-     * @param nCols The NCols for the construct.
+     * @return Grid with all values as false or NoDataValues.
+     * @param dir The directory for storing the grid.
+     * @param nRows The number of rows in the grid.
+     * @param nCols The number of columns in the grid.
+     * @throws java.io.IOException If encountered.
      */
-    public Grids_AbstractGrid create(File dir, long nRows, long nCols) throws IOException {
+    public Grids_AbstractGrid create(Generic_Path dir, long nRows, long nCols)
+            throws IOException {
         return create(dir, nRows, nCols, getDimensions(nRows, nCols));
     }
 
     /**
-     * @return Grids_AbstractGrid grid with all values as false or NoDataValues.
-     * @param directory The Directory for storing the grid.
+     * @return Grid with all values as false or NoDataValues.
+     * @param dir The Directory for storing the grid.
      * @param nRows The number of rows in the grid.
-     * @param nCols The number of Columns in the grid.
-     * @param dimensions
+     * @param nCols The number of columns in the grid.
+     * @param d The dimensions for the grid created.
+     * @throws java.io.IOException If encountered.
      */
-    public abstract Grids_AbstractGrid create(File directory, long nRows,
-            long nCols, Grids_Dimensions dimensions) throws IOException ;
+    public abstract Grids_AbstractGrid create(Generic_Path dir, long nRows,
+            long nCols, Grids_Dimensions d) throws IOException;
 
     ////////////////////////////////////////////////
     // Create from an existing Grids_AbstractGrid //
     ////////////////////////////////////////////////
     /**
-     * @return Grids_AbstractGridNumber with all values from g.
-     * @param dir The Directory to be used for storing the grid.
-     * @param g The Grids_AbstractGridNumber from which values are obtained.
+     * @return Grid with all values from g.
+     * @param dir The directory for storing the grid.
+     * @param g The grid from which values are obtained.
+     * @throws java.io.IOException If encountered.
      */
-    public Grids_AbstractGrid create(File dir, Grids_AbstractGrid g) throws IOException {
+    public Grids_AbstractGrid create(Generic_Path dir, Grids_AbstractGrid g)
+            throws IOException {
         return create(dir, g, 0L, 0L, g.getNRows() - 1L, g.getNCols() - 1L);
     }
 
     /**
-     * @return Grids_AbstractGridNumber with values obtained from g.
-     * @param dir The Directory to be used for storing the grid.
-     * @param g The Grids_AbstractGridNumber from which values are obtained.
-     * @param startRow The topmost row index of grid2DSquareCell thats values
-     * are used.
-     * @param startCol The leftmost column index of grid2DSquareCell thats
-     * values are used.
-     * @param endRow The bottom row index of the grid2DSquareCell thats values
-     * are used.
-     * @param endCol The rightmost column index of grid2DSquareCell thats values
-     * are used.
+     * @return Grid with all values from g.
+     * @param dir The directory for storing the grid.
+     * @param g The grid from which values are obtained.
+     * @param startRow The topmost row index of {@code g} to get values from.
+     * @param startCol The leftmost column index of {@code g} to get values
+     * from.
+     * @param endRow The bottommost row index of {@code g} to get values from.
+     * @param endCol The rightmost column index of {@code g} to get values from.
+     * @throws java.io.IOException If encountered.
      */
-    public abstract Grids_AbstractGrid create(File dir, Grids_AbstractGrid g, 
-            long startRow, long startCol,            long endRow, long endCol) throws IOException ;
+    public abstract Grids_AbstractGrid create(Generic_Path dir,
+            Grids_AbstractGrid g, long startRow, long startCol, long endRow,
+            long endCol) throws IOException;
 
     ////////////////////////
     // Create from a File //
     ////////////////////////
     /**
-     * @param dir The Directory to be used for storing the grid.
-     * @return Grids_AbstractGrid with values obtained from gridFile. If
-     * gridFile is a Directory then it is assumed to contain a file called cache
-     * which can be opened into an object input stream and initialised as an
-     * instance of a class extending Grids_AbstractGridNumber.
-     * @param gridFile either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grids_AbstractGridNumber to be returned.
+     * @param dir The directory for storing the grid.
+     * @return Grid with values obtained from gridFile. If {@code gf} is a
+     * directory then there will be an attempt to load a grid from a file
+     * therein.
+     * @param gridFile either a directory, or a formatted file used to
+     * initialise the grid returned.
+     * @throws java.io.IOException If encountered.
      */
-    public abstract Grids_AbstractGrid create(File dir, File gridFile)throws IOException ;
-//    {
-//        if (gridFile.isDirectory()) {
-//            // Initialise from File(gridFile,"this")
-//            File thisFile = new File(gridFile, "thisFile");
-//            try {
-//                ObjectInputStream ois;
-//                ois = Generic_StaticIO.getObjectInputStream(thisFile);
-//                return create(Directory, gridFile, ois);
-//            } catch (Exception e) {
-//                System.out.println(e);
-//                e.printStackTrace(System.err);
-//            }
-//        }
-//        // Assume it is ESRI asciigrid
-//        Grids_ESRIAsciiGridImporter eagi;
-//        eagi = new Grids_ESRIAsciiGridImporter(gridFile, ge);
-//        Grids_ESRIAsciiGridHeader header = eagi.readHeaderObject();
-//        long nCols = header.NCols;
-//        long nRows = header.NRows;
-//        //double _NoDataValue = (Double) header[5];
-//        eagi.close();
-//        String gridName;
-//        gridName = gridFile.getName().substring(0,
-//                gridFile.getName().length() - 4);
-//        String dirName;
-//        dirName = gridFile.getParentFile()
-//                + System.getProperty("file.separator")
-//                + gridName + getClass().getName()
-//                + "_ChunkNrows(" + ChunkNRows
-//                + ")_ChunkNcols(" + ChunkNCols + ")";
-//        //this.Directory = Grids_Files.createNewFile( new File( _DirectoryName ) );
-//        Directory = new File(dirName);
-//        Directory.mkdirs();
-//        return create(Directory, gridFile, 0L, 0L, nRows - 1L, nCols - 1L);
-//    }
+    public abstract Grids_AbstractGrid create(Generic_Path dir,
+            Generic_Path gridFile) throws IOException;
 
     /**
-     * @return Grids_AbstractGrid with values obtained from gridFile.
-     * @param dir The Directory to be used for storing the grid.
-     * @param gridFile either a Directory, or a formatted File with a specific
-     * extension containing the data and information about the
-     * Grids_AbstractGridNumber to be returned.
-     * @param startRow The topmost row index of the grid represented in gridFile
-     * thats values are used.
-     * @param startCol The leftmost column index of the grid represented in
-     * gridFile thats values are used.
-     * @param endRow The bottom row index of the grid represented in gridFile
-     * thats values are used.
-     * @param endCol The rightmost column index of the grid represented in
-     * gridFile thats values are used.
+     * @return A grid with values obtained from gridFile.
+     * @param dir The directory to be used for storing the grid.
+     * @param gridFile either a directory, or a formatted file used to
+     * initialise the grid returned.
+     * @param startRow The topmost row index of the grid in {@code gridFile} to
+     * get values from.
+     * @param startCol The leftmost column index of grid in {@code gridFile} to
+     * get values from.
+     * @param endRow The bottommost row index of the grid in {@code gridFile} to
+     * get values from.
+     * @param endCol The rightmost column index of the grid in {@code gridFile}
+     * to get values from.
+     * @throws java.io.IOException If encountered.
      */
     public abstract Grids_AbstractGrid create(File dir, File gridFile,
-            long startRow, long startCol, long endRow, long endCol)throws IOException ;
+            long startRow, long startCol, long endRow, long endCol)
+            throws IOException;
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
@@ -195,82 +181,62 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
      */
-    public abstract Grids_AbstractGrid create(File dir, File gridFile, 
+    public abstract Grids_AbstractGrid create(File dir, File gridFile,
             ObjectInputStream ois);
 
     /**
-     * Return ChunkNRows.
-     *
-     * @return
+     * @return A copy of {@link #ChunkNRows}.
      */
     public int getChunkNRows() {
         return ChunkNRows;
     }
 
     /**
-     * Sets ChunkNRows to chunkNRows.
+     * Sets {@link #ChunkNRows}.
      *
-     * @param chunkNRows
+     * @param chunkNRows The value to set {@link #ChunkNRows} to.
      */
     public void setChunkNRows(int chunkNRows) {
         ChunkNRows = chunkNRows;
     }
 
     /**
-     * Returns ChunkNCols.
-     *
-     * @return
+     * @return A copy of {@link #getChunkNCols}.
      */
     public int getChunkNCols() {
         return ChunkNCols;
     }
 
     /**
-     * Sets ChunkNCols to chunkNCols.
+     * Sets {@link #ChunkNCols}.
      *
-     * @param chunkNCols
+     * @param chunkNCols The value to set {@link #ChunkNCols} to.
      */
     public void setChunkNCols(int chunkNCols) {
         ChunkNCols = chunkNCols;
     }
 
     /**
-     * Initialise Dimensions. Defaulting the origin to 0,0 and cellsize to 1.
-     *
-     * @param chunkNCols
-     * @param chunkNRows
-     */
-    protected final void getDimensions(int chunkNCols, int chunkNRows) {
-        Dimensions = new Grids_Dimensions(
-                new BigDecimal(0L), 
-                new BigDecimal(chunkNCols),
-                new BigDecimal(0L),
-                new BigDecimal(chunkNRows),
-                new BigDecimal(1L));
-    }
-
-    /**
-     * Returns Dimensions.
-     *
-     * @return
+     * @return {@link #Dimensions}
      */
     public Grids_Dimensions getDimensions() {
         return Dimensions;
     }
 
-    protected Grids_Dimensions getDimensions(long nRows, long nCols) {
-        Grids_Dimensions result;
-        BigDecimal cellsize;
-        cellsize = Dimensions.getCellsize();
-        BigDecimal xMax = Dimensions.getXMin().add(new BigDecimal(nCols).multiply(cellsize));
-        BigDecimal yMax = Dimensions.getYMin().add(new BigDecimal(nRows).multiply(cellsize));
-        result = new Grids_Dimensions(
-                Dimensions.getXMin(), 
-                xMax,
-                Dimensions.getYMin(), 
-                yMax, 
-                cellsize);
-        return result;
+    /**
+     * Initialises {@link #Dimensions}. {@link Grids_Dimensions#XMin} and
+     * {@link Grids_Dimensions#XMin} are set to {@link BigDecimal#ZERO};
+     * {@link Grids_Dimensions#Cellsize} is set to {@link BigDecimal#ONE};
+     * {@link Grids_Dimensions#XMax} is set to {@code nCols} using
+     * {@link BigDecimal#BigDecimal(int)}; {@link Grids_Dimensions#YMax} is set
+     * to {@code nRows} using {@link BigDecimal#BigDecimal(int)}
+     *
+     * @param nRows The number of rows in the grids to be created.
+     * @param nCols The number of columns in the grids to be created.
+     */
+    protected void setDimensions(long nRows, long nCols) {
+        Dimensions = new Grids_Dimensions(BigDecimal.ZERO,
+                BigDecimal.valueOf(nRows), BigDecimal.ZERO,
+                BigDecimal.valueOf(nCols), BigDecimal.ONE);
     }
-    
 }

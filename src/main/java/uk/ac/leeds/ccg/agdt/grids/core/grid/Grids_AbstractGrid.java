@@ -18,7 +18,9 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
@@ -39,6 +42,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_AbstractGridStats;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 
 /**
  * Grids_AbstractGrid
@@ -54,45 +58,55 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     /**
      * Path to dir used for storing grid data.
      */
-    protected Path dir;
+    protected Generic_Path dir;
+    
     /**
      * The Grids_AbstractGridChunk data cache.
      */
     protected TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> chunkIDChunkMap;
+    
     /**
      * The Grids_AbstractGridChunk data cache.
      */
     protected HashSet<Grids_2D_ID_int> ChunkIDsOfChunksWorthCaching;
+    
     /**
      * For storing the number of chunk rows.
      */
     protected int NChunkRows;
+    
     /**
      * For storing the number of chunk columns.
      */
     protected int NChunkCols;
+    
     /**
      * For storing the (usual) number of rows of cells in a chunk. The number of
      * rows in the final chunk row may be less.
      */
     protected int ChunkNRows;
+    
     /**
      * For storing the (usual) number of columns of cells in a chunk. The number
      * of columns in the final chunk column may be less.
      */
     protected int ChunkNCols;
+    
     /**
      * For storing the number of rows in the grid.
      */
     protected long NRows;
+    
     /**
      * For storing the number of columns in the grid.
      */
     protected long NCols;
+    
     /**
      * For storing the Name of the grid.
      */
     protected String Name;
+    
     /**
      * Stores the cellsize, minx, miny, maxx, maxy.
      */
@@ -106,7 +120,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     protected Grids_AbstractGrid() {
     }
 
-    protected Grids_AbstractGrid(Grids_Environment ge, File dir) {
+    protected Grids_AbstractGrid(Grids_Environment ge, Generic_Path dir) {
         super(ge);
         this.dir = dir;
     }
@@ -114,30 +128,26 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     /**
      * Checks to see if {@link #dir} already exists and contains a lock file. If
      * it does then an error is thrown likely aborting the program.
+     * @throws IOException If a lock file could not be created.
      */
-    protected final void checkDir() {
-        if (dir.exists()) {
-            if (dir.isDirectory()) {
-                File lock = new File(dir, "lock");
-                if (!lock.exists()) {
-                    try {
-                        lock.createNewFile();
-                    } catch (IOException ex) {
-                        Logger.getLogger(Grids_AbstractGrid.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+    protected final void checkDir() throws IOException {
+        Path p = dir.getPath();
+        if (Files.exists(p)) {
+            if (Files.isDirectory(p)) {
+                Path lock = Paths.get(dir.toString(), "lock");
+                if (!Files.exists(lock)) {
+                    Files.createFile(lock);
                 } else {
-                    throw new Error("Lock file " + lock + " already exists. "
-                            + "Exiting program to prevent data getting overwritten!");
+                    throw new IOException("Lock file " + lock + " already exists!");
                 }
             } else {
-                throw new Error("Directory " + dir + " already exists as a file. "
-                        + "Exiting program to prevent data getting overwritten!");
+                throw new IOException(dir.toString() + " already exists as a file!");
             }
         }
     }
 
-    protected void init() {
-        dir.mkdir();
+    protected void init() throws IOException {
+        Files.createDirectory(dir.getPath());
         env.setDataToCache(true);
         env.addGrid(this);
     }
@@ -147,8 +157,9 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      *
      * @param g The Grids_AbstractGrid from which the non transient
      * Grids_AbstractGrid fields of this are set.
+     * @throws java.io.IOException If encountered.
      */
-    protected void init(Grids_AbstractGrid g) {
+    protected void init(Grids_AbstractGrid g) throws IOException {
         ChunkNCols = g.ChunkNCols;
         ChunkNRows = g.ChunkNRows;
         Dimensions = g.Dimensions;
@@ -222,8 +233,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     /**
      * @return dir.
      */
-    public File getDirectory() {
-        return new File(dir.getPath());
+    public Generic_Path getDirectory() {
+        return new Generic_Path(dir);
     }
 
     /**
@@ -691,10 +702,8 @@ public abstract class Grids_AbstractGrid extends Grids_Object
      * getDirectory().
      */
     public void writeToFile() {
-        File dir = getDirectory();
-        dir.mkdirs();
         File f = new File(dir, "thisFile");
-        env.env.io.writeObject(this, f);
+        Generic_IO.writeObject(this, Paths.f);
     }
 
     /**
