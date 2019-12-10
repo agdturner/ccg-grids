@@ -17,15 +17,18 @@ package uk.ac.leeds.ccg.agdt.grids.utilities;
 
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleIterator;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
  * This class holds miscellaneous general utility methods
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -169,14 +172,29 @@ public class Grids_Utilities {
     }
 
     /**
-     * Returns the distance between a pair of coordinates calculated using
-     * double precision arithmetic.
+     * @param x1 The x coordinate of the first point.
+     * @param y1 The y coordinate of the first point.
+     * @param x2 The x coordinate of the second point.
+     * @param y2 The y coordinate of the second point.
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The {@link RoundingMode} to use when rounding the result.
      *
-     * @param x1 - the x coordinate of one point
-     * @param y1 - the y coordinate of one point
-     * @param x2 - the x coordinate of another point
-     * @param y2 - the y coordinate of another point
-     * @return
+     * @return The distance between two points calculated using
+     * {@link BigDecimal} arithmetic.
+     */
+    public static final BigDecimal distance(BigDecimal x1, BigDecimal y1,
+            BigDecimal x2, BigDecimal y2, int dp, RoundingMode rm) {
+        return Math_BigDecimal.sqrt(((x1.subtract(x2)).pow(2))
+                .add((y1.subtract(y2)).pow(2)), dp, rm);
+    }
+
+    /**
+     * @param x1 The x coordinate of the first point.
+     * @param y1 The y coordinate of the first point.
+     * @param x2 The x coordinate of the second point.
+     * @param y2 The y coordinate of the second point.
+     * @return The distance between two points calculated using {@code double}
+     * precision floating point numbers.
      */
     public static final double distance(
             double x1, double y1, double x2, double y2) {
@@ -184,17 +202,72 @@ public class Grids_Utilities {
     }
 
     /**
-     * Returns the clockwise angle in radians to the y axis of the line from x1,
-     * y1 to x2, y2
+     * Returns the clockwise angle in radians to the y axis of the line from: {@code x1},
+     * {@code y1}; to, {@code x2}, {@code y2}.
      *
-     * @param x1 - the x coordinate of one point
-     * @param y1 - the y coordinate of one point
-     * @param x2 - the x coordinate of another point
-     * @param y2 - the y coordinate of another point
-     * @return
+     * @param x1 The x coordinate of the first point.
+     * @param y1 The y coordinate of the first point.
+     * @param x2 The x coordinate of the second point.
+     * @param y2 The y coordinate of the second point.
+     * @return The clockwise angle in radians to the y axis of the line from x1,
+     * y1 to x2, y2 calculated using {@code double}
+     * precision floating point numbers.
      */
-    public static final double angle(
-            double x1, double y1, double x2, double y2) {
+    public static final double angle(double x1, double y1, double x2, 
+            double y2) {
+        double xdiff = x1 - x2;
+        double ydiff = y1 - y2;
+        double angle;
+        if (xdiff == 0.0d && ydiff == 0.0d) {
+            angle = -1.0d;
+        } else {
+            if (xdiff <= 0.0d) {
+                if (xdiff == 0.0d) {
+                    if (ydiff <= 0.0d) {
+                        angle = 0.0d;
+                    } else {
+                        angle = Math.PI;
+                    }
+                } else {
+                    if (ydiff <= 0.0d) {
+                        if (ydiff == 0.0d) {
+                            angle = Math.PI / 2.0d;
+                        } else {
+                            angle = Math_BigDecimal.atan(Math.abs(xdiff / ydiff));
+                        }
+                    } else {
+                        angle = Math.PI - Math.atan(Math.abs(xdiff / ydiff));
+                    }
+                }
+            } else {
+                if (ydiff <= 0.0d) {
+                    if (ydiff == 0.0d) {
+                        angle = 3.0d * Math.PI / 2.0d;
+                    } else {
+                        angle = (2.0d * Math.PI) - Math.atan(Math.abs(xdiff / ydiff));
+                    }
+                } else {
+                    angle = Math.PI + Math.atan(Math.abs(xdiff / ydiff));
+                }
+            }
+        }
+        return angle;
+    }
+    
+    /**
+     * Returns the clockwise angle in radians to the y axis of the line from: {@code x1},
+     * {@code y1}; to, {@code x2}, {@code y2}.
+     *
+     * @param x1 The x coordinate of the first point.
+     * @param y1 The y coordinate of the first point.
+     * @param x2 The x coordinate of the second point.
+     * @param y2 The y coordinate of the second point.
+     * @return The clockwise angle in radians to the y axis of the line from x1,
+     * y1 to x2, y2 calculated using {@code double}
+     * precision floating point numbers.
+     */
+    public static final double angle(double x1, double y1, double x2, 
+            double y2) {
         double xdiff = x1 - x2;
         double ydiff = y1 - y2;
         double angle;

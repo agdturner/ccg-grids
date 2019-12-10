@@ -108,7 +108,7 @@ public abstract class Grids_AbstractGrid extends Grids_Object
     protected String Name;
     
     /**
-     * Stores the cellsize, minx, miny, maxx, maxy.
+     * @see {@link Grids_Dimensions}
      */
     protected Grids_Dimensions Dimensions;
 

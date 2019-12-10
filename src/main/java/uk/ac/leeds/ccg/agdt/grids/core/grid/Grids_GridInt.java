@@ -45,7 +45,7 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
  * A class for representing grids of int values.
  *
  * @see Grids_AbstractGridNumber
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -1499,10 +1499,10 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             double distance;
             double minDistance = Integer.MAX_VALUE;
             // Go through values and find the closest
-            HashSet closest = new HashSet();
+            HashSet<Grids_2D_ID_long> closest = new HashSet<>();
             iterator = values.iterator();
             while (iterator.hasNext()) {
-                cellID0 = (Grids_2D_ID_long) iterator.next();
+                cellID0 = iterator.next();
                 distance = Grids_Utilities.distance(x, y,
                         getCellXDouble(cellID0), getCellYDouble(cellID0));
                 if (distance < minDistance) {
@@ -1538,7 +1538,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             value = 0;
             iterator = closest.iterator();
             while (iterator.hasNext()) {
-                cellID0 = (Grids_2D_ID_long) iterator.next();
+                cellID0 = iterator.next();
                 value += getCell(cellID0);
             }
             nearestValue = value / (double) closest.size();
@@ -1597,34 +1597,25 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * with data values are returned.
      */
     @Override
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(
-            double x,
-            double y,
-            long row,
-            long col) {
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
+            long row, long col) {
         Grids_2D_ID_long[] nearestCellIDs = new Grids_2D_ID_long[1];
         nearestCellIDs[0] = getNearestCellID(x, y, row, col);
         double nearestCellValue = getCell(row, col);
         if (nearestCellValue == NoDataValue) {
             // Find a value Seeking outwards from nearestCellID
             // Initialise visitedSet1
-            HashSet visitedSet = new HashSet();
-            HashSet visitedSet1 = new HashSet();
+            HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
+            HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
             visitedSet.add(nearestCellIDs[0]);
             visitedSet1.add(nearestCellIDs[0]);
             // Initialise toVisitSet1
-            HashSet toVisitSet1 = new HashSet();
-            long p;
-            long q;
-            boolean isInGrid;
-            Grids_2D_ID_long cellID;
-            for (p = -1; p < 2; p++) {
-                for (q = -1; q < 2; q++) {
+            HashSet<Grids_2D_ID_long> toVisitSet1 = new HashSet<>();
+            for (long p = -1; p < 2; p++) {
+                for (long q = -1; q < 2; q++) {
                     if (!(p == 0 && q == 0)) {
-                        isInGrid = isInGrid(row + p, col + q);
-                        if (isInGrid) {
-                            cellID = getCellID(row + p, col + q);
-                            toVisitSet1.add(cellID);
+                        if (isInGrid(row + p, col + q)) {
+                            toVisitSet1.add(getCellID(row + p, col + q));
                         }
                     }
                 }
@@ -1632,16 +1623,14 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             // Seek
             boolean foundValue = false;
             double value;
-            HashSet values = new HashSet();
-            HashSet visitedSet2;
-            HashSet toVisitSet2;
-            Iterator iterator;
+            HashSet<Grids_2D_ID_long> values = new HashSet<>();
+            Iterator<Grids_2D_ID_long> iterator;
             while (!foundValue) {
-                visitedSet2 = new HashSet();
-                toVisitSet2 = new HashSet();
+                HashSet<Grids_2D_ID_long> visitedSet2 = new HashSet<>();
+                HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
                 iterator = toVisitSet1.iterator();
                 while (iterator.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator.next();
+                    Grids_2D_ID_long cellID = iterator.next();
                     visitedSet2.add(cellID);
                     value = getCell(cellID);
                     if (value != NoDataValue) {
@@ -1649,17 +1638,13 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                         values.add(cellID);
                     } else {
                         // Add neighbours to toVisitSet2
-                        for (p = -1; p < 2; p++) {
-                            for (q = -1; q < 2; q++) {
+                        for (long p = -1; p < 2; p++) {
+                            for (long q = -1; q < 2; q++) {
                                 if (!(p == 0 && q == 0)) {
-                                    isInGrid = isInGrid(
-                                            cellID.getRow() + p,
-                                            cellID.getCol() + q);
-                                    if (isInGrid) {
-                                        cellID = getCellID(
-                                                cellID.getRow() + p,
-                                                cellID.getCol() + q);
-                                        toVisitSet2.add(cellID);
+                                    long r0 = cellID.getRow() + p;
+                                    long c0 = cellID.getCol() + q;
+                                    if (isInGrid(r0, c0)) {
+                                        toVisitSet2.add(getCellID(r0, c0));
                                     }
                                 }
                             }
@@ -1675,10 +1660,10 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             double distance;
             double minDistance = Double.MAX_VALUE;
             // Go through values and find the closest
-            HashSet closest = new HashSet();
+            HashSet<Grids_2D_ID_long> closest = new HashSet<>();
             iterator = values.iterator();
             while (iterator.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator.next();
+                Grids_2D_ID_long cellID = iterator.next();
                 distance = Grids_Utilities.distance(x, y,
                         getCellXDouble(cellID), getCellYDouble(cellID));
                 if (distance < minDistance) {
@@ -1692,10 +1677,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                 minDistance = Math.min(minDistance, distance);
             }
             // Get cellIDs that are within distance of discovered value
-            Grids_2D_ID_long[] cellIDs = getCellIDs(
-                    x,
-                    y,
-                    minDistance);
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, minDistance);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1) != NoDataValue) {
@@ -1719,7 +1701,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             iterator = closest.iterator();
             int counter = 0;
             while (iterator.hasNext()) {
-                nearestCellIDs[counter] = (Grids_2D_ID_long) iterator.next();
+                nearestCellIDs[counter] = iterator.next();
                 counter++;
             }
         }
@@ -1734,11 +1716,11 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      */
     @Override
     public double getNearestValueDoubleDistance(double x, double y) {
-        double result = getCell(x, y);
-        if (result == NoDataValue) {
-            result = getNearestValueDoubleDistance(x, y, getRow(y), getCol(x));
+        double r = getCell(x, y);
+        if (r == NoDataValue) {
+            r = getNearestValueDoubleDistance(x, y, getRow(y), getCol(x));
         }
-        return result;
+        return r;
     }
 
     /**
@@ -1749,15 +1731,13 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * @param col The cell column index of the cell from which the distance
      * nearest to the nearest cell value is returned.
      */
-    public double getNearestValueDoubleDistance(
-            long row,
-            long col) {
-        double result = getCell(row, col);
-        if (result == NoDataValue) {
-            result = getNearestValueDoubleDistance(getCellXDouble(col),
+    public double getNearestValueDoubleDistance(long row, long col) {
+        double r = getCell(row, col);
+        if (r == NoDataValue) {
+            r = getNearestValueDoubleDistance(getCellXDouble(col),
                     getCellYDouble(row), row, col);
         }
-        return result;
+        return r;
     }
 
     /**
@@ -1772,16 +1752,10 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * nearest to the nearest cell value is returned.
      */
     @Override
-    public double getNearestValueDoubleDistance(
-            double x,
-            double y,
-            long row,
-            long col) {
+    public double getNearestValueDoubleDistance(double x, double y, long row, long col) {
         double result = getCell(row, col);
         if (result == NoDataValue) {
             // Initialisation
-            long long0;
-            long long1;
             long longMinus1 = -1;
             long longTwo = 2;
             long longZero = 0;
@@ -1791,49 +1765,45 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             double double0;
             double double1;
             Grids_2D_ID_long nearestCellID = getNearestCellID(x, y, row, col);
-            HashSet visitedSet = new HashSet();
-            HashSet visitedSet1 = new HashSet();
+            HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
+            HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
             visitedSet.add(nearestCellID);
             visitedSet1.add(nearestCellID);
-            HashSet toVisitSet1 = new HashSet();
-            long p;
-            long q;
+            HashSet<Grids_2D_ID_long> toVisitSet1 = new HashSet<>();
             boolean isInGrid;
             Grids_2D_ID_long cellID;
             boolean foundValue = false;
             double value;
-            HashSet values = new HashSet();
-            HashSet visitedSet2;
-            HashSet toVisitSet2;
-            Iterator iterator;
+            HashSet<Grids_2D_ID_long> values = new HashSet<>();
+            HashSet<Grids_2D_ID_long> visitedSet2;
+            HashSet<Grids_2D_ID_long> toVisitSet2;
+            Iterator<Grids_2D_ID_long> iterator;
             double distance;
             double minDistance = Double.MAX_VALUE;
-            HashSet closest = new HashSet();
+            HashSet<Grids_2D_ID_long> closest = new HashSet<>();
             // Find a value Seeking outwards from nearestCellID
             // Initialise toVisitSet1
-            for (p = longMinus1; p < longTwo; p++) {
-                for (q = longMinus1; q < longTwo; q++) {
+            for (long p = longMinus1; p < longTwo; p++) {
+                for (long q = longMinus1; q < longTwo; q++) {
                     boolean0 = (p == longZero);
                     boolean1 = (q == longZero);
                     boolean2 = !(boolean0 && boolean1);
                     if (boolean2) {
-                        long0 = row + p;
-                        long1 = col + q;
-                        isInGrid = isInGrid(long0, long1);
-                        if (isInGrid) {
-                            cellID = getCellID(long0, long1);
-                            toVisitSet1.add(cellID);
+                        long r0 = row + p;
+                        long c0 = col + q;
+                        if (isInGrid(r0, c0)) {
+                            toVisitSet1.add(getCellID(r0, c0));
                         }
                     }
                 }
             }
             // Seek
             while (!foundValue) {
-                visitedSet2 = new HashSet();
-                toVisitSet2 = new HashSet();
+                visitedSet2 = new HashSet<>();
+                toVisitSet2 = new HashSet<>();
                 iterator = toVisitSet1.iterator();
                 while (iterator.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator.next();
+                    cellID = iterator.next();
                     visitedSet2.add(cellID);
                     value = getCell(cellID);
                     if (value != NoDataValue) {
@@ -1841,18 +1811,16 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
                         values.add(cellID);
                     } else {
                         // Add neighbours to toVisitSet2
-                        for (p = longMinus1; p < longTwo; p++) {
-                            for (q = longMinus1; q < longTwo; q++) {
+                        for (long p = longMinus1; p < longTwo; p++) {
+                            for (long q = longMinus1; q < longTwo; q++) {
                                 boolean0 = (p == longZero);
                                 boolean1 = (q == longZero);
                                 boolean2 = !(boolean0 && boolean1);
                                 if (boolean2) {
-                                    long0 = cellID.getRow() + p;
-                                    long1 = cellID.getCol() + q;
-                                    isInGrid = isInGrid(long0, long1);
-                                    if (isInGrid) {
-                                        cellID = getCellID(long0, long1);
-                                        toVisitSet2.add(cellID);
+                                    long r0 = cellID.getRow() + p;
+                                    long c0 = cellID.getCol() + q;
+                                    if (isInGrid(r0, c0)) {
+                                        toVisitSet2.add(getCellID(r0, c0));
                                     }
                                 }
                             }
@@ -1868,7 +1836,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
             // Go through values and find the closest
             iterator = values.iterator();
             while (iterator.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator.next();
+                cellID = iterator.next();
                 double0 = getCellXDouble(cellID);
                 double1 = getCellYDouble(cellID);
                 distance = Grids_Utilities.distance(x, y, double0, double1);
