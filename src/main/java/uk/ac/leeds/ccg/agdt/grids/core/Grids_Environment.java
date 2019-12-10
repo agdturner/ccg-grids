@@ -19,12 +19,16 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.agdt.generic.core.Generic_Environment;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
@@ -41,34 +45,34 @@ public class Grids_Environment extends Grids_MemoryManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * A HashSet of Grids_AbstractGrid objects that may have data that can be
-     * cached to release memory for processing.
+     * A set of grids that may have data that can be cached to help with memory
+     * management and processing.
      */
     protected transient HashSet<Grids_AbstractGrid> grids;
 
     /**
-     * For indicating which chunks are not cached to release memory for
+     * For indicating which chunks are not to be cached to release memory for
      * processing unless desperate.
      */
     protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToCache;
 
     /**
-     * For storing an instance of Math_BigDecimal.
+     * For storing an instance of {@link Math_BigDecimal}.
      */
     public transient Math_BigDecimal bd;
 
     /**
-     * For storing a Grids_Processor.
+     * For storing a {@link Grids_Processor} instance.
      */
     protected transient Grids_Processor processor;
 
     /**
-     * For storing an instance of Grids_Files.
+     * For storing an instance of {@link Grids_Files}.
      */
     public transient Grids_Files files;
 
     /**
-     * For storing an instance of Generic_Environment.
+     * For storing an instance of {@link Generic_Environment}.
      */
     public transient final Generic_Environment env;
 
@@ -76,10 +80,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * Defaults Generic_Environment to: {@code new Generic_Environment()).
      * {@link #Grids_Environment(Generic_Environment)}
      *
-     * @throws IOException
+     * @throws java.io.IOException If encountered.
+     * @throws Exception If there is a another problem setting up the file
+     * store.
      */
-    public Grids_Environment() throws IOException {
-        this(new Generic_Environment());
+    public Grids_Environment() throws IOException, Exception {
+        this(new Generic_Environment(new Generic_Defaults()));
     }
 
     /**
@@ -98,13 +104,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param dir Used to initialise {@link #files} using
      * {@link Grids_Files(File)}.
      */
-    public Grids_Environment(Generic_Environment env, File dir) throws IOException {
+    public Grids_Environment(Generic_Environment env, Generic_Path dir) throws IOException {
         this.env = env;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
         initNotToCache();
-        if (!dir.exists()) {
-            dir.mkdirs();
+        Path p = dir.getPath();
+        if (!Files.exists(p)) {
+            Files.createDirectory(p);
         }
         files = new Grids_Files(dir);
     }
@@ -114,11 +121,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     public Grids_Processor getProcessor() {
         if (processor == null) {
-            try {
-                processor = new Grids_Processor(this);
-            } catch (IOException e) {
-                e.printStackTrace(System.err);
-            }
+            processor = new Grids_Processor(this);
         }
         return processor;
     }
