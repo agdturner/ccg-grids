@@ -32,6 +32,8 @@ import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
  */
 public class Grids_ClipGrid extends Grids_Processor {
 
+    private static final long serialVersionUID = 1L;
+
     boolean HandleOutOfMemoryError;
     String Filename;
 

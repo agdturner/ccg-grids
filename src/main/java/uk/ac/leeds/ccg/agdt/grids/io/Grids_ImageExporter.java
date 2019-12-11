@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
 import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;

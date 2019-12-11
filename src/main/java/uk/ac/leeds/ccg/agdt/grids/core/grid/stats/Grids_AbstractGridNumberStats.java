@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
@@ -30,6 +30,8 @@ import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
  * @version 1.0.0
  */
 public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridStats {
+
+    private static final long serialVersionUID = 1L;
 
     //private long final long serialVersionUID = 1L;
 

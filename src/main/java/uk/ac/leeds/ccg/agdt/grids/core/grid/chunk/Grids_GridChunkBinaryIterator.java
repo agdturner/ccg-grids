@@ -28,6 +28,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
 
+    private static final long serialVersionUID = 1L;
+
     protected boolean[][] Data;
     protected int Row;
     protected int Col;

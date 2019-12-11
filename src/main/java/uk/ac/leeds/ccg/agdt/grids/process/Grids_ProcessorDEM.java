@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridIntFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkInt;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Kernel;

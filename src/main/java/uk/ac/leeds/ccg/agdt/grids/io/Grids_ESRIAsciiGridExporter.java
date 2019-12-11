@@ -22,7 +22,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 
 /**
@@ -32,6 +32,8 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
  * @version 1.0.0
  */
 public class Grids_ESRIAsciiGridExporter extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
 
     String DefaultNoDataValue = "-9999.0d";
 

@@ -38,6 +38,8 @@ import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
  */
 public class Grids_ConvertToTimeSeries extends Grids_Processor {
 
+    private static final long serialVersionUID = 1L;
+
     private long Time;
     boolean HandleOutOfMemoryError;
     String Filename;

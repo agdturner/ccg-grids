@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.andyt.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;

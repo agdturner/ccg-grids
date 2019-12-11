@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
 import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinary;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinaryIterator;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinary;

@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 
 /**
  * Used by Grids_AbstractGridNumber instances to access statistics. This class

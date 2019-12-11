@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.utilities;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 
 /**

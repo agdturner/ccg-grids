@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Kernel;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
 
@@ -36,6 +36,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
  * @version 1.0.0
  */
 public class Grids_ProcessorGWS extends Grids_Processor {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * @throws IOException 
