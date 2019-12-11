@@ -45,19 +45,64 @@ public class Grids_Environment extends Grids_MemoryManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * A set of grids that may have data that can be cached to help with memory
-     * management and processing.
+     * This is the main block of data - a set of grids that may have chunks that
+     * can be cached and released from the fast access memory (swapped out) to
+     * help with memory management and processing. Swapping out involves both
+     * caching the chunks and releasing the memory used to store them from the
+     * fast access memory. In some cases there is already an up-to-date cache of
+     * a chunk and the chunk can simply be released from memory and loaded back
+     * from the existing cache as needed.
      */
     protected transient HashSet<Grids_AbstractGrid> grids;
 
     /**
-     * For indicating which chunks are not to be cached to release memory for
-     * processing unless desperate.
+     * For indicating which chunks of which grids are preferably not to be
+     * swapped out or otherwise to released from memory (offloaded). This map is
+     * modified as data processing methods start and progress. The content of
+     * the map is used to make processing more efficient by reducing the
+     * potential offloading chunks only to have to reload these again from the
+     * cache in the very near future.
+     *
+     * Maintaining this map is something of an inefficiency when all the data
+     * fits easily into the available fast access memory, but often it doesn't
+     * and this library is more geared to supporting the processing of large
+     * volumes of data where this is typically not the case and processing may
+     * involve a significant amount of loading and offloading.
+     *
+     * In cases where some chunks in {@link #grids} need to be offloaded in
+     * order for some processing to complete, and there are no other chunks
+     * loaded into the fast access memory to offload, then some of the chunks
+     * identified in the map will be offloaded. Typically these will need to be
+     * loaded again in the not too distant future in order for a method to run
+     * successfully. When this happens the processing will be inefficient.
+     *
+     * For some methods cell values from a set of neighbouring chunks are wanted
+     * from a grid along with other nearby cell values or chunk statistics from
+     * other grids. Often the processing is localised within the dimensions of
+     * the grids. An example case would be in calculating geographically
+     * weighted statistic of the difference between two grids, where the
+     * statistic takes in values from each grid within a specific distance of
+     * any cell to produce a result for a given cell in a new output grid.
+     *
+     * It may be desirable to have additional maps and sets to nuance this
+     * approach and improve algorithmic efficiency further. For instance, there
+     * could be a set identifying all grids to prefer not to offload data from
+     * and a map identifying those chunks not to offload at all. In some cases
+     * it might be best for the method to throw an Exception rather than to
+     * slowly grind on and potentially take too long to produce a result. It
+     * might be in some of these cases that restructuring the data into smaller
+     * chunks might help as typically with smaller chunks - less memory might be
+     * needed as more circular, less rectangular regions of chunks might be
+     * needed. However, there is a small overhead in that each chunk requires
+     * more memory than just the cell values in the chunks. Additionally, it may
+     * be that the way each chunk stores the data can be done in a more memory
+     * efficient way. So there could be other ways to make some processing more
+     * memory efficient.
      */
     protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToCache;
 
     /**
-     * For storing an instance of {@link Math_BigDecimal}.
+     * For storing a {@link Math_BigDecimal} instance.
      */
     public transient Math_BigDecimal bd;
 
@@ -67,22 +112,22 @@ public class Grids_Environment extends Grids_MemoryManager
     protected transient Grids_Processor processor;
 
     /**
-     * For storing an instance of {@link Grids_Files}.
+     * For storing a {@link Grids_Files} instance.
      */
     public transient Grids_Files files;
 
     /**
-     * For storing an instance of {@link Generic_Environment}.
+     * For storing a {@link Generic_Environment} instance.
      */
     public transient final Generic_Environment env;
 
     /**
-     * Defaults Generic_Environment to: {@code new Generic_Environment()).
-     * {@link #Grids_Environment(Generic_Environment)}
+     * Defaults Generic_Environment to:
+     * {@code new Generic_Environment(new Generic_Defaults())}.
      *
+     * @see #Grids_Environment(Generic_Environment)
      * @throws java.io.IOException If encountered.
-     * @throws Exception If there is a another problem setting up the file
-     * store.
+     * @throws Exception If there is another problem setting up the file store.
      */
     public Grids_Environment() throws IOException, Exception {
         this(new Generic_Environment(new Generic_Defaults()));
@@ -93,9 +138,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * {@link #Grids_Environment(Generic_Environment,File)}
      *
      * @param env The default.
+     * @throws java.io.IOException If encountered.
      */
     public Grids_Environment(Generic_Environment env) throws IOException {
-        this(env, Grids_Files.getDefaultDir());
+        this(env, env.files.getDir());
     }
 
     /**
@@ -117,9 +163,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return the processor initialising first if it is null.
+     * If {@link #processor} is not {@code null}, it is returned. If
+     * {@link #processor} is {@code null} it is initialised and then returned.
+     *
+     * @return {@link #processor} initialising first if it is {@code null}.
+     * @throws java.io.IOException If encountered initialising
+     * {@link #processor}.
      */
-    public Grids_Processor getProcessor() {
+    public Grids_Processor getProcessor() throws IOException {
         if (processor == null) {
             processor = new Grids_Processor(this);
         }
@@ -127,14 +178,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param processor
+     * @param p What {@link #processor} is set to.
      */
-    public void setProcessor(Grids_Processor processor) {
-        this.processor = processor;
+    public void setProcessor(Grids_Processor p) {
+        this.processor = p;
     }
 
     /**
-     * Initialises grids.
+     * If {@link #grids} is {@code null} it is initialised as a new
+     * {@link java.util.HashSet}.
      */
     protected final void initGrids() {
         if (grids == null) {
@@ -169,7 +221,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Adds the chunkID of g to notToCache.
+     * Adds the specific {@code chunkRow} of chunks of {@code g} to notToCache.
      *
      * @param g
      * @param chunkRow
