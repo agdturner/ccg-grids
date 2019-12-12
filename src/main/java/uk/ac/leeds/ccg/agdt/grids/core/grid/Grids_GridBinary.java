@@ -60,21 +60,24 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     /**
      * Creates a new Grids_GridBinary.
      *
-     * @param dir The directory for this.
-     * @param gridFile The directory containing the File named "thisFile" that
-     * the ois was constructed from.
+     * @param dir What {@link #dir} is set to.
+     * @param gridFile The directory containing a file named "thisFile" that
+     * {@code ois} was constructed from.
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param ge
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Generic_Path dir, Generic_Path gridFile, ObjectInputStream ois,
-            Grids_Environment ge) throws IOException {
+    protected Grids_GridBinary(Generic_Path dir, Generic_Path gridFile,
+            ObjectInputStream ois, Grids_Environment ge) throws IOException,
+            ClassNotFoundException {
         super(ge, dir);
         init(gridFile, ois);
     }
 
     /**
-     * Creates a new Grids_GridBinary with each cell value equal to ndv
- and all chunks of the same type.
+     * Creates a new Grids_GridBinary with each cell value equal to {@code ndv}
+     * and all chunks of the same type.
      *
      * @param stats The Grids_GridBinaryStats to accompany this.
      * @param dir The directory for this.
@@ -84,13 +87,14 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The ndv.
+     * @param ndv The noDataValue. WHY IS THIS IGNORED?
      * @param ge
+     * @throws java.io.IOException If encountered.
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, Generic_Path dir,
             Grids_GridChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            double noDataValue, Grids_Environment ge) throws IOException {
+            double ndv, Grids_Environment ge) throws IOException {
         super(ge, dir);
         init(stats, dir, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions);
     }
@@ -113,6 +117,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
      * @param v
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, Generic_Path dir,
             Grids_AbstractGrid g, Grids_GridChunkBinaryFactory cf,
@@ -125,9 +131,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * Creates a new Grids_GridBinary with values obtained from gridFile.Currently gridFile must be a directory of a Grids_GridDouble or
- Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
- ".asc" or ".txt".
+     * Creates a new Grids_GridBinary with values obtained from
+     * gridFile.Currently gridFile must be a directory of a Grids_GridDouble or
+     * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
+     * ".asc" or ".txt".
      *
      * @param stats The Grids_GridBinaryStats to accompany this.
      * @param dir The directory for this.
@@ -145,7 +152,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * of this.
      * @param ge
      * @param v
-     * @throws java.io.IOException
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, Generic_Path dir,
             Generic_Path gridFile, Grids_GridChunkBinaryFactory cf,
@@ -167,16 +175,18 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      * @param v
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_Environment ge, Generic_Path dir, 
-            Generic_Path gridFile, double v) throws IOException, ClassNotFoundException{
+    protected Grids_GridBinary(Grids_Environment ge, Generic_Path dir,
+            Generic_Path gridFile, double v) throws IOException, ClassNotFoundException {
         super(ge, dir);
         init(new Grids_GridBinaryStatsNotUpdated(ge), gridFile, v);
     }
 
     /**
-     * Creates a new Grids_GridDouble with each cell value equal to ndv
- and all chunks of the same type.
+     * Creates a new Grids_GridDouble with each cell value equal to ndv and all
+     * chunks of the same type.
      *
      * @param stats The Grids_GridDoubleStats to accompany this.
      * @param dir The directory for this.
@@ -187,6 +197,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param ge
+     * @throws java.io.IOException If encountered.
      */
     protected Grids_GridBinary(Grids_GridBinaryStats stats, Generic_Path dir,
             Grids_GridChunkBinaryFactory cf, int chunkNRows,
@@ -201,6 +212,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      *
      * @param g The Grids_GridBinary from which the fields of this are set. with
      * those of g.
+     * @throws java.io.IOException If encountered.
      */
     private void init(Grids_GridBinary g) throws IOException {
 //        Grids_GridBinaryStats gStats;
@@ -230,14 +242,15 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * 
+     *
      * @param file
-     * @param ois 
-     * 
+     * @param ois
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    private void init(Generic_Path file, ObjectInputStream ois) throws IOException {
+    private void init(Generic_Path file, ObjectInputStream ois) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
-        Path thisFile = getPathThisFile();
+        Path thisFile = getPathThisFile(file);
         try {
             init((Grids_GridBinary) ois.readObject());
             ois.close();
@@ -254,18 +267,18 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
                 ois = Generic_IO.getObjectInputStream(thisFile);
                 // If the object is a Grids_GridInt
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridIntFactory gif = new Grids_GridIntFactory(env, 
+                Grids_GridIntFactory gif = new Grids_GridIntFactory(env,
                         gp.GridChunkIntFactory,
                         gp.DefaultGridChunkIntFactory, Integer.MIN_VALUE,
                         ChunkNRows, ChunkNCols, Dimensions,
                         new Grids_GridIntStatsNotUpdated(env));
-                Generic_Path dir = env.files.getGeneratedGridIntDir();
-                Grids_GridInt gi = (Grids_GridInt) gif.create(dir, file, ois);
-                Grids_GridBinaryFactory gdf = new Grids_GridBinaryFactory(env, gp.GridChunkBinaryFactory,
-                        gi.ChunkNRows, gi.ChunkNCols, gi.Dimensions,
-                        new Grids_GridBinaryStatsNotUpdated(env), DefaultValue);
-                Grids_GridBinary gd;
-                gd = (Grids_GridBinary) gdf.create(this.dir, gi);
+                Generic_Path gid = env.files.getGeneratedGridIntDir();
+                Grids_GridInt gi = (Grids_GridInt) gif.create(gid, file, ois);
+                Grids_GridBinaryFactory gbf = new Grids_GridBinaryFactory(env,
+                        gp.GridChunkBinaryFactory, gi.ChunkNRows, gi.ChunkNCols,
+                        gi.Dimensions, new Grids_GridBinaryStatsNotUpdated(env),
+                        DefaultValue);
+                Grids_GridBinary gd = (Grids_GridBinary) gbf.create(this.dir, gi);
                 init(gd);
                 // Delete gi
                 Files.delete(gi.dir);
@@ -287,7 +300,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
     }
 
     /**
-     * 
+     *
      * @param stats
      * @param directory
      * @param chunkFactory
@@ -295,11 +308,12 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param chunkNCols
      * @param nRows
      * @param nCols
-     * @param dimensions 
+     * @param dimensions
+     * @throws java.io.IOException If encountered.
      */
     private void init(Grids_GridBinaryStats stats, Generic_Path directory,
             Grids_GridChunkBinaryFactory chunkFactory, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions) 
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
             throws IOException {
         env.checkAndMaybeFreeMemory();
         dir = directory;
@@ -315,12 +329,10 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
         ChunkIDsOfChunksWorthCaching = new HashSet<>();
-        int r;
-        int c;
         Grids_2D_ID_int chunkID;
         Grids_GridChunkBinary chunk;
-        for (r = 0; r < NChunkRows; r++) {
-            for (c = 0; c < NChunkCols; c++) {
+        for (int r = 0; r < NChunkRows; r++) {
+            for (int c = 0; c < NChunkCols; c++) {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 chunkID = new Grids_2D_ID_int(r, c);
@@ -344,6 +356,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param startCol
      * @param endRow
      * @param endCol
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     private void init(Grids_GridBinaryStats stats, Grids_AbstractGrid g,
             Grids_GridChunkBinaryFactory cf, int chunkNRows,
@@ -552,6 +566,21 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         init();
     }
 
+    /**
+     *
+     * @param stats
+     * @param gridFile
+     * @param cf
+     * @param chunkNRows
+     * @param chunkNCols
+     * @param startRow
+     * @param startCol
+     * @param endRow
+     * @param endCol
+     * @param v
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
     private void init(Grids_GridBinaryStats stats, Generic_Path gridFile,
             Grids_GridChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
@@ -567,26 +596,22 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         }
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_Processor gp;
-                gp = env.getProcessor();
-                Grids_GridBinaryFactory gf;
-                gf = new Grids_GridBinaryFactory(env, cf, chunkNRows,
-                        chunkNCols, null, stats, DefaultValue);
-                Generic_Path thisFile = new Generic_Path(
-                        Paths.get(gridFile.toString(), "thisFile"));
-                ObjectInputStream ois;
-                ois = env.env.io.getObjectInputStream(thisFile);
+                Grids_Processor gp = env.getProcessor();
+                Grids_GridBinaryFactory gf = new Grids_GridBinaryFactory(env,
+                        cf, chunkNRows, chunkNCols, null, stats, DefaultValue);
+                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
+                ObjectInputStream ois = Generic_IO.getObjectInputStream(thisFile);
                 Grids_GridBinary g = gf.create(dir, thisFile, ois);
-                Grids_GridBinary g2;
-                g2 = gf.create(dir, g, startRow, startCol, endRow, endCol);
+                Grids_GridBinary g2 = gf.create(dir, g, startRow, startCol,
+                        endRow, endCol);
                 init(g2);
             }
         } else {
             // Assume ESRI AsciiFile
             ChunkNRows = chunkNRows;
             ChunkNCols = chunkNCols;
-            NRows = endRow - startRow + 1L;
-            NCols = endCol - startCol + 1L;
+            NRows = endRow - startRow;
+            NCols = endCol - startCol;
             Name = dir.getFileName().toString();
             initNChunkRows();
             initNChunkCols();
@@ -629,7 +654,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         init();
     }
 
-    private void init(Grids_GridBinaryStats stats, Generic_Path gridFile, 
+    private void init(Grids_GridBinaryStats stats, Generic_Path gridFile,
             double v) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -639,18 +664,14 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridBinaryFactory gf;
-                gf = new Grids_GridBinaryFactory(env,
+                Grids_GridBinaryFactory gf = new Grids_GridBinaryFactory(env,
                         gp.GridChunkBinaryFactory,
                         gp.GridBinaryFactory.ChunkNRows,
                         gp.GridBinaryFactory.ChunkNCols, null, stats,
                         DefaultValue);
-                Generic_Path thisFile = new Generic_Path(
-                        Paths.get(gridFile.toString(), "thisFile"));
-                ObjectInputStream ois;
-                ois = env.env.io.getObjectInputStream(thisFile);
-                Grids_GridBinary g;
-                g = gf.create(dir, thisFile, ois);
+                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
+                ObjectInputStream ois = Generic_IO.getObjectInputStream(thisFile);
+                Grids_GridBinary g = gf.create(dir, thisFile, ois);
                 init(g);
                 //this.chunkIDChunkMap = g.chunkIDChunkMap;
                 this.ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
@@ -761,7 +782,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @throws java.io.IOException
      */
     @Override
-    public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID) 
+    public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException {
         if (isInGrid(chunkID)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
@@ -777,7 +798,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param chunkID
      */
     @Override
-    public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID, int chunkRow, 
+    public Grids_GridChunkBinary getChunk(Grids_2D_ID_int chunkID, int chunkRow,
             int chunkCol) throws IOException, ClassNotFoundException {
         if (isInGrid(chunkRow, chunkCol)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
@@ -858,7 +879,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param y the y-coordinate of the point.
      * @return
      */
-    public final boolean getCell(double x, double y) throws IOException, 
+    public final boolean getCell(double x, double y) throws IOException,
             ClassNotFoundException {
         long row = getRow(y);
         long col = getCol(x);
@@ -875,8 +896,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param cellID the Grids_2D_ID_long of the cell.
      * @return
      */
-    public final boolean getCell(Grids_2D_ID_long cellID) throws IOException, 
-            ClassNotFoundException{
+    public final boolean getCell(Grids_2D_ID_long cellID) throws IOException,
+            ClassNotFoundException {
         return getCell(cellID.getRow(), cellID.getCol());
     }
 
@@ -887,7 +908,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param y the y-coordinate of the point.
      * @param value
      */
-    public final void setCell(Double x, Double y, boolean value) throws IOException, ClassNotFoundException{
+    public final void setCell(Double x, Double y, boolean value) throws IOException, ClassNotFoundException {
         setCell(getRow(x), getCol(y), value);
     }
 
@@ -898,7 +919,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param col
      * @param value
      */
-    public void setCell(Long row, Long col, boolean value) throws IOException, 
+    public void setCell(Long row, Long col, boolean value) throws IOException,
             ClassNotFoundException {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
@@ -919,7 +940,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param value
      */
     public void setCell(int chunkRow, int chunkCol, int cellRow, int cellCol,
-            boolean value) throws IOException, ClassNotFoundException{
+            boolean value) throws IOException, ClassNotFoundException {
         Grids_GridChunkBinary chunk;
         chunk = (Grids_GridChunkBinary) getChunk(chunkRow, chunkCol);
         setCell(chunk, cellRow, cellCol, value);
@@ -998,7 +1019,7 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public boolean[] getCells(long row, long col, double distance) throws IOException, ClassNotFoundException{
+    public boolean[] getCells(long row, long col, double distance) throws IOException, ClassNotFoundException {
         return getCells(getCellXDouble(col), getCellYDouble(row), row, col,
                 distance);
     }

@@ -19,8 +19,9 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleF
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridDoubleStats;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdated;
@@ -31,8 +32,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdate
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridDoubleFactory
-        extends Grids_AbstractGridFactory {
+public class Grids_GridDoubleFactory extends Grids_AbstractGridFactory {
 
     /**
      * The NoDataValue for creating chunks.
@@ -134,8 +134,8 @@ public class Grids_GridDoubleFactory
      * @return
      */
     @Override
-    public Grids_GridDouble create(File dir, long nRows, long nCols,
-            Grids_Dimensions dimensions) {
+    public Grids_GridDouble create(Generic_Path dir, long nRows, long nCols,
+            Grids_Dimensions dimensions) throws IOException, ClassNotFoundException {
         return create(new Grids_GridDoubleStatsNotUpdated(env), dir,
                 GridChunkDoubleFactory, nRows, nCols, dimensions);
     }
@@ -151,13 +151,12 @@ public class Grids_GridDoubleFactory
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return A new Grids_GridDouble grid with all values as NoDataValues.
      */
-    public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
+    public Grids_GridDouble create(Grids_GridDoubleStats stats, Generic_Path dir,
             Grids_AbstractGridChunkDoubleFactory cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) {
-        Grids_GridDouble result;
-        result = new Grids_GridDouble(getStats(stats), dir, cf, ChunkNRows,
+            Grids_Dimensions dimensions) throws IOException, 
+            ClassNotFoundException {
+        return new Grids_GridDouble(getStats(stats), dir, cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
-        return result;
     }
 
     //////////////////////////////////////////////////////
@@ -173,8 +172,8 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with all values taken from g.
      */
     @Override
-    public Grids_GridDouble create(File dir, Grids_AbstractGrid g,
-            long startRow, long startCol, long endRow, long endCol) {
+    public Grids_GridDouble create(Generic_Path dir, Grids_AbstractGrid g,
+            long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException {
         return create(new Grids_GridDoubleStatsNotUpdated(env), dir, g,
                 DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
                 endCol);
@@ -193,9 +192,10 @@ public class Grids_GridDoubleFactory
      * @param endCol The rightmost column index of g.
      * @return A new Grids_GridDouble with all values taken from g.
      */
-    public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
+    public Grids_GridDouble create(Grids_GridDoubleStats stats, Generic_Path dir,
             Grids_AbstractGrid g, Grids_AbstractGridChunkDoubleFactory cf,
-            long startRow, long startCol, long endRow, long endCol) {
+            long startRow, long startCol, long endRow, long endCol) 
+            throws IOException, ClassNotFoundException {
         return new Grids_GridDouble(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
     }
@@ -215,8 +215,8 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
     @Override
-    public Grids_GridDouble create(File dir, File gridFile, long startRow,
-            long startCol, long endRow, long endCol) throws IOException {
+    public Grids_GridDouble create(Generic_Path dir, Generic_Path gridFile, long startRow,
+            long startCol, long endRow, long endCol)throws IOException, ClassNotFoundException {
         return create(new Grids_GridDoubleStatsNotUpdated(env), dir,
                 gridFile, DefaultGridChunkDoubleFactory, startRow, startCol,
                 endRow, endCol);
@@ -237,9 +237,9 @@ public class Grids_GridDoubleFactory
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
-    public Grids_GridDouble create(Grids_GridDoubleStats stats, File dir,
-            File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
-            long startRow, long startCol, long endRow, long endCol) throws IOException {
+    public Grids_GridDouble create(Grids_GridDoubleStats stats, Generic_Path dir,
+            Generic_Path gridFile, Grids_AbstractGridChunkDoubleFactory cf,
+            long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException {
         return new Grids_GridDouble(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
@@ -253,7 +253,7 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
     @Override
-    public Grids_GridDouble create(File dir, File gridFile) throws IOException {
+    public Grids_GridDouble create(Generic_Path dir, Generic_Path gridFile) throws IOException, ClassNotFoundException {
         return new Grids_GridDouble(env, dir, gridFile);
     }
 
@@ -267,7 +267,7 @@ public class Grids_GridDoubleFactory
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
     public @Override
-    Grids_GridDouble create(File dir, File gridFile, ObjectInputStream ois) {
+    Grids_GridDouble create(Generic_Path dir, Generic_Path gridFile, ObjectInputStream ois) throws IOException, ClassNotFoundException {
         return new Grids_GridDouble(dir, gridFile, ois, env);
     }
 

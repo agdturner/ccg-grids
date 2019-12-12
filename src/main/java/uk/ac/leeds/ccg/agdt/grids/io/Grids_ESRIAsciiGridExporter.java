@@ -18,6 +18,9 @@ package uk.ac.leeds.ccg.agdt.grids.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
@@ -54,9 +57,10 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param g Grid for export.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g) throws IOException {
-        File directory = g.getDirectory();
-        File file = new File(directory.getParentFile(), g.getName() + ".asc");
+    public Path toAsciiFile(Grids_AbstractGridNumber g) throws IOException, 
+            ClassNotFoundException {
+        Generic_Path directory = g.getDirectory();
+        Path file = Paths.get(directory.getParent().toString(), g.getName() + ".asc");
         return toAsciiFile(g, file);
     }
 
@@ -67,7 +71,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param file The File to export to.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g, File file) throws IOException {
+    public Path toAsciiFile(Grids_AbstractGridNumber g, Path file) 
+            throws IOException, ClassNotFoundException {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
             noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue();
@@ -85,8 +90,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param ndv The value to be used or substituted as a noDataValue for g.
      * @return
      */
-    public File toAsciiFile(Grids_AbstractGridNumber g, File file, String ndv) 
-            throws IOException {
+    public Path toAsciiFile(Grids_AbstractGridNumber g, Path file, String ndv) 
+            throws IOException, ClassNotFoundException {
         env.initNotToCache();
         env.checkAndMaybeFreeMemory();
         try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {

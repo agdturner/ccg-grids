@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
@@ -96,7 +97,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     public Grids_AbstractGrid create(Generic_Path dir, long nRows, long nCols)
-            throws IOException {
+            throws IOException, ClassNotFoundException {
         setDimensions(nRows, nCols);
         return create(dir, nRows, nCols, Dimensions);
     }
@@ -110,7 +111,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     public abstract Grids_AbstractGrid create(Generic_Path dir, long nRows,
-            long nCols, Grids_Dimensions d) throws IOException;
+            long nCols, Grids_Dimensions d) throws IOException, 
+            ClassNotFoundException;
 
     ////////////////////////////////////////////////
     // Create from an existing Grids_AbstractGrid //
@@ -120,10 +122,11 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param dir The directory for storing the grid.
      * @param g The grid from which values are obtained.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException
      */
     public Grids_AbstractGrid create(Generic_Path dir, Grids_AbstractGrid g)
-            throws IOException {
-        return create(dir, g, 0L, 0L, g.getNRows() - 1L, g.getNCols() - 1L);
+            throws IOException, ClassNotFoundException {
+        return create(dir, g, 0L, 0L, g.getNRows(), g.getNCols());
     }
 
     /**
@@ -136,10 +139,11 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param endRow The bottommost row index of {@code g} to get values from.
      * @param endCol The rightmost column index of {@code g} to get values from.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException
      */
     public abstract Grids_AbstractGrid create(Generic_Path dir,
             Grids_AbstractGrid g, long startRow, long startCol, long endRow,
-            long endCol) throws IOException;
+            long endCol) throws IOException, ClassNotFoundException;
 
     ////////////////////////
     // Create from a File //
@@ -152,9 +156,10 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param gridFile either a directory, or a formatted file used to
      * initialise the grid returned.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException
      */
     public abstract Grids_AbstractGrid create(Generic_Path dir,
-            Generic_Path gridFile) throws IOException;
+            Generic_Path gridFile) throws IOException, ClassNotFoundException;
 
     /**
      * @return A grid with values obtained from gridFile.
@@ -170,19 +175,22 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param endCol The rightmost column index of the grid in {@code gridFile}
      * to get values from.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException
      */
     public abstract Grids_AbstractGrid create(Generic_Path dir, Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException;
+            throws IOException, ClassNotFoundException;
 
     /**
      * @return Grids_AbstractGridNumber with values obtained from gridFile.
      * @param dir The Directory to be used for storing the grid.
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      */
     public abstract Grids_AbstractGrid create(Generic_Path dir, Generic_Path gridFile,
-            ObjectInputStream ois) throws IOException;
+            ObjectInputStream ois) throws IOException, ClassNotFoundException;
 
     /**
      * @return A copy of {@link #ChunkNRows}.

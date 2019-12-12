@@ -20,6 +20,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -155,7 +156,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param dir Used to initialise {@link #files} using
      * {@link Grids_Files(Generic_Path)}.
      */
-    public Grids_Environment(Generic_Environment e, Generic_Path dir) throws IOException {
+    public Grids_Environment(Generic_Environment e, Generic_Path dir) 
+            throws IOException {
         this.env = e;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
@@ -164,7 +166,8 @@ public class Grids_Environment extends Grids_MemoryManager
         if (!Files.exists(p)) {
             Files.createDirectory(p);
         }
-        files = new Grids_Files(dir);
+        files = new Grids_Files(new Generic_Defaults(Paths.get(dir.toString(),
+                Grids_Strings.s_grids)));
     }
 
     /**

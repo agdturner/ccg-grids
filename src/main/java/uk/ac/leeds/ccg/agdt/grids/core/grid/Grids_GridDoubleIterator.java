@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
+import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayOrMapIterator;
@@ -42,8 +43,8 @@ public class Grids_GridDoubleIterator
     /**
      * @param g The Grids_GridDouble to iterate over.
      */
-    public Grids_GridDoubleIterator(
-            Grids_GridDouble g) {
+    public Grids_GridDoubleIterator( Grids_GridDouble g) throws IOException, 
+            ClassNotFoundException {
         super(g);
         GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {

@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -86,7 +87,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * Updates by going through all values in grid.
      */
     @Override
-    public void update() {
+    public void update() throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
@@ -132,7 +133,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * @return
      */
     @Override
-    public Double getMin(boolean update) {
+    public Double getMin(boolean update) throws IOException, ClassNotFoundException {
         if (NMin < 1) {
             if (update) {
                 update();
@@ -151,7 +152,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * @return
      */
     @Override
-    public Double getMax(boolean update) {
+    public Double getMax(boolean update) throws IOException, ClassNotFoundException {
         if (NMax < 1) {
             if (update) {
                 update();
@@ -171,7 +172,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * @return
      */
     @Override
-    public long getN() {
+    public long getN() throws IOException, ClassNotFoundException {
         long result = 0;
         Grids_GridDouble g = getGrid();
         Grids_GridDoubleIterator gIte;
@@ -205,7 +206,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * @return
      */
     @Override
-    public BigInteger getNonZeroN() {
+    public BigInteger getNonZeroN() throws IOException, ClassNotFoundException {
         BigInteger result = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
@@ -227,7 +228,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      * @param update Is ignored.
      * @return
      */
-    public BigDecimal getSum(boolean update) {
+    public BigDecimal getSum(boolean update) throws IOException, ClassNotFoundException {
         return getSum();
     }
     
@@ -235,7 +236,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
      *
      * @return
      */
-    public BigDecimal getSum() {
+    public BigDecimal getSum() throws IOException, ClassNotFoundException {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
         Grids_GridDoubleIterator gIte;
@@ -252,7 +253,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
         return result;
     }
 
-    public BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
+    public BigDecimal getStandardDeviation(int numberOfDecimalPlaces) throws IOException, ClassNotFoundException {
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
@@ -281,8 +282,13 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
                 env.bd.getRoundingMode());
     }
 
+    /**
+     *
+     * @param nClasses
+     * @return
+     */
     @Override
-    public Object[] getQuantileClassMap(int nClasses) {
+    public Object[] getQuantileClassMap(int nClasses) throws IOException, ClassNotFoundException {
         Object[] result;
         result = new Object[3];
         Grids_GridDouble g = getGrid();
@@ -296,8 +302,7 @@ public class Grids_GridDoubleStats extends Grids_AbstractGridNumberStats  {
         }
         result[0] = minDouble;
         result[1] = maxDouble;
-        BigInteger nonZeroN;
-        nonZeroN = getNonZeroN();
+        BigInteger nonZeroN  = getNonZeroN();
         long nonZeroNLong = nonZeroN.longValueExact();
         System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroN);
         long numberOfValuesInEachClass;

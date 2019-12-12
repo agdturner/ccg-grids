@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
@@ -81,7 +82,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * Grids_GridIntStatistics.)
      */
     @Override
-    public void update() {
+    public void update() throws IOException, ClassNotFoundException {
         if (!isUpToDate()) {
             super.update();
             setUpToDate(true);
@@ -94,7 +95,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    public long getN() {
+    public long getN() throws IOException, ClassNotFoundException {
         update();
         return n;
     }
@@ -105,7 +106,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    public BigDecimal getSum() {
+    public BigDecimal getSum() throws IOException, ClassNotFoundException {
         return Sum;
     }
 
@@ -117,7 +118,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    public BigDecimal getSum(boolean update) {
+    public BigDecimal getSum(boolean update) throws IOException, ClassNotFoundException {
         if (update) {
             update();
         }
@@ -131,7 +132,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    public Double getMin(boolean update) {
+    public Double getMin(boolean update) throws IOException, ClassNotFoundException {
         if (update) {
             update();
         }
@@ -145,7 +146,7 @@ public class Grids_GridDoubleStatsNotUpdated
      * @return
      */
     @Override
-    public Double getMax(boolean update) {
+    public Double getMax(boolean update) throws IOException, ClassNotFoundException {
         if (update) {
             update();
         }

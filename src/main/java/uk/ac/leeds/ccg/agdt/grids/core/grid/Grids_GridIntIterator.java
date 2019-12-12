@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
+import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
@@ -33,8 +34,9 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntMap;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridIntIterator
-        extends Grids_AbstractGridIterator {
+public class Grids_GridIntIterator extends Grids_AbstractGridIterator {
+
+    private static final long serialVersionUID = 1L;
 
     protected Grids_GridIntIterator() {
     }
@@ -43,12 +45,12 @@ public class Grids_GridIntIterator
      *
      * @param g The Grids_GridInt to iterate over.
      */
-    public Grids_GridIntIterator(
-            Grids_GridInt g) {
+    public Grids_GridIntIterator(Grids_GridInt g) throws IOException, 
+            ClassNotFoundException {
         super(g);
         GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
-            ChunkID = (Grids_2D_ID_int) GridIterator.next();
+            ChunkID = GridIterator.next();
             Chunk = (Grids_AbstractGridChunkInt) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);

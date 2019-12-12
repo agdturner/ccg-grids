@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -225,7 +226,8 @@ public abstract class Grids_AbstractGridChunkNumber
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double getMedianDouble(boolean handleOutOfMemoryError) {
+    public double getMedianDouble(boolean handleOutOfMemoryError) 
+            throws IOException, ClassNotFoundException {
         try {
             double result = getMedianDouble();
             env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
@@ -260,7 +262,7 @@ public abstract class Grids_AbstractGridChunkNumber
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double getStandardDeviationDouble(boolean handleOutOfMemoryError) {
+    public double getStandardDeviationDouble(boolean handleOutOfMemoryError) throws IOException, ClassNotFoundException {
         try {
             double result = getStandardDeviationDouble();
             env.checkAndMaybeFreeMemory(handleOutOfMemoryError);

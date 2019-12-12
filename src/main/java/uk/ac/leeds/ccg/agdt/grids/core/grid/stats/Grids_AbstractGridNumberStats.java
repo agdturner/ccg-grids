@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -84,7 +85,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      * @return
      */
     @Override
-    public String getFieldsDescription() {
+    public String getFieldsDescription() throws IOException, ClassNotFoundException {
         return super.getFieldsDescription() 
                 + ", Max=" + getMax(false) + ", Min=" + getMin(false)
                 + ", NMax=" + NMax + ", NMin=" + NMin + ", Sum=" + Sum;
@@ -128,7 +129,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
     /**
      * @return The number of cells with finite non zero data values.
      */
-    public abstract BigInteger getNonZeroN();
+    public abstract BigInteger getNonZeroN()throws IOException, ClassNotFoundException;
 
 //    /**
 //     * For returning the sum of all finite data values.
@@ -204,7 +205,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      * @param update If true then update() is called.
      * @return
      */
-    public abstract Number getMin(boolean update);
+    public abstract Number getMin(boolean update) throws IOException, ClassNotFoundException;
 
 //    /**
 //     * For returning the maximum of all data values.
@@ -247,7 +248,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      * @param update If true then an update of the statistics is made.
      * @return
      */
-    public abstract Number getMax(boolean update);
+    public abstract Number getMax(boolean update)throws IOException, ClassNotFoundException;
 
 //    /**
 //     * For returning the mode of all data values.
@@ -735,7 +736,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
 //     * @return
 //     */
 //    protected abstract BigDecimal getStandardDeviation(int numberOfDecimalPlaces);
-    public abstract Object[] getQuantileClassMap(int nClasses);
+    public abstract Object[] getQuantileClassMap(int nClasses)throws IOException, ClassNotFoundException;
 
 //    private boolean checkMaps(
 //            TreeMap<Integer, TreeMap<Double, Long>> classMap,

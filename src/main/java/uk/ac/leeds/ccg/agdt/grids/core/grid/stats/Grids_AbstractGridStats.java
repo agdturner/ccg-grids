@@ -15,6 +15,9 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
@@ -46,7 +49,7 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
         n = 0;
     }
 
-    public abstract long getN();
+    public abstract long getN()throws IOException, ClassNotFoundException;
 
     /**
      * @param n to set n to.
@@ -65,7 +68,7 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
      * Updates by going through all values in grid if the fields are likely not
      * be up to date.
      */
-    protected abstract void update();
+    protected abstract void update() throws IOException, ClassNotFoundException ;
 
     public void update(Grids_AbstractGridStats stats) {
         n = stats.n;
@@ -92,7 +95,7 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
      * OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public String toString(boolean hoome) {
+    public String toString(boolean hoome) throws IOException {
         try {
             String r = toString();
             env.checkAndMaybeFreeMemory();
@@ -116,7 +119,7 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
      *
      * @return
      */
-    public String getFieldsDescription() {
+    public String getFieldsDescription() throws IOException, ClassNotFoundException {
         return "N=" + n;
     }
 
@@ -127,7 +130,14 @@ public abstract class Grids_AbstractGridStats extends Grids_Object {
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + getFieldsDescription() + "]";
+        try {
+            return getClass().getSimpleName() + "[" + getFieldsDescription() + "]";
+        } catch (IOException ex) {
+            Logger.getLogger(Grids_AbstractGridStats.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Grids_AbstractGridStats.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

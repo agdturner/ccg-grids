@@ -15,7 +15,10 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinary;
@@ -29,7 +32,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinary;
  * underlying data is changed can be expensive! Second order statistics like the
  * standard deviation would always require going through all the data again if
  * the values have changed.)
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -59,18 +62,21 @@ public class Grids_GridBinaryStats extends Grids_AbstractGridStats {
 
     /**
      * Updates by going through all values in grid.
+     *
+     * @throws java.io.IOException
      */
     @Override
-    public void update() {
+    public void update() throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridBinary g = getGrid();
         boolean v;
-        Grids_GridBinaryIterator ite = g.iterator();
+        Grids_GridBinaryIterator ite;
+        ite = g.iterator();
         while (ite.hasNext()) {
             v = (Boolean) ite.next();
             if (v) {
-                n ++;
+                n++;
             }
         }
     }
@@ -82,7 +88,7 @@ public class Grids_GridBinaryStats extends Grids_AbstractGridStats {
      * @return
      */
     @Override
-    public long getN() {
+    public long getN() throws IOException, ClassNotFoundException {
         long r = 0;
         Grids_GridBinary g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();

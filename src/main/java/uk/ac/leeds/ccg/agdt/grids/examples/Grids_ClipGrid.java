@@ -15,8 +15,9 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.examples;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_ImageExporter;
@@ -24,7 +25,7 @@ import uk.ac.leeds.ccg.agdt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
 
 /**
- * A class for giving an example of a clip operation on a grid.
+ * Provides example of a clip operation on a grid.
  *
 *
  * @author Andy Turner
@@ -71,7 +72,8 @@ public class Grids_ClipGrid extends Grids_Processor {
     public void run() {
         try {
             env.setProcessor(this);
-            File input = new File(files.getInputDir(), "p15oct.asc");
+            Generic_Path input = new Generic_Path(Paths.get(
+                    files.getInputDir().toString(),                    "p15oct.asc"));
 //            input = new File(
 //                    gf.getInputDataDir(),
 //                    "RADAR_UK_Composite_Highres_23_6.asc");
@@ -85,19 +87,19 @@ public class Grids_ClipGrid extends Grids_Processor {
             //String[] imageTypes = new String[0];
             String[] imageTypes = new String[1];
             imageTypes[0] = "PNG";
-            String inputName;
-            inputName = input.getName();
+            String inputName  = input.getFileName().toString();
             System.out.println("inputFilename " + input);
             String inputNameWithoutExtension = inputName.substring(0, inputName.length() - 4);
-            File outDir;
-            outDir = new File(files.getOutputDir(), getClass().getName());
+            Generic_Path outDir = new Generic_Path(Paths.get(
+                    files.getOutputDir().toString(), getClass().getName()));
             Grids_GridDouble gd;
             //Grids_GridDouble g;
             // Load input
             boolean notLoadedAsGrid = true;
             if (notLoadedAsGrid) {
-                File dir = new File(files.getGeneratedGridDoubleDir(),
-                        inputNameWithoutExtension);
+                Generic_Path dir = new Generic_Path(Paths.get(
+                        files.getGeneratedGridDoubleDir().toString(),
+                        inputNameWithoutExtension));
                 gd = (Grids_GridDouble) GridDoubleFactory.create(dir, input);
                 // clip gridDouble
 //                dir = new File(files.getGeneratedGridDoubleDir(),

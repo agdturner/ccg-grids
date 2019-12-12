@@ -45,6 +45,8 @@ import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
  */
 public class Grids_ImageExporter extends Grids_Object implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     //private static final long serialVersionUID = 1L;
     protected Grids_ImageExporter() {
     }
@@ -70,7 +72,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      */
     public void toGreyScaleImage(Grids_AbstractGridNumber g,
             Grids_Processor processor, File file, String type) 
-            throws IOException {
+            throws IOException, ClassNotFoundException {
         // Initialisation
         env.initNotToCache();
         env.checkAndMaybeFreeMemory();
@@ -201,7 +203,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param hoome
      */
     private void write(int nCols, int nRows, int[] gridImageArray,
-            String type, File file, Grids_AbstractGridNumber g, boolean hoome) {
+            String type, File file, Grids_AbstractGridNumber g, boolean hoome) 
+            throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory();
             write(nCols, nRows, gridImageArray, type, file);
@@ -263,7 +266,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * "jpeg"
      */
     public void toColourImage(int duplication, TreeMap<Double, Color> colours,
-            Color noDataValueColour, Grids_GridDouble g, File file, String type) {
+            Color noDataValueColour, Grids_GridDouble g, File file, String type) 
+            throws IOException, ClassNotFoundException {
         String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
                 + "Grids_GridDouble,File,String)";
         env.initNotToCache();

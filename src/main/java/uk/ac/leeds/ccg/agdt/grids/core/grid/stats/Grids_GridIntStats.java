@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.Serializable;
@@ -37,9 +38,10 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridIntStats
-        extends Grids_AbstractGridNumberStats
+public class Grids_GridIntStats        extends Grids_AbstractGridNumberStats
         implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the minimum value.
@@ -88,7 +90,7 @@ public class Grids_GridIntStats
      * Updates by going through all values in grid.
      */
     @Override
-    public void update() {
+    public void update() throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridInt g = getGrid();
@@ -133,7 +135,7 @@ public class Grids_GridIntStats
      * @return
      */
     @Override
-    public Integer getMin(boolean update) {
+    public Integer getMin(boolean update) throws IOException, ClassNotFoundException {
         if (NMin < 1) {
             if (update) {
                 update();
@@ -152,7 +154,7 @@ public class Grids_GridIntStats
      * @return
      */
     @Override
-    public Integer getMax(boolean update) {
+    public Integer getMax(boolean update) throws IOException, ClassNotFoundException {
         if (NMax < 1) {
             if (update) {
                 update();
@@ -172,7 +174,7 @@ public class Grids_GridIntStats
      * @return
      */
     @Override
-    public long getN() {
+    public long getN() throws IOException, ClassNotFoundException {
         long result = 0;
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
@@ -206,7 +208,7 @@ public class Grids_GridIntStats
      * @return
      */
     @Override
-    public BigInteger getNonZeroN() {
+    public BigInteger getNonZeroN() throws IOException, ClassNotFoundException {
         BigInteger result = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
         int ndv = g.getNoDataValue();
@@ -225,7 +227,7 @@ public class Grids_GridIntStats
      *
      * @return
      */
-    public BigDecimal getSum() {
+    public BigDecimal getSum() throws IOException, ClassNotFoundException {
         BigDecimal result = BigDecimal.ZERO;
         Grids_GridInt g = getGrid();
         Grids_GridIntIterator gIte;
@@ -242,7 +244,7 @@ public class Grids_GridIntStats
         return result;
     }
 
-    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) {
+    protected BigDecimal getStandardDeviation(int numberOfDecimalPlaces) throws IOException, ClassNotFoundException {
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(numberOfDecimalPlaces * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
