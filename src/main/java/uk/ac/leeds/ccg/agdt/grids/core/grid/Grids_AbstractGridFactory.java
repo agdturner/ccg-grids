@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
@@ -172,7 +171,7 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * to get values from.
      * @throws java.io.IOException If encountered.
      */
-    public abstract Grids_AbstractGrid create(File dir, File gridFile,
+    public abstract Grids_AbstractGrid create(Generic_Path dir, Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException;
 
@@ -182,8 +181,8 @@ public abstract class Grids_AbstractGridFactory extends Grids_Object {
      * @param gridFile A file containing the data to be used in construction.
      * @param ois The ObjectInputStream to construct from.
      */
-    public abstract Grids_AbstractGrid create(File dir, File gridFile,
-            ObjectInputStream ois);
+    public abstract Grids_AbstractGrid create(Generic_Path dir, Generic_Path gridFile,
+            ObjectInputStream ois) throws IOException;
 
     /**
      * @return A copy of {@link #ChunkNRows}.

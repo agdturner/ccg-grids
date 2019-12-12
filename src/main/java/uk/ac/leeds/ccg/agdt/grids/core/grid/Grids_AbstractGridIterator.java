@@ -15,8 +15,11 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
@@ -31,6 +34,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  */
 public abstract class Grids_AbstractGridIterator
         extends Grids_AbstractIterator {
+
+    private static final long serialVersionUID = 1L;
 
     protected Grids_AbstractGrid Grid;
     protected Grids_AbstractGridChunk Chunk;
@@ -100,12 +105,16 @@ public abstract class Grids_AbstractGridIterator
         } else {
             if (GridIterator.hasNext()) {
                 env.removeFromNotToCache(Grid, ChunkID);
-                ChunkID = (Grids_2D_ID_int) GridIterator.next();
-                Chunk = (Grids_AbstractGridChunk) Grid.chunkIDChunkMap.get(ChunkID);
+                ChunkID = GridIterator.next();
+                Chunk = Grid.chunkIDChunkMap.get(ChunkID);
                 if (Chunk == null) {
-                    Grid.loadIntoCacheChunk(ChunkID);
+                    try {
+                        Grid.loadIntoCacheChunk(ChunkID);
+                    } catch (IOException | ClassNotFoundException ex) {
+                        Logger.getLogger(Grids_AbstractGridIterator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                Chunk = (Grids_AbstractGridChunk) Grid.chunkIDChunkMap.get(ChunkID);
+                Chunk = Grid.chunkIDChunkMap.get(ChunkID);
                 env.addToNotToCache(Grid, ChunkID);
                 ChunkIterator = getChunkIterator(Chunk);
                 if (ChunkIterator.hasNext()) {

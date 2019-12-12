@@ -15,13 +15,13 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.io;
 
-import java.io.File;
 import java.io.StreamTokenizer;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 
@@ -33,10 +33,12 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
  */
 public class Grids_ESRIAsciiGridImporter extends Grids_Object {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The ESRIAsciigrid File
      */
-    private File file;
+    private Generic_Path file;
 
     /**
      * The ESRIAsciigrid BufferedReader.
@@ -58,15 +60,15 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      * @param e The Grids_Environment.
      * @throws java.io.FileNotFoundException If f does not exist.
      */
-    public Grids_ESRIAsciiGridImporter(Grids_Environment e, File f)
-            throws FileNotFoundException {
+    public Grids_ESRIAsciiGridImporter(Grids_Environment e, Generic_Path f)
+            throws FileNotFoundException, IOException {
         super(e);
         init(f);
     }
 
-    private void init(File f) throws FileNotFoundException {
+    private void init(Generic_Path f) throws FileNotFoundException, IOException {
         file = f;
-        br = env.env.io.getBufferedReader(file);
+        br = env.env.io.getBufferedReader(file.getPath());
         st = new StreamTokenizer(br);
     }
 
@@ -158,11 +160,11 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                             new BigDecimal("2"),
                             cellsize.scale() + 4, RoundingMode.HALF_EVEN);
                     if (!b1) {
-                        header.xll = ((BigDecimal) header.xll).subtract(halfCellsize);
+                        header.xll = header.xll.subtract(halfCellsize);
                     }
                     // adjust yll
                     if (!b2) {
-                        header.yll = ((BigDecimal) header.yll).subtract(halfCellsize);
+                        header.yll = header.yll.subtract(halfCellsize);
                     }
                 }
                 // noDataValue
@@ -395,7 +397,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      * @return
      */
     public String getFilenamePrefix() {
-        String filename = this.file.getName();
+        String filename = this.file.getFileName().toString();
         return filename.substring(0, filename.length() - 4);
     }
 

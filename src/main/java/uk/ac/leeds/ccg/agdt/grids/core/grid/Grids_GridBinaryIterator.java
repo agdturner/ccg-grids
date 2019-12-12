@@ -15,10 +15,8 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
-import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
+import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkRowMajorOrderIterator;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinary;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinaryIterator;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
@@ -33,18 +31,22 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  */
 public class Grids_GridBinaryIterator extends Grids_AbstractGridIterator {
 
+    private static final long serialVersionUID = 1L;
+
     protected Grids_GridBinaryIterator() {
     }
 
     /**
      * @param g The Grids_GridBinary to iterate over.
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      */
     public Grids_GridBinaryIterator(
-            Grids_GridBinary g) {
+            Grids_GridBinary g) throws IOException, ClassNotFoundException {
         super(g);
         GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
-            ChunkID = (Grids_2D_ID_int) GridIterator.next();
+            ChunkID = GridIterator.next();
             Chunk = (Grids_GridChunkBinary) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);

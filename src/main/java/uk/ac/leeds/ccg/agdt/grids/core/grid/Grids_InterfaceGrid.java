@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
@@ -27,7 +28,9 @@ public interface Grids_InterfaceGrid {
 
     /**
      * @return An iterator for iterating over the cell values in this.
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      */
-    Iterator iterator();
+    Iterator iterator() throws IOException, ClassNotFoundException;
     
 }

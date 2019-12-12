@@ -15,11 +15,11 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridBinaryStats;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridBinaryStatsNotUpdated;
@@ -95,8 +95,8 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return
      */
     @Override
-    public Grids_GridBinary create(File dir, long nRows, long nCols,
-            Grids_Dimensions dimensions) {
+    public Grids_GridBinary create(Generic_Path dir, long nRows, long nCols,
+            Grids_Dimensions dimensions) throws IOException {
         return create(new Grids_GridBinaryStatsNotUpdated(env), dir,
                 factory, nRows, nCols, dimensions);
     }
@@ -112,9 +112,9 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return A new Grids_GridBinary grid with all values as NoDataValues.
      */
-    public Grids_GridBinary create(Grids_GridBinaryStats stats, File dir,
+    public Grids_GridBinary create(Grids_GridBinaryStats stats, Generic_Path dir,
             Grids_GridChunkBinaryFactory cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) {
+            Grids_Dimensions dimensions) throws IOException {
         return new Grids_GridBinary(getStats(stats), dir, cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, env);
     }
@@ -132,8 +132,8 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridBinary with all values taken from g.
      */
     @Override
-    public Grids_GridBinary create(File dir, Grids_AbstractGrid g,
-            long startRow, long startCol, long endRow, long endCol) {
+    public Grids_GridBinary create(Generic_Path dir, Grids_AbstractGrid g,
+            long startRow, long startCol, long endRow, long endCol) throws IOException {
         return create(new Grids_GridBinaryStatsNotUpdated(env), dir, g,
                 new Grids_GridChunkBinaryFactory(), startRow, startCol, endRow,
                 endCol, v);
@@ -152,9 +152,9 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @param endCol The rightmost column index of g.
      * @return A new Grids_GridBinary with all values taken from g.
      */
-    public Grids_GridBinary create(Grids_GridBinaryStats stats, File dir,
+    public Grids_GridBinary create(Grids_GridBinaryStats stats, Generic_Path dir,
             Grids_AbstractGrid g, Grids_GridChunkBinaryFactory cf,
-            long startRow, long startCol, long endRow, long endCol, double v) {
+            long startRow, long startCol, long endRow, long endCol, double v) throws IOException {
         return new Grids_GridBinary(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, v);
     }
@@ -174,7 +174,7 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridBinary with values obtained from gridFile.
      */
     @Override
-    public Grids_GridBinary create(File dir, File gridFile, long startRow,
+    public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile, long startRow,
             long startCol, long endRow, long endCol) throws IOException {
         return create(new Grids_GridBinaryStatsNotUpdated(env), dir, gridFile, 
                 new Grids_GridChunkBinaryFactory(), startRow, startCol, endRow,
@@ -196,8 +196,8 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridBinary with values obtained from gridFile.
      */
-    public Grids_GridBinary create(Grids_GridBinaryStats stats, File dir,
-            File gridFile, Grids_GridChunkBinaryFactory cf,
+    public Grids_GridBinary create(Grids_GridBinaryStats stats, Generic_Path dir,
+            Generic_Path gridFile, Grids_GridChunkBinaryFactory cf,
             long startRow, long startCol, long endRow, long endCol, double v) throws IOException {
         return new Grids_GridBinary(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
@@ -212,7 +212,7 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridBinary with values obtained from gridFile.
      */
     @Override
-    public Grids_GridBinary create(File dir, File gridFile) throws IOException {
+    public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile) throws IOException {
         return new Grids_GridBinary(env, dir, gridFile, v);
     }
 
@@ -226,7 +226,8 @@ public class Grids_GridBinaryFactory extends Grids_AbstractGridFactory {
      * @return A new Grids_GridBinary with values obtained from gridFile.
      */
     @Override
-    public Grids_GridBinary create(File dir, File gridFile, ObjectInputStream ois) {
+    public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile, 
+            ObjectInputStream ois) throws IOException {
         return new Grids_GridBinary(dir, gridFile, ois, env);
     }
 

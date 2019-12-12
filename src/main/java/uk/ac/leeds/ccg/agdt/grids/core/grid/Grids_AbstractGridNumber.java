@@ -16,10 +16,11 @@
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
 import java.awt.geom.Point2D;
-import java.io.File;
+import java.io.IOException;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
 
@@ -41,10 +42,12 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
  */
 public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
 
+    private static final long serialVersionUID = 1L;
+
     protected Grids_AbstractGridNumber() {
     }
 
-    protected Grids_AbstractGridNumber(Grids_Environment ge, File dir) {
+    protected Grids_AbstractGridNumber(Grids_Environment ge, Generic_Path dir) {
         super(ge, dir);
     }
 
@@ -56,7 +59,8 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(Point2D.Double point, boolean hoome) {
+    public final double getCellDouble(Point2D.Double point, boolean hoome) 
+            throws IOException, ClassNotFoundException {
         try {
             double r = getCellDouble(point);
             env.checkAndMaybeFreeMemory(hoome);
@@ -79,7 +83,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
-    public double getCellDouble(Point2D.Double point) {
+    public double getCellDouble(Point2D.Double point) throws IOException, ClassNotFoundException {
         return getCellDouble(getChunkRow(point.getY()),
                 getChunkCol(point.getX()), getCellRow(point.getY()),
                 getCellCol(point.getX()));
@@ -96,7 +100,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public double getCellDouble(double x, double y, boolean hoome) {
+    public double getCellDouble(double x, double y, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             double r = getCellDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -122,7 +126,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * @param y The y coordinate of the point at which the cell value is
      * returned.
      */
-    public double getCellDouble(double x, double y) {
+    public double getCellDouble(double x, double y) throws IOException, ClassNotFoundException {
         return getCellDouble(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
     }
@@ -136,7 +140,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(long row, long col, boolean hoome) {
+    public final double getCellDouble(long row, long col, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             double r = getCellDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -160,7 +164,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * @return Grids_AbstractGridChunk cell value at cell row index equal to
      * _CellRowIndex, cell col index equal to _CellColIndex as a double.
      */
-    public double getCellDouble(long row, long col) {
+    public double getCellDouble(long row, long col) throws IOException, ClassNotFoundException {
         return getCellDouble(getChunkRow(row), getChunkCol(col),
                 getCellRow(row), getCellCol(col));
     }
@@ -177,7 +181,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(int chunkRow, int chunkCol, int cellRow,
-            int cellCol, boolean hoome) {
+            int cellCol, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             double r = getCellDouble(chunkRow, chunkCol, cellRow, cellCol);
             env.checkAndMaybeFreeMemory(hoome);
@@ -207,7 +211,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * @param cellCol The cell column index of the chunk.
      */
     public double getCellDouble(int chunkRow, int chunkCol, int cellRow,
-            int cellCol) {
+            int cellCol) throws IOException, ClassNotFoundException {
         if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
             if (this instanceof Grids_GridDouble) {
                 return ((Grids_GridDouble) this).NoDataValue;
@@ -241,7 +245,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      */
     public final double getCellDouble(Grids_AbstractGridChunk chunk,
             int chunkRow, int chunkCol, int cellRow, int cellCol,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             double r;
             r = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
@@ -284,7 +288,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -331,7 +335,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
-            long row, long col, boolean hoome) {
+            long row, long col, boolean hoome) throws IOException {
         try {
             Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y, row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -370,7 +374,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -407,7 +411,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(double x, double y, 
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             double r = getNearestValueDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -448,7 +452,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(double x, double y, long row,
-            long col, boolean hoome) {
+            long col, boolean hoome) throws IOException {
         try {
             return getNearestValueDouble(x, y, row, col);
         } catch (OutOfMemoryError e) {
@@ -490,7 +494,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(long row, long col, 
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             double result = getNearestValueDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -528,7 +532,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             double r = getNearestValueDoubleDistance(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -569,7 +573,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y,
-            long row, long col, boolean hoome) {
+            long row, long col, boolean hoome) throws IOException {
         try {
             double result = getNearestValueDoubleDistance(x, y, row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -613,7 +617,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(long row, long col,
-            boolean hoome) {
+            boolean hoome) throws IOException {
         try {
             double result = getNearestValueDoubleDistance(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -632,7 +636,7 @@ public abstract class Grids_AbstractGridNumber extends Grids_AbstractGrid {
     }
 
     @Override
-    public Grids_AbstractGridNumberStats getStats(boolean hoome) {
+    public Grids_AbstractGridNumberStats getStats(boolean hoome) throws IOException {
         return (Grids_AbstractGridNumberStats) super.getStats(hoome);
     }
 }

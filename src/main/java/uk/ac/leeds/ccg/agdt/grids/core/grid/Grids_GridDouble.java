@@ -15,20 +15,20 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.andyt.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleArray;
@@ -51,6 +51,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
  */
 public class Grids_GridDouble extends Grids_AbstractGridNumber {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * For storing the NODATA value of the grid, which by default is
      * -Double.MAX_VALUE. N.B. Double.NaN, Double.POSITIVE_INFINITY or
@@ -71,8 +73,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param ois The ObjectInputStream used in first attempt to construct this.
      * @param ge
      */
-    protected Grids_GridDouble(File dir, File gridFile, ObjectInputStream ois,
-            Grids_Environment ge) {
+    protected Grids_GridDouble(Generic_Path dir, Generic_Path gridFile, 
+            ObjectInputStream ois,            Grids_Environment ge) {
         super(ge, dir);
         init(gridFile, ois);
     }
@@ -92,7 +94,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param noDataValue The ndv.
      * @param ge
      */
-    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, Generic_Path dir,
             Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double noDataValue, Grids_Environment ge) {
@@ -120,7 +122,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * of this.
      * @param noDataValue The ndv for this.
      */
-    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, Generic_Path dir,
             Grids_AbstractGrid g,
             Grids_AbstractGridChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
@@ -154,8 +156,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param noDataValue The ndv for this.
      * @param ge
      */
-    protected Grids_GridDouble(Grids_GridDoubleStats stats, File dir,
-            File gridFile, Grids_AbstractGridChunkDoubleFactory cf,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, Generic_Path dir,
+            Generic_Path gridFile, Grids_AbstractGridChunkDoubleFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue,
             Grids_Environment ge) throws IOException {
@@ -176,7 +178,7 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * extension containing the data for this.
      * @throws java.io.IOException
      */
-    protected Grids_GridDouble(Grids_Environment ge, File dir, File gridFile) throws IOException {
+    protected Grids_GridDouble(Grids_Environment ge, Generic_Path dir, Generic_Path gridFile) throws IOException {
         super(ge, dir);
         init(new Grids_GridDoubleStatsNotUpdated(ge), gridFile);
     }
@@ -223,9 +225,9 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
         stats.grid = this;
     }
 
-    private void init(File file, ObjectInputStream ois) {
+    private void init(Generic_Path file, ObjectInputStream ois) {
         env.checkAndMaybeFreeMemory();
-        File thisFile = new File(file, "thisFile");
+        Generic_Path thisFile = getPathThisFile();
         try {
             init((Grids_GridDouble) ois.readObject());
             ois.close();
