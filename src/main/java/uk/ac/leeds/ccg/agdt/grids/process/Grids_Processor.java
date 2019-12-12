@@ -771,12 +771,8 @@ public class Grids_Processor extends Grids_Object {
      * into the range [min,max] or scaled using log.
      * @TODO Improve log rescaling implementation.
      */
-    public Grids_GridDouble rescale(
-            Grids_GridInt g,
-            String type,
-            double min,
-            double max,
-            boolean hoome) throws IOException {
+    public Grids_GridDouble rescale(Grids_GridInt g, String type, double min,
+            double max, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
@@ -804,7 +800,7 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Improve log rescaling implementation.
      */
     protected Grids_GridDouble rescale(Grids_GridInt g, String type, double min,
-            double max) throws IOException,            ClassNotFoundException {
+            double max) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -818,7 +814,7 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         double value;
         double v;
-        Grids_GridDouble r  = GridDoubleFactory.create(
+        Grids_GridDouble r = GridDoubleFactory.create(
                 new Generic_Path(Paths.get(g.getDirectory().getParent().toString(),
                         "Rescaled" + g.getName())),
                 g, 0, 0, nrows - 1, ncols - 1);
@@ -938,7 +934,8 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_GridDouble to be processed.
      * @param cellIDs The CellIDs of the cells to be processed.
      */
-    public void setLarger(Grids_GridDouble g, HashSet cellIDs) {
+    public void setLarger(Grids_GridDouble g, HashSet cellIDs)
+            throws IOException, ClassNotFoundException {
         Grids_2D_ID_long cellID;
         double noDataValue = g.getNoDataValue();
         Iterator iterator1 = cellIDs.iterator();
@@ -960,7 +957,8 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_GridDouble to be processed.
      * @param cellIDs The CellIDs of the cells to be processed.
      */
-    public void setSmaller(Grids_GridDouble g, HashSet cellIDs) {
+    public void setSmaller(Grids_GridDouble g, HashSet cellIDs)
+            throws IOException, ClassNotFoundException {
         Grids_2D_ID_long cellID;
         double noDataValue = g.getNoDataValue();
         Iterator iterator1 = cellIDs.iterator();
@@ -989,7 +987,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble grid,
             HashSet cellIDs,
             double value,
-            boolean hoome) {
+            boolean hoome) throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory(hoome);
             Iterator iterator1 = cellIDs.iterator();
@@ -1023,7 +1021,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void addToGrid(
             Grids_GridDouble grid,
-            double value) {
+            double value) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
@@ -1047,7 +1045,7 @@ public class Grids_Processor extends Grids_Object {
     public void addToGrid(
             Grids_GridDouble grid,
             Grids_2D_ID_long[] cellIDs,
-            double value) {
+            double value) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         for (Grids_2D_ID_long cellID : cellIDs) {
             grid.addToCell(cellID.getRow(), cellID.getCol(), value);
@@ -1062,11 +1060,11 @@ public class Grids_Processor extends Grids_Object {
      * @param g2 Grid from which values are added.
      * @param w Value g2 values are multiplied by.
      */
-    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w) throws IOException {
+    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w)
+            throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         if (g2 != null) {
-            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L,
-                    g2.getNCols() - 1L, w);
+            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L, g2.getNCols() - 1L, w);
         }
     }
 
@@ -1084,7 +1082,8 @@ public class Grids_Processor extends Grids_Object {
      * @param w Value g2 values are multiplied by.
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
-            long startRow, long startCol, long endRow, long endCol, double w) throws IOException {
+            long startRow, long startCol, long endRow, long endCol, double w)
+            throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin;
@@ -1121,7 +1120,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
             long startRow, long startCol, long endRow, long endCol,
-            BigDecimal[] dc, double w) throws IOException {
+            BigDecimal[] dc, double w) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -1187,10 +1186,10 @@ public class Grids_Processor extends Grids_Object {
                 // Check
                 Grids_GridDouble tg1;
                 Grids_GridDouble tg2;
-                File dir;
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                tg1 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                Generic_Path dir;
+                dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir().getPath()));
+                tg1 = gf.create(dir, nrows, ncols, gDimensions);
+                dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir().getPath()));
                 tg2 = (Grids_GridDouble) gf.create(dir, nrows, ncols, gDimensions);
                 // TODO:
                 // Check scale and rounding appropriate
@@ -1332,7 +1331,8 @@ public class Grids_Processor extends Grids_Object {
      * @param file the file contining values to be added.
      * @param type the type of file. Supported types include "xyv", "xy", "idxy"
      */
-    public void addToGrid(Grids_GridDouble g, File file, String type) {
+    public void addToGrid(Grids_GridDouble g, Path file, String type)
+            throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         if (type.equalsIgnoreCase("xyv")) {
             try {
@@ -1478,8 +1478,8 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        File dir;
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+        Generic_Path dir;
+        dir = new Generic_Path(env.env.io.createNewFile(files.getGeneratedGridDoubleDir().getPath()));
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
         double v0;

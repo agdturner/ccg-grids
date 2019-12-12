@@ -820,7 +820,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
      */
-    protected void upDateGridStatistics(boolean newValue, boolean oldValue) {
+    protected void upDateGridStatistics(boolean newValue, boolean oldValue)
+            throws IOException, ClassNotFoundException {
         if (stats.getClass() == Grids_GridBinaryStats.class) {
             if (newValue == false) {
                 if (oldValue == false) {
@@ -952,8 +953,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @param cellRow
      * @param value
      */
-    public void setCell(Grids_GridChunkBinary chunk, int cellRow,
-            int cellCol, boolean value) {
+    public void setCell(Grids_GridChunkBinary chunk, int cellRow, int cellCol, 
+            boolean value) throws IOException, ClassNotFoundException {
         boolean v = chunk.setCell(cellRow, cellCol, value);
         // Update stats
         upDateGridStatistics(value, v);
@@ -973,7 +974,8 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
         chunk.initCell(getCellRow(row), getCellCol(col), value);
     }
 
-    protected void updateStatistics(boolean value) {
+    protected void updateStatistics(boolean value) throws IOException,
+            ClassNotFoundException {
         if (value) {
             stats.setN(stats.getN() + 1);
         }

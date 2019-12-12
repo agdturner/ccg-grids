@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.examples;
 
-import java.io.File;
 import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridFactory;
@@ -27,8 +26,8 @@ import uk.ac.leeds.ccg.agdt.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
 
 /**
- * 
- * 
+ *
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -47,13 +46,13 @@ public class Grids_GenerateRoofData extends Grids_Processor {
     Grids_ESRIAsciiGridExporter ESRIAsciiGridExporter;
 
     /**
-     * @throws IOException 
+     * @throws IOException
      */
-    protected Grids_GenerateRoofData() throws IOException {
+    protected Grids_GenerateRoofData() throws IOException, ClassNotFoundException {
         super();
     }
 
-    public Grids_GenerateRoofData(Grids_Environment ge) throws IOException {
+    public Grids_GenerateRoofData(Grids_Environment ge) throws IOException, ClassNotFoundException {
         super(ge);
         this.Time = System.currentTimeMillis();
         this.HandleOutOfMemoryError = true;
@@ -216,14 +215,8 @@ public class Grids_GenerateRoofData extends Grids_Processor {
                         _ColWithRidge = ncols / _ColWithRidgeProportion;
                         for (_RowRidgeHeight = 2; _RowRidgeHeight <= 8; _RowRidgeHeight *= 2) {
                             for (_ColRidgeHeight = 2; _ColRidgeHeight <= 8; _ColRidgeHeight *= 2) {
-                                Grids_GenerateRoofData.this.createGableRoofs(
-                                        nrows,
-                                        ncols,
-                                        _CellsizeDivideTwo,
-                                        _RowWithRidge,
-                                        _ColWithRidge,
-                                        (double) _RowRidgeHeight,
-                                        (double) _ColRidgeHeight);
+                                createGableRoofs(nrows, ncols, _CellsizeDivideTwo, _RowWithRidge,
+                                        _ColWithRidge, _RowRidgeHeight, _ColRidgeHeight);
                                 for (_RowStartRidgeProportion = 2; _RowStartRidgeProportion <= 8; _RowStartRidgeProportion *= 2) {
                                     _RowStartRidge = nrows / _RowStartRidgeProportion;
                                     for (_ColStartRidgeProportion = 2; _ColStartRidgeProportion <= 8; _ColStartRidgeProportion *= 2) {
@@ -232,12 +225,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
                                             _RowEndRidge = nrows * (_RowEndRidgeProportion - 1) / _RowEndRidgeProportion;
                                             for (_ColEndRidgeProportion = 2; _ColEndRidgeProportion <= 8; _ColEndRidgeProportion *= 2) {
                                                 _ColEndRidge = ncols * (_ColEndRidgeProportion - 1) / _ColEndRidgeProportion;
-                                                createHippedRoofs(
-                                                        nrows,
-                                                        ncols,
-                                                        _CellsizeDivideTwo,
-                                                        _RowWithRidge,
-                                                        (double) _RowRidgeHeight,
+                                                createHippedRoofs(nrows, ncols, _CellsizeDivideTwo, _RowWithRidge, _RowRidgeHeight,
                                                         _ColStartRidge,
                                                         _ColEndRidge,
                                                         _ColWithRidge,
@@ -316,7 +304,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
             long nrows,
             long rowWithRidge,
             double bottomRowRidgeTanAngle,
-            double topRowRidgeTanAngle) {
+            double topRowRidgeTanAngle) throws IOException, ClassNotFoundException {
         long row;
         long col;
         double h;
@@ -362,7 +350,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
             long ncols,
             long colWithRidge,
             double leftColRidgeTanAngle,
-            double rightColRidgeTanAngle) {
+            double rightColRidgeTanAngle) throws IOException, ClassNotFoundException {
         long col;
         long row;
         double h;
@@ -421,7 +409,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
             double colRidgeHeight,
             long rowStartRidge,
             long rowEndRidge)
-            throws IOException {
+            throws IOException, ClassNotFoundException {
         double heightToAdd;
         // For row ridge hips
         double bottomRowRidgeTanAngle = rowRidgeHeight
@@ -686,7 +674,7 @@ public class Grids_GenerateRoofData extends Grids_Processor {
         // Rescale
         Grids_GridDouble ag = rescale(rg, null, 1.0d, 10.0d);
         ag.setName(g.getName() + "ResizedRescaled");
-        output(ag, files.getOutputDir(), ie, imageTypes, 
+        output(ag, files.getOutputDir(), ie, imageTypes,
                 eage);
     }
 

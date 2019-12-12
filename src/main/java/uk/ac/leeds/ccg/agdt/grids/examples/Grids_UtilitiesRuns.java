@@ -19,7 +19,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
@@ -33,7 +36,7 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Kernel;
 
 /**
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -126,7 +129,7 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //        pw.close();
     }
 
-    public void densityPlot(            boolean hoome)            throws IOException {
+    public void densityPlot(boolean hoome) throws IOException, ClassNotFoundException {
         Grids_Files gf = env.files;
         int divisions = 100;
         String resolution = "" + divisions;
@@ -149,13 +152,12 @@ public class Grids_UtilitiesRuns extends Grids_Processor implements Runnable {
 //                new File(inDataDirectory + xFilename + ".asc"));
 //        Grids_GridDouble yGrid = (Grids_GridDouble) gf.create(
 //                new File(inDataDirectory + yFilename + ".asc"));
-File dir;
-dir = env.env.io.createNewFile(this.files.getGeneratedGridDoubleDir());
-        Grids_GridDouble xGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                new File(inDataDirectory + xFilename + ".asc"));
-        dir = env.env.io.createNewFile(this.files.getGeneratedGridDoubleDir());
-        Grids_GridDouble yGrid = (Grids_GridDouble) GridDoubleFactory.create(dir,
-                new File(inDataDirectory + yFilename + ".asc"));
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(this.files.getGeneratedGridDoubleDir()));
+        Grids_GridDouble xGrid = GridDoubleFactory.create(dir,
+                new Generic_Path(Paths.get(inDataDirectory + xFilename + ".asc")));
+        dir = new Generic_Path(Files.createFile(this.files.getGeneratedGridDoubleDir().getPath()));
+        Grids_GridDouble yGrid = GridDoubleFactory.create(dir,
+                new Generic_Path(Paths.get(inDataDirectory + yFilename + ".asc")));
         System.out.println(xGrid.toString());
         System.out.println(yGrid.toString());
         System.out.println("Processing...");
@@ -172,15 +174,9 @@ dir = env.env.io.createNewFile(this.files.getGeneratedGridDoubleDir());
         divx = (stats.getMax(true) - stats.getMin(true)) / divisions;
         System.out.println("Exchanging...");
         //Grid2DSquareCellDoubleExchange.toImage( densityPlotGrid, new File( outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.png" ), "PNG" );
-        new Grids_ESRIAsciiGridExporter(env).toAsciiFile(densityPlotGrid, 
-                new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"));
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new FileOutputStream(new File(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv")));
-        } catch (java.io.FileNotFoundException e) {
-            System.out.println(e);
-            System.exit(0);
-        }
+        new Grids_ESRIAsciiGridExporter(env).toAsciiFile(densityPlotGrid,
+                Paths.get(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.asc"));
+        PrintWriter pw = Generic_IO.getPrintWriter(Paths.get(outDataDirectory + yFilename + xFilename + divisions + "DensityPlot.csv"), false);
         pw.println("meanx,meany-stdevy,meany,meany+stdevy,numy");
         for (int i = 0; i < divisions; i++) {
             if (numy[i] > 0.0d) {

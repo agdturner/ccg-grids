@@ -41,7 +41,7 @@ public class Grids_ClipGrid extends Grids_Processor {
     /**
      * @throws IOException 
      */
-    protected Grids_ClipGrid() throws IOException {
+    protected Grids_ClipGrid() throws IOException, ClassNotFoundException {
         super();
         HandleOutOfMemoryError = true;
     }
@@ -52,7 +52,8 @@ public class Grids_ClipGrid extends Grids_Processor {
      *
      * @param ge
      */
-    public Grids_ClipGrid(Grids_Environment ge) throws IOException {
+    public Grids_ClipGrid(Grids_Environment ge) throws IOException, 
+            ClassNotFoundException {
         super(ge);
         HandleOutOfMemoryError = true;
     }
@@ -64,7 +65,7 @@ public class Grids_ClipGrid extends Grids_Processor {
         try {
             Grids_ClipGrid t = new Grids_ClipGrid();
             t.run();
-        } catch (IOException | Error e) {
+        } catch (Exception | Error e) {
             e.printStackTrace(System.err);
         }
     }

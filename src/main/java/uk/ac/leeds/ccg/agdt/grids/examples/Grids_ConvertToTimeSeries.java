@@ -47,14 +47,16 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
     /**
      * @throws IOException 
      */
-    protected Grids_ConvertToTimeSeries() throws IOException {
+    protected Grids_ConvertToTimeSeries() throws IOException, 
+            ClassNotFoundException {
         super();
     }
 
     /**
      * @param e
      */
-    public Grids_ConvertToTimeSeries(Grids_Environment e) throws IOException {
+    public Grids_ConvertToTimeSeries(Grids_Environment e) throws IOException, 
+            ClassNotFoundException {
         super(e);
         Time = System.currentTimeMillis();
         HandleOutOfMemoryError = true;
@@ -68,7 +70,7 @@ public class Grids_ConvertToTimeSeries extends Grids_Processor {
             Grids_Environment ge = new Grids_Environment(new Generic_Environment());
             Grids_ConvertToTimeSeries t = new Grids_ConvertToTimeSeries(ge);
             t.run();
-        } catch (IOException | Error e) {
+        } catch (Exception | Error e) {
             e.printStackTrace(System.err);
         }
     }

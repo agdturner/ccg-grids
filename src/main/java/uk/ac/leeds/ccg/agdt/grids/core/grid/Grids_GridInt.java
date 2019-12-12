@@ -982,9 +982,7 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
      */
-    public void updateStats(
-            int newValue,
-            int oldValue) {
+    public void updateStats(            int newValue,           int oldValue) throws IOException, ClassNotFoundException {
         Grids_GridIntStats iStats = getStats();
         if (iStats.isUpdated()) {
             if (newValue != NoDataValue) {
@@ -1245,7 +1243,8 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
         }
     }
 
-    public void updateStats(int value) {
+    public void updateStats(int value) throws IOException, 
+            ClassNotFoundException {
         Grids_GridIntStats iStats = getStats();
         BigDecimal valueBD = new BigDecimal(value);
         iStats.setN(iStats.getN() + 1);

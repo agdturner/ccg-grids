@@ -39,6 +39,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
  */
 public class Grids_GenerateTestData extends Grids_Processor implements Runnable {
 
+    private static final long serialVersionUID = 1L;
+
     long time0;
 
     /**

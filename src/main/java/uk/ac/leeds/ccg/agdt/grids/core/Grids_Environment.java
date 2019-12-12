@@ -178,7 +178,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered initialising
      * {@link #processor}.
      */
-    public Grids_Processor getProcessor() throws IOException {
+    public Grids_Processor getProcessor() throws IOException, ClassNotFoundException {
         if (processor == null) {
             processor = new Grids_Processor(this);
         }

@@ -947,7 +947,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * @param newValue The value replacing oldValue.
      * @param oldValue The value being replaced.
      */
-    protected void upDateGridStatistics(double newValue, double oldValue) {
+    protected void upDateGridStatistics(double newValue, double oldValue) 
+            throws IOException, ClassNotFoundException {
         Grids_GridDoubleStats dStats = getStats();
         if (dStats.getClass() == Grids_GridDoubleStats.class) {
             if (newValue != NoDataValue) {
@@ -1158,7 +1159,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
      * Convert chunk to another type of chunk.
      */
     private Grids_AbstractGridChunkDouble convertToAnotherTypeOfChunk(
-            Grids_AbstractGridChunkDouble chunk, Grids_2D_ID_int chunkID) throws IOException {
+            Grids_AbstractGridChunkDouble chunk, Grids_2D_ID_int chunkID) 
+            throws IOException, ClassNotFoundException {
         Grids_AbstractGridChunkDouble r;
         Grids_AbstractGridChunkDoubleFactory f = env.getProcessor().DefaultGridChunkDoubleFactory;
         r = f.create(chunk, chunkID);
@@ -1198,7 +1200,8 @@ public class Grids_GridDouble extends Grids_AbstractGridNumber {
         }
     }
 
-    protected void updateStatistics(double value) {
+    protected void updateStatistics(double value) throws IOException, 
+            ClassNotFoundException {
         Grids_GridDoubleStats dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             BigDecimal valueBD = new BigDecimal(value);
