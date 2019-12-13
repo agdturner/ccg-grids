@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.agdt.grids.io;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -261,7 +262,7 @@ public class Grids_IO {
             File xyFile,
             Grids_GridDouble grid,
             int linesInHeader,
-            boolean handleOutOfMemoryError) {
+            boolean handleOutOfMemoryError) throws IOException, ClassNotFoundException {
         //System.out.println( "xyFileToGrid( xyFile( " + xyFile.toString() + " ), grid( " + grid.toString() + " ) )" );
         try {
             Reader r = new BufferedReader(new InputStreamReader(new FileInputStream(xyFile)));

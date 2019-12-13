@@ -1474,30 +1474,28 @@ public class Grids_Processor extends Grids_Object {
      * @param g1
      * @return
      */
-    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1) throws IOException {
-        Grids_GridDouble result;
+    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1)
+            throws IOException, ClassNotFoundException {
+        Grids_GridDouble r;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        Generic_Path dir;
-        dir = new Generic_Path(env.env.io.createNewFile(files.getGeneratedGridDoubleDir().getPath()));
-        result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
-                nCols - 1);
-        double v0;
-        double v1;
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
+                files.getGeneratedGridDoubleDir().getPath()));
+        r = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1, nCols - 1);
         double noDataValue0 = g0.getNoDataValue();
         double noDataValue1 = g1.getNoDataValue();
         for (long row = 0L; row < nRows; row++) {
             for (long col = 0L; col < nCols; col++) {
-                v0 = g0.getCell(row, col);
-                v1 = g1.getCell(row, col);
+                double v0 = g0.getCell(row, col);
+                double v1 = g1.getCell(row, col);
                 if (v0 != noDataValue0) {
                     if (v1 != noDataValue1) {
-                        result.setCell(row, col, v0 * v1);
+                        r.setCell(row, col, v0 * v1);
                     }
                 }
             }
         }
-        return result;
+        return r;
     }
 
     /**
@@ -1510,22 +1508,20 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridDouble divide(
             Grids_GridDouble g0,
-            Grids_GridDouble g1) throws IOException {
+            Grids_GridDouble g1) throws IOException, ClassNotFoundException {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        File dir;
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
+                files.getGeneratedGridDoubleDir()));
         result = GridDoubleFactory.create(dir, g0, 0L, 0L, nRows - 1,
                 nCols - 1);
-        double v0;
-        double v1;
         double noDataValue0 = g0.getNoDataValue();
         double noDataValue1 = g1.getNoDataValue();
         for (long row = 0L; row < nRows; row++) {
             for (long col = 0L; col < nCols; col++) {
-                v0 = g0.getCell(row, col);
-                v1 = g1.getCell(row, col);
+                double v0 = g0.getCell(row, col);
+                double v1 = g1.getCell(row, col);
                 if (v0 != noDataValue0) {
                     if (v1 != noDataValue1) {
                         if (v1 != 0) {
@@ -1569,13 +1565,10 @@ public class Grids_Processor extends Grids_Object {
      * and variance aggregations. @return @param colOffset @param gridFactory
      * @param colOffset @param gridFactory @return
      */
-    public Grids_GridDouble aggregate(
-            Grids_AbstractGridNumber grid,
-            int cellFactor,
-            String statistic,
-            int rowOffset,
-            int colOffset,
-            Grids_GridDoubleFactory gridFactory) throws IOException {
+    public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
+            int cellFactor, String statistic, int rowOffset, int colOffset,
+            Grids_GridDoubleFactory gridFactory) throws IOException,
+            ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         // Initial tests
         if (cellFactor <= 0) {
@@ -1645,8 +1638,8 @@ public class Grids_Processor extends Grids_Object {
                 resultXMax, resultYMin, resultYMax, resultCellsize);
         // Initialise result
         gridFactory.setNoDataValue(noDataValue);
-        File dir;
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
+                files.getGeneratedGridDoubleDir()));
         Grids_GridDouble result = (Grids_GridDouble) gridFactory.create(dir,
                 resultNrows, resultNcols, resultDimensions);
 
@@ -1658,11 +1651,13 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
             Grids_GridDouble count;
             count = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
             Grids_GridDouble normaliser;
             normaliser = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
@@ -1708,13 +1703,13 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-            Grids_GridDouble numerator;
-            numerator = (Grids_GridDouble) gridFactory.create(dir, resultNrows,
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            Grids_GridDouble numerator = gridFactory.create(dir, resultNrows,
                     resultNcols, resultDimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-            Grids_GridDouble denominator;
-            denominator = (Grids_GridDouble) gridFactory.create(dir,
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            Grids_GridDouble denominator = gridFactory.create(dir,
                     resultNrows, resultNcols, resultDimensions);
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
@@ -1836,7 +1831,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
             String statistic, Grids_Dimensions resultDimensions,
-            Grids_GridDoubleFactory gf) throws IOException {
+            Grids_GridDoubleFactory gf) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
@@ -1952,10 +1947,9 @@ public class Grids_Processor extends Grids_Object {
         resultYMax = dimensionsYMin.add(resultHeight);
         // Initialise result
         gf.setNoDataValue(noDataValue);
-        File dir;
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-        Grids_GridDouble result;
-        result = (Grids_GridDouble) gf.create(dir, resultNrows, resultNcols,
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
+                files.getGeneratedGridDoubleDir()));
+        Grids_GridDouble result = gf.create(dir, resultNrows, resultNcols,
                 resultDimensions);
         long row;
         long col;
@@ -1967,9 +1961,9 @@ public class Grids_Processor extends Grids_Object {
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-            totalValueArea = (Grids_GridDouble) gf.create(dir, resultNrows,
-                    resultNcols, resultDimensions);
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            totalValueArea = gf.create(dir, resultNrows, resultNcols, resultDimensions);
             double areaProportion;
             double[] bounds;
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
@@ -2568,7 +2562,7 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessInitialData(Grids_GridDouble g,
-            int cellDistance, long row) {
+            int cellDistance, long row) throws IOException, ClassNotFoundException {
         int l = (cellDistance * 2) + 1;
         double[][] result = new double[l][l];
         long col;
@@ -2594,7 +2588,8 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessData(Grids_GridDouble g,
-            double[][] previous, int cellDistance, long row, long col) {
+            double[][] previous, int cellDistance, long row, long col) 
+            throws IOException, ClassNotFoundException {
         double[][] result = previous;
         if (col == 0) {
             return getRowProcessInitialData(g, cellDistance, row);
@@ -2623,9 +2618,10 @@ public class Grids_Processor extends Grids_Object {
      * @param imageTypes
      * @param eage
      */
-    public void output(Grids_AbstractGridNumber g, File outDir,
+    public void output(Grids_AbstractGridNumber g, Path outDir,
             Grids_ImageExporter ie, String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage) throws IOException {
+            Grids_ESRIAsciiGridExporter eage) 
+            throws IOException, ClassNotFoundException {
         System.out.println("Output " + g.toString());
         if (ie == null) {
             ie = new Grids_ImageExporter(env);
@@ -2641,12 +2637,12 @@ public class Grids_Processor extends Grids_Object {
         String dotASC = ".asc";
         String noDataValue = "-9999.0";
         String s;
-        File file;
+        Generic_Path file;
         int i;
         int l = imageTypes.length;
         for (i = 0; i < l; i++) {
             s = g.getName() + "." + imageTypes[i];
-            file = new File(outDir, s);
+            file = new Generic_Path(Paths.get(outDir.toString(), s));
             ie.toGreyScaleImage(g, this, file, imageTypes[i]);
         }
         s = g.getName() + dotASC;
@@ -2706,7 +2702,7 @@ public class Grids_Processor extends Grids_Object {
      * @param hoome
      */
     public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, File outDir,
-            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException {
+            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(env);
@@ -2720,9 +2716,9 @@ public class Grids_Processor extends Grids_Object {
             String string_DotASC = ".asc";
             String ndv = "-9999.0";
             String string;
-            File file;
+            Path file;
             string = g.getName() + string_DotASC;
-            file = new File(outDir, string);
+            file = Paths.get(outDir, string);
             eage.toAsciiFile(g, file, ndv);
         } catch (OutOfMemoryError e) {
             if (hoome) {

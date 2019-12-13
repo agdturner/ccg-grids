@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 
+import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 
 /**
@@ -78,7 +79,7 @@ public class Grids_GridBinaryStatsNotUpdated
      * Grids_GridIntStatistics.)
      */
     @Override
-    public void update() {
+    public void update() throws IOException, ClassNotFoundException {
         if (!isUpToDate()) {
             super.update();
             setUpToDate(true);
@@ -91,7 +92,7 @@ public class Grids_GridBinaryStatsNotUpdated
      * @return
      */
     @Override
-    public long getN() {
+    public long getN() throws IOException, ClassNotFoundException {
         update();
         return n;
     }
