@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.agdt.grids.utilities;
 
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
@@ -200,59 +201,6 @@ public class Grids_Utilities {
             double x1, double y1, double x2, double y2) {
         return Math.hypot((x1 - x2), (y1 - y2));
     }
-
-    /**
-     * Returns the clockwise angle in radians to the y axis of the line from: {@code x1},
-     * {@code y1}; to, {@code x2}, {@code y2}.
-     *
-     * @param x1 The x coordinate of the first point.
-     * @param y1 The y coordinate of the first point.
-     * @param x2 The x coordinate of the second point.
-     * @param y2 The y coordinate of the second point.
-     * @return The clockwise angle in radians to the y axis of the line from x1,
-     * y1 to x2, y2 calculated using {@code double}
-     * precision floating point numbers.
-     */
-    public static final double angle(double x1, double y1, double x2, 
-            double y2) {
-        double xdiff = x1 - x2;
-        double ydiff = y1 - y2;
-        double angle;
-        if (xdiff == 0.0d && ydiff == 0.0d) {
-            angle = -1.0d;
-        } else {
-            if (xdiff <= 0.0d) {
-                if (xdiff == 0.0d) {
-                    if (ydiff <= 0.0d) {
-                        angle = 0.0d;
-                    } else {
-                        angle = Math.PI;
-                    }
-                } else {
-                    if (ydiff <= 0.0d) {
-                        if (ydiff == 0.0d) {
-                            angle = Math.PI / 2.0d;
-                        } else {
-                            angle = Math_BigDecimal.atan(Math.abs(xdiff / ydiff));
-                        }
-                    } else {
-                        angle = Math.PI - Math.atan(Math.abs(xdiff / ydiff));
-                    }
-                }
-            } else {
-                if (ydiff <= 0.0d) {
-                    if (ydiff == 0.0d) {
-                        angle = 3.0d * Math.PI / 2.0d;
-                    } else {
-                        angle = (2.0d * Math.PI) - Math.atan(Math.abs(xdiff / ydiff));
-                    }
-                } else {
-                    angle = Math.PI + Math.atan(Math.abs(xdiff / ydiff));
-                }
-            }
-        }
-        return angle;
-    }
     
     /**
      * Returns the clockwise angle in radians to the y axis of the line from: {@code x1},
@@ -328,7 +276,7 @@ public class Grids_Utilities {
             Grids_GridDouble xGrid,
             Grids_GridDouble yGrid,
             int divisions,
-            Grids_GridDoubleFactory factory) {
+            Grids_GridDoubleFactory factory) throws IOException, ClassNotFoundException {
         Object[] result = new Object[4];
         boolean hoome;
         hoome = false;

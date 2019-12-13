@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
@@ -31,7 +33,7 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
 /**
  * Class of methods for processing and generating geographically weighted
  * Grids_GridDouble statistics.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -39,19 +41,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @throws IOException 
-     */
-    protected Grids_ProcessorGWS() throws IOException {
-        super();
-    }
-
     /*
      * Creates a new instance of Grids_ProcessorGWS.
      *
      */
-    public Grids_ProcessorGWS(Grids_Environment ge) throws IOException {
-        super(ge);
+    public Grids_ProcessorGWS(Grids_Environment e) throws IOException,
+            ClassNotFoundException {
+        super(e);
     }
 
     //    /**
@@ -90,9 +86,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * weighted > 0.0d means the edge of the kernel has a zero weight < 0.0d
      * means that the edge of the kernel has a weight of 1 > -1.0d && < 1.0d
      * provides an inverse decay @param gridFactory the Abstract
-     * 2DSquareCellDoubleFactory used to create grids @return
-     * @param gf
-     * @return 
+     * 2DSquareCellDoubleFactory used to create grids @return @param gf @return
      */
     public List<Grids_AbstractGridNumber> regionUnivariateStatistics(
             Grids_GridDouble grid,
@@ -101,7 +95,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grids_GridDoubleFactory gf) throws IOException {
+            Grids_GridDoubleFactory gf) throws IOException, ClassNotFoundException {
         List<Grids_AbstractGridNumber> result = new ArrayList<>();
         //Vector result = new Vector();
 
@@ -273,52 +267,53 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doSum || doWSum || doNWSum || doWSumN || doMean || doWMean1
                 || doWMean2 || doNWMean || doWMeanN) {
-            File dir;
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-            sumWeightGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
-                    dimensions);
+            Generic_Path dir;
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            sumWeightGrid = gf.create(dir, nrows, ncols, dimensions);
             if (doSum) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                sumGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
-                        dimensions);
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+                sumGrid = gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWSum) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                wSumGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
-                        dimensions);
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+                wSumGrid = gf.create(dir, nrows, ncols, dimensions);
             }
             if (doNWSum) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                nWSumGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
+                dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            nWSumGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doWSumN) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                wSumNGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
+                dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            wSumNGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doMean) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
                 meanGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doWMean1) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wMean1Grid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doWMean2) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wMean2Grid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doNWMean) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 nWMeanGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
             if (doWMeanN) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wMeanNGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols,
                         dimensions);
             }
@@ -440,45 +435,45 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Second order statistics ( coefficient of variation, skewness, kurtosis, zscore)
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
-            File dir;
+            Generic_Path dir;
             if (doProp) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 propGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWProp) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wPropGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 varGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wVarGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 skewGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wSkewGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doCVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 cVarGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wCVarGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 cSkewGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wCSkewGrid = (Grids_GridDouble) gf.create(dir, nrows, ncols, dimensions);
             }
             double[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
@@ -791,7 +786,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grids_GridDoubleFactory gridFactory) throws IOException {
+            Grids_GridDoubleFactory gridFactory) throws IOException, ClassNotFoundException {
         boolean hoome = true;
         List<Grids_AbstractGridNumber> result = new ArrayList<>();
         //        Vector result = new Vector();
@@ -934,21 +929,21 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         gridFactory.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
-            File dir;
+            Generic_Path dir;
             if (doMean) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 meanGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWMean) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wMeanGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doSum) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 sumGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWSum) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wSumGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
@@ -1029,45 +1024,45 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Second order statistics ( coefficient of variation, skewness, kurtosis, zscore)
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
-            File dir;
+            Generic_Path dir;
             if (doProp) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
-                propGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
+                propGrid = gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWProp) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wPropGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 varGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wVarGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 skewGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wSkewGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doCVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 cVarGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wCVarGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 cSkewGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 wCSkewGrid = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             }
             double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
@@ -1461,7 +1456,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] geometricDensity(
             Grids_GridDouble grid,
             double distance,
-            Grids_GridDoubleFactory gridFactory) throws IOException {
+            Grids_GridDoubleFactory gridFactory) throws IOException, ClassNotFoundException {
         long n;
         n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
@@ -1496,19 +1491,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             }
         }
         Grids_GridDouble[] result = new Grids_GridDouble[numberOfIterations];
-        File dir;
+        Generic_Path dir;
         // If all values are noDataValues return noDataValue density results
         if (n == 0) {
             for (int i = 0; i < numberOfIterations; i++) {
-                dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                              dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
                 result[i] = (Grids_GridDouble) gridFactory.create(dir, grid);
             }
             return result;
         }
         // Initialise temporary numerator and normaliser grids
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                      dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
         Grids_GridDouble g2 = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols);
-        dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                      dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
         Grids_GridDouble g3 = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols);
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
@@ -1533,11 +1528,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             width += doubler;
             growth *= 2;
             // Step 1: Aggregate
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             g4 = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             g5 = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             g6 = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols);
             for (int p = 0; p < doubler; p++) {
                 for (int q = 0; q < doubler; q++) {
@@ -1583,7 +1578,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             //    processing strategies this step can probably be speeded up a lot.
             //density = gridFactory.createGrid2DSquareCellDouble( nrows, ncols, 0.0d, 0.0d, cellsize, 0.0d );
             gridFactory.setNoDataValue(noDataValue);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             density = (Grids_GridDouble) gridFactory.create(dir, nrows, ncols, dimensions);
             for (row = 0; row < nrows; row += doubler) {
                 for (int p = 0; p < doubler; p++) {
@@ -1794,10 +1789,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * frames. (NB. Sensibly the two grids being correlated should have the same
      * no data space.) @param gridFactory @return @param gf @return
      */
-    public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0, 
-            Grids_GridDouble grid1, ArrayList statistics, double distance, 
-            double weightIntersect, double weightFactor, 
-            Grids_GridDoubleFactory gf) throws IOException {
+    public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
+            Grids_GridDouble grid1, ArrayList statistics, double distance,
+            double weightIntersect, double weightFactor,
+            Grids_GridDoubleFactory gf) throws IOException, ClassNotFoundException {
         boolean hoome = true;
         // Initialisation
         boolean dodiff = false;
@@ -1890,14 +1885,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         if (dodiff) {
             gf.setNoDataValue(grid0NoDataValue);
 
-            File dir;
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            Generic_Path dir;
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             diffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             weightedDiffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             normalisedDiffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             weightedNormalisedDiffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
 
             double max0;
@@ -1998,14 +1993,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         // temporarily fix range
         if (docorr || dozdiff) {
             gf.setNoDataValue(grid0NoDataValue);
-            File dir;
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+            Generic_Path dir;
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             weightedCorrelationGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             correlationGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             weightedZdiffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
-            dir = env.env.io.createNewFile(files.getGeneratedGridDoubleDir());
+                          dir = new Generic_Path(Generic_IO.createNewFile(files.getGeneratedGridDoubleDir()));
             zdiffGrid = (Grids_GridDouble) gf.create(dir, grid0Nrows, grid0Ncols, grid0Dimensions);
             // setNumberOfPairs defines how many cells are needed to calculate correlation
             double max0;

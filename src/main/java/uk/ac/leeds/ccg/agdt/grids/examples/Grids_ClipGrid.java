@@ -39,22 +39,14 @@ public class Grids_ClipGrid extends Grids_Processor {
     String Filename;
 
     /**
-     * @throws IOException 
-     */
-    protected Grids_ClipGrid() throws IOException, ClassNotFoundException {
-        super();
-        HandleOutOfMemoryError = true;
-    }
-
-    /**
      * Creates a new RoofGeneralisation using specified Directory. WARNING:
      * Files in the specified Directory may get overwritten.
      *
      * @param ge
      */
-    public Grids_ClipGrid(Grids_Environment ge) throws IOException, 
+    public Grids_ClipGrid(Grids_Environment e) throws IOException, 
             ClassNotFoundException {
-        super(ge);
+        super(e);
         HandleOutOfMemoryError = true;
     }
 
@@ -63,7 +55,7 @@ public class Grids_ClipGrid extends Grids_Processor {
      */
     public static void main(String[] args) {
         try {
-            Grids_ClipGrid t = new Grids_ClipGrid();
+            Grids_ClipGrid t = new Grids_ClipGrid(new Grids_Environment());
             t.run();
         } catch (Exception | Error e) {
             e.printStackTrace(System.err);

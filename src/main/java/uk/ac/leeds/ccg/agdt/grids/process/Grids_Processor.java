@@ -177,13 +177,6 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridIntStatsNotUpdated GridIntStatisticsNotUpdated;
 
     /**
-     * @throws IOException
-     */
-    protected Grids_Processor() throws IOException, ClassNotFoundException {
-        this(new Grids_Environment(new Generic_Environment()));
-    }
-
-    /**
      * Creates a new instance of Grids_Processor. The Log file in directory will
      * be overwritten if appendToLogFile is false.
      *
@@ -2637,7 +2630,7 @@ public class Grids_Processor extends Grids_Object {
         String dotASC = ".asc";
         String noDataValue = "-9999.0";
         String s;
-        Generic_Path file;
+        Path file;
         int i;
         int l = imageTypes.length;
         for (i = 0; i < l; i++) {
@@ -2646,7 +2639,7 @@ public class Grids_Processor extends Grids_Object {
             ie.toGreyScaleImage(g, this, file, imageTypes[i]);
         }
         s = g.getName() + dotASC;
-        file = new File(outDir, s);
+        file = Paths.get(outDir.toString(), s);
         eage.toAsciiFile(g, file, noDataValue);
     }
 
@@ -2672,12 +2665,12 @@ public class Grids_Processor extends Grids_Object {
             }
             String string;
             String string_DOT = ".";
-            File file;
+            Path file;
             int i;
             int l = imageTypes.length;
             for (i = 0; i < l; i++) {
                 string = g.getName() + string_DOT + imageTypes[i];
-                file = new File(outDir, string);
+                file = Paths.get(outDir.toString(), string);
                 ie.toGreyScaleImage(g, this, file, imageTypes[i]);
             }
         } catch (OutOfMemoryError e) {
@@ -2701,8 +2694,9 @@ public class Grids_Processor extends Grids_Object {
      * @param eage
      * @param hoome
      */
-    public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, File outDir,
-            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException, ClassNotFoundException {
+    public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, Path outDir,
+            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException,
+            ClassNotFoundException {
         try {
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(env);
@@ -2718,7 +2712,7 @@ public class Grids_Processor extends Grids_Object {
             String string;
             Path file;
             string = g.getName() + string_DotASC;
-            file = Paths.get(outDir, string);
+            file = Paths.get(outDir.toString(), string);
             eage.toAsciiFile(g, file, ndv);
         } catch (OutOfMemoryError e) {
             if (hoome) {
