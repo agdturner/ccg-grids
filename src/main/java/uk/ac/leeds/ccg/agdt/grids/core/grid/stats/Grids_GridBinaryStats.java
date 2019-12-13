@@ -71,10 +71,9 @@ public class Grids_GridBinaryStats extends Grids_AbstractGridStats {
         init();
         Grids_GridBinary g = getGrid();
         boolean v;
-        Grids_GridBinaryIterator ite;
-        ite = g.iterator();
+        Grids_GridBinaryIterator ite = g.iterator();
         while (ite.hasNext()) {
-            v = (Boolean) ite.next();
+            v = ite.next();
             if (v) {
                 n++;
             }

@@ -18,7 +18,6 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
 import java.io.Serializable;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  *
@@ -26,8 +25,9 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_AbstractGridChunk extends Grids_Object 
-        implements Serializable {
+public abstract class Grids_AbstractGridChunk extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * A reference to the Grid.
@@ -136,14 +136,6 @@ public abstract class Grids_AbstractGridChunk extends Grids_Object
     public String getName() {
         return this.getClass().getName();
     }
-
-    /**
-     * Returns an iterator over the cell values. These are not guaranteed to be
-     * in any particular order.
-     *
-     * @return
-     */
-    public abstract Grids_AbstractIterator iterator();
 
     /**
      * Returns true if row, col is in this.

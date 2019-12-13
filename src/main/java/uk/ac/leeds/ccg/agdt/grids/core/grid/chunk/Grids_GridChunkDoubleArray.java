@@ -154,7 +154,6 @@ public class Grids_GridChunkDoubleArray
      *
      * @return
      */
-    @Override
     public Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }

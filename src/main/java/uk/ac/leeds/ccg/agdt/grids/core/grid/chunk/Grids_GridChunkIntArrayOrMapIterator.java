@@ -27,10 +27,9 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
 public class Grids_GridChunkIntArrayOrMapIterator
         extends Grids_AbstractGridChunkRowMajorOrderIterator {
 
-    protected int[][] Data;
+    private static final long serialVersionUID = 1L;
 
-    public Grids_GridChunkIntArrayOrMapIterator() {
-    }
+    protected int[][] Data;
 
     public Grids_GridChunkIntArrayOrMapIterator(
             Grids_GridChunkIntArray chunk) {
@@ -49,15 +48,12 @@ public class Grids_GridChunkIntArrayOrMapIterator
      *
      * @return the next element in the iteration.
      */
-    @Override
-    public Object next() {
+    public Integer next() {
         next0();
         return Data[Row][Col];
     }
 
-    @Override
     public void remove() {
         Data[Row][Col] = ((Grids_GridInt) Grid).getNoDataValue();
-//        throw new UnsupportedOperationException();
     }
 }

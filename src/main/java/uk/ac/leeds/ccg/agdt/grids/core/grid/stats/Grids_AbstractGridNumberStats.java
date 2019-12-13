@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.stats;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -26,7 +27,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
  * more optimally.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -35,7 +36,6 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
     private static final long serialVersionUID = 1L;
 
     //private long final long serialVersionUID = 1L;
-
     /**
      * For storing the sum of all non data values.
      */
@@ -65,7 +65,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
         NMin = 0;
         NMax = 0;
     }
-    
+
     /**
      * Updates from stats.
      *
@@ -86,7 +86,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      */
     @Override
     public String getFieldsDescription() throws IOException, ClassNotFoundException {
-        return super.getFieldsDescription() 
+        return super.getFieldsDescription()
                 + ", Max=" + getMax(false) + ", Min=" + getMin(false)
                 + ", NMax=" + NMax + ", NMin=" + NMin + ", Sum=" + Sum;
     }
@@ -125,11 +125,10 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
 //     * @return The number of cells with finite data values as a BigInteger.
 //     */
 //    protected abstract long getN();
-
     /**
      * @return The number of cells with finite non zero data values.
      */
-    public abstract BigInteger getNonZeroN()throws IOException, ClassNotFoundException;
+    public abstract BigInteger getNonZeroN() throws IOException, ClassNotFoundException;
 
 //    /**
 //     * For returning the sum of all finite data values.
@@ -248,7 +247,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      * @param update If true then an update of the statistics is made.
      * @return
      */
-    public abstract Number getMax(boolean update)throws IOException, ClassNotFoundException;
+    public abstract Number getMax(boolean update) throws IOException, ClassNotFoundException;
 
 //    /**
 //     * For returning the mode of all data values.
@@ -692,8 +691,8 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
      * @return
      */
     public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
-        return Sum.divide(new BigDecimal(n), numberOfDecimalPlaces, 
-                BigDecimal.ROUND_HALF_EVEN);
+        return Sum.divide(new BigDecimal(n), numberOfDecimalPlaces,
+                RoundingMode.HALF_EVEN);
     }
 
 //    /**
@@ -736,7 +735,7 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
 //     * @return
 //     */
 //    protected abstract BigDecimal getStandardDeviation(int numberOfDecimalPlaces);
-    public abstract Object[] getQuantileClassMap(int nClasses)throws IOException, ClassNotFoundException;
+    public abstract Object[] getQuantileClassMap(int nClasses) throws IOException, ClassNotFoundException;
 
 //    private boolean checkMaps(
 //            TreeMap<Integer, TreeMap<Double, Long>> classMap,
@@ -808,30 +807,24 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
     }
 
     /**
-     * @param value
+     * @param v
      * @param classMap
-     * @param minDouble
-     * @param maxDouble
+     * @param mins
+     * @param maxs
      * @param classCounts
      * @param desiredNumberOfValuesInEachClass
      * @param classToFill
      * @return result[0] is the class, result[1] is the classToFill which may or
      * may not change from what is passed in.
      */
-    protected int[] getValueClass(
-            double value,
+    protected int[] getValueClass(double v,
             TreeMap<Integer, TreeMap<Double, Long>> classMap,
-            TreeMap<Integer, Double> minDouble,
-            TreeMap<Integer, Double> maxDouble,
+            TreeMap<Integer, Double> mins, TreeMap<Integer, Double> maxs,
             TreeMap<Integer, Long> classCounts,
-            long desiredNumberOfValuesInEachClass,
-            int classToFill) {
-        int[] result;
-        result = new int[2];
-        long classToFillCount;
-        classToFillCount = classCounts.get(classToFill);
-        double maxValueOfClassToFill;
-        maxValueOfClassToFill = maxDouble.get(classToFill);
+            long desiredNumberOfValuesInEachClass, int classToFill) {
+        int[] r = new int[2];
+        long classToFillCount = classCounts.get(classToFill);
+        double maxValueOfClassToFill = maxs.get(classToFill);
 //        if (maxDouble.get(classToFill) != null) {
 //            maxValueOfClassToFill = maxDouble.get(classToFill);
 //        } else {
@@ -839,49 +832,35 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
 //        }
         // Special cases
         // Case 1:
-        if (value > maxValueOfClassToFill) {
-            maxDouble.put(classToFill, value);
+        if (v > maxValueOfClassToFill) {
+            maxs.put(classToFill, v);
             classToFillCount += 1;
-            addToMapCounts(value, classToFill, classMap);
+            addToMapCounts(v, classToFill, classMap);
             addToCount(classToFill, classCounts);
-            result[0] = classToFill;
+            r[0] = classToFill;
             //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-            result[1] = checkClassToFillAndPropagation(
-                    result,
-                    classToFill,
-                    classToFillCount,
-                    classMap,
-                    minDouble,
-                    maxDouble,
-                    classCounts,
-                    desiredNumberOfValuesInEachClass,
-                    classToFill);
+            r[1] = checkClassToFillAndPropagation(r, classToFill,
+                    classToFillCount, classMap, mins, maxs,
+                    classCounts, desiredNumberOfValuesInEachClass, classToFill);
 //            } else {
 //                result[1] = classToFill;
 //            }
-            return result;
+            return r;
         }
         // Case 2:
-        if (value == maxValueOfClassToFill) {
+        if (v == maxValueOfClassToFill) {
             classToFillCount += 1;
-            addToMapCounts(value, classToFill, classMap);
+            addToMapCounts(v, classToFill, classMap);
             addToCount(classToFill, classCounts);
-            result[0] = classToFill;
+            r[0] = classToFill;
             //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-            result[1] = checkClassToFillAndPropagation(
-                    result,
-                    classToFill,
-                    classToFillCount,
-                    classMap,
-                    minDouble,
-                    maxDouble,
-                    classCounts,
-                    desiredNumberOfValuesInEachClass,
-                    classToFill);
+            r[1] = checkClassToFillAndPropagation(r, classToFill,
+                    classToFillCount, classMap, mins, maxs,
+                    classCounts, desiredNumberOfValuesInEachClass, classToFill);
 //            } else {
 //                result[1] = classToFill;
 //            }
-            return result;
+            return r;
         }
 //        // Case 3:
 //        double minValueOfClass0;
@@ -891,30 +870,23 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
 //            long class0Count;
 //            class0Count = classCounts.get(0);
 //            if (class0Count < desiredNumberOfValuesInEachClass) {
-//                result[0] = classToFill; // Which should be 0
+//                r[0] = classToFill; // Which should be 0
 //                addToMapCounts(value, classToFill, classMap);
 //                addToCount(classToFill, classCounts);
 //                classToFillCount += 1;
 //                if (classToFillCount >= desiredNumberOfValuesInEachClass) {
-//                    result[1] = classToFill + 1;
+//                    r[1] = classToFill + 1;
 //                } else {
-//                    result[1] = classToFill;
+//                    r[1] = classToFill;
 //                }
-//                return result;
+//                return r;
 //            } else {
 //                classToFillCount += 1;
-//                result[0] = 0;
-//                checkValueCounts(
-//                        result,
-//                        0,
-//                        classToFillCount,
-//                        classMap,
-//                        minDouble,
-//                        maxDouble,
-//                        classCounts,
-//                        desiredNumberOfValuesInEachClass,
-//                        classToFill);
-//                return result;
+//                r[0] = 0;
+//                checkClassToFillAndPropagation(r, 0, classToFillCount, classMap,
+//                        minDouble, maxDouble, classCounts,
+//                        desiredNumberOfValuesInEachClass, classToFill);
+//                return r;
 //            }
 //        }
         // General Case
@@ -930,32 +902,26 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
         // General Case
         // 1. Find which class the value sits in.
         int classToCheck = classToFill;
-//        double maxToCheck0;
-//        double minToCheck0;
-//        maxToCheck0 = maxDouble.get(classToCheck);
-//        minToCheck0 = minDouble.get(classToCheck);
-        double maxToCheck;
-        double minToCheck;
-        maxToCheck = maxDouble.get(classToCheck);
-        minToCheck = minDouble.get(classToCheck);
+        double maxToCheck = maxs.get(classToCheck);
+        double minToCheck = mins.get(classToCheck);
         boolean foundClass = false;
         while (!foundClass) {
-            if (value >= minToCheck && value <= maxToCheck) {
-                result[0] = classToCheck;
+            if (v >= minToCheck && v <= maxToCheck) {
+                r[0] = classToCheck;
                 foundClass = true;
             } else {
                 classToCheck--;
                 if (classToCheck < 1) {
                     if (classToCheck < 0) {
                         // This means that value is less than min value so set min.
-                        minDouble.put(0, value);
+                        mins.put(0, v);
                     }
-                    result[0] = 0;
+                    r[0] = 0;
                     classToCheck = 0;
                     foundClass = true;
                 } else {
                     maxToCheck = minToCheck; // This way ensures there are no gaps.
-                    minToCheck = minDouble.get(classToCheck);
+                    minToCheck = mins.get(classToCheck);
                 }
             }
         }
@@ -963,15 +929,15 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
         // 2. If the value already exists, add to the count, else add to the map
         // and counts and ensure maxDouble and minDouble are correct (which has 
         // to be done first)
-        maxToCheck = maxDouble.get(classToCheck);
-        if (value > maxToCheck) {
-            maxDouble.put(classToCheck, value);
+        maxToCheck = maxs.get(classToCheck);
+        if (v > maxToCheck) {
+            maxs.put(classToCheck, v);
         }
-        minToCheck = minDouble.get(classToCheck);
-        if (value < minToCheck) {
-            minDouble.put(classToCheck, value);
+        minToCheck = mins.get(classToCheck);
+        if (v < minToCheck) {
+            mins.put(classToCheck, v);
         }
-        addToMapCounts(value, classToCheck, classMap);
+        addToMapCounts(v, classToCheck, classMap);
         addToCount(classToCheck, classCounts);
         classToCheckCount = classCounts.get(classToCheck);
         // 3. Check the top of the class value counts. If by moving these up the 
@@ -981,18 +947,159 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
         //      Modify the min value in the next class
         //      Repeat Step 3 for the next class
         //result[1] = checkValueCounts(
-        checkClassToFillAndPropagation(
-                result,
-                classToCheck,
-                classToCheckCount,
-                classMap,
-                minDouble,
-                maxDouble,
-                classCounts,
-                desiredNumberOfValuesInEachClass,
-                classToFill);
+        checkClassToFillAndPropagation(r, classToCheck, classToCheckCount,
+                classMap, mins, maxs, classCounts,
+                desiredNumberOfValuesInEachClass, classToFill);
         //classCounts.put(classToCheck, classToFillCount + 1);
-        return result;
+        return r;
+    }
+
+    /**
+     * @param v
+     * @param classMap
+     * @param mins
+     * @param maxs
+     * @param classCounts
+     * @param desiredNumberOfValuesInEachClass
+     * @param classToFill
+     * @return result[0] is the class, result[1] is the classToFill which may or
+     * may not change from what is passed in.
+     */
+    protected int[] getValueClass(int v,
+            TreeMap<Integer, TreeMap<Integer, Long>> classMap,
+            TreeMap<Integer, Integer> mins, TreeMap<Integer, Integer> maxs,
+            TreeMap<Integer, Long> classCounts,
+            long desiredNumberOfValuesInEachClass, int classToFill) {
+        int[] r = new int[2];
+        long classToFillCount = classCounts.get(classToFill);
+        double maxValueOfClassToFill = maxs.get(classToFill);
+//        if (maxDouble.get(classToFill) != null) {
+//            maxValueOfClassToFill = maxDouble.get(classToFill);
+//        } else {
+//            maxValueOfClassToFill = Double.NEGATIVE_INFINITY;
+//        }
+        // Special cases
+        // Case 1:
+        if (v > maxValueOfClassToFill) {
+            maxs.put(classToFill, v);
+            classToFillCount += 1;
+            addToMapCounts(v, classToFill, classMap);
+            addToCount(classToFill, classCounts);
+            r[0] = classToFill;
+            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+            r[1] = checkClassToFillAndPropagation(r, classToFill,
+                    classToFillCount, classMap, mins, maxs,
+                    classCounts, desiredNumberOfValuesInEachClass, classToFill);
+//            } else {
+//                result[1] = classToFill;
+//            }
+            return r;
+        }
+        // Case 2:
+        if (v == maxValueOfClassToFill) {
+            classToFillCount += 1;
+            addToMapCounts(v, classToFill, classMap);
+            addToCount(classToFill, classCounts);
+            r[0] = classToFill;
+            //if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+            r[1] = checkClassToFillAndPropagation(r, classToFill,
+                    classToFillCount, classMap, mins, maxs,
+                    classCounts, desiredNumberOfValuesInEachClass, classToFill);
+//            } else {
+//                result[1] = classToFill;
+//            }
+            return r;
+        }
+//        // Case 3:
+//        double minValueOfClass0;
+//        minValueOfClass0 = minDouble.get(0);
+//        if (value < minValueOfClass0) {
+//            minDouble.put(0, value);
+//            long class0Count;
+//            class0Count = classCounts.get(0);
+//            if (class0Count < desiredNumberOfValuesInEachClass) {
+//                r[0] = classToFill; // Which should be 0
+//                addToMapCounts(value, classToFill, classMap);
+//                addToCount(classToFill, classCounts);
+//                classToFillCount += 1;
+//                if (classToFillCount >= desiredNumberOfValuesInEachClass) {
+//                    r[1] = classToFill + 1;
+//                } else {
+//                    r[1] = classToFill;
+//                }
+//                return r;
+//            } else {
+//                classToFillCount += 1;
+//                r[0] = 0;
+//                checkClassToFillAndPropagation(r, 0, classToFillCount, classMap,
+//                        minDouble, maxDouble, classCounts,
+//                        desiredNumberOfValuesInEachClass, classToFill);
+//                return r;
+//            }
+//        }
+        // General Case
+        // 1. Find which class the value sits in.
+        // 2. If the value already exists, add to the count, else add to the map
+        // 3. Check the top of the class value counts. If by moving these up the 
+        //    class would not contain enough values finish, otherwise do the following:
+        //    a) move the top values up to the bottom of the next class.
+        //      Modify the max value in this class
+        //      Modify the min value in the next class
+        //      Repeat Step 3 for the next class
+
+        // General Case
+        // 1. Find which class the value sits in.
+        int classToCheck = classToFill;
+        double maxToCheck = maxs.get(classToCheck);
+        double minToCheck = mins.get(classToCheck);
+        boolean foundClass = false;
+        while (!foundClass) {
+            if (v >= minToCheck && v <= maxToCheck) {
+                r[0] = classToCheck;
+                foundClass = true;
+            } else {
+                classToCheck--;
+                if (classToCheck < 1) {
+                    if (classToCheck < 0) {
+                        // This means that value is less than min value so set min.
+                        mins.put(0, v);
+                    }
+                    r[0] = 0;
+                    classToCheck = 0;
+                    foundClass = true;
+                } else {
+                    maxToCheck = minToCheck; // This way ensures there are no gaps.
+                    minToCheck = mins.get(classToCheck);
+                }
+            }
+        }
+        long classToCheckCount;
+        // 2. If the value already exists, add to the count, else add to the map
+        // and counts and ensure maxDouble and minDouble are correct (which has 
+        // to be done first)
+        maxToCheck = maxs.get(classToCheck);
+        if (v > maxToCheck) {
+            maxs.put(classToCheck, v);
+        }
+        minToCheck = mins.get(classToCheck);
+        if (v < minToCheck) {
+            mins.put(classToCheck, v);
+        }
+        addToMapCounts(v, classToCheck, classMap);
+        addToCount(classToCheck, classCounts);
+        classToCheckCount = classCounts.get(classToCheck);
+        // 3. Check the top of the class value counts. If by moving these up the 
+        //    class would not contain enough values finish, otherwise do the following:
+        //    a) move the top values up to the bottom of the next class.
+        //      Modify the max value in this class
+        //      Modify the min value in the next class
+        //      Repeat Step 3 for the next class
+        //result[1] = checkValueCounts(
+        checkClassToFillAndPropagation(r, classToCheck, classToCheckCount,
+                classMap, mins, maxs, classCounts,
+                desiredNumberOfValuesInEachClass, classToFill);
+        //classCounts.put(classToCheck, classToFillCount + 1);
+        return r;
     }
 
     private void addToCount(
@@ -1004,53 +1111,49 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
         classCounts.put(index, count);
     }
 
-    private void addToMapCounts(
-            double value,
-            int classToCount,
-            TreeMap<Integer, TreeMap<Double, Long>> classMap) {
-        TreeMap<Double, Long> classToCheckMap;
+    private <T> void addToMapCounts(T v, int classToCount,
+            TreeMap<Integer, TreeMap<T, Long>> classMap) {
+        TreeMap<T, Long> classToCheckMap;
         classToCheckMap = classMap.get(classToCount);
-        if (classToCheckMap.containsKey(value)) {
+        if (classToCheckMap.containsKey(v)) {
             long count;
-            count = classToCheckMap.get(value);
+            count = classToCheckMap.get(v);
             count++;
-            classToCheckMap.put(value, count);
+            classToCheckMap.put(v, count);
         } else {
-            classToCheckMap.put(value, 1L);
+            classToCheckMap.put(v, 1L);
         }
     }
 
     /**
      *
-     * @param result
+     * @param r
      * @param classToCheck
      * @param classToCheckCount
      * @param classMap
-     * @param minDouble
-     * @param maxDouble
+     * @param mins
+     * @param maxs
      * @param classCounts
      * @param desiredNumberOfValuesInEachClass
      * @param classToFill
      * @return Value for classToFill (may be the same as what is passed in).
      */
-    private int checkClassToFillAndPropagation(
-            int[] result,
+    private <T> int checkClassToFillAndPropagation(
+            int[] r,
             int classToCheck,
             long classToCheckCount,
-            TreeMap<Integer, TreeMap<Double, Long>> classMap,
-            TreeMap<Integer, Double> minDouble,
-            TreeMap<Integer, Double> maxDouble,
+            TreeMap<Integer, TreeMap<T, Long>> classMap,
+            TreeMap<Integer, T> mins,
+            TreeMap<Integer, T> maxs,
             TreeMap<Integer, Long> classCounts,
             long desiredNumberOfValuesInEachClass,
             int classToFill) {
         long classToCheckCountOfMaxValue;
-        double classToCheckMaxValue;
-        classToCheckMaxValue = maxDouble.get(classToCheck);
-        TreeMap<Double, Long> classToCheckMap;
-        classToCheckMap = classMap.get(classToCheck);
+        T classToCheckMaxValue = maxs.get(classToCheck);
+        TreeMap<T, Long> classToCheckMap = classMap.get(classToCheck);
         classToCheckCountOfMaxValue = classToCheckMap.get(classToCheckMaxValue);
         if (classToCheckCount - classToCheckCountOfMaxValue < desiredNumberOfValuesInEachClass) {
-            result[1] = classToFill;
+            r[1] = classToFill;
         } else {
             int nextClassToCheck;
             nextClassToCheck = classToCheck + 1;
@@ -1061,21 +1164,20 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
             classCounts.put(classToCheck, classToCheckCount - classToCheckCountOfMaxValue);
             classToCheckMap.remove(classToCheckMaxValue);
             // 2. Add
-            TreeMap<Double, Long> nextClassToCheckMap;
-            nextClassToCheckMap = classMap.get(nextClassToCheck);
+            TreeMap<T, Long> nextClassToCheckMap = classMap.get(nextClassToCheck);
             nextClassToCheckMap.put(classToCheckMaxValue, classToCheckCountOfMaxValue);
             // 2.1 Adjust min and max values
-            maxDouble.put(classToCheck, classToCheckMap.lastKey());
+            maxs.put(classToCheck, classToCheckMap.lastKey());
 //            try {
 //            maxDouble.put(classToCheck, classToCheckMap.lastKey());
 //            } catch (NoSuchElementException e) {
 //                int debug = 1;
 //            }
-            minDouble.put(nextClassToCheck, classToCheckMaxValue);
+            mins.put(nextClassToCheck, classToCheckMaxValue);
             long nextClassToCheckCount;
             nextClassToCheckCount = classCounts.get(nextClassToCheck);
             if (nextClassToCheckCount == 0) {
-                maxDouble.put(nextClassToCheck, classToCheckMaxValue);
+                maxs.put(nextClassToCheck, classToCheckMaxValue);
                 // There should not be any value bigger in nextClasstoCheck.
             }
             // 2.2 Add to classCounts
@@ -1086,30 +1188,16 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
             }
             // 2.3. Check this class again then check the next class
             classToCheckCount = classCounts.get(classToCheck);
-            result[1] = checkClassToFillAndPropagation(
-                    result,
-                    classToCheck,
-                    classToCheckCount,
-                    classMap,
-                    minDouble,
-                    maxDouble,
-                    classCounts,
-                    desiredNumberOfValuesInEachClass,
-                    classToFill);
+            r[1] = checkClassToFillAndPropagation(r, classToCheck,
+                    classToCheckCount, classMap, mins, maxs, classCounts,
+                    desiredNumberOfValuesInEachClass, classToFill);
             // nextClassToCheckCount needs to be got again as it may have changed!
             nextClassToCheckCount = classCounts.get(nextClassToCheck);
-            result[1] = checkClassToFillAndPropagation(
-                    result,
-                    nextClassToCheck,
-                    nextClassToCheckCount,
-                    classMap,
-                    minDouble,
-                    maxDouble,
-                    classCounts,
-                    desiredNumberOfValuesInEachClass,
-                    classToFill);
+            r[1] = checkClassToFillAndPropagation(r, nextClassToCheck, 
+                    nextClassToCheckCount, classMap, mins, maxs, classCounts, 
+                    desiredNumberOfValuesInEachClass, classToFill);
         }
-        return result[1];
+        return r[1];
     }
 
     /**
@@ -1146,6 +1234,5 @@ public abstract class Grids_AbstractGridNumberStats extends Grids_AbstractGridSt
     public long getNMax() {
         return NMax;
     }
-    
-    
+
 }

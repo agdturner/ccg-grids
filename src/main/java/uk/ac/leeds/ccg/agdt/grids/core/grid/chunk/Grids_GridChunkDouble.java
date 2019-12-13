@@ -19,17 +19,17 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * Grids_AbstractGridChunkDouble extension for which all values are the same.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridChunkDouble
-        extends Grids_AbstractGridChunkDouble
+public class Grids_GridChunkDouble extends Grids_AbstractGridChunkDouble
         implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the value of every cell in this grid.
@@ -46,9 +46,7 @@ public class Grids_GridChunkDouble
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      * @param value To be the value of all cells in this chunk.
      */
-    public Grids_GridChunkDouble(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID,
+    public Grids_GridChunkDouble(Grids_GridDouble g, Grids_2D_ID_int chunkID,
             double value) {
         super(g, chunkID);
         Value = value;
@@ -68,9 +66,10 @@ public class Grids_GridChunkDouble
 
     /**
      * Beware OutOfMemoryErrors being thrown if calling this method.
+     *
      * @param row
      * @param col
-     * @return 
+     * @return
      */
     @Override
     public double getCell(
@@ -80,11 +79,11 @@ public class Grids_GridChunkDouble
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to valueToSet.
+     * Returns the value at position given by: row, col and sets it to
+     * valueToSet.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param v the value the cell is to be set to.
      * @return
      */
@@ -110,22 +109,18 @@ public class Grids_GridChunkDouble
      *
      * @return
      */
-    @Override
-    public Grids_AbstractIterator iterator() {
+    public Grids_GridChunkDoubleIterator iterator() {
         return new Grids_GridChunkDoubleIterator(this);
     }
 
     @Override
-    public void initCell(
-            int row,
-            int col,
-            double valueToInitialise) {
+    public void initCell(int row, int col, double valueToInitialise) {
     }
 
     public double getSumDouble() {
         return getN() * Value;
     }
-    
+
     @Override
     public Number getMin(boolean update) {
         return Value;

@@ -15,14 +15,11 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
-import java.io.IOException;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractChunkIterator;
 
 /**
  * For iterating through the values in a Grid. The values are returned chunk by
@@ -32,8 +29,7 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_AbstractGridIterator
-        extends Grids_AbstractIterator {
+public abstract class Grids_AbstractGridIterator extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +38,7 @@ public abstract class Grids_AbstractGridIterator
     protected Grids_2D_ID_int ChunkID;
 //    protected Iterator<Grids_AbstractGridChunk> GridIterator;
     protected Iterator<Grids_2D_ID_int> GridIterator;
-    protected Grids_AbstractIterator ChunkIterator;
+    protected Grids_AbstractChunkIterator ChunkIterator;
 
     protected Grids_AbstractGridIterator() {
     }
@@ -60,7 +56,7 @@ public abstract class Grids_AbstractGridIterator
         return GridIterator;
     }
 
-    public Grids_AbstractIterator getChunkIterator() {
+    public Grids_AbstractChunkIterator getChunkIterator() {
         return ChunkIterator;
     }
 
@@ -70,7 +66,7 @@ public abstract class Grids_AbstractGridIterator
      * @param chunk
      * @return
      */
-    public abstract Grids_AbstractIterator getChunkIterator(
+    public abstract Grids_AbstractChunkIterator getChunkIterator(
             Grids_AbstractGridChunk chunk);
 
     /**
@@ -80,7 +76,6 @@ public abstract class Grids_AbstractGridIterator
      *
      * @return <tt>true</tt> if the iterator has more elements.
      */
-    @Override
     public boolean hasNext() {
         if (ChunkIterator.hasNext()) {
             return true;
@@ -93,39 +88,6 @@ public abstract class Grids_AbstractGridIterator
     }
 
     /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration.
-     * @exception NoSuchElementException iteration has no more elements.
-     */
-    @Override
-    public Object next() {
-        if (ChunkIterator.hasNext()) {
-            return ChunkIterator.next();
-        } else {
-            if (GridIterator.hasNext()) {
-                env.removeFromNotToCache(Grid, ChunkID);
-                ChunkID = GridIterator.next();
-                Chunk = Grid.chunkIDChunkMap.get(ChunkID);
-                if (Chunk == null) {
-                    try {
-                        Grid.loadIntoCacheChunk(ChunkID);
-                    } catch (IOException | ClassNotFoundException ex) {
-                        Logger.getLogger(Grids_AbstractGridIterator.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                Chunk = Grid.chunkIDChunkMap.get(ChunkID);
-                env.addToNotToCache(Grid, ChunkID);
-                ChunkIterator = getChunkIterator(Chunk);
-                if (ChunkIterator.hasNext()) {
-                    return ChunkIterator.next();
-                }
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    /**
      *
      * @return Chunk.ChunkID
      */
@@ -133,11 +95,4 @@ public abstract class Grids_AbstractGridIterator
         return ChunkID;
     }
 
-    /**
-     * throw new UnsupportedOperationException();
-     */
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
 }

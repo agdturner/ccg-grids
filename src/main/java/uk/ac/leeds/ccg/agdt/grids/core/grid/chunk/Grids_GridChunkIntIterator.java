@@ -24,10 +24,9 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
  */
 public class Grids_GridChunkIntIterator extends Grids_AbstractGridChunkRowMajorOrderIterator {
 
-    protected int Value;
+    private static final long serialVersionUID = 1L;
 
-    protected Grids_GridChunkIntIterator() {
-    }
+    protected int v;
 
     /**
      * Creates a new instance of Grids_GridChunkIntIterator
@@ -36,7 +35,7 @@ public class Grids_GridChunkIntIterator extends Grids_AbstractGridChunkRowMajorO
      */
     public Grids_GridChunkIntIterator(Grids_GridChunkInt chunk) {
         super(chunk);
-        Value = chunk.getValue();
+        v = chunk.getValue();
     }
 
     /**
@@ -44,14 +43,8 @@ public class Grids_GridChunkIntIterator extends Grids_AbstractGridChunkRowMajorO
      *
      * @return the next element in the iteration.
      */
-    @Override
-    public Object next() {
+    public Integer next() {
         next0();
-        return Value;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
+        return v;
     }
 }

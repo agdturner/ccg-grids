@@ -24,15 +24,12 @@ import java.util.NoSuchElementException;
  * @version 1.0.0
  */
 public abstract class Grids_AbstractGridChunkRowMajorOrderIterator 
-        extends Grids_AbstractGridChunkIterator {
+        extends Grids_AbstractChunkIterator {
 
     protected int Row;
     protected int Col;
     protected int NRows;
     protected int NCols;
-
-    protected Grids_AbstractGridChunkRowMajorOrderIterator() {
-    }
 
     protected Grids_AbstractGridChunkRowMajorOrderIterator(
             Grids_AbstractGridChunk chunk) {
@@ -51,7 +48,6 @@ public abstract class Grids_AbstractGridChunkRowMajorOrderIterator
      * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
      * catch ArrayOutOfboundsException should be faster
      */
-    @Override
     public boolean hasNext() {
         if (Col + 1 == NCols) {
             if (Row + 1 == NRows) {

@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntMap;
  * For iterating through the values in a Grids_GridInt. The values are returned
  * chunk by chunk in row major order. The values within each chunk are also
  * returned in row major order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -45,7 +45,7 @@ public class Grids_GridIntIterator extends Grids_AbstractGridIterator {
      *
      * @param g The Grids_GridInt to iterate over.
      */
-    public Grids_GridIntIterator(Grids_GridInt g) throws IOException, 
+    public Grids_GridIntIterator(Grids_GridInt g) throws IOException,
             ClassNotFoundException {
         super(g);
         GridIterator = g.chunkIDChunkMap.keySet().iterator();
@@ -95,14 +95,39 @@ public class Grids_GridIntIterator extends Grids_AbstractGridIterator {
                     (Grids_GridChunkInt) chunk);
         } else {
             throw new Error("Unrecognised type of chunk "
-                        + this.getClass().getName()
-                        + ".getChunkIterator(Chunk(" + chunk.toString() + "))");
+                    + this.getClass().getName()
+                    + ".getChunkIterator(Chunk(" + chunk.toString() + "))");
         }
     }
 
     @Override
     public Grids_GridInt getGrid() {
         return (Grids_GridInt) Grid;
+    }
+
+    /**
+     * @return The next value iterating over the entire grid chunk by chunk. If
+     * there is no such value, then {@code null} is returned.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If there is a problem 
+     */
+    public Integer next() throws IOException, ClassNotFoundException {
+        if (!ChunkIterator.hasNext()) {
+            if (GridIterator.hasNext()) {
+                ChunkID = GridIterator.next();
+                Chunk = Grid.getChunk(ChunkID);
+                ChunkIterator = getChunkIterator(Chunk);
+                Integer r = ((Grids_GridChunkIntIterator) ChunkIterator).next();
+                env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+                return r;
+            } else {
+                return null;
+            }
+        } else {
+            Integer r = ((Grids_GridChunkIntIterator) ChunkIterator).next();
+            env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+            return r;
+        }
     }
 
 }

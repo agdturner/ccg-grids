@@ -59,6 +59,8 @@ public class Grids_GridChunkIntMap
         extends Grids_AbstractGridChunkIntArrayOrMap
         implements Serializable, Grids_InterfaceStats {
 
+    private static final long serialVersionUID = 1L;
+
     //private static final long serialVersionUID = 1L;
     /**
      * A value initialised with grid that can be used to optimise storage.
@@ -1056,7 +1058,6 @@ public class Grids_GridChunkIntMap
      *
      * @return
      */
-    @Override
     public Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
     }

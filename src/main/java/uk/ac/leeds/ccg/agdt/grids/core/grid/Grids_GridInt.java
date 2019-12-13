@@ -1925,7 +1925,6 @@ public class Grids_GridInt extends Grids_AbstractGridNumber {
      * @return A Grids_GridIntIterator for iterating over the cell values in
      * this.
      */
-    @Override
     public Grids_GridIntIterator iterator() throws IOException, ClassNotFoundException {
         return new Grids_GridIntIterator(this);
     }

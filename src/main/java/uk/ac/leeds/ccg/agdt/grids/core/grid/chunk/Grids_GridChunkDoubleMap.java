@@ -60,6 +60,8 @@ public class Grids_GridChunkDoubleMap
         extends Grids_AbstractGridChunkDoubleArrayOrMap
         implements Serializable, Grids_InterfaceStats {
 
+    private static final long serialVersionUID = 1L;
+
     //private static final long serialVersionUID = 1L;
     /**
      * A value initialised with grid that can be used to optimise storage.
@@ -1043,7 +1045,6 @@ public class Grids_GridChunkDoubleMap
      *
      * @return
      */
-    @Override
     public Grids_GridChunkDoubleArrayOrMapIterator iterator() {
         return new Grids_GridChunkDoubleArrayOrMapIterator(this);
     }

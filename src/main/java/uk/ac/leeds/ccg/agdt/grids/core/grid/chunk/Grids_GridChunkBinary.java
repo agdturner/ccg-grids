@@ -107,7 +107,6 @@ public class Grids_GridChunkBinary extends Grids_AbstractGridChunk {
         return data;
     }
 
-    @Override
     public Grids_GridChunkBinaryIterator iterator() {
         return new Grids_GridChunkBinaryIterator(this);
     }
@@ -117,7 +116,7 @@ public class Grids_GridChunkBinary extends Grids_AbstractGridChunk {
         long n = 0;
         Grids_GridChunkBinaryIterator ite = iterator();
         while (ite.hasNext()) {
-            if ((Boolean) ite.next()) {
+            if (ite.next()) {
                 n++;
             }
         }

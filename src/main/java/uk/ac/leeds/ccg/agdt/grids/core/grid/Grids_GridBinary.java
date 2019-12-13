@@ -1088,7 +1088,6 @@ public class Grids_GridBinary extends Grids_AbstractGrid {
      * @return A Grids_GridBinaryIterator for iterating over the cell values in
      * this.
      */
-    @Override
     public Grids_GridBinaryIterator iterator() throws IOException, ClassNotFoundException {
         return new Grids_GridBinaryIterator(this);
     }

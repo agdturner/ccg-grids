@@ -25,6 +25,8 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
  * @version 1.0.0
  */
 public abstract class Grids_AbstractGridChunkIntArrayOrMap extends Grids_AbstractGridChunkInt {
+
+    private static final long serialVersionUID = 1L;
     
     protected Grids_AbstractGridChunkIntArrayOrMap() {
     }
@@ -32,14 +34,5 @@ public abstract class Grids_AbstractGridChunkIntArrayOrMap extends Grids_Abstrac
     protected Grids_AbstractGridChunkIntArrayOrMap(Grids_GridInt g, Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
-
-    /**
-     * Returns a Grids_GridChunkIntArrayOrMapIterator for iterating over the
-     * cells in this.
-     *
-     * @return
-     */
-    @Override
-    public abstract Grids_GridChunkIntArrayOrMapIterator iterator();
     
 }

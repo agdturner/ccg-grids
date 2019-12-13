@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
 import java.util.NoSuchElementException;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinary;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grids_GridChunkBinary instance. The
@@ -26,7 +25,7 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
+public class Grids_GridChunkBinaryIterator extends Grids_AbstractChunkIterator {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,11 +35,8 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
     protected int NRows;
     protected int NCols;
 
-    protected Grids_GridChunkBinaryIterator() {
-    }
-
     public Grids_GridChunkBinaryIterator(Grids_GridChunkBinary chunk) {
-        super(chunk.env);
+        super(chunk);
         Data = chunk.getData();
         Row = 0;
         Col = 0;
@@ -57,7 +53,6 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
      * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
      * catch ArrayOutOfboundsException should be faster
      */
-    @Override
     public boolean hasNext() {
         if (Col + 1 == NCols) {
             if (Row + 1 == NRows) {
@@ -72,8 +67,7 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
      *
      * @return the next element in the iteration.
      */
-    @Override
-    public Object next() {
+    public Boolean next() {
         if (Col + 1 == NCols) {
             if (Row + 1 == NRows) {
                 throw new NoSuchElementException();
@@ -86,26 +80,4 @@ public class Grids_GridChunkBinaryIterator extends Grids_AbstractIterator {
         }
         return Data[Row][Col];
     }
-
-    /**
-     *
-     * Removes from the underlying collection the last element returned by the
-     * iterator (optional operation). This method can be called only once per
-     * call to <tt>next</tt>. The behavior of an iterator is unspecified if the
-     * underlying collection is modified while the iteration is in progress in
-     * any way other than by calling this method.
-     *
-     * @exception UnsupportedOperationException if the <tt>remove</tt>
-     * operation is not supported by this Iterator.
-     *
-     * @exception IllegalStateException if the <tt>next</tt> method has not yet
-     * been called, or the <tt>remove</tt> method has already been called after
-     * the last call to the <tt>next</tt>
-     * method.
-     */
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
-
 }

@@ -17,10 +17,8 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 
 /**
  * Grids_AbstractGridChunkInt extension that stores cell values in a int[][].
@@ -31,6 +29,8 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 public class Grids_GridChunkIntArray
         extends Grids_AbstractGridChunkIntArrayOrMap
         implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     //private static final long serialVersionUID = 1L; 
     /**
@@ -172,7 +172,6 @@ public class Grids_GridChunkIntArray
      *
      * @return
      */
-    @Override
     public Grids_GridChunkIntArrayOrMapIterator iterator() {
         return new Grids_GridChunkIntArrayOrMapIterator(this);
     }

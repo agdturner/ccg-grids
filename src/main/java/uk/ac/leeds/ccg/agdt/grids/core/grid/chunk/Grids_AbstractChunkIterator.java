@@ -15,8 +15,8 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
+import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  *
@@ -24,16 +24,19 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_AbstractGridChunkIterator extends Grids_AbstractIterator {
+public abstract class Grids_AbstractChunkIterator extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
     
     protected Grids_AbstractGrid Grid;
     protected Grids_AbstractGridChunk Chunk;
     
-    protected Grids_AbstractGridChunkIterator(){}
-    
-    public Grids_AbstractGridChunkIterator(Grids_AbstractGridChunk chunk) {
+    public Grids_AbstractChunkIterator(Grids_AbstractGridChunk chunk) {
         super(chunk.env);
         Chunk = chunk;
         Grid = Chunk.getGrid();        
     }
+    
+    public abstract boolean hasNext();
+    
 }

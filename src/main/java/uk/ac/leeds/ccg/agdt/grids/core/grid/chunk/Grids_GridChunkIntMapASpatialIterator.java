@@ -25,23 +25,26 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntMap.OffsetBi
 /**
  * For iterating through the values in a Grids_GridChunkIntMap instance. The
  * values are returned in no particular spatial order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumberMapASpatialIterator {
+public class Grids_GridChunkIntMapASpatialIterator
+        extends Grids_GridChunkNumberMapASpatialIterator {
 
-    private int DefaultValue;
-    private Grids_GridChunkIntMap.GridChunkIntMapData Data;
-    private TreeMap<Integer, OffsetBitSet> DataMapBitSet;
-    private Iterator<Integer> DataMapBitSetIte;
-    private int DataMapBitSetValue;
-    private TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
-    private Iterator<Integer> DataMapHashSetIte;
-    private int DataMapHashSetValue;
+    private static final long serialVersionUID = 1L;
 
-    protected Grids_GridChunkIntMapASpatialIterator() {
-    }
+    protected int NumberOfDefaultValues;
+    protected int NumberOfNoDataValues;
+
+    protected int DefaultValue;
+    protected Grids_GridChunkIntMap.GridChunkIntMapData Data;
+    protected TreeMap<Integer, OffsetBitSet> DataMapBitSet;
+    protected Iterator<Integer> DataMapBitSetIte;
+    protected int DataMapBitSetValue;
+    protected TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+    protected Iterator<Integer> DataMapHashSetIte;
+    protected int DataMapHashSetValue;
 
     public Grids_GridChunkIntMapASpatialIterator(
             Grids_GridChunkIntMap chunk) {
@@ -52,7 +55,7 @@ public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumber
         DataMapBitSetNumberOfValues = 0;
         DataMapBitSetIte = DataMapBitSet.keySet().iterator();
         if (DataMapBitSetIte.hasNext()) {
-            ValuesLeft = true;
+            hasNext = true;
             DataMapBitSetValue = DataMapBitSetIte.next();
             DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
         }
@@ -62,7 +65,7 @@ public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumber
         DataMapHashSetNumberOfValues = 0;
         DataMapHashSetIte = DataMapHashSet.keySet().iterator();
         if (DataMapHashSetIte.hasNext()) {
-            ValuesLeft = true;
+            hasNext = true;
             DataMapHashSetValue = DataMapHashSetIte.next();
             DataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
         }
@@ -80,7 +83,7 @@ public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumber
      */
     @Override
     public boolean hasNext() {
-        return ValuesLeft;
+        return hasNext;
     }
 
     /**
@@ -91,9 +94,8 @@ public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumber
      * @return the next element in the iteration or null.
      * @exception NoSuchElementException iteration has no more elements.
      */
-    @Override
-    public Object next() {
-        if (ValuesLeft) {
+    public Integer next() {
+        if (hasNext) {
             if (DefaultValueIndex == NumberOfDefaultValues - 1) {
                 if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
                     if (DataMapBitSetIte.hasNext()) {
@@ -109,7 +111,7 @@ public class Grids_GridChunkIntMapASpatialIterator extends Grids_GridChunkNumber
                                 DataMapHashSetIndex = 0;
                                 return DataMapHashSetValue;
                             } else {
-                                ValuesLeft = false;
+                                hasNext = false;
                                 return null;
                             }
                         } else {

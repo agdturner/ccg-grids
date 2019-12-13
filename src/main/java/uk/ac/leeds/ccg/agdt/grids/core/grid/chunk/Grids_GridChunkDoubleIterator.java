@@ -15,6 +15,8 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
+import java.util.Iterator;
+
 /**
  * For iterating through the values in a Grids_GridChunkDouble
  * instance. The values are not returned in any particular order.
@@ -22,12 +24,13 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridChunkDoubleIterator extends Grids_AbstractGridChunkRowMajorOrderIterator {
+public class Grids_GridChunkDoubleIterator 
+        extends Grids_AbstractGridChunkRowMajorOrderIterator
+            implements Iterator<Double> {
+
+    private static final long serialVersionUID = 1L;
 
     protected double Value;
-
-    protected Grids_GridChunkDoubleIterator() {
-    }
 
     /**
      * Creates a new instance of Grids_GridChunkDoubleIterator
@@ -45,7 +48,7 @@ public class Grids_GridChunkDoubleIterator extends Grids_AbstractGridChunkRowMaj
      * @return the next element in the iteration.
      */
     @Override
-    public Object next() {
+    public Double next() {
         next0();
         return Value;
     }

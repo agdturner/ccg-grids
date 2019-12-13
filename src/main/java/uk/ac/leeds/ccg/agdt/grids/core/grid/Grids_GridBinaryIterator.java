@@ -19,7 +19,6 @@ import java.io.IOException;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinary;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinaryIterator;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * For iterating through the values in a Grids_GridBinary. The values are
@@ -72,7 +71,7 @@ public class Grids_GridBinaryIterator extends Grids_AbstractGridIterator {
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_AbstractIterator getChunkIterator(
+    public Grids_GridChunkBinaryIterator getChunkIterator(
             Grids_AbstractGridChunk chunk) {
         if (chunk instanceof Grids_GridChunkBinary) {
             return new Grids_GridChunkBinaryIterator(
@@ -87,5 +86,30 @@ public class Grids_GridBinaryIterator extends Grids_AbstractGridIterator {
     @Override
     public Grids_GridBinary getGrid() {
         return (Grids_GridBinary) Grid;
+    }
+    
+    /**
+     * @return The next value iterating over the entire grid chunk by chunk. If
+     * there is no such value, then {@code null} is returned.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If there is a problem 
+     */
+    public Boolean next() throws IOException, ClassNotFoundException {
+        if (!ChunkIterator.hasNext()) {
+            if (GridIterator.hasNext()) {
+                ChunkID = GridIterator.next();
+                Chunk = Grid.getChunk(ChunkID);
+                ChunkIterator = getChunkIterator(Chunk);
+                Boolean r = ((Grids_GridChunkBinaryIterator) ChunkIterator).next();
+                env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+                return r;
+            } else {
+                return null;
+            }
+        } else {
+            Boolean r = ((Grids_GridChunkBinaryIterator) ChunkIterator).next();
+            env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+            return r;
+        }
     }
 }

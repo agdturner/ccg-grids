@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,6 +50,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinary;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinaryFactory;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleIterator;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
@@ -367,10 +369,9 @@ public class Grids_Processor extends Grids_Object {
                 maskInt = (Grids_GridInt) mask;
                 int maskNoDataValue = maskInt.getNoDataValue();
                 int value;
-                Iterator ite = maskInt.iterator();
-                Grids_AbstractGridChunkInt maskIntChunk;
+                Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    maskIntChunk = (Grids_AbstractGridChunkInt) ite.next();
+                    Grids_AbstractGridChunkInt maskIntChunk = maskInt.getChunk(ite.next());
                     chunkID = maskIntChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -400,10 +401,9 @@ public class Grids_Processor extends Grids_Object {
                 maskDouble = (Grids_GridDouble) mask;
                 double maskNoDataValue = maskDouble.getNoDataValue();
                 double value;
-                Iterator ite = maskDouble.iterator();
-                Grids_AbstractGridChunkDouble maskChunk;
+                Iterator<Grids_2D_ID_int> ite = maskDouble.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    maskChunk = (Grids_AbstractGridChunkDouble) ite.next();
+                    Grids_AbstractGridChunkDouble maskChunk = maskDouble.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -436,10 +436,9 @@ public class Grids_Processor extends Grids_Object {
                 Grids_GridInt maskInt = (Grids_GridInt) mask;
                 int maskNoDataValue = maskInt.getNoDataValue();
                 int value;
-                Iterator iterator = maskInt.iterator();
-                Grids_AbstractGridChunkInt maskChunk;
-                while (iterator.hasNext()) {
-                    maskChunk = (Grids_AbstractGridChunkInt) iterator.next();
+                Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
+                while (ite.hasNext()) {
+                    Grids_AbstractGridChunkInt maskChunk = maskInt.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -523,10 +522,9 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridInt gi = (Grids_GridInt) g;
             int ndv = gi.getNoDataValue();
             int value;
-            Iterator ite = gi.iterator();
-            Grids_AbstractGridChunkInt chunk;
+            Iterator<Grids_2D_ID_int> ite = gi.iterator().getGridIterator();
             while (ite.hasNext()) {
-                chunk = (Grids_AbstractGridChunkInt) ite.next();
+                Grids_AbstractGridChunkInt chunk = gi.getChunk(ite.next());
                 chunkID = chunk.getChunkID();
                 env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
@@ -547,21 +545,19 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double ndv = gd.getNoDataValue();
             double value;
-            Iterator iterator = g.iterator();
-            Grids_AbstractGridChunkDouble gridChunk;
-            //Iterator gridChunkIterator;
-            while (iterator.hasNext()) {
-                gridChunk = (Grids_AbstractGridChunkDouble) iterator.next();
-                chunkID = gridChunk.getChunkID();
+            Iterator<Grids_2D_ID_int> ite = gd.iterator().getGridIterator();
+            while (ite.hasNext()) {
+                Grids_AbstractGridChunkDouble chunk = gd.getChunk(ite.next());
+                chunkID = chunk.getChunkID();
                 env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = g.getChunkNRows(chunkID);
                 chunkNCols = g.getChunkNCols(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                        value = gd.getCell(gridChunk, cellRow, cellCol);
+                        value = gd.getCell(chunk, cellRow, cellCol);
                         if (value >= min && value <= max) {
-                            gd.setCell(gridChunk, cellRow, cellCol, ndv);
+                            gd.setCell(chunk, cellRow, cellCol, ndv);
                         }
                     }
                 }
@@ -1187,7 +1183,6 @@ public class Grids_Processor extends Grids_Object {
                 // TODO:
                 // Check scale and rounding appropriate
                 int scale = 324;
-                int roundingMode = BigDecimal.ROUND_HALF_EVEN;
                 BigDecimal g2CellsizeSquared;
                 g2CellsizeSquared = g2Cellsize.multiply(g2Cellsize);
                 double[] bounds;
@@ -1205,6 +1200,7 @@ public class Grids_Processor extends Grids_Object {
                 long c;
                 double areaProportion;
                 double halfCellsize = g.getCellsizeDouble() / 2.0d;
+                RoundingMode rm = RoundingMode.HALF_EVEN;
                 // TODO:
                 // precision checking and use of BigDecimal?
                 for (r = 0; r < nrows; r++) {
@@ -1221,7 +1217,7 @@ public class Grids_Processor extends Grids_Object {
                         if (cellID1.equals(cellID2) && cellID2.equals(cellID3)) {
                             if (d1 != g2NoDataValue) {
                                 areaProportion = (gCellsize.multiply(
-                                        gCellsize).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue();
+                                        gCellsize).divide(g2CellsizeSquared, scale, rm)).doubleValue();
                                 tg1.addToCell(r, c, d1 * areaProportion);
                                 tg2.addToCell(r, c, areaProportion);
                             }
@@ -1235,11 +1231,11 @@ public class Grids_Processor extends Grids_Object {
                                         areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
                                                 g2.getCellYBigDecimal(cellID1).subtract(
                                                         g2HalfCellsize)).multiply(gCellsize)).divide(
-                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                g2CellsizeSquared, scale, rm)).doubleValue());
                                     } else {
                                         areaProportion = Math.abs(((((g2.getCellXBigDecimal(cellID1).add(
                                                 g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0]))).multiply(
-                                                gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                gCellsize)).divide(g2CellsizeSquared, scale, rm)).doubleValue());
                                     }
                                 } else {
                                     areaProportion = Math.abs(
@@ -1247,7 +1243,7 @@ public class Grids_Processor extends Grids_Object {
                                                     g2.getCellYBigDecimal(cellID1).subtract(g2HalfCellsize))).multiply(
                                                     (g2.getCellXBigDecimal(cellID1).add(
                                                             g2HalfCellsize.subtract(BigDecimal.valueOf(bounds[0])))).divide(
-                                                            g2CellsizeSquared, scale, roundingMode))).doubleValue());
+                                                            g2CellsizeSquared, scale, rm))).doubleValue());
                                 }
                                 tg1.addToCell(r, c, d1 * areaProportion);
                                 tg2.addToCell(r, c, areaProportion);
@@ -1258,13 +1254,13 @@ public class Grids_Processor extends Grids_Object {
                                         areaProportion = Math.abs((((BigDecimal.valueOf(bounds[2]).subtract(
                                                 g2.getCellXBigDecimal(cellID2).subtract(
                                                         g2HalfCellsize))).multiply(gCellsize)).divide(
-                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                g2CellsizeSquared, scale, rm)).doubleValue());
                                     } else {
                                         areaProportion = Math.abs(((BigDecimal.valueOf(bounds[3]).subtract(
                                                 g2.getCellYBigDecimal(cellID2).subtract(
                                                         g2HalfCellsize))).multiply(BigDecimal.valueOf(bounds[2]).subtract(
                                                         g2.getCellXBigDecimal(cellID2).subtract(
-                                                                g2HalfCellsize))).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                                g2HalfCellsize))).divide(g2CellsizeSquared, scale, rm)).doubleValue());
                                     }
                                     tg1.addToCell(r, c, d2 * areaProportion);
                                     tg2.addToCell(r, c, areaProportion);
@@ -1275,12 +1271,12 @@ public class Grids_Processor extends Grids_Object {
                                     if (cellID3.equals(cellID4)) {
                                         areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
                                                 g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply(
-                                                gCellsize)).divide(g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                gCellsize)).divide(g2CellsizeSquared, scale, rm)).doubleValue());
                                     } else {
                                         areaProportion = Math.abs(((((g2.getCellYBigDecimal(cellID3).add(
                                                 g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[1]))).multiply((g2.getCellXBigDecimal(cellID3).add(
                                                 g2HalfCellsize)).subtract(BigDecimal.valueOf(bounds[0])))).divide(
-                                                g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                g2CellsizeSquared, scale, rm)).doubleValue());
                                     }
                                     tg1.addToCell(r, c, d3 * areaProportion);
                                     tg2.addToCell(r, c, areaProportion);
@@ -1293,7 +1289,7 @@ public class Grids_Processor extends Grids_Object {
                                             BigDecimal.valueOf(bounds[2]).subtract(
                                                     (g2.getCellXBigDecimal(cellID4)).subtract(
                                                             g2HalfCellsize)))).divide(
-                                                    g2CellsizeSquared, scale, roundingMode)).doubleValue());
+                                                    g2CellsizeSquared, scale, rm)).doubleValue());
                                     tg1.addToCell(r, c, d4 * areaProportion);
                                     tg2.addToCell(r, c, areaProportion);
                                 }
@@ -2581,7 +2577,7 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessData(Grids_GridDouble g,
-            double[][] previous, int cellDistance, long row, long col) 
+            double[][] previous, int cellDistance, long row, long col)
             throws IOException, ClassNotFoundException {
         double[][] result = previous;
         if (col == 0) {
@@ -2613,7 +2609,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void output(Grids_AbstractGridNumber g, Path outDir,
             Grids_ImageExporter ie, String[] imageTypes,
-            Grids_ESRIAsciiGridExporter eage) 
+            Grids_ESRIAsciiGridExporter eage)
             throws IOException, ClassNotFoundException {
         System.out.println("Output " + g.toString());
         if (ie == null) {

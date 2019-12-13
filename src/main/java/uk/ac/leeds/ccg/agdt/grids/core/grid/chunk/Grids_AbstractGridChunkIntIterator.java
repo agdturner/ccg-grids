@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2019 Centre for Computational Geography.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.agdt.grids.core.grid;
-
-import java.io.IOException;
-import java.util.Iterator;
+package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
 
 /**
- *
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public interface Grids_InterfaceGrid {
+public abstract class Grids_AbstractGridChunkIntIterator extends Grids_AbstractChunkIterator {
 
-    /**
-     * @return An iterator for iterating over the cell values in this.
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
-     */
-    Iterator iterator() throws IOException, ClassNotFoundException;
+    private static final long serialVersionUID = 1L;
     
+    public Grids_AbstractGridChunkIntIterator(Grids_AbstractGridChunkInt chunk) {
+        super(chunk);
+    }
+        
+    public abstract Integer next();
 }

@@ -22,30 +22,29 @@ package uk.ac.leeds.ccg.agdt.grids.core.grid.chunk;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_GridChunkNumberMapASpatialIterator extends Grids_AbstractGridChunkIterator {
+public abstract class Grids_GridChunkNumberMapASpatialIterator
+        extends Grids_AbstractChunkIterator {
+
+    private static final long serialVersionUID = 1L;
 
     protected int NumberOfCells;
-    protected int NumberOfDefaultValues;
     protected int DefaultValueIndex;
-    protected int NumberOfNoDataValues;
     protected int NoDataValueIndex;
     protected int DataMapBitSetIndex;
     protected int DataMapBitSetNumberOfValues;
     protected int DataMapHashSetNumberOfValues;
     protected int DataMapHashSetIndex;
-    protected boolean ValuesLeft;
-
-    protected Grids_GridChunkNumberMapASpatialIterator() {
-    }
+    protected boolean hasNext;
 
     public Grids_GridChunkNumberMapASpatialIterator(
-            Grids_GridChunkIntMap chunk) {
+            Grids_AbstractGridChunk chunk) {
+        super(chunk);
                 NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
         NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
-        NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
+        //NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
         DefaultValueIndex = 0;
-        ValuesLeft = true;
-        NumberOfNoDataValues = NumberOfCells - NumberOfDefaultValues;
+        hasNext = true;
+        //NumberOfNoDataValues = NumberOfCells - NumberOfDefaultValues;
         DataMapBitSetIndex = 0;
         DataMapHashSetIndex = 0;
     }
@@ -57,13 +56,7 @@ public abstract class Grids_GridChunkNumberMapASpatialIterator extends Grids_Abs
      *
      * @return <tt>true</tt> if the iterator has more elements.
      */
-    @Override
     public boolean hasNext() {
-        return ValuesLeft;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
+        return hasNext;
     }
 }

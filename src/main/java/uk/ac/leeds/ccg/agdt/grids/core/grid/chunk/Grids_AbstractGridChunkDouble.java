@@ -19,6 +19,7 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 
 /**

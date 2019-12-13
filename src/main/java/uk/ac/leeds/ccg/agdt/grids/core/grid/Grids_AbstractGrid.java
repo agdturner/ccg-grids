@@ -50,8 +50,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_AbstractGrid extends Grids_Object
-        implements Grids_InterfaceGrid {
+public abstract class Grids_AbstractGrid extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
 
@@ -2591,29 +2590,6 @@ public abstract class Grids_AbstractGrid extends Grids_Object
             int chunkRow, int chunkCol) throws IOException, ClassNotFoundException;
 
     public abstract Grids_AbstractGridStats getStats();
-
-    /**
-     * @return An Iterator for iterating over the cell values in this.
-     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Iterator iterator(boolean hoome) throws IOException, 
-            ClassNotFoundException {
-        try {
-            Iterator r = iterator();
-            env.checkAndMaybeFreeMemory(hoome);
-            return r;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                freeSomeMemoryAndResetReserve(hoome, e);
-                return iterator(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
 
     /**
      * @param hoome

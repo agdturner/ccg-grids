@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.agdt.grids.core.grid;
 
 import java.io.IOException;
-import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayOrMapIterator;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleMap;
@@ -34,21 +33,24 @@ import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridDoubleIterator
-        extends Grids_AbstractGridIterator {
+public class Grids_GridDoubleIterator extends Grids_AbstractGridIterator {
+
+    private static final long serialVersionUID = 1L;
 
     protected Grids_GridDoubleIterator() {
     }
 
     /**
-     * @param g The Grids_GridDouble to iterate over.
+     * @param g The grid to iterate over.
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      */
-    public Grids_GridDoubleIterator( Grids_GridDouble g) throws IOException, 
+    public Grids_GridDoubleIterator(Grids_GridDouble g) throws IOException, 
             ClassNotFoundException {
         super(g);
         GridIterator = g.chunkIDChunkMap.keySet().iterator();
         if (GridIterator.hasNext()) {
-            ChunkID = (Grids_2D_ID_int) GridIterator.next();
+            ChunkID = GridIterator.next();
             Chunk = (Grids_AbstractGridChunkDouble) g.chunkIDChunkMap.get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
@@ -101,5 +103,30 @@ public class Grids_GridDoubleIterator
     @Override
     public Grids_GridDouble getGrid() {
         return (Grids_GridDouble) Grid;
+    }
+    
+    /**
+     * @return The next value iterating over the entire grid chunk by chunk. If
+     * there is no such value, then {@code null} is returned.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If there is a problem 
+     */
+    public Double next() throws IOException, ClassNotFoundException {
+        if (!ChunkIterator.hasNext()) {
+            if (GridIterator.hasNext()) {
+                ChunkID = GridIterator.next();
+                Chunk = Grid.getChunk(ChunkID);
+                ChunkIterator = getChunkIterator(Chunk);
+                Double r = ((Grids_GridChunkDoubleIterator) ChunkIterator).next();
+                env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+                return r;
+            } else {
+                return null;
+            }
+        } else {
+            Double r = ((Grids_GridChunkDoubleIterator) ChunkIterator).next();
+            env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+            return r;
+        }
     }
 }

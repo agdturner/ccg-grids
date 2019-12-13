@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_AbstractIterator;
 
 /**
  * Grids_AbstractGridChunkDouble extension for which all values are the same.
@@ -106,8 +105,7 @@ public class Grids_GridChunkInt
      *
      * @return
      */
-    @Override
-    public Grids_AbstractIterator iterator() {
+    public Grids_GridChunkIntIterator iterator() {
         return new Grids_GridChunkIntIterator(this);
     }
 
