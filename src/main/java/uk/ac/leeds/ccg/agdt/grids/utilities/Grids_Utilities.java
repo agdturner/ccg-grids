@@ -16,15 +16,13 @@
 package uk.ac.leeds.ccg.agdt.grids.utilities;
 
 import java.awt.geom.Point2D;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleIterator;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
@@ -36,92 +34,53 @@ import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 public class Grids_Utilities {
 
     /**
-     * Creates a new instance of Utilities
+     * Creates a new instance of Utilities.
      */
     public Grids_Utilities() {
     }
 
     /**
-     * Returns a string identifying the number of hours, minutes, seconds and
-     * milliseconds for the input getTime in milliseconds.
-     *
      * @param time
-     * @return
+     * @return A string representing the number of days, hours, minutes, seconds
+     * and milliseconds in the input time.
      */
     public static String getTime(long time) {
-        int hours = (int) Math.floor(time / 3600000.0d);
-        int mins = (int) Math.floor((time - (3600000.0d * hours)) / 60000.0d);
-        int secs = (int) Math.floor((time - (3600000.0d * hours) - (60000.0d * mins)) / 1000.0d);
-        int millisecs = (int) Math.floor((time - (3600000.0d * hours) - (60000.0d * mins)) - (1000.0d * secs));
-        return hours + " hours, " + mins + " mins, " + secs + " secs, " + millisecs + " millisecs";
+        long milliSecondsInDay = 24L * Generic_Time.MilliSecondsInHour;
+        long days = Math.floorDiv(time, milliSecondsInDay);
+        int t = (int) (time - (days * milliSecondsInDay));
+        int hours = Math.floorDiv(t, Generic_Time.MilliSecondsInHour);
+        t -= hours * Generic_Time.MilliSecondsInHour;
+        int milliSecondsInMinute = Generic_Time.MilliSecondsInSecond * 60;
+        int mins = Math.floorDiv(t, milliSecondsInMinute);
+        t -= mins * milliSecondsInMinute;
+        int secs = Math.floorDiv(t, Generic_Time.MilliSecondsInSecond);
+        t -= secs * Generic_Time.MilliSecondsInSecond;
+        return "days=" + days + ", hours=" + hours + ", mins=" + mins
+                + ", secs=" + secs + ", millisecs=" + t;
     }
 
     /**
-     * TODO: documentation
+     * Deprecated since we can now simply use
+     * {@link java.lang.Math#nextUp(double)}.
      *
-     * @param value
-     * @return
+     * @param value The value for which a larger value is returned.
+     * @return A number immediately larger than value in the double range.
      */
+    @Deprecated
     public static double getLarger(double value) {
         return Math.nextUp(value);
-//        if ( value == Double.MAX_VALUE ) {
-//            return value; // Issue warning?
-//        } else {
-//            double difference = 1.0d;
-//            double counter = 1.0d;
-//            boolean calculated;
-//            if ( value != 0.0d ) {
-//                difference = Math.abs( value );
-//                counter = value;
-//            }
-//            for ( int i = 2048; i > 2; i /= 2 ) {
-//                calculated = false;
-//                while ( ! calculated ) {
-//                    if ( ( value + difference ) == value ) {
-//                        calculated = true;
-//                    } else {
-//                        counter *= ( double ) i;
-//                        difference = Math.abs( 1.0d / counter );
-//                    }
-//                }
-//                counter /= ( double ) i;
-//                difference = Math.abs( 1.0d / counter );
-//            }
-//            //System.out.println( value + difference );
-//            return value + difference;
-//        }
     }
 
     /**
-     * TODO: documentation
+     * Deprecated since we can now simply use
+     * {@link java.lang.Math#nextDown(double)}.
      *
-     * @param value
-     * @return
+     * @param value The value for which a smaller value is returned.
+     * @return A number immediately smaller than value in the double range.
      */
+    @Deprecated
     public static double getSmaller(double value) {
-        return Math.nextAfter(value, Double.NEGATIVE_INFINITY);
-//        if (value == -Double.MAX_VALUE) {
-//            return value; // Issue warning?
-//        } else {
-//            double difference = Math.abs( value );
-//            double counter = value;
-//            boolean calculated;
-//            int ite = 0;
-//            for ( int i = 2048; i > 2; i /= 2 ) {
-//                calculated = false;
-//                while ( ! calculated ) {
-//                    if ( ( value - difference ) == value ) {
-//                        calculated = true;
-//                    } else {
-//                        counter *= ( double ) i;
-//                        difference = Math.abs( 1.0d / counter );
-//                    }
-//                }
-//                counter /= ( double ) i;
-//                difference = Math.abs( 1.0d / counter );
-//            }
-//            return value - difference;
-//        }
+        return Math.nextDown(value);
     }
 
     /**
@@ -141,35 +100,25 @@ public class Grids_Utilities {
      * @return
      *
      */
-    public static Point2D.Double[][] getSamplePoints(
-            Point2D.Double point, double angle, double maxDistance,
-            int nDistances, int nAngles) {
-        Point2D.Double[][] result;
-        result = new Point2D.Double[nAngles][nDistances];
+    public static Point2D.Double[][] getSamplePoints(Point2D.Double point,
+            double angle, double maxDistance, int nDistances, int nAngles) {
+        Point2D.Double[][] r = new Point2D.Double[nAngles][nDistances];
         double sAngle = 2.0d * Math.PI / (double) nAngles;
         double sDistance = maxDistance / (double) nDistances;
-        double xdiff;
-        double ydiff;
-        double sina;
-        double cosa;
-        double distance;
-        int d;
         for (int a = 0; a < nAngles; a++) {
-            sina = Math.sin(angle + sAngle * a);
-            cosa = Math.cos(angle + sAngle * a);
-            distance = maxDistance;
-            d = 0;
+            double sina = Math.sin(angle + sAngle * a);
+            double cosa = Math.cos(angle + sAngle * a);
+            double distance = maxDistance;
+            int d = 0;
             while (distance >= sDistance) {
-                xdiff = sina * distance;
-                ydiff = cosa * distance;
-                result[a][d] = new Point2D.Double(
-                        point.x + xdiff,
-                        point.y + ydiff);
+                double xdiff = sina * distance;
+                double ydiff = cosa * distance;
+                r[a][d] = new Point2D.Double(point.x + xdiff, point.y + ydiff);
                 distance -= sDistance;
                 d++;
             }
         }
-        return result;
+        return r;
     }
 
     /**
@@ -201,20 +150,20 @@ public class Grids_Utilities {
             double x1, double y1, double x2, double y2) {
         return Math.hypot((x1 - x2), (y1 - y2));
     }
-    
+
     /**
-     * Returns the clockwise angle in radians to the y axis of the line from: {@code x1},
-     * {@code y1}; to, {@code x2}, {@code y2}.
+     * Returns the clockwise angle in radians to the y axis of the line from:
+     * {@code x1}, {@code y1}; to, {@code x2}, {@code y2}.
      *
      * @param x1 The x coordinate of the first point.
      * @param y1 The y coordinate of the first point.
      * @param x2 The x coordinate of the second point.
      * @param y2 The y coordinate of the second point.
      * @return The clockwise angle in radians to the y axis of the line from x1,
-     * y1 to x2, y2 calculated using {@code double}
-     * precision floating point numbers.
+     * y1 to x2, y2 calculated using {@code double} precision floating point
+     * numbers.
      */
-    public static final double angle(double x1, double y1, double x2, 
+    public static final double angle(double x1, double y1, double x2,
             double y2) {
         double xdiff = x1 - x2;
         double ydiff = y1 - y2;
@@ -256,30 +205,29 @@ public class Grids_Utilities {
     }
 
     /**
-     * Returns a density plot of xGrid values against yGrid values. A density
-     * plot is like a scatterplot, but rather than plotting individual points,
-     * each point is aggregated to a cells and the result is a plot of the
-     * density of points in the cells. The values of yGrid are scaled to be in
-     * the same range as the values of xGrid and the number of divisions for
-     * each axis is given by divisions. NB1 For this implementation xGrid and
-     * yGrid must have the same spatial frame. NB2 The result returned has a set
-     * cellsize of 1 and origin at ( 0, 0 ) (This enables easy comparison with
-     * other density plots)
+     * Returns a density plot of xGrid values against yGrid values.A density
+ plot is like a scatterplot, but rather than plotting individual points,
+ each point is aggregated to a cells and the result is a plot of the
+ density of points in the cells.The values of yGrid are scaled to be in
+ the same range as the values of xGrid and the number of divisions for
+ each axis is given by divisions. NB1 For this implementation xGrid and
+ yGrid must have the same spatial frame. NB2 The result returned has a set
+ cellsize of 1 and origin at ( 0, 0 ) (This enables easy comparison with
+ other density plots)
      *
      * @param xGrid
      * @param yGrid
      * @param factory
      * @param divisions
      * @return
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      */
-    public static Object[] densityPlot(
-            Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid,
-            int divisions,
-            Grids_GridDoubleFactory factory) throws IOException, ClassNotFoundException {
-        Object[] result = new Object[4];
-        boolean hoome;
-        hoome = false;
+    public static Object[] densityPlot(Grids_GridDouble xGrid,
+            Grids_GridDouble yGrid, int divisions, 
+            Grids_GridDoubleFactory factory) throws IOException, 
+            ClassNotFoundException {
+        Object[] r = new Object[4];
         long nrows = xGrid.getNRows();
         long ncols = xGrid.getNCols();
         Grids_Dimensions dimensions = xGrid.getDimensions();
@@ -396,7 +344,7 @@ public class Grids_Utilities {
 //            xGridRescaled.clear();
 //        }
 //        result[3] = densityPlotGrid;
-        return result;
+        return r;
     }
     /**
      * Generates a CSV file for a cumulative gains chart of observed and

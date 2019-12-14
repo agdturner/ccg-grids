@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.process;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
