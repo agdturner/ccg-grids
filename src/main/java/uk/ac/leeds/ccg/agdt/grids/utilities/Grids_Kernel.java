@@ -16,7 +16,7 @@
 package uk.ac.leeds.ccg.agdt.grids.utilities;
 
 import java.awt.geom.Point2D;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridNumber;
 
 /**
  * Class of methods to do with kernels.
@@ -163,7 +163,7 @@ public abstract class Grids_Kernel {
      * @return
      */
     public static double[][] getKernelWeights(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             double distance,
             double weightIntersect,
             double weightFactor) {
@@ -209,7 +209,7 @@ public abstract class Grids_Kernel {
      * @return
      */
     public static double[] getKernelWeights(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             long rowIndex,
             long colIndex,
             double distance,
@@ -268,8 +268,8 @@ public abstract class Grids_Kernel {
      * of cells thats centroids are within distance of an arbitrary cell
      * centroid of grid2DSquareCell.
      *
-     * @param grid2DSquareCell Grids_AbstractGridNumber for which kernel
-     * parameters are returned
+     * @param grid2DSquareCell Grids_GridNumber for which kernel
+ parameters are returned
      * @param cellDistance
      * @param distance
      * @param weightIntersect
@@ -277,7 +277,7 @@ public abstract class Grids_Kernel {
      * @return
      */
     public static double[] getKernelParameters(
-            Grids_AbstractGridNumber grid2DSquareCell,
+            Grids_GridNumber grid2DSquareCell,
             int cellDistance,
             double distance,
             double weightIntersect,

@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
@@ -225,7 +225,7 @@ public class Grids_Utilities {
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
             Grids_GridDouble yGrid, int divisions, 
-            Grids_GridDoubleFactory factory) throws IOException, 
+            Grids_GridFactoryDouble factory) throws IOException, 
             ClassNotFoundException {
         Object[] r = new Object[4];
         long nrows = xGrid.getNRows();

@@ -34,32 +34,32 @@ import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDoubleFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleArrayFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleMapFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntArrayFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntMapFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridIntFactory;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkFactoryDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkFactoryDoubleArray;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkFactoryDoubleMap;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridInt;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkInt;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkIntArrayFactory;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkFactoryIntMap;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridFactoryInt;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinary;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridBinaryFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleIterator;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkIntFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkBinaryFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDoubleFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkIntFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_AbstractGridNumberStats;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridDoubleStats;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridDoubleStatsNotUpdated;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridIntStats;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.stats.Grids_GridIntStatsNotUpdated;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.b.Grids_GridBoolean;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.b.Grids_GridFactoryBoolean;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDoubleIterator;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkFactoryInt;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.b.Grids_ChunkFactoryBoolean;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkFactoryDoubleSinglet;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkFactoryIntSinglet;
+import uk.ac.leeds.ccg.agdt.grids.core.stats.Grids_StatsNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.stats.Grids_StatsDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.stats.Grids_StatsNotUpdatedDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.stats.Grids_StatsInt;
+import uk.ac.leeds.ccg.agdt.grids.core.stats.Grids_StatsNotUpdatedInt;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.agdt.grids.io.Grids_ImageExporter;
@@ -72,6 +72,8 @@ import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
  * @version 1.0.0
  */
 public class Grids_Processor extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the start time of the processing.
@@ -98,85 +100,86 @@ public class Grids_Processor extends Grids_Object {
 //     * Workspace directory for the processing.
 //     */
 //    protected File Directory;
+    
     /**
-     * Grids_AbstractGridChunkIntFactory
+     * Grids_ChunkFactoryInt
      */
-    public Grids_AbstractGridChunkIntFactory DefaultGridChunkIntFactory;
+    public Grids_ChunkFactoryInt defaultChunkIntFactory;
 
     /**
-     * Grids_GridChunkIntFactory
+     * Grids_ChunkFactoryIntSinglet
      */
-    public Grids_GridChunkBinaryFactory GridChunkBinaryFactory;
+    public Grids_ChunkFactoryBoolean chunkBinaryFactory;
 
     /**
-     * Grids_GridChunkIntFactory
+     * Grids_ChunkFactoryIntSinglet
      */
-    public Grids_GridChunkIntFactory GridChunkIntFactory;
+    public Grids_ChunkFactoryIntSinglet GridChunkIntFactory;
 
     /**
-     * Grids_GridChunkIntArrayFactory
+     * Grids_ChunkIntArrayFactory
      */
-    public Grids_GridChunkIntArrayFactory GridChunkIntArrayFactory;
+    public Grids_ChunkIntArrayFactory GridChunkIntArrayFactory;
 
     /**
-     * Grids_GridChunkIntMapFactory
+     * Grids_ChunkFactoryIntMap
      */
-    public Grids_GridChunkIntMapFactory GridChunkIntMapFactory;
+    public Grids_ChunkFactoryIntMap GridChunkIntMapFactory;
 
     /**
-     * Grids_GridBinaryFactory
+     * Grids_GridFactoryBoolean
      */
-    public Grids_GridBinaryFactory GridBinaryFactory;
+    public Grids_GridFactoryBoolean GridBinaryFactory;
 
     /**
-     * Grids_GridIntFactory
+     * Grids_GridFactoryInt
      */
-    public Grids_GridIntFactory GridIntFactory;
+    public Grids_GridFactoryInt GridIntFactory;
 
     /**
-     * Grids_AbstractGridChunkDoubleFactory
+     * Grids_ChunkFactoryDouble
      */
-    public Grids_AbstractGridChunkDoubleFactory DefaultGridChunkDoubleFactory;
+    public Grids_ChunkFactoryDouble DefaultGridChunkDoubleFactory;
 
     /**
-     * Grids_GridChunkDoubleFactory
+     * Grids_ChunkFactoryDoubleSinglet
      */
-    public Grids_GridChunkDoubleFactory GridChunkDoubleFactory;
+    public Grids_ChunkFactoryDoubleSinglet GridChunkDoubleFactory;
 
     /**
-     * Grids_GridChunkDoubleArrayFactory
+     * Grids_ChunkFactoryDoubleArray
      */
-    public Grids_GridChunkDoubleArrayFactory GridChunkDoubleArrayFactory;
+    public Grids_ChunkFactoryDoubleArray GridChunkDoubleArrayFactory;
 
     /**
-     * Grids_GridChunkDoubleMapFactory
+     * Grids_ChunkFactoryDoubleMap
      */
-    public Grids_GridChunkDoubleMapFactory GridChunkDoubleMapFactory;
+    public Grids_ChunkFactoryDoubleMap GridChunkDoubleMapFactory;
 
     /**
-     * Grids_GridDoubleFactory
+     * Grids_GridFactoryDouble
      */
-    public Grids_GridDoubleFactory GridDoubleFactory;
+    public Grids_GridFactoryDouble GridDoubleFactory;
 
     /**
-     * Grids_GridDoubleStats
+     * Grids_StatsDouble
      */
-    public Grids_GridDoubleStats GridDoubleStatistics;
+    public Grids_StatsDouble GridDoubleStatistics;
 
     /**
-     * Grids_GridDoubleStatsNotUpdated
+     * Grids_StatsNotUpdatedDouble
      */
-    public Grids_GridDoubleStatsNotUpdated GridDoubleStatisticsNotUpdated;
+    public Grids_StatsNotUpdatedDouble GridDoubleStatisticsNotUpdated;
 
     /**
-     * Grids_GridIntStats
+     * Grids_StatsInt
      */
-    public Grids_GridIntStats GridIntStatistics;
+    public Grids_StatsInt GridIntStatistics;
 
     /**
-     * Grids_GridIntStatsNotUpdated
+     * Grids_StatsNotUpdatedInt
      */
-    public Grids_GridIntStatsNotUpdated GridIntStatisticsNotUpdated;
+    public Grids_StatsNotUpdatedInt GridIntStatisticsNotUpdated;
 
     /**
      * Creates a new instance of Grids_Processor. The Log file in directory will
@@ -207,11 +210,11 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactories() {
         initChunkFactories();
-        GridBinaryFactory = new Grids_GridBinaryFactory(env,
-                GridChunkBinaryFactory, 512, 512, Grids_GridBinary.DefaultValue);
-        GridIntFactory = new Grids_GridIntFactory(env, GridChunkIntFactory,
-                DefaultGridChunkIntFactory, 512, 512);
-        GridDoubleFactory = new Grids_GridDoubleFactory(env,
+        GridBinaryFactory = new Grids_GridFactoryBoolean(env,
+                chunkBinaryFactory, 512, 512, Grids_GridBoolean.DefaultValue);
+        GridIntFactory = new Grids_GridFactoryInt(env, GridChunkIntFactory,
+                defaultChunkIntFactory, 512, 512);
+        GridDoubleFactory = new Grids_GridFactoryDouble(env,
                 GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, 512,
                 512);
         initGridStatistics();
@@ -221,13 +224,13 @@ public class Grids_Processor extends Grids_Object {
      * Initialises chunk Factories.
      */
     private void initChunkFactories() {
-        GridChunkIntArrayFactory = new Grids_GridChunkIntArrayFactory();
-        GridChunkIntMapFactory = new Grids_GridChunkIntMapFactory();
-        GridChunkIntFactory = new Grids_GridChunkIntFactory(Integer.MIN_VALUE);
-        DefaultGridChunkIntFactory = GridChunkIntArrayFactory;
-        GridChunkDoubleArrayFactory = new Grids_GridChunkDoubleArrayFactory();
-        GridChunkDoubleMapFactory = new Grids_GridChunkDoubleMapFactory();
-        GridChunkDoubleFactory = new Grids_GridChunkDoubleFactory(
+        GridChunkIntArrayFactory = new Grids_ChunkIntArrayFactory();
+        GridChunkIntMapFactory = new Grids_ChunkFactoryIntMap();
+        GridChunkIntFactory = new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE);
+        defaultChunkIntFactory = GridChunkIntArrayFactory;
+        GridChunkDoubleArrayFactory = new Grids_ChunkFactoryDoubleArray();
+        GridChunkDoubleMapFactory = new Grids_ChunkFactoryDoubleMap();
+        GridChunkDoubleFactory = new Grids_ChunkFactoryDoubleSinglet(
                 -Double.MAX_VALUE);
         DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
     }
@@ -236,11 +239,11 @@ public class Grids_Processor extends Grids_Object {
      * Initialises Stats.
      */
     private void initGridStatistics() {
-        GridDoubleStatistics = new Grids_GridDoubleStats(env);
-        GridDoubleStatisticsNotUpdated = new Grids_GridDoubleStatsNotUpdated(
+        GridDoubleStatistics = new Grids_StatsDouble(env);
+        GridDoubleStatisticsNotUpdated = new Grids_StatsNotUpdatedDouble(
                 env);
-        GridIntStatistics = new Grids_GridIntStats(env);
-        GridIntStatisticsNotUpdated = new Grids_GridIntStatsNotUpdated(env);
+        GridIntStatistics = new Grids_StatsInt(env);
+        GridIntStatisticsNotUpdated = new Grids_StatsNotUpdatedInt(env);
     }
 
     /**
@@ -346,11 +349,11 @@ public class Grids_Processor extends Grids_Object {
      * coincident have the same origin and the same chunk structure. @TODO add
      * flexibility so the mask can have a different chunk structure to g.
      *
-     * @param g The Grids_AbstractGridNumber that the mask will be applied to.
-     * @param mask The Grids_AbstractGridNumber to use as a mask.
+     * @param g The Grids_GridNumber that the mask will be applied to.
+     * @param mask The Grids_GridNumber to use as a mask.
      */
-    public void mask(Grids_AbstractGridNumber g,
-            Grids_AbstractGridNumber mask) throws IOException, ClassNotFoundException {
+    public void mask(Grids_GridNumber g,
+            Grids_GridNumber mask) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         int chunkNRows;
         int chunkNCols;
@@ -371,7 +374,7 @@ public class Grids_Processor extends Grids_Object {
                 int value;
                 Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    Grids_AbstractGridChunkInt maskIntChunk = maskInt.getChunk(ite.next());
+                    Grids_ChunkInt maskIntChunk = maskInt.getChunk(ite.next());
                     chunkID = maskIntChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -403,7 +406,7 @@ public class Grids_Processor extends Grids_Object {
                 double value;
                 Iterator<Grids_2D_ID_int> ite = maskDouble.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    Grids_AbstractGridChunkDouble maskChunk = maskDouble.getChunk(ite.next());
+                    Grids_ChunkDouble maskChunk = maskDouble.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -438,7 +441,7 @@ public class Grids_Processor extends Grids_Object {
                 int value;
                 Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    Grids_AbstractGridChunkInt maskChunk = maskInt.getChunk(ite.next());
+                    Grids_ChunkInt maskChunk = maskInt.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -468,9 +471,9 @@ public class Grids_Processor extends Grids_Object {
                 double maskNoDataValue = maskDouble.getNoDataValue();
                 double value;
                 Iterator ite = maskDouble.getChunkIDs().iterator();
-                Grids_AbstractGridChunkDouble maskChunk;
+                Grids_ChunkDouble maskChunk;
                 while (ite.hasNext()) {
-                    maskChunk = (Grids_AbstractGridChunkDouble) mask.getChunk(
+                    maskChunk = (Grids_ChunkDouble) mask.getChunk(
                             (Grids_2D_ID_int) ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
@@ -509,7 +512,7 @@ public class Grids_Processor extends Grids_Object {
      * @param max The maximum value in the range.
      */
     public void mask(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             double min,
             double max) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
@@ -524,7 +527,7 @@ public class Grids_Processor extends Grids_Object {
             int value;
             Iterator<Grids_2D_ID_int> ite = gi.iterator().getGridIterator();
             while (ite.hasNext()) {
-                Grids_AbstractGridChunkInt chunk = gi.getChunk(ite.next());
+                Grids_ChunkInt chunk = gi.getChunk(ite.next());
                 chunkID = chunk.getChunkID();
                 env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
@@ -547,7 +550,7 @@ public class Grids_Processor extends Grids_Object {
             double value;
             Iterator<Grids_2D_ID_int> ite = gd.iterator().getGridIterator();
             while (ite.hasNext()) {
-                Grids_AbstractGridChunkDouble chunk = gd.getChunk(ite.next());
+                Grids_ChunkDouble chunk = gd.getChunk(ite.next());
                 chunkID = chunk.getChunkID();
                 env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
@@ -578,7 +581,7 @@ public class Grids_Processor extends Grids_Object {
      * @param max The maximum value in the rescaled range.
      */
     public Grids_GridDouble rescale(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             String type,
             double min,
             double max) throws IOException, ClassNotFoundException {
@@ -644,7 +647,7 @@ public class Grids_Processor extends Grids_Object {
         int chunkNRows;
         double ndv = g.getNoDataValue();
         double range = max - min;
-        Grids_AbstractGridNumberStats stats = g.getStats();
+        Grids_StatsNumber stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
@@ -658,8 +661,8 @@ public class Grids_Processor extends Grids_Object {
         int chunkCol;
         int cellRow;
         int cellCol;
-        Grids_AbstractGridChunkDouble gridChunk;
-        Grids_AbstractGridChunkDouble resultChunk;
+        Grids_ChunkDouble gridChunk;
+        Grids_ChunkDouble resultChunk;
         Grids_2D_ID_int chunkID;
         if (type == null) {
             // if range of either input or output range is zero return min for all non noDataValues
@@ -797,7 +800,7 @@ public class Grids_Processor extends Grids_Object {
         int nChunkRows = g.getNChunkCols();
         int ndv = g.getNoDataValue();
         double range = max - min;
-        Grids_AbstractGridNumberStats stats = g.getStats();
+        Grids_StatsNumber stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
@@ -835,9 +838,9 @@ public class Grids_Processor extends Grids_Object {
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
-                        Grids_AbstractGridChunkInt gridChunk;
+                        Grids_ChunkInt gridChunk;
                         gridChunk = g.getChunk(chunkID);
-                        Grids_AbstractGridChunkDouble outputGridChunk;
+                        Grids_ChunkDouble outputGridChunk;
                         outputGridChunk = r.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -868,9 +871,9 @@ public class Grids_Processor extends Grids_Object {
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
-                        Grids_AbstractGridChunkInt gridChunk;
+                        Grids_ChunkInt gridChunk;
                         gridChunk = g.getChunk(chunkID);
-                        Grids_AbstractGridChunkDouble outputGridChunk;
+                        Grids_ChunkDouble outputGridChunk;
                         outputGridChunk = r.getChunk(chunkID);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -1117,8 +1120,8 @@ public class Grids_Processor extends Grids_Object {
         Grids_Dimensions gDimensions = g.getDimensions();
         double g2NoDataValue = g2.getNoDataValue();
         Grids_Dimensions g2Dimensions = g2.getDimensions();
-        Grids_GridDoubleFactory gf;
-        gf = new Grids_GridDoubleFactory(env, GridChunkDoubleFactory,
+        Grids_GridFactoryDouble gf;
+        gf = new Grids_GridFactoryDouble(env, GridChunkDoubleFactory,
                 DefaultGridChunkDoubleFactory, g.getChunkNCols(),
                 g.getChunkNRows());
         // If the region to be added is outside g then return.
@@ -1495,9 +1498,8 @@ public class Grids_Processor extends Grids_Object {
      * @param g1 Denominator
      * @return
      */
-    public Grids_GridDouble divide(
-            Grids_GridDouble g0,
-            Grids_GridDouble g1) throws IOException, ClassNotFoundException {
+    public Grids_GridDouble divide(Grids_GridDouble g0, Grids_GridDouble g1) 
+            throws IOException, ClassNotFoundException {
         Grids_GridDouble result;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
@@ -1554,9 +1556,9 @@ public class Grids_Processor extends Grids_Object {
      * and variance aggregations. @return @param colOffset @param gridFactory
      * @param colOffset @param gridFactory @return
      */
-    public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
+    public Grids_GridDouble aggregate(Grids_GridNumber grid,
             int cellFactor, String statistic, int rowOffset, int colOffset,
-            Grids_GridDoubleFactory gridFactory) throws IOException,
+            Grids_GridFactoryDouble gridFactory) throws IOException,
             ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         // Initial tests
@@ -1790,7 +1792,7 @@ public class Grids_Processor extends Grids_Object {
     //     */
     //    public Grids_GridDouble aggregate( Grids_GridDouble grid, double resultCellsize, String statistic, double resultXllcorner, double resultYllcorner ) {
     //        try {
-    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_GridDoubleFactory() );
+    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_GridFactoryDouble() );
     //        } catch ( OutOfMemoryError e ) {
     //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grid2DSquareCellDoubleFileFactory() );
     //        }
@@ -1818,9 +1820,9 @@ public class Grids_Processor extends Grids_Object {
      * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
      * @return
      */
-    public Grids_GridDouble aggregate(Grids_AbstractGridNumber grid,
+    public Grids_GridDouble aggregate(Grids_GridNumber grid,
             String statistic, Grids_Dimensions resultDimensions,
-            Grids_GridDoubleFactory gf) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         int scale = 325;
         // Initialistaion
@@ -2607,7 +2609,7 @@ public class Grids_Processor extends Grids_Object {
      * @param imageTypes
      * @param eage
      */
-    public void output(Grids_AbstractGridNumber g, Path outDir,
+    public void output(Grids_GridNumber g, Path outDir,
             Grids_ImageExporter ie, String[] imageTypes,
             Grids_ESRIAsciiGridExporter eage)
             throws IOException, ClassNotFoundException {
@@ -2647,7 +2649,7 @@ public class Grids_Processor extends Grids_Object {
      * @param imageTypes
      * @param hoome
      */
-    public void outputImage(Grids_AbstractGridNumber g, Generic_Path outDir,
+    public void outputImage(Grids_GridNumber g, Generic_Path outDir,
             Grids_ImageExporter ie, String[] imageTypes, boolean hoome)
             throws IOException, ClassNotFoundException {
         try {
@@ -2690,7 +2692,7 @@ public class Grids_Processor extends Grids_Object {
      * @param eage
      * @param hoome
      */
-    public void outputESRIAsciiGrid(Grids_AbstractGridNumber g, Path outDir,
+    public void outputESRIAsciiGrid(Grids_GridNumber g, Path outDir,
             Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException,
             ClassNotFoundException {
         try {

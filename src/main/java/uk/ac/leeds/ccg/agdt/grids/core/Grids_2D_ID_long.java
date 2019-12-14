@@ -15,14 +15,18 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core;
 
+import java.io.Serializable;
+
 /**
  * Grids_2D_ID_long class for distinguishing chunks or cells within chunks.
- * 
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_2D_ID_long extends Object
-        implements Comparable<Grids_2D_ID_long> {
+public class Grids_2D_ID_long extends Object implements Serializable, 
+        Comparable<Grids_2D_ID_long> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the row.

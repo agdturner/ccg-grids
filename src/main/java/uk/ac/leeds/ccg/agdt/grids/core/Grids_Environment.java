@@ -15,8 +15,8 @@
  */
 package uk.ac.leeds.ccg.agdt.grids.core;
 
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunk;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGrid;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.Grids_Chunk;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_Grid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,32 +45,30 @@ public class Grids_Environment extends Grids_MemoryManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * A set of grids that may have chunks that can be cached and released from
-     * the fast access memory (swapped out) to help with memory management and
-     * processing. Swapping out involves both caching the chunks and releasing
+     * A set of all the grids. These may have chunks that can be cached and released from
+     * the fast access memory (swapped out). Swapping out involves both caching the chunks and releasing
      * the memory used to store them in the fast access memory.
      *
-     * If chunks are not in the fast access memory they can be loaded from the
+     * If chunks are not in the fast access memory when they are wanted, they can be loaded from the
      * cache as needed - although this may necessitate other data being swapped
      * out in order to manage with the available fast access memory.
      */
-    protected transient HashSet<Grids_AbstractGrid> grids;
+    protected transient HashSet<Grids_Grid> grids;
 
     /**
-     * For indicating which chunks of which grids are preferably not to be
+     * For indicating which chunks of which grids are not to be
      * swapped out or otherwise released from memory (off-loaded). This map is
      * modified as data processing methods start and progress. The content of
-     * the map is used to make processing more efficient by reducing the
-     * potential of off-loading chunks only to have to load these again from the
-     * cache in the very near future.
+     * the map is used to make processing more efficient by not off-loading chunks only to have to load these again from the
+     * cache in the immediate future.
      *
-     * Maintaining this map is something of an inefficiency when all the data
+     * Maintaining this map has a marginal cost when all the data
      * fits easily into the available fast access memory, but often it doesn't
      * and this library is more geared to supporting the processing of large
-     * volumes of data where this is typically not the case and processing may
-     * involve a significant amount of loading and offloading.
+     * volumes of data (when this is typically not the case and processing may
+     * involve a significant amount of loading and off-loading).
      *
-     * In cases where some chunks in {@link #grids} need to be offloaded in
+     * In cases where some chunks in {@link #grids} need to be off-loaded in
      * order for some processing to complete, and there are no other chunks
      * loaded into the fast access memory to offload, then some of the chunks
      * identified in the map will be offloaded. Typically these will need to be
@@ -100,7 +98,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * efficient way. So there could be other ways to make some processing more
      * memory efficient.
      */
-    protected transient HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> notToCache;
+    protected transient HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToCache;
 
     /**
      * For storing a {@link Math_BigDecimal} instance.
@@ -155,8 +153,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param e What {@link #env} is set to.
      * @param dir Used to initialise {@link #files} using
      * {@link Grids_Files(Generic_Path)}.
+     * @throws java.io.IOException If encountered.
      */
-    public Grids_Environment(Generic_Environment e, Generic_Path dir) 
+    public Grids_Environment(Generic_Environment e, Generic_Path dir)
             throws IOException {
         this.env = e;
         initMemoryReserve(Default_Memory_Threshold);
@@ -171,12 +170,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * If {@link #processor} is not {@code null}, it is returned. If
+     * If {@link #processor} is not {@code null}, it is returned.If
      * {@link #processor} is {@code null} it is initialised and then returned.
      *
      * @return {@link #processor} initialising first if it is {@code null}.
      * @throws java.io.IOException If encountered initialising
      * {@link #processor}.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.io.IOException If encountered.
      */
     public Grids_Processor getProcessor() throws IOException, ClassNotFoundException {
         if (processor == null) {
@@ -215,7 +216,7 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      */
-    public final void addToNotToCache(Grids_AbstractGrid g) {
+    public final void addToNotToCache(Grids_Grid g) {
         notToCache.put(g, g.getChunkIDs());
     }
 
@@ -224,7 +225,7 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      */
-    public final void removeFromNotToCache(Grids_AbstractGrid g) {
+    public final void removeFromNotToCache(Grids_Grid g) {
         notToCache.remove(g);
     }
 
@@ -234,7 +235,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param chunkRow
      */
-    public final void addToNotToCache(Grids_AbstractGrid g, int chunkRow) {
+    public final void addToNotToCache(Grids_Grid g, int chunkRow) {
         int n = g.getNChunkCols();
         for (int c = 0; c < n; c++) {
             addToNotToCache(g, new Grids_2D_ID_int(chunkRow, c));
@@ -247,7 +248,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param chunkRow
      */
-    public final void removeFromNotToCache(Grids_AbstractGrid g, int chunkRow) {
+    public final void removeFromNotToCache(Grids_Grid g, int chunkRow) {
         int n = g.getNChunkCols();
         for (int c = 0; c < n; c++) {
             removeFromNotToCache(g, new Grids_2D_ID_int(chunkRow, c));
@@ -261,7 +262,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      */
     public final void addToNotToCache(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             Grids_2D_ID_int chunkID) {
         if (notToCache.containsKey(g)) {
             notToCache.get(g).add(chunkID);
@@ -280,9 +281,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      */
     public final void addToNotToCache(
-            Grids_AbstractGrid[] g,
+            Grids_Grid[] g,
             Grids_2D_ID_int chunkID) {
-        for (Grids_AbstractGrid g1 : g) {
+        for (Grids_Grid g1 : g) {
             addToNotToCache(g1, chunkID);
         }
     }
@@ -293,10 +294,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      */
     public final void addToNotToCache(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
-        Iterator<Grids_AbstractGrid> ite;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) {
+        Iterator<Grids_Grid> ite;
         ite = m.keySet().iterator();
-        Grids_AbstractGrid g;
+        Grids_Grid g;
         while (ite.hasNext()) {
             g = ite.next();
             if (notToCache.containsKey(g)) {
@@ -314,9 +315,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      */
     public final void removeFromNotToCache(
-            Grids_AbstractGrid[] g,
+            Grids_Grid[] g,
             Grids_2D_ID_int chunkID) {
-        for (Grids_AbstractGrid g1 : g) {
+        for (Grids_Grid g1 : g) {
             removeFromNotToCache(g1, chunkID);
         }
     }
@@ -327,10 +328,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      */
     public final void removeFromNotToCache(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) {
-        Iterator<Grids_AbstractGrid> ite;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) {
+        Iterator<Grids_Grid> ite;
         ite = m.keySet().iterator();
-        Grids_AbstractGrid g;
+        Grids_Grid g;
         while (ite.hasNext()) {
             g = ite.next();
             if (notToCache.containsKey(g)) {
@@ -346,7 +347,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkIDs
      */
     public final void addToNotToCache(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) {
         if (notToCache.containsKey(g)) {
             notToCache.get(g).addAll(chunkIDs);
@@ -362,7 +363,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      */
     public final void removeFromNotToCache(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             Grids_2D_ID_int chunkID) {
         if (notToCache.containsKey(g)) {
             /**
@@ -398,7 +399,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * all chunks in notToCache.
      */
     public final void addToNotToCache(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             Grids_2D_ID_int chunkID,
             int chunkRow,
             int chunkCol,
@@ -446,7 +447,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param grids
      */
     protected void initGrids(
-            HashSet<Grids_AbstractGrid> grids) {
+            HashSet<Grids_Grid> grids) {
         if (this.grids == null) {
             this.grids = grids;
         } else {
@@ -462,7 +463,7 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @return the grids
      */
-    public HashSet<Grids_AbstractGrid> getGrids() {
+    public HashSet<Grids_Grid> getGrids() {
         return grids;
     }
 
@@ -471,10 +472,10 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param grids
      * @param hoome
+     * @throws java.io.IOException If encountered.
      */
-    public void setGrids(
-            HashSet<Grids_AbstractGrid> grids,
-            boolean hoome) throws IOException {
+    public void setGrids(HashSet<Grids_Grid> grids, boolean hoome) 
+            throws IOException {
         try {
             this.grids = grids;
             checkAndMaybeFreeMemory(hoome);
@@ -493,20 +494,20 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Adds g to grids.
+     * Adds {@code g} to {@link #grids}.
      *
-     * @param g
+     * @param g The grid to add to {@link #grids}.
      */
-    public void addGrid(Grids_AbstractGrid g) {
+    public void addGrid(Grids_Grid g) {
         grids.add(g);
     }
 
     /**
-     * Remove g from grids.
+     * Remove {@code g} from {@link #grids}.
      *
-     * @param g
+     * @param g The grid to remove from {@link #grids}.
      */
-    public void removeGrid(Grids_AbstractGrid g) {
+    public void removeGrid(Grids_Grid g) {
         grids.remove(g);
     }
 
@@ -515,8 +516,9 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param grids
      * @param hoome
+     * @throws java.io.IOException If encountered.
      */
-    public void initGridsAndMemoryReserve(HashSet<Grids_AbstractGrid> grids,
+    public void initGridsAndMemoryReserve(HashSet<Grids_Grid> grids,
             boolean hoome) throws IOException {
         try {
             initGridsAndMemoryReserve(grids);
@@ -540,9 +542,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param grids
      */
     protected void initGridsAndMemoryReserve(
-            HashSet<Grids_AbstractGrid> grids) {
+            HashSet<Grids_Grid> grids) {
         initGrids(grids);
-        Iterator<Grids_AbstractGrid> ite = this.grids.iterator();
+        Iterator<Grids_Grid> ite = this.grids.iterator();
         if (ite.hasNext()) {
             ite.next().env.setMemoryReserve(MemoryReserve);
         } else {
@@ -559,7 +561,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             initMemoryReserve_AccountDetail(boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -567,9 +569,9 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunk_AccountDetail();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = checkAndMaybeFreeMemory_AccountDetail(hoome);
                 combine(r, pr);
                 pr = initMemoryReserve_AccountDetail(hoome);
@@ -622,7 +624,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public final void initMemoryReserve(Grids_AbstractGrid g, boolean hoome)
+    public final void initMemoryReserve(Grids_Grid g, boolean hoome)
             throws IOException {
         try {
             initMemoryReserve();
@@ -687,7 +689,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             initMemoryReserve_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) throws IOException {
         try {
@@ -696,12 +698,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
                 partResult = initMemoryReserve_AccountDetail(chunkID, hoome);
                 combine(r, partResult);
                 return r;
@@ -752,7 +754,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public final void initMemoryReserve(Grids_AbstractGrid g,
+    public final void initMemoryReserve(Grids_Grid g,
             Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -782,7 +784,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public long initMemoryReserve_Account(Grids_AbstractGrid g,
+    public long initMemoryReserve_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -816,8 +818,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            initMemoryReserve_AccountDetail(Grids_AbstractGrid g,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            initMemoryReserve_AccountDetail(Grids_Grid g,
                     Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -825,12 +827,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = checkAndMaybeFreeMemory_AccountDetail(g, chunkID, hoome);
                 combine(r, pr);
                 pr = initMemoryReserve_AccountDetail(g, chunkID, hoome);
@@ -853,8 +855,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            initMemoryReserve_AccountDetail(Grids_AbstractGrid g,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            initMemoryReserve_AccountDetail(Grids_Grid g,
                     HashSet<Grids_2D_ID_int> chunkIDs, boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -862,12 +864,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(g, chunkIDs);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = checkAndMaybeFreeMemory_AccountDetail(g, chunkIDs, hoome);
                 combine(r, pr);
                 pr = initMemoryReserve_AccountDetail(g, chunkIDs, hoome);
@@ -888,8 +890,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            initMemoryReserve_AccountDetail(Grids_AbstractGrid g, boolean hoome)
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            initMemoryReserve_AccountDetail(Grids_Grid g, boolean hoome)
             throws IOException {
         try {
             initMemoryReserve();
@@ -897,12 +899,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(g);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
                 combine(r, pr);
                 pr = initMemoryReserve_AccountDetail(g, hoome);
@@ -925,7 +927,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public long initMemoryReserve_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -955,7 +957,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public long initMemoryReserve_Account(Grids_AbstractGrid g, boolean hoome) throws IOException {
+    public long initMemoryReserve_Account(Grids_Grid g, boolean hoome) throws IOException {
         try {
             initMemoryReserve();
             return checkAndMaybeFreeMemory_Account(g, hoome);
@@ -986,7 +988,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public long initMemoryReserve_Account(Grids_AbstractGrid g,
+    public long initMemoryReserve_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs, boolean hoome)
             throws IOException {
         try {
@@ -1020,7 +1022,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryErrors are caught and thrown.
      */
     @Override
-    public final void initMemoryReserve(Grids_AbstractGrid g,
+    public final void initMemoryReserve(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs,
             boolean hoome) throws IOException {
         try {
@@ -1051,7 +1053,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public void initMemoryReserve(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -1079,9 +1081,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             initMemoryReserve_AccountDetail(
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
                     boolean hoome) throws IOException {
         try {
             initMemoryReserve();
@@ -1089,12 +1091,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(m);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
                 combine(r, pr);
                 pr = initMemoryReserve_AccountDetail(m, hoome);
@@ -1208,7 +1210,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryError otherwise.
      */
     @Override
-    public boolean checkAndMaybeFreeMemory(Grids_AbstractGrid g, boolean hoome)
+    public boolean checkAndMaybeFreeMemory(Grids_Grid g, boolean hoome)
             throws IOException {
         try {
             if (!checkAndMaybeFreeMemory(g)) {
@@ -1249,7 +1251,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
-    protected boolean checkAndMaybeFreeMemory(Grids_AbstractGrid g) throws IOException {
+    protected boolean checkAndMaybeFreeMemory(Grids_Grid g) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             notToCache.put(g, g.getChunkIDs());
             do {
@@ -1284,7 +1286,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public boolean checkAndMaybeFreeMemory(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             Grids_2D_ID_int chunkID,
             boolean hoome) throws IOException {
         try {
@@ -1327,7 +1329,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
-    protected boolean checkAndMaybeFreeMemory(Grids_AbstractGrid g,
+    protected boolean checkAndMaybeFreeMemory(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToCache(g, chunkID);
@@ -1401,11 +1403,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
-    protected boolean checkAndMaybeFreeMemory(Grids_2D_ID_int chunkID) 
+    protected boolean checkAndMaybeFreeMemory(Grids_2D_ID_int chunkID)
             throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            Grids_AbstractGrid g;
-            Iterator<Grids_AbstractGrid> ite;
+            Grids_Grid g;
+            Iterator<Grids_Grid> ite;
             ite = grids.iterator();
             while (ite.hasNext()) {
                 g = ite.next();
@@ -1443,7 +1445,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public boolean checkAndMaybeFreeMemory(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException {
         try {
             if (!checkAndMaybeFreeMemory(m)) {
@@ -1483,7 +1485,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * otherwise.
      */
     protected boolean checkAndMaybeFreeMemory(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToCache(m);
             do {
@@ -1515,7 +1517,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * otherwise.
      */
     @Override
-    public boolean checkAndMaybeFreeMemory(            Grids_AbstractGrid g,
+    public boolean checkAndMaybeFreeMemory(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs,
             boolean hoome) throws IOException {
         try {
@@ -1568,7 +1570,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
-    protected boolean checkAndMaybeFreeMemory(            Grids_AbstractGrid g,
+    protected boolean checkAndMaybeFreeMemory(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToCache(g, chunkIDs);
@@ -1682,7 +1684,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return Number of chunks cached.
      */
     @Override
-    public long checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g,
+    public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
             boolean hoome) throws IOException {
         try {
             Account test = checkAndMaybeFreeMemory_Account(g);
@@ -1703,7 +1705,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                long r = checkAndMaybeFreeMemory_Account(                        g, hoome);
+                long r = checkAndMaybeFreeMemory_Account(g, hoome);
                 r += initMemoryReserve_Account(g, hoome);
                 return r;
             } else {
@@ -1722,7 +1724,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @return Account of data cached.
      */
-    protected Account checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g) 
+    protected Account checkAndMaybeFreeMemory_Account(Grids_Grid g)
             throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account r = new Account();
@@ -1764,8 +1766,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return Number of chunks cached.
      */
     @Override
-    public long checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g,
-            Grids_2D_ID_int chunkID,            boolean hoome) throws IOException {
+    public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
+            Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             Account r = checkAndMaybeFreeMemory_Account(g, chunkID);
             if (r == null) {
@@ -1806,7 +1808,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      * @return Account of data cached.
      */
-    public Account checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g,
+    public Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account r = new Account();
@@ -1848,7 +1850,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return Number of chunks cached.
      */
     @Override
-    public long checkAndMaybeFreeMemory_Account(            Grids_2D_ID_int chunkID,
+    public long checkAndMaybeFreeMemory_Account(Grids_2D_ID_int chunkID,
             boolean hoome) throws IOException {
         try {
             Account r = checkAndMaybeFreeMemory_Account(chunkID);
@@ -1887,12 +1889,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      * @return Account of data cached.
      */
-    public Account checkAndMaybeFreeMemory_Account(            Grids_2D_ID_int chunkID) throws IOException {
+    public Account checkAndMaybeFreeMemory_Account(Grids_2D_ID_int chunkID) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account r = new Account();
-            Iterator<Grids_AbstractGrid> ite = grids.iterator();
+            Iterator<Grids_Grid> ite = grids.iterator();
             while (ite.hasNext()) {
-                Grids_AbstractGrid g = ite.next();
+                Grids_Grid g = ite.next();
                 addToNotToCache(g, chunkID);
                 long cache = cacheChunkExcept_Account(notToCache);
                 r.detail += cache;
@@ -1905,7 +1907,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             ite = grids.iterator();
             while (ite.hasNext()) {
-                Grids_AbstractGrid g = ite.next();
+                Grids_Grid g = ite.next();
                 long cache;
                 cache = cacheChunkExcept_Account(g, chunkID);
                 r.detail += cache;
@@ -1932,7 +1934,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException {
         try {
             Account test = checkAndMaybeFreeMemory_Account(m);
@@ -1972,7 +1974,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return Account of data cached.
      */
     public Account checkAndMaybeFreeMemory_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account r = new Account();
             addToNotToCache(m);
@@ -2013,8 +2015,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return Number of chunks cached.
      */
     @Override
-    public long checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g,
-            HashSet<Grids_2D_ID_int> chunks,            boolean hoome) throws IOException {
+    public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
+            HashSet<Grids_2D_ID_int> chunks, boolean hoome) throws IOException {
         try {
             Account test = checkAndMaybeFreeMemory_Account(g, chunks);
             if (test == null) {
@@ -2052,7 +2054,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkIDs
      * @return Account of data cached.
      */
-    public Account checkAndMaybeFreeMemory_Account(            Grids_AbstractGrid g,
+    public Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Account r = new Account();
@@ -2092,7 +2094,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return A map of the grid chunks cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             checkAndMaybeFreeMemory_AccountDetail(boolean hoome) throws IOException {
         try {
             AccountDetail test = checkAndMaybeFreeMemory_AccountDetail();
@@ -2134,7 +2136,7 @@ public class Grids_Environment extends Grids_MemoryManager
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail() throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail r = new AccountDetail();
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
             do {
                 pr = cacheChunkExcept_AccountDetail(notToCache);
                 if (pr.isEmpty()) {
@@ -2180,9 +2182,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             checkAndMaybeFreeMemory_AccountDetail(
-                    Grids_AbstractGrid g, boolean hoome) throws IOException {
+                    Grids_Grid g, boolean hoome) throws IOException {
         try {
             AccountDetail test;
             test = checkAndMaybeFreeMemory_AccountDetail(g);
@@ -2221,11 +2223,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            Grids_AbstractGrid g) throws IOException {
+            Grids_Grid g) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail result = new AccountDetail();
             addToNotToCache(g);
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
             do {
                 partResult = cacheChunkExcept_AccountDetail(notToCache);
                 if (partResult.isEmpty()) {
@@ -2269,9 +2271,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             checkAndMaybeFreeMemory_AccountDetail(
-                    Grids_AbstractGrid g,
+                    Grids_Grid g,
                     Grids_2D_ID_int chunkID,
                     boolean hoome) throws IOException {
         try {
@@ -2295,9 +2297,9 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = checkAndMaybeFreeMemory_AccountDetail(g, chunkID, hoome);
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = initMemoryReserve_AccountDetail(g, chunkID, hoome);
                 combine(r, pr);
                 return r;
@@ -2319,11 +2321,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            Grids_AbstractGrid g, Grids_2D_ID_int chunkID) throws IOException {
+            Grids_Grid g, Grids_2D_ID_int chunkID) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail r = new AccountDetail();
             addToNotToCache(g, chunkID);
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
             do {
                 pr = cacheChunkExcept_AccountDetail(notToCache);
                 if (pr.isEmpty()) {
@@ -2367,8 +2369,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            checkAndMaybeFreeMemory_AccountDetail(                    Grids_2D_ID_int chunkID,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            checkAndMaybeFreeMemory_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) throws IOException {
         try {
             AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(chunkID);
@@ -2390,9 +2392,9 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = checkAndMaybeFreeMemory_AccountDetail(chunkID, hoome);
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = initMemoryReserve_AccountDetail(chunkID, hoome);
                 combine(r, pr);
                 return r;
@@ -2417,11 +2419,11 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_2D_ID_int chunkID) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail r = new AccountDetail();
-            Iterator<Grids_AbstractGrid> ite = grids.iterator();
+            Iterator<Grids_Grid> ite = grids.iterator();
             while (ite.hasNext()) {
-                Grids_AbstractGrid g = ite.next();
+                Grids_Grid g = ite.next();
                 addToNotToCache(g, chunkID);
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
                 do {
                     partResult = cacheChunkExcept_AccountDetail(notToCache);
                     if (partResult.isEmpty()) {
@@ -2437,8 +2439,8 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             ite = grids.iterator();
             while (ite.hasNext()) {
-                Grids_AbstractGrid g = ite.next();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                Grids_Grid g = ite.next();
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 do {
                     pr = cacheChunkExcept_AccountDetail(g, chunkID);
                     if (pr.isEmpty()) {
@@ -2472,9 +2474,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached or null if nothing is cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             checkAndMaybeFreeMemory_AccountDetail(
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
                     boolean hoome) throws IOException {
         try {
             AccountDetail test;
@@ -2496,9 +2498,9 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = initMemoryReserve_AccountDetail(m, hoome);
                 combine(r, pr);
                 return r;
@@ -2520,11 +2522,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached or null if nothing is cached.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail r = new AccountDetail();
             addToNotToCache(m);
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
             do {
                 pr = cacheChunkExcept_AccountDetail(notToCache);
                 if (pr.isEmpty()) {
@@ -2569,9 +2571,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap identifying chunks cached.
      */
     @Override
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             checkAndMaybeFreeMemory_AccountDetail(
-                    Grids_AbstractGrid g,
+                    Grids_Grid g,
                     HashSet<Grids_2D_ID_int> chunkIDs,
                     boolean hoome) throws IOException {
         try {
@@ -2615,12 +2617,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            Grids_AbstractGrid g,
+            Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
         if (getTotalFreeMemory() < Memory_Threshold) {
             AccountDetail r = new AccountDetail();
             addToNotToCache(g, chunkIDs);
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
             do {
                 pr = cacheChunkExcept_AccountDetail(notToCache);
                 if (pr.isEmpty()) {
@@ -2659,10 +2661,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunks_AccountDetail(boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> result;
             result = cacheChunks_AccountDetail(notToCache);
             try {
                 if (result.isEmpty()) {
@@ -2676,7 +2678,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
                     partResult = checkAndMaybeFreeMemory_AccountDetail(hoome);
                     combine(result, partResult);
                 }
@@ -2698,16 +2700,16 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_Chunk in this.grids.
      *
      * @return
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunks_AccountDetail() throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>();
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             partResult = ite.next().cacheChunks_AccountDetail();
             combine(result,
@@ -2717,19 +2719,19 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_Chunk in this.grids.
      *
      * @param m
      * @return
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunks_AccountDetail(
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> result;
         result = new HashMap<>();
-        Grids_AbstractGrid g;
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Grids_Grid g;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             g = ite.next();
             partResult = g.cacheChunksExcept_AccountDetail(m.get(g));
@@ -2790,11 +2792,11 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected long cacheChunks_Account() throws IOException {
         long result = 0L;
-        Iterator<Grids_AbstractGrid> ite;
+        Iterator<Grids_Grid> ite;
         ite = grids.iterator();
         while (ite.hasNext()) {
             long partResult;
-            Grids_AbstractGrid g;
+            Grids_Grid g;
             g = ite.next();
             partResult = g.cacheChunks_Account();
             result += partResult;
@@ -2804,7 +2806,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache all Grids_Chunk in this.grids.
      *
      * @param hoome If true then OutOfMemoryErrors are caught in this method
      * then cache operations are initiated prior to retrying. If false then
@@ -2841,12 +2843,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_AbstractGridChunk in grids.
+     * Attempts to cache all Grids_Chunk in grids.
      *
      * @return
      */
     protected boolean cacheChunks() throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             ite.next().cacheChunks();
         }
@@ -2858,17 +2860,16 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to cache any Grids_AbstractGridChunk in this.Grids. This is the
      * lowest level of OutOfMemoryError handling in this class.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
      * then cache operations are initiated prior to retrying. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunk_AccountDetail(boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> result;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> result;
             result = cacheChunk_AccountDetail();
             try {
                 if (result.isEmpty()) {
@@ -2882,7 +2883,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> partResult;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> partResult;
                     partResult = checkAndMaybeFreeMemory_AccountDetail(hoome);
                     combine(result, partResult);
                 }
@@ -2951,8 +2952,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected boolean cacheChunk() throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
-        Grids_AbstractGrid g;
+        Iterator<Grids_Grid> ite = grids.iterator();
+        Grids_Grid g;
         while (ite.hasNext()) {
             g = ite.next();
             if (cacheChunkExcept(notToCache)) {
@@ -2972,7 +2973,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param hoome
      */
-    public void cacheChunkExcept(Grids_AbstractGrid g, boolean hoome) throws IOException {
+    public void cacheChunkExcept(Grids_Grid g, boolean hoome) throws IOException {
         try {
             boolean success = cacheChunkExcept(g);
             try {
@@ -3010,10 +3011,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @return
      */
-    protected boolean cacheChunkExcept(Grids_AbstractGrid g) throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+    protected boolean cacheChunkExcept(Grids_Grid g) throws IOException {
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid bg = ite.next();
+            Grids_Grid bg = ite.next();
             if (bg != g) {
                 if (bg.cacheChunk()) {
                     return true;
@@ -3031,14 +3032,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param toCombine
      */
     public void combine(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> toGetCombined,
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> toCombine) {
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> toGetCombined,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> toCombine) {
         if (toCombine != null) {
             if (!toCombine.isEmpty()) {
-                Set<Grids_AbstractGrid> toGetCombinedKS = toGetCombined.keySet();
-                Set<Grids_AbstractGrid> toCombineKS = toCombine.keySet();
-                Iterator<Grids_AbstractGrid> ite = toCombineKS.iterator();
-                Grids_AbstractGrid g;
+                Set<Grids_Grid> toGetCombinedKS = toGetCombined.keySet();
+                Set<Grids_Grid> toCombineKS = toCombine.keySet();
+                Iterator<Grids_Grid> ite = toCombineKS.iterator();
+                Grids_Grid g;
                 while (ite.hasNext()) {
                     g = ite.next();
                     if (toGetCombinedKS.contains(g)) {
@@ -3052,18 +3053,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache any Grids_AbstractGridChunk in this.grids.
+     * Attempts to cache any Grids_Chunk in this.grids.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunk_AccountDetail() throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             if (notToCache.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs;
                 chunkIDs = notToCache.get(g);
@@ -3079,18 +3079,17 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in with
-     * Grids_AbstractGrid.ID = _ChunkID.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in with
+     * Grids_Grid.ID = _ChunkID.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunkExcept_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunkExcept_AccountDetail(chunkID);
             try {
                 if (r.isEmpty()) {
@@ -3104,7 +3103,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                     pr = checkAndMaybeFreeMemory_AccountDetail(chunkID, hoome);
                     combine(r, pr);
                 }
@@ -3117,12 +3116,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = initMemoryReserve_AccountDetail(chunkID, hoome);
                 combine(r, pr);
                 return r;
@@ -3133,19 +3132,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in with
-     * Grids_AbstractGrid.ID = _ChunkID.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in with
+     * Grids_Grid.ID = _ChunkID.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunkExcept_AccountDetail(Grids_2D_ID_int chunkID) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             r = g.cacheChunkExcept_AccountDetail(chunkID);
             if (!r.isEmpty()) {
                 HashSet<Grids_2D_ID_int> chunkIDs = new HashSet<>(1);
@@ -3208,9 +3206,9 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected long cacheChunkExcept_Account(Grids_2D_ID_int chunkID) throws IOException {
         long r = 0L;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             addToNotToCache(g, chunkID);
             if (!cacheChunkExcept(notToCache)) {
                 r += cacheChunkExcept_Account(chunkID);
@@ -3229,9 +3227,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected boolean cacheChunkExcept(Grids_2D_ID_int chunkID) throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             if (cacheChunkExcept_Account(g, chunkID) > 0) {
                 return true;
             }
@@ -3241,21 +3239,20 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
-     * @param m HashMap with Grids_AbstractGrid as keys and a respective HashSet
-     * of Grids_AbstractGrid.ChunkIDs as values. Collectively these identifying
-     * those chunks not to be cached from the Grids_AbstractGrid.
+     * @param m HashMap with Grids_Grid as keys and a respective HashSet of
+     * Grids_Grid.ChunkIDs as values. Collectively these identifying those
+     * chunks not to be cached from the Grids_Grid.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunkExcept_AccountDetail(
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
                     boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunkExcept_AccountDetail(m);
             try {
                 if (r.isEmpty()) {
@@ -3269,7 +3266,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                     pr = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
                     combine(r, pr);
                 }
@@ -3282,7 +3279,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(m);
                 if (r.isEmpty()) {
                     throw e;
@@ -3297,22 +3294,21 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param m
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in
      * _Grid2DSquareCell_ChunkIDHashSet.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunkExcept_AccountDetail(
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         HashSet<Grids_2D_ID_int> s = new HashSet<>(1);
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
                 chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
@@ -3338,16 +3334,16 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkIDs
      * @return
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunkExcept_AccountDetail(Grids_Grid g,
                     HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         HashSet<Grids_2D_ID_int> rp = new HashSet<>(1);
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (g == gb) {
                 chunkID = gb.cacheChunkExcept_AccountChunk(chunkIDs);
                 if (chunkID != null) {
@@ -3373,16 +3369,16 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param chunkID
      * @return
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunkExcept_AccountDetail(Grids_Grid g,
                     Grids_2D_ID_int chunkID) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         HashSet<Grids_2D_ID_int> rp = new HashSet<>(1);
         Grids_2D_ID_int chunkIDb;
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (g == gb) {
                 chunkIDb = gb.cacheChunkExcept_AccountChunk(chunkID);
                 if (chunkIDb != null) {
@@ -3409,22 +3405,22 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome
      * @return
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunkExcept_AccountDetail(Grids_Grid g,
                     Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunkExcept_AccountDetail(g, chunkID);
             return r;
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                 rp = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (rp.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = initMemoryReserve_AccountDetail(g, chunkID, hoome);
                 combine(r, rp);
                 return r;
@@ -3439,14 +3435,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @return
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunkExcept_AccountDetail(Grids_AbstractGrid g) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunkExcept_AccountDetail(Grids_Grid g) throws IOException {
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>(1);
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         HashSet<Grids_2D_ID_int> rp = new HashSet<>(1);
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (g != gb) {
                 Grids_2D_ID_int chunkID = gb.cacheChunk_AccountChunk();
                 if (chunkID != null) {
@@ -3465,11 +3461,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     protected long cacheChunkExcept_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+        Iterator<Grids_Grid> ite = grids.iterator();
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
                 chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
@@ -3486,12 +3482,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     protected boolean cacheChunkExcept(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
-        Iterator<Grids_AbstractGrid> ite;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+        Iterator<Grids_Grid> ite;
         ite = grids.iterator();
         Grids_2D_ID_int chunkID;
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             if (m.containsKey(g)) {
                 HashSet<Grids_2D_ID_int> chunkIDs = m.get(g);
                 chunkID = g.cacheChunkExcept_AccountChunk(chunkIDs);
@@ -3510,14 +3506,13 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param hoome
      * @param chunkIDs
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in g with ChunkIDs
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
      */
-    public long cacheChunkExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunkExcept_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs, boolean hoome) throws IOException {
         try {
             long r = cacheChunkExcept_Account(g, chunkIDs);
@@ -3560,20 +3555,19 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param chunkIDs
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in g with ChunkIDs
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
      */
-    protected long cacheChunkExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunkExcept_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
-                TreeMap<Grids_2D_ID_int, Grids_AbstractGridChunk> m;
+                TreeMap<Grids_2D_ID_int, Grids_Chunk> m;
                 m = gb.getChunkIDChunkMap();
                 Set<Grids_2D_ID_int> chunkIDsb = m.keySet();
                 Iterator<Grids_2D_ID_int> iteb = chunkIDsb.iterator();
@@ -3581,7 +3575,7 @@ public class Grids_Environment extends Grids_MemoryManager
                     Grids_2D_ID_int chunkID = iteb.next();
                     if (!chunkIDs.contains(chunkID)) {
                         //Check it can be cached
-                        Grids_AbstractGridChunk chunkb = m.get(chunkID);
+                        Grids_Chunk chunkb = m.get(chunkID);
                         if (chunkb != null) {
                             gb.cacheChunk(chunkID);
                             return 1;
@@ -3595,15 +3589,14 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for that in
-     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for that in _Grid2DSquareCell
+     * with Grids_Grid._ChunkID _ChunkID.
+     * @param g Grids_Grid that's chunks are not to be cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    public long cacheChunkExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunkExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             long r = cacheChunkExcept_Account(g, chunkID);
@@ -3643,15 +3636,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for that in
-     * _Grid2DSquareCell with Grids_AbstractGrid._ChunkID _ChunkID.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for that in _Grid2DSquareCell
+     * with Grids_Grid._ChunkID _ChunkID.
+     * @param g Grids_Grid that's chunks are not to be cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    protected long cacheChunkExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunkExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException {
         long r = cacheChunkExcept_Account(g);
         if (r < 1L) {
@@ -3662,13 +3654,12 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in g.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in g.
+     * @param g Grids_Grid that's chunks are not to be cached.
      */
-    public long cacheChunkExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunkExcept_Account(Grids_Grid g,
             boolean hoome) throws IOException {
         try {
             long r = cacheChunkExcept_Account(g);
@@ -3707,17 +3698,16 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached. Attempts to cache any
-     * Grids_AbstractGridChunk in this.grids except for those in
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
+     * cache any Grids_Chunk in this.grids except for those in
      * _Grid2DSquareCell.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
      */
-    protected long cacheChunkExcept_Account(Grids_AbstractGrid g) throws IOException {
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+    protected long cacheChunkExcept_Account(Grids_Grid g) throws IOException {
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
                 Grids_2D_ID_int chunkID = gb.cacheChunk_AccountChunk();
                 if (chunkID != null) {
@@ -3729,20 +3719,19 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunksExcept_AccountDetail(Grids_2D_ID_int chunkID,
                     boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunksExcept_AccountDetail(chunkID);
             try {
                 if (r.isEmpty()) {
@@ -3756,7 +3745,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                     rp = checkAndMaybeFreeMemory_AccountDetail(chunkID, hoome);
                     combine(r, rp);
                 }
@@ -3769,12 +3758,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(chunkID, hoome);
                 combine(r, rp);
                 rp = cacheChunksExcept_AccountDetail(chunkID, hoome);
@@ -3787,41 +3776,39 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             cacheChunksExcept_AccountDetail(Grids_2D_ID_int chunkID) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             combine(r, g.cacheChunksExcept_AccountDetail(chunkID));
         }
         return r;
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached. cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param g Grids_Grid that's chunks are not to be cached. cached.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunksExcept_AccountDetail(Grids_Grid g,
                     boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunksExcept_AccountDetail(g);
             try {
                 if (r.isEmpty()) {
@@ -3835,7 +3822,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                     rp = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
                     combine(r, rp);
                 }
@@ -3848,12 +3835,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(g);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(g, hoome);
                 combine(r, rp);
                 rp = cacheChunksExcept_AccountDetail(g, hoome);
@@ -3866,21 +3853,20 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunksExcept_AccountDetail(Grids_Grid g) throws IOException {
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
                 combine(r, gb.cacheChunks_AccountDetail());
             }
@@ -3888,7 +3874,7 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
-    public long cacheChunksExcept_Account(Grids_AbstractGrid g, boolean hoome) throws IOException {
+    public long cacheChunksExcept_Account(Grids_Grid g, boolean hoome) throws IOException {
         try {
             long r = cacheChunksExcept_Account(g);
             try {
@@ -3926,11 +3912,11 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    protected long cacheChunksExcept_Account(Grids_AbstractGrid g) throws IOException {
+    protected long cacheChunksExcept_Account(Grids_Grid g) throws IOException {
         long r = 0L;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
                 r += gb.env.cacheChunks_Account();
             }
@@ -3939,21 +3925,20 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
      * @param hoome
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunksExcept_AccountDetail(Grids_Grid g,
                     Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
             r = cacheChunksExcept_AccountDetail(g, chunkID);
             try {
                 if (r.isEmpty()) {
@@ -3967,7 +3952,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         }
                     }
                 } else {
-                    HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                    HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                     rp = checkAndMaybeFreeMemory_AccountDetail(g, chunkID, hoome);
                     combine(r, rp);
                 }
@@ -3980,12 +3965,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve();
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
                 r = cacheChunkExcept_AccountDetail(g, chunkID);
                 if (r.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
                 rp = initMemoryReserve_AccountDetail(g, chunkID, hoome);
                 combine(r, rp);
                 rp = cacheChunksExcept_AccountDetail(g, chunkID, hoome);
@@ -3997,7 +3982,7 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    public long cacheChunksExcept_Account(Grids_AbstractGrid g,
+    public long cacheChunksExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID, boolean hoome) throws IOException {
         try {
             long r = cacheChunksExcept_Account(g, chunkID);
@@ -4037,12 +4022,12 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
-    protected long cacheChunksExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunksExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException {
         long r = 0L;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
                 int cri0 = 0;
                 int cci0 = 0;
@@ -4057,23 +4042,22 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_AbstractGrid.ChunkIDs in this.grids except
-     * those with Grids_AbstractGrid.ID _ChunkID.
+     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
+     * Grids_Grid.ID _ChunkID.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
-     * @param chunkID The Grids_AbstractGrid.ID not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
+     * @param chunkID The Grids_Grid.ID not to be cached.
      */
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunksExcept_AccountDetail(Grids_Grid g,
                     Grids_2D_ID_int chunkID) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
-        Grids_AbstractGrid bg;
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+        Iterator<Grids_Grid> ite = grids.iterator();
+        Grids_Grid bg;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
         while (ite.hasNext()) {
             bg = ite.next();
             if (bg == g) {
@@ -4087,16 +4071,16 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            cacheChunksExcept_AccountDetail(Grids_AbstractGrid g,
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            cacheChunksExcept_AccountDetail(Grids_Grid g,
                     HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = new HashMap<>();
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid gb = ite.next();
+            Grids_Grid gb = ite.next();
             if (gb != g) {
-                HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                 pr = gb.cacheChunks_AccountDetail();
                 combine(r, pr);
             } else {
@@ -4108,7 +4092,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 while (ite2.hasNext()) {
                     chunkID = ite2.next();
                     if (!chunkIDs.contains(chunkID)) {
-                        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> pr;
+                        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> pr;
                         pr = cacheChunksExcept_AccountDetail(chunkID);
                         combine(r, pr);
                     }
@@ -4122,18 +4106,17 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to Cache all chunks except those in g with Chunk IDs in
      * chunkIDs.
      *
-     * @return HashMap with: key as the Grids_AbstractGrid from which the
-     * Grids_AbstractGridChunk was cached; and, value as the
-     * Grids_AbstractGridChunk._ChunkID cached.
-     * @param g Grids_AbstractGrid that's chunks are not to be cached.
+     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
+     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @param g Grids_Grid that's chunks are not to be cached.
      * @param chunkIDs The chunk IDs in g not to be cached.
      */
-    protected long cacheChunksExcept_Account(Grids_AbstractGrid g,
+    protected long cacheChunksExcept_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunkIDs) throws IOException {
         long r = 0L;
-        Iterator<Grids_AbstractGrid> ite;
+        Iterator<Grids_Grid> ite;
         ite = grids.iterator();
-        Grids_AbstractGrid gb;
+        Grids_Grid gb;
         while (ite.hasNext()) {
             gb = ite.next();
             if (gb != g) {
@@ -4155,7 +4138,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      */
     public long cacheChunksExcept_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m,
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException {
         try {
             long r = cacheChunksExcept_Account(m);
@@ -4195,11 +4178,11 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     protected long cacheChunksExcept_Account(
-            HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> m) throws IOException {
+            HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> m) throws IOException {
         long r = 0L;
-        Iterator<Grids_AbstractGrid> ite = grids.iterator();
+        Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            Grids_AbstractGrid g = ite.next();
+            Grids_Grid g = ite.next();
             r += g.cacheChunksExcept_Account(m.get(g));
         }
         return r;
@@ -4254,54 +4237,54 @@ public class Grids_Environment extends Grids_MemoryManager
         this.dataToCache = dataToCache;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
-            freeSomeMemoryAndResetReserve_AccountDetails(Grids_AbstractGrid g,
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
+            freeSomeMemoryAndResetReserve_AccountDetails(Grids_Grid g,
                     boolean hoome) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
         rp = initMemoryReserve_AccountDetail(g, hoome);
         combine(r, rp);
         return r;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(
-                    Grids_AbstractGrid g, HashSet<Grids_2D_ID_int> chunks,
+                    Grids_Grid g, HashSet<Grids_2D_ID_int> chunks,
                     boolean hoome) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = checkAndMaybeFreeMemory_AccountDetail(g, chunks, hoome);
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
         rp = initMemoryReserve_AccountDetail(g, chunks, hoome);
         combine(r, rp);
         return r;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(
                     OutOfMemoryError e, boolean hoome) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = cacheChunk_AccountDetail();
         if (r.isEmpty()) {
             throw e;
         }
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
         rp = initMemoryReserve_AccountDetail(hoome);
         combine(r, rp);
         return r;
     }
 
-    protected HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>>
+    protected HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(boolean hoome) throws IOException {
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> r;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r;
         r = checkAndMaybeFreeMemory_AccountDetail(hoome);
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> rp;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> rp;
         rp = initMemoryReserve_AccountDetail(hoome);
         combine(r, rp);
         return r;
     }
 
-    protected long freeSomeMemoryAndResetReserve_Account(Grids_AbstractGrid g,
+    protected long freeSomeMemoryAndResetReserve_Account(Grids_Grid g,
             HashSet<Grids_2D_ID_int> chunks, boolean hoome) throws IOException {
         long r = checkAndMaybeFreeMemory_Account(g, chunks, hoome);
         r += initMemoryReserve_Account(g, chunks, hoome);
@@ -4321,7 +4304,7 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @return the notToCache
      */
-    public HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> getNotToCache() {
+    public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> getNotToCache() {
         return notToCache;
     }
 
@@ -4330,7 +4313,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected class AccountDetail {
 
-        HashMap<Grids_AbstractGrid, HashSet<Grids_2D_ID_int>> detail;
+        HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> detail;
         boolean success;
 
         protected AccountDetail() {

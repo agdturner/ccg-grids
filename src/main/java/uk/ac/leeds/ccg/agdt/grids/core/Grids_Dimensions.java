@@ -25,6 +25,8 @@ import java.math.BigDecimal;
  */
 public class Grids_Dimensions extends Grids_Object {
 
+    private static final long serialVersionUID = 1L;
+
     private final BigDecimal XMin;
     private final BigDecimal XMax;
     private final BigDecimal YMin;

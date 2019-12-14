@@ -22,9 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
 
@@ -57,7 +57,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param g Grid for export.
      * @return
      */
-    public Path toAsciiFile(Grids_AbstractGridNumber g) throws IOException, 
+    public Path toAsciiFile(Grids_GridNumber g) throws IOException, 
             ClassNotFoundException {
         Generic_Path directory = g.getDirectory();
         Path file = Paths.get(directory.getParent().toString(), g.getName() + ".asc");
@@ -71,7 +71,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param file The File to export to.
      * @return
      */
-    public Path toAsciiFile(Grids_AbstractGridNumber g, Path file) 
+    public Path toAsciiFile(Grids_GridNumber g, Path file) 
             throws IOException, ClassNotFoundException {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
@@ -90,7 +90,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param ndv The value to be used or substituted as a noDataValue for g.
      * @return
      */
-    public Path toAsciiFile(Grids_AbstractGridNumber g, Path file, String ndv) 
+    public Path toAsciiFile(Grids_GridNumber g, Path file, String ndv) 
             throws IOException, ClassNotFoundException {
         env.initNotToCache();
         env.checkAndMaybeFreeMemory();

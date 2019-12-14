@@ -25,16 +25,16 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Dimensions;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDoubleFactory;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkInt;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridIntFactory;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridInt;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkInt;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridFactoryInt;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_GridChunkInt;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkDoubleSinglet;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.i.Grids_ChunkIntSinglet;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Kernel;
 import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
 
@@ -63,16 +63,16 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
     /**
      * Calculates and returns measures of the slope and aspect for the
-     * Grids_AbstractGridNumber _Grid2DSquareCell passed in.
+ Grids_GridNumber _Grid2DSquareCell passed in.
      *
-     * @param g The Grids_AbstractGridNumber to be processed. Defaults: kernel
-     * to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
-     * ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
-     * = 0.0d;
+     * @param g The Grids_GridNumber to be processed. Defaults: kernel
+ to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
+ ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
+ = 0.0d;
      * @return Grids_GridDouble[] slopeAndAspect. /n
      * @throws java.io.IOException
      */
-    public Grids_GridDouble[] getSlopeAspect(Grids_AbstractGridNumber g)
+    public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g)
             throws IOException, ClassNotFoundException {
         boolean hoome = true;
         // Default distance to contain centroids of immediate neighbours
@@ -86,7 +86,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     /**
-     * @param g The Grids_AbstractGridNumber to be processed.
+     * @param g The Grids_GridNumber to be processed.
      * @param distance the distance which defines the aggregate region.
      * @param weightIntersect The kernel weighting weight at centre.
      * @param weightFactor The kernel weighting distance decay.
@@ -115,7 +115,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * slopeAndAspect[9] Is the sine of slopeAndAspect[1] + ( ( Pi * 7 ) / 8).
      * @throws java.io.IOException
      */
-    public Grids_GridDouble[] getSlopeAspect(Grids_AbstractGridNumber g,
+    public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
             boolean hoome) throws IOException, ClassNotFoundException {
         try {
@@ -123,9 +123,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             String methodName = "getSlopeAspect(" + g.getClass().getName()
                     + ",double,double,double,boolean)";
             System.out.println(methodName);
-            Grids_AbstractGridChunkDouble cd;
+            Grids_ChunkDouble cd;
             Grids_GridDouble gd;
-            Grids_AbstractGridChunkInt ci;
+            Grids_ChunkInt ci;
             Grids_GridInt gridInt;
             int slopeAndAspectSize = 10;
             Grids_GridDouble[] slopeAndAspect;
@@ -374,7 +374,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 double h2;
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
-                        cd = (Grids_AbstractGridChunkDouble) gd.getChunk(cri, cci);
+                        cd = (Grids_ChunkDouble) gd.getChunk(cri, cci);
                         chunkID = cd.getChunkID();
                         env.addToNotToCache(g, chunkID);
                         env.checkAndMaybeFreeMemory();
@@ -481,7 +481,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     chunkNrows = g.getChunkNRows(cri);
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
-                        ci = (Grids_AbstractGridChunkInt) gridInt.getChunk(cri, cci);
+                        ci = (Grids_ChunkInt) gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
                         env.addToNotToCache(g, chunkID);
                         env.checkAndMaybeFreeMemory();
@@ -608,7 +608,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param weightFactor the kernel weighting distance decay.
      * @return
      */
-    protected double[] getSlopeAspect(Grids_AbstractGridNumber g, double x,
+    protected double[] getSlopeAspect(Grids_GridNumber g, double x,
             double y, double distance, double weightIntersect,
             double weightFactor) throws IOException, ClassNotFoundException {
         return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance,
@@ -640,7 +640,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * consider interpolation
      * @return
      */
-    protected double[] getSlopeAspect(Grids_AbstractGridNumber g, long rowIndex,
+    protected double[] getSlopeAspect(Grids_GridNumber g, long rowIndex,
             long colIndex, double x, double y, double distance,
             double weightIntersect, double weightFactor) throws IOException, ClassNotFoundException {
         env.getGrids().add(g);
@@ -746,7 +746,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     /**
-     * @param g Grids_AbstractGridNumber to be processed.
+     * @param g Grids_GridNumber to be processed.
      * @param gdf
      * @param outflowHeight
      * @param maxIterations
@@ -768,8 +768,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * This algorithm was optimised by processing each hollow in turn and
      * dealing with the situation around each hollow.
      */
-    public Grids_GridDouble getHollowFilledDEM(Grids_AbstractGridNumber g,
-            Grids_GridDoubleFactory gdf, double outflowHeight, int maxIterations,
+    public Grids_GridDouble getHollowFilledDEM(Grids_GridNumber g,
+            Grids_GridFactoryDouble gdf, double outflowHeight, int maxIterations,
             HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
         env.getGrids().add(g);
         // Intitialise variables
@@ -1307,21 +1307,21 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param outflowCellIDsSet
      * @param outflowHeight The value below which cells in _Grid2DSquareCell are
      * regarded as outflow cells.
-     * @param g Grids_AbstractGridNumber to process.
+     * @param g Grids_GridNumber to process.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
-     * @return HashSet containing Grids_AbstractGridNumber.CellIDs of those
-     * cells in _Grid2DSquareCell that are to be regarded as outflow cells.
-     * Outflow cells are those: with a value <= outflowHeight; those with CellID
+     * @return HashSet containing Grids_GridNumber.CellIDs of those
+ cells in _Grid2DSquareCell that are to be regarded as outflow cells.
+ Outflow cells are those: with a value <= outflowHeight; those with CellID
      * in outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
      * cell with a value of NoDataValue.
      */
     private HashSet getHollowFilledDEMOutflowCellIDs(
             HashSet outflowCellIDsSet,
             double outflowHeight,
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             long nrows,
             long ncols,
             boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
@@ -1378,7 +1378,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      *
      *
      *
-     * @param g Grids_AbstractGridNumber to be processed.
+     * @param g Grids_GridNumber to be processed.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
@@ -1391,7 +1391,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * 8 cell neighbourhood are either the same value or higher or noDataValues.
      */
     private HashSet getHollowFilledDEMInitialHollowsHashSet(
-            Grids_AbstractGridNumber g, long nrows, long ncols,
+            Grids_GridNumber g, long nrows, long ncols,
             boolean treatNoDataValueAsOutflow) throws IOException,
             ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
@@ -1500,11 +1500,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      *
      *
      *
-     * @param g The Grids_AbstractGridNumber to be processed.
+     * @param g The Grids_GridNumber to be processed.
      * @param cellIDs the HashSet storing _CellIDs that must be examined.
      */
     private HashSet getHollowsInNeighbourhood(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             HashSet cellIDs,
             boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
@@ -1633,7 +1633,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     private HashSet getHollowFilledDEMCalculateHollows(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             HashSet cellIDs) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         if ((g.getNCols() * g.getNRows()) / 4 < cellIDs.size()) {
@@ -1816,15 +1816,15 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param distance the distance within which metrics will be calculated
      * @param weightIntersect kernel parameter ( weight at the centre )
      * @param weightFactor kernel parameter ( distance decay )
-     * @param gdf The Grids_GridDoubleFactory for creating grids
+     * @param gdf The Grids_GridFactoryDouble for creating grids
      * @param gif
      * @param cacheOutInitialisedFiles
      * @param cacheOutProcessedChunks
      * @return
      */
-    public Grids_AbstractGridNumber[] getMetrics1(Grids_AbstractGridNumber g,
+    public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
-            Grids_GridDoubleFactory gdf, Grids_GridIntFactory gif,
+            Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
             boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
@@ -1834,8 +1834,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     + "(gridDoubleFactory.getChunkNrows() != "
                     + "gridIntFactory.getChunkNrows()))");
         }
-        Grids_AbstractGridNumber[] metrics1;
-        metrics1 = new Grids_AbstractGridNumber[65];
+        Grids_GridNumber[] metrics1;
+        metrics1 = new Grids_GridNumber[65];
         long ncols = g.getNCols();
         long nrows = g.getNRows();
         Grids_Dimensions dimensions = g.getDimensions();
@@ -2051,9 +2051,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * stuck.
      * @return
      */
-    public Grids_AbstractGridNumber[] getMetrics1(
-            Grids_AbstractGridNumber[] metrics1,
-            Grids_AbstractGridNumber g,
+    public Grids_GridNumber[] getMetrics1(
+            Grids_GridNumber[] metrics1,
+            Grids_GridNumber g,
             Grids_Dimensions dimensions,
             double distance,
             double weightIntersect,
@@ -2114,7 +2114,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             gridDouble = (Grids_GridDouble) g;
             double noDataValue = gridDouble.getNoDataValue();
             double cellHeight;
-            Grids_AbstractGridChunkDouble gridChunkDouble;
+            Grids_ChunkDouble gridChunkDouble;
             for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
                 System.out.println("chunkRow(" + chunkRow + ")");
                 chunkNRows = g.getChunkNRows(chunkRow);
@@ -2127,11 +2127,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     //ge.addToNotToCache(g, chunkID);
                     env.addToNotToCache(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
-                    gridChunkDouble = (Grids_AbstractGridChunkDouble) gridDouble.getChunk(
+                    gridChunkDouble = (Grids_ChunkDouble) gridDouble.getChunk(
                             chunkRow, chunkCol);
                     boolean doLoop = true;
-                    if (gridChunkDouble instanceof Grids_GridChunkDouble) {
-                        if (((Grids_GridChunkDouble) gridChunkDouble).Value == noDataValue) {
+                    if (gridChunkDouble instanceof Grids_ChunkDoubleSinglet) {
+                        if (((Grids_ChunkDoubleSinglet) gridChunkDouble).Value == noDataValue) {
                             doLoop = false;
                         }
                     }
@@ -2191,7 +2191,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             Grids_GridInt gridInt = (Grids_GridInt) g;
             int noDataValue = gridInt.getNoDataValue();
             int cellHeight;
-            Grids_AbstractGridChunkInt gridChunkInt;
+            Grids_ChunkInt gridChunkInt;
             for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
                 chunkNRows = g.getChunkNRows(chunkRow);
                 System.out.println("chunkRow(" + chunkRow + ")");
@@ -2204,11 +2204,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     //ge.addToNotToCache(g, chunkID);
                     env.addToNotToCache(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
-                    gridChunkInt = (Grids_AbstractGridChunkInt) gridInt.getChunk(
+                    gridChunkInt = (Grids_ChunkInt) gridInt.getChunk(
                             chunkRow, chunkCol);
                     boolean doLoop = true;
-                    if (gridChunkInt instanceof Grids_GridChunkInt) {
-                        if (((Grids_GridChunkInt) gridChunkInt).Value == noDataValue) {
+                    if (gridChunkInt instanceof Grids_ChunkIntSinglet) {
+                        if (((Grids_ChunkIntSinglet) gridChunkInt).Value == noDataValue) {
                             doLoop = false;
                         }
                     }
@@ -2375,7 +2375,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * cacheped if possible when an OutOfMemoryError is encountered.
      */
     private void metrics1Calculate_All(
-            Grids_AbstractGridNumber g,
+            Grids_GridNumber g,
             double noDataValue,
             long row,
             long col,
@@ -3654,7 +3654,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, double distance,
             double weightIntersect, double weightFactor, int samplingDensity,
-            Grids_GridDoubleFactory gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory();
             Grids_GridDouble[] result = new Grids_GridDouble[7];
@@ -3740,12 +3740,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * flow direction is 0.
      *
      * @param g the Grids_GridDouble to be processed
-     * @param gf the Grids_GridDoubleFactory used to create result
+     * @param gf the Grids_GridFactoryDouble used to create result
      * @param hoome
      * @return
      */
     public Grids_GridDouble getMaxFlowDirection(Grids_GridDouble g,
-            Grids_GridDoubleFactory gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory();
             long nrows = g.getNRows();
@@ -3839,7 +3839,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble getUpSlopeAreaMetrics(Grids_GridDouble grid,
             double distance, double weightFactor, double weightIntersect,
-            Grids_GridDoubleFactory gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory();
             Generic_Path dir;
@@ -4015,7 +4015,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //            int iterations,
 //            double precipitation,
 //            HashSet outflowCellIDs,
-//            Grids_GridDoubleFactory gridFactory,
+//            Grids_GridFactoryDouble gridFactory,
 //            boolean hoome ) {
 //        int _MessageLength = 1000;
 //        String _Message0 = env.initString( _MessageLength, hoome );
@@ -4056,7 +4056,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //            Grids_GridDouble grid,
 //            double precipitation,
 //            HashSet outflowCellIDs,
-//            Grids_GridDoubleFactory gridFactory,
+//            Grids_GridFactoryDouble gridFactory,
 //            boolean hoome ) {
 //        //double constant = 8.0d * 9.81d / 75.0d ;
 //        double constant = 1.0d;

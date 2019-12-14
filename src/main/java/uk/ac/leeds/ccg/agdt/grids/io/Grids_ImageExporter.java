@@ -31,12 +31,12 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_AbstractGridNumber;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.chunk.Grids_AbstractGridChunkDouble;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridNumber;
+import uk.ac.leeds.ccg.agdt.grids.core.chunk.d.Grids_ChunkDouble;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.agdt.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.agdt.grids.core.grid.Grids_GridInt;
+import uk.ac.leeds.ccg.agdt.grids.core.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.agdt.grids.process.Grids_Processor;
 
 /**
@@ -72,7 +72,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param type The name of the type of image to be written e.g. "png",
      * "jpeg"
      */
-    public void toGreyScaleImage(Grids_AbstractGridNumber g,
+    public void toGreyScaleImage(Grids_GridNumber g,
             Grids_Processor processor, Path file, String type) 
             throws IOException, ClassNotFoundException {
         // Initialisation
@@ -146,7 +146,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         int chunkCol;
         int cellRow;
         int cellCol;
-        Grids_AbstractGridChunkDouble chunk;
+        Grids_ChunkDouble chunk;
         int chunkNCols;
         int nChunkRows = r.getNChunkRows();
         int nChunkCols = r.getNChunkCols();
@@ -205,7 +205,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param hoome
      */
     private void write(int nCols, int nRows, int[] gridImageArray,
-            String type, Path file, Grids_AbstractGridNumber g, boolean hoome) 
+            String type, Path file, Grids_GridNumber g, boolean hoome) 
             throws IOException, ClassNotFoundException {
         try {
             env.checkAndMaybeFreeMemory();
@@ -328,7 +328,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         int chunkCol;
         int cellRow;
         int cellCol;
-        Grids_AbstractGridChunkDouble chunk;
+        Grids_ChunkDouble chunk;
         int chunkNRows;
         int chunkNCols;
         int nChunkRows = g.getNChunkRows();
@@ -340,7 +340,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 env.addToNotToCache(g, chunkID);
                 env.checkAndMaybeFreeMemory();
-                chunk = (Grids_AbstractGridChunkDouble) g.getChunk(chunkID);
+                chunk = (Grids_ChunkDouble) g.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
