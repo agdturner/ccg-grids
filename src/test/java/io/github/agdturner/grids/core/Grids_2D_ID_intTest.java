@@ -17,12 +17,12 @@ package io.github.agdturner.grids.core;
 
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -35,20 +35,20 @@ public class Grids_2D_ID_intTest {
     public Grids_2D_ID_intTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    public static void setUpClass() throws Exception {
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    public static void tearDownClass() throws Exception {
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp() throws Exception {
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    public void tearDown() throws Exception {
     }
 
     /**
@@ -64,17 +64,17 @@ public class Grids_2D_ID_intTest {
         i = new Grids_2D_ID_int(6, 5);
         expResult = 6;
         result = i.getRow();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         i = new Grids_2D_ID_int(i);
         expResult = 6;
         result = i.getRow();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 3
         i = new Grids_2D_ID_int(-1, -2);
         expResult = -1;
         result = i.getRow();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
     }
 
     /**
@@ -90,17 +90,17 @@ public class Grids_2D_ID_intTest {
         i = new Grids_2D_ID_int(6, 5);
         expResult = 5;
         result = i.getCol();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         i = new Grids_2D_ID_int(i);
         expResult = 5;
         result = i.getCol();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 3
         i = new Grids_2D_ID_int(-1, -2);
         expResult = -2;
         result = i.getCol();
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
     }
 
     /**
@@ -118,31 +118,31 @@ public class Grids_2D_ID_intTest {
         instance = new Grids_2D_ID_int(6, 5);
         expResult = true;
         result = instance.equals(object);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         object = new Grids_2D_ID_int(6, 5);
         instance = new Grids_2D_ID_int(5, 5);
         expResult = false;
         result = instance.equals(object);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 3
         object = new Grids_2D_ID_int(6, 5);
         instance = new Grids_2D_ID_int(5, 6);
         expResult = false;
         result = instance.equals(object);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 4
         object = null;
         instance = new Grids_2D_ID_int(5, 6);
         expResult = false;
         result = instance.equals(object);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 5
         object = new Grids_2D_ID_long(5, 6);
         instance = new Grids_2D_ID_int(5, 6);
         expResult = false;
         result = instance.equals(object);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
     }
 
     /**
@@ -160,37 +160,36 @@ public class Grids_2D_ID_intTest {
         instance = new Grids_2D_ID_int(6, 5);
         expResult = 0;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         t = new Grids_2D_ID_int(5, 5);
         instance = new Grids_2D_ID_int(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 3
         t = new Grids_2D_ID_int(6, 4);
         instance = new Grids_2D_ID_int(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         t = new Grids_2D_ID_int(7, 5);
         instance = new Grids_2D_ID_int(6, 5);
         expResult = 1;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         t = new Grids_2D_ID_int(6, 6);
         instance = new Grids_2D_ID_int(6, 5);
         expResult = 1;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
         // Test 2
         t = new Grids_2D_ID_int(5, 5);
         instance = new Grids_2D_ID_int(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
-        assertEquals(expResult, result);
+        Assertions.assertEquals(expResult, result);
     }
-
 }
