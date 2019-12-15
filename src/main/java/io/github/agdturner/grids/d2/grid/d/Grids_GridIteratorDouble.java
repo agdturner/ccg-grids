@@ -35,11 +35,11 @@ import io.github.agdturner.grids.d2.grid.Grids_GridIterator;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridDoubleIterator extends Grids_GridIterator {
+public class Grids_GridIteratorDouble extends Grids_GridIterator {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridDoubleIterator() {
+    protected Grids_GridIteratorDouble() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class Grids_GridDoubleIterator extends Grids_GridIterator {
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public Grids_GridDoubleIterator(Grids_GridDouble g) throws IOException, 
+    public Grids_GridIteratorDouble(Grids_GridDouble g) throws IOException, 
             ClassNotFoundException {
         super(g);
         TreeMap<Grids_2D_ID_int, Grids_Chunk> m = g.getChunkIDChunkMap();

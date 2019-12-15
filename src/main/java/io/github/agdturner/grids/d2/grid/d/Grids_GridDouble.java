@@ -1834,11 +1834,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return A Grids_GridDoubleIterator for iterating over the cell values in
+     * @return A Grids_GridIteratorDouble for iterating over the cell values in
      * this.
      */
-    public Grids_GridDoubleIterator iterator() throws IOException, ClassNotFoundException {
-        return new Grids_GridDoubleIterator(this);
+    public Grids_GridIteratorDouble iterator() throws IOException, ClassNotFoundException {
+        return new Grids_GridIteratorDouble(this);
     }
 
     @Override

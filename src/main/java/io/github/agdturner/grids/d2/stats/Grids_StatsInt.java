@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridDoubleIterator;
+import io.github.agdturner.grids.d2.grid.d.Grids_GridIteratorDouble;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridIteratorInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;

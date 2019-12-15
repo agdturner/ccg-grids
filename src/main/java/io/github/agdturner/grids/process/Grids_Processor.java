@@ -51,7 +51,7 @@ import io.github.agdturner.grids.core.Grids_Object;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBoolean;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridDoubleIterator;
+import io.github.agdturner.grids.d2.grid.d.Grids_GridIteratorDouble;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryInt;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;

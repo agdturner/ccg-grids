@@ -15,28 +15,40 @@
  */
 package io.github.agdturner.grids.util;
 
+import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import io.github.agdturner.grids.core.Grids_Dimensions;
+import io.github.agdturner.grids.core.Grids_Environment;
+import io.github.agdturner.grids.core.Grids_Object;
+import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
+import java.math.BigInteger;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
- * This class holds miscellaneous general utility methods
+ * Grid utility methods.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_Utilities {
+public class Grids_Utilities extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a new instance of Utilities.
+     *
+     * @param e The grids environment.
      */
-    public Grids_Utilities() {
+    public Grids_Utilities(Grids_Environment e) {
+        super(e);
     }
 
     /**
@@ -55,6 +67,30 @@ public class Grids_Utilities {
         t -= mins * milliSecondsInMinute;
         int secs = Math.floorDiv(t, Generic_Time.MilliSecondsInSecond);
         t -= secs * Generic_Time.MilliSecondsInSecond;
+        return "days=" + days + ", hours=" + hours + ", mins=" + mins
+                + ", secs=" + secs + ", millisecs=" + t;
+    }
+
+    /**
+     * @param time
+     * @return A string representing the number of days, hours, minutes, seconds
+     * and milliseconds in the input time.
+     */
+    public static String getTime(BigInteger time) {
+        BigInteger milliSecondsInDay = BigInteger.valueOf(24L
+                * Generic_Time.MilliSecondsInHour);
+        BigInteger days = time.divideAndRemainder(milliSecondsInDay)[0];
+        BigInteger t = time.subtract(days.multiply(milliSecondsInDay));
+        BigInteger msh = BigInteger.valueOf(Generic_Time.MilliSecondsInHour);
+        BigInteger hours = t.divideAndRemainder(msh)[0];
+        t = t.subtract(hours.multiply(msh));
+        BigInteger msm = BigInteger.valueOf(Generic_Time.MilliSecondsInSecond
+                * 60);
+        BigInteger mins = t.divideAndRemainder(msm)[0];
+        t = t.subtract(mins.multiply(msm));
+        BigInteger mss = BigInteger.valueOf(1000);
+        BigInteger secs = t.divideAndRemainder(mss)[0];
+        t = t.subtract(secs.multiply(mss));
         return "days=" + days + ", hours=" + hours + ", mins=" + mins
                 + ", secs=" + secs + ", millisecs=" + t;
     }
@@ -206,14 +242,14 @@ public class Grids_Utilities {
 
     /**
      * Returns a density plot of xGrid values against yGrid values.A density
- plot is like a scatterplot, but rather than plotting individual points,
- each point is aggregated to a cells and the result is a plot of the
- density of points in the cells.The values of yGrid are scaled to be in
- the same range as the values of xGrid and the number of divisions for
- each axis is given by divisions. NB1 For this implementation xGrid and
- yGrid must have the same spatial frame. NB2 The result returned has a set
- cellsize of 1 and origin at ( 0, 0 ) (This enables easy comparison with
- other density plots)
+     * plot is like a scatterplot, but rather than plotting individual points,
+     * each point is aggregated to a cells and the result is a plot of the
+     * density of points in the cells.The values of yGrid are scaled to be in
+     * the same range as the values of xGrid and the number of divisions for
+     * each axis is given by divisions. NB1 For this implementation xGrid and
+     * yGrid must have the same spatial frame. NB2 The result returned has a set
+     * cellsize of 1 and origin at ( 0, 0 ) (This enables easy comparison with
+     * other density plots)
      *
      * @param xGrid
      * @param yGrid
@@ -223,9 +259,8 @@ public class Grids_Utilities {
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, 
-            Grids_GridFactoryDouble factory) throws IOException, 
+    public Object[] densityPlot(Grids_GridDouble xGrid, Grids_GridDouble yGrid,
+            int divisions, Grids_GridFactoryDouble factory) throws IOException,
             ClassNotFoundException {
         Object[] r = new Object[4];
         long nrows = xGrid.getNRows();
@@ -240,112 +275,118 @@ public class Grids_Utilities {
         double miny = yGrid.getStats().getMin(true);
         double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
-        Grids_GridDouble xGridRescaled = null;
+        Grids_GridDouble xGridRescaled;
         double value;
         double v;
-        long row;
-        long col;
-//        if (minx == miny && maxx == maxy) {
-//            File dir = Generic_IO.createNewFile(this.getDirectory());
-//            xGridRescaled = (Grids_GridDouble) factory.create(dir,yGrid);
-//        } else {
-//            xGridRescaled = (Grids_GridDouble) factory.create(xGrid);
-//            Grids_GridDoubleIterator ite;
-//            for (row = 0; row < nrows; row++) {
-//                for (col = 0; col < ncols; col++) {
-//                    value = xGrid.getCell(row, col);
-//                    if (value != yGridNoDataValue) {
-//                        v = (((value - minx) / (maxx - minx))
-//                                * (maxy - miny)) + miny;
-//                        xGridRescaled.setCell(row, col, v);
-//                    }
-//                }
-//            }
-//        }
-        // This code is broken and wants fixing.
-//        //System.out.println( "yGridRescaled" );
-//        Grids_GridDouble temp1 = (Grids_GridDouble) factory.create(
-//                divisions, divisions,
-//                new Grids_Dimensions(divisions, divisions));
-//        double x;
-//        double y;
-//        int division;
-//        double[] sumy = new double[divisions];
-//        double[] numy = new double[divisions];
-//        double[] sumysq = new double[divisions];
-//        for (int j = 0; j < divisions; j++) {
-//            sumy[j] = 0.0d;
-//            numy[j] = 0.0d;
-//            sumysq[j] = 0.0d;
-//        }
-//        for (row = 0; row < nrows; row++) {
-//                for (col = 0; col < ncols; col++) {
-//                    x = xGridRescaled.getCell(row, col, hoome);
-//                    y = yGrid.getCell(row, col, hoome);
-//                if (y != yGridNoDataValue) {
-//                    if (x != xGridNoDataValue) {
-//                        temp1.addToCell(x, y, 1.0d);
-//                        division = temp1.getColIndex(x);
-//                        if (division == divisions) {
-//                            division = divisions - 1;
-//                        }//System.out.println(division);
-//                        sumy[division] += y;
-//                        numy[division] += 1.0d;
-//                        sumysq[division] += (y * y);
-//                    }
-//                }
-//            }
-//        }
-//        double[] stdevy = new double[divisions];
-//        double[] meany = new double[divisions];
-//        for (int j = 0; j < divisions; j++) {
-//            if (numy[j] > 0.0d) {
-//                meany[j] = sumy[j] / numy[j];
-//                if (numy[j] > 1.0d) {
-//                    stdevy[j] = Math.sqrt(((numy[j] * sumysq[j]) - (sumy[j] * sumy[j])) / (numy[j] * (numy[j] - 1)));
-//                }
-//            }
-//        }
-//        result[0] = stdevy;
-//        result[1] = meany;
-//        result[2] = numy;
-//        double[] normalisers = new double[divisions];
-//        //double d1 = 0.0d;
-//        //double d2 = 0.0d;
-//        for (int j = 0; j < divisions; j++) {
-//            normalisers[j] = 0.0d;
-//            for (int i = 0; i < divisions; i++) {
-//                value = temp1.getCell(i, j);
-//                if (value != xnoDataValue) {
-//                    normalisers[j] += value;
-//                    //d1 += value;
-//                    //d2 += 1.0d;
-//                }
-//            }
-//        }
-//        AbstractGrid2DSquareCellDouble densityPlotGrid = factory.createGrid2DSquareCellDouble(divisions, divisions, minx, minx, cellsize, xnoDataValue);
-//        //double average = d1 / d2;
-//        for (int i = 0; i < divisions; i++) {
-//            for (int j = 0; j < divisions; j++) {
-//                if (normalisers[j] != 0.0d) {
-//                    value = temp1.getCell(i, j);
-//                    if (value != xnoDataValue) {
-//                        //densityPlotGrid.setCell( i, j, temp1.getCell( i, j ) / ( normalisers[ j ] + average ) );
-//                        densityPlotGrid.setCell(i, j, temp1.getCell(i, j) / normalisers[j]);
-//                    }
-//                }
-//            }
-//        }
-//        densityPlotGrid.setCellsize(1.0d);
-//        densityPlotGrid.setXllcorner(0.0d);
-//        densityPlotGrid.setYllcorner(0.0d);
-//        temp1.clear();
-//        if (!(minx == miny && maxx == maxy)) {
-//            xGridRescaled.clear();
-//        }
-//        result[3] = densityPlotGrid;
+        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
+                env.files.getGeneratedDir().getPath()));
+        if (minx == miny && maxx == maxy) {
+            xGridRescaled = (Grids_GridDouble) factory.create(dir, xGrid);
+        } else {
+            xGridRescaled = (Grids_GridDouble) factory.create(dir, xGrid);
+            // It would be better to go through the chunks rather than across the rows!
+            int ncr = xGridRescaled.getNChunkRows();
+            int ncc = xGridRescaled.getNChunkCols();
+            for (int cr = 0; cr < ncr; cr++) {
+                int cnr = xGridRescaled.getChunkNRows(cr);
+                for (int cc = 0; cc < ncc; cc++) {
+                    Grids_2D_ID_int cid = new Grids_2D_ID_int(cr, cc);
+                    Grids_ChunkDouble chunk = xGridRescaled.getChunk(cid);
+                    int cnc = xGridRescaled.getChunkNCols(cc);
+                    for (int row = 0; row < cnr; row++) {
+                        for (int col = 0; col < cnc; col++) {
+                            value = chunk.getCell(row, col);
+                            if (value != yGridNoDataValue) {
+                                v = (((value - minx) / (maxx - minx))
+                                        * (maxy - miny)) + miny;
+                                chunk.setCell(row, col, v);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        double[] sumy = new double[divisions];
+        double[] numy = new double[divisions];
+        double[] sumysq = new double[divisions];
+        for (int j = 0; j < divisions; j++) {
+            sumy[j] = 0.0d;
+            numy[j] = 0.0d;
+            sumysq[j] = 0.0d;
+        }
+        dir = new Generic_Path(Generic_IO.createNewFile(
+                env.files.getGeneratedDir().getPath()));
+        Grids_GridDouble temp1 = (Grids_GridDouble) factory.create(dir, divisions, divisions);
+        for (long row = 0; row < nrows; row++) {
+            for (long col = 0; col < ncols; col++) {
+                double x = xGridRescaled.getCell(row, col);
+                double y = yGrid.getCell(row, col);
+                if (y != yGridNoDataValue) {
+                    if (x != xGridNoDataValue) {
+                        temp1.addToCell(x, y, 1.0d);
+                        int division = (int) temp1.getCol(x);
+                        if (division == divisions) {
+                            division = divisions - 1;
+                        }//System.out.println(division);
+                        sumy[division] += y;
+                        numy[division] += 1.0d;
+                        sumysq[division] += (y * y);
+                    }
+                }
+            }
+        }
+        double[] stdevy = new double[divisions];
+        double[] meany = new double[divisions];
+        for (int j = 0; j < divisions; j++) {
+            if (numy[j] > 0.0d) {
+                meany[j] = sumy[j] / numy[j];
+                if (numy[j] > 1.0d) {
+                    stdevy[j] = Math.sqrt(((numy[j] * sumysq[j])
+                            - (sumy[j] * sumy[j]))
+                            / (numy[j] * (numy[j] - 1)));
+                }
+            }
+        }
+        r[0] = stdevy;
+        r[1] = meany;
+        r[2] = numy;
+        double[] normalisers = new double[divisions];
+        //double d1 = 0.0d;
+        //double d2 = 0.0d;
+        for (int j = 0; j < divisions; j++) {
+            normalisers[j] = 0.0d;
+            for (int i = 0; i < divisions; i++) {
+                value = temp1.getCell(i, j);
+                if (value != xGridNoDataValue) {
+                    normalisers[j] += value;
+                    //d1 += value;
+                    //d2 += 1.0d;
+                }
+            }
+        }
+        dir = new Generic_Path(Generic_IO.createNewFile(
+                env.files.getGeneratedDir().getPath()));
+        Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO, 
+                BigDecimal.ZERO, BigDecimal.valueOf(divisions), 
+                BigDecimal.valueOf(divisions), BigDecimal.ONE);
+        Grids_GridDouble densityPlotGrid = factory.create(dir,
+                divisions, divisions, newdimensions);
+        //double average = d1 / d2;
+        for (int i = 0; i < divisions; i++) {
+            for (int j = 0; j < divisions; j++) {
+                if (normalisers[j] != 0.0d) {
+                    value = temp1.getCell(i, j);
+                    if (value != xGridNoDataValue) {
+                        //densityPlotGrid.setCell( i, j, temp1.getCell( i, j ) / ( normalisers[ j ] + average ) );
+                        densityPlotGrid.setCell(i, j, temp1.getCell(i, j) / normalisers[j]);
+                    }
+                }
+            }
+        }
+        r[3] = densityPlotGrid;
         return r;
     }
+
     /**
      * Generates a CSV file for a cumulative gains chart of observed and
      * indicator NB1. observed and indicator must have same spatial frame.

@@ -2634,8 +2634,7 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final Grids_Chunk getChunk(int chunkRow, int chunkCol)
             throws IOException, ClassNotFoundException {
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        return getChunk(chunkID);
+        return getChunk(new Grids_2D_ID_int(chunkRow, chunkCol));
     }
 
     /**

@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridDoubleIterator;
+import io.github.agdturner.grids.d2.grid.d.Grids_GridIteratorDouble;
 
 /**
  * Grids_GridDouble statistics. Some of the statistic are kept up to date as the
@@ -94,7 +94,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         init();
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
-        Grids_GridDoubleIterator ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double v = ite.next();
             if (Double.isFinite(v)) {
@@ -193,7 +193,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         BigInteger r = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
-        Grids_GridDoubleIterator ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double value = ite.next();
             if (!(value == ndv || value == 0)) {
@@ -248,7 +248,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         BigDecimal dataValueCount = BigDecimal.ZERO;
         Grids_GridDouble g = (Grids_GridDouble) grid;
         double ndv = g.getNoDataValue();
-        Grids_GridDoubleIterator ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double v = ite.next();
             if (v != ndv) {
@@ -309,7 +309,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         r[2] = classMap;
         int count = 0;
         //long valueID = 0;
-        Grids_GridDoubleIterator ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double value = ite.next();
             if (!(value == 0.0d || value == noDataValue)) {
