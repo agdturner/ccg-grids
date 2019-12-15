@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.agdt.grids.utilities;
+package io.github.agdturner.grids.util;
 
-import uk.ac.leeds.ccg.agdt.grids.utilities.Grids_Utilities;
 import java.awt.geom.Point2D;
 import org.junit.After;
 import org.junit.AfterClass;

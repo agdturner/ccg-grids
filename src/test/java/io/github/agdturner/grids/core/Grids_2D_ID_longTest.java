@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.agdt.grids.core;
+package io.github.agdturner.grids.core;
 
-import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.agdt.grids.core.Grids_2D_ID_long;
+import io.github.agdturner.grids.core.Grids_2D_ID_int;
+import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,9 +30,9 @@ import static org.junit.Assert.*;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_2D_ID_intTest {
+public class Grids_2D_ID_longTest {
 
-    public Grids_2D_ID_intTest() {
+    public Grids_2D_ID_longTest() {
     }
 
     @BeforeClass
@@ -52,142 +52,142 @@ public class Grids_2D_ID_intTest {
     }
 
     /**
-     * Test of getRow method, of class Grids_2D_ID_int.
+     * Test of getRow method, of class Grids_2D_ID_long.
      */
     @Test
     public void testGetRow() {
         System.out.println("getRow");
-        Grids_2D_ID_int i;
-        int expResult;
-        int result;
+        Grids_2D_ID_long instance;
+        long expResult;
+        long result;
         // Test 1
-        i = new Grids_2D_ID_int(6, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = 6;
-        result = i.getRow();
+        result = instance.getRow();
         assertEquals(expResult, result);
         // Test 2
-        i = new Grids_2D_ID_int(i);
+        instance = new Grids_2D_ID_long(instance);
         expResult = 6;
-        result = i.getRow();
+        result = instance.getRow();
         assertEquals(expResult, result);
         // Test 3
-        i = new Grids_2D_ID_int(-1, -2);
+        instance = new Grids_2D_ID_long(-1, -2);
         expResult = -1;
-        result = i.getRow();
+        result = instance.getRow();
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of getCol method, of class Grids_2D_ID_int.
+     * Test of getCol method, of class Grids_2D_ID_long.
      */
     @Test
     public void testGetCol() {
         System.out.println("getCol");
-        Grids_2D_ID_int i;
-        int expResult;
-        int result;
+        Grids_2D_ID_long instance;
+        long expResult;
+        long result;
         // Test 1
-        i = new Grids_2D_ID_int(6, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = 5;
-        result = i.getCol();
+        result = instance.getCol();
         assertEquals(expResult, result);
         // Test 2
-        i = new Grids_2D_ID_int(i);
+        instance = new Grids_2D_ID_long(instance);
         expResult = 5;
-        result = i.getCol();
+        result = instance.getCol();
         assertEquals(expResult, result);
         // Test 3
-        i = new Grids_2D_ID_int(-1, -2);
+        instance = new Grids_2D_ID_long(-1, -2);
         expResult = -2;
-        result = i.getCol();
+        result = instance.getCol();
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of equals method, of class Grids_2D_ID_int.
+     * Test of equals method, of class Grids_2D_ID_long.
      */
     @Test
     public void testEquals() {
         System.out.println("equals");
         Object object;
-        Grids_2D_ID_int instance;
+        Grids_2D_ID_long instance;
         boolean expResult;
         boolean result;
         // Test 1
-        object = new Grids_2D_ID_int(6, 5);
-        instance = new Grids_2D_ID_int(6, 5);
+        object = new Grids_2D_ID_long(6, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = true;
         result = instance.equals(object);
         assertEquals(expResult, result);
         // Test 2
-        object = new Grids_2D_ID_int(6, 5);
-        instance = new Grids_2D_ID_int(5, 5);
+        object = new Grids_2D_ID_long(6, 5);
+        instance = new Grids_2D_ID_long(5, 5);
         expResult = false;
         result = instance.equals(object);
         assertEquals(expResult, result);
         // Test 3
-        object = new Grids_2D_ID_int(6, 5);
-        instance = new Grids_2D_ID_int(5, 6);
+        object = new Grids_2D_ID_long(6, 5);
+        instance = new Grids_2D_ID_long(5, 6);
         expResult = false;
         result = instance.equals(object);
         assertEquals(expResult, result);
         // Test 4
         object = null;
-        instance = new Grids_2D_ID_int(5, 6);
+        instance = new Grids_2D_ID_long(5, 6);
         expResult = false;
         result = instance.equals(object);
         assertEquals(expResult, result);
         // Test 5
-        object = new Grids_2D_ID_long(5, 6);
-        instance = new Grids_2D_ID_int(5, 6);
+        object = new Grids_2D_ID_int(5, 6);
+        instance = new Grids_2D_ID_long(5, 6);
         expResult = false;
         result = instance.equals(object);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of compareTo method, of class Grids_2D_ID_int.
+     * Test of compareTo method, of class Grids_2D_ID_long.
      */
     @Test
     public void testCompareTo() {
         System.out.println("compareTo");
-        Grids_2D_ID_int t;
-        Grids_2D_ID_int instance;
-        int expResult;
-        int result;
+        Grids_2D_ID_long t;
+        Grids_2D_ID_long instance;
+        long expResult;
+        long result;
         // Test 1
-        t = new Grids_2D_ID_int(6, 5);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(6, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = 0;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
         // Test 2
-        t = new Grids_2D_ID_int(5, 5);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(5, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
         // Test 3
-        t = new Grids_2D_ID_int(6, 4);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(6, 4);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
         // Test 2
-        t = new Grids_2D_ID_int(7, 5);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(7, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = 1;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
         // Test 2
-        t = new Grids_2D_ID_int(6, 6);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(6, 6);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = 1;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
         // Test 2
-        t = new Grids_2D_ID_int(5, 5);
-        instance = new Grids_2D_ID_int(6, 5);
+        t = new Grids_2D_ID_long(5, 5);
+        instance = new Grids_2D_ID_long(6, 5);
         expResult = -1;
         result = instance.compareTo(t);
         assertEquals(expResult, result);
