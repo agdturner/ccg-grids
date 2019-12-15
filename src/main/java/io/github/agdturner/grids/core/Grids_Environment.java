@@ -143,7 +143,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param e The Generic_Environment.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_Environment(Generic_Environment e) throws IOException {
+    public Grids_Environment(Generic_Environment e) throws IOException, 
+            Exception {
         this(e, e.files.getDir());
     }
 
@@ -156,17 +157,19 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     public Grids_Environment(Generic_Environment e, Generic_Path dir)
-            throws IOException {
+            throws IOException, Exception {
         this.env = e;
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
         initNotToCache();
-        Path p = dir.getPath();
-        if (!Files.exists(p)) {
-            Files.createDirectory(p);
-        }
-        files = new Grids_Files(new Generic_Defaults(Paths.get(dir.toString(),
-                Grids_Strings.s_grids)));
+        Path p = e.getLogDir(Grids_Strings.s_grids); 
+//        Path p = dir.getPath();
+//        if (!Files.exists(p)) {
+//            Files.createDirectory(p);
+//        }
+//        files = new Grids_Files(new Generic_Defaults(Paths.get(dir.toString(),
+//                Grids_Strings.s_grids)));
+        files = new Grids_Files(new Generic_Defaults(p));
     }
 
     /**
@@ -179,7 +182,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.lang.ClassNotFoundException If encountered.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_Processor getProcessor() throws IOException, ClassNotFoundException {
+    public Grids_Processor getProcessor() throws IOException, 
+            ClassNotFoundException, Exception {
         if (processor == null) {
             processor = new Grids_Processor(this);
         }

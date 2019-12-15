@@ -57,7 +57,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param e
      */
     public Grids_ProcessorDEM(Grids_Environment e) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         super(e);
     }
 

@@ -48,6 +48,7 @@ import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntMap;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridFactoryInt;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
+import io.github.agdturner.grids.core.Grids_Strings;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBoolean;
@@ -66,6 +67,7 @@ import io.github.agdturner.grids.io.Grids_ESRIAsciiGridExporter;
 import io.github.agdturner.grids.io.Grids_Files;
 import io.github.agdturner.grids.io.Grids_ImageExporter;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * A class holding methods for processing individual or multiple grids.
@@ -198,14 +200,23 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param ge
      */
-    public Grids_Processor(Grids_Environment ge) throws IOException,
+    public Grids_Processor(Grids_Environment ge) throws Exception, IOException,
             ClassNotFoundException {
         super(ge);
         StartTime = System.currentTimeMillis();
         files = ge.files;
-        Path dir = Generic_IO.createNewFile(files.getGeneratedDir());
-        Path logFile;
-        logFile = Paths.get(dir.toString(), "log.txt");
+        String s = Grids_Strings.s_Processor;
+        Path baseDir = Paths.get(files.getGeneratedDir().toString(), s);
+        Path dir;
+        if (Files.exists(baseDir)) {
+            Generic_FileStore fs = new Generic_FileStore(baseDir);
+            fs.addDir();
+            dir = fs.getHighestLeaf();
+        } else {
+            Generic_FileStore fs = new Generic_FileStore(files.getGeneratedDir(), s);
+            dir = fs.getHighestLeaf();
+        }
+        Path logFile = Paths.get(dir.toString(), "log.txt");
         if (!Files.exists(logFile)) {
             Files.createFile(logFile);
         }

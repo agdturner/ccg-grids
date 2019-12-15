@@ -45,7 +45,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      *
      */
     public Grids_ProcessorGWS(Grids_Environment e) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         super(e);
     }
 
