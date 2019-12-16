@@ -570,8 +570,7 @@ public class Grids_UtilitiesTest {
         Grids_GridDouble yGrid = gfd.create(dir, nrows, ncols, dimensions);
         int divisions = 10;
         //Object[] expResult = null;
-        Grids_Utilities gu = new Grids_Utilities(ge);
-        Object[] result = gu.densityPlot(xGrid, yGrid, divisions, gp);
+        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp);
         Grids_ImageExporter ie = new Grids_ImageExporter(ge);
         String type = "PNG";
         Path outdir = ge.files.getGeneratedDir().getPath();
