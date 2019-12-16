@@ -82,7 +82,7 @@ public class Grids_StatsNotUpdatedDouble
      * Grids_GridIntStatistics.)
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         if (!isUpToDate()) {
             super.update();
             setUpToDate(true);
@@ -95,7 +95,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }
@@ -106,7 +106,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public BigDecimal getSum() throws IOException, ClassNotFoundException {
+    public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
         return Sum;
     }
 
@@ -118,7 +118,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public BigDecimal getSum(boolean update) throws IOException, ClassNotFoundException {
+    public BigDecimal getSum(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (update) {
             update();
         }
@@ -132,7 +132,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public Double getMin(boolean update) throws IOException, ClassNotFoundException {
+    public Double getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (update) {
             update();
         }
@@ -146,7 +146,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public Double getMax(boolean update) throws IOException, ClassNotFoundException {
+    public Double getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (update) {
             update();
         }
