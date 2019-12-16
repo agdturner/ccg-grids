@@ -47,7 +47,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorInt(Grids_GridInt g) throws IOException,
+    public Grids_GridIteratorInt(Grids_GridInt g) throws IOException, Exception,
             ClassNotFoundException {
         super(g);
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
@@ -112,7 +112,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem
      */
-    public Integer next() throws IOException, ClassNotFoundException {
+    public Integer next() throws IOException, Exception, ClassNotFoundException {
         if (!ChunkIterator.hasNext()) {
             if (GridIterator.hasNext()) {
                 ChunkID = GridIterator.next();

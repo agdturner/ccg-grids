@@ -236,45 +236,54 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Initialises factories and file stores.
      */
-    private void initFactoriesAndFileStores(int chunkNRows, int chunkNCols) throws Exception {
+    private void initFactoriesAndFileStores(int chunkNRows, int chunkNCols) 
+            throws Exception {
         initChunkFactories();
-        GridBooleanFactory = new Grids_GridFactoryBoolean(env,
-                chunkBooleanFactory, chunkNRows, chunkNCols);
+        // Boolean
         String s = Grids_Strings.s_GridBoolean;
-        Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString(), s);
+        Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
         if (Files.exists(dir)) {
             fsGridBoolean = new Generic_FileStore(dir);
         } else {
             fsGridBoolean = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBinaryFactory = new Grids_GridFactoryBinary(env, chunkBinaryFactory,
-                chunkNRows, chunkNCols);
+        Generic_Path baseDir = new Generic_Path(dir);
+        GridBooleanFactory = new Grids_GridFactoryBoolean(env, baseDir,
+                chunkBooleanFactory, chunkNRows, chunkNCols);
+        // Binary
         s = Grids_Strings.s_GridBinary;
-        dir = Paths.get(files.getGeneratedGridBinaryDir().toString(), s);
+        dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
         if (Files.exists(dir)) {
             fsGridBinary = new Generic_FileStore(dir);
         } else {
             fsGridBinary = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridIntFactory = new Grids_GridFactoryInt(env, GridChunkIntFactory,
-                defaultChunkIntFactory, chunkNRows, chunkNCols);
+        baseDir = new Generic_Path(dir);
+        GridBinaryFactory = new Grids_GridFactoryBinary(env, baseDir,
+                chunkBinaryFactory, chunkNRows, chunkNCols);
+        // Int
         s = Grids_Strings.s_GridInt;
-        dir = Paths.get(files.getGeneratedGridIntDir().toString(), s);
+        dir = Paths.get(files.getGeneratedGridIntDir().toString());
         if (Files.exists(dir)) {
             fsGridInt = new Generic_FileStore(dir);
         } else {
             fsGridInt = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridDoubleFactory = new Grids_GridFactoryDouble(env,
-                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory,
-                chunkNRows, chunkNCols);
+        baseDir = new Generic_Path(dir);
+        GridIntFactory = new Grids_GridFactoryInt(env, baseDir, GridChunkIntFactory,
+                defaultChunkIntFactory, chunkNRows, chunkNCols);
+        // Double
         s = Grids_Strings.s_GridDouble;
-        dir = Paths.get(files.getGeneratedGridDoubleDir().toString(), s);
+        dir = Paths.get(files.getGeneratedGridDoubleDir().toString());
         if (Files.exists(dir)) {
             fsGridDouble = new Generic_FileStore(dir);
         } else {
             fsGridDouble = new Generic_FileStore(files.getGeneratedDir(), s);
         }
+        baseDir = new Generic_Path(dir);
+        GridDoubleFactory = new Grids_GridFactoryDouble(env, baseDir,
+                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory,
+                chunkNRows, chunkNCols);
         initGridStatistics();
     }
 
@@ -298,8 +307,7 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initGridStatistics() {
         GridDoubleStatistics = new Grids_StatsDouble(env);
-        GridDoubleStatisticsNotUpdated = new Grids_StatsNotUpdatedDouble(
-                env);
+        GridDoubleStatisticsNotUpdated = new Grids_StatsNotUpdatedDouble(env);
         GridIntStatistics = new Grids_StatsInt(env);
         GridIntStatisticsNotUpdated = new Grids_StatsNotUpdatedInt(env);
     }
@@ -334,6 +342,19 @@ public class Grids_Processor extends Grids_Object {
             LogIndentation++;
         }
         env.env.log(s2);
+    }
+
+    /**
+     * This returns (@link #fsGridDouble) the current next GridDouble directory
+     * in {
+     *
+     * @return A Generic_Path to the directory which is currently the next one
+     * for setting up this grid.
+     */
+    public Generic_Path getGridDoubleDir() throws IOException {
+        Generic_Path r = fsGridDouble.getPathNext();
+        fsGridDouble.addDir();
+        return r;
     }
 
     /**
@@ -409,7 +430,7 @@ public class Grids_Processor extends Grids_Object {
      * @param g The Grids_GridNumber that the mask will be applied to.
      * @param mask The Grids_GridNumber to use as a mask.
      */
-    public void mask(Grids_GridNumber g, Grids_GridNumber mask) 
+    public void mask(Grids_GridNumber g, Grids_GridNumber mask)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         int chunkNRows;
@@ -660,12 +681,9 @@ public class Grids_Processor extends Grids_Object {
      * into the range [min,max] or scaled using log.
      * @TODO Improve log rescaling implementation.
      */
-    public Grids_GridDouble rescale(
-            Grids_GridDouble g,
-            String type,
-            double min,
-            double max,
-            boolean hoome) throws IOException, ClassNotFoundException, Exception {
+    public Grids_GridDouble rescale(Grids_GridDouble g, String type, double min,
+            double max, boolean hoome) throws IOException,
+            ClassNotFoundException, Exception {
         try {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
@@ -693,7 +711,8 @@ public class Grids_Processor extends Grids_Object {
      * @TODO Improve log rescaling implementation.
      */
     protected Grids_GridDouble rescale(Grids_GridDouble g, String type,
-            double min, double max) throws IOException, ClassNotFoundException, Exception {
+            double min, double max) throws IOException, ClassNotFoundException,
+            Exception {
         env.checkAndMaybeFreeMemory();
         Grids_GridDouble r;
         long nrows = g.getNRows();
@@ -709,8 +728,8 @@ public class Grids_Processor extends Grids_Object {
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
         double value;
-        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
-                files.getGeneratedGridDoubleDir()));
+        Generic_Path dir = new Generic_Path(fsGridDouble.getHighestLeaf());
+        fsGridDouble.addDir();
         r = GridDoubleFactory.create(dir, g, 0, 0, nrows - 1, ncols - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
@@ -1171,10 +1190,7 @@ public class Grids_Processor extends Grids_Object {
         Grids_Dimensions gDimensions = g.getDimensions();
         double g2NoDataValue = g2.getNoDataValue();
         Grids_Dimensions g2Dimensions = g2.getDimensions();
-        Grids_GridFactoryDouble gf;
-        gf = new Grids_GridFactoryDouble(env, GridChunkDoubleFactory,
-                DefaultGridChunkDoubleFactory, g.getChunkNCols(),
-                g.getChunkNRows());
+        Grids_GridFactoryDouble gf = this.GridDoubleFactory;
         // If the region to be added is outside g then return.
         if ((dc[1].compareTo(gDimensions.getXMax()) == 1)
                 || (dc[3].compareTo(gDimensions.getXMin()) == -1)
@@ -2598,7 +2614,7 @@ public class Grids_Processor extends Grids_Object {
      * @return
      */
     protected double[][] getRowProcessInitialData(Grids_GridDouble g,
-            int cellDistance, long row) throws IOException, ClassNotFoundException {
+            int cellDistance, long row) throws IOException, Exception, ClassNotFoundException {
         int l = (cellDistance * 2) + 1;
         double[][] result = new double[l][l];
         long col;
@@ -2625,7 +2641,7 @@ public class Grids_Processor extends Grids_Object {
      */
     protected double[][] getRowProcessData(Grids_GridDouble g,
             double[][] previous, int cellDistance, long row, long col)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double[][] result = previous;
         if (col == 0) {
             return getRowProcessInitialData(g, cellDistance, row);

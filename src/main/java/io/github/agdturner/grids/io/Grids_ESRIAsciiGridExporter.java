@@ -57,7 +57,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param g Grid for export.
      * @return
      */
-    public Path toAsciiFile(Grids_GridNumber g) throws IOException, 
+    public Path toAsciiFile(Grids_GridNumber g) throws IOException, Exception, 
             ClassNotFoundException {
         Generic_Path directory = g.getDirectory();
         Path file = Paths.get(directory.getParent().toString(), g.getName() + ".asc");
@@ -72,7 +72,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @return
      */
     public Path toAsciiFile(Grids_GridNumber g, Path file) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
             noDataValue = "" + ((Grids_GridDouble) g).getNoDataValue();
@@ -91,7 +91,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @return
      */
     public Path toAsciiFile(Grids_GridNumber g, Path file, String ndv) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         env.initNotToCache();
         env.checkAndMaybeFreeMemory();
         try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {

@@ -46,11 +46,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridNumber() {
-    }
-
-    protected Grids_GridNumber(Grids_Environment ge, Generic_Path dir) {
-        super(ge, dir);
+    protected Grids_GridNumber(Grids_Environment ge, Generic_Path dir,
+            Generic_Path baseDir) throws Exception {
+        super(ge, dir, baseDir);
     }
 
     /**
@@ -62,7 +60,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(Point2D.Double point, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getCellDouble(point);
             env.checkAndMaybeFreeMemory(hoome);
@@ -85,7 +83,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
  a double.
      * @param point The Point2D.Double for which the cell value is returned.
      */
-    public double getCellDouble(Point2D.Double point) throws IOException, ClassNotFoundException {
+    public double getCellDouble(Point2D.Double point) throws IOException, Exception, ClassNotFoundException {
         return getCellDouble(getChunkRow(point.getY()),
                 getChunkCol(point.getX()), getCellRow(point.getY()),
                 getCellCol(point.getX()));
@@ -102,7 +100,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public double getCellDouble(double x, double y, boolean hoome) throws IOException, ClassNotFoundException {
+    public double getCellDouble(double x, double y, boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getCellDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -128,7 +126,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param y The y coordinate of the point at which the cell value is
      * returned.
      */
-    public double getCellDouble(double x, double y) throws IOException, ClassNotFoundException {
+    public double getCellDouble(double x, double y) throws IOException, Exception, ClassNotFoundException {
         return getCellDouble(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
     }
@@ -142,7 +140,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * are initiated, then the method is re-called. If false then
      * OutOfMemoryErrors are caught and thrown.
      */
-    public final double getCellDouble(long row, long col, boolean hoome) throws IOException, ClassNotFoundException {
+    public final double getCellDouble(long row, long col, boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getCellDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -166,7 +164,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @return Grids_Chunk cell value at cell row index equal to
  _CellRowIndex, cell col index equal to _CellColIndex as a double.
      */
-    public double getCellDouble(long row, long col) throws IOException, ClassNotFoundException {
+    public double getCellDouble(long row, long col) throws IOException, Exception, ClassNotFoundException {
         return getCellDouble(getChunkRow(row), getChunkCol(col),
                 getCellRow(row), getCellCol(col));
     }
@@ -183,7 +181,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getCellDouble(int chunkRow, int chunkCol, int cellRow,
-            int cellCol, boolean hoome) throws IOException, ClassNotFoundException {
+            int cellCol, boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getCellDouble(chunkRow, chunkCol, cellRow, cellCol);
             env.checkAndMaybeFreeMemory(hoome);
@@ -213,7 +211,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param cellCol The cell column index of the chunk.
      */
     public double getCellDouble(int chunkRow, int chunkCol, int cellRow,
-            int cellCol) throws IOException, ClassNotFoundException {
+            int cellCol) throws IOException, Exception, ClassNotFoundException {
         if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
             if (this instanceof Grids_GridDouble) {
                 return ((Grids_GridDouble) this).getNoDataValue();
@@ -247,7 +245,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public final double getCellDouble(Grids_Chunk chunk,
             int chunkRow, int chunkCol, int cellRow, int cellCol,
-            boolean hoome) throws IOException {
+            boolean hoome) throws IOException, Exception {
         try {
             double r;
             r = getCellDouble(chunk, chunkRow, chunkCol, cellRow, cellCol);
@@ -291,7 +289,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
             boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -322,7 +320,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x,
             double y, long row, long col)
-            throws IOException, ClassNotFoundException;
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
@@ -340,7 +338,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
             long row, long col, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             Grids_2D_ID_long[] r = getNearestValuesCellIDs(x, y, row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -367,7 +365,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(long row,
             long col)
-            throws IOException, ClassNotFoundException;
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @param col
@@ -381,7 +379,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public final Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col,
             boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             Grids_2D_ID_long[] result = getNearestValuesCellIDs(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -407,7 +405,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x, 
             double y)
-            throws IOException, ClassNotFoundException;
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the average of the nearest data values to point given by
@@ -419,7 +417,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(double x, double y, boolean hoome)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getNearestValueDouble(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -444,7 +442,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param y the y-coordinate of the point
      */
     protected abstract <T extends Number> double getNearestValueDouble(double x, double y) 
-            throws IOException, ClassNotFoundException;
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the average of the nearest data values to point given by
@@ -462,7 +460,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public final double getNearestValueDouble(double x, double y, long row,
             long col, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             return getNearestValueDouble(x, y, row, col);
         } catch (OutOfMemoryError e) {
@@ -490,7 +488,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * is returned
      */
     protected abstract double getNearestValueDouble(double x, double y,
-            long row, long col)            throws IOException, ClassNotFoundException;
+            long row, long col)            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the average of the nearest data values to position given by row
@@ -504,7 +502,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDouble(long row, long col, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         try {
             double result = getNearestValueDouble(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -531,7 +529,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * index rowIndex, column index colIndex
      */
     protected abstract double getNearestValueDouble(long row, long col)
-            throws IOException, ClassNotFoundException;
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the distance to the nearest data value from point given by
@@ -543,7 +541,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y,
-            boolean hoome) throws IOException, ClassNotFoundException {
+            boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getNearestValueDoubleDistance(x, y);
             env.checkAndMaybeFreeMemory(hoome);
@@ -567,7 +565,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      */
-    protected abstract double getNearestValueDoubleDistance(double x, double y)throws IOException, ClassNotFoundException;
+    protected abstract double getNearestValueDoubleDistance(double x, double y)throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the distance to the nearest data value from: point given by
@@ -584,7 +582,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(double x, double y,
-            long row, long col, boolean hoome) throws IOException, ClassNotFoundException {
+            long row, long col, boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double r = getNearestValueDoubleDistance(x, y, row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -614,7 +612,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * nearest to the nearest cell value is returned.
      */
     protected abstract double getNearestValueDoubleDistance(double x, double y,
-            long row, long col)throws IOException, ClassNotFoundException;
+            long row, long col)throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return the distance to the nearest data value from position given by row
@@ -628,7 +626,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * OutOfMemoryErrors are caught and thrown.
      */
     public final double getNearestValueDoubleDistance(long row, long col,
-            boolean hoome) throws IOException, ClassNotFoundException {
+            boolean hoome) throws IOException, Exception, ClassNotFoundException {
         try {
             double result = getNearestValueDoubleDistance(row, col);
             env.checkAndMaybeFreeMemory(hoome);
@@ -647,7 +645,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     @Override
-    public Grids_StatsNumber getStats(boolean hoome) throws IOException {
+    public Grids_StatsNumber getStats(boolean hoome) throws IOException, Exception {
         return (Grids_StatsNumber) super.getStats(hoome);
     }
 }

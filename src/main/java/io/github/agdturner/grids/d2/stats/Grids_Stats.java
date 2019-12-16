@@ -49,7 +49,7 @@ public abstract class Grids_Stats extends Grids_Object {
         n = 0;
     }
 
-    public abstract long getN()throws IOException, ClassNotFoundException;
+    public abstract long getN()throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @param n to set n to.
@@ -68,7 +68,7 @@ public abstract class Grids_Stats extends Grids_Object {
      * Updates by going through all values in grid if the fields are likely not
      * be up to date.
      */
-    protected abstract void update() throws IOException, ClassNotFoundException ;
+    protected abstract void update() throws IOException, Exception, ClassNotFoundException ;
 
     public void update(Grids_Stats stats) {
         n = stats.n;
@@ -95,7 +95,7 @@ public abstract class Grids_Stats extends Grids_Object {
      * OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public String toString(boolean hoome) throws IOException {
+    public String toString(boolean hoome) throws IOException, Exception {
         try {
             String r = toString();
             env.checkAndMaybeFreeMemory();
@@ -119,7 +119,7 @@ public abstract class Grids_Stats extends Grids_Object {
      *
      * @return
      */
-    public String getFieldsDescription() throws IOException, ClassNotFoundException {
+    public String getFieldsDescription() throws IOException, Exception, ClassNotFoundException {
         return "N=" + n;
     }
 
@@ -132,9 +132,7 @@ public abstract class Grids_Stats extends Grids_Object {
     public String toString() {
         try {
             return getClass().getSimpleName() + "[" + getFieldsDescription() + "]";
-        } catch (IOException ex) {
-            Logger.getLogger(Grids_Stats.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Grids_Stats.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

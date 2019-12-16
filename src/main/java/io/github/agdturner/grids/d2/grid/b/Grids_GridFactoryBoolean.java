@@ -40,10 +40,6 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
 
     public Grids_StatsBoolean Stats;
 
-    protected Grids_GridFactoryBoolean() {
-        super();
-    }
-
     /**
      * @see #Grids_GridFactoryBoolean(Grids_Environment,
      * Grids_ChunkFactoryBoolean, int, int, Grids_Dimensions,
@@ -55,9 +51,9 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @param chunkNRows What {@link #ChunkNRows} is set to.
      * @param chunkNCols What {@link #ChunkNCols} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e,
+    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_Path baseDir,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols) {
-        this(e, factory, chunkNRows, chunkNCols, null,
+        this(e, baseDir, factory, chunkNRows, chunkNCols, null,
                 new Grids_StatsNotUpdatedBoolean(e));
     }
 
@@ -69,10 +65,10 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @param dimensions What {@link #Dimensions} is set to.
      * @param stats What {@link #Stats} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e,
+    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_Path baseDir,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBoolean stats) {
-        super(e, chunkNRows, chunkNCols, dimensions);
+        super(e, baseDir, chunkNRows, chunkNCols, dimensions);
         this.factory = factory;
         Stats = stats;
     }
@@ -90,8 +86,9 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_GridBoolean create(Generic_Path dir, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException {
+    public Grids_GridBoolean create(Generic_Path dir,
+            long nRows, long nCols, Grids_Dimensions dimensions)
+            throws IOException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), dir,
                 factory, nRows, nCols, dimensions);
     }
@@ -117,9 +114,9 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      */
     public Grids_GridBoolean create(Grids_StatsBoolean stats, Generic_Path dir,
-            Grids_ChunkFactoryBoolean cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException {
-        return new Grids_GridBoolean(getStats(stats), dir, cf, ChunkNRows,
+            Grids_ChunkFactoryBoolean cf, long nRows, long nCols, 
+            Grids_Dimensions dimensions) throws IOException, Exception {
+        return new Grids_GridBoolean(getStats(stats), dir, baseDir, cf, ChunkNRows, 
                 ChunkNCols, nRows, nCols, dimensions, env);
     }
 
@@ -181,15 +178,14 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             Grids_Grid g, Grids_ChunkFactoryBoolean cf, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
-        return new Grids_GridBoolean(getStats(stats), dir, g, cf, ChunkNRows,
+        return new Grids_GridBoolean(getStats(stats), dir, baseDir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol);
     }
 
     /**
      * @see #create(Grids_StatsBoolean, Generic_Path, Generic_Path,
      * Grids_ChunkFactoryBoolean, long, long, long, long)} where:
-     * {@link Grids_StatsBoolean} is set to
-     * {@code new Grids_StatsNotUpdatedBoolean(env)};
+     * {@link Grids_StatsBoolean} is set to null null     {@code new Grids_StatsNotUpdatedBoolean(env)};
      * {@link Grids_ChunkFactoryBoolean} is set to
      * {@code new Grids_ChunkFactoryBoolean()}.
      *
@@ -244,7 +240,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridBoolean(getStats(stats), dir, gridFile, cf,
+        return new Grids_GridBoolean(getStats(stats), dir, baseDir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 env);
     }
@@ -260,7 +256,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     @Override
     public Grids_GridBoolean create(Generic_Path dir, Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridBoolean(env, dir, gridFile);
+        return new Grids_GridBoolean(env, dir, baseDir, gridFile);
     }
 
     /**

@@ -317,7 +317,7 @@ public class Grids_Utilities extends Grids_Object {
             numy[j] = 0.0d;
             sumysq[j] = 0.0d;
         }
-dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
         gp.fsGridDouble.addDir();
         Grids_GridDouble temp1 = (Grids_GridDouble) gfd.create(dir, divisions, divisions);
         for (long row = 0; row < nrows; row++) {

@@ -17,8 +17,6 @@ package io.github.agdturner.grids.d2.stats;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
@@ -66,7 +64,7 @@ public class Grids_StatsBoolean extends Grids_Stats {
      * @throws java.io.IOException
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridBoolean g = getGrid();
@@ -87,7 +85,7 @@ public class Grids_StatsBoolean extends Grids_Stats {
      * @return
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         long r = 0;
         Grids_GridBoolean g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();

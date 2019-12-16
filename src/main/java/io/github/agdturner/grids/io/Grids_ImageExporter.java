@@ -41,7 +41,7 @@ import io.github.agdturner.grids.process.Grids_Processor;
 
 /**
  * Class for exporting to images.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -67,13 +67,13 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * Writes this grid as a Grey scale image
      *
      * @param g
-     * @param processor
+     * @param gp
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png",
      * "jpeg"
      */
-    public void toGreyScaleImage(Grids_GridNumber g,
-            Grids_Processor processor, Path file, String type) 
+    public void toGreyScaleImage(Grids_GridNumber g, Grids_Processor gp, 
+            Path file, String type)
             throws IOException, ClassNotFoundException, Exception {
         // Initialisation
         env.initNotToCache();
@@ -128,9 +128,9 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
-            r = processor.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d, env.HOOMET);
+            r = gp.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d, env.HOOMET);
         } else {
-            r = processor.rescale((Grids_GridInt) g, null, 0.0d, 255.0d, env.HOOMET);
+            r = gp.rescale((Grids_GridInt) g, null, 0.0d, 255.0d, env.HOOMET);
         }
         double noDataValue = r.getNoDataValue();
 //        System.out.println("r nrows " + r.getNRows(hoome));
@@ -205,7 +205,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param hoome
      */
     private void write(int nCols, int nRows, int[] gridImageArray,
-            String type, Path file, Grids_GridNumber g, boolean hoome) 
+            String type, Path file, Grids_GridNumber g, boolean hoome)
             throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
@@ -267,7 +267,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * "jpeg"
      */
     public void toColourImage(int duplication, TreeMap<Double, Color> colours,
-            Color noDataValueColour, Grids_GridDouble g, Path file, String type) 
+            Color noDataValueColour, Grids_GridDouble g, Path file, String type)
             throws IOException, ClassNotFoundException, Exception {
         String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
                 + "Grids_GridDouble,File,String)";

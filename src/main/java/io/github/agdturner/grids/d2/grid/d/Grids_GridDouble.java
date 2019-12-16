@@ -68,9 +68,6 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected double NoDataValue = -Double.MAX_VALUE;
 
-    protected Grids_GridDouble() {
-    }
-
     /**
      * Creates a new Grids_GridDouble with each cell value equal to ndv and all
      * chunks of the same type.
@@ -87,11 +84,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_Path dir,
-            Grids_ChunkFactoryDouble cf, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            double noDataValue, Grids_Environment ge) throws IOException, ClassNotFoundException {
-        super(ge, dir);
-        init(stats, dir, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions,
+            Generic_Path baseDir, Grids_ChunkFactoryDouble cf,
+            int chunkNRows, int chunkNCols, long nRows, long nCols,
+            Grids_Dimensions dimensions, double noDataValue, 
+            Grids_Environment ge) throws IOException, Exception, ClassNotFoundException {
+        super(ge, dir, baseDir);
+        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions,
                 noDataValue);
     }
 
@@ -114,11 +112,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param noDataValue The ndv for this.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_Path dir,
-            Grids_Grid g, Grids_ChunkFactoryDouble cf,
+            Generic_Path baseDir, Grids_Grid g, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue) throws IOException,
             ClassNotFoundException, Exception {
-        super(g.env, dir);
+        super(g.env, dir, baseDir);
         checkDir();
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
@@ -148,12 +146,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_Path dir,
-            Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
+            Generic_Path baseDir, Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue,
             Grids_Environment ge) throws IOException, ClassNotFoundException,
             Exception {
-        super(ge, dir);
+        super(ge, dir, baseDir);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
     }
@@ -171,9 +169,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException
      */
     protected Grids_GridDouble(Grids_Environment ge, Generic_Path dir,
-            Generic_Path gridFile) throws IOException, ClassNotFoundException,
-            Exception {
-        super(ge, dir);
+            Generic_Path baseDir, Generic_Path gridFile) 
+            throws IOException, ClassNotFoundException,            Exception {
+        super(ge, dir, baseDir);
         init(new Grids_StatsNotUpdatedDouble(ge), gridFile);
     }
 
@@ -220,22 +218,20 @@ public class Grids_GridDouble extends Grids_GridNumber {
         stats.grid = this;
     }
 
-    private void init(Grids_StatsDouble stats, Generic_Path directory,
+    private void init(Grids_StatsDouble stats,
             Grids_ChunkFactoryDouble chunkFactory, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            double noDataValue) throws IOException {
+            double noDataValue) throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
-        dir = directory;
         this.stats = stats;
         this.stats.setGrid(this);
-        dir = directory;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         NRows = nRows;
         NCols = nCols;
         Dimensions = dimensions;
         initNoDataValue(noDataValue);
-        Name = directory.getFileName().toString();
+        Name = getDirectory().getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
@@ -287,7 +283,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         NRows = endRow - startRow + 1L;
         NCols = endCol - startCol + 1L;
         NoDataValue = ndv;
-        Name = dir.getFileName().toString();
+        Name = getDirectory().getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
@@ -511,13 +507,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (Files.isDirectory(gridFile)) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryDouble gf = new Grids_GridFactoryDouble(env,
-                        gp.GridChunkDoubleFactory, cf, noDataValue, chunkNRows,
-                        chunkNCols, null, stats);
+                Grids_GridFactoryDouble gf = gp.GridDoubleFactory;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
-                Grids_GridDouble g = (Grids_GridDouble) gf.create(dir,
+                Grids_GridDouble g = (Grids_GridDouble) gf.create(getDirectory(),
                         (Grids_Grid) Generic_IO.readObject(thisFile));
-                Grids_GridDouble g2 = gf.create(dir, g,
+                Grids_GridDouble g2 = gf.create(getDirectory(), g,
                         startRow, startCol, endRow, endCol);
                 init(g2);
             }
@@ -528,7 +522,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             NRows = endRow - startRow;
             NCols = endCol - startCol;
             initNoDataValue(noDataValue);
-            Name = dir.getFileName().toString();
+            Name = getDirectory().getFileName().toString();
             initNChunkRows();
             initNChunkCols();
             chunkIDChunkMap = new TreeMap<>();
@@ -628,28 +622,23 @@ public class Grids_GridDouble extends Grids_GridNumber {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridFactoryDouble gf = new Grids_GridFactoryDouble(env,
-                        gp.GridChunkDoubleFactory,
-                        gp.DefaultGridChunkDoubleFactory,
-                        gp.GridIntFactory.getNoDataValue(),
-                        gp.GridDoubleFactory.getChunkNRows(),
-                        gp.GridDoubleFactory.getChunkNCols(), null, stats);
+                Grids_GridFactoryDouble gf = gp.GridDoubleFactory;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
-                Grids_GridDouble g = (Grids_GridDouble) gf.create(dir,
+                Grids_GridDouble g = (Grids_GridDouble) gf.create(getDirectory(),
                         (Grids_Grid) Generic_IO.readObject(thisFile));
                 init(g);
                 //this.chunkIDChunkMap = g.chunkIDChunkMap;
                 this.ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
                 this.NoDataValue = g.NoDataValue;
                 this.Dimensions = g.Dimensions;
-                this.dir = g.dir;
+                this.dir = g.getDirectory();
                 this.stats = stats;
                 this.stats.grid = this;
             }
         } else {
             // Assume ESRI AsciiFile
             checkDir();
-            Name = dir.getFileName().toString();
+            Name = getDirectory().getFileName().toString();
             chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;
@@ -851,7 +840,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param chunkID
      */
     @Override
-    public Grids_ChunkDouble getChunk(Grids_2D_ID_int chunkID) throws IOException, ClassNotFoundException {
+    public Grids_ChunkDouble getChunk(Grids_2D_ID_int chunkID) throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(chunkID)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
@@ -867,7 +856,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     public Grids_ChunkDouble getChunk(Grids_2D_ID_int chunkID,
-            int chunkRow, int chunkCol) throws IOException, ClassNotFoundException {
+            int chunkRow, int chunkCol) throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(chunkRow, chunkCol)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
@@ -889,7 +878,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param oldValue The value being replaced.
      */
     protected void upDateGridStatistics(double newValue, double oldValue)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         Grids_StatsDouble dStats = getStats();
         if (dStats.getClass() == Grids_StatsDouble.class) {
             if (newValue != NoDataValue) {
@@ -958,7 +947,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param col
      * @return
      */
-    public double getCell(long row, long col) throws IOException, ClassNotFoundException {
+    public double getCell(long row, long col) throws IOException, Exception, ClassNotFoundException {
 //        boolean isInGrid = isInGrid(row, col);
 //        if (isInGrid) {
         int chunkRow = getChunkRow(row);
@@ -1002,7 +991,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param y the y-coordinate of the point.
      * @return
      */
-    public final double getCell(double x, double y) throws IOException, ClassNotFoundException {
+    public final double getCell(double x, double y) throws IOException, Exception, ClassNotFoundException {
         long row = getRow(y);
         long col = getCol(x);
         boolean isInGrid = isInGrid(row, col);
@@ -1018,7 +1007,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param cellID the Grids_2D_ID_long of the cell.
      * @return
      */
-    public final double getCell(Grids_2D_ID_long cellID) throws IOException, ClassNotFoundException {
+    public final double getCell(Grids_2D_ID_long cellID) throws IOException, Exception, ClassNotFoundException {
         return getCell(cellID.getRow(), cellID.getCol());
     }
 
@@ -1029,7 +1018,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param y the y-coordinate of the point.
      * @param value
      */
-    public final void setCell(double x, double y, double value) throws IOException, ClassNotFoundException, Exception {
+    public final void setCell(double x, double y, double value) throws IOException, Exception, ClassNotFoundException, Exception {
         setCell(getRow(x), getCol(y), value);
     }
 
@@ -1144,7 +1133,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         }
     }
 
-    protected void updateStatistics(double value) throws IOException,
+    protected void updateStatistics(double value) throws IOException, Exception,
             ClassNotFoundException {
         Grids_StatsDouble dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
@@ -1202,7 +1191,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * values are returned.
      */
     protected double[] getCells(double x, double y, double distance)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance);
     }
 
@@ -1217,7 +1206,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public double[] getCells(long row, long col, double distance) throws IOException, ClassNotFoundException {
+    public double[] getCells(long row, long col, double distance) throws IOException, Exception, ClassNotFoundException {
         return getCells(getCellXDouble(col), getCellYDouble(row), row, col,
                 distance);
     }
@@ -1236,7 +1225,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * values are returned.
      */
     protected double[] getCells(double x, double y, long row, long col,
-            double distance) throws IOException, ClassNotFoundException {
+            double distance) throws IOException, Exception, ClassNotFoundException {
         double[] cells;
         int cellDistance = (int) Math.ceil(distance / getCellsizeDouble());
         cells = new double[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
@@ -1264,7 +1253,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected double getNearestValueDouble(double x, double y)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double result = getCell(x, y);
         if (result == NoDataValue) {
             result = getNearestValueDouble(x, y, getRow(y), getCol(x));
@@ -1282,7 +1271,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected double getNearestValueDouble(long row, long col)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double r = getCell(row, col);
         if (r == NoDataValue) {
             r = getNearestValueDouble(getCellXDouble(col),
@@ -1304,7 +1293,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected double getNearestValueDouble(double x, double y, long row, long col)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         Grids_2D_ID_long nearestCellID = getNearestCellID(x, y, row, col);
         double nearestValue = getCell(row, col);
         if (nearestValue == NoDataValue) {
@@ -1433,7 +1422,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double value = getCell(x, y);
         if (value == NoDataValue) {
             return getNearestValuesCellIDs(x, y, getRow(y), getCol(x));
@@ -1452,7 +1441,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double value = getCell(row, col);
         if (value == NoDataValue) {
             return getNearestValuesCellIDs(getCellXDouble(col),
@@ -1477,7 +1466,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
-            long row, long col) throws IOException, ClassNotFoundException {
+            long row, long col) throws IOException, Exception, ClassNotFoundException {
         Grids_2D_ID_long[] nearestCellIDs = new Grids_2D_ID_long[1];
         nearestCellIDs[0] = getNearestCellID(x, y, row, col);
         double nearestCellValue = getCell(row, col);
@@ -1606,7 +1595,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected double getNearestValueDoubleDistance(double x, double y)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double result = getCell(x, y);
         if (result == NoDataValue) {
             result = getNearestValueDoubleDistance(x, y, getRow(y), getCol(x));
@@ -1623,7 +1612,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * nearest to the nearest cell value is returned.
      */
     protected double getNearestValueDoubleDistance(long row, long col)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         double result = getCell(row, col);
         if (result == NoDataValue) {
             result = getNearestValueDoubleDistance(getCellXDouble(col),
@@ -1645,7 +1634,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     protected double getNearestValueDoubleDistance(double x, double y, long row,
-            long col) throws IOException, ClassNotFoundException {
+            long col) throws IOException, Exception, ClassNotFoundException {
         double result = getCell(row, col);
         if (result == NoDataValue) {
             // Initialisation
@@ -1816,7 +1805,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      *
      * @param value
      */
-    public void initCells(double value) throws IOException {
+    public void initCells(double value) throws IOException, Exception {
         Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
         int nChunks = chunkIDChunkMap.size();
         Grids_ChunkDouble chunk;
@@ -1846,7 +1835,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @return A Grids_GridIteratorDouble for iterating over the cell values in
      * this.
      */
-    public Grids_GridIteratorDouble iterator() throws IOException, ClassNotFoundException {
+    public Grids_GridIteratorDouble iterator() throws IOException, Exception, ClassNotFoundException {
         return new Grids_GridIteratorDouble(this);
     }
 

@@ -35,6 +35,12 @@ public abstract class Grids_GridFactory extends Grids_Object {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The baseDir of this factory's file store. If this factory does not use a
+     * file store this is null.
+     */
+    protected final Generic_Path baseDir;
+
+    /**
      * The number of rows in a chunk.
      */
     protected int ChunkNRows;
@@ -51,17 +57,12 @@ public abstract class Grids_GridFactory extends Grids_Object {
 
     /**
      * Creates a new Grids_AbstractGridFactory.
-     */
-    public Grids_GridFactory() {
-    }
-
-    /**
-     * Creates a new Grids_AbstractGridFactory.
      *
      * @param e What {@link #env} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e) {
+    public Grids_GridFactory(Grids_Environment e, Generic_Path baseDir) {
         super(e);
+        this.baseDir = baseDir;
     }
 
     /**
@@ -72,9 +73,10 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param chunkNCols What {@link #ChunkNCols} is set to.
      * @param dimensions What {@link #Dimensions} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, int chunkNRows,
+    public Grids_GridFactory(Grids_Environment e, Generic_Path baseDir, int chunkNRows,
             int chunkNCols, Grids_Dimensions dimensions) {
         super(e);
+        this.baseDir = baseDir;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         Dimensions = dimensions;
@@ -111,7 +113,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     public abstract Grids_Grid create(Generic_Path dir, long nRows,
-            long nCols, Grids_Dimensions d) throws IOException, 
+            long nCols, Grids_Dimensions d) throws IOException,
             ClassNotFoundException, Exception;
 
     ////////////////////////////////////////////////

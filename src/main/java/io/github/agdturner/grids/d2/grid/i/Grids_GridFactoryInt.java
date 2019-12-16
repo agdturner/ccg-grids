@@ -47,9 +47,6 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
 
     public Grids_StatsInt Stats;
 
-    protected Grids_GridFactoryInt() {
-    }
-
     /**
      * Creates a new Grids_GridIntFactory.
      *
@@ -59,11 +56,11 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param chunkNRows The number of rows chunks have by default.
      * @param chunkNCols The number of columns chunks have by default.
      */
-    public Grids_GridFactoryInt(Grids_Environment ge,
+    public Grids_GridFactoryInt(Grids_Environment ge, Generic_Path baseDir,
             Grids_ChunkFactoryIntSinglet gcif, 
             Grids_ChunkFactoryInt dgcif, int chunkNRows, 
             int chunkNCols) {
-        super(ge, chunkNRows, chunkNCols, null);
+        super(ge, baseDir, chunkNRows, chunkNCols, null);
         GridChunkIntFactory = gcif;
         DefaultGridChunkIntFactory = dgcif;
         Stats = new Grids_StatsNotUpdatedInt(ge);
@@ -82,12 +79,12 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param dimensions
      * @param stats
      */
-    public Grids_GridFactoryInt(Grids_Environment ge,
+    public Grids_GridFactoryInt(Grids_Environment ge, Generic_Path baseDir,
             Grids_ChunkFactoryIntSinglet gridChunkIntFactory,
             Grids_ChunkFactoryInt defaultGridChunkIntFactory,
             int noDataValue, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsInt stats) {
-        super(ge, chunkNRows, chunkNCols, dimensions);
+        super(ge, baseDir, chunkNRows, chunkNCols, dimensions);
         GridChunkIntFactory = gridChunkIntFactory;
         DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         Stats = stats;
@@ -155,7 +152,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
     public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
             Grids_ChunkFactoryInt cf, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, cf, ChunkNRows,
+        return new Grids_GridInt(getStats(stats), dir, baseDir, cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
     }
 
@@ -195,7 +192,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
     public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
             Grids_Grid g, Grids_ChunkFactoryInt cf,
             long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, g, cf, ChunkNRows,
+        return new Grids_GridInt(getStats(stats), dir, baseDir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
     }
 
@@ -238,8 +235,9 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      */
     public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
             Generic_Path gridFile, Grids_ChunkFactoryInt cf,
-            long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, gridFile, cf,
+            long startRow, long startCol, long endRow, long endCol) 
+            throws IOException, ClassNotFoundException, Exception {
+        return new Grids_GridInt(getStats(stats), dir, baseDir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
     }
@@ -252,8 +250,9 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @return A new Grids_GridInt with values obtained from gridFile.
      */
     @Override
-    public Grids_GridInt create(Generic_Path dir, Generic_Path gridFile) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(env, dir, gridFile);
+    public Grids_GridInt create(Generic_Path dir, Generic_Path gridFile) 
+            throws IOException, ClassNotFoundException, Exception {
+        return new Grids_GridInt(env, dir, baseDir, gridFile);
     }
 
 

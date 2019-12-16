@@ -44,7 +44,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridIteratorBoolean(
-            Grids_GridBoolean g) throws IOException, ClassNotFoundException {
+            Grids_GridBoolean g) throws IOException, ClassNotFoundException, Exception {
         super(g);
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
         if (GridIterator.hasNext()) {
@@ -92,7 +92,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
     }
     
     public Grids_ChunkIteratorBoolean getChunkIterator(Grids_2D_ID_int ChunkID) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return getChunkIterator(getGrid().getChunk(ChunkID));
     }
     
@@ -102,7 +102,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem 
      */
-    public Boolean next() throws IOException, ClassNotFoundException {
+    public Boolean next() throws IOException, ClassNotFoundException, Exception {
         if (!ChunkIterator.hasNext()) {
             if (GridIterator.hasNext()) {
                 ChunkID = GridIterator.next();
@@ -116,7 +116,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
         }
     }
 
-    private Boolean next0() throws IOException {
+    private Boolean next0() throws IOException, Exception {
         boolean r = getChunkIterator().next();
         env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
         return r;

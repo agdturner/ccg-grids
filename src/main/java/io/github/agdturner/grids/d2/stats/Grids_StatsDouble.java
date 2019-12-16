@@ -89,7 +89,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridDouble g = getGrid();
@@ -134,7 +134,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Double getMin(boolean update) throws IOException, ClassNotFoundException {
+    public Double getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (NMin < 1) {
             if (update) {
                 update();
@@ -153,7 +153,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Double getMax(boolean update) throws IOException, ClassNotFoundException {
+    public Double getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (NMax < 1) {
             if (update) {
                 update();
@@ -172,7 +172,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         long r = 0;
         Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
@@ -189,7 +189,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getNonZeroN() throws IOException, ClassNotFoundException {
+    public BigInteger getNonZeroN() throws IOException, Exception, ClassNotFoundException {
         BigInteger r = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
@@ -211,7 +211,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum(boolean update) throws IOException,
+    public BigDecimal getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
 //        if (update) {
 //            update();
@@ -224,7 +224,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum() throws IOException, ClassNotFoundException {
+    public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
         BigDecimal r = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
@@ -242,7 +242,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public BigDecimal getStandardDeviation(int dp)
-            throws IOException, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(dp * 2);
         BigDecimal dataValueCount = BigDecimal.ZERO;
@@ -276,7 +276,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Object[] getQuantileClassMap(int nClasses) throws IOException,
+    public Object[] getQuantileClassMap(int nClasses) throws IOException, Exception,
             ClassNotFoundException {
         Object[] r = new Object[3];
         Grids_GridDouble g = getGrid();

@@ -44,7 +44,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
      * @throws java.lang.ClassNotFoundException
      */
     public Grids_GridIteratorBinary(
-            Grids_GridBinary g) throws IOException, ClassNotFoundException {
+            Grids_GridBinary g) throws IOException, ClassNotFoundException, Exception {
         super(g);
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
         if (GridIterator.hasNext()) {
@@ -92,7 +92,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
     }
 
     public Grids_ChunkIteratorBinary getChunkIterator(Grids_2D_ID_int ChunkID)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return getChunkIterator(getGrid().getChunk(ChunkID));
     }
 
@@ -102,7 +102,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem
      */
-    public boolean next() throws IOException, ClassNotFoundException {
+    public boolean next() throws IOException, ClassNotFoundException, Exception {
         if (!ChunkIterator.hasNext()) {
             if (GridIterator.hasNext()) {
                 ChunkID = GridIterator.next();

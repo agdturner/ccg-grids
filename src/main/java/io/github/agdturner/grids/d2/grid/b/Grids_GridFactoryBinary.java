@@ -24,6 +24,7 @@ import io.github.agdturner.grids.d2.grid.Grids_GridFactory;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedBinary;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * A factory for constructing
@@ -40,24 +41,20 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
 
     public Grids_StatsBinary Stats;
 
-    protected Grids_GridFactoryBinary() {
-        super();
-    }
-
     /**
      * @see #Grids_GridFactoryBinary(Grids_Environment,
-     * Grids_ChunkFactoryBinary, int, int, Grids_Dimensions,
-     * Grids_StatsBinary) where {@link #Dimensions} is set to {@code null}.
-     * {@link #Stats} is set to {@code new Grids_StatsNotUpdatedBinary(e)}.
+     * Grids_ChunkFactoryBinary, int, int, Grids_Dimensions, Grids_StatsBinary)
+     * where {@link #Dimensions} is set to {@code null}. {@link #Stats} is set
+     * to {@code new Grids_StatsNotUpdatedBinary(e)}.
      *
      * @param e What {@link #env} is set to.
      * @param factory What {@link #factory} is set to.
      * @param chunkNRows What {@link #ChunkNRows} is set to.
      * @param chunkNCols What {@link #ChunkNCols} is set to.
      */
-    public Grids_GridFactoryBinary(Grids_Environment e,
+    public Grids_GridFactoryBinary(Grids_Environment e, Generic_Path baseDir,
             Grids_ChunkFactoryBinary factory, int chunkNRows, int chunkNCols) {
-        this(e, factory, chunkNRows, chunkNCols, null,
+        this(e, baseDir, factory, chunkNRows, chunkNCols, null,
                 new Grids_StatsNotUpdatedBinary(e));
     }
 
@@ -69,10 +66,10 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @param dimensions What {@link #Dimensions} is set to.
      * @param stats What {@link #Stats} is set to.
      */
-    public Grids_GridFactoryBinary(Grids_Environment e,
+    public Grids_GridFactoryBinary(Grids_Environment e, Generic_Path baseDir,
             Grids_ChunkFactoryBinary factory, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBinary stats) {
-        super(e, chunkNRows, chunkNCols, dimensions);
+        super(e, baseDir, chunkNRows, chunkNCols, dimensions);
         this.factory = factory;
         Stats = stats;
     }
@@ -91,9 +88,9 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      */
     @Override
     public Grids_GridBinary create(Generic_Path dir, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException {
-        return create(new Grids_StatsNotUpdatedBinary(env), dir,
-                factory, nRows, nCols, dimensions);
+            Grids_Dimensions dimensions) throws IOException, Exception {
+        return create(new Grids_StatsNotUpdatedBinary(env), dir, factory, nRows,
+                nCols, dimensions);
     }
 
     /**
@@ -114,12 +111,12 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * framework as a cached grid, but with potentially different dimensions,
      * rows and columns to the cached grid. All values in the resulting grid are
      * {@link null}.
-     * @throws java.io.IOException If encountered.
+     * @throws java.io.IOException, Exception If encountered.
      */
     public Grids_GridBinary create(Grids_StatsBinary stats, Generic_Path dir,
             Grids_ChunkFactoryBinary cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException {
-        return new Grids_GridBinary(getStats(stats), dir, cf, ChunkNRows,
+            Grids_Dimensions dimensions) throws IOException, Exception {
+        return new Grids_GridBinary(getStats(stats), dir, baseDir, cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, env);
     }
 
@@ -181,15 +178,14 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
             Grids_Grid g, Grids_ChunkFactoryBinary cf, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
-        return new Grids_GridBinary(getStats(stats), dir, g, cf, ChunkNRows,
+        return new Grids_GridBinary(getStats(stats), dir, baseDir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol);
     }
 
     /**
      * @see #create(Grids_StatsBinary, Generic_Path, Generic_Path,
      * Grids_ChunkFactoryBinary, long, long, long, long)} where:
-     * {@link Grids_StatsBinary} is set to
-     * {@code new Grids_StatsNotUpdatedBinary(env)};
+     * {@link Grids_StatsBinary} is set to null null null null null     {@code new Grids_StatsNotUpdatedBinary(env)};
      * {@link Grids_ChunkFactoryBinary} is set to
      * {@code new Grids_ChunkFactoryBinary()}.
      *
@@ -244,7 +240,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
             Generic_Path gridFile, Grids_ChunkFactoryBinary cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridBinary(getStats(stats), dir, gridFile, cf,
+        return new Grids_GridBinary(getStats(stats), dir, baseDir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 env);
     }
@@ -260,7 +256,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     @Override
     public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridBinary(env, dir, gridFile);
+        return new Grids_GridBinary(env, dir, baseDir, gridFile);
     }
 
     /**

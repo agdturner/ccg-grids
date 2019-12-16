@@ -66,7 +66,7 @@ public class Grids_StatsBinary extends Grids_Stats {
      * @throws java.io.IOException
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridBinary g = getGrid();
@@ -81,13 +81,15 @@ public class Grids_StatsBinary extends Grids_Stats {
     }
 
     /**
+     * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      * @TODO Take advantage of the data structures of some types of chunk to
      * optimise this. Probably the best way to do this is to iterate over the
      * chunks and sum all the N from each chunk.
      * @return
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         long r = 0;
         Grids_GridBinary g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();

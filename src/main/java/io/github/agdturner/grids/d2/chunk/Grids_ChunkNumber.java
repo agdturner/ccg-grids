@@ -221,25 +221,25 @@ public abstract class Grids_ChunkNumber
     /**
      * Returns the median of all data values as a double.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * cache operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double getMedianDouble(boolean handleOutOfMemoryError) 
-            throws IOException, ClassNotFoundException {
+    public double getMedianDouble(boolean hoome) 
+            throws IOException, ClassNotFoundException, Exception {
         try {
-            double result = getMedianDouble();
-            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-            return result;
+            double r = getMedianDouble();
+            env.checkAndMaybeFreeMemory(hoome);
+            return r;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 env.clearMemoryReserve();
                 if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
-                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getMedianDouble(handleOutOfMemoryError);
+                env.initMemoryReserve(Grid, ChunkID, hoome);
+                return getMedianDouble(hoome);
             } else {
                 throw e;
             }
@@ -257,24 +257,25 @@ public abstract class Grids_ChunkNumber
     /**
      * Returns the standard deviation of all data values as a double.
      *
-     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
+     * @param hoome If true then OutOfMemoryErrors are caught,
      * cache operations are initiated, then the method is re-called. If false
      * then OutOfMemoryErrors are caught and thrown.
      * @return
      */
-    public double getStandardDeviationDouble(boolean handleOutOfMemoryError) throws IOException, ClassNotFoundException {
+    public double getStandardDeviationDouble(boolean hoome) throws IOException,
+            ClassNotFoundException, Exception {
         try {
             double result = getStandardDeviationDouble();
-            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
+            env.checkAndMaybeFreeMemory(hoome);
             return result;
         } catch (OutOfMemoryError e) {
-            if (handleOutOfMemoryError) {
+            if (hoome) {
                 env.clearMemoryReserve();
-                if (env.cacheChunkExcept_Account(Grid, ChunkID, handleOutOfMemoryError) < 1L) {
+                if (env.cacheChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
                     throw e;
                 }
-                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-                return getStandardDeviationDouble(handleOutOfMemoryError);
+                env.initMemoryReserve(Grid, ChunkID, hoome);
+                return getStandardDeviationDouble(hoome);
             } else {
                 throw e;
             }
