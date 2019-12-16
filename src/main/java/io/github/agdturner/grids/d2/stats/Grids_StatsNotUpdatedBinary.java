@@ -81,7 +81,7 @@ public class Grids_StatsNotUpdatedBinary
      * Grids_GridIntStatistics.)
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         if (!isUpToDate()) {
             super.update();
             setUpToDate(true);
@@ -94,7 +94,7 @@ public class Grids_StatsNotUpdatedBinary
      * @return
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }

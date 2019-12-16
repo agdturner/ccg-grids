@@ -206,7 +206,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         NRows = nRows;
         NCols = nCols;
         Dimensions = dimensions;
-        Name = getDirectory().getFileName().toString();
+        Name = dir.getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
@@ -258,7 +258,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         ChunkNCols = chunkNCols;
         NRows = endRow - startRow;
         NCols = endCol - startCol;
-        Name = getDirectory().getFileName().toString();
+        Name = dir.getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();

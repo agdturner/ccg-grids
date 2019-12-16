@@ -233,7 +233,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         NCols = nCols;
         Dimensions = dim;
         initNoDataValue(ndv);
-        Name = getDirectory().getFileName().toString();
+        Name = dir.getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
@@ -284,7 +284,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         NRows = endRow - startRow + 1L;
         NCols = endCol - startCol + 1L;
         NoDataValue = ndv;
-        Name = getDirectory().getFileName().toString();
+        Name = dir.getFileName().toString();
         initNChunkRows();
         initNChunkCols();
         chunkIDChunkMap = new TreeMap<>();
@@ -548,7 +548,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             NRows = endRow - startRow + 1L;
             NCols = endCol - startCol + 1L;
             initNoDataValue(ndv);
-            Name = getDirectory().getFileName().toString();
+            Name = dir.getFileName().toString();
             initNChunkRows();
             initNChunkCols();
             chunkIDChunkMap = new TreeMap<>();
@@ -665,7 +665,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         } else {
             // Assume ESRI AsciiFile
             checkDir();
-            Name = getDirectory().getFileName().toString();
+            Name = dir.getFileName().toString();
             chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;

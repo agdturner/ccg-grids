@@ -80,7 +80,7 @@ public class Grids_StatsNotUpdatedBoolean extends Grids_StatsBoolean {
      * Grids_GridIntStatistics.)
      */
     @Override
-    public void update() throws IOException, ClassNotFoundException {
+    public void update() throws IOException, Exception, ClassNotFoundException {
         if (!isUpToDate()) {
             super.update();
             setUpToDate(true);
@@ -93,7 +93,7 @@ public class Grids_StatsNotUpdatedBoolean extends Grids_StatsBoolean {
      * @return
      */
     @Override
-    public long getN() throws IOException, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }
