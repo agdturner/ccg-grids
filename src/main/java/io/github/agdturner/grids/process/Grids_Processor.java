@@ -205,7 +205,7 @@ public class Grids_Processor extends Grids_Object {
      * @param ge
      */
     public Grids_Processor(Grids_Environment ge) throws Exception, IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         super(ge);
         StartTime = System.currentTimeMillis();
         files = ge.files;
@@ -2657,7 +2657,7 @@ public class Grids_Processor extends Grids_Object {
     public void output(Grids_GridNumber g, Path outDir,
             Grids_ImageExporter ie, String[] imageTypes,
             Grids_ESRIAsciiGridExporter eage)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         System.out.println("Output " + g.toString());
         if (ie == null) {
             ie = new Grids_ImageExporter(env);
@@ -2696,7 +2696,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void outputImage(Grids_GridNumber g, Generic_Path outDir,
             Grids_ImageExporter ie, String[] imageTypes, boolean hoome)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         try {
             System.out.println("Output " + g.toString());
             if (ie == null) {
@@ -2739,7 +2739,7 @@ public class Grids_Processor extends Grids_Object {
      */
     public void outputESRIAsciiGrid(Grids_GridNumber g, Path outDir,
             Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         try {
             if (eage == null) {
                 eage = new Grids_ESRIAsciiGridExporter(env);
