@@ -15,11 +15,14 @@
  */
 package io.github.agdturner.grids.util;
 
+import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Strings;
+import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
+import io.github.agdturner.grids.d2.grid.d.Grids_GridIteratorDouble;
 import io.github.agdturner.grids.io.Grids_ImageExporter;
 import io.github.agdturner.grids.process.Grids_Processor;
 import java.awt.Color;
@@ -29,6 +32,8 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -545,12 +550,14 @@ public class Grids_UtilitiesTest {
 
     /**
      * Test of densityPlot method, of class Grids_Utilities.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testDensityPlot() throws Exception {
         System.out.println("densityPlot");
-        Path dataDir = Paths.get(System.getProperty("user.home"), 
-                        Grids_Strings.s_data);
+        Path dataDir = Paths.get(System.getProperty("user.home"),
+                Grids_Strings.s_data);
         Generic_Environment env = new Generic_Environment(new Generic_Defaults(
                 Paths.get(dataDir.toString(), Grids_Strings.s_generic)));
         Generic_Path dir = new Generic_Path(dataDir);
@@ -562,23 +569,43 @@ public class Grids_UtilitiesTest {
         Grids_Dimensions dimensions = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.valueOf(ncols), BigDecimal.ZERO,
                 BigDecimal.valueOf(nrows), BigDecimal.ONE);
-        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
-        gp.fsGridDouble.addDir();
+        dir = gp.fsGridDouble.getPathNext();
         Grids_GridDouble xGrid = gfd.create(dir, nrows, ncols, dimensions);
-        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        setRandom(ge, xGrid);
         gp.fsGridDouble.addDir();
+        dir = gp.fsGridDouble.getPathNext();
         Grids_GridDouble yGrid = gfd.create(dir, nrows, ncols, dimensions);
+        setRandom(ge, yGrid);
+        gp.fsGridDouble.addDir();
         int divisions = 10;
         //Object[] expResult = null;
         Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp);
         Grids_ImageExporter ie = new Grids_ImageExporter(ge);
         String type = "PNG";
-        Path outdir = ge.files.getGeneratedDir().getPath();
-        Grids_GridDouble g = (Grids_GridDouble) result[2];
-        ie.toGreyScaleImage(g, gp, outdir, type);
+        Path file = Generic_IO.createNewFile(gp.env.files.getGeneratedDir()
+                .getPath(), "Test", "." + type);
+        Grids_GridDouble g = (Grids_GridDouble) result[3];
+        ie.toGreyScaleImage(g, gp, file, type);
         //TreeMap<Double, > colours;
         //ie.toColourImage(0 , ie.colours, Color.orange, yGrid, outdir, type);
         //assertArrayEquals(expResult, result);
     }
 
+    public void setRandom(Grids_Environment env, Grids_GridDouble g) 
+            throws Exception {
+        Random r = new Random();
+        int ncr = g.getNChunkRows();
+        int ncc = g.getNChunkCols();
+        for (int cr = 0; cr < ncr; cr ++) {
+            int chunkNRows = g.getChunkNRows(cr);
+            for (int cc = 0; cc < ncc; cc ++) {
+                int chunkNCols = g.getChunkNCols(cc);
+                for (int row = 0; row < chunkNRows; row++) {
+                    for (int col = 0; col < chunkNCols; col++) {
+                        g.setCell(cr, cc, row, col, r.nextDouble() * 100);
+                    }
+                }
+            }
+        }
+    }
 }
