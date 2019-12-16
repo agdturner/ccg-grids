@@ -549,28 +549,29 @@ public class Grids_UtilitiesTest {
     @Test
     public void testDensityPlot() throws Exception {
         System.out.println("densityPlot");
-        Generic_Environment env = new Generic_Environment(
-                new Generic_Defaults());
-        Generic_Path dir = new Generic_Path(Paths.get(env.files.getDir().toString(),
-                Grids_Strings.s_data));
+        Path dataDir = Paths.get(System.getProperty("user.home"), 
+                        Grids_Strings.s_data);
+        Generic_Environment env = new Generic_Environment(new Generic_Defaults(
+                Paths.get(dataDir.toString(), Grids_Strings.s_generic)));
+        Generic_Path dir = new Generic_Path(dataDir);
         Grids_Environment ge = new Grids_Environment(env, dir);
         Grids_Processor gp = new Grids_Processor(ge);
         Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
-        dir = new Generic_Path(Generic_IO.createNewFile(
-                ge.files.getGeneratedDir().getPath()));
         long nrows = 10L;
         long ncols = 10L;
         Grids_Dimensions dimensions = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.valueOf(ncols), BigDecimal.ZERO,
                 BigDecimal.valueOf(nrows), BigDecimal.ONE);
+        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        gp.fsGridDouble.addDir();
         Grids_GridDouble xGrid = gfd.create(dir, nrows, ncols, dimensions);
-        dir = new Generic_Path(Generic_IO.createNewFile(
-                ge.files.getGeneratedDir().getPath()));
+        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        gp.fsGridDouble.addDir();
         Grids_GridDouble yGrid = gfd.create(dir, nrows, ncols, dimensions);
         int divisions = 10;
         //Object[] expResult = null;
         Grids_Utilities gu = new Grids_Utilities(ge);
-        Object[] result = gu.densityPlot(xGrid, yGrid, divisions, gfd);
+        Object[] result = gu.densityPlot(xGrid, yGrid, divisions, gp);
         Grids_ImageExporter ie = new Grids_ImageExporter(ge);
         String type = "PNG";
         Path outdir = ge.files.getGeneratedDir().getPath();
