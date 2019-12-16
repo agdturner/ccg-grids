@@ -74,7 +74,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      */
     public void toGreyScaleImage(Grids_GridNumber g,
             Grids_Processor processor, Path file, String type) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         // Initialisation
         env.initNotToCache();
         env.checkAndMaybeFreeMemory();
@@ -206,7 +206,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      */
     private void write(int nCols, int nRows, int[] gridImageArray,
             String type, Path file, Grids_GridNumber g, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             write(nCols, nRows, gridImageArray, type, file);
@@ -268,7 +268,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      */
     public void toColourImage(int duplication, TreeMap<Double, Color> colours,
             Color noDataValueColour, Grids_GridDouble g, Path file, String type) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
                 + "Grids_GridDouble,File,String)";
         env.initNotToCache();
