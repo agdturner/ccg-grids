@@ -134,7 +134,7 @@ public class Grids_GridBinary extends Grids_Grid {
             Generic_Path gridFile, Grids_ChunkFactoryBinary cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, Grids_Environment e)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         super(e, dir);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol);
@@ -152,7 +152,7 @@ public class Grids_GridBinary extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridBinary(Grids_Environment e, Generic_Path dir,
-            Generic_Path gridFile) throws IOException, ClassNotFoundException {
+            Generic_Path gridFile) throws IOException, ClassNotFoundException, Exception {
         super(e, dir);
         init(new Grids_StatsNotUpdatedBinary(e), gridFile);
     }
@@ -385,7 +385,7 @@ public class Grids_GridBinary extends Grids_Grid {
     private void init(Grids_StatsBinary stats, Generic_Path gridFile,
             Grids_ChunkFactoryBinary cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol) throws IOException, ClassNotFoundException {
+            long endCol) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -407,7 +407,7 @@ public class Grids_GridBinary extends Grids_Grid {
     }
 
     private void init(Grids_StatsBinary stats, Generic_Path gridFile)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);

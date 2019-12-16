@@ -84,17 +84,17 @@ public class Grids_Processor extends Grids_Object {
      */
     public final long StartTime;
 
-    /**
-     * The Log for recording progress and information about the processing.
-     */
-    protected PrintWriter Log;
-
+//    /**
+//     * The Log for recording progress and information about the processing.
+//     */
+//    protected PrintWriter Log;
+    
     /**
      * The Log indentation (how many spaces before a Log message line is
      * output).
      */
     protected int LogIndentation;
-
+    
     /**
      * For convenience.
      */
@@ -194,6 +194,11 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_StatsNotUpdatedInt GridIntStatisticsNotUpdated;
 
+    public Generic_FileStore fsGridBinary;
+    public Generic_FileStore fsGridBoolean;
+    public Generic_FileStore fsGridInt;
+    public Generic_FileStore fsGridDouble;
+
     /**
      * Creates a new instance of Grids_Processor. The Log file in directory will
      * be overwritten if appendToLogFile is false.
@@ -208,39 +213,69 @@ public class Grids_Processor extends Grids_Object {
         String s = Grids_Strings.s_Processor;
         Path baseDir = Paths.get(files.getGeneratedDir().toString(), s);
         Path dir;
-        if (Files.exists(baseDir)) {
-            Generic_FileStore fs = new Generic_FileStore(baseDir);
-            fs.addDir();
-            dir = fs.getHighestLeaf();
-        } else {
-            Generic_FileStore fs = new Generic_FileStore(files.getGeneratedDir(), s);
-            dir = fs.getHighestLeaf();
-        }
-        Path logFile = Paths.get(dir.toString(), "log.txt");
-        if (!Files.exists(logFile)) {
-            Files.createFile(logFile);
-        }
-        Log = Generic_IO.getPrintWriter(logFile, true);
-        LogIndentation = 0;
-        log(LogIndentation, this.getClass().getName() + " set up "
-                + Generic_Time.getTime(StartTime));
-        initFactories();
+//        if (Files.exists(baseDir)) {
+//            Generic_FileStore fs = new Generic_FileStore(baseDir);
+//            fs.addDir();
+//            dir = fs.getHighestLeaf();
+//        } else {
+//            Generic_FileStore fs = new Generic_FileStore(files.getGeneratedDir(), s);
+//            dir = fs.getHighestLeaf();
+//        }
+//        Path logFile = Paths.get(dir.toString(), "log.txt");
+//        if (!Files.exists(logFile)) {
+//            Files.createFile(logFile);
+//        }
+//        Log = ge.env.files.Generic_IO.getPrintWriter(logFile, true);
+//        LogIndentation = 0;
+//        log(LogIndentation, this.getClass().getName() + " set up "
+//                + Generic_Time.getTime(StartTime));
+        int chunkNRows = 512;
+        int chunkNCols = 512;
+        initFactoriesAndFileStores(chunkNRows, chunkNCols);
     }
 
     /**
-     * Initialises factories.
+     * Initialises factories and file stores.
      */
-    private void initFactories() {
+    private void initFactoriesAndFileStores(int chunkNRows, int chunkNCols) throws Exception {
         initChunkFactories();
-        GridBooleanFactory = new Grids_GridFactoryBoolean(env,
-                chunkBooleanFactory, 512, 512);
-        GridBinaryFactory = new Grids_GridFactoryBinary(env,
-                chunkBinaryFactory, 512, 512);
+        GridBooleanFactory = new Grids_GridFactoryBoolean(env, 
+                chunkBooleanFactory, chunkNRows, chunkNCols);
+        String s = Grids_Strings.s_GridBoolean;
+        Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString(), s);
+        if (Files.exists(dir)) {
+            fsGridBoolean = new Generic_FileStore(dir);
+        } else {
+            fsGridBoolean = new Generic_FileStore(files.getGeneratedDir(), s);
+        }
+        GridBinaryFactory = new Grids_GridFactoryBinary(env, chunkBinaryFactory, 
+                chunkNRows, chunkNCols);
+        s = Grids_Strings.s_GridBinary;
+        dir = Paths.get(files.getGeneratedGridBinaryDir().toString(), s);
+        if (Files.exists(dir)) {
+            fsGridBinary = new Generic_FileStore(dir);
+        } else {
+            fsGridBinary = new Generic_FileStore(files.getGeneratedDir(), s);
+        }
         GridIntFactory = new Grids_GridFactoryInt(env, GridChunkIntFactory,
-                defaultChunkIntFactory, 512, 512);
+                defaultChunkIntFactory, chunkNRows, chunkNCols);
+        s = Grids_Strings.s_GridInt;
+        dir = Paths.get(files.getGeneratedGridIntDir().toString(), s);
+        if (Files.exists(dir)) {
+            fsGridInt = new Generic_FileStore(dir);
+        } else {
+            fsGridInt = new Generic_FileStore(files.getGeneratedDir(), s);
+        }
         GridDoubleFactory = new Grids_GridFactoryDouble(env,
-                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, 512,
-                512);
+                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory, 
+                chunkNRows,                chunkNCols);
+        s = Grids_Strings.s_GridDouble;
+        dir = Paths.get(files.getGeneratedGridDoubleDir().toString(), s);
+        if (Files.exists(dir)) {
+            fsGridDouble = new Generic_FileStore(dir);
+        } else {
+            fsGridDouble = new Generic_FileStore(files.getGeneratedDir(), s);
+        }
         initGridStatistics();
     }
 
@@ -291,18 +326,17 @@ public class Grids_Processor extends Grids_Object {
             logIndentation--;
             LogIndentation--;
         }
+        String s2 = "";
         for (int i = 0; i < logIndentation; i++) {
-            System.out.print(" ");
-            Log.write(" ");
+            s2 += " ";
         }
-        Log.write(s);
-        Log.write(System.getProperty("line.separator"));
-        Log.flush();
+        s2 += s + System.getProperty("line.separator");
         if (s.endsWith("{")) {
             LogIndentation++;
         }
+        env.env.log(s2);
     }
-
+    
     /**
      * Returns the distance between a pair of coordinates.
      *
@@ -1917,7 +1951,7 @@ public class Grids_Processor extends Grids_Object {
                         resultYMin.divide(dimensionsCellsize, scale,
                                 RoundingMode.HALF_EVEN)).intValue();
                 int colOffset = dimensionsXMin.subtract(
-                        resultXMin.divide(dimensionsCellsize, scale, 
+                        resultXMin.divide(dimensionsCellsize, scale,
                                 RoundingMode.HALF_EVEN)).intValue();
                 return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gf);
             }

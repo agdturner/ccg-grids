@@ -24,14 +24,17 @@ import uk.ac.leeds.ccg.agdt.generic.core.Generic_Strings;
  * @version 1.0.0
  */
 public class Grids_Strings extends Generic_Strings {
-    
+
+    public static final String s_GridBigDecimal = "GridBigDecimal";
+    public static final String s_GridBigInteger = "GridBigInteger";
+    public static final String s_GridBinary = "GridBinary";
+    public static final String s_GridBoolean = "GridBoolean";
+    public static final String s_GridDouble = "GridDouble";
+    public static final String s_GridFloat = "GridFloat";
+    public static final String s_GridInt = "GridInt";
     public static final String s_Grids = "Grids";
     public static final String s_grids = "grids";
-    public static final  String s_GridInt = "GridInt";
-    public static final  String s_GridDouble = "GridDouble";
-    public static final  String s_GridBinary = "GridBinary";
-    
-    public static final  String s_Processor = "Processor";
+    public static final String s_Processor = "Processor";
 
     public Grids_Strings() {
     }

@@ -15,21 +15,22 @@
  */
 package io.github.agdturner.grids.util;
 
-import io.github.agdturner.grids.core.Grids_2D_ID_int;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
+import io.github.agdturner.grids.process.Grids_Processor;
+import io.github.agdturner.grids.core.Grids_2D_ID_int;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
@@ -253,16 +254,18 @@ public class Grids_Utilities extends Grids_Object {
      *
      * @param xGrid
      * @param yGrid
-     * @param factory
+     * @param gp
      * @param divisions
      * @return
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public Object[] densityPlot(Grids_GridDouble xGrid, Grids_GridDouble yGrid,
-            int divisions, Grids_GridFactoryDouble factory) throws IOException,
+    public static Object[] densityPlot(Grids_GridDouble xGrid, Grids_GridDouble yGrid,
+            int divisions, Grids_Processor gp) throws IOException,
             ClassNotFoundException {
-        Object[] r = new Object[4];
+        Object[] r = new Object[4];        
+        Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
+        Generic_Path dir;
         long nrows = xGrid.getNRows();
         long ncols = xGrid.getNCols();
         Grids_Dimensions dimensions = xGrid.getDimensions();
@@ -278,12 +281,12 @@ public class Grids_Utilities extends Grids_Object {
         Grids_GridDouble xGridRescaled;
         double value;
         double v;
-        Generic_Path dir = new Generic_Path(Generic_IO.createNewFile(
-                env.files.getGeneratedDir().getPath()));
+        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        gp.fsGridDouble.addDir();
         if (minx == miny && maxx == maxy) {
-            xGridRescaled = (Grids_GridDouble) factory.create(dir, xGrid);
+            xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
         } else {
-            xGridRescaled = (Grids_GridDouble) factory.create(dir, xGrid);
+            xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
             // It would be better to go through the chunks rather than across the rows!
             int ncr = xGridRescaled.getNChunkRows();
             int ncc = xGridRescaled.getNChunkCols();
@@ -314,9 +317,9 @@ public class Grids_Utilities extends Grids_Object {
             numy[j] = 0.0d;
             sumysq[j] = 0.0d;
         }
-        dir = new Generic_Path(Generic_IO.createNewFile(
-                env.files.getGeneratedDir().getPath()));
-        Grids_GridDouble temp1 = (Grids_GridDouble) factory.create(dir, divisions, divisions);
+dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        gp.fsGridDouble.addDir();
+        Grids_GridDouble temp1 = (Grids_GridDouble) gfd.create(dir, divisions, divisions);
         for (long row = 0; row < nrows; row++) {
             for (long col = 0; col < ncols; col++) {
                 double x = xGridRescaled.getCell(row, col);
@@ -364,12 +367,12 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        dir = new Generic_Path(Generic_IO.createNewFile(
-                env.files.getGeneratedDir().getPath()));
+        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        gp.fsGridDouble.addDir();
         Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO, 
                 BigDecimal.ZERO, BigDecimal.valueOf(divisions), 
                 BigDecimal.valueOf(divisions), BigDecimal.ONE);
-        Grids_GridDouble densityPlotGrid = factory.create(dir,
+        Grids_GridDouble densityPlotGrid = gfd.create(dir,
                 divisions, divisions, newdimensions);
         //double average = d1 / d2;
         for (int i = 0; i < divisions; i++) {

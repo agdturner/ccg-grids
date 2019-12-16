@@ -45,28 +45,30 @@ public class Grids_Environment extends Grids_MemoryManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * A set of all the grids. These may have chunks that can be cached and released from
-     * the fast access memory (swapped out). Swapping out involves both caching the chunks and releasing
-     * the memory used to store them in the fast access memory.
+     * A set of all the grids. These may have chunks that can be cached and
+     * released from the fast access memory (swapped out). Swapping out involves
+     * both caching the chunks and releasing the memory used to store them in
+     * the fast access memory.
      *
-     * If chunks are not in the fast access memory when they are wanted, they can be loaded from the
-     * cache as needed - although this may necessitate other data being swapped
-     * out in order to manage with the available fast access memory.
+     * If chunks are not in the fast access memory when they are wanted, they
+     * can be loaded from the cache as needed - although this may necessitate
+     * other data being swapped out in order to manage with the available fast
+     * access memory.
      */
     protected transient HashSet<Grids_Grid> grids;
 
     /**
-     * For indicating which chunks of which grids are not to be
-     * swapped out or otherwise released from memory (off-loaded). This map is
-     * modified as data processing methods start and progress. The content of
-     * the map is used to make processing more efficient by not off-loading chunks only to have to load these again from the
-     * cache in the immediate future.
+     * For indicating which chunks of which grids are not to be swapped out or
+     * otherwise released from memory (off-loaded). This map is modified as data
+     * processing methods start and progress. The content of the map is used to
+     * make processing more efficient by not off-loading chunks only to have to
+     * load these again from the cache in the immediate future.
      *
-     * Maintaining this map has a marginal cost when all the data
-     * fits easily into the available fast access memory, but often it doesn't
-     * and this library is more geared to supporting the processing of large
-     * volumes of data (when this is typically not the case and processing may
-     * involve a significant amount of loading and off-loading).
+     * Maintaining this map has a marginal cost when all the data fits easily
+     * into the available fast access memory, but often it doesn't and this
+     * library is more geared to supporting the processing of large volumes of
+     * data (when this is typically not the case and processing may involve a
+     * significant amount of loading and off-loading).
      *
      * In cases where some chunks in {@link #grids} need to be off-loaded in
      * order for some processing to complete, and there are no other chunks
@@ -143,7 +145,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param e The Generic_Environment.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_Environment(Generic_Environment e) throws IOException, 
+    public Grids_Environment(Generic_Environment e) throws IOException,
             Exception {
         this(e, e.files.getDir());
     }
@@ -162,14 +164,16 @@ public class Grids_Environment extends Grids_MemoryManager
         initMemoryReserve(Default_Memory_Threshold);
         initGrids();
         initNotToCache();
-        Path p = e.getLogDir(Grids_Strings.s_grids); 
+        Path p = e.getLogDir(Grids_Strings.s_grids);
 //        Path p = dir.getPath();
 //        if (!Files.exists(p)) {
 //            Files.createDirectory(p);
 //        }
 //        files = new Grids_Files(new Generic_Defaults(Paths.get(dir.toString(),
 //                Grids_Strings.s_grids)));
-        files = new Grids_Files(new Generic_Defaults(p));
+        files = new Grids_Files(new Generic_Defaults(Paths.get(files.getDir()
+                .toString(), Grids_Strings.s_grids)));
+        e.files.setDir(p);
     }
 
     /**
@@ -180,9 +184,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered initialising
      * {@link #processor}.
      * @throws java.lang.ClassNotFoundException If encountered.
-     * @throws java.io.IOException If encountered.
+     * @throws java.lang.Exception If encountered.
      */
-    public Grids_Processor getProcessor() throws IOException, 
+    public Grids_Processor getProcessor() throws IOException,
             ClassNotFoundException, Exception {
         if (processor == null) {
             processor = new Grids_Processor(this);
@@ -478,7 +482,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome
      * @throws java.io.IOException If encountered.
      */
-    public void setGrids(HashSet<Grids_Grid> grids, boolean hoome) 
+    public void setGrids(HashSet<Grids_Grid> grids, boolean hoome)
             throws IOException {
         try {
             this.grids = grids;

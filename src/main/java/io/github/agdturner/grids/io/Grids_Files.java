@@ -27,8 +27,7 @@ import io.github.agdturner.grids.core.Grids_Strings;
 import io.github.agdturner.grids.process.Grids_Processor;
 
 /**
- * For convenience of locating files and directories commonly used by the
- * library.
+ * For conveniently initialising and locating files and directories.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -58,14 +57,19 @@ public class Grids_Files extends Generic_Files {
     protected Generic_Path GeneratedGridDoubleDir;
 
     /**
-     * Indicates where grids holding {@code double} values are to be stored.
+     * Indicates where grids holding {@code float} values are to be stored.
      */
     protected Generic_Path GeneratedGridFloatDir;
 
     /**
-     * Indicates where grids holding {@code boolean} values are to be stored.
+     * Indicates where grids holding {@code Boolean} values are to be stored.
      */
     protected Generic_Path GeneratedGridBooleanDir;
+
+    /**
+     * Indicates where grids holding {@code boolean} values are to be stored.
+     */
+    protected Generic_Path GeneratedGridBinaryDir;
 
     /**
      * Indicates where grids processed using a {@link #Grids_Processor} are to
@@ -119,7 +123,7 @@ public class Grids_Files extends Generic_Files {
     public Generic_Path getGeneratedGridIntDir() throws IOException {
         if (GeneratedGridIntDir == null) {
             GeneratedGridIntDir = new Generic_Path(Paths.get(
-                    getGeneratedDir().toString(), Grids_Strings.s_int));
+                    getGeneratedDir().toString(), Grids_Strings.s_GridInt));
         }
         return GeneratedGridIntDir;
     }
@@ -151,7 +155,7 @@ public class Grids_Files extends Generic_Files {
     public Generic_Path getGeneratedGridDoubleDir() throws IOException {
         if (GeneratedGridDoubleDir == null) {
             GeneratedGridDoubleDir = new Generic_Path(Paths.get(
-                    getGeneratedDir().toString(), Grids_Strings.s_double));
+                    getGeneratedDir().toString(), Grids_Strings.s_GridDouble));
         }
         return GeneratedGridDoubleDir;
     }
@@ -166,7 +170,7 @@ public class Grids_Files extends Generic_Files {
     public Generic_Path getGeneratedGridFloatDir() throws IOException {
         if (GeneratedGridFloatDir == null) {
             GeneratedGridFloatDir = new Generic_Path(Paths.get(
-                    getGeneratedDir().toString(), Grids_Strings.s_float));
+                    getGeneratedDir().toString(), Grids_Strings.s_GridFloat));
         }
         return GeneratedGridFloatDir;
     }
@@ -182,9 +186,25 @@ public class Grids_Files extends Generic_Files {
     public Generic_Path getGeneratedGridBooleanDir() throws IOException {
         if (GeneratedGridBooleanDir == null) {
             GeneratedGridBooleanDir = new Generic_Path(Paths.get(
-                    getGeneratedDir().toString(), Grids_Strings.s_boolean));
+                    getGeneratedDir().toString(), Grids_Strings.s_GridBoolean));
         }
         return GeneratedGridBooleanDir;
+    }
+
+    /**
+     * If {@link #GeneratedGridBooleanDir} is {@code null} it will be
+     * initialised.
+     *
+     * @return {@link #GeneratedGridBinaryDir} initialised first if it is
+     * {@code null}.
+     * @throws java.io.IOException If encountered.
+     */
+    public Generic_Path getGeneratedGridBinaryDir() throws IOException {
+        if (GeneratedGridBinaryDir == null) {
+            GeneratedGridBinaryDir = new Generic_Path(Paths.get(
+                    getGeneratedDir().toString(), Grids_Strings.s_GridBinary));
+        }
+        return GeneratedGridBinaryDir;
     }
 
     /**

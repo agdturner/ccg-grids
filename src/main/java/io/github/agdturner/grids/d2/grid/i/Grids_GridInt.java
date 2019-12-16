@@ -115,7 +115,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected Grids_GridInt(Grids_StatsInt stats, Generic_Path dir,
             Grids_Grid g, Grids_ChunkFactoryInt cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, int ndv) throws IOException, ClassNotFoundException {
+            long endRow, long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
         super(g.env, dir);
         checkDir();
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
@@ -148,7 +148,8 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected Grids_GridInt(Grids_StatsInt stats, Generic_Path dir, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, int noDataValue, Grids_Environment ge) throws IOException, ClassNotFoundException {
+            long endCol, int noDataValue, Grids_Environment ge) 
+            throws IOException, ClassNotFoundException, Exception {
         super(ge, dir);
         checkDir();
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
@@ -166,7 +167,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * extension containing the data for this.
      */
     protected Grids_GridInt(Grids_Environment ge, Generic_Path dir, Generic_Path gridFile)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         super(ge, dir);
         init(new Grids_StatsNotUpdatedInt(ge), gridFile);
     }
@@ -274,7 +275,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     private void init(Grids_StatsInt stats, Grids_Grid g,
             Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, int ndv) throws IOException, ClassNotFoundException {
+            long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -520,7 +521,8 @@ public class Grids_GridInt extends Grids_GridNumber {
     private void init(Grids_StatsInt stats, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, int ndv) throws IOException, ClassNotFoundException {
+            long endCol, int ndv) throws IOException, ClassNotFoundException,
+            Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -637,7 +639,8 @@ public class Grids_GridInt extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsInt stats, Generic_Path gridFile) throws IOException, ClassNotFoundException {
+    private void init(Grids_StatsInt stats, Generic_Path gridFile) 
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -813,7 +816,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param value
      * @param fast
      */
-    private void initCell(long row, long col, int value, boolean fast) throws IOException, ClassNotFoundException {
+    private void initCell(long row, long col, int value, boolean fast) 
+            throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkInt chunk;
         int chunkRow;
         int chunkCol;
@@ -1036,7 +1040,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param value
      */
     public final void setCell(double x, double y,
-            int value) throws IOException, ClassNotFoundException {
+            int value) throws IOException, ClassNotFoundException, Exception {
         setCell(getRow(x), getCol(y), value);
     }
 
@@ -1047,7 +1051,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col
      * @param value
      */
-    public void setCell(long row, long col, int value) throws IOException, ClassNotFoundException {
+    public void setCell(long row, long col, int value) throws IOException, ClassNotFoundException, Exception {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
@@ -1069,7 +1073,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param newValue
      */
     public void setCell(int chunkRow, int chunkCol, int cellRow, int cellCol,
-            int newValue) throws IOException, ClassNotFoundException {
+            int newValue) throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkInt chunk;
         chunk = (Grids_ChunkInt) getChunk(
                 chunkRow, chunkCol);
@@ -1088,7 +1092,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Grids_ChunkInt chunk,
             int cellRow,
             int cellCol,
-            int value) throws IOException, ClassNotFoundException {
+            int value) throws IOException, ClassNotFoundException, Exception {
         int v;
         if (chunk instanceof Grids_ChunkIntArray) {
             v = ((Grids_ChunkIntArray) chunk).setCell(cellRow, cellCol,
@@ -1121,7 +1125,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     private Grids_ChunkInt convertToAnotherTypeOfChunk(
             Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID) throws IOException, ClassNotFoundException {
+            Grids_2D_ID_int chunkID) throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkInt r;
         Grids_ChunkFactoryInt f = env.getProcessor().defaultChunkIntFactory;
         r = f.create(chunk, chunkID);
@@ -1143,7 +1147,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Grids_2D_ID_int chunkID,
             long row,
             long col,
-            int value) throws IOException, ClassNotFoundException {
+            int value) throws IOException, ClassNotFoundException, Exception {
         if (chunk instanceof Grids_ChunkIntSinglet) {
             Grids_ChunkIntSinglet gridChunk = (Grids_ChunkIntSinglet) chunk;
             if (value != gridChunk.Value) {
@@ -1776,7 +1780,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param v the value to be added to the cell containing the point
      */
     public void addToCell(double x, double y, int v) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         addToCell(getRow(y), getCol(x), v);
     }
 
@@ -1785,7 +1789,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param v the value to be added to the cell containing the point
      */
     public void addToCell(Grids_2D_ID_long cellID, int v)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         addToCell(cellID.getRow(), cellID.getCol(), v);
     }
 
@@ -1797,7 +1801,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * a cell with value of 0. TODO: Check Arithmetic
      */
     public void addToCell(long row, long col, int v) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         int currentValue = getCell(row, col);
         if (currentValue != NoDataValue) {
             if (v != NoDataValue) {
