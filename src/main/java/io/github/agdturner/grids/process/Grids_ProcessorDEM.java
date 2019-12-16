@@ -186,7 +186,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         long0 = q + cellDistance;
                         int1 = (int) (long0);
                         thisX = q * cellsize;
-                        thisDistance = distance(x, y, thisX, thisY);
+                        thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
                             weight = weights[int0][int1];
                             weightSum += weight;
@@ -399,7 +399,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = col + q;
                                                 thisX = g.getCellXDouble(long0);
-                                                thisDistance = distance(x, y, thisX, thisY);
+                                                thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
                                                     h2 = gd.getCell(thisX, thisY);
                                                     if (h2 != noDataValue) {
@@ -431,7 +431,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                         slopeAndAspect[0].setCell(row, col, slope);
                                         d = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, d, double1);
+                                        angle = Grids_Utilities.angle(x, y, d, double1);
                                         slopeAndAspect[1].setCell(row, col, angle);
                                         sinAngle = Math.sin(angle);
                                         slopeAndAspect[2].setCell(row, col, sinAngle);
@@ -505,7 +505,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = col + q;
                                                 thisX = g.getCellXDouble(long0);
-                                                thisDistance = distance(x, y, thisX, thisY);
+                                                thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
                                                     thisHeightInt = gridInt.getCell(
                                                             thisX, thisY);
@@ -538,7 +538,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                         slopeAndAspect[0].setCell(row, col, slope);
                                         d = x + diffX;
                                         double1 = y + diffY;
-                                        angle = angle(x, y, d, double1);
+                                        angle = Grids_Utilities.angle(x, y, d, double1);
                                         slopeAndAspect[1].setCell(row, col, angle);
                                         sinAngle = Math.sin(angle);
                                         slopeAndAspect[2].setCell(row, col, sinAngle);
@@ -669,7 +669,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     thisY = y + (p * distance);
                     for (int q = -cellDistance; q <= cellDistance; q++) {
                         thisX = x + (q * distance);
-                        thisDistance = distance(x, y, thisX, thisY);
+                        thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
                             weight = Grids_Kernel.getKernelWeight(distance,
                                     weightIntersect, weightFactor, thisDistance);
@@ -685,9 +685,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     }
                 }
                 slopeAndAspect[0] = slope;
-                slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
-                slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
-                slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[1] = Grids_Utilities.angle(x, y, (x + diffX), (y + diffY));
+                slopeAndAspect[2] = Math.sin(Grids_Utilities.angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[3] = Math.cos(Grids_Utilities.angle(x, y, (x + diffX), (y + diffY)));
             }
             return slopeAndAspect;
         } else {
@@ -719,7 +719,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     thisY = y + (p * distance);
                     for (int q = -cellDistance; q <= cellDistance; q++) {
                         thisX = x + (q * distance);
-                        thisDistance = distance(x, y, thisX, thisY);
+                        thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
                             weight = Grids_Kernel.getKernelWeight(distance,
                                     weightIntersect, weightFactor, thisDistance);
@@ -735,9 +735,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     }
                 }
                 slopeAndAspect[0] = slope;
-                slopeAndAspect[1] = angle(x, y, (x + diffX), (y + diffY));
-                slopeAndAspect[2] = Math.sin(angle(x, y, (x + diffX), (y + diffY)));
-                slopeAndAspect[3] = Math.cos(angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[1] = Grids_Utilities.angle(x, y, (x + diffX), (y + diffY));
+                slopeAndAspect[2] = Math.sin(Grids_Utilities.angle(x, y, (x + diffX), (y + diffY)));
+                slopeAndAspect[3] = Math.cos(Grids_Utilities.angle(x, y, (x + diffX), (y + diffY)));
             }
             return slopeAndAspect;
         }
