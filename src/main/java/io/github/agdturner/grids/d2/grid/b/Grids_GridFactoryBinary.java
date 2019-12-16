@@ -148,7 +148,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     @Override
     public Grids_GridBinary create(Generic_Path dir, Grids_Grid g,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBinary(env), dir, g,
                 new Grids_ChunkFactoryBinary(), startRow, startCol, endRow,
                 endCol);
@@ -180,7 +180,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     public Grids_GridBinary create(Grids_StatsBinary stats, Generic_Path dir,
             Grids_Grid g, Grids_ChunkFactoryBinary cf, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         return new Grids_GridBinary(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol);
     }
@@ -213,7 +213,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     @Override
     public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBinary(env), dir, gridFile,
                 new Grids_ChunkFactoryBinary(), startRow, startCol, endRow,
                 endCol);
@@ -243,7 +243,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     public Grids_GridBinary create(Grids_StatsBinary stats, Generic_Path dir,
             Generic_Path gridFile, Grids_ChunkFactoryBinary cf,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridBinary(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 env);
@@ -259,7 +259,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      */
     @Override
     public Grids_GridBinary create(Generic_Path dir, Generic_Path gridFile)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridBinary(env, dir, gridFile);
     }
 

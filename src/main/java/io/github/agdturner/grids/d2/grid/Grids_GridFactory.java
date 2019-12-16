@@ -97,7 +97,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     public Grids_Grid create(Generic_Path dir, long nRows, long nCols)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         setDimensions(nRows, nCols);
         return create(dir, nRows, nCols, Dimensions);
     }
@@ -112,7 +112,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      */
     public abstract Grids_Grid create(Generic_Path dir, long nRows,
             long nCols, Grids_Dimensions d) throws IOException, 
-            ClassNotFoundException;
+            ClassNotFoundException, Exception;
 
     ////////////////////////////////////////////////
     // Create from an existing Grids_Grid //
@@ -125,7 +125,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.lang.ClassNotFoundException
      */
     public Grids_Grid create(Generic_Path dir, Grids_Grid g)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return create(dir, g, 0L, 0L, g.getNRows(), g.getNCols());
     }
 
@@ -143,7 +143,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      */
     public abstract Grids_Grid create(Generic_Path dir,
             Grids_Grid g, long startRow, long startCol, long endRow,
-            long endCol) throws IOException, ClassNotFoundException;
+            long endCol) throws IOException, ClassNotFoundException, Exception;
 
     ////////////////////////
     // Create from a File //
@@ -159,7 +159,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.lang.ClassNotFoundException
      */
     public abstract Grids_Grid create(Generic_Path dir,
-            Generic_Path gridFile) throws IOException, ClassNotFoundException;
+            Generic_Path gridFile) throws IOException, ClassNotFoundException, Exception;
 
     /**
      * @return A grid with values obtained from gridFile.
@@ -179,7 +179,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      */
     public abstract Grids_Grid create(Generic_Path dir, Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException;
+            throws IOException, ClassNotFoundException, Exception;
 
     /**
      * @return A copy of {@link #ChunkNRows}.

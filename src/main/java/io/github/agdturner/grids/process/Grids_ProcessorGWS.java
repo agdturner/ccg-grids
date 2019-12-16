@@ -94,7 +94,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> result = new ArrayList<>();
         //Vector result = new Vector();
 
@@ -785,7 +785,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             double distance,
             double weightIntersect,
             double weightFactor,
-            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         List<Grids_GridNumber> result = new ArrayList<>();
         //        Vector result = new Vector();
@@ -1455,7 +1455,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] geometricDensity(
             Grids_GridDouble grid,
             double distance,
-            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException, Exception {
         long n;
         n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
@@ -1791,7 +1791,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList statistics, double distance,
             double weightIntersect, double weightFactor,
-            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         // Initialisation
         boolean dodiff = false;

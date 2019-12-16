@@ -148,7 +148,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     @Override
     public Grids_GridBoolean create(Generic_Path dir, Grids_Grid g,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), dir, g,
                 new Grids_ChunkFactoryBoolean(), startRow, startCol, endRow,
                 endCol);
@@ -180,7 +180,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     public Grids_GridBoolean create(Grids_StatsBoolean stats, Generic_Path dir,
             Grids_Grid g, Grids_ChunkFactoryBoolean cf, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         return new Grids_GridBoolean(getStats(stats), dir, g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol);
     }
@@ -213,7 +213,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     @Override
     public Grids_GridBoolean create(Generic_Path dir, Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), dir, gridFile,
                 new Grids_ChunkFactoryBoolean(), startRow, startCol, endRow,
                 endCol);
@@ -243,7 +243,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     public Grids_GridBoolean create(Grids_StatsBoolean stats, Generic_Path dir,
             Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
             long startRow, long startCol, long endRow, long endCol)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridBoolean(getStats(stats), dir, gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 env);
@@ -259,7 +259,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      */
     @Override
     public Grids_GridBoolean create(Generic_Path dir, Generic_Path gridFile)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridBoolean(env, dir, gridFile);
     }
 

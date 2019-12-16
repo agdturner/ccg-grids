@@ -57,8 +57,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param e
      */
     public Grids_ProcessorDEM(Grids_Environment e) throws IOException,
-            ClassNotFoundException,
-            Exception {
+            ClassNotFoundException, Exception {
         super(e);
     }
 
@@ -74,7 +73,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.io.IOException
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g)
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
@@ -118,7 +117,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
-            boolean hoome) throws IOException, ClassNotFoundException {
+            boolean hoome) throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             String methodName = "getSlopeAspect(" + g.getClass().getName()
@@ -611,7 +610,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, double x,
             double y, double distance, double weightIntersect,
-            double weightFactor) throws IOException, ClassNotFoundException {
+            double weightFactor) throws IOException, ClassNotFoundException, Exception {
         return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance,
                 weightIntersect, weightFactor);
     }
@@ -643,7 +642,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, long rowIndex,
             long colIndex, double x, double y, double distance,
-            double weightIntersect, double weightFactor) throws IOException, ClassNotFoundException {
+            double weightIntersect, double weightFactor) throws IOException, ClassNotFoundException, Exception {
         env.getGrids().add(g);
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
@@ -771,7 +770,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble getHollowFilledDEM(Grids_GridNumber g,
             Grids_GridFactoryDouble gdf, double outflowHeight, int maxIterations,
-            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
+            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
         env.getGrids().add(g);
         // Intitialise variables
         Grids_GridDouble result;
@@ -1325,7 +1324,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             Grids_GridNumber g,
             long nrows,
             long ncols,
-            boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
+            boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
         boolean checkAndMaybeFreeMemory = env.checkAndMaybeFreeMemory();
         HashSet outflowCellIDs = new HashSet();
         if (!(outflowCellIDsSet == null)) {
@@ -1394,7 +1393,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     private HashSet getHollowFilledDEMInitialHollowsHashSet(
             Grids_GridNumber g, long nrows, long ncols,
             boolean treatNoDataValueAsOutflow) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         HashSet initialHollowsHashSet = new HashSet();
         int k;
@@ -1507,7 +1506,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     private HashSet getHollowsInNeighbourhood(
             Grids_GridNumber g,
             HashSet cellIDs,
-            boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException {
+            boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         HashSet result = new HashSet();
         HashSet visited1 = new HashSet();
@@ -1635,7 +1634,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
     private HashSet getHollowFilledDEMCalculateHollows(
             Grids_GridNumber g,
-            HashSet cellIDs) throws IOException, ClassNotFoundException {
+            HashSet cellIDs) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if ((g.getNCols() * g.getNRows()) / 4 < cellIDs.size()) {
             // return getInitialHollowsHashSet( grid );
@@ -1826,7 +1825,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
             Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
-            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException {
+            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
                 || gdf.getChunkNRows() != gif.getChunkNRows()) {
@@ -2059,7 +2058,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             double distance,
             double weightIntersect,
             double weightFactor,
-            boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException {
+            boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException, Exception {
         String methodName;
         methodName = "getMetrics1("
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
@@ -2388,7 +2387,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             double[] metrics1,
             double[] heights,
             double[] diff,
-            double[] dummyDiff) throws IOException, ClassNotFoundException {
+            double[] dummyDiff) throws IOException, ClassNotFoundException, Exception {
         for (int i = 0; i < metrics1.length; i++) {
             metrics1[i] = 0.0d;
         }
@@ -3655,7 +3654,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, double distance,
             double weightIntersect, double weightFactor, int samplingDensity,
-            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             Grids_GridDouble[] result = new Grids_GridDouble[7];
@@ -3746,7 +3745,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @return
      */
     public Grids_GridDouble getMaxFlowDirection(Grids_GridDouble g,
-            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             long nrows = g.getNRows();
@@ -3840,7 +3839,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble getUpSlopeAreaMetrics(Grids_GridDouble grid,
             double distance, double weightFactor, double weightIntersect,
-            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException {
+            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             Generic_Path dir;
@@ -3887,7 +3886,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public HashSet getInitialPeaksHashSetAndSetTheirValue(Grids_GridDouble grid,
             Grids_GridDouble upSlopeAreaMetrics, boolean hoome) 
-            throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             HashSet initialPeaksHashSet = new HashSet();

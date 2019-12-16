@@ -262,7 +262,7 @@ public class Grids_IO {
             File xyFile,
             Grids_GridDouble grid,
             int linesInHeader,
-            boolean handleOutOfMemoryError) throws IOException, ClassNotFoundException {
+            boolean handleOutOfMemoryError) throws IOException, ClassNotFoundException, Exception {
         //System.out.println( "xyFileToGrid( xyFile( " + xyFile.toString() + " ), grid( " + grid.toString() + " ) )" );
         try {
             Reader r = new BufferedReader(new InputStreamReader(new FileInputStream(xyFile)));

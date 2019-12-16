@@ -262,7 +262,7 @@ public class Grids_Utilities extends Grids_Object {
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid, Grids_GridDouble yGrid,
             int divisions, Grids_Processor gp) throws IOException,
-            ClassNotFoundException {
+            ClassNotFoundException, Exception {
         Object[] r = new Object[4];        
         Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
         Generic_Path dir;
