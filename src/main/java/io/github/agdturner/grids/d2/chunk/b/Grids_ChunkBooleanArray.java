@@ -16,8 +16,8 @@
 package io.github.agdturner.grids.d2.chunk.b;
 
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
-import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
+import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
  * Stores the data in a {@code Boolean[][]}.
@@ -25,15 +25,15 @@ import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBinary extends Grids_Chunk {
+public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
 
     private static final long serialVersionUID = 1L;
     
-    boolean[][] data;
+    Boolean[][] data;
 
-    protected Grids_ChunkBinary() {}
+    protected Grids_ChunkBooleanArray() {}
 
-    public Grids_ChunkBinary(Grids_GridBinary g, Grids_2D_ID_int chunkID) {
+    public Grids_ChunkBooleanArray(Grids_GridBoolean g, Grids_2D_ID_int chunkID) {
         super();
         this.Grid = g;
         ChunkID = chunkID;
@@ -42,18 +42,18 @@ public class Grids_ChunkBinary extends Grids_Chunk {
 
     @Override
     protected final void initData() {
-        Grids_GridBinary g = getGrid();
+        Grids_GridBoolean g = getGrid();
         int chunkNrows = g.getChunkNRows(ChunkID);
         int chunkNcols = g.getChunkNCols(ChunkID);
-        data = new boolean[chunkNrows][chunkNcols];
+        data = new Boolean[chunkNrows][chunkNcols];
     }
 
     /**
      * @return (Grids_GridBoolean) Grid;
      */
     @Override
-    public Grids_GridBinary getGrid() {
-        return (Grids_GridBinary) Grid;
+    public Grids_GridBoolean getGrid() {
+        return (Grids_GridBoolean) Grid;
     }
 
     /**
@@ -63,8 +63,8 @@ public class Grids_ChunkBinary extends Grids_Chunk {
      * @param col The column of the cell w.r.t. the origin of this chunk.
      * @return
      */
-    public boolean getCell(int row, int col) {
-        return this.data[row][col];
+    public Boolean getCell(int row, int col) {
+        return data[row][col];
     }
 
     /**
@@ -75,9 +75,9 @@ public class Grids_ChunkBinary extends Grids_Chunk {
      * @param v the value the cell is to be set to
      * @return
      */
-    public boolean setCell(int row, int col, boolean v) {
-        boolean v0 = this.data[row][col];
-        this.data[row][col] = v;
+    public Boolean setCell(int row, int col, boolean v) {
+        Boolean v0 = data[row][col];
+        data[row][col] = v;
         if (isCacheUpToDate()) {
             if (v != v0) {
                 setCacheUpToDate(false);
@@ -94,7 +94,7 @@ public class Grids_ChunkBinary extends Grids_Chunk {
      * @param value
      */
     public void initCell(int row, int col, Boolean value) {
-        this.data[row][col] = value;
+        data[row][col] = value;
     }
 
     /**
@@ -105,18 +105,18 @@ public class Grids_ChunkBinary extends Grids_Chunk {
         data = null;
     }
 
-    protected boolean[][] getData() {
+    protected Boolean[][] getData() {
         return data;
     }
 
-    public Grids_ChunkIteratorBinary iterator() {
-        return new Grids_ChunkIteratorBinary(this);
+    public Grids_ChunkIteratorBooleanArray iterator() {
+        return new Grids_ChunkIteratorBooleanArray(this);
     }
 
     @Override
     public Long getN() {
         long n = 0;
-        Grids_ChunkIteratorBinary ite = iterator();
+        Grids_ChunkIteratorBooleanArray ite = iterator();
         while (ite.hasNext()) {
             if (ite.next()) {
                 n++;

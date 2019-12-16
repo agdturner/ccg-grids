@@ -21,7 +21,7 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridIteratorBinary;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinary;
+import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinaryArray;
 
 /**
  * Used by Grids_GridBinary instances to access statistics. This class is to be
@@ -95,7 +95,7 @@ public class Grids_StatsBinary extends Grids_Stats {
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
             Grids_2D_ID_int chunkID = (Grids_2D_ID_int) ite.next();
-            Grids_ChunkBinary chunk = g.getChunk(chunkID);
+            Grids_ChunkBinaryArray chunk = g.getChunk(chunkID);
             r += chunk.getN();
         }
         return r;

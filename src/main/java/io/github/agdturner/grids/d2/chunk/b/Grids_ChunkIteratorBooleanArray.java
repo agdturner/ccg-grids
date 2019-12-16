@@ -26,7 +26,7 @@ import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIteratorBoolean extends Grids_ChunkIterator {
+public class Grids_ChunkIteratorBooleanArray extends Grids_ChunkIterator {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class Grids_ChunkIteratorBoolean extends Grids_ChunkIterator {
     protected int NRows;
     protected int NCols;
 
-    public Grids_ChunkIteratorBoolean(Grids_ChunkBoolean chunk) {
+    public Grids_ChunkIteratorBooleanArray(Grids_ChunkBooleanArray chunk) {
         super(chunk);
         Data = chunk.getData();
         Row = 0;

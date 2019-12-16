@@ -15,7 +15,6 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
@@ -23,13 +22,14 @@ import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 
 /**
  * Grids_AbstractGridChunkDouble extension for which all values are the same.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIntSinglet
-        extends Grids_ChunkInt
+public class Grids_ChunkIntSinglet extends Grids_ChunkInt
         implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the value of every cell in this grid.
@@ -46,9 +46,7 @@ public class Grids_ChunkIntSinglet
      * @param chunkID The Grids_2D_ID_int ChunkID is set to.
      * @param value To be the value of all cells in this chunk.
      */
-    public Grids_ChunkIntSinglet(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID,
+    public Grids_ChunkIntSinglet(Grids_GridInt g, Grids_2D_ID_int chunkID,
             int value) {
         super(g, chunkID);
         initGrid(g);
@@ -68,27 +66,21 @@ public class Grids_ChunkIntSinglet
     }
 
     @Override
-    public int getCell(
-            int row,
-            int col) {
+    public int getCell(int row, int col) {
         return Value;
     }
-    
+
     /**
-     * Returns the value at position given by: row, col and sets it to 
+     * Returns the value at position given by: row, col and sets it to
      * valueToSet.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this
-     * chunk
+     * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param valueToSet the value the cell is to be set to.
      * @return
      */
     @Override
-    public int setCell(
-            int row,
-            int col,
-            int valueToSet) {
+    public int setCell(int row, int col, int valueToSet) {
         if (valueToSet == Value) {
             return Value;
         } else {
@@ -111,13 +103,10 @@ public class Grids_ChunkIntSinglet
     }
 
     @Override
-    public void initCell(
-            int row,
-            int col,
-            int valueToInitialise) {
+    public void initCell(int row, int col, int valueToInitialise) {
         if (valueToInitialise != Value) {
-            throw new Error("valueToInitialise != Value in " + 
-                    this.getClass().getName() + ".initCell(int,int,int)");
+            throw new Error("valueToInitialise != Value in "
+                    + this.getClass().getName() + ".initCell(int,int,int)");
         }
     }
 

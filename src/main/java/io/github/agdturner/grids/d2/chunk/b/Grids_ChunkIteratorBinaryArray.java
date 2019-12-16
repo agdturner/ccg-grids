@@ -26,7 +26,7 @@ import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIteratorBinary extends Grids_ChunkIterator {
+public class Grids_ChunkIteratorBinaryArray extends Grids_ChunkIterator {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class Grids_ChunkIteratorBinary extends Grids_ChunkIterator {
     protected int NRows;
     protected int NCols;
 
-    public Grids_ChunkIteratorBinary(Grids_ChunkBinary chunk) {
+    public Grids_ChunkIteratorBinaryArray(Grids_ChunkBinaryArray chunk) {
         super(chunk);
         Data = chunk.getData();
         Row = 0;

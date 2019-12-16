@@ -128,7 +128,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
     }
 
     @Override
-    public Grids_ChunkIteratorInt getChunkIterator() {
-        return (Grids_ChunkIteratorInt) ChunkIterator;
+    public Grids_ChunkIteratorIntArrayOrMap getChunkIterator() {
+        return (Grids_ChunkIteratorIntArrayOrMap) ChunkIterator;
     }
 }

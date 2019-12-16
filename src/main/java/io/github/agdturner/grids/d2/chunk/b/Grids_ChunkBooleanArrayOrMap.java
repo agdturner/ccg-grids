@@ -16,30 +16,24 @@
 package io.github.agdturner.grids.d2.chunk.b;
 
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
-import io.github.agdturner.grids.d2.chunk.Grids_ChunkFactory;
+import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
- * A factory for constructing Grids_AbstractGridChunkDouble instances.
-*
+ *
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkFactoryBoolean extends Grids_ChunkFactory {
+public abstract class Grids_ChunkBooleanArrayOrMap extends Grids_Chunk {
 
     private static final long serialVersionUID = 1L;
-
-    public Grids_ChunkFactoryBoolean() {
+    
+    protected Grids_ChunkBooleanArrayOrMap() {
     }
 
-    public Grids_ChunkBooleanArray create(Grids_GridBoolean grid,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkBooleanArray(grid, chunkID);
+    protected Grids_ChunkBooleanArrayOrMap(Grids_GridBoolean g, Grids_2D_ID_int chunkID) {
+        super(g, chunkID);
     }
-
-    public Grids_ChunkBooleanArray create(Grids_ChunkBooleanArray chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkBooleanArray(chunk.getGrid(), chunkID);
-    }
-
+    
 }

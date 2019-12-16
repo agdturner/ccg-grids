@@ -56,6 +56,7 @@ public abstract class Grids_ChunkNumberMapASpatialIterator
      *
      * @return <tt>true</tt> if the iterator has more elements.
      */
+    @Override
     public boolean hasNext() {
         return hasNext;
     }

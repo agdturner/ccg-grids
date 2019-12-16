@@ -132,7 +132,7 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
 
     
     @Override
-    public Grids_ChunkIteratorDouble getChunkIterator() {
-        return (Grids_ChunkIteratorDouble) ChunkIterator;
+    public Grids_ChunkIteratorDoubleArrayOrMap getChunkIterator() {
+        return (Grids_ChunkIteratorDoubleArrayOrMap) ChunkIterator;
     }
 }

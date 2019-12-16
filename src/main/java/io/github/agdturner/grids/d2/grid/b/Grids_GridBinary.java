@@ -31,7 +31,7 @@ import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.Grids_Grid;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinary;
+import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinaryArray;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedBinary;
@@ -209,7 +209,7 @@ public class Grids_GridBinary extends Grids_Grid {
         chunkIDChunkMap = new TreeMap<>();
         ChunkIDsOfChunksWorthCaching = new HashSet<>();
         Grids_2D_ID_int chunkID;
-        Grids_ChunkBinary chunk;
+        Grids_ChunkBinaryArray chunk;
         for (int r = 0; r < NChunkRows; r++) {
             for (int c = 0; c < NChunkCols; c++) {
                 env.checkAndMaybeFreeMemory();
@@ -327,7 +327,7 @@ public class Grids_GridBinary extends Grids_Grid {
             java.lang.ClassNotFoundException, Exception {
         env.addToNotToCache(g, gChunkID);
         env.checkAndMaybeFreeMemory();
-        Grids_ChunkBinary c = gb.getChunk(gChunkID);
+        Grids_ChunkBinaryArray c = gb.getChunk(gChunkID);
         int gChunkNCols = g.getChunkNCols(gcc);
         for (int cellRow = 0; cellRow < gChunkNRows; cellRow++) {
             long gRow = g.getRow(gcr, cellRow);
@@ -347,12 +347,12 @@ public class Grids_GridBinary extends Grids_Grid {
                         if (isInGrid(row, col)) {
                             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                             //ge.addToNotToCache(this, chunkID);
-                            Grids_ChunkBinary chunk;
+                            Grids_ChunkBinaryArray chunk;
                             if (!chunkIDChunkMap.containsKey(chunkID)) {
                                 chunk = cf.create(this, chunkID);
                                 chunkIDChunkMap.put(chunkID, chunk);
                             } else {
-                                chunk = (Grids_ChunkBinary) chunkIDChunkMap.get(chunkID);
+                                chunk = (Grids_ChunkBinaryArray) chunkIDChunkMap.get(chunkID);
                             }
                             boolean gValue = gb.getCell(c, cellRow, cellCol);
                             if (gValue) {
@@ -439,7 +439,7 @@ public class Grids_GridBinary extends Grids_Grid {
      */
     private void initCell(long row, long col, boolean value, boolean fast)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_ChunkBinary chunk;
+        Grids_ChunkBinaryArray chunk;
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
@@ -449,14 +449,14 @@ public class Grids_GridBinary extends Grids_Grid {
          */
         env.addToNotToCache(this, chunkID);
         if (!chunkIDChunkMap.containsKey(chunkID)) {
-            Grids_ChunkBinary gc = new Grids_ChunkBinary(this, chunkID);
+            Grids_ChunkBinaryArray gc = new Grids_ChunkBinaryArray(this, chunkID);
             chunkIDChunkMap.put(chunkID, gc);
         } else {
             Grids_Chunk c = chunkIDChunkMap.get(chunkID);
             if (c == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            chunk = (Grids_ChunkBinary) chunkIDChunkMap.get(chunkID);
+            chunk = (Grids_ChunkBinaryArray) chunkIDChunkMap.get(chunkID);
             if (fast) {
                 initCellFast(chunk, row, col, value);
             } else {
@@ -472,19 +472,19 @@ public class Grids_GridBinary extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkBinary getChunk(Grids_2D_ID_int chunkID)
+    public Grids_ChunkBinaryArray getChunk(Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkID)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_ChunkBinary) chunkIDChunkMap.get(chunkID);
+            return (Grids_ChunkBinaryArray) chunkIDChunkMap.get(chunkID);
         }
         return null;
     }
 
     /**
-     * @return Grids_ChunkBinary for the given chunkID.
+     * @return Grids_ChunkBinaryArray for the given chunkID.
      * @param chunkID The identifier for the chunk to return.
      * @param chunkRow The chunk row.
      * @param chunkCol The chunk col.
@@ -492,14 +492,14 @@ public class Grids_GridBinary extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkBinary getChunk(Grids_2D_ID_int chunkID, int chunkRow,
+    public Grids_ChunkBinaryArray getChunk(Grids_2D_ID_int chunkID, int chunkRow,
             int chunkCol) throws IOException, ClassNotFoundException,
             Exception {
         if (isInGrid(chunkRow, chunkCol)) {
             if (chunkIDChunkMap.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_ChunkBinary) chunkIDChunkMap.get(chunkID);
+            return (Grids_ChunkBinaryArray) chunkIDChunkMap.get(chunkID);
         }
         return null;
     }
@@ -546,7 +546,7 @@ public class Grids_GridBinary extends Grids_Grid {
 //        if (isInGrid) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
-        Grids_ChunkBinary c = (Grids_ChunkBinary) getChunk(chunkRow, chunkCol);
+        Grids_ChunkBinaryArray c = (Grids_ChunkBinaryArray) getChunk(chunkRow, chunkCol);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
         return getCell(c, cellRow, cellCol);
@@ -567,7 +567,7 @@ public class Grids_GridBinary extends Grids_Grid {
      * column index cellCol.
      *
      */
-    public boolean getCell(Grids_ChunkBinary chunk, int cellRow, int cellCol) {
+    public boolean getCell(Grids_ChunkBinaryArray chunk, int cellRow, int cellCol) {
         return chunk.getCell(cellRow, cellCol);
     }
 
@@ -629,7 +629,7 @@ public class Grids_GridBinary extends Grids_Grid {
         int chunkCol = getChunkCol(col);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
-        setCell((Grids_ChunkBinary) getChunk(chunkRow, chunkCol), cellRow,
+        setCell((Grids_ChunkBinaryArray) getChunk(chunkRow, chunkCol), cellRow,
                 cellCol, value);
     }
 
@@ -647,8 +647,8 @@ public class Grids_GridBinary extends Grids_Grid {
     public void setCell(int chunkRow, int chunkCol, int cellRow, int cellCol,
             boolean value) throws IOException, ClassNotFoundException,
              Exception {
-        Grids_ChunkBinary chunk;
-        chunk = (Grids_ChunkBinary) getChunk(chunkRow, chunkCol);
+        Grids_ChunkBinaryArray chunk;
+        chunk = (Grids_ChunkBinaryArray) getChunk(chunkRow, chunkCol);
         setCell(chunk, cellRow, cellCol, value);
     }
 
@@ -662,7 +662,7 @@ public class Grids_GridBinary extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(Grids_ChunkBinary chunk, int cellRow, int cellCol,
+    public void setCell(Grids_ChunkBinaryArray chunk, int cellRow, int cellCol,
             boolean value) throws IOException, Exception, ClassNotFoundException {
         boolean v = chunk.setCell(cellRow, cellCol, value);
         // Update stats
@@ -682,7 +682,7 @@ public class Grids_GridBinary extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkBinary chunk, long row, long col,
+    protected void initCell(Grids_ChunkBinaryArray chunk, long row, long col,
             boolean value) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getCellRow(row), getCellCol(col), value);
         if (value) {
@@ -700,7 +700,7 @@ public class Grids_GridBinary extends Grids_Grid {
      * be set.
      * @param value The value to initialise.
      */
-    protected void initCellFast(Grids_ChunkBinary chunk, long row, long col,
+    protected void initCellFast(Grids_ChunkBinaryArray chunk, long row, long col,
             boolean value) {
         chunk.initCell(getCellRow(row), getCellCol(col), value);
     }
@@ -809,7 +809,7 @@ public class Grids_GridBinary extends Grids_Grid {
             env.env.log("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             Grids_2D_ID_int chunkID = ite.next();
-            Grids_ChunkBinary chunk = getChunk(chunkID);
+            Grids_ChunkBinaryArray chunk = getChunk(chunkID);
             int chunkNRows = getChunkNRows(chunkID);
             int chunkNCols = getChunkNCols(chunkID);
             for (int row = 0; row < chunkNRows; row++) {

@@ -222,7 +222,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkFactoryDouble chunkFactory, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double noDataValue) throws IOException, Exception {
-        env.checkAndMaybeFreeMemory();
+        //env.checkAndMaybeFreeMemory(this, true);
         this.stats = stats;
         this.stats.setGrid(this);
         ChunkNRows = chunkNRows;
@@ -245,6 +245,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 chunkID = new Grids_2D_ID_int(r, c);
+                //env.checkAndMaybeFreeMemory();
                 chunk = chunkFactory.create(this, chunkID);
                 chunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
@@ -1835,7 +1836,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @return A Grids_GridIteratorDouble for iterating over the cell values in
      * this.
      */
-    public Grids_GridIteratorDouble iterator() throws IOException, Exception, ClassNotFoundException {
+    public Grids_GridIteratorDouble iterator() throws IOException, Exception, 
+            ClassNotFoundException {
         return new Grids_GridIteratorDouble(this);
     }
 

@@ -63,12 +63,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
     /**
      * Calculates and returns measures of the slope and aspect for the
- Grids_GridNumber _Grid2DSquareCell passed in.
+     * Grids_GridNumber _Grid2DSquareCell passed in.
      *
-     * @param g The Grids_GridNumber to be processed. Defaults: kernel
- to have distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0
- ].doubleValue() ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor
- = 0.0d;
+     * @param g The Grids_GridNumber to be processed. Defaults: kernel to have
+     * distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0 ].doubleValue()
+     * ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor = 0.0d;
      * @return Grids_GridDouble[] slopeAndAspect. /n
      * @throws java.io.IOException
      */
@@ -214,10 +213,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = new Generic_Path(Generic_IO.createNewFile(
-                    files.getGeneratedGridDoubleDir()));
+             dir = fsGridDouble.getPathNext();
             slopeAndAspect[0] = GridDoubleFactory.create(dir, nrows, ncols,
                     dimensions);
+            fsGridDouble.addDir();
             slopeAndAspect[0].setName(filename);
             slopeAndAspect[0].writeToFile();
             System.out.println(slopeAndAspect[0].toString());
@@ -230,10 +229,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = new Generic_Path(Generic_IO.createNewFile(
-                    files.getGeneratedGridDoubleDir()));
+            dir = fsGridDouble.getPathNext();
             slopeAndAspect[1] = GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
+            fsGridDouble.addDir();
             slopeAndAspect[1].setName(filename);
             slopeAndAspect[1].writeToFile();
             env.getGrids().add(slopeAndAspect[1]);
@@ -246,10 +245,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = new Generic_Path(Generic_IO.createNewFile(
-                    files.getGeneratedGridDoubleDir()));
-            slopeAndAspect[2] = (Grids_GridDouble) GridDoubleFactory.create(
-                    dir, nrows, ncols, dimensions);
+            dir = fsGridDouble.getPathNext();
+            slopeAndAspect[2] = GridDoubleFactory.create(dir, nrows, ncols, dimensions);
+            fsGridDouble.addDir();
             slopeAndAspect[2].setName(filename);
             slopeAndAspect[2].writeToFile();
             System.out.println(slopeAndAspect[2].toString());
@@ -262,10 +260,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = new Generic_Path(Generic_IO.createNewFile(
-                    files.getGeneratedGridDoubleDir()));
-            slopeAndAspect[3] = (Grids_GridDouble) GridDoubleFactory.create(dir,
+             dir = fsGridDouble.getPathNext();
+        slopeAndAspect[3] = GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
+        fsGridDouble.addDir();
             slopeAndAspect[3].setName(filename);
             slopeAndAspect[3].writeToFile();
             System.out.println(slopeAndAspect[3].toString());
@@ -278,10 +276,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            dir = new Generic_Path(Generic_IO.createNewFile(
-                    files.getGeneratedGridDoubleDir()));
-            slopeAndAspect[4] = (Grids_GridDouble) GridDoubleFactory.create(dir,
+             dir = fsGridDouble.getPathNext();
+        slopeAndAspect[4] = GridDoubleFactory.create(dir,
                     nrows, ncols, dimensions);
+        fsGridDouble.addDir();
             slopeAndAspect[4].setName(filename);
             slopeAndAspect[4].writeToFile();
             System.out.println(slopeAndAspect[4].toString());
@@ -1312,10 +1310,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
-     * @return HashSet containing Grids_GridNumber.CellIDs of those
- cells in _Grid2DSquareCell that are to be regarded as outflow cells.
- Outflow cells are those: with a value <= outflowHeight; those with CellID
-     * in outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
+     * @return HashSet containing Grids_GridNumber.CellIDs of those cells in
+     * _Grid2DSquareCell that are to be regarded as outflow cells. Outflow cells
+     * are those: with a value <= outflowHeight; those with CellID in
+     * outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
      * cell with a value of NoDataValue.
      */
     private HashSet getHollowFilledDEMOutflowCellIDs(
@@ -3671,7 +3669,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             for (int i = 0; i < result.length; i++) {
                 dir = new Generic_Path(Generic_IO.createNewFile(
                         files.getGeneratedGridDoubleDir()));
-                result[i] = gf.create(dir, nrows,                        ncols, dimensions);
+                result[i] = gf.create(dir, nrows, ncols, dimensions);
             }
             double[] metrics2;
             double slope;
@@ -3752,9 +3750,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             long ncols = g.getNCols();
             double noDataValue = g.getNoDataValue();
             Generic_Path dir;
-                 dir = new Generic_Path(Generic_IO.createNewFile(
-                        files.getGeneratedGridDoubleDir()));
-           Grids_GridDouble result = gf.create(dir, nrows, ncols, g.getDimensions());
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
+            Grids_GridDouble result = gf.create(dir, nrows, ncols, g.getDimensions());
             Grids_2D_ID_long cellID;
             long row;
             long col;
@@ -3843,8 +3841,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         try {
             env.checkAndMaybeFreeMemory();
             Generic_Path dir;
-                 dir = new Generic_Path(Generic_IO.createNewFile(
-                        files.getGeneratedGridDoubleDir()));
+            dir = new Generic_Path(Generic_IO.createNewFile(
+                    files.getGeneratedGridDoubleDir()));
             Grids_GridDouble upSlopeAreaMetrics;
             upSlopeAreaMetrics = gf.create(dir,
                     grid.getNRows(), grid.getNCols(), grid.getDimensions());
@@ -3885,7 +3883,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @return
      */
     public HashSet getInitialPeaksHashSetAndSetTheirValue(Grids_GridDouble grid,
-            Grids_GridDouble upSlopeAreaMetrics, boolean hoome) 
+            Grids_GridDouble upSlopeAreaMetrics, boolean hoome)
             throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();

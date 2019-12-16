@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.math.BigInteger;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
@@ -260,10 +259,10 @@ public class Grids_Utilities extends Grids_Object {
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public static Object[] densityPlot(Grids_GridDouble xGrid, Grids_GridDouble yGrid,
-            int divisions, Grids_Processor gp) throws IOException,
-            ClassNotFoundException, Exception {
-        Object[] r = new Object[4];        
+    public static Object[] densityPlot(Grids_GridDouble xGrid,
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp)
+            throws IOException, ClassNotFoundException, Exception {
+        Object[] r = new Object[4];
         Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
         Generic_Path dir;
         long nrows = xGrid.getNRows();
@@ -278,16 +277,20 @@ public class Grids_Utilities extends Grids_Object {
         double miny = yGrid.getStats().getMin(true);
         double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
+        Grids_Dimensions newDimensions = new Grids_Dimensions(
+                BigDecimal.valueOf(minx), BigDecimal.valueOf(maxx), 
+                BigDecimal.valueOf(miny), BigDecimal.valueOf(maxy), 
+                BigDecimal.valueOf(cellsize));
         Grids_GridDouble xGridRescaled;
         double value;
         double v;
-        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
-        gp.fsGridDouble.addDir();
+        dir = gp.fsGridDouble.getPathNext();
         if (minx == miny && maxx == maxy) {
             xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
+            gp.fsGridDouble.addDir();
         } else {
             xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
-            // It would be better to go through the chunks rather than across the rows!
+            gp.fsGridDouble.addDir();
             int ncr = xGridRescaled.getNChunkRows();
             int ncc = xGridRescaled.getNChunkCols();
             for (int cr = 0; cr < ncr; cr++) {
@@ -317,9 +320,9 @@ public class Grids_Utilities extends Grids_Object {
             numy[j] = 0.0d;
             sumysq[j] = 0.0d;
         }
-        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
+        dir = gp.fsGridDouble.getPathNext();
+        Grids_GridDouble temp1 = gfd.create(dir, divisions, divisions, newDimensions);
         gp.fsGridDouble.addDir();
-        Grids_GridDouble temp1 = (Grids_GridDouble) gfd.create(dir, divisions, divisions);
         for (long row = 0; row < nrows; row++) {
             for (long col = 0; col < ncols; col++) {
                 double x = xGridRescaled.getCell(row, col);
@@ -367,13 +370,12 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        dir = new Generic_Path(gp.fsGridDouble.getHighestLeaf());
-        gp.fsGridDouble.addDir();
-        Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO, 
-                BigDecimal.ZERO, BigDecimal.valueOf(divisions), 
+        dir = gp.fsGridDouble.getPathNext();
+        Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO,
+                BigDecimal.ZERO, BigDecimal.valueOf(divisions),
                 BigDecimal.valueOf(divisions), BigDecimal.ONE);
-        Grids_GridDouble densityPlotGrid = gfd.create(dir,
-                divisions, divisions, newdimensions);
+        gp.fsGridDouble.addDir();
+        Grids_GridDouble densityPlotGrid = gfd.create(dir, divisions, divisions, newdimensions);
         //double average = d1 / d2;
         for (int i = 0; i < divisions; i++) {
             for (int j = 0; j < divisions; j++) {
@@ -383,6 +385,8 @@ public class Grids_Utilities extends Grids_Object {
                         //densityPlotGrid.setCell( i, j, temp1.getCell( i, j ) / ( normalisers[ j ] + average ) );
                         densityPlotGrid.setCell(i, j, temp1.getCell(i, j) / normalisers[j]);
                     }
+                } else {
+                    densityPlotGrid.setCell(i, j, 0.0d);
                 }
             }
         }

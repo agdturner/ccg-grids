@@ -19,8 +19,7 @@ import java.util.Iterator;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 
 /**
- * For iterating through the values in a Grids_GridChunkDouble
- * instance. The values are not returned in any particular order.
+ * For iterating through the values in a Grids_ChunkDoubleSinglet.
 *
  * @author Andy Turner
  * @version 1.0.0

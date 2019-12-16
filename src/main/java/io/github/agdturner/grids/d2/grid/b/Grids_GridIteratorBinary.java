@@ -20,8 +20,8 @@ import java.util.NoSuchElementException;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.Grids_GridIterator;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinary;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkIteratorBinary;
+import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinaryArray;
+import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkIteratorBinaryArray;
 
 /**
  * For iterating through the values in a {@link Grids_GridBinary}. The values
@@ -49,10 +49,10 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkBinary) g.getChunkIDChunkMap().get(ChunkID);
+            Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap().get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_ChunkBinary) g.getChunkIDChunkMap().get(ChunkID);
+                Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap().get(ChunkID);
             }
             initChunkIterator();
         }
@@ -63,9 +63,9 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_ChunkBinary) {
-            ChunkIterator = new Grids_ChunkIteratorBinary(
-                    (Grids_ChunkBinary) Chunk);
+        if (Chunk instanceof Grids_ChunkBinaryArray) {
+            ChunkIterator = new Grids_ChunkIteratorBinaryArray(
+                    (Grids_ChunkBinaryArray) Chunk);
         }
     }
 
@@ -74,11 +74,11 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_ChunkIteratorBinary getChunkIterator(
+    public Grids_ChunkIteratorBinaryArray getChunkIterator(
             Grids_Chunk chunk) {
-        if (chunk instanceof Grids_ChunkBinary) {
-            return new Grids_ChunkIteratorBinary(
-                    (Grids_ChunkBinary) chunk);
+        if (chunk instanceof Grids_ChunkBinaryArray) {
+            return new Grids_ChunkIteratorBinaryArray(
+                    (Grids_ChunkBinaryArray) chunk);
         } else {
             throw new Error("Unrecognised type of chunk "
                     + this.getClass().getName()
@@ -91,7 +91,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
         return (Grids_GridBinary) Grid;
     }
 
-    public Grids_ChunkIteratorBinary getChunkIterator(Grids_2D_ID_int ChunkID)
+    public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_2D_ID_int ChunkID)
             throws IOException, ClassNotFoundException, Exception {
         return getChunkIterator(getGrid().getChunk(ChunkID));
     }
@@ -119,7 +119,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
     }
 
     @Override
-    public Grids_ChunkIteratorBinary getChunkIterator() {
-        return (Grids_ChunkIteratorBinary) ChunkIterator;
+    public Grids_ChunkIteratorBinaryArray getChunkIterator() {
+        return (Grids_ChunkIteratorBinaryArray) ChunkIterator;
     }
 }

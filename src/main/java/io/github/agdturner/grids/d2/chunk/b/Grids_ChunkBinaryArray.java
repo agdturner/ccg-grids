@@ -16,8 +16,8 @@
 package io.github.agdturner.grids.d2.chunk.b;
 
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
+import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
-import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
  * Stores the data in a {@code Boolean[][]}.
@@ -25,15 +25,15 @@ import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBoolean extends Grids_Chunk {
+public class Grids_ChunkBinaryArray extends Grids_Chunk {
 
     private static final long serialVersionUID = 1L;
     
-    Boolean[][] data;
+    boolean[][] data;
 
-    protected Grids_ChunkBoolean() {}
+    protected Grids_ChunkBinaryArray() {}
 
-    public Grids_ChunkBoolean(Grids_GridBoolean g, Grids_2D_ID_int chunkID) {
+    public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int chunkID) {
         super();
         this.Grid = g;
         ChunkID = chunkID;
@@ -42,18 +42,18 @@ public class Grids_ChunkBoolean extends Grids_Chunk {
 
     @Override
     protected final void initData() {
-        Grids_GridBoolean g = getGrid();
+        Grids_GridBinary g = getGrid();
         int chunkNrows = g.getChunkNRows(ChunkID);
         int chunkNcols = g.getChunkNCols(ChunkID);
-        data = new Boolean[chunkNrows][chunkNcols];
+        data = new boolean[chunkNrows][chunkNcols];
     }
 
     /**
      * @return (Grids_GridBoolean) Grid;
      */
     @Override
-    public Grids_GridBoolean getGrid() {
-        return (Grids_GridBoolean) Grid;
+    public Grids_GridBinary getGrid() {
+        return (Grids_GridBinary) Grid;
     }
 
     /**
@@ -105,18 +105,18 @@ public class Grids_ChunkBoolean extends Grids_Chunk {
         data = null;
     }
 
-    protected Boolean[][] getData() {
+    protected boolean[][] getData() {
         return data;
     }
 
-    public Grids_ChunkIteratorBoolean iterator() {
-        return new Grids_ChunkIteratorBoolean(this);
+    public Grids_ChunkIteratorBinaryArray iterator() {
+        return new Grids_ChunkIteratorBinaryArray(this);
     }
 
     @Override
     public Long getN() {
         long n = 0;
-        Grids_ChunkIteratorBoolean ite = iterator();
+        Grids_ChunkIteratorBinaryArray ite = iterator();
         while (ite.hasNext()) {
             if (ite.next()) {
                 n++;

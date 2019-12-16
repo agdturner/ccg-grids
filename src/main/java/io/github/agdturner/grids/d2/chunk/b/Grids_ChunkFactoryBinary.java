@@ -32,14 +32,14 @@ public class Grids_ChunkFactoryBinary extends Grids_ChunkFactory {
     public Grids_ChunkFactoryBinary() {
     }
 
-    public Grids_ChunkBinary create(Grids_GridBinary grid,
+    public Grids_ChunkBinaryArray create(Grids_GridBinary grid,
             Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkBinary(grid, chunkID);
+        return new Grids_ChunkBinaryArray(grid, chunkID);
     }
 
-    public Grids_ChunkBinary create(Grids_ChunkBinary chunk,
+    public Grids_ChunkBinaryArray create(Grids_ChunkBinaryArray chunk,
             Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkBinary(chunk.getGrid(), chunkID);
+        return new Grids_ChunkBinaryArray(chunk.getGrid(), chunkID);
     }
 
 }

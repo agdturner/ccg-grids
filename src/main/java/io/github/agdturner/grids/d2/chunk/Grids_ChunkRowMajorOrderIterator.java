@@ -26,6 +26,8 @@ import java.util.NoSuchElementException;
 public abstract class Grids_ChunkRowMajorOrderIterator 
         extends Grids_ChunkIterator {
 
+    private static final long serialVersionUID = 1L;
+
     protected int Row;
     protected int Col;
     protected int NRows;
@@ -48,6 +50,7 @@ public abstract class Grids_ChunkRowMajorOrderIterator
      * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
      * catch ArrayOutOfboundsException should be faster
      */
+    @Override
     public boolean hasNext() {
         if (Col + 1 == NCols) {
             if (Row + 1 == NRows) {

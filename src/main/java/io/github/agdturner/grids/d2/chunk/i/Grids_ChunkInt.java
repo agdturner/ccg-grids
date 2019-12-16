@@ -27,21 +27,19 @@ import io.github.agdturner.grids.d2.stats.Grids_StatsInterface;
 /**
  * Provides general methods and controls what methods extended classes must
  * implement acting as an interface.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkInt
-        extends Grids_ChunkNumber
+public abstract class Grids_ChunkInt extends Grids_ChunkNumber
         implements Serializable, Grids_StatsInterface {
 
-    //private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+
     protected Grids_ChunkInt() {
     }
 
-    protected Grids_ChunkInt(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID) {
+    protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
 
@@ -107,20 +105,16 @@ public abstract class Grids_ChunkInt
         int[] array;
         if (nChunkCells > Integer.MAX_VALUE) {
             //throw new PrecisionExcpetion
-            System.out.println(
-                    "PrecisionException in "
+            System.out.println("PrecisionException in "
                     + this.getClass().getName() + ".toArray()!");
-            System.out.println(
-                    "Warning! The returned array size is only "
+            System.out.println("Warning! The returned array size is only "
                     + Integer.MAX_VALUE + " instead of " + nChunkCells);
         }
         //int noDataValue = getGrid().getNoDataValue();
         array = new int[chunkNrows * chunkNcols];
-        int row;
-        int col;
         int count = 0;
-        for (row = 0; row < chunkNrows; row++) {
-            for (col = 0; col < chunkNcols; col++) {
+        for (int row = 0; row < chunkNrows; row++) {
+            for (int col = 0; col < chunkNcols; col++) {
                 array[count] = getCell(row, col);
                 count++;
             }
@@ -144,13 +138,10 @@ public abstract class Grids_ChunkInt
             throw new Error("n != (int) n");
         }
         int[] array = new int[(int) n];
-        int row;
-        int col;
         int count = 0;
-        int value;
-        for (row = 0; row < chunkNrows; row++) {
-            for (col = 0; col < chunkNcols; col++) {
-                value = getCell(row, col);
+        for (int row = 0; row < chunkNrows; row++) {
+            for (int col = 0; col < chunkNcols; col++) {
+                int value = getCell(row, col);
                 if (value != noDataValue) {
                     array[count] = value;
                     count++;
@@ -194,12 +185,9 @@ public abstract class Grids_ChunkInt
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
         int noDataValue = g.getNoDataValue();
-        int value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                int value = getCell(row, col);
                 if (value != noDataValue) {
                     sum = sum.add(new BigDecimal(value));
                 }
@@ -219,12 +207,9 @@ public abstract class Grids_ChunkInt
         int nrows = g.getChunkNRows();
         int ncols = g.getChunkNCols();
         int noDataValue = g.getNoDataValue();
-        int value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                int value = getCell(row, col);
                 if (value != noDataValue) {
                     min = Math.min(min, value);
                 }
@@ -244,12 +229,9 @@ public abstract class Grids_ChunkInt
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
         int noDataValue = g.getNoDataValue();
-        int value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                int value = getCell(row, col);
                 if (value != noDataValue) {
                     max = Math.max(max, value);
                 }
@@ -259,10 +241,7 @@ public abstract class Grids_ChunkInt
     }
 
     /**
-     * For returning the mode of all data values as a HashSet&LT;Integer&GT;.
-     * TODO: Better to use toArray and go through a sorted version?
-     *
-     * @return
+     * @return The mode.
      */
     protected HashSet<Integer> getMode() {
         HashSet<Integer> mode = new HashSet<>();
@@ -328,10 +307,7 @@ public abstract class Grids_ChunkInt
      *
      * @see getModeTIntHashSet()
      */
-    private Object[] initMode(
-            int nrows,
-            int ncols,
-            int noDataValue) {
+    private Object[] initMode(int nrows, int ncols, int noDataValue) {
         Object[] initMode = new Object[3];
         long modeCount;
         int p;
@@ -371,12 +347,7 @@ public abstract class Grids_ChunkInt
      * @param value the value to be counted
      * @return A count of cells with value = value starting from p, q.
      */
-    protected long count(
-            int p,
-            int q,
-            int nrows,
-            int ncols,
-            int value) {
+    protected long count(int p, int q, int nrows, int ncols, int value) {
         long count = 1L;
         int thisValue;
         // Do remainder of the row
@@ -523,7 +494,7 @@ public abstract class Grids_ChunkInt
             return getGrid().getNoDataValue();
         }
     }
-    
+
     /**
      * Returns the standard deviation of all data values as a double.
      *

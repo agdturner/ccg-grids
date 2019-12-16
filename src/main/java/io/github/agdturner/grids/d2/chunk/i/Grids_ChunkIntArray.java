@@ -15,8 +15,6 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntArrayOrMap;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -24,17 +22,15 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 
 /**
  * Grids_ChunkInt extension that stores cell values in a int[][].
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIntArray
-        extends Grids_ChunkIntArrayOrMap
+public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    //private static final long serialVersionUID = 1L; 
     /**
      * For storing values arranged in rows and columns.
      */
@@ -47,14 +43,12 @@ public class Grids_ChunkIntArray
     }
 
     /**
-     * Creates a new Grid2DSquareCellInt grid containing all no Data values.
+     * Creates a new chunk filled with noDataValues.
      *
-     * @param g
-     * @param chunkID
+     * @param g The grid.
+     * @param chunkID The chunkID.
      */
-    protected Grids_ChunkIntArray(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID) {
+    protected Grids_ChunkIntArray(Grids_GridInt g, Grids_2D_ID_int chunkID) {
         super(g, chunkID);
         initData();
         int noDataValue = g.getNoDataValue();
@@ -70,18 +64,15 @@ public class Grids_ChunkIntArray
      * could be coded then a constructor based on an int[] or int[][] might be
      * faster?
      *
-     * @param chunk
-     * @param chunkID
+     * @param chunk The chunk that's values will be duplicated.
+     * @param chunkID The chunkID.
      */
-    protected Grids_ChunkIntArray(
-            Grids_ChunkInt chunk,
+    protected Grids_ChunkIntArray(Grids_ChunkInt chunk,
             Grids_2D_ID_int chunkID) {
         super(chunk.getGrid(), chunkID);
         initData();
-        int row;
-        int col;
-        for (row = 0; row < ChunkNRows; row++) {
-            for (col = 0; col < ChunkNCols; col++) {
+        for (int row = 0; row < ChunkNRows; row++) {
+            for (int col = 0; col < ChunkNCols; col++) {
                 Data[row][col] = chunk.getCell(row, col);
             }
         }
@@ -106,7 +97,7 @@ public class Grids_ChunkIntArray
     }
 
     /**
-     * Clears the Data associated with
+     * Sets {@link #Data} to {@code null}.
      */
     protected @Override
     void clearData() {
@@ -123,9 +114,7 @@ public class Grids_ChunkIntArray
      * @return
      */
     public @Override
-    int getCell(
-            int row,
-            int col) {
+    int getCell(int row, int col) {
         return Data[row][col];
     }
 
@@ -137,10 +126,7 @@ public class Grids_ChunkIntArray
      * @param v the value with which the cell is initialised
      */
     @Override
-    public void initCell(
-            int row,
-            int col,
-            int v) {
+    public void initCell(            int row,            int col,            int v) {
         Data[row][col] = v;
     }
 
@@ -154,10 +140,7 @@ public class Grids_ChunkIntArray
      * @return
      */
     @Override
-    public int setCell(
-            int row,
-            int col,
-            int v) {
+    public int setCell(            int row,            int col,            int v) {
         int oldValue = Data[row][col];
         Data[row][col] = v;
         if (isCacheUpToDate()) {
@@ -169,51 +152,45 @@ public class Grids_ChunkIntArray
     }
 
     /**
-     * Returns a Grids_ChunkIteratorIntArrayOrMap for iterating over the
- cells in this in row major order.
+     * Returns a Grids_ChunkIteratorIntArrayOrMap for iterating over the cells
+     * in this in row major order.
      *
      * @return
      */
     public Grids_ChunkIteratorIntArrayOrMap iterator() {
         return new Grids_ChunkIteratorIntArrayOrMap(this);
     }
-    
+
     @Override
     public Number getMin(boolean update) {
-        Integer result = Data[0][0];
+        Integer r = Data[0][0];
         Grids_GridInt g = getGrid();
         int noDataValue = g.getNoDataValue();
-        int v;
-        int row;
-        int col;
-        for (row = 0; row < ChunkNRows; row++) {
-            for (col = 0; col < ChunkNCols; col++) {
-                v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < ChunkNRows; row++) {
+            for (int col = 0; col < ChunkNCols; col++) {
+                int v = Data[ChunkNRows][ChunkNCols];
                 if (v != noDataValue) {
-                    result = Math.min(result, v);
+                    r = Math.min(r, v);
                 }
             }
         }
-        return result;
+        return r;
     }
 
     @Override
     public Integer getMax(boolean update) {
-        Integer result = Data[0][0];
+        Integer r = Data[0][0];
         Grids_GridInt g = getGrid();
         int noDataValue = g.getNoDataValue();
-        int v;
-        int row;
-        int col;
-        for (row = 0; row < ChunkNRows; row++) {
-            for (col = 0; col < ChunkNCols; col++) {
-                v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < ChunkNRows; row++) {
+            for (int col = 0; col < ChunkNCols; col++) {
+                int v = Data[ChunkNRows][ChunkNCols];
                 if (v != noDataValue) {
-                    result = Math.min(result, v);
+                    r = Math.min(r, v);
                 }
             }
         }
-        return result;
+        return r;
     }
 
 }

@@ -304,8 +304,8 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public Generic_Path getDirectory() throws Exception {
         if (baseDir != null) {
-            Generic_FileStore fs = new Generic_FileStore(baseDir);
-            return new Generic_Path(fs.getPath(id));
+            return new Generic_Path(new Generic_FileStore(baseDir.getPath())
+                    .getPath(id));
         }
         return new Generic_Path(dir);
     }
@@ -856,7 +856,7 @@ public abstract class Grids_Grid extends Grids_Object {
             if (!gridChunk.isCacheUpToDate()) {
                 Path file = Paths.get(getDirectory().toString(),
                         chunkID.getRow() + "_" + chunkID.getCol());
-                Files.createDirectory(file.getParent());
+                //Files.createDirectory(file.getParent());
                 Generic_IO.writeObject(gridChunk, file);
                 //System.gc();
                 gridChunk.setCacheUpToDate(true);
