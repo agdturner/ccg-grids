@@ -927,19 +927,15 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col
      * @return
      */
-    public int getCell(long row, long col) throws IOException, Exception, Exception,
+    @Override
+    public Integer getCell(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
-//        boolean isInGrid = isInGrid(row, col);
-//        if (isInGrid) {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
-        Grids_ChunkInt c;
-        c = (Grids_ChunkInt) getChunk(chunkRow, chunkCol);
+        Grids_ChunkInt c = (Grids_ChunkInt) getChunk(chunkRow, chunkCol);
         int cellRow = getCellRow(row);
         int cellCol = getCellCol(col);
         return getCell(c, cellRow, cellCol);
-//        }
-//        return ndv;
     }
 
     /**
@@ -969,11 +965,13 @@ public class Grids_GridInt extends Grids_GridNumber {
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @return
+     * @return The value at x, y.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final int getCell(
-            double x,
-            double y) throws IOException, Exception, ClassNotFoundException {
+    @Override
+    public final Integer getCell(BigDecimal x, BigDecimal y) throws IOException,
+            ClassNotFoundException, Exception {
         long row = getRow(y);
         long col = getCol(x);
         boolean isInGrid = isInGrid(row, col);
@@ -984,26 +982,28 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * For returning the value of the cell with cellID.
-     *
      * @param cellID the Grids_2D_ID_long of the cell.
-     * @return
+     * @return The value of the cell with cellID.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final int getCell(
-            Grids_2D_ID_long cellID) throws IOException, Exception, ClassNotFoundException {
+    public final int getCell( Grids_2D_ID_long cellID) throws IOException, 
+            Exception, ClassNotFoundException {
         return getCell(cellID.getRow(), cellID.getCol());
     }
-
+    
     /**
      * For setting the value at x-coordinate x, y-coordinate y.
      *
      * @param x the x-coordinate of the point.
      * @param y the y-coordinate of the point.
-     * @param value
+     * @param v The value to set in the cell.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final void setCell(double x, double y,
-            int value) throws IOException, ClassNotFoundException, Exception {
-        setCell(getRow(x), getCol(y), value);
+    public final void setCell(BigDecimal x, BigDecimal y, int v)
+            throws IOException, Exception, ClassNotFoundException, Exception {
+        setCell(getRow(x), getCol(y), v);
     }
 
     /**
@@ -1188,7 +1188,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    protected int[] getCells(double x, double y, double distance)
+    protected Integer[] getCells(BigDecimal x, BigDecimal y, BigDecimal distance)
             throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance);
     }
@@ -1204,9 +1204,9 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public int[] getCells(long row, long col, double distance)
+    public int[] getCells(long row, long col, BigDecimal distance)
             throws IOException, Exception, ClassNotFoundException {
-        return getCells(getCellXDouble(col), getCellYDouble(row), row, col,
+        return getCells(getCellXBigDecimal(col), getCellYBigDecimal(row), row, col,
                 distance);
     }
 
@@ -1223,8 +1223,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      */
-    public int[] getCells(double x, double y, long row, long col,
-            double distance) throws IOException, Exception, ClassNotFoundException {
+    public int[] getCells(BigDecimal x, BigDecimal y, long row, long col,
+            BigDecimal distance) throws IOException, Exception, ClassNotFoundException {
         int[] cells;
         int cellDistance = (int) Math.ceil(distance / getCellsizeDouble());
         cells = new int[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
@@ -1249,15 +1249,16 @@ public class Grids_GridInt extends Grids_GridNumber {
      * x-coordinate x, y-coordinate y as a double.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
+     * @throws java.lang.Exception
      */
     @Override
-    public double getNearestValueDouble(double x, double y) throws IOException, Exception,
+    public Integer[] getNearestValues(BigDecimal x, BigDecimal y) throws IOException, Exception,
             ClassNotFoundException {
-        double result = getCell(x, y);
-        if (result == NoDataValue) {
-            result = getNearestValueDouble(x, y, getRow(y), getCol(x));
+        Integer[] r = getCell(x, y);
+        if (r == NoDataValue) {
+            r = getNearestValue(x, y, getRow(y), getCol(x));
         }
-        return result;
+        return (T) r;
     }
 
     /**
@@ -1269,11 +1270,10 @@ public class Grids_GridInt extends Grids_GridNumber {
      * index rowIndex, column index colIndex
      */
     @Override
-    public double getNearestValueDouble(long row, long col) throws IOException, Exception, ClassNotFoundException {
+    public <T extends Number> T getNearestValueDouble(long row, long col) throws IOException, Exception, ClassNotFoundException {
         double r = getCell(row, col);
         if (r == NoDataValue) {
-            r = getNearestValueDouble(getCellXDouble(col),
-                    getCellYDouble(row), row, col);
+            r = getNearestValue(getCellXDouble(col),                    getCellYDouble(row), row, col);
         }
         return r;
     }
@@ -1419,9 +1419,9 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param y The y-coordinate of the point.
      */
     @Override
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y)
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(BigDecimal x, BigDecimal y)
             throws IOException, Exception, ClassNotFoundException {
-        double value = getCell(x, y);
+        int value = getCell(x, y);
         if (value == NoDataValue) {
             return getNearestValuesCellIDs(x, y, getRow(y), getCol(x));
         }
@@ -1463,7 +1463,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * with data values are returned.
      */
     @Override
-    public Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y,
+    public Grids_2D_ID_long[] getNearestValuesCellIDs(BigDecimal x, BigDecimal y,
             long row, long col) throws IOException, Exception, ClassNotFoundException {
         Grids_2D_ID_long[] nearestCellIDs = new Grids_2D_ID_long[1];
         nearestCellIDs[0] = getNearestCellID(x, y, row, col);

@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeMap;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
@@ -59,10 +58,9 @@ public class Grids_GridBinary extends Grids_Grid {
      * and all chunks of the same type.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param baseDir The baseDir of the file store in which this grid may be
-     * stored.
-     * @param id The id of the grid in the file store.
-     * @param cf The factory used to create chunks.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
+     * @param cf Used to initialise the chunks.
      * @param chunkNRows What {@link #ChunkNRows} is set to.
      * @param chunkNCols What {@link #ChunkNCols} is set to.
      * @param nRows What {@link #NRows} is set to.
@@ -71,8 +69,8 @@ public class Grids_GridBinary extends Grids_Grid {
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats,
-            Generic_FileStore fs, long id, Grids_ChunkFactoryBinary cf, int chunkNRows,
+    protected Grids_GridBinary(Grids_StatsBinary stats, Generic_FileStore fs,
+            long id, Grids_ChunkFactoryBinary cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             Grids_Environment e) throws IOException, Exception {
         super(e, fs, id);
@@ -83,10 +81,8 @@ public class Grids_GridBinary extends Grids_Grid {
      * Creates a new Grids_GridBinary based on values in grid.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param dir What {@link #dir} is set to.
-     * @param baseDir The baseDir of the file store in which this grid may be
-     * stored.
-     * @param id The id of the grid in the file store.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param g The {@link Grids_Grid} used to construct this.
      * @param cf The factory used to create chunks.
      * @param chunkNRows What {@link #ChunkNRows} is set to.
@@ -115,10 +111,8 @@ public class Grids_GridBinary extends Grids_Grid {
      * gridFile.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param dir What {@link #dir} is set to.
-     * @param baseDir The baseDir of the file store in which this grid may be
-     * stored.
-     * @param id The id of the grid in the file store.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param gridFile The directory containing a grid that is to be loaded to
      * initialise this.
      * @param cf The factory used to create chunks.
@@ -149,13 +143,11 @@ public class Grids_GridBinary extends Grids_Grid {
      * Creates a new Grids_GridBinary with values obtained from a grid cached in
      * {@code gridFile}.
      *
-     * @param dir What {@link #dir} is set to.
-     * @param baseDir The baseDir of the file store in which this grid may be
-     * stored.
-     * @param id The id of the grid in the file store.
+     * @param e The grids environment.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param gridFile The directory containing a grid that is to be loaded to
      * initialise this.
-     * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -248,7 +240,6 @@ public class Grids_GridBinary extends Grids_Grid {
             Exception {
         env.checkAndMaybeFreeMemory();
         init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
-        boolean isLoadedChunk = false;
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
         int nChunkRows = endChunkRow - startChunkRow + 1;
@@ -259,43 +250,18 @@ public class Grids_GridBinary extends Grids_Grid {
             for (int gcr = startChunkRow; gcr <= endChunkRow; gcr++) {
                 int gChunkNRows = g.getChunkNRows(gcr);
                 for (int gcc = startChunkCol; gcc <= endChunkCol; gcc++) {
+                    boolean isLoadedChunk;
                     do {
-                        try {
-                            // Try to load chunk.
-                            Grids_2D_ID_int gChunkID = new Grids_2D_ID_int(gcr,
-                                    gcc);
-                            loadChunk(gChunkID, g, gb, gcc, gcr, cf,
-                                    gChunkNRows, startRow, endRow, startCol,
-                                    endCol);
-                            isLoadedChunk = true;
-                            env.removeFromNotToCache(g, gChunkID);
-                        } catch (OutOfMemoryError e) {
-                            if (env.HOOME) {
-                                env.clearMemoryReserve();
-                                freeSomeMemoryAndResetReserve(e);
-                                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-                                        gcr, gcc);
-                                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToSwapOut = new HashMap<>();
-                                notToSwapOut.put(g, g.getChunkIDs(startRow,
-                                        endRow, startCol, endCol));
-                                HashSet<Grids_2D_ID_int> s = new HashSet<>();
-                                s.add(chunkID);
-                                notToSwapOut.put(this, s);
-                                if (env.cacheChunksExcept_Account(notToSwapOut,
-                                        false) < 1L) {
-                                    throw e;
-                                }
-                                env.initMemoryReserve(this, chunkID, env.HOOME);
-                            } else {
-                                throw e;
-                            }
-                        }
+                        isLoadedChunk = loadChunk(g, cf, chunkNRows, chunkNCols, 
+                                startRow, startCol, endRow, endCol, 
+                                startChunkRow, endChunkRow, nChunkRows, 
+                                startChunkCol, endChunkCol, gb, gcr, 
+                                gChunkNRows, gcc);
                     } while (!isLoadedChunk);
-                    isLoadedChunk = false;
                     //loadedChunkCount++;
                     //cci1 = _ChunkColIndex;
                 }
-                System.out.println("Done chunkRow " + gcr + " out of " + nChunkRows);
+                env.env.log("Done chunkRow " + gcr + " out of " + nChunkRows);
             }
         } else if (g instanceof Grids_GridBinary) {
             // Implementation needed...
@@ -304,6 +270,43 @@ public class Grids_GridBinary extends Grids_Grid {
             // Implementation needed...
         }
         init();
+    }
+
+    protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBinary cf,
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol, int startChunkRow, int endChunkRow,
+            int nChunkRows, int startChunkCol, int endChunkCol,
+            Grids_GridBinary gb, int gcr, int gChunkNRows, int gcc)
+            throws ClassNotFoundException, Exception {
+        boolean isLoadedChunk = false;
+        try {
+            // Try to load chunk.
+            Grids_2D_ID_int gChunkID = new Grids_2D_ID_int(gcr, gcc);
+            loadChunk(gChunkID, g, gb, gcc, gcr, cf, gChunkNRows, startRow, 
+                    endRow, startCol, endCol);
+            isLoadedChunk = true;
+            env.removeFromNotToCache(g, gChunkID);
+        } catch (OutOfMemoryError e) {
+            if (env.HOOME) {
+                env.clearMemoryReserve();
+                freeSomeMemoryAndResetReserve(e);
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(gcr, gcc);
+                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToSwapOut 
+                        = new HashMap<>();
+                notToSwapOut.put(g, g.getChunkIDs(startRow, endRow, startCol, 
+                        endCol));
+                HashSet<Grids_2D_ID_int> s = new HashSet<>();
+                s.add(chunkID);
+                notToSwapOut.put(this, s);
+                if (env.cacheChunksExcept_Account(notToSwapOut, false) < 1L) {
+                    throw e;
+                }
+                env.initMemoryReserve(this, chunkID, env.HOOME);
+            } else {
+                throw e;
+            }
+        }
+        return isLoadedChunk;
     }
 
     public void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
@@ -331,14 +334,16 @@ public class Grids_GridBinary extends Grids_Grid {
                          * not be a chunk for the chunkID.
                          */
                         if (isInGrid(row, col)) {
-                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+                                    chunkRow, chunkCol);
                             //ge.addToNotToCache(this, chunkID);
                             Grids_ChunkBinaryArray chunk;
                             if (!chunkIDChunkMap.containsKey(chunkID)) {
                                 chunk = cf.create(this, chunkID);
                                 chunkIDChunkMap.put(chunkID, chunk);
                             } else {
-                                chunk = (Grids_ChunkBinaryArray) chunkIDChunkMap.get(chunkID);
+                                chunk = (Grids_ChunkBinaryArray) chunkIDChunkMap
+                                        .get(chunkID);
                             }
                             boolean gValue = gb.getCell(c, cellRow, cellCol);
                             if (gValue) {
