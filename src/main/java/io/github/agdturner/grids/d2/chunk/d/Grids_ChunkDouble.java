@@ -19,28 +19,28 @@ import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.Iterator;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkNumber;
 
 /**
- * Provides general methods and controls what methods extended classes must
- * implement acting as an interface.
-*
+ * A general class for chunks that represent values at cell locations that are
+ * {@code double} type numbers.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkDouble
-        extends Grids_ChunkNumber {
+public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
-    //private static final long serialVersionUID = 1L;
     protected Grids_ChunkDouble() {
     }
 
-    protected Grids_ChunkDouble(Grids_GridDouble g,
-            Grids_2D_ID_int chunkID) {
+    /**
+     * @param g The grid.
+     * @param chunkID The chunk id.
+     */
+    protected Grids_ChunkDouble(Grids_GridDouble g, Grids_2D_ID_int chunkID) {
         super(g, chunkID);
     }
 
@@ -53,20 +53,16 @@ public abstract class Grids_ChunkDouble
     }
 
     /**
-     * Returns the value at row, col.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
+     * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @return The value at row, col.
      */
     public abstract double getCell(int row, int col);
 
     /**
-     * Returns the value at row, col as a double.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @return The value at row, col as a double.
      */
     @Override
     public double getCellDouble(int row, int col) {
@@ -76,9 +72,9 @@ public abstract class Grids_ChunkDouble
     /**
      * Initialises the value at position given by: row, col.
      *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @param v the value to initialise the cell with.
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @param v The value to initialise.
      */
     public abstract void initCell(int row, int col, double v);
 
@@ -86,37 +82,25 @@ public abstract class Grids_ChunkDouble
      * Returns the value at position given by: row, col and sets it to
      * valueToSet. The noDataValue is passed in for convenience.
      *
-     * @param row the row of the chunk.
-     * @param col the column of the chunk.
-     * @param valueToSet the value the cell is to be set to
-     * @return
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @param v The value the cell is to be set to.
+     * @return The value at position given by: row, col prior to it being
+     * potentially being set to something different.
      */
-    public abstract double setCell(int row, int col, double valueToSet);
+    public abstract double setCell(int row, int col, double v);
 
     /**
-     * Returns all the values in row major order as a double[].
-     *
-     * @return
+     * @return All the values including noDataValue's in row major order as a double[].
      */
     public double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
-        double[] array;
-        if (((long) nrows * (long) ncols) > Integer.MAX_VALUE) {
-            //throw new PrecisionExcpetion
-            System.out.println("PrecisionException in " + getClass().getName()
-                    + ".toArray()!");
-            System.out.println("Warning! The returned array size is only "
-                    + Integer.MAX_VALUE + " instead of "
-                    + ((long) nrows * (long) ncols));
-        }
-        array = new double[nrows * ncols];
-        int row;
-        int col;
+        double[] array = new double[nrows * ncols];
         int count = 0;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
                 array[count] = getCell(row, col);
                 count++;
             }
@@ -125,9 +109,7 @@ public abstract class Grids_ChunkDouble
     }
 
     /**
-     * Returns all the values in row major order as a double[].
-     *
-     * @return
+     * @return All the values excluding noDataValues in row major order as a double[].
      */
     public double[] toArrayNotIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
@@ -135,19 +117,13 @@ public abstract class Grids_ChunkDouble
         int ncols = g.getChunkNCols(ChunkID);
         double noDataValue = g.getNoDataValue();
         long n = getN();
-        if (n != (int) n) {
-            throw new Error("Error n != (int) n ");
-        }
         double[] array = new double[(int) n];
-        int row;
-        int col;
         int count = 0;
-        double value;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (value != noDataValue) {
-                    array[count] = value;
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                double v = getCell(row, col);
+                if (v != noDataValue) {
+                    array[count] = v;
                     count++;
                 }
             }

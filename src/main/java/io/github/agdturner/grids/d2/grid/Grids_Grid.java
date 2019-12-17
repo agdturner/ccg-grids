@@ -44,12 +44,28 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 
 /**
- * Each grids has a map of chunks each indexed by a unique identifier. These
- * chunks are arranged in rows and columns and each of them represent an array
- * of values in a lattice arrangement orientated in the same way as the chunks
- * themselves within the dimensions of the grid. Each chunk in a grid represents
- * a lattice with effectively the same number of rows and columns and the same
- * type of values: boolean; or, numerical.
+ * Each instance of this is known as a 2D grid and represents a regular lattice
+ * or square celled raster arrangement values. All values in a grid are of the
+ * same type and all "cells" are effecively the same size. The supported types of values are: {@code boolean},
+ * {@link Boolean}; or a specific type of {@link java.lang.Number}. With the
+ * exception of the {@code boolean} type each type has a specific no data value
+ * (noDataValue). Each grid has a map of chunks containing a minimum of one 
+ * chunk and a maximum of {@link Integer#MAX_VALUE} each indexed 
+ * by a unique identifier.
+ * 
+ * The chunks of each grid are arranged in rows and columns orientated in the
+ * same way as the chunks themselves. The first row of chunks and 
+ * first column of chunks begining at the lower left corner of the origin of the gridchunk . Each
+ * chunk in a grid represents a regular lattice or cell values. In the general
+ * case (where there are more than two rows and columns of chunks) - most chunks
+ * have the same number of rows and columns of cells. The number of rows
+ * multiplied by the number of columns in these chunks cannot exceed
+ * {@link Integer#MAX_VALUE}, but they may be and typically represent fewer cell
+ * values than in a typical this. Cells in the final row of chunks may represent
+ * an array of cell values with a smaller number of rows than is in the typical
+ * smaller number of and All the cell values in a grid effectively represent the
+ * same type of value: {@code binary}, {@link Boolean}; or a specific type of
+ * {@link java.lang.Number}.
  *
  * A grid can approximately represent any 2D shape as each point in the lattice
  * (cell) may optionally have a null or noDataValue.
