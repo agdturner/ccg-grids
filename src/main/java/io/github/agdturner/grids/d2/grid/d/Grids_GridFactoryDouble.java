@@ -17,7 +17,6 @@ package io.github.agdturner.grids.d2.grid.d;
 
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDouble;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
@@ -30,7 +29,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -59,11 +58,11 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param chunkNRows The number of rows chunks have by default.
      * @param chunkNCols The number of columns chunks have by default.
      */
-    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_Path baseDir,
+    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore store,
             Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory,
             Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory,
             int chunkNRows, int chunkNCols) {
-        super(ge, baseDir, chunkNRows, chunkNCols, null);
+        super(ge, store, chunkNRows, chunkNCols, null);
         GridChunkDoubleFactory = gridChunkDoubleFactory;
         DefaultGridChunkDoubleFactory = defaultGridChunkDoubleFactory;
         Stats = new Grids_StatsNotUpdatedDouble(ge);
@@ -82,12 +81,12 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param dimensions
      * @param stats
      */
-    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_Path baseDir,
+    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore store,
             Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory,
             Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory,
             double noDataValue, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsDouble stats) {
-        super(ge, baseDir, chunkNRows, chunkNCols, dimensions);
+        super(ge, store, chunkNRows, chunkNCols, dimensions);
         GridChunkDoubleFactory = gridChunkDoubleFactory;
         DefaultGridChunkDoubleFactory = defaultGridChunkDoubleFactory;
         Stats = stats;
@@ -135,36 +134,36 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @return
      */
     @Override
-    public Grids_GridDouble create(Generic_Path dir, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env), dir,
+    public Grids_GridDouble create(long nRows, long nCols, 
+            Grids_Dimensions dimensions) throws IOException, 
+            ClassNotFoundException, Exception {
+        return create(new Grids_StatsNotUpdatedDouble(env), 
                 GridChunkDoubleFactory, nRows, nCols, dimensions);
     }
 
     /**
      * @param stats The type of Grids_StatsDouble to accompany the returned
- grid.
+     * grid.
      * @param dir The Directory to be used for storing grid.
-     * @param cf The preferred Grids_ChunkFactoryDouble for creating
- chunks that the constructed Grid is to be made of.
+     * @param cf The preferred Grids_ChunkFactoryDouble for creating chunks that
+     * the constructed Grid is to be made of.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return A new Grids_GridDouble grid with all values as NoDataValues.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats, Generic_Path dir,
+    public Grids_GridDouble create(Grids_StatsDouble stats,
             Grids_ChunkFactoryDouble cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException, 
+            Grids_Dimensions dimensions) throws IOException,
             ClassNotFoundException, Exception {
-        return new Grids_GridDouble(getStats(stats), dir, baseDir, cf, ChunkNRows,
+        Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
+                store.getNextID(), cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
+        store.addDir();
+        return r;
     }
 
-    //////////////////////////////////////////////////////
-    // Create from an existing Grids_AbstractGridNumber //
-    //////////////////////////////////////////////////////
     /**
-     * @param dir The Directory to be used for storing the grid.
      * @param g The Grids_AbstractGridNumber from which values are used.
      * @param startRow The topmost row index of g.
      * @param startCol The leftmost column index of g.
@@ -173,20 +172,19 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @return A new Grids_GridDouble with all values taken from g.
      */
     @Override
-    public Grids_GridDouble create(Generic_Path dir, Grids_Grid g,
-            long startRow, long startCol, long endRow, long endCol) 
+    public Grids_GridDouble create(Grids_Grid g,
+            long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env), dir, g,
+        return create(new Grids_StatsNotUpdatedDouble(env), g,
                 DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
                 endCol);
     }
 
     /**
      * @param stats The type of Grids_StatsDouble to accompany the returned
- grid.
-     * @param dir The directory to be used for storing the grid.
-     * @param cf The preferred Grids_ChunkFactoryDouble for creating
- chunks that the constructed Grid is to be made of.
+     * grid.
+     * @param cf The preferred Grids_ChunkFactoryDouble for creating chunks that
+     * the constructed Grid is to be made of.
      * @param g The Grids_AbstractGridNumber from which grid values are used.
      * @param startRow The topmost row index of g.
      * @param startCol The leftmost column index of g.
@@ -194,12 +192,15 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param endCol The rightmost column index of g.
      * @return A new Grids_GridDouble with all values taken from g.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats, Generic_Path dir,
+    public Grids_GridDouble create(Grids_StatsDouble stats,
             Grids_Grid g, Grids_ChunkFactoryDouble cf,
-            long startRow, long startCol, long endRow, long endCol) 
+            long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridDouble(getStats(stats), dir, baseDir, g, cf, ChunkNRows,
+        Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
+                store.getNextID(), g, cf, ChunkNRows,
                 ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
+        store.addDir();
+        return r;
     }
 
     ////////////////////////
@@ -217,16 +218,17 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
     @Override
-    public Grids_GridDouble create(Generic_Path dir, Generic_Path gridFile, long startRow,
-            long startCol, long endRow, long endCol)throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env), dir,
+    public Grids_GridDouble create(Generic_Path gridFile, long startRow,
+            long startCol, long endRow, long endCol) throws IOException, 
+            ClassNotFoundException, Exception {
+        return create(new Grids_StatsNotUpdatedDouble(env),
                 gridFile, DefaultGridChunkDoubleFactory, startRow, startCol,
                 endRow, endCol);
     }
 
     /**
      * @param stats The type of Grids_StatsDouble to accompany the returned
- grid.
+     * grid.
      * @param dir The directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
@@ -239,26 +241,30 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats, Generic_Path dir,
+    public Grids_GridDouble create(Grids_StatsDouble stats,
             Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
-            long startRow, long startCol, long endRow, long endCol) 
+            long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridDouble(getStats(stats), dir, baseDir, gridFile, cf,
-                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
-                NoDataValue, env);
+        Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
+                store.getNextID(), gridFile, cf, ChunkNRows, ChunkNCols,
+                startRow, startCol, endRow, endCol, NoDataValue, env);
+        store.addDir();
+        return r;
     }
 
     /**
-     * @param dir The directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * returned.
      * @return A new Grids_GridDouble with values obtained from gridFile.
      */
     @Override
-    public Grids_GridDouble create(Generic_Path dir, Generic_Path gridFile) 
+    public Grids_GridDouble create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridDouble(env, dir, baseDir, gridFile);
+        Grids_GridDouble r = new Grids_GridDouble(env, store, store.getNextID(),
+                gridFile);
+        store.addDir();
+        return r;
     }
 
     /**

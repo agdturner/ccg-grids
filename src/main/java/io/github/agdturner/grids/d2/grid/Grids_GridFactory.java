@@ -16,13 +16,12 @@
 package io.github.agdturner.grids.d2.grid;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.math.BigDecimal;
-import java.nio.file.Path;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * Grids_GridFactory.
@@ -35,10 +34,9 @@ public abstract class Grids_GridFactory extends Grids_Object {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The baseDir of this factory's file store. If this factory does not use a
-     * file store this is null.
+     * The file store in which grids can be cached.
      */
-    protected final Generic_Path baseDir;
+    protected final Generic_FileStore store;
 
     /**
      * The number of rows in a chunk.
@@ -56,34 +54,36 @@ public abstract class Grids_GridFactory extends Grids_Object {
     protected Grids_Dimensions Dimensions;
 
     /**
-     * Creates a new Grids_AbstractGridFactory.
+     * Creates a new grid factory.
      *
      * @param e What {@link #env} is set to.
+     * @param store What {@link #store} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_Path baseDir) {
+    public Grids_GridFactory(Grids_Environment e, Generic_FileStore store) {
         super(e);
-        this.baseDir = baseDir;
+        this.store = store;
     }
 
     /**
-     * Creates a new Grids_AbstractGridFactory.
+     * Creates a new grid factory.
      *
      * @param e What {@link #env} is set to.
+     * @param store What {@link #store} is set to.
      * @param chunkNRows What {@link #ChunkNRows} is set to.
      * @param chunkNCols What {@link #ChunkNCols} is set to.
      * @param dimensions What {@link #Dimensions} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_Path baseDir, int chunkNRows,
-            int chunkNCols, Grids_Dimensions dimensions) {
+    public Grids_GridFactory(Grids_Environment e, Generic_FileStore store,
+            int chunkNRows, int chunkNCols, Grids_Dimensions dimensions) {
         super(e);
-        this.baseDir = baseDir;
+        this.store = store;
         ChunkNRows = chunkNRows;
         ChunkNCols = chunkNCols;
         Dimensions = dimensions;
     }
 
     /**
-     * Set Dimensions.
+     * Set dimensions.
      *
      * @param d What {@link #Dimensions} is set to.
      */
@@ -93,47 +93,42 @@ public abstract class Grids_GridFactory extends Grids_Object {
 
     /**
      * @return Grid with all values as false or NoDataValues.
-     * @param dir The directory for storing the grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_Grid create(Generic_Path dir, long nRows, long nCols)
+    public Grids_Grid create(long nRows, long nCols)
             throws IOException, ClassNotFoundException, Exception {
         setDimensions(nRows, nCols);
-        return create(dir, nRows, nCols, Dimensions);
+        return create(nRows, nCols, Dimensions);
     }
 
     /**
      * @return Grid with all values as false or NoDataValues.
-     * @param dir The Directory for storing the grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param d The dimensions for the grid created.
      * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public abstract Grids_Grid create(Generic_Path dir, long nRows,
+    public abstract Grids_Grid create(long nRows,
             long nCols, Grids_Dimensions d) throws IOException,
             ClassNotFoundException, Exception;
 
-    ////////////////////////////////////////////////
-    // Create from an existing Grids_Grid //
-    ////////////////////////////////////////////////
     /**
      * @return Grid with all values from g.
-     * @param dir The directory for storing the grid.
      * @param g The grid from which values are obtained.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException
      */
-    public Grids_Grid create(Generic_Path dir, Grids_Grid g)
+    public Grids_Grid create(Grids_Grid g)
             throws IOException, ClassNotFoundException, Exception {
-        return create(dir, g, 0L, 0L, g.getNRows(), g.getNCols());
+        return create(g, 0L, 0L, g.getNRows(), g.getNCols());
     }
 
     /**
      * @return Grid with all values from g.
-     * @param dir The directory for storing the grid.
      * @param g The grid from which values are obtained.
      * @param startRow The topmost row index of {@code g} to get values from.
      * @param startCol The leftmost column index of {@code g} to get values
@@ -143,15 +138,11 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException
      */
-    public abstract Grids_Grid create(Generic_Path dir,
-            Grids_Grid g, long startRow, long startCol, long endRow,
-            long endCol) throws IOException, ClassNotFoundException, Exception;
+    public abstract Grids_Grid create(Grids_Grid g,
+            long startRow, long startCol, long endRow, long endCol) 
+            throws IOException, ClassNotFoundException, Exception;
 
-    ////////////////////////
-    // Create from a File //
-    ////////////////////////
     /**
-     * @param dir The directory for storing the grid.
      * @return Grid with values obtained from gridFile. If {@code gf} is a
      * directory then there will be an attempt to load a grid from a file
      * therein.
@@ -160,12 +151,11 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException
      */
-    public abstract Grids_Grid create(Generic_Path dir,
-            Generic_Path gridFile) throws IOException, ClassNotFoundException, Exception;
+    public abstract Grids_Grid create(Generic_Path gridFile)
+            throws IOException, ClassNotFoundException, Exception;
 
     /**
      * @return A grid with values obtained from gridFile.
-     * @param dir The directory to be used for storing the grid.
      * @param gridFile either a directory, or a formatted file used to
      * initialise the grid returned.
      * @param startRow The topmost row index of the grid in {@code gridFile} to
@@ -179,7 +169,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException
      */
-    public abstract Grids_Grid create(Generic_Path dir, Generic_Path gridFile,
+    public abstract Grids_Grid create(Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception;
 

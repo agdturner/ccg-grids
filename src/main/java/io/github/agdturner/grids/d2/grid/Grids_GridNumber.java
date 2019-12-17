@@ -19,12 +19,12 @@ import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * Contains Grids_2D_ID_long and Grids_2D_ID_int classes, referencing and
@@ -46,9 +46,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridNumber(Grids_Environment ge, Generic_Path dir,
-            Generic_Path baseDir) throws Exception {
-        super(ge, dir, baseDir);
+    protected Grids_GridNumber(Grids_Environment ge, Generic_FileStore fs, 
+            long id) throws Exception {
+        super(ge, fs, id);
     }
 
     /**

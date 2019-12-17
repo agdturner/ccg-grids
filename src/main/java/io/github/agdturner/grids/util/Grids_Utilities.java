@@ -286,10 +286,10 @@ public class Grids_Utilities extends Grids_Object {
         double v;
         dir = gp.fsGridDouble.getPathNext();
         if (minx == miny && maxx == maxy) {
-            xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
+            xGridRescaled = (Grids_GridDouble) gfd.create(xGrid);
             gp.fsGridDouble.addDir();
         } else {
-            xGridRescaled = (Grids_GridDouble) gfd.create(dir, xGrid);
+            xGridRescaled = (Grids_GridDouble) gfd.create(xGrid);
             gp.fsGridDouble.addDir();
             int ncr = xGridRescaled.getNChunkRows();
             int ncc = xGridRescaled.getNChunkCols();
@@ -320,9 +320,7 @@ public class Grids_Utilities extends Grids_Object {
             numy[j] = 0.0d;
             sumysq[j] = 0.0d;
         }
-        dir = gp.fsGridDouble.getPathNext();
-        Grids_GridDouble temp1 = gfd.create(dir, divisions, divisions, newDimensions);
-        gp.fsGridDouble.addDir();
+        Grids_GridDouble temp1 = gfd.create(divisions, divisions, newDimensions);
         for (long row = 0; row < nrows; row++) {
             for (long col = 0; col < ncols; col++) {
                 double x = xGridRescaled.getCell(row, col);
@@ -370,12 +368,10 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        dir = gp.fsGridDouble.getPathNext();
         Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.ZERO, BigDecimal.valueOf(divisions),
                 BigDecimal.valueOf(divisions), BigDecimal.ONE);
-        gp.fsGridDouble.addDir();
-        Grids_GridDouble densityPlotGrid = gfd.create(dir, divisions, divisions, newdimensions);
+        Grids_GridDouble densityPlotGrid = gfd.create(divisions, divisions, newdimensions);
         //double average = d1 / d2;
         for (int i = 0; i < divisions; i++) {
             for (int j = 0; j < divisions; j++) {

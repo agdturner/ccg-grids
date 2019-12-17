@@ -47,6 +47,7 @@ import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * A class for representing grids of int values.
@@ -82,13 +83,12 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param ndv The ndv.
      * @param ge
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_Path dir,
-            Generic_Path baseDir, Grids_ChunkFactoryInt cf, int chunkNRows,
+    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
+            long id, Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
             int ndv, Grids_Environment ge) throws IOException, Exception,
             ClassNotFoundException {
-        super(ge, dir, baseDir);
-        checkDir();
+        super(ge, fs, id);
         init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dims, ndv);
     }
 
@@ -110,13 +110,11 @@ public class Grids_GridInt extends Grids_GridNumber {
      * of this.
      * @param ndv The ndv for this.
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_Path dir,
-            Generic_Path baseDir,
+    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs, long id,
             Grids_Grid g, Grids_ChunkFactoryInt cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
-        super(g.env, dir, baseDir);
-        checkDir();
+        super(g.env, fs, id);
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
@@ -144,14 +142,13 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param noDataValue The ndv for this.
      * @param ge
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_Path dir,
-            Generic_Path baseDir, Generic_Path gridFile,
+    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
+            long id, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int noDataValue, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, dir, baseDir);
-        checkDir();
+        super(ge, fs, id);
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, noDataValue);
     }
@@ -166,10 +163,10 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      */
-    protected Grids_GridInt(Grids_Environment ge, Generic_Path dir,
-            Generic_Path baseDir, Generic_Path gridFile)
+    protected Grids_GridInt(Grids_Environment ge, Generic_FileStore fs,
+            long id, Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, dir, baseDir);
+        super(ge, fs, id);
         init(new Grids_StatsNotUpdatedInt(ge), gridFile);
     }
 
@@ -217,42 +214,27 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
-     * @param dim The cellsize, xmin, ymin, xmax and ymax.
+     * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
      * @param ndv The ndv.
      */
     private void init(Grids_StatsInt stats,
             Grids_ChunkFactoryInt cf, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dim,
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             int ndv) throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
-        this.stats = stats;
-        this.stats.setGrid(this);
-        ChunkNRows = chunkNRows;
-        ChunkNCols = chunkNCols;
-        NRows = nRows;
-        NCols = nCols;
-        Dimensions = dim;
-        initNoDataValue(ndv);
-        Name = dir.getFileName().toString();
-        initNChunkRows();
-        initNChunkCols();
-        chunkIDChunkMap = new TreeMap<>();
-        ChunkIDsOfChunksWorthCaching = new HashSet<>();
-        Grids_2D_ID_int chunkID;
-        Grids_ChunkInt chunk;
+        init(stats, chunkNRows, chunkNCols, nRows, nCols, dimensions);
         for (int r = 0; r < NChunkRows; r++) {
             for (int c = 0; c < NChunkCols; c++) {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
-                chunkID = new Grids_2D_ID_int(r, c);
-                chunk = cf.create(this, chunkID);
+                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(r, c);
+                Grids_ChunkInt chunk = cf.create(this, chunkID);
                 chunkIDChunkMap.put(chunkID, chunk);
                 if (!(chunk instanceof Grids_ChunkIntSinglet)) {
                     ChunkIDsOfChunksWorthCaching.add(chunkID);
                 }
             }
-            System.out.println("Done chunkRow " + r + " out of "
-                    + NChunkRows);
+            env.env.log("Done chunkRow " + r + " out of " + NChunkRows);
         }
         init();
     }
@@ -277,19 +259,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        this.stats = stats;
-        this.stats.setGrid(this);
-        ChunkNRows = chunkNRows;
-        ChunkNCols = chunkNCols;
-        NRows = endRow - startRow + 1L;
-        NCols = endCol - startCol + 1L;
-        NoDataValue = ndv;
-        Name = dir.getFileName().toString();
-        initNChunkRows();
-        initNChunkCols();
-        chunkIDChunkMap = new TreeMap<>();
-        ChunkIDsOfChunksWorthCaching = new HashSet<>();
-        initDimensions(g, startRow, startCol);
+        init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
         int gcr;
         int gcc;
         int chunkRow;
@@ -538,7 +508,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 Grids_GridFactoryInt gf = gp.GridIntFactory;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_Grid g = (Grids_Grid) Generic_IO.readObject(thisFile);
-                Grids_GridInt g2 = gf.create(getDirectory(), g, startRow, startCol, endRow, endCol);
+                Grids_GridInt g2 = gf.create(g, startRow, startCol, endRow, endCol);
                 init(g2);
             }
         } else {
@@ -548,7 +518,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             NRows = endRow - startRow + 1L;
             NCols = endCol - startCol + 1L;
             initNoDataValue(ndv);
-            Name = dir.getFileName().toString();
+            Name = store.getBaseDir().getFileName().toString() + id;
             initNChunkRows();
             initNChunkCols();
             chunkIDChunkMap = new TreeMap<>();
@@ -651,21 +621,19 @@ public class Grids_GridInt extends Grids_GridNumber {
             if (true) {
                 Grids_GridFactoryInt gf = gp.GridIntFactory;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
-                Grids_GridInt g = (Grids_GridInt) gf.create(getDirectory(),
+                Grids_GridInt g = (Grids_GridInt) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
                 init(g);
                 this.chunkIDChunkMap = g.chunkIDChunkMap;
                 this.ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
                 this.NoDataValue = g.NoDataValue;
                 this.Dimensions = g.Dimensions;
-                this.dir = g.getDirectory();
                 this.stats = g.getStats();
                 this.stats.grid = this;
             }
         } else {
             // Assume ESRI AsciiFile
-            checkDir();
-            Name = dir.getFileName().toString();
+            Name = store.getBaseDir().getFileName().toString() + id;
             chunkIDChunkMap = new TreeMap<>();
             ChunkIDsOfChunksWorthCaching = new HashSet<>();
             this.stats = stats;
@@ -882,7 +850,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     @Override
     public Grids_ChunkInt getChunk(Grids_2D_ID_int chunkID, int chunkRow,
-            int chunkCol) throws IOException, ClassNotFoundException, 
+            int chunkCol) throws IOException, ClassNotFoundException,
             Exception {
         if (isInGrid(chunkRow, chunkCol)) {
             if (chunkIDChunkMap.get(chunkID) == null) {

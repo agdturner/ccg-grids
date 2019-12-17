@@ -17,7 +17,6 @@ package io.github.agdturner.grids.d2.grid.i;
 
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryInt;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
@@ -26,10 +25,11 @@ import io.github.agdturner.grids.d2.grid.Grids_GridFactory;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
 import io.github.agdturner.grids.d2.stats.Grids_StatsInt;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedInt;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
  * A factory for constructing Grids_GridInt instances.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -56,11 +56,11 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param chunkNRows The number of rows chunks have by default.
      * @param chunkNCols The number of columns chunks have by default.
      */
-    public Grids_GridFactoryInt(Grids_Environment ge, Generic_Path baseDir,
-            Grids_ChunkFactoryIntSinglet gcif, 
-            Grids_ChunkFactoryInt dgcif, int chunkNRows, 
+    public Grids_GridFactoryInt(Grids_Environment ge, Generic_FileStore store,
+            Grids_ChunkFactoryIntSinglet gcif,
+            Grids_ChunkFactoryInt dgcif, int chunkNRows,
             int chunkNCols) {
-        super(ge, baseDir, chunkNRows, chunkNCols, null);
+        super(ge, store, chunkNRows, chunkNCols, null);
         GridChunkIntFactory = gcif;
         DefaultGridChunkIntFactory = dgcif;
         Stats = new Grids_StatsNotUpdatedInt(ge);
@@ -79,12 +79,12 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param dimensions
      * @param stats
      */
-    public Grids_GridFactoryInt(Grids_Environment ge, Generic_Path baseDir,
+    public Grids_GridFactoryInt(Grids_Environment ge, Generic_FileStore store,
             Grids_ChunkFactoryIntSinglet gridChunkIntFactory,
             Grids_ChunkFactoryInt defaultGridChunkIntFactory,
             int noDataValue, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsInt stats) {
-        super(ge, baseDir, chunkNRows, chunkNCols, dimensions);
+        super(ge, store, chunkNRows, chunkNCols, dimensions);
         GridChunkIntFactory = gridChunkIntFactory;
         DefaultGridChunkIntFactory = defaultGridChunkIntFactory;
         Stats = stats;
@@ -119,41 +119,40 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
         NoDataValue = noDataValue;
     }
 
-    /////////////////////////
-    // Create from scratch //
-    /////////////////////////
     /**
      * Returns A new Grids_GridInt with all values as NoDataValues.
      *
-     * @param dir The Directory to be used for storing grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return
      */
     @Override
-    public Grids_GridInt create(Generic_Path dir, long nRows, long nCols,
+    public Grids_GridInt create(long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedInt(env), dir,
+        return create(new Grids_StatsNotUpdatedInt(env),
                 GridChunkIntFactory, nRows, nCols, dimensions);
     }
 
     /**
-     * @param stats The type of Grids_StatsInt to accompany the returned
- grid.
+     * @param stats The type of Grids_StatsInt to accompany the returned grid.
      * @param dir The Directory to be used for storing grid.
-     * @param cf The preferred Grids_ChunkFactoryInt for creating
- chunks that the constructed Grid is to be made of.
+     * @param cf The preferred Grids_ChunkFactoryInt for creating chunks that
+     * the constructed Grid is to be made of.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
      * @return A new Grids_GridInt grid with all values as NoDataValues.
      */
-    public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
+    public Grids_GridInt create(Grids_StatsInt stats, 
             Grids_ChunkFactoryInt cf, long nRows, long nCols,
-            Grids_Dimensions dimensions) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, baseDir, cf, ChunkNRows,
+            Grids_Dimensions dimensions) throws IOException, 
+            ClassNotFoundException, Exception {
+        Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
+                store.getNextID(), cf, ChunkNRows,
                 ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
+        store.addDir();
+        return r;
     }
 
     //////////////////////////////////////////////////////
@@ -169,19 +168,19 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @return A new Grids_GridInt with all values taken from g.
      */
     @Override
-    public Grids_GridInt create(Generic_Path dir, Grids_Grid g,
-            long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedInt(env), dir, g,
+    public Grids_GridInt create(Grids_Grid g,
+            long startRow, long startCol, long endRow, long endCol) 
+            throws IOException, ClassNotFoundException, Exception {
+        return create(new Grids_StatsNotUpdatedInt(env), g,
                 DefaultGridChunkIntFactory, startRow, startCol, endRow,
                 endCol);
     }
 
     /**
-     * @param stats The type of Grids_StatsInt to accompany the returned
- grid.
+     * @param stats The type of Grids_StatsInt to accompany the returned grid.
      * @param dir The directory to be used for storing the grid.
-     * @param cf The preferred Grids_ChunkFactoryInt for creating
- chunks that the constructed Grid is to be made of.
+     * @param cf The preferred Grids_ChunkFactoryInt for creating chunks that
+     * the constructed Grid is to be made of.
      * @param g The Grids_AbstractGridNumber from which grid values are used.
      * @param startRow The topmost row index of g.
      * @param startCol The leftmost column index of g.
@@ -189,11 +188,14 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param endCol The rightmost column index of g.
      * @return A new Grids_GridInt with all values taken from g.
      */
-    public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
-            Grids_Grid g, Grids_ChunkFactoryInt cf,
-            long startRow, long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, baseDir, g, cf, ChunkNRows,
-                ChunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
+    public Grids_GridInt create(Grids_StatsInt stats, Grids_Grid g,
+            Grids_ChunkFactoryInt cf, long startRow, long startCol, long endRow,
+            long endCol) throws IOException, ClassNotFoundException, Exception {
+        Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
+                store.getNextID(), g, cf, ChunkNRows, ChunkNCols, startRow, 
+                startCol, endRow, endCol, NoDataValue);
+        store.addDir();
+        return r;
     }
 
     ////////////////////////
@@ -211,16 +213,16 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @return A new Grids_GridInt with values obtained from gridFile.
      */
     @Override
-    public Grids_GridInt create(Generic_Path dir, Generic_Path gridFile, long startRow,
-            long startCol, long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedInt(env), dir,
+    public Grids_GridInt create(Generic_Path gridFile, long startRow,
+            long startCol, long endRow, long endCol) throws IOException,
+            ClassNotFoundException, Exception {
+        return create(new Grids_StatsNotUpdatedInt(env),
                 gridFile, DefaultGridChunkIntFactory, startRow, startCol,
                 endRow, endCol);
     }
 
     /**
-     * @param stats The type of Grids_StatsInt to accompany the returned
- grid.
+     * @param stats The type of Grids_StatsInt to accompany the returned grid.
      * @param dir The directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
@@ -233,11 +235,11 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridInt with values obtained from gridFile.
      */
-    public Grids_GridInt create(Grids_StatsInt stats, Generic_Path dir,
+    public Grids_GridInt create(Grids_StatsInt stats,
             Generic_Path gridFile, Grids_ChunkFactoryInt cf,
-            long startRow, long startCol, long endRow, long endCol) 
+            long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(getStats(stats), dir, baseDir, gridFile, cf,
+        return new Grids_GridInt(getStats(stats), store, store.getNextID(), gridFile, cf,
                 ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
     }
@@ -250,11 +252,12 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @return A new Grids_GridInt with values obtained from gridFile.
      */
     @Override
-    public Grids_GridInt create(Generic_Path dir, Generic_Path gridFile) 
+    public Grids_GridInt create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        return new Grids_GridInt(env, dir, baseDir, gridFile);
+        Grids_GridInt r = new Grids_GridInt(env, store, store.getNextID(), gridFile);
+        store.addDir();
+        return r;
     }
-
 
     /**
      * @param stats

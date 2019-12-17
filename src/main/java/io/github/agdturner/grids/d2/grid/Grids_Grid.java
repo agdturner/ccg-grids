@@ -98,23 +98,14 @@ public abstract class Grids_Grid extends Grids_Object {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Stores the path to the cache directory as it was when the grid was
-     * initialised.
+     * The file store in which this is stored.
      */
-    protected Generic_Path dir;
-
-    /**
-     * Stores the path to the baseDir of the file store used to store this grid
-     * if it is stored in a file store. If this grid is not stored in a file
-     * store (where the path structure may be modified as more is added to the
-     * file store) then this is null.
-     */
-    protected final Generic_Path baseDir;
+    protected final Generic_FileStore store;
 
     /**
      * The file store id for this grid.
      */
-    protected final Long id;
+    protected final long id;
 
     /**
      * The Grids_Chunk data cache.
@@ -174,45 +165,15 @@ public abstract class Grids_Grid extends Grids_Object {
     protected Grids_Stats stats;
 
     /**
-     * @param ge The grids environment.
-     * @param dir The initial directory in which this grid is stored.
-     * @param baseDir If the grid is stored in a file store which has a
-     * potentially changing structure, then this indicates the directory of the
-     * baseDir of the file store. If the grid is not stored in a file store this
-     * should be null.
-     * @param id If the grid is stored in a file store which has a potentially
-     * changing structure, then this is the id for the grid directory in the
-     * file store. If the grid is not stored in a file store this can be any
-     * value, but sensibly it would be {@code null}.
+     * @param e The grids environment.
+     * @param fs The file store in which this grid is stored.
+     * @param id The id of the directory for this grid in the file store.
      */
-    protected Grids_Grid(Grids_Environment ge, Generic_Path dir,
-            Generic_Path baseDir) throws Exception {
-        super(ge);
-        this.dir = dir;
-        this.baseDir = baseDir;
-        this.id = Generic_FileStore.getNextID(baseDir);
-    }
-
-    /**
-     * Checks to see if {@link #dir} already exists and contains a lock file. If
-     * it does then an error is thrown likely aborting the program.
-     *
-     * @throws IOException If a lock file could not be created.
-     */
-    protected final void checkDir() throws IOException {
-        Path p = dir.getPath();
-        if (Files.exists(p)) {
-            if (Files.isDirectory(p)) {
-                Path lock = Paths.get(dir.toString(), "lock");
-                if (!Files.exists(lock)) {
-                    Files.createFile(lock);
-                } else {
-                    throw new IOException("Lock file " + lock + " already exists!");
-                }
-            } else {
-                throw new IOException(dir.toString() + " already exists as a file!");
-            }
-        }
+    protected Grids_Grid(Grids_Environment e, Generic_FileStore fs, long id)
+            throws Exception {
+        super(e);
+        this.store = fs;
+        this.id = id;
     }
 
     protected void init() throws IOException {
@@ -238,6 +199,39 @@ public abstract class Grids_Grid extends Grids_Object {
         NCols = g.NCols;
         NRows = g.NRows;
         init();
+    }
+
+    protected void init(Grids_Stats stats, int chunkNRows, int chunkNCols,
+            long nRows, long nCols, Grids_Dimensions dimensions) {
+        this.stats = stats;
+        this.stats.setGrid(this);
+        ChunkNRows = chunkNRows;
+        ChunkNCols = chunkNCols;
+        NRows = nRows;
+        NCols = nCols;
+        Dimensions = dimensions;
+        Name = store.getBaseDir().getFileName().toString() + id;
+        initNChunkRows();
+        initNChunkCols();
+        chunkIDChunkMap = new TreeMap<>();
+        ChunkIDsOfChunksWorthCaching = new HashSet<>();
+    }
+
+    protected void init(Grids_Grid g, Grids_Stats stats, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol) {
+        this.stats = stats;
+        this.stats.setGrid(this);
+        ChunkNRows = chunkNRows;
+        ChunkNCols = chunkNCols;
+        NRows = endRow - startRow;
+        NCols = endCol - startCol;
+        Name = store.getBaseDir().getFileName().toString() + id;
+        initNChunkRows();
+        initNChunkCols();
+        chunkIDChunkMap = new TreeMap<>();
+        ChunkIDsOfChunksWorthCaching = new HashSet<>();
+        initDimensions(g, startRow, startCol);
     }
 
     /**
@@ -273,7 +267,8 @@ public abstract class Grids_Grid extends Grids_Object {
         r += "NChunkRows=" + NChunkRows + ", ";
         r += "NCols=" + NCols + ", ";
         r += "NRows=" + NRows + ", ";
-        r += "Directory=" + dir + ", ";
+        r += "store=" + store.toString() + ", ";
+        r += "id=" + id + ", ";
         r += "Name=" + Name + ", ";
         r += "Dimensions=" + getDimensions().toString() + ", ";
         if (chunkIDChunkMap == null) {
@@ -300,14 +295,10 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return dir.
+     * @return The path to the directory where this is currently stored.
      */
     public Generic_Path getDirectory() throws Exception {
-        if (baseDir != null) {
-            return new Generic_Path(new Generic_FileStore(baseDir.getPath())
-                    .getPath(id));
-        }
-        return new Generic_Path(dir);
+        return new Generic_Path(store.getPath(id));
     }
 
     /**
@@ -787,8 +778,8 @@ public abstract class Grids_Grid extends Grids_Object {
      *
      * @throws java.io.IOException If encountered.
      */
-    public void writeToFile() throws IOException {
-        Generic_IO.writeObject(this, Paths.get(dir.getPath().toString(),
+    public void writeToFile() throws IOException, Exception {
+        Generic_IO.writeObject(this, Paths.get(getDirectory().toString(),
                 "thisFile"));
     }
 
@@ -1062,7 +1053,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws IOException
      */
     public Grids_2D_ID_int cacheChunkExcept_AccountChunk(
-            HashSet<Grids_2D_ID_int> chunkIDs,            boolean camfm,
+            HashSet<Grids_2D_ID_int> chunkIDs, boolean camfm,
             boolean hoome) throws IOException, Exception {
         try {
             Grids_2D_ID_int r = cacheChunkExcept_AccountChunk(chunkIDs);
@@ -1184,7 +1175,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return True if a chunk is cached.
      * @throws java.io.IOException
      */
-    public boolean cacheChunk(boolean camfm, boolean hoome) throws IOException, 
+    public boolean cacheChunk(boolean camfm, boolean hoome) throws IOException,
             Exception {
         try {
             boolean r = cacheChunk();
@@ -1658,7 +1649,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param chunkID
      * @return A count of the number of chunks cached.
      */
-    public final long cacheChunksExcept_Account(Grids_2D_ID_int chunkID) 
+    public final long cacheChunksExcept_Account(Grids_2D_ID_int chunkID)
             throws IOException, Exception {
         long result = 0L;
         for (int cri = 0; cri < NChunkRows; cri++) {
