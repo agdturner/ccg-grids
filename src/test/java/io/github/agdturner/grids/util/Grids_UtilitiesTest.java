@@ -569,14 +569,10 @@ public class Grids_UtilitiesTest {
         Grids_Dimensions dimensions = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.valueOf(ncols), BigDecimal.ZERO,
                 BigDecimal.valueOf(nrows), BigDecimal.ONE);
-        dir = gp.fsGridDouble.getPathNext();
-        Grids_GridDouble xGrid = gfd.create(dir, nrows, ncols, dimensions);
+        Grids_GridDouble xGrid = gfd.create(nrows, ncols, dimensions);
         setRandom(ge, xGrid);
-        gp.fsGridDouble.addDir();
-        dir = gp.fsGridDouble.getPathNext();
-        Grids_GridDouble yGrid = gfd.create(dir, nrows, ncols, dimensions);
+        Grids_GridDouble yGrid = gfd.create(nrows, ncols, dimensions);
         setRandom(ge, yGrid);
-        gp.fsGridDouble.addDir();
         int divisions = 10;
         //Object[] expResult = null;
         Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp);
@@ -587,7 +583,7 @@ public class Grids_UtilitiesTest {
         Grids_GridDouble g = (Grids_GridDouble) result[3];
         ie.toGreyScaleImage(g, gp, file, type);
         //TreeMap<Double, > colours;
-        //ie.toColourImage(0 , ie.colours, Color.orange, yGrid, outdir, type);
+        //ie.toColourImage(0 , ie.colours, Color.orange, yGrid, outtype);
         //assertArrayEquals(expResult, result);
     }
 
