@@ -16,9 +16,9 @@
 package io.github.agdturner.grids.d2.chunk.d;
 
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
+import java.math.RoundingMode;
 
 /**
  * Grids_ChunkDouble extension for which all values are the same.
@@ -26,8 +26,7 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble
-        implements Serializable {
+public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,14 +41,14 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble
     /**
      * Creates a new Grids_GridChunkDouble with value set to value.
      *
-     * @param g The Grids_GridDouble Grids is set to.
-     * @param chunkID The Grids_2D_ID_int ChunkID is set to.
-     * @param value To be the value of all cells in this chunk.
+     * @param g What {@link #Grid} is set to.
+     * @param i What {@link #ChunkID} is set to.
+     * @param v What {@link #Value} is set to.
      */
-    public Grids_ChunkDoubleSinglet(Grids_GridDouble g, Grids_2D_ID_int chunkID,
-            double value) {
-        super(g, chunkID);
-        Value = value;
+    public Grids_ChunkDoubleSinglet(Grids_GridDouble g, Grids_2D_ID_int i,
+            double v) {
+        super(g, i, false);
+        Value = v;
     }
 
     @Override
@@ -72,9 +71,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble
      * @return
      */
     @Override
-    public double getCell(
-            int row,
-            int col) {
+    public double getCell(int row, int col) {
         return Value;
     }
 
@@ -88,9 +85,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble
      * @return
      */
     @Override
-    public double setCell(
-            int row,
-            int col,
+    public double setCell(int row, int col,
             double v) {
         if (v == Value) {
             return Value;
@@ -132,7 +127,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble
     }
 
     @Override
-    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
+    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
         return BigDecimal.valueOf(Value);
     }
 

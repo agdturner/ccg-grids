@@ -36,6 +36,11 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * @param g What {@link #Grid} is set to.
+     * @param i What {@link #id} is set to.
+     * @param worthClearing What {@link #worthClearing} is set to.
+     */
     protected Grids_ChunkNumber(Grids_Grid g, Grids_2D_ID_int i,
             boolean worthClearing) {
         super(g, i, worthClearing);
@@ -157,12 +162,12 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
      * @return
      */
     @Override
-    public BigDecimal getArithmeticMean(int dp) {
+    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
         BigDecimal sum = getSum();
         long n = getN();
         if (n != 0) {
             return Math_BigDecimal.divideRoundIfNecessary(sum,
-                    BigInteger.valueOf(n), dp, RoundingMode.HALF_EVEN);
+                    BigInteger.valueOf(n), dp, rm);
         }
         return null;
     }

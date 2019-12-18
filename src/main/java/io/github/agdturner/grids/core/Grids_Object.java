@@ -16,27 +16,24 @@
 package io.github.agdturner.grids.core;
 
 import java.io.Serializable;
-import io.github.agdturner.grids.core.Grids_Environment;
 
 /**
- *
+ * To be extended by classes for access to a shared {@link Grids_Environment}.
 *
  * @author Andy Turner
  * @version 1.0.0
  */
 public abstract class Grids_Object implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     /**
-     * A reference to Grids_Environment.
+     * A reference to a Grids_Environment.
      */
     public transient Grids_Environment env;
 
-    public Grids_Object() {
-    }
-    
     public Grids_Object(Grids_Environment e) {
         this.env = e;
     }
-    
     
 }

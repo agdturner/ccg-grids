@@ -19,7 +19,9 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 
 /**
- *
+ * A simple wrapper for
+ * {@link io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntArray} and
+ * {@link io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntMap}.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -27,12 +29,9 @@ import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 public abstract class Grids_ChunkIntArrayOrMap extends Grids_ChunkInt {
 
     private static final long serialVersionUID = 1L;
-    
-    protected Grids_ChunkIntArrayOrMap() {
+
+    protected Grids_ChunkIntArrayOrMap(Grids_GridInt g, Grids_2D_ID_int i) {
+        super(g, i, true);
     }
 
-    protected Grids_ChunkIntArrayOrMap(Grids_GridInt g, Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
-    }
-    
 }

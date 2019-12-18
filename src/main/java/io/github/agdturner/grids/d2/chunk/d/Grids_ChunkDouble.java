@@ -23,7 +23,7 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkNumber;
 
 /**
- * A general class for chunks that represent values at cell locations that are
+ * For chunks that represent values at cell locations that are
  * {@code double} type numbers.
  *
  * @author Andy Turner
@@ -33,15 +33,14 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_ChunkDouble() {
-    }
-
     /**
-     * @param g The grid.
-     * @param chunkID The chunk id.
+     * @param g What {@link #Grid} is set to.
+     * @param i What {@link #id} is set to.
+     * @param worthClearing What {@link #worthClearing} is set to.
      */
-    protected Grids_ChunkDouble(Grids_GridDouble g, Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
+    protected Grids_ChunkDouble(Grids_GridDouble g, Grids_2D_ID_int i, 
+            boolean worthClearing) {
+        super(g, i, worthClearing); 
     }
 
     /**
@@ -65,8 +64,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * @return The value at row, col as a double.
      */
     @Override
-    public double getCellDouble(int row, int col) {
-        return getCell(row, col);
+    public BigDecimal getCellBigDecimal(int row, int col) {
+        return BigDecimal.valueOf(getCell(row, col));
     }
 
     /**

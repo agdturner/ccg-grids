@@ -19,22 +19,25 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 
 /**
+ * A simple wrapper for
+ * {@link io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleArray} and
+ * {@link io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleMap}.
  *
-*
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkDoubleArrayOrMap 
-        extends Grids_ChunkDouble {
+public abstract class Grids_ChunkDoubleArrayOrMap extends Grids_ChunkDouble {
 
     private static final long serialVersionUID = 1L;
-    
-    protected Grids_ChunkDoubleArrayOrMap() {
+
+    /**
+     * {@link #worthClearing} is set to {@code true}.
+     * @param g What {@link #Grid} is set to.
+     * @param i What {@link #id} is set to.
+     */
+    protected Grids_ChunkDoubleArrayOrMap(Grids_GridDouble g, 
+            Grids_2D_ID_int i) {
+        super(g, i, true);
     }
 
-    protected Grids_ChunkDoubleArrayOrMap(Grids_GridDouble g, 
-            Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
-    }
-    
 }

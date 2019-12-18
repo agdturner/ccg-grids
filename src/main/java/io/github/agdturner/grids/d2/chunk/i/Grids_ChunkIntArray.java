@@ -16,7 +16,6 @@
 package io.github.agdturner.grids.d2.chunk.i;
 
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
-import java.io.Serializable;
 import java.util.Arrays;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 
@@ -26,8 +25,7 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
-        implements Serializable {
+public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,19 +35,13 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
     private int[][] Data;
 
     /**
-     * Default constructor
-     */
-    protected Grids_ChunkIntArray() {
-    }
-
-    /**
      * Creates a new chunk filled with noDataValues.
      *
      * @param g The grid.
-     * @param chunkID The chunkID.
+     * @param i The chunkID.
      */
-    protected Grids_ChunkIntArray(Grids_GridInt g, Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
+    protected Grids_ChunkIntArray(Grids_GridInt g, Grids_2D_ID_int i) {
+        super(g, i);
         initData();
         int noDataValue = g.getNoDataValue();
         int row;
@@ -60,27 +52,25 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
     }
 
     /**
-     * TODO: 1. docs 2. A fast toArray() method in Grid2DSquareCellIntChunkMap
-     * could be coded then a constructor based on an int[] or int[][] might be
-     * faster?
+     * TODO: Optimise for different types of chunk. A fast toArray() could be
+     * coded then a constructor based on an int[] or int[][] might be faster?
      *
-     * @param chunk The chunk that's values will be duplicated.
-     * @param chunkID The chunkID.
+     * @param c The chunk that's values will be duplicated.
+     * @param i The chunkID.
      */
-    protected Grids_ChunkIntArray(Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID) {
-        super(chunk.getGrid(), chunkID);
+    protected Grids_ChunkIntArray(Grids_ChunkInt c, Grids_2D_ID_int i) {
+        super(c.getGrid(), i);
         initData();
         for (int row = 0; row < ChunkNRows; row++) {
             for (int col = 0; col < ChunkNCols; col++) {
-                Data[row][col] = chunk.getCell(row, col);
+                Data[row][col] = c.getCell(row, col);
             }
         }
         CacheUpToDate = false;
     }
 
     /**
-     * Initialises the Data associated with this.
+     * Initialises {@link #Data}.
      */
     @Override
     protected final void initData() {
@@ -88,9 +78,9 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
     }
 
     /**
-     * Returns Data. TODO: Should the array be copied and the copy returned?
+     * TODO: Should the array be copied and the copy returned?
      *
-     * @return
+     * @return {@link #Data}.
      */
     protected int[][] getData() {
         return Data;
@@ -99,48 +89,46 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
     /**
      * Sets {@link #Data} to {@code null}.
      */
-    protected @Override
-    void clearData() {
+    @Override
+    protected void clearData() {
         Data = null;
         //System.gc();
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex.
-     *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @return
+     * @param row The row index of the cell w.r.t. the origin of this chunk.
+     * @param col The column index of the cell w.r.t. the origin of this chunk.
+     * @return The value at position given by: chunk cell row {@code row}; chunk
+     * cell column {@link col}.
      */
-    public @Override
-    int getCell(int row, int col) {
+    @Override
+    public int getCell(int row, int col) {
         return Data[row][col];
     }
 
     /**
      * Initialises the value at position given by: row, col.
      *
-     * @param row the row index of the cell w.r.t. the origin of this chunk.
-     * @param col the column index of the cell w.r.t. the origin of this chunk.
-     * @param v the value with which the cell is initialised
+     * @param row The row index of the cell w.r.t. the origin of this chunk.
+     * @param col The column index of the cell w.r.t. the origin of this chunk.
+     * @param v The value initialised.
      */
     @Override
-    public void initCell(            int row,            int col,            int v) {
+    public void initCell(int row, int col, int v) {
         Data[row][col] = v;
     }
 
     /**
-     * Returns the value at position given by: chunk cell row chunkCellRowIndex;
-     * chunk cell row chunkCellColIndex and sets it to valueToSet
-     *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to
-     * @return
+     * Sets the value at position given by: chunk cell row {@code row};
+     * chunk cell row {@code col} to {@code v).
+     * @param row The row index of the cell w.r.t. the origin of this chunk.
+     * @param col The column index of the cell w.r.t. the origin of this chunk.
+     * @param v The value set.
+     * @return The value at position given by: chunk cell row {@code row};
+     * chunk cell row {@code col} prior to it being set to {@code v).
      */
     @Override
-    public int setCell(            int row,            int col,            int v) {
+    public int setCell(int row, int col, int v) {
         int oldValue = Data[row][col];
         Data[row][col] = v;
         if (isCacheUpToDate()) {
@@ -152,17 +140,15 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap
     }
 
     /**
-     * Returns a Grids_ChunkIteratorIntArrayOrMap for iterating over the cells
-     * in this in row major order.
-     *
-     * @return
+     * @return A {@link Grids_ChunkIteratorIntArrayOrMap} for iterating over the 
+     * cells in this.
      */
     public Grids_ChunkIteratorIntArrayOrMap iterator() {
         return new Grids_ChunkIteratorIntArrayOrMap(this);
     }
 
     @Override
-    public Number getMin(boolean update) {
+    public Integer getMin(boolean update) {
         Integer r = Data[0][0];
         Grids_GridInt g = getGrid();
         int noDataValue = g.getNoDataValue();

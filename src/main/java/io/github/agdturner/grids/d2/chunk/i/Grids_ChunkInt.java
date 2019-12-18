@@ -15,33 +15,28 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkNumber;
-import io.github.agdturner.grids.d2.stats.Grids_StatsInterface;
 
 /**
- * Provides general methods and controls what methods extended classes must
- * implement acting as an interface.
+ * For chunks that represent values at cell locations that are
+ * {@code int} type numbers.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkInt extends Grids_ChunkNumber
-        implements Serializable, Grids_StatsInterface {
+public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_ChunkInt() {
-    }
-
-    protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
-    }
+    protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int i, 
+            boolean worthClearing) {
+        super(g, i, worthClearing);
+    } 
 
     /**
      * @return (Grids_GridInt) Grid;
@@ -68,8 +63,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber
      * @return
      */
     @Override
-    public double getCellDouble(int row, int col) {
-        return getCell(row, col);
+    public BigDecimal getCellBigDecimal(int row, int col) {
+        return BigDecimal.valueOf(getCell(row, col));
     }
 
     /**

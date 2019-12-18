@@ -18,14 +18,12 @@ package io.github.agdturner.grids.core;
 import java.math.BigDecimal;
 
 /**
- * For storing the dimensions of a grid.
+ * A POJO for storing the dimensions of a grid.
  * 
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_Dimensions extends Grids_Object {
-
-    private static final long serialVersionUID = 1L;
+public class Grids_Dimensions {
 
     private final BigDecimal XMin;
     private final BigDecimal XMax;

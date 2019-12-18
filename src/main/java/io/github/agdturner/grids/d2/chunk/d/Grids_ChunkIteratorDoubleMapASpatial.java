@@ -58,7 +58,7 @@ public class Grids_ChunkIteratorDoubleMapASpatial
         if (DataMapBitSetIte.hasNext()) {
             hasNext = true;
             DataMapBitSetValue = DataMapBitSetIte.next();
-            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
         }
         NumberOfNoDataValues -= DataMapBitSetNumberOfValues;
         DataMapBitSetIte = DataMapBitSet.keySet().iterator();
@@ -99,7 +99,7 @@ public class Grids_ChunkIteratorDoubleMapASpatial
                 if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
                     if (DataMapBitSetIte.hasNext()) {
                         DataMapBitSetValue = DataMapBitSetIte.next();
-                        DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+                        DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
                         DataMapBitSetIndex = 0;
                         return DataMapBitSetValue;
                     } else {
