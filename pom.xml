@@ -44,76 +44,20 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
-        <!--
-        <log4j.version>2.12.1</log4j.version>
         <junit.version>5.5.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        -->
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-generic</artifactId>
+            <artifactId>agdt-java-generic</artifactId>
             <version>${agdt-java-generic.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-generic-math</artifactId>
+            <artifactId>agdt-java-generic-math</artifactId>
             <version>${agdt-java-generic-math.version}</version>
-        </dependency>        
-        <!--
-        <dependency>
-            <groupId>trove</groupId>
-            <artifactId>trove</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections-api</artifactId>
-            <version>9.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections</artifactId>
-            <version>9.0.0</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>8.1.0</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>javax.media</groupId>
-            <artifactId>jai_core</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.media.jai</groupId>
-            <artifactId>com.springsource.javax.media.jai.core</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -133,7 +77,6 @@
             <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
-        -->    
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -171,6 +114,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M4</version>
+                <configuration>
+                    <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>
+                </configuration>
                 <!--
                 <version>2.22.2</version>
                 -->
@@ -217,6 +163,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>3.0.0-M4</version>
+                        <configuration>
+                            <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>
+                        </configuration>
                         <!--
                         <version>2.22.2</version>
                         -->
