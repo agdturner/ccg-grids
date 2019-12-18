@@ -80,6 +80,15 @@ public abstract class Grids_Chunk extends Grids_Object {
     public abstract Grids_Grid getGrid();
 
     /**
+     * Initialises Grid = g.
+     *
+     * @param g What {}
+     */
+    public final void initGrid(Grids_Grid g) {
+        Grid = g;
+    }
+
+    /**
      * Initialises _ChunkID.
      *
      * @param chunkID
@@ -160,13 +169,6 @@ public abstract class Grids_Chunk extends Grids_Object {
      * For initialising the data associated with this.
      */
     protected abstract void initData();
-
-    /**
-     * @param grid the Grid to set
-     */
-    public void setGrid(Grids_Grid grid) {
-        Grid = grid;
-    }
 
     /**
      * Returns the number of cells with data values or values of true.
