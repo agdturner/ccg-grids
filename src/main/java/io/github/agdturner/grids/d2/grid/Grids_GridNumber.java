@@ -18,12 +18,12 @@ package io.github.agdturner.grids.d2.grid;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
-import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
@@ -48,8 +48,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * returned.
      * @param y The y coordinate of the point at which the cell value is
      * returned.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number getCell(BigDecimal x, BigDecimal y) throws IOException, 
+    public Number getCell(BigDecimal x, BigDecimal y) throws IOException,
             Exception, ClassNotFoundException {
         return getCell(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
@@ -60,10 +62,12 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param col
      * @return Grids_Chunk cell value at cell row index equal to _CellRowIndex,
      * cell col index equal to _CellColIndex as a double.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number getCell(long row, long col) throws IOException, Exception, 
+    public Number getCell(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
-        return getCell(getChunkRow(row), getChunkCol(col), getCellRow(row), 
+        return getCell(getChunkRow(row), getChunkCol(col), getCellRow(row),
                 getCellCol(col));
     }
 
@@ -76,6 +80,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * cell col index equal to _CellColIndex as a double.
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Number getCell(int chunkRow, int chunkCol, int cellRow,
             int cellCol) throws IOException, Exception, ClassNotFoundException {
@@ -100,29 +106,33 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     /**
      * @param chunkCol
      * @param chunkRow
-     * @return Cell value at chunk cell row index cellRow, chunk cell
-     * col index cellCol of Grids_Chunk given by chunk row chunkRow,
-     * chunk col chunkCol.
+     * @return Cell value at chunk cell row index cellRow, chunk cell col index
+     * cellCol of Grids_Chunk given by chunk row chunkRow, chunk col chunkCol.
      * @param chunk The Grids_Chunk containing the cell.
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
      */
-    public abstract Number getCell(Grids_Chunk chunk, int chunkRow, 
+    public abstract Number getCell(Grids_Chunk chunk, int chunkRow,
             int chunkCol, int cellRow, int cellCol);
 
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values nearest to point with position given by: x-coordinate x,
-     * y-coordinate y; and, cell row index row, cell column index
-     * col.
+     * y-coordinate y; and, cell row index row, cell column index col.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param col
+     * @param col The column index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The {@link RoundingMode} to use when rounding the result.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(BigDecimal x,
-            BigDecimal y, long row, long col)
+    protected abstract NearestValuesCellIDsAndDistance
+         getNearestValuesCellIDsAndDistance(BigDecimal x, BigDecimal y, 
+                 long row, long col, int dp, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException;
 
     /**
@@ -131,112 +141,40 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(long row,
-            long col)
-            throws IOException, Exception, ClassNotFoundException;
-
-    /**
-     * @param col
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest cells
-     * with data values are returned.
-     * @param hoome If true then OutOfMemoryErrors are caught, swap operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     */
-    public final Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col,
-            boolean hoome)
-            throws IOException, Exception, ClassNotFoundException {
-        try {
-            Grids_2D_ID_long[] result = getNearestValuesCellIDs(row, col);
-            env.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(getChunkRow(row),
-                        getChunkCol(col));
-                freeSomeMemoryAndResetReserve(chunkID, e);
-                return getNearestValuesCellIDs(row, col, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
+    protected abstract NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(long row,
+            long col, int dp, RoundingMode rm) throws IOException, Exception,
+            ClassNotFoundException;
 
     /**
      * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
      * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract Grids_2D_ID_long[] getNearestValuesCellIDs(double x,
-            double y)
-            throws IOException, Exception, ClassNotFoundException;
+    protected NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(BigDecimal x,
+            BigDecimal y, int dp, RoundingMode rm) throws IOException,
+            Exception, ClassNotFoundException {
+        return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
+    }
 
-    /**
-     * @return The average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y as a BigDecimal.
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
-     */
-    protected abstract Number getNearestValue(BigDecimal x, BigDecimal y)
-            throws IOException, Exception, ClassNotFoundException;
+    public class NearestValuesCellIDsAndDistance {
 
-    /**
-     * @return the average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param row the row index from which average of the nearest data values is
-     * returned
-     * @param col the column index from which average of the nearest data values
-     * is returned
-     */
-    protected abstract Number getNearestValue(BigDecimal x, BigDecimal y,
-            long row, long col) throws IOException, Exception, ClassNotFoundException;
+        public Grids_2D_ID_long[] cellIDs;
+        public BigDecimal distance;
 
-    /**
-     * @param row The row index from which average of the nearest data values is
-     * returned.
-     * @param col The column index from which average of the nearest data values
-     * is returned.
-     * @return the average of the nearest data values to position given by row
-     * index rowIndex, column index colIndex
-     */
-    protected abstract Number getNearestValue(long row, long col)
-            throws IOException, Exception, ClassNotFoundException;
+        public NearestValuesCellIDsAndDistance() {
+        }
 
-    /**
-     * @return the distance to the nearest data value from point given by
-     * x-coordinate x, y-coordinate y as a double.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     */
-    protected abstract double getNearestValueDistance(BigDecimal x, 
-            BigDecimal y) throws IOException, Exception, ClassNotFoundException;
-
-    /**
-     * @return the distance to the nearest data value from: point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex as a double.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param row The cell row index of the cell from which the distance nearest
-     * to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the distance
-     * nearest to the nearest cell value is returned.
-     */
-    protected abstract BigDecimal getNearestValueDistance(BigDecimal x, BigDecimal y,
-            long row, long col) throws IOException, Exception, ClassNotFoundException;
+    }
 
     @Override
-    public Grids_StatsNumber getStats(boolean hoome) throws IOException, Exception {
+    public Grids_StatsNumber getStats(boolean hoome) throws IOException,
+            Exception {
         return (Grids_StatsNumber) super.getStats(hoome);
     }
 }

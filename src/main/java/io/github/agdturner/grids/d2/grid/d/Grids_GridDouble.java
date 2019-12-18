@@ -925,7 +925,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public double getCell(long row, long col) throws IOException, Exception, ClassNotFoundException {
+    public Double getCell(long row, long col) throws IOException, Exception, 
+            ClassNotFoundException {
 //        boolean isInGrid = isInGrid(row, col);
 //        if (isInGrid) {
         int chunkRow = getChunkRow(row);
@@ -971,7 +972,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final double getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final Double getCell(BigDecimal x, BigDecimal y) throws IOException,
             Exception, ClassNotFoundException {
         long row = getRow(y);
         long col = getCol(x);
@@ -1171,22 +1172,6 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return double[] of all cell values for cells that's centroids are
-     * intersected by circle with centre at x-coordinate x, y-coordinate y, and
-     * radius distance.
-     * @param x the x-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param y the y-coordinate of the circle centre from which cell values are
-     * returned.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
-     */
-    protected double[] getCells(double x, double y, double distance)
-            throws IOException, Exception, ClassNotFoundException {
-        return getCells(x, y, getRow(y), getCol(x), distance);
-    }
-
-    /**
      * @return double[] of all cell values for cells thats centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
@@ -1197,8 +1182,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public double[] getCells(long row, long col, double distance) throws IOException, Exception, ClassNotFoundException {
-        return getCells(getCellXDouble(col), getCellYDouble(row), row, col,
+    public double[] getCells(long row, long col, double distance) 
+            throws IOException, Exception, ClassNotFoundException {
+        return getCells(getCellXBigDecimal(col), getCellYBigDecimal(row), row, col,
                 distance);
     }
 
@@ -1215,16 +1201,16 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      */
-    protected double[] getCells(double x, double y, long row, long col,
+    protected double[] getCells(BigDecimal x, BigDecimal y, long row, long col,
             double distance) throws IOException, Exception, ClassNotFoundException {
         double[] cells;
         int cellDistance = (int) Math.ceil(distance / getCellsizeDouble());
         cells = new double[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
         int count = 0;
         for (long p = row - cellDistance; p <= row + cellDistance; p++) {
-            double thisY = getCellYDouble(row);
+            BigDecimal thisY = getCellYBigDecimal(row);
             for (long q = col - cellDistance; q <= col + cellDistance; q++) {
-                double thisX = getCellXDouble(col);
+                BigDecimal thisX = getCellXBigDecimal(col);
                 if (Grids_Utilities.distance(x, y, thisX, thisY) <= distance) {
                     cells[count] = getCell(p, q);
                     count++;

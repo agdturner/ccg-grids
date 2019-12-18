@@ -34,51 +34,50 @@ public abstract class Grids_Chunk extends Grids_Object {
     protected transient Grids_Grid Grid;
 
     /**
-     * For storing the Grids_2D_ID_int of this.
+     * For storing the ID of this.
      */
     protected Grids_2D_ID_int ChunkID;
 
+    /**
+     * The number of rows in the chunk.
+     */
     protected int ChunkNRows;
 
+    /**
+     * The number of columns in the chunk.
+     */
     protected int ChunkNCols;
 
-    //protected Grids_2D_ID_int _ChunkID;
     /**
-     * Indicator for whether the swapped version of this chunk is upToDate.
-     * TODO: This adds a small amount of weight, so for 64CellMap
-     * implementations it may be undesirable?
+     * Indicator for whether the cache of this chunk is upToDate.
      */
     protected transient boolean CacheUpToDate;
-    //protected boolean CacheUpToDate;
 
-    protected Grids_Chunk() {
-    }
+    /**
+     * Indicator for whether the cache of this chunk is upToDate.
+     */
+    protected final boolean worthClearing;
 
-    protected Grids_Chunk(Grids_Grid g,
-            Grids_2D_ID_int chunkID) {
+    /**
+     * @param g What {@link #Grid} is set to.
+     * @param i What {@link #id} is set to.
+     * @param worthClearing What {@link #worthClearing} is set to.
+     */
+    protected Grids_Chunk(Grids_Grid g, Grids_2D_ID_int i, 
+            boolean worthClearing) {
         super(g.env);
         Grid = g;
-        ChunkID = chunkID;
+        ChunkID = i;
         ChunkNRows = Grid.getChunkNRows(ChunkID);
         ChunkNCols = Grid.getChunkNCols(ChunkID);
         CacheUpToDate = false;
+        this.worthClearing = worthClearing;
     }
 
     /**
-     * Returns Grid.
-     *
-     * @return
+     * @return {@link #Grid}
      */
     public abstract Grids_Grid getGrid();
-
-    /**
-     * Initialises Grid = g.
-     *
-     * @param g
-     */
-    public final void initGrid(Grids_Grid g) {
-        setGrid(g);
-    }
 
     /**
      * Initialises _ChunkID.
@@ -100,8 +99,8 @@ public abstract class Grids_Chunk extends Grids_Object {
     }
 
     /**
-     * Returns CacheUpToDate. This method is public so that it can be accessed in
-     * memory management without checking there is enough memory to continue.
+     * Returns CacheUpToDate. This method is public so that it can be accessed
+     * in memory management without checking there is enough memory to continue.
      *
      * @return
      */
@@ -110,7 +109,7 @@ public abstract class Grids_Chunk extends Grids_Object {
     }
 
     /**
-     * Sets {@link #CacheUpToDate} to b. 
+     * Sets {@link #CacheUpToDate} to b.
      *
      * @param b
      */

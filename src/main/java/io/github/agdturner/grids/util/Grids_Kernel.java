@@ -17,10 +17,12 @@ package io.github.agdturner.grids.util;
 
 import java.awt.geom.Point2D;
 import io.github.agdturner.grids.d2.grid.Grids_GridNumber;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Class of methods to do with kernels.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -33,14 +35,11 @@ public abstract class Grids_Kernel {
      * @return double expected value of value for a normal distribution with
      * mean and variance.
      */
-    public static double getNormalDistributionKernelWeight(
-            double value,
-            double mean,
-            double variance) {
-        double result = (1.0d / (variance * Math.sqrt(2.0d * Math.PI)))
+    public static double getNormalDistributionKernelWeight(double value,
+            double mean, double variance) {
+        return (1.0d / (variance * Math.sqrt(2.0d * Math.PI)))
                 * Math.pow(Math.E, (-1.0d * (((value - mean) * (value - mean))
                         / (2.0d * variance * variance))));
-        return result;
     }
 
     /**
@@ -50,14 +49,13 @@ public abstract class Grids_Kernel {
      * mean and variance of the normal distribution is given by the distances to
      * the centroids of the cells that are within distance.
      */
-    public static double[][] getNormalDistributionKernelWeights(
-            double cellsize,
+    public static double[][] getNormalDistributionKernelWeights(double cellsize,
             double distance) {
-        double[][] result;
-        int cellDistance = (int) Math.ceil(distance / cellsize);
-        int squareSize = (cellDistance * 2) + 1;
-        result = new double[squareSize][squareSize];
-        int thisDistanceSquared;
+        double[][] r;
+        int delta = (int) Math.ceil(distance / cellsize);
+        int squareSize = (delta * 2) + 1;
+        r = new double[squareSize][squareSize];
+        int distance2;
         int i;
         int j;
         double meanSquared = 0.0d;
@@ -65,15 +63,15 @@ public abstract class Grids_Kernel {
         double varianceSquared = 0.0d;
         double variance;
         double numberOfCentroids = 0.0d;
-        int cellDistanceSquared = cellDistance * cellDistance;
+        int delta2 = delta * delta;
 
         // Calculate mean distance
-        for (i = -cellDistance; i <= cellDistance; i++) {
-            for (j = -cellDistance; j <= cellDistance; j++) {
-                thisDistanceSquared = (i * i) + (j * j);
-                if (thisDistanceSquared <= cellDistanceSquared) {
+        for (i = -delta; i <= delta; i++) {
+            for (j = -delta; j <= delta; j++) {
+                distance2 = (i * i) + (j * j);
+                if (distance2 <= delta2) {
                     numberOfCentroids++;
-                    meanSquared += thisDistanceSquared;
+                    meanSquared += distance2;
                 }
             }
         }
@@ -81,13 +79,13 @@ public abstract class Grids_Kernel {
         mean = Math.sqrt(meanSquared);
 
         // Calculate the variance of distance
-        for (i = -cellDistance; i <= cellDistance; i++) {
-            for (j = -cellDistance; j <= cellDistance; j++) {
-                thisDistanceSquared = (i * i) + (j * j);
-                if (thisDistanceSquared <= cellDistanceSquared) {
+        for (i = -delta; i <= delta; i++) {
+            for (j = -delta; j <= delta; j++) {
+                distance2 = (i * i) + (j * j);
+                if (distance2 <= delta2) {
                     numberOfCentroids++;
-                    varianceSquared += (thisDistanceSquared - meanSquared)
-                            * (thisDistanceSquared - meanSquared);
+                    varianceSquared += (distance2 - meanSquared)
+                            * (distance2 - meanSquared);
                 }
             }
         }
@@ -95,52 +93,51 @@ public abstract class Grids_Kernel {
         variance /= (numberOfCentroids - 1.0d);
 
         // Calculate the weights (expected values)
-        for (i = -cellDistance; i <= cellDistance; i++) {
-            for (j = -cellDistance; j <= cellDistance; j++) {
-                thisDistanceSquared = (i * i) + (j * j);
-                if (thisDistanceSquared <= cellDistanceSquared) {
+        for (i = -delta; i <= delta; i++) {
+            for (j = -delta; j <= delta; j++) {
+                distance2 = (i * i) + (j * j);
+                if (distance2 <= delta2) {
                     numberOfCentroids++;
-                    result[i + cellDistance][j + cellDistance]
-                            = getNormalDistributionKernelWeight(
-                                    Math.sqrt((double) thisDistanceSquared),
-                                    mean,
-                                    variance);
+                    r[i + delta][j + delta] = getNormalDistributionKernelWeight(
+                            Math.sqrt((double) distance2), mean,
+                            variance);
                 } else {
-                    //weights[ i + cellDistance ][ j + cellDistance ] = noDataValue;
-                    result[i + cellDistance][j + cellDistance] = 0.0d;
+                    //weights[ i + delta ][ j + delta ] = noDataValue;
+                    r[i + delta][j + delta] = 0.0d;
                 }
             }
         }
-        return result;
+        return r;
     }
 
     /**
-     * Returns a double value for the height of a kernel at thisDistance from
-     * the centre of a kernel with; Bandwidth distance, weight at the centre of
+     * @return A value for the height of a kernel at thisDistance from the
+     * centre of a kernel with; bandwidth distance, weight at the centre of
      * weightIntersect and distance decay of weightFactor.
      *
-     * @param distance
-     * @param weightIntersect
-     * @param weightFactor Warning: If weightfactor is < 1.0d strange things
-     * could be happening!!!! @param thisDistance @return @param thisDistance
-     * @param thisDistance
-     * @return
+     * @param distance Bandwidth of the kernel.
+     * @param weightIntersect Weight at the centre of the kernel.
+     * @param weightFactor Warning: If less than 1 then strange things could
+     * happen!!!!
+     * @param thisDistance The distance from the centre of the kernel that the
+     * weight result is returned.
      */
-    public static double getKernelWeight(
-            double distance,
-            double weightIntersect,
-            double weightFactor,
+    public static double getKernelWeight(double distance,
+            double weightIntersect, double weightFactor,
             double thisDistance) {
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
         /*
         double weight;
         if ( weightFactor > 0.0d ) {
-            weight = ( Math.pow( 1.0d - ( Math.pow( thisDistance , 2.0d ) / Math.pow( distance, 2.0d ) ), weightFactor ) * weightIntersect );
-            //weight = Math.pow( 1.0d - ( Math.pow( thisDistance, distanceWeightFactor ) / Math.pow( distance, distanceWeightFactor ) ), distanceWeightFactor );
+            weight = ( Math.pow( 1.0d - ( Math.pow( thisDistance , 2.0d ) 
+        / Math.pow( distance, 2.0d ) ), weightFactor ) * weightIntersect );
+            //weight = Math.pow( 1.0d - ( Math.pow( thisDistance, distanceWeightFactor ) 
+        / Math.pow( distance, distanceWeightFactor ) ), distanceWeightFactor );
         } else {
             if ( weightFactor < 0.0d ) {
-                weight = ( ( 1.0d - Math.pow( 1.0d - ( Math.pow( thisDistance , 2.0d ) / Math.pow( distance, 2.0d ) ), Math.abs( weightFactor ) ) * ( 1.0d - weightIntersect ) ) + weightIntersect );
+                weight = ( ( 1.0d - Math.pow( 1.0d - ( Math.pow( thisDistance , 2.0d ) 
+        / Math.pow( distance, 2.0d ) ), Math.abs( weightFactor ) ) * ( 1.0d - weightIntersect ) ) + weightIntersect );
                 //weight = 1.0d - Math.pow( 1.0d - ( Math.pow( thisDistance, Math.abs( distanceWeightFactor ) ) / Math.pow( distance, Math.abs( distanceWeightFactor ) ) ), Math.abs( distanceWeightFactor ) );
             } else {
                 weight = weightIntersect;
@@ -162,34 +159,34 @@ public abstract class Grids_Kernel {
      * @param weightFactor
      * @return
      */
-    public static double[][] getKernelWeights(
-            Grids_GridNumber g,
-            double distance,
-            double weightIntersect,
-            double weightFactor) {
-        double cellsize = g.getCellsizeDouble();
-        int cellDistance = (int) Math.ceil(distance / cellsize);
-        double[][] weights = new double[(cellDistance * 2) + 1][(cellDistance * 2) + 1];
+    public static double[][] getKernelWeights(Grids_GridNumber g,
+            BigDecimal distance, double weightIntersect, double weightFactor,
+            int dp, RoundingMode rm) {
+        BigDecimal cellsize = g.getCellsize();
+        int delta = distance.divideToIntegralValue(cellsize).intValueExact();
+        double[][] weights = new double[(delta * 2) + 1][(delta * 2) + 1];
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
-        double x0 = g.getCellXDouble(0L);
-        double y0 = g.getCellYDouble(0L);
-        double x1;
-        double y1;
-        double thisDistance;
+        BigDecimal x0 = g.getCellXBigDecimal(0L);
+        BigDecimal y0 = g.getCellYBigDecimal(0L);
+        BigDecimal x1;
+        BigDecimal y1;
+        BigDecimal thisDistance;
         int row;
         int col;
-        for (row = -cellDistance; row <= cellDistance; row++) {
-            for (col = -cellDistance; col <= cellDistance; col++) {
-                x1 = g.getCellXDouble(col);
-                y1 = g.getCellYDouble(row);
-                thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
+        for (row = -delta; row <= delta; row++) {
+            for (col = -delta; col <= delta; col++) {
+                x1 = g.getCellXBigDecimal(col);
+                y1 = g.getCellYBigDecimal(row);
+                thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                 //if ( thisDistance <= distance ) {
-                if (thisDistance < distance) {
-                    weights[row + cellDistance][col + cellDistance] = getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                if (thisDistance.compareTo(distance) == -1) {
+                    weights[row + delta][col + delta] = getKernelWeight(
+                            distance.doubleValue(), weightIntersect,
+                            weightFactor, thisDistance.doubleValue());
                 } else {
                     //weights[ i + cellDistance ][ j + cellDistance ] = noDataValue;
-                    weights[row + cellDistance][col + cellDistance] = 0.0d;
+                    weights[row + delta][col + delta] = 0.0d;
                 }
             }
         }
@@ -208,23 +205,17 @@ public abstract class Grids_Kernel {
      * @param points
      * @return
      */
-    public static double[] getKernelWeights(
-            Grids_GridNumber g,
-            long rowIndex,
-            long colIndex,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            Point2D.Double[] points) {
+    public static double[] getKernelWeights(Grids_GridNumber g, long rowIndex,
+            long colIndex, double distance, double weightIntersect,
+            double weightFactor, Point2D.Double[] points) {
         double[] weights = new double[points.length];
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
-        boolean handleOutOfMemroyError = true;
         Point2D.Double centroid = new Point2D.Double(
-                g.getCellXDouble(colIndex), g.getCellYDouble(rowIndex));
-        double thisDistance;
+                g.getCellXBigDecimal(colIndex).doubleValue(),
+                g.getCellYBigDecimal(rowIndex).doubleValue());
         for (int i = 0; i < points.length; i++) {
-            thisDistance = centroid.distance(points[i]);
+            double thisDistance = centroid.distance(points[i]);
             if (thisDistance < distance) {
                 weights[i] = getKernelWeight(distance, weightIntersect,
                         weightFactor, thisDistance);
@@ -243,11 +234,8 @@ public abstract class Grids_Kernel {
      * @param points
      * @return
      */
-    public static double[] getKernelWeights(
-            Point2D.Double centroid,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
+    public static double[] getKernelWeights(Point2D.Double centroid,
+            double distance, double weightIntersect, double weightFactor,
             Point2D.Double[] points) {
         double[] weights = new double[points.length];
         // The following weight is just one example of a kernel that can be used!
@@ -256,7 +244,8 @@ public abstract class Grids_Kernel {
         for (int i = 0; i < points.length; i++) {
             thisDistance = centroid.distance(points[i]);
             if (thisDistance < distance) {
-                weights[i] = getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                weights[i] = getKernelWeight(distance, weightIntersect,
+                        weightFactor, thisDistance);
             }
         }
         return weights;
@@ -268,36 +257,33 @@ public abstract class Grids_Kernel {
      * of cells thats centroids are within distance of an arbitrary cell
      * centroid of grid2DSquareCell.
      *
-     * @param grid2DSquareCell Grids_GridNumber for which kernel
- parameters are returned
+     * @param g Grids_GridNumber for which kernel parameters are
+     * returned
      * @param cellDistance
      * @param distance
      * @param weightIntersect
      * @param weightFactor
      * @return
      */
-    public static double[] getKernelParameters(
-            Grids_GridNumber grid2DSquareCell,
-            int cellDistance,
-            double distance,
-            double weightIntersect,
+    public static double[] getKernelParameters(Grids_GridNumber g,
+            int cellDistance, double distance, double weightIntersect,
             double weightFactor) {
         double kernelParameters[] = new double[2];
         kernelParameters[0] = 0.0d;
         kernelParameters[1] = 0.0d;
-        double x0 = grid2DSquareCell.getCellXDouble(0);
-        double y0 = grid2DSquareCell.getCellYDouble(0);
+        double x0 = g.getCellXBigDecimal(0).doubleValue();
+        double y0 = g.getCellYBigDecimal(0).doubleValue();
         double x1;
         double y1;
         double thisDistance;
         for (int p = -cellDistance; p <= cellDistance; p++) {
             for (int q = -cellDistance; q <= cellDistance; q++) {
-                x1 = grid2DSquareCell.getCellXDouble(q);
-                y1 = grid2DSquareCell.getCellYDouble(p);
+                x1 = g.getCellXBigDecimal(q).doubleValue();
+                y1 = g.getCellYBigDecimal(p).doubleValue();
                 thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance < distance) {
-                    kernelParameters[0] += getKernelWeight(distance, 
+                    kernelParameters[0] += getKernelWeight(distance,
                             weightIntersect, weightFactor, thisDistance);
                     kernelParameters[1] += 1.0d;
                 }

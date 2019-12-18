@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.math.BigInteger;
+import java.math.MathContext;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
@@ -254,22 +255,24 @@ public class Grids_Utilities extends Grids_Object {
      * @param xGrid
      * @param yGrid
      * @param gp
-     * @param divisions
-     * @return
+     * @param divisions The number of divisions in the plot. This has to be less
+     * than the square root of {@link Integer#MAX_VALUE} ~ 46341 but should in
+     * practice be smaller than this. In general a detailed picture is often
+     * from 512.
+     * @return r[4] where r[0] is a = stdevy; r[1] = meany; r[2] = numy; r[3] =
+     * densityPlotGrid;
+     *
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, Grids_Processor gp)
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int dp,
+            RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
         Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
-        Generic_Path dir;
         long nrows = xGrid.getNRows();
         long ncols = xGrid.getNCols();
-        Grids_Dimensions dimensions = xGrid.getDimensions();
-        double xllcorner = dimensions.getXMin().doubleValue();
-        double yllcorner = dimensions.getYMin().doubleValue();
         double xGridNoDataValue = xGrid.getNoDataValue();
         double yGridNoDataValue = yGrid.getNoDataValue();
         double minx = xGrid.getStats().getMin(true);
@@ -278,19 +281,16 @@ public class Grids_Utilities extends Grids_Object {
         double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
         Grids_Dimensions newDimensions = new Grids_Dimensions(
-                BigDecimal.valueOf(minx), BigDecimal.valueOf(maxx), 
-                BigDecimal.valueOf(miny), BigDecimal.valueOf(maxy), 
+                BigDecimal.valueOf(minx), BigDecimal.valueOf(maxx),
+                BigDecimal.valueOf(miny), BigDecimal.valueOf(maxy),
                 BigDecimal.valueOf(cellsize));
         Grids_GridDouble xGridRescaled;
         double value;
         double v;
-        dir = gp.fsGridDouble.getPathNext();
         if (minx == miny && maxx == maxy) {
             xGridRescaled = (Grids_GridDouble) gfd.create(xGrid);
-            gp.fsGridDouble.addDir();
         } else {
             xGridRescaled = (Grids_GridDouble) gfd.create(xGrid);
-            gp.fsGridDouble.addDir();
             int ncr = xGridRescaled.getNChunkRows();
             int ncc = xGridRescaled.getNChunkCols();
             for (int cr = 0; cr < ncr; cr++) {
@@ -312,13 +312,13 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        double[] sumy = new double[divisions];
-        double[] numy = new double[divisions];
-        double[] sumysq = new double[divisions];
+        BigDecimal[] sumy = new BigDecimal[divisions];
+        BigDecimal[] numy = new BigDecimal[divisions];
+        BigDecimal[] sumysq = new BigDecimal[divisions];
         for (int j = 0; j < divisions; j++) {
-            sumy[j] = 0.0d;
-            numy[j] = 0.0d;
-            sumysq[j] = 0.0d;
+            sumy[j] = BigDecimal.ZERO;
+            numy[j] = BigDecimal.ZERO;
+            sumysq[j] = BigDecimal.ZERO;
         }
         Grids_GridDouble temp1 = gfd.create(divisions, divisions, newDimensions);
         for (long row = 0; row < nrows; row++) {
@@ -328,28 +328,39 @@ public class Grids_Utilities extends Grids_Object {
                 if (y != yGridNoDataValue) {
                     if (x != xGridNoDataValue) {
                         temp1.addToCell(x, y, 1.0d);
-                        int division = (int) temp1.getCol(x);
+                        int division = (int) temp1.getCol(BigDecimal.valueOf(x));
                         if (division == divisions) {
                             division = divisions - 1;
-                        }//System.out.println(division);
-                        sumy[division] += y;
-                        numy[division] += 1.0d;
-                        sumysq[division] += (y * y);
+                        }
+                        //System.out.println(division);
+                        BigDecimal yd = BigDecimal.valueOf(y);
+                        sumy[division] = sumy[division].add(yd);
+                        numy[division] = numy[division].add(BigDecimal.ONE);
+                        sumysq[division] = sumysq[division].add(yd.multiply(yd));
                     }
                 }
             }
         }
-        double[] stdevy = new double[divisions];
-        double[] meany = new double[divisions];
+        BigDecimal[] stdevy = new BigDecimal[divisions];
+        BigDecimal[] meany = new BigDecimal[divisions];
         for (int j = 0; j < divisions; j++) {
-            if (numy[j] > 0.0d) {
-                meany[j] = sumy[j] / numy[j];
-                if (numy[j] > 1.0d) {
-                    stdevy[j] = Math.sqrt(((numy[j] * sumysq[j])
-                            - (sumy[j] * sumy[j]))
-                            / (numy[j] * (numy[j] - 1)));
+            if (numy[j].compareTo(BigDecimal.ZERO) == 1) {
+                meany[j] = Math_BigDecimal.divideRoundIfNecessary(
+                        sumy[j], numy[j], dp, rm);
+                if (numy[j].compareTo(BigDecimal.ONE) == 1) {
+                    stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
+                            ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j])))
+                            , ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
                 }
             }
+//            if (numy[j] > 0.0d) {
+//                meany[j] = sumy[j] / numy[j];
+//                if (numy[j] > 1.0d) {
+//                    stdevy[j] = Math.sqrt(((numy[j] * sumysq[j])
+//                            - (sumy[j] * sumy[j]))
+//                            / (numy[j] * (numy[j] - 1)));
+//                }
+//            }
         }
         r[0] = stdevy;
         r[1] = meany;

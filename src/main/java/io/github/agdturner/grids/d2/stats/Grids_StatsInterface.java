@@ -15,6 +15,8 @@
  */
 package io.github.agdturner.grids.d2.stats;
 
+import java.math.RoundingMode;
+
 /**
  * An interface to be implemented by classes that provide statistics about
  * raster data.
@@ -52,15 +54,12 @@ public interface Grids_StatsInterface {
      */
     public Number getMax(boolean update);
 
-    /**
-     * For returning the arithmetic mean of all data values.
-     *
-     * @param numberOfDecimalPlaces The result returned uses BigDecimal 
-     * arithmetic to ensure the result is correct given a round scheme to this
-     * many decimal places.
-     * @return
+    /** 
+     * @param dp The number of decimal places the result is rounded to if necessary.
+     * @param rm The Rounding mode for any necessary rounding.
+     * @return The arithmetic mean of all data values.
      */
-    public Number getArithmeticMean(int numberOfDecimalPlaces);
+    public Number getArithmeticMean(int dp, RoundingMode rm);
 
 //    @TODO
 //    StandardDeviation
