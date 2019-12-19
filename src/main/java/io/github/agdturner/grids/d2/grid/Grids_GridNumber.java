@@ -15,8 +15,6 @@
  */
 package io.github.agdturner.grids.d2.grid;
 
-import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
-import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
@@ -41,8 +39,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     public final BigDecimal ndv;
 
     protected Grids_GridNumber(Grids_Environment ge, Generic_FileStore fs,
-            long id) throws Exception {
+            long id, BigDecimal ndv) throws Exception {
         super(ge, fs, id);
+        this.ndv = ndv;
     }
 
     /**
@@ -57,7 +56,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y) 
             throws IOException,            Exception, ClassNotFoundException {
-        return getCell(getChunkRow(y), getChunkCol(x), getCellRow(y),
+        return getCellBigDecimal(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
     }
 
@@ -71,7 +70,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal getCellBigDecimal(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
-        return getCell(getChunkRow(row), getChunkCol(col), getCellRow(row),
+        return getCellBigDecimal(getChunkRow(row), getChunkCol(col), getCellRow(row),
                 getCellCol(col));
     }
 
@@ -90,21 +89,13 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     public BigDecimal getCellBigDecimal(int chunkRow, int chunkCol, int cellRow,
             int cellCol) throws IOException, Exception, ClassNotFoundException {
         if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
-            if (this instanceof Grids_GridDouble) {
-                return ((Grids_GridDouble) this).getNoDataValue();
-            } else {
-                return ((Grids_GridInt) this).getNoDataValue();
-            }
+            return ndv;
         }
         Grids_Chunk gridChunk = getChunk(chunkRow, chunkCol);
         if (gridChunk == null) {
-            if (this instanceof Grids_GridDouble) {
-                return ((Grids_GridDouble) this).getNoDataValue();
-            } else {
-                return ((Grids_GridInt) this).getNoDataValue();
-            }
+            return ndv;
         }
-        return getCell(gridChunk, chunkRow, chunkCol, cellRow, cellCol);
+        return getCellBigDecimal(gridChunk, chunkRow, chunkCol, cellRow, cellCol);
     }
 
     /**

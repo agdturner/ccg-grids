@@ -66,32 +66,36 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected int NoDataValue = Integer.MIN_VALUE;
 
     /**
-     * Creates a new Grids_GridInt with each cell value equal to ndv and all
-     * chunks of the same type.
+     * Each cell value equal to {@code ndv} and all chunks of the same type
+     * created via {@code cf}.
      *
-     * @param stats The Grids_StatsInt to accompany this.
+     * @param stats What {@link #stats} is set to.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param cf The factory preferred for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dims The grid dimensions (cellsize, xmin, ymin, xmax and ymax).
-     * @param ndv The ndv.
-     * @param ge
+     * @param ndv The noDataValue for this.
+     * @param ge The grids environment.
      */
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
             long id, Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
             int ndv, Grids_Environment ge) throws IOException, Exception,
             ClassNotFoundException {
-        super(ge, fs, id);
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dims, ndv);
     }
 
     /**
      * Creates a new Grids_GridInt based on values in grid.
      *
-     * @param stats The Grids_StatsInt to accompany this.
+     * @param stats What {@link #stats} is set to.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param g The Grids_GridNumber from which this is to be constructed.
      * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
@@ -103,14 +107,14 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
-     * @param ndv The ndv for this.
+     * @param ndv The noDataValue for this.
      */
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs, long id,
             Grids_Grid g, Grids_ChunkFactoryInt cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow, 
-            long endCol, int ndv) throws IOException, ClassNotFoundException, 
+            int chunkNCols, long startRow, long startCol, long endRow,
+            long endCol, int ndv) throws IOException, ClassNotFoundException,
             Exception {
-        super(g.env, fs, id);
+        super(g.env, fs, id, BigDecimal.valueOf(ndv));
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
@@ -120,8 +124,9 @@ public class Grids_GridInt extends Grids_GridNumber {
      * gridFile must be a directory of a Grids_GridDouble or Grids_GridInt or a
      * ESRI Asciigrid format file with a filename ending ".asc" or ".txt".
      *
-     * @param stats The Grids_StatsInt to accompany this.
-     * @param dir The directory for this.
+     * @param stats What {@link #stats} is set to.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
@@ -135,18 +140,18 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
-     * @param noDataValue The ndv for this.
-     * @param ge
+     * @param ndv The noDataValue for this.
+     * @param ge The grids environment.
      */
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
             long id, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, int noDataValue, Grids_Environment ge)
+            long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, fs, id);
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
-                endRow, endCol, noDataValue);
+                endRow, endCol, ndv);
     }
 
     /**
@@ -154,15 +159,16 @@ public class Grids_GridInt extends Grids_GridNumber {
      * gridFile must be a directory of a Grids_GridDouble or Grids_GridInt or an
      * ESRI Asciigrid format file with a filename ending in ".asc" or ".txt".
      *
-     * @param ge
-     * @param dir The directory for this.
+     * @param ge The grids environment.
+     * @param fs What {@link #store} is set to.
+     * @param id What {@link #id} is set to.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      */
     protected Grids_GridInt(Grids_Environment ge, Generic_FileStore fs,
-            long id, Generic_Path gridFile)
+            long id, Generic_Path gridFile, int ndv)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, fs, id);
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(new Grids_StatsNotUpdatedInt(ge), gridFile);
     }
 

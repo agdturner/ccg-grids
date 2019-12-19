@@ -47,7 +47,7 @@ import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
- * A class for representing grids of double precision values.
+ * A class for representing grids with {@code double} values.
  *
  * @see Grids_GridNumber
  *
@@ -67,10 +67,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected double NoDataValue = -Double.MAX_VALUE;
 
     /**
-     * Creates a new Grids_GridDouble with each cell value equal to ndv and all
-     * chunks of the same type.
+     * Each cell value equal to {@code ndv} and all chunks of the same type
+     * created via {@code cf}.
      *
-     * @param stats The Grids_StatsDouble to accompany this.
+     * @param stats What {@link #stats} is set to.
      * @param fs What {@link #store} is set to.
      * @param id What {@link #id} is set to.
      * @param cf The factory preferred for creating chunks.
@@ -79,27 +79,25 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dimensions The cellsize, xmin, ymin, xmax and ymax.
-     * @param noDataValue The ndv.
-     * @param ge
+     * @param ndv The noDataValue.
+     * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
-            long id, Grids_ChunkFactoryDouble cf,
-            int chunkNRows, int chunkNCols, long nRows, long nCols,
-            Grids_Dimensions dimensions, double noDataValue,
-            Grids_Environment ge) throws IOException, Exception {
-        super(ge, fs, id);
-        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions,
-                noDataValue);
+            long id, Grids_ChunkFactoryDouble cf, int chunkNRows, 
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions, 
+            double ndv, Grids_Environment ge) throws IOException, Exception {
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions,  ndv);
     }
 
     /**
      * Creates a new Grids_GridDouble based on values in grid.
      *
-     * @param stats The AbstractGridStatistics to accompany this.
+     * @param stats What {@link #stats} is set to.
      * @param fs What {@link #store} is set to.
      * @param id What {@link #id} is set to.
-     * @param g The Grids_GridNumber from which this is to be constructed.
+     * @param g The grid from which this is to be constructed.
      * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
@@ -110,17 +108,17 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
-     * @param noDataValue The ndv for this.
+     * @param ndv The noDataValue for this.
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
             long id, Grids_Grid g, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, double noDataValue) throws IOException,
+            long endRow, long endCol, double ndv) throws IOException,
             Exception {
-        super(g.env, fs, id);
+        super(g.env, fs, id, BigDecimal.valueOf(ndv));
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
-                endRow, endCol, noDataValue);
+                endRow, endCol, ndv);
     }
 
     /**
@@ -129,7 +127,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
      *
-     * @param stats The Grids_StatsDouble to accompany this.
+     * @param stats What {@link #stats} is set to.
      * @param fs What {@link #store} is set to.
      * @param id What {@link #id} is set to.
      * @param gridFile Either a directory, or a formatted File with a specific
@@ -144,18 +142,18 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param endRow The row of the input that will be the top most row of this.
      * @param endCol The column of the input that will be the right most column
      * of this.
-     * @param noDataValue The ndv for this.
-     * @param ge
+     * @param ndv The noDataValue for this.
+     * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, double noDataValue,
-            Grids_Environment ge) throws IOException, Exception {
-        super(ge, fs, id);
+            long endRow, long endCol, double ndv, Grids_Environment ge)
+            throws IOException, Exception {
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
-                endRow, endCol, noDataValue);
+                endRow, endCol, ndv);
     }
 
     /**
@@ -164,16 +162,17 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * Grids_GridInt or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
      *
-     * @param ge
+     * @param ge The grids environment.
      * @param fs What {@link #store} is set to.
      * @param id What {@link #id} is set to.
      * @param gridFile Either a directory, or a formatted File with a specific
-     * extension containing the data for this.
+     * @param ndv The noDataValue for this. extension containing the data for
+     * this.
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_Environment ge, Generic_FileStore fs,
-            long id, Generic_Path gridFile) throws IOException, Exception {
-        super(ge, fs, id);
+            long id, Generic_Path gridFile, double ndv) throws IOException, Exception {
+        super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(new Grids_StatsNotUpdatedDouble(ge), gridFile);
     }
 
@@ -1256,8 +1255,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     /**
      * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
-     * cells with data values nearest to cell row index {@code row}, cell
-     * column index {@code col}.
+     * cells with data values nearest to cell row index {@code row}, cell column
+     * index {@code col}.
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
