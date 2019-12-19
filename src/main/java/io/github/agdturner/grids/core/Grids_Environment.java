@@ -44,60 +44,63 @@ public class Grids_Environment extends Grids_MemoryManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * A set of all the grids. These may have chunks that can be cached and
-     * released from the fast access memory (swapped out). Swapping out involves
-     * both caching the chunks and releasing the memory used to store them in
-     * the fast access memory.
+     * A set of all the grids. These may have chunks stored in the fast access
+     * memory that can be cached (stored) elsewhere and cleared from the fast
+     * access memory (swapped out). If a cache of the chunk already exists and
+     * is effectively no different to the copy of the chunk in the fast access
+     * memory, then the chunk can be cleared from the fast access memory by
+     * setting the reference to this to null. The chunk may not be immediately
+     * cleared, the timing of this is left up to normal garbage collection.
      *
      * If chunks are not in the fast access memory when they are wanted, they
-     * can be loaded from the cache as needed - although this may necessitate
+     * can be loaded from a cache as needed - although this may necessitate
      * other data being swapped out in order to manage with the available fast
      * access memory.
      */
     protected transient HashSet<Grids_Grid> grids;
 
     /**
-     * For indicating which chunks of which grids are not to be swapped out or
-     * otherwise released from memory (off-loaded). This map is modified as data
-     * processing methods start and progress. The content of the map is used to
-     * make processing more efficient by not off-loading chunks only to have to
-     * load these again from the cache in the immediate future.
+     * For indicating which chunks of which grids are not to be cleared from the
+     * fast access memory. This map is modified by data processing algorithms to
+     * to try to ensure a reasonable efficiency and prevent chunks being cleared
+     * only to be reloaded shortly afterwards, when there were either: other
+     * chunks to clear that would not have been reloaded in the same frame; or,
+     * some other data from some other environment that would have been better
+     * to clear instead.
      *
-     * Maintaining this map has a marginal cost when all the data fits easily
-     * into the available fast access memory, but often it doesn't and this
-     * library is more geared to supporting the processing of large volumes of
-     * data (when this is typically not the case and processing may involve a
-     * significant amount of loading and off-loading).
-     *
-     * In cases where some chunks in {@link #grids} need to be off-loaded in
-     * order for some processing to complete, and there are no other chunks
-     * loaded into the fast access memory to offload, then some of the chunks
-     * identified in the map will be offloaded. Typically these will need to be
-     * loaded again in the not too distant future in order for a method to run
-     * successfully. When this happens the processing will be inefficient.
+     * Maintaining this map has a marginal efficiency cost which may be
+     * noticeable when all the data fits easily into the available fast access
+     * memory and comparing the processing functionality of this library with
+     * other libraries which essentially generate the same processed results.
+     * However this library is more geared to supporting the processing of large
+     * volumes of data (when it is typically not the case that all the data will
+     * fit in the fast access memory of the machine, and processing may involve
+     * a significant amount of caching, clearing and reloading of data). In such
+     * circumstances it would be more interesting to compare the performance of
+     * this library with other software that is also geared are not geared for
+     * such memory management.
      *
      * For some methods cell values from a set of neighbouring chunks are wanted
-     * from a grid along with other nearby cell values or chunk statistics from
-     * other grids. Often the processing is localised within the dimensions of
-     * the grids. An example case would be in calculating geographically
-     * weighted statistic of the difference between two grids, where the
-     * statistic takes in values from each grid within a specific distance of
-     * any cell to produce a result for a given cell in a new output grid.
+     * along with other nearby cell values or chunk statistics from other grids.
+     * An example case is calculating geographically weighted statistics such as
+     * the difference between two grids, where the statistic takes in values
+     * from each grid within a specific distance of any cell to produce a result
+     * for a given cell in a new output grid.
      *
-     * It may be desirable to have additional maps and sets to nuance this
-     * approach and improve algorithmic efficiency further. For instance, there
-     * could be a set identifying all grids to prefer not to offload data from
-     * and a map identifying those chunks not to offload at all. In some cases
-     * it might be best for the method to throw an Exception rather than to
-     * slowly grind on and potentially take too long to produce a result. It
-     * might be in some of these cases that restructuring the data into smaller
-     * chunks might help as typically with smaller chunks - less memory might be
-     * needed as more circular, less rectangular regions of chunks might be
-     * needed. However, there is a small overhead in that each chunk requires
-     * more memory than just the cell values in the chunks. Additionally, it may
-     * be that the way each chunk stores the data can be done in a more memory
-     * efficient way. So there could be other ways to make some processing more
-     * memory efficient.
+     * There are additional maps and sets that help improve algorithmic
+     * efficiency further, including a set of very lightweight chunks which are
+     * hardly worth clearing unless options are very limited.
+     *
+     * In some cases it might be best for the method to throw an Exception
+     * rather than to slowly grind on and potentially taking overly long to
+     * produce a result when restructuring the data into smaller or larger
+     * chunks or storing the data in chunks of different types may be a
+     * worthwhile step.
+     *
+     * An overhead is involved in changing chunk types and chunk restructuring.
+     * What is best to do depends on many factors, but generally what is wanted
+     * is a good solution or a solution that works rather than the best solution
+     * - the one that creates a result in the fastest and most efficient way.
      */
     protected transient HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToCache;
 
