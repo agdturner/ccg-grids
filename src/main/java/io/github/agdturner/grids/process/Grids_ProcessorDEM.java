@@ -37,6 +37,7 @@ import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import io.github.agdturner.grids.util.Grids_Kernel;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.BigDecimal;
 
 /**
  * A class of methods relevant to the processing of Digital Elevation Model
@@ -134,13 +135,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             long ncols = g.getNCols();
             long nrows = g.getNRows();
             Grids_Dimensions dimensions = g.getDimensions();
-            double cellsize = g.getCellsizeDouble();
+            double cellsize = g.getCellsize().doubleValue();
             long cellDistance = (long) Math.ceil(distance / cellsize);
             double thisDistance;
             double x = 0.0d;
             double y = 0.0d;
-            double thisX;
-            double thisY;
             double diffX;
             double diffY;
             double diffHeight;
@@ -178,14 +177,14 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             int int0;
             int int1;
             for (p = -cellDistance; p <= cellDistance; p++) {
-                thisY = p * cellsize;
+               BigDecimal thisY = BigDecimal.valueOf(p * cellsize);
                 for (q = -cellDistance; q <= cellDistance; q++) {
                     if (!(p == 0 && q == 0)) {
                         long0 = p + cellDistance;
                         int0 = (int) long0;
                         long0 = q + cellDistance;
                         int1 = (int) (long0);
-                        thisX = q * cellsize;
+                       BigDecimal thisX = BigDecimal.valueOf(q * cellsize);
                         thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                         if (thisDistance <= distance) {
                             weight = weights[int0][int1];
@@ -360,10 +359,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
-                            y = g.getCellYDouble(row);
+                            y = g.getCellYBigDecimal(row).doubleValue();
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
                                 col = g.getCol(cci, cellCol);
-                                x = g.getCellXDouble(col);
+                                x = g.getCellXBigDecimal(col).doubleValue();
                                 h = cd.getCell(cellRow, cellCol);
                                 if (h != noDataValue) {
                                     diffX = 0.0d;
@@ -374,11 +373,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
                                         long0 = row + p;
-                                        thisY = g.getCellYDouble(long0);
+                                        thisY = g.getCellYBigDecimal(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = col + q;
-                                                thisX = g.getCellXDouble(long0);
+                                                thisX = g.getCellXBigDecimal(long0);
                                                 thisDistance = Grids_Utilities.distance(x, y, thisX, thisY);
                                                 if (thisDistance <= distance) {
                                                     h2 = gd.getCell(thisX, thisY);

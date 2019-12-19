@@ -92,7 +92,6 @@ public class Grids_GridInt extends Grids_GridNumber {
      * Creates a new Grids_GridInt based on values in grid.
      *
      * @param stats The Grids_StatsInt to accompany this.
-     * @param dir The directory for this.
      * @param g The Grids_GridNumber from which this is to be constructed.
      * @param cf The factory preferred to construct chunks of this.
      * @param chunkNRows The number of rows of cells in any chunk.
@@ -107,9 +106,10 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param ndv The ndv for this.
      */
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs, long id,
-            Grids_Grid g, Grids_ChunkFactoryInt cf,
-            int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
+            Grids_Grid g, Grids_ChunkFactoryInt cf, int chunkNRows,
+            int chunkNCols, long startRow, long startCol, long endRow, 
+            long endCol, int ndv) throws IOException, ClassNotFoundException, 
+            Exception {
         super(g.env, fs, id);
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
@@ -923,8 +923,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col
      * @return
      */
-    @Override
-    public Integer getCell(long row, long col) throws IOException, Exception,
+    public int getCell(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
         int chunkRow = getChunkRow(row);
         int chunkCol = getChunkCol(col);
@@ -965,8 +964,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    @Override
-    public final Integer getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final int getCell(BigDecimal x, BigDecimal y) throws IOException,
             ClassNotFoundException, Exception {
         long row = getRow(y);
         long col = getCol(x);
@@ -1269,8 +1267,8 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     /**
      * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
-     * cells with data values nearest to cell row index {@code row}, cell
-     * column index {@code col}.
+     * cells with data values nearest to cell row index {@code row}, cell column
+     * index {@code col}.
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
@@ -1514,8 +1512,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         this.stats = stats;
     }
 
-    @Override
-    public Integer getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
+    public int getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
             int cellRow, int cellCol) {
         Grids_ChunkInt c = (Grids_ChunkInt) chunk;
         if (chunk.getClass() == Grids_ChunkIntArray.class) {
@@ -1525,6 +1522,13 @@ public class Grids_GridInt extends Grids_GridNumber {
             return ((Grids_ChunkIntMap) c).getCell(cellRow, cellCol);
         }
         return c.getGrid().NoDataValue;
+    }
+
+    @Override
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
+            int chunkCol, int cellRow, int cellCol) {
+        return BigDecimal.valueOf(getCell(chunk, chunkRow, chunkCol, cellRow,
+                cellCol));
     }
 
 }

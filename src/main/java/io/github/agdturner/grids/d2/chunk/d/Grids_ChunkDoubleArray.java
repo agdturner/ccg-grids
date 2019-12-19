@@ -29,7 +29,6 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
-    //private static final long serialVersionUID = 1L;
     /**
      * For storing values arranged in rows and columns.
      */

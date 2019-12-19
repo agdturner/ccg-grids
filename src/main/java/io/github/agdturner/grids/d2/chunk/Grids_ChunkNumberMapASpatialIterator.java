@@ -16,9 +16,9 @@
 package io.github.agdturner.grids.d2.chunk;
 
 /**
- * For iterating through the values in a Grids_GridChunkNumberMap instance. The
- * values are returned in no particular spatial order.
-*
+ * For iterating over the values in a chunk in no particular spatial order. 
+ * Such iteration can be faster than a particular order of iteration.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -36,10 +36,8 @@ public abstract class Grids_ChunkNumberMapASpatialIterator
     protected int DataMapHashSetIndex;
     protected boolean hasNext;
 
-    public Grids_ChunkNumberMapASpatialIterator(
-            Grids_Chunk chunk) {
+    public Grids_ChunkNumberMapASpatialIterator(Grids_Chunk chunk) {
         super(chunk);
-                NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
         NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
         //NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
         DefaultValueIndex = 0;
@@ -50,11 +48,7 @@ public abstract class Grids_ChunkNumberMapASpatialIterator
     }
 
     /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements.
+     * @return {@code true} if the iterator has more elements.
      */
     @Override
     public boolean hasNext() {

@@ -327,8 +327,9 @@ public class Grids_Utilities extends Grids_Object {
                 double y = yGrid.getCell(row, col);
                 if (y != yGridNoDataValue) {
                     if (x != xGridNoDataValue) {
-                        temp1.addToCell(x, y, 1.0d);
-                        int division = (int) temp1.getCol(BigDecimal.valueOf(x));
+                        BigDecimal xBD = BigDecimal.valueOf(x);
+                        temp1.addToCell(xBD, BigDecimal.valueOf(y), 1.0d);
+                        int division = (int) temp1.getCol(xBD);
                         if (division == divisions) {
                             division = divisions - 1;
                         }
@@ -349,8 +350,8 @@ public class Grids_Utilities extends Grids_Object {
                         sumy[j], numy[j], dp, rm);
                 if (numy[j].compareTo(BigDecimal.ONE) == 1) {
                     stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
-                            ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j])))
-                            , ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
+                            ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j]))),
+                             ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
                 }
             }
 //            if (numy[j] > 0.0d) {

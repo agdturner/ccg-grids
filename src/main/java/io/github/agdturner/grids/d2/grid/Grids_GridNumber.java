@@ -18,7 +18,6 @@ package io.github.agdturner.grids.d2.grid;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
-import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
@@ -35,6 +34,11 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 public abstract class Grids_GridNumber extends Grids_Grid {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * The noDataValue for the grid.
+     */
+    public final BigDecimal ndv;
 
     protected Grids_GridNumber(Grids_Environment ge, Generic_FileStore fs,
             long id) throws Exception {
@@ -42,8 +46,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     /**
-     * @return Grids_Chunk cell value at at point given by x-coordinate x and
-     * y-coordinate y as a double.
+     * @return Value at at point given by x-coordinate x and
+     * y-coordinate y as a BigDecimal.
      * @param x The x coordinate of the point at which the cell value is
      * returned.
      * @param y The y coordinate of the point at which the cell value is
@@ -51,8 +55,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number getCell(BigDecimal x, BigDecimal y) throws IOException,
-            Exception, ClassNotFoundException {
+    public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y) 
+            throws IOException,            Exception, ClassNotFoundException {
         return getCell(getChunkRow(y), getChunkCol(x), getCellRow(y),
                 getCellCol(x));
     }
@@ -65,7 +69,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number getCell(long row, long col) throws IOException, Exception,
+    public BigDecimal getCellBigDecimal(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
         return getCell(getChunkRow(row), getChunkCol(col), getCellRow(row),
                 getCellCol(col));
@@ -83,7 +87,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number getCell(int chunkRow, int chunkCol, int cellRow,
+    public BigDecimal getCellBigDecimal(int chunkRow, int chunkCol, int cellRow,
             int cellCol) throws IOException, Exception, ClassNotFoundException {
         if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
             if (this instanceof Grids_GridDouble) {
@@ -112,7 +116,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param cellRow The cell row index of the chunk.
      * @param cellCol The cell column index of the chunk.
      */
-    public abstract Number getCell(Grids_Chunk chunk, int chunkRow,
+    public abstract BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
             int chunkCol, int cellRow, int cellCol);
 
     /**

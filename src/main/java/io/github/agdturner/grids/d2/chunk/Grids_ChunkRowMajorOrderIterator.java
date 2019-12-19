@@ -18,12 +18,12 @@ package io.github.agdturner.grids.d2.chunk;
 import java.util.NoSuchElementException;
 
 /**
+ * For iterating over the values in a chunk in row major order.
  *
-*
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkRowMajorOrderIterator 
+public abstract class Grids_ChunkRowMajorOrderIterator
         extends Grids_ChunkIterator {
 
     private static final long serialVersionUID = 1L;
@@ -33,8 +33,7 @@ public abstract class Grids_ChunkRowMajorOrderIterator
     protected int NRows;
     protected int NCols;
 
-    protected Grids_ChunkRowMajorOrderIterator(
-            Grids_Chunk chunk) {
+    protected Grids_ChunkRowMajorOrderIterator(Grids_Chunk chunk) {
         super(chunk);
         Row = 0;
         Col = 0;
@@ -43,12 +42,7 @@ public abstract class Grids_ChunkRowMajorOrderIterator
     }
 
     /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
-     * catch ArrayOutOfboundsException should be faster
+     * @return {@code true} if the iterator has more elements.
      */
     @Override
     public boolean hasNext() {

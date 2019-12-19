@@ -926,7 +926,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Double getCell(long row, long col) throws IOException, Exception,
+    public double getCell(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
 //        boolean isInGrid = isInGrid(row, col);
 //        if (isInGrid) {
@@ -973,7 +973,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final Double getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final double getCell(BigDecimal x, BigDecimal y) throws IOException,
             Exception, ClassNotFoundException {
         long row = getRow(y);
         long col = getCol(x);
@@ -1501,8 +1501,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         this.stats = stats;
     }
 
-    @Override
-    public Double getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
+    public double getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
             int cellRow, int cellCol) {
         Grids_ChunkDouble c = (Grids_ChunkDouble) chunk;
         if (chunk.getClass() == Grids_ChunkDoubleArray.class) {
@@ -1512,6 +1511,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
             return ((Grids_ChunkDoubleMap) c).getCell(cellRow, cellCol);
         }
         return c.getGrid().NoDataValue;
+    }
+
+    @Override
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
+            int chunkCol, int cellRow, int cellCol) {
+        return BigDecimal.valueOf(getCell(chunk, chunkRow, chunkCol, cellRow,
+                cellCol));
     }
 
 }
