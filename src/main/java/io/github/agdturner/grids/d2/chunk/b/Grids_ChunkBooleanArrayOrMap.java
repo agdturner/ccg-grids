@@ -29,11 +29,8 @@ public abstract class Grids_ChunkBooleanArrayOrMap extends Grids_Chunk {
 
     private static final long serialVersionUID = 1L;
     
-    protected Grids_ChunkBooleanArrayOrMap() {
-    }
-
-    protected Grids_ChunkBooleanArrayOrMap(Grids_GridBoolean g, Grids_2D_ID_int chunkID) {
-        super(g, chunkID);
+    protected Grids_ChunkBooleanArrayOrMap(Grids_GridBoolean g, Grids_2D_ID_int i) {
+        super(g, i, true);
     }
     
 }

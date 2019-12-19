@@ -35,24 +35,23 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridIteratorBinary() {
-    }
-
     /**
      * @param g The Grids_GridBinary to iterate over.
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public Grids_GridIteratorBinary(
-            Grids_GridBinary g) throws IOException, ClassNotFoundException, Exception {
+    public Grids_GridIteratorBinary(Grids_GridBinary g) throws IOException, 
+            ClassNotFoundException, Exception {
         super(g);
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap().get(ChunkID);
+            Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap()
+                    .get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap().get(ChunkID);
+                Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap()
+                        .get(ChunkID);
             }
             initChunkIterator();
         }
@@ -70,12 +69,11 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
     }
 
     /**
-     * @param chunk
-     * @return Grids_AbstractIterator to iterate over values in chunk.
+     * @param chunk The chunk for which an iterator is returned.
+     * @return {@link Grids_ChunkIteratorBinaryArray} to iterate over values in chunk.
      */
     @Override
-    public Grids_ChunkIteratorBinaryArray getChunkIterator(
-            Grids_Chunk chunk) {
+    public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_Chunk chunk) {
         if (chunk instanceof Grids_ChunkBinaryArray) {
             return new Grids_ChunkIteratorBinaryArray(
                     (Grids_ChunkBinaryArray) chunk);
@@ -91,9 +89,9 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
         return (Grids_GridBinary) Grid;
     }
 
-    public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_2D_ID_int ChunkID)
+    public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_2D_ID_int i)
             throws IOException, ClassNotFoundException, Exception {
-        return getChunkIterator(getGrid().getChunk(ChunkID));
+        return getChunkIterator(getGrid().getChunk(i));
     }
 
     /**

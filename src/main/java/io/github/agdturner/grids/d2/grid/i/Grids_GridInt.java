@@ -1168,7 +1168,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return int[] of all cell values for cells thats centroids are
+     * @return int[] of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
      * @param x the x-coordinate of the circle centre from which cell values are
@@ -1243,10 +1243,14 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
-     * values to point given by x-coordinate x, y-coordinate y.
+     * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
+     * cells with data values nearest to a point with position given by:
+     * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
@@ -1264,16 +1268,21 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to position given by row index rowIndex, column index colIndex.
+     * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
+     * cells with data values nearest to cell row index {@code row}, cell
+     * column index {@code col}.
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param col
+     * @param col The column index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
      */
     @Override
-    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(long row, long col,
-            int dp, RoundingMode rm) throws IOException, Exception,
-            ClassNotFoundException {
+    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            long row, long col, int dp, RoundingMode rm) throws IOException,
+            Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(row, col);
         if (value == NoDataValue) {
@@ -1287,23 +1296,25 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values nearest to point with position given by: x-coordinate x,
-     * y-coordinate y; and, cell row index _CellRowIndex, cell column index
-     * _CellColIndex.
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
+     * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
+     * cells with data values nearest to a point with position given by:
+     * x-coordinate x, y-coordinate y; in cell row index {@code row}, cell
+     * column index {@code col}.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The {@link RoundingMode} to use when rounding the result.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
      */
     @Override
-    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(BigDecimal x,
-            BigDecimal y, long row, long col, int dp, RoundingMode rm)
-            throws IOException, Exception, ClassNotFoundException {
+    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            BigDecimal x, BigDecimal y, long row, long col, int dp,
+            RoundingMode rm) throws IOException, Exception,
+            ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
@@ -1419,28 +1430,28 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param v the value to be added to the cell containing the point
+     * @param x The x-coordinate of a point.
+     * @param y The y-coordinate of a point.
+     * @param v The value to be added to the cell containing the point (x, y).
      */
     public void addToCell(BigDecimal x, BigDecimal y, int v) throws IOException,
-            Exception, ClassNotFoundException, Exception {
+            Exception, ClassNotFoundException {
         addToCell(getRow(y), getCol(x), v);
     }
 
     /**
-     * @param cellID the Grids_2D_ID_long of the cell.
-     * @param v the value to be added to the cell containing the point
+     * @param i The ID of the cell to add to the value of.
+     * @param v The value to be added to the cell.
      */
-    public void addToCell(Grids_2D_ID_long cellID, int v)
+    public void addToCell(Grids_2D_ID_long i, int v)
             throws IOException, Exception, ClassNotFoundException {
-        addToCell(cellID.getRow(), cellID.getCol(), v);
+        addToCell(i.getRow(), i.getCol(), v);
     }
 
     /**
-     * @param row the row index of the cell.
-     * @param col the column index of the cell.
-     * @param v the value to be added to the cell. NB1. If cell is not contained
+     * @param row The row index of the cell.
+     * @param col The column index of the cell.
+     * @param v The value to be added to the cell. NB1. If cell is not contained
      * in this then then returns ndv. NB2. Adding to ndv is done as if adding to
      * a cell with value of 0. TODO: Check Arithmetic
      */
@@ -1459,31 +1470,27 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
+     * Initialises all cells with value {@code v}.
      *
-     * @param value
+     * @param v The value to initialise all the cells with.
      */
-    protected void initCells(int value) throws IOException, Exception, ClassNotFoundException {
+    protected void initCells(int v) throws IOException, Exception,
+            ClassNotFoundException {
         Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
         int nChunks = chunkIDChunkMap.size();
-        Grids_ChunkInt chunk;
-        int chunkNRows;
-        int chunkNCols;
-        int row;
-        int col;
-        Grids_2D_ID_int chunkID;
         int counter = 0;
         while (ite.hasNext()) {
             env.checkAndMaybeFreeMemory();
             System.out.println("Initialising Chunk " + counter + " out of "
                     + nChunks);
             counter++;
-            chunkID = ite.next();
-            chunk = (Grids_ChunkInt) chunkIDChunkMap.get(chunkID);
-            chunkNRows = getChunkNRows(chunkID);
-            chunkNCols = getChunkNCols(chunkID);
-            for (row = 0; row <= chunkNRows; row++) {
-                for (col = 0; col <= chunkNCols; col++) {
-                    chunk.initCell(chunkNRows, chunkNCols, value);
+            Grids_2D_ID_int i = ite.next();
+            Grids_ChunkInt chunk = getChunk(i);
+            int chunkNRows = getChunkNRows(i);
+            int chunkNCols = getChunkNCols(i);
+            for (int row = 0; row <= chunkNRows; row++) {
+                for (int col = 0; col <= chunkNCols; col++) {
+                    chunk.initCell(chunkNRows, chunkNCols, v);
                 }
             }
         }
@@ -1493,7 +1500,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @return A Grids_GridIteratorInt for iterating over the cell values in
      * this.
      */
-    public Grids_GridIteratorInt iterator() throws IOException, Exception, ClassNotFoundException {
+    public Grids_GridIteratorInt iterator() throws IOException, Exception,
+            ClassNotFoundException {
         return new Grids_GridIteratorInt(this);
     }
 
@@ -1507,21 +1515,16 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     @Override
-    public Integer getCell(Grids_Chunk chunk, int chunkRow,
-            int chunkCol, int cellRow, int cellCol) {
+    public Integer getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
+            int cellRow, int cellCol) {
         Grids_ChunkInt c = (Grids_ChunkInt) chunk;
-        Grids_GridInt g = (Grids_GridInt) c.getGrid();
         if (chunk.getClass() == Grids_ChunkIntArray.class) {
-            Grids_ChunkIntArray gridChunkArray;
-            gridChunkArray = (Grids_ChunkIntArray) c;
-            return gridChunkArray.getCell(cellRow, cellCol);
+            return ((Grids_ChunkIntArray) c).getCell(cellRow, cellCol);
         }
         if (chunk.getClass() == Grids_ChunkIntMap.class) {
-            Grids_ChunkIntMap gridChunkMap;
-            gridChunkMap = (Grids_ChunkIntMap) c;
-            return gridChunkMap.getCell(cellRow, cellCol);
+            return ((Grids_ChunkIntMap) c).getCell(cellRow, cellCol);
         }
-        return g.NoDataValue;
+        return c.getGrid().NoDataValue;
     }
 
 }

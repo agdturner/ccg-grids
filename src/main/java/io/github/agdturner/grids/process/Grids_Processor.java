@@ -1106,8 +1106,6 @@ public class Grids_Processor extends Grids_Object {
                     && ((g2Dimensions.getYMin().remainder(gCellsize)).compareTo(
                             (gDimensions.getYMin().remainder(gCellsize))) == 0)) {
                 //println( "grids Align!" );
-                double x;
-                double y;
                 double value;
                 long row;
                 long col;
@@ -1115,9 +1113,9 @@ public class Grids_Processor extends Grids_Object {
                 // rather than using x and y.
                 for (row = startRow; row <= endRow; row++) {
                     env.checkAndMaybeFreeMemory();
-                    y = g2.getCellYDouble(row);
+                   BigDecimal y = g2.getCellYBigDecimal(row);
                     for (col = startCol; col <= endCol; col++) {
-                        x = g2.getCellXDouble(col);
+                       BigDecimal x = g2.getCellXBigDecimal(col);
                         value = g2.getCell(row, col);
                         if (value != g2NoDataValue) {
                             if (value != 0.0d) {
@@ -1142,7 +1140,7 @@ public class Grids_Processor extends Grids_Object {
                 int scale = 324;
                 BigDecimal g2CellsizeSquared;
                 g2CellsizeSquared = g2Cellsize.multiply(g2Cellsize);
-                double[] bounds;
+                BigDecimal[] bounds;
                 Grids_2D_ID_long cellID1;
                 Grids_2D_ID_long cellID2;
                 Grids_2D_ID_long cellID3;
@@ -1151,19 +1149,14 @@ public class Grids_Processor extends Grids_Object {
                 double d2;
                 double d3;
                 double d4;
-                //double x;
-                //double y;
-                long r;
-                long c;
-                double areaProportion;
-                double halfCellsize = g.getCellsizeDouble() / 2.0d;
+                BigDecimal areaProportion;
+                BigDecimal halfCellsize = g.getCellsize().divide(
+                        BigDecimal.valueOf(2));
                 RoundingMode rm = RoundingMode.HALF_EVEN;
-                // TODO:
-                // precision checking and use of BigDecimal?
-                for (r = 0; r < nrows; r++) {
+                for (int r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
-                    for (c = 0; c < ncols; c++) {
-                        bounds = g.getCellBoundsDoubleArray(halfCellsize, r, c);
+                    for (int c = 0; c < ncols; c++) {
+                        bounds = g.getCellBounds(halfCellsize, r, c);
                         //x = g.getCellXDouble(col);
                         //y = g.getCellYDouble(row);
                         cellID1 = g2.getCellID(bounds[0], bounds[3]);

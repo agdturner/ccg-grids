@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
@@ -43,6 +42,8 @@ import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.RoundingMode;
+import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
@@ -925,7 +926,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Double getCell(long row, long col) throws IOException, Exception, 
+    public Double getCell(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
 //        boolean isInGrid = isInGrid(row, col);
 //        if (isInGrid) {
@@ -1104,8 +1105,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID, 
-            long row, long col, double v) throws IOException, 
+    protected void initCell(Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID,
+            long row, long col, double v) throws IOException,
             ClassNotFoundException, Exception {
         if (chunk instanceof Grids_ChunkDoubleSinglet) {
             Grids_ChunkDoubleSinglet gridChunk = (Grids_ChunkDoubleSinglet) chunk;
@@ -1154,8 +1155,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * Initialises the value at row, col and does nothing
-     * about stats.
+     * Initialises the value at row, col and does nothing about stats.
      *
      * @param chunk The chunk.
      * @param row The row.
@@ -1172,20 +1172,20 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return double[] of all cell values for cells thats centroids are
-     * intersected by circle with centre at centroid of cell given by cell row
-     * index row, cell column index col, and radius distance.
-     * @param row the row index for the cell that'stats centroid is the circle
-     * centre from which cell values are returned.
-     * @param col the column index for the cell that'stats centroid is the
-     * circle centre from which cell values are returned.
+     * @return int[] of all cell values for cells that's centroids are
+     * intersected by circle with centre at x-coordinate x, y-coordinate y, and
+     * radius distance.
+     * @param x the x-coordinate of the circle centre from which cell values are
+     * returned.
+     * @param y the y-coordinate of the circle centre from which cell values are
+     * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public double[] getCells(long row, long col, double distance) 
-            throws IOException, Exception, ClassNotFoundException {
-        return getCells(getCellXBigDecimal(col), getCellYBigDecimal(row), row, col,
-                distance);
+    protected double[] getCells(BigDecimal x, BigDecimal y,
+            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+            Exception, ClassNotFoundException {
+        return getCells(x, y, getRow(y), getCol(x), distance, dp, rm);
     }
 
     /**
@@ -1202,16 +1202,22 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * values are returned.
      */
     protected double[] getCells(BigDecimal x, BigDecimal y, long row, long col,
-            double distance) throws IOException, Exception, ClassNotFoundException {
+            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+            Exception, ClassNotFoundException {
         double[] cells;
-        int cellDistance = (int) Math.ceil(distance / getCellsizeDouble());
-        cells = new double[((2 * cellDistance) + 1) * ((2 * cellDistance) + 1)];
+        BigDecimal[] dar = distance.divideAndRemainder(getCellsize());
+        int delta = dar[0].intValueExact();
+        if (dar[1].compareTo(BigDecimal.ZERO) == 1) {
+            delta += 1;
+        }
+        cells = new double[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
-        for (long p = row - cellDistance; p <= row + cellDistance; p++) {
+        for (long p = row - delta; p <= row + delta; p++) {
             BigDecimal thisY = getCellYBigDecimal(row);
-            for (long q = col - cellDistance; q <= col + cellDistance; q++) {
+            for (long q = col - delta; q <= col + delta; q++) {
                 BigDecimal thisX = getCellXBigDecimal(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY) <= distance) {
+                if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
+                        .compareTo(distance) <= 0) {
                     cells[count] = getCell(p, q);
                     count++;
                 }
@@ -1223,586 +1229,255 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return the average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y as a double.
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
+     * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
+     * cells with data values nearest to a point with position given by:
+     * x-coordinate x, y-coordinate y.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
      */
     @Override
-    protected double getNearestValueDouble(double x, double y)
+    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            BigDecimal x, BigDecimal y, int dp, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
-        double result = getCell(x, y);
-        if (result == NoDataValue) {
-            result = getNearestValueDouble(x, y, getRow(y), getCol(x));
+        NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
+        double value = getCell(x, y);
+        if (value == NoDataValue) {
+            return getNearestValuesCellIDsAndDistance(x, y, getRow(y),
+                    getCol(x), dp, rm);
         }
-        return result;
+        r.cellIDs = new Grids_2D_ID_long[1];
+        r.cellIDs[0] = getCellID(x, y);
+        r.distance = BigDecimal.ZERO;
+        return r;
     }
 
     /**
-     * @param row The row index from which average of the nearest data values is
-     * returned.
-     * @param col The column index from which average of the nearest data values
-     * is returned.
-     * @return the average of the nearest data values to position given by row
-     * index rowIndex, column index colIndex
+     * @return NearestValuesCellIDsAndDistance - The cell IDs of the nearest
+     * cells with data values nearest to cell row index {@code row}, cell
+     * column index {@code col}.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param col The column index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
      */
     @Override
-    protected double getNearestValueDouble(long row, long col)
-            throws IOException, Exception, ClassNotFoundException {
-        double r = getCell(row, col);
-        if (r == NoDataValue) {
-            r = getNearestValueDouble(getCellXDouble(col),
-                    getCellYDouble(row), row, col);
+    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            long row, long col, int dp, RoundingMode rm) throws IOException,
+            Exception, ClassNotFoundException {
+        NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
+        double value = getCell(row, col);
+        if (value == NoDataValue) {
+            return getNearestValuesCellIDsAndDistance(getCellXBigDecimal(col),
+                    getCellYBigDecimal(row), row, col, dp, rm);
+        }
+        r.cellIDs = new Grids_2D_ID_long[1];
+        r.cellIDs[0] = getCellID(row, col);
+        r.distance = BigDecimal.ZERO;
+        return r;
+    }
+
+    /**
+     * @return NearestValuesCellIDsAndDistance - The ccll IDs of the nearest
+     * cells with data values nearest to a point with position given by:
+     * x-coordinate x, y-coordinate y; in cell row index {@code row}, cell
+     * column index {@code col}.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param row The row index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param col The column index from which the cell IDs of the nearest cells
+     * with data values are returned.
+     * @param dp The number of decimal places used in distance calculations.
+     * @param rm The {@link RoundingMode} to use when rounding distance
+     * calculations.
+     */
+    @Override
+    public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            BigDecimal x, BigDecimal y, long row, long col, int dp,
+            RoundingMode rm) throws IOException, Exception,
+            ClassNotFoundException {
+        NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
+        r.cellIDs = new Grids_2D_ID_long[1];
+        r.cellIDs[0] = getNearestCellID(x, y, row, col);
+        double nearestCellValue = getCell(row, col);
+        if (nearestCellValue == NoDataValue) {
+            // Find a value Seeking outwards from nearestCellID
+            // Initialise visitedSet1
+            HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
+            HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
+            visitedSet.add(r.cellIDs[0]);
+            visitedSet1.add(r.cellIDs[0]);
+            // Initialise toVisitSet1
+            HashSet<Grids_2D_ID_long> toVisitSet1 = new HashSet<>();
+            for (long p = -1; p < 2; p++) {
+                for (long q = -1; q < 2; q++) {
+                    if (!(p == 0 && q == 0)) {
+                        if (isInGrid(row + p, col + q)) {
+                            toVisitSet1.add(getCellID(row + p, col + q));
+                        }
+                    }
+                }
+            }
+            // Seek
+            boolean foundValue = false;
+            double value;
+            HashSet<Grids_2D_ID_long> values = new HashSet<>();
+            Iterator<Grids_2D_ID_long> iterator;
+            while (!foundValue) {
+                HashSet<Grids_2D_ID_long> visitedSet2 = new HashSet<>();
+                HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
+                iterator = toVisitSet1.iterator();
+                while (iterator.hasNext()) {
+                    Grids_2D_ID_long cellID = iterator.next();
+                    visitedSet2.add(cellID);
+                    value = getCell(cellID);
+                    if (value != NoDataValue) {
+                        foundValue = true;
+                        values.add(cellID);
+                    } else {
+                        // Add neighbours to toVisitSet2
+                        for (long p = -1; p < 2; p++) {
+                            for (long q = -1; q < 2; q++) {
+                                if (!(p == 0 && q == 0)) {
+                                    long r0 = cellID.getRow() + p;
+                                    long c0 = cellID.getCol() + q;
+                                    if (isInGrid(r0, c0)) {
+                                        toVisitSet2.add(getCellID(r0, c0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                toVisitSet2.removeAll(visitedSet1);
+                toVisitSet2.removeAll(visitedSet2);
+                visitedSet.addAll(visitedSet2);
+                visitedSet1 = visitedSet2;
+                toVisitSet1 = toVisitSet2;
+            }
+            BigDecimal distance;
+            // Go through values and find the closest
+            HashSet<Grids_2D_ID_long> closest = new HashSet<>();
+            iterator = values.iterator();
+            Grids_2D_ID_long cellID = iterator.next();
+            r.distance = Grids_Utilities.distance(x, y,
+                    getCellXBigDecimal(cellID), getCellYBigDecimal(cellID),
+                    dp, rm);
+            while (iterator.hasNext()) {
+                cellID = iterator.next();
+                distance = Grids_Utilities.distance(x, y,
+                        getCellXBigDecimal(cellID), getCellYBigDecimal(cellID),
+                        dp, rm);
+                if (distance.compareTo(r.distance) == -1) {
+                    closest.clear();
+                    closest.add(cellID);
+                } else {
+                    if (distance == r.distance) {
+                        closest.add(cellID);
+                    }
+                }
+                r.distance = r.distance.min(distance);
+            }
+            // Get cellIDs that are within distance of discovered value
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, dp, rm);
+            for (Grids_2D_ID_long cellID1 : cellIDs) {
+                if (!visitedSet.contains(cellID1)) {
+                    if (getCell(cellID1) != NoDataValue) {
+                        distance = Grids_Utilities.distance(x, y,
+                                getCellXBigDecimal(cellID1),
+                                getCellYBigDecimal(cellID1), dp, rm);
+                        if (distance.compareTo(r.distance) == -1) {
+                            closest.clear();
+                            closest.add(cellID1);
+                        } else {
+                            if (distance == r.distance) {
+                                closest.add(cellID1);
+                            }
+                        }
+                        r.distance = r.distance.min(distance);
+                    }
+                }
+            }
+            // Go through the closest and put into an array
+            r.cellIDs = new Grids_2D_ID_long[closest.size()];
+            iterator = closest.iterator();
+            int counter = 0;
+            while (iterator.hasNext()) {
+                r.cellIDs[counter] = iterator.next();
+                counter++;
+            }
         }
         return r;
     }
 
     /**
-     * @return the average of the nearest data values to point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param row the row index from which average of the nearest data values is
-     * returned
-     * @param col the column index from which average of the nearest data values
-     * is returned
+     * @param x The x-coordinate of a point.
+     * @param y The y-coordinate of a point.
+     * @param v The value to be added to the cell containing the point (x, y).
      */
-    @Override
-    protected double getNearestValueDouble(double x, double y, long row, long col)
+    public void addToCell(BigDecimal x, BigDecimal y, double v)
             throws IOException, Exception, ClassNotFoundException {
-        Grids_2D_ID_long nearestCellID = getNearestCellID(x, y, row, col);
-        double nearestValue = getCell(row, col);
-        if (nearestValue == NoDataValue) {
-            // Find a value Seeking outwards from nearestCellID
-            // Initialise visitedSet1
-            HashSet visitedSet = new HashSet();
-            HashSet visitedSet1 = new HashSet();
-            visitedSet.add(nearestCellID);
-            visitedSet1.add(nearestCellID);
-            // Initialise toVisitSet1
-            HashSet toVisitSet1 = new HashSet();
-            long p;
-            long q;
-            Grids_2D_ID_long cellID0;
-            boolean isInGrid;
-            for (p = -1; p < 2; p++) {
-                for (q = -1; q < 2; q++) {
-                    if (!(p == 0 && q == 0)) {
-                        isInGrid = isInGrid(row + p, col + q);
-                        if (isInGrid) {
-                            cellID0 = new Grids_2D_ID_long(row + p, col + q);
-                            toVisitSet1.add(cellID0);
-                        }
-                    }
-                }
-            }
-            // Seek
-            boolean foundValue = false;
-            double value;
-            HashSet values = new HashSet();
-            HashSet visitedSet2;
-            HashSet toVisitSet2;
-            Iterator iterator;
-            Grids_2D_ID_long cellID1;
-            while (!foundValue) {
-                visitedSet2 = new HashSet();
-                toVisitSet2 = new HashSet();
-                iterator = toVisitSet1.iterator();
-                while (iterator.hasNext()) {
-                    cellID0 = (Grids_2D_ID_long) iterator.next();
-                    visitedSet2.add(cellID0);
-                    value = getCell(cellID0);
-                    if (value != NoDataValue) {
-                        foundValue = true;
-                        values.add(cellID0);
-                    } else {
-                        // Add neighbours to toVisitSet2
-                        for (p = -1; p < 2; p++) {
-                            for (q = -1; q < 2; q++) {
-                                if (!(p == 0 && q == 0)) {
-                                    isInGrid = isInGrid(
-                                            cellID0.getRow() + p,
-                                            cellID0.getCol() + q);
-                                    if (isInGrid) {
-                                        cellID1 = new Grids_2D_ID_long(
-                                                cellID0.getRow() + p,
-                                                cellID0.getCol() + q);
-                                        toVisitSet2.add(cellID1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                toVisitSet2.removeAll(visitedSet1);
-                toVisitSet2.removeAll(visitedSet2);
-                visitedSet.addAll(visitedSet2);
-                visitedSet1 = visitedSet2;
-                toVisitSet1 = toVisitSet2;
-            }
-            double distance;
-            double minDistance = Integer.MAX_VALUE;
-            // Go through values and find the closest
-            HashSet closest = new HashSet();
-            iterator = values.iterator();
-            while (iterator.hasNext()) {
-                cellID0 = (Grids_2D_ID_long) iterator.next();
-                distance = Grids_Utilities.distance(x, y,
-                        getCellXDouble(cellID0), getCellYDouble(cellID0));
-                if (distance < minDistance) {
-                    closest.clear();
-                    closest.add(cellID0);
-                } else {
-                    if (distance == minDistance) {
-                        closest.add(cellID0);
-                    }
-                }
-                minDistance = Math.min(minDistance, distance);
-            }
-            // Get cellIDs that are within distance of discovered value
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, minDistance);
-            for (Grids_2D_ID_long cellID : cellIDs) {
-                if (!visitedSet.contains(cellID)) {
-                    if (getCell(cellID) != NoDataValue) {
-                        distance = Grids_Utilities.distance(x, y,
-                                getCellXDouble(cellID), getCellYDouble(cellID));
-                        if (distance < minDistance) {
-                            closest.clear();
-                            closest.add(cellID);
-                        } else {
-                            if (distance == minDistance) {
-                                closest.add(cellID);
-                            }
-                        }
-                        minDistance = Math.min(minDistance, distance);
-                    }
-                }
-            }
-            // Go through the closest and calculate the average.
-            value = 0;
-            iterator = closest.iterator();
-            while (iterator.hasNext()) {
-                cellID0 = (Grids_2D_ID_long) iterator.next();
-                value += getCell(cellID0);
-            }
-            nearestValue = value / (double) closest.size();
-        }
-        return nearestValue;
+        addToCell(getRow(y), getCol(x), v);
     }
 
     /**
-     * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
-     * values to point given by x-coordinate x, y-coordinate y.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
+     * @param cellID The ID of the cell to add to the value of.
+     * @param v The value to be added to the cell.
      */
-    @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(double x, double y)
+    public void addToCell(Grids_2D_ID_long cellID, double v)
             throws IOException, Exception, ClassNotFoundException {
-        double value = getCell(x, y);
-        if (value == NoDataValue) {
-            return getNearestValuesCellIDs(x, y, getRow(y), getCol(x));
-        }
-        Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
-        cellIDs[0] = getCellID(x, y);
-        return cellIDs;
+        addToCell(cellID.getRow(), cellID.getCol(), v);
     }
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest cells
-     * with data values are returned.
-     * @param col
+     * @param row The row index of the cell.
+     * @param col The column index of the cell.
+     * @param v The value to be added to the cell. NB1. If cell is not contained
+     * in this then then returns ndv. NB2. Adding to ndv is done as if adding to
+     * a cell with value of 0. TODO: Check Arithmetic
      */
-    @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(long row, long col)
-            throws IOException, Exception, ClassNotFoundException {
-        double value = getCell(row, col);
-        if (value == NoDataValue) {
-            return getNearestValuesCellIDs(getCellXDouble(col),
-                    getCellYDouble(row), row, col);
-        }
-        Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[1];
-        cellIDs[0] = getCellID(row, col);
-        return cellIDs;
-    }
-
-    /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values nearest to point with position given by: x-coordinate x,
-     * y-coordinate y; and, cell row index _CellRowIndex, cell column index
-     * _CellColIndex.
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param row The row index from which the cell IDs of the nearest cells
-     * with data values are returned.
-     * @param col The column index from which the cell IDs of the nearest cells
-     * with data values are returned.
-     */
-    @Override
-    protected Grids_2D_ID_long[] getNearestValuesCellIDs(BigDecimal x, BigDecimal y,
-            long row, long col) throws IOException, Exception, ClassNotFoundException {
-        Grids_2D_ID_long[] nearestCellIDs = new Grids_2D_ID_long[1];
-        nearestCellIDs[0] = getNearestCellID(x, y, row, col);
-        double nearestCellValue = getCell(row, col);
-        if (nearestCellValue == NoDataValue) {
-            // Find a value Seeking outwards from nearestCellID
-            // Initialise visitedSet1
-            HashSet visitedSet = new HashSet();
-            HashSet visitedSet1 = new HashSet();
-            visitedSet.add(nearestCellIDs[0]);
-            visitedSet1.add(nearestCellIDs[0]);
-            // Initialise toVisitSet1
-            HashSet toVisitSet1 = new HashSet();
-            long p;
-            long q;
-            boolean isInGrid;
-            Grids_2D_ID_long cellID;
-            for (p = -1; p < 2; p++) {
-                for (q = -1; q < 2; q++) {
-                    if (!(p == 0 && q == 0)) {
-                        isInGrid = isInGrid(row + p, col + q);
-                        if (isInGrid) {
-                            cellID = getCellID(row + p, col + q);
-                            toVisitSet1.add(cellID);
-                        }
-                    }
-                }
+    public void addToCell(long row, long col, double v) throws IOException,
+            ClassNotFoundException, Exception {
+        double currentValue = getCell(row, col);
+        if (currentValue != NoDataValue) {
+            if (v != NoDataValue) {
+                setCell(row, col, currentValue + v);
             }
-            // Seek
-            boolean foundValue = false;
-            double value;
-            HashSet values = new HashSet();
-            HashSet visitedSet2;
-            HashSet toVisitSet2;
-            Iterator iterator;
-            while (!foundValue) {
-                visitedSet2 = new HashSet();
-                toVisitSet2 = new HashSet();
-                iterator = toVisitSet1.iterator();
-                while (iterator.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator.next();
-                    visitedSet2.add(cellID);
-                    value = getCell(cellID);
-                    if (value != NoDataValue) {
-                        foundValue = true;
-                        values.add(cellID);
-                    } else {
-                        // Add neighbours to toVisitSet2
-                        for (p = -1; p < 2; p++) {
-                            for (q = -1; q < 2; q++) {
-                                if (!(p == 0 && q == 0)) {
-                                    isInGrid = isInGrid(cellID.getRow() + p,
-                                            cellID.getCol() + q);
-                                    if (isInGrid) {
-                                        cellID = getCellID(cellID.getRow() + p,
-                                                cellID.getCol() + q);
-                                        toVisitSet2.add(cellID);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                toVisitSet2.removeAll(visitedSet1);
-                toVisitSet2.removeAll(visitedSet2);
-                visitedSet.addAll(visitedSet2);
-                visitedSet1 = visitedSet2;
-                toVisitSet1 = toVisitSet2;
-            }
-            double distance;
-            double minDistance = Double.MAX_VALUE;
-            // Go through values and find the closest
-            HashSet closest = new HashSet();
-            iterator = values.iterator();
-            while (iterator.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator.next();
-                distance = Grids_Utilities.distance(x, y,
-                        getCellXDouble(cellID),
-                        getCellYDouble(cellID));
-                if (distance < minDistance) {
-                    closest.clear();
-                    closest.add(cellID);
-                } else {
-                    if (distance == minDistance) {
-                        closest.add(cellID);
-                    }
-                }
-                minDistance = Math.min(minDistance, distance);
-            }
-            // Get cellIDs that are within distance of discovered value
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, minDistance);
-            for (Grids_2D_ID_long cellID1 : cellIDs) {
-                if (!visitedSet.contains(cellID1)) {
-                    if (getCell(cellID1) != NoDataValue) {
-                        distance = Grids_Utilities.distance(x, y,
-                                getCellXDouble(cellID1),
-                                getCellYDouble(cellID1));
-                        if (distance < minDistance) {
-                            closest.clear();
-                            closest.add(cellID1);
-                        } else {
-                            if (distance == minDistance) {
-                                closest.add(cellID1);
-                            }
-                        }
-                        minDistance = Math.min(minDistance, distance);
-                    }
-                }
-            }
-            // Go through the closest and put into an array
-            nearestCellIDs = new Grids_2D_ID_long[closest.size()];
-            iterator = closest.iterator();
-            int counter = 0;
-            while (iterator.hasNext()) {
-                nearestCellIDs[counter] = (Grids_2D_ID_long) iterator.next();
-                counter++;
-            }
-        }
-        return nearestCellIDs;
-    }
-
-    /**
-     * @return the distance to the nearest data value from point given by
-     * x-coordinate x, y-coordinate y as a double.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     */
-    @Override
-    protected double getNearestValueDoubleDistance(double x, double y)
-            throws IOException, Exception, ClassNotFoundException {
-        double result = getCell(x, y);
-        if (result == NoDataValue) {
-            result = getNearestValueDoubleDistance(x, y, getRow(y), getCol(x));
-        }
-        return result;
-    }
-
-    /**
-     * @return the distance to the nearest data value from position given by row
-     * index rowIndex, column index colIndex as a double.
-     * @param row The cell row index of the cell from which the distance nearest
-     * to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the distance
-     * nearest to the nearest cell value is returned.
-     */
-    protected double getNearestValueDoubleDistance(long row, long col)
-            throws IOException, Exception, ClassNotFoundException {
-        double result = getCell(row, col);
-        if (result == NoDataValue) {
-            result = getNearestValueDoubleDistance(getCellXDouble(col),
-                    getCellYDouble(row), row, col);
-        }
-        return result;
-    }
-
-    /**
-     * @return the distance to the nearest data value from: point given by
-     * x-coordinate x, y-coordinate y in position given by row index rowIndex,
-     * column index colIndex as a double.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param row The cell row index of the cell from which the distance nearest
-     * to the nearest cell value is returned.
-     * @param col The cell column index of the cell from which the distance
-     * nearest to the nearest cell value is returned.
-     */
-    @Override
-    protected double getNearestValueDoubleDistance(double x, double y, long row,
-            long col) throws IOException, Exception, ClassNotFoundException {
-        double result = getCell(row, col);
-        if (result == NoDataValue) {
-            // Initialisation
-            long long0;
-            long long1;
-            long longMinus1 = -1;
-            long longTwo = 2;
-            long longZero = 0;
-            boolean boolean0;
-            boolean boolean1;
-            boolean boolean2;
-            double double0;
-            double double1;
-            Grids_2D_ID_long nearestCellID = getNearestCellID(x, y, row, col);
-            HashSet visitedSet = new HashSet();
-            HashSet visitedSet1 = new HashSet();
-            visitedSet.add(nearestCellID);
-            visitedSet1.add(nearestCellID);
-            HashSet toVisitSet1 = new HashSet();
-            long p;
-            long q;
-            boolean isInGrid;
-            Grids_2D_ID_long cellID;
-            boolean foundValue = false;
-            double value;
-            HashSet values = new HashSet();
-            HashSet visitedSet2;
-            HashSet toVisitSet2;
-            Iterator iterator;
-            double distance;
-            double minDistance = Double.MAX_VALUE;
-            HashSet closest = new HashSet();
-            // Find a value Seeking outwards from nearestCellID
-            // Initialise toVisitSet1
-            for (p = longMinus1; p < longTwo; p++) {
-                for (q = longMinus1; q < longTwo; q++) {
-                    boolean0 = (p == longZero);
-                    boolean1 = (q == longZero);
-                    boolean2 = !(boolean0 && boolean1);
-                    if (boolean2) {
-                        long0 = row + p;
-                        long1 = col + q;
-                        isInGrid = isInGrid(long0, long1);
-                        if (isInGrid) {
-                            cellID = getCellID(long0, long1);
-                            toVisitSet1.add(cellID);
-                        }
-                    }
-                }
-            }
-            // Seek
-            while (!foundValue) {
-                visitedSet2 = new HashSet();
-                toVisitSet2 = new HashSet();
-                iterator = toVisitSet1.iterator();
-                while (iterator.hasNext()) {
-                    cellID = (Grids_2D_ID_long) iterator.next();
-                    visitedSet2.add(cellID);
-                    value = getCell(cellID);
-                    if (value != NoDataValue) {
-                        foundValue = true;
-                        values.add(cellID);
-                    } else {
-                        // Add neighbours to toVisitSet2
-                        for (p = longMinus1; p < longTwo; p++) {
-                            for (q = longMinus1; q < longTwo; q++) {
-                                boolean0 = (p == longZero);
-                                boolean1 = (q == longZero);
-                                boolean2 = !(boolean0 && boolean1);
-                                if (boolean2) {
-                                    long0 = cellID.getRow() + p;
-                                    long1 = cellID.getCol() + q;
-                                    isInGrid = isInGrid(long0, long1);
-                                    if (isInGrid) {
-                                        cellID = getCellID(long0, long1);
-                                        toVisitSet2.add(cellID);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                toVisitSet2.removeAll(visitedSet1);
-                toVisitSet2.removeAll(visitedSet2);
-                visitedSet.addAll(visitedSet2);
-                visitedSet1 = visitedSet2;
-                toVisitSet1 = toVisitSet2;
-            }
-            // Go through values and find the closest
-            iterator = values.iterator();
-            while (iterator.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator.next();
-                double0 = getCellXDouble(cellID);
-                double1 = getCellYDouble(cellID);
-                distance = Grids_Utilities.distance(x, y, double0, double1);
-                if (distance < minDistance) {
-                    closest.clear();
-                    closest.add(cellID);
-                } else {
-                    if (distance == minDistance) {
-                        closest.add(cellID);
-                    }
-                }
-                minDistance = Math.min(minDistance, distance);
-            }
-            // Get cellIDs that are within distance of discovered value
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, minDistance);
-            for (Grids_2D_ID_long cellID1 : cellIDs) {
-                if (!visitedSet.contains(cellID1)) {
-                    if (getCell(cellID1) != NoDataValue) {
-                        distance = Grids_Utilities.distance(x, y,
-                                getCellXDouble(cellID1),
-                                getCellYDouble(cellID1));
-                        minDistance = Math.min(minDistance, distance);
-                    }
-                }
-            }
-            result = minDistance;
         } else {
-            result = 0.0d;
-        }
-        return result;
-    }
-
-    /**
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @param valueToAdd the value to be added to the cell containing the point
-     */
-    public void addToCell(double x, double y, double valueToAdd)
-            throws IOException, ClassNotFoundException, Exception {
-        addToCell(getRow(y), getCol(x), valueToAdd);
-    }
-
-    /**
-     * @param cellID the Grids_2D_ID_long of the cell.
-     * @param valueToAdd the value to be added to the cell containing the point
-     */
-    public void addToCell(Grids_2D_ID_long cellID, double valueToAdd)
-            throws IOException, ClassNotFoundException, Exception {
-        addToCell(cellID.getRow(), cellID.getCol(), valueToAdd);
-    }
-
-    /**
-     * @param row the row index of the cell.
-     * @param col the column index of the cell.
-     * @param valueToAdd the value to be added to the cell. If the value is ndv
-     * the adding is done as if adding to a cell with value of 0.
-     */
-    public void addToCell(long row, long col, double valueToAdd)
-            throws IOException, ClassNotFoundException, Exception {
-        boolean isInGrid = isInGrid(row, col);
-        if (isInGrid) {
-            double currentValue = getCell(row, col);
-            if (currentValue != NoDataValue) {
-                if (valueToAdd != NoDataValue) {
-                    setCell(row, col, currentValue + valueToAdd);
-                }
-            } else {
-                if (valueToAdd != NoDataValue) {
-                    setCell(row, col, valueToAdd);
-                }
+            if (v != NoDataValue) {
+                setCell(row, col, v);
             }
         }
     }
 
     /**
+     * Initialises all cells with value {@code v}.
      *
-     * @param value
+     * @param v The value to initialise all the cells with.
      */
-    public void initCells(double value) throws IOException, Exception {
+    protected void initCells(double v) throws IOException, Exception,
+            ClassNotFoundException {
         Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
         int nChunks = chunkIDChunkMap.size();
-        Grids_ChunkDouble chunk;
-        int chunkNRows;
-        int chunkNCols;
-        int row;
-        int col;
-        Grids_2D_ID_int chunkID;
         int counter = 0;
         while (ite.hasNext()) {
             env.checkAndMaybeFreeMemory();
-            System.out.println("Initialising Chunk " + counter + " out of " + nChunks);
+            System.out.println("Initialising Chunk " + counter + " out of "
+                    + nChunks);
             counter++;
-            chunkID = ite.next();
-            chunk = (Grids_ChunkDouble) chunkIDChunkMap.get(chunkID);
-            chunkNRows = getChunkNRows(chunkID);
-            chunkNCols = getChunkNCols(chunkID);
-            for (row = 0; row <= chunkNRows; row++) {
-                for (col = 0; col <= chunkNCols; col++) {
-                    chunk.initCell(row, col, value);
+            Grids_2D_ID_int i = ite.next();
+            Grids_ChunkDouble chunk = getChunk(i);
+            int chunkNRows = getChunkNRows(i);
+            int chunkNCols = getChunkNCols(i);
+            for (int row = 0; row <= chunkNRows; row++) {
+                for (int col = 0; col <= chunkNCols; col++) {
+                    chunk.initCell(chunkNRows, chunkNCols, v);
                 }
             }
         }
@@ -1827,24 +1502,16 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     @Override
-    public double getCellDouble(Grids_Chunk chunk, int chunkRow,
-            int chunkCol, int cellRow, int cellCol) {
-        Grids_ChunkDouble c;
-        c = (Grids_ChunkDouble) chunk;
-        Grids_GridDouble g;
-        g = (Grids_GridDouble) c.getGrid();
+    public Double getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
+            int cellRow, int cellCol) {
+        Grids_ChunkDouble c = (Grids_ChunkDouble) chunk;
         if (chunk.getClass() == Grids_ChunkDoubleArray.class) {
-            Grids_ChunkDoubleArray gridChunkArray;
-            gridChunkArray = (Grids_ChunkDoubleArray) c;
-            return gridChunkArray.getCell(cellRow, cellCol);
+            return ((Grids_ChunkDoubleArray) c).getCell(cellRow, cellCol);
         }
         if (chunk.getClass() == Grids_ChunkDoubleMap.class) {
-            Grids_ChunkDoubleMap gridChunkMap;
-            gridChunkMap = (Grids_ChunkDoubleMap) c;
-            return gridChunkMap.getCell(cellRow, cellCol);
+            return ((Grids_ChunkDoubleMap) c).getCell(cellRow, cellCol);
         }
-        double noDataValue = g.NoDataValue;
-        return noDataValue;
+        return c.getGrid().NoDataValue;
     }
 
 }

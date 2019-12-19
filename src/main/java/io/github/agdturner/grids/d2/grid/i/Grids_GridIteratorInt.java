@@ -20,7 +20,6 @@ import io.github.agdturner.grids.d2.grid.Grids_GridIterator;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIteratorInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntArray;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIteratorIntArrayOrMap;
@@ -38,9 +37,6 @@ import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntMap;
 public class Grids_GridIteratorInt extends Grids_GridIterator {
 
     private static final long serialVersionUID = 1L;
-
-    protected Grids_GridIteratorInt() {
-    }
 
     /**
      * @param g The {@link Grids_GridInt} to iterate over.

@@ -16,7 +16,6 @@
 package io.github.agdturner.grids.d2.chunk.b;
 
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
-import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
@@ -31,12 +30,8 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
     
     Boolean[][] data;
 
-    protected Grids_ChunkBooleanArray() {}
-
-    public Grids_ChunkBooleanArray(Grids_GridBoolean g, Grids_2D_ID_int chunkID) {
-        super();
-        this.Grid = g;
-        ChunkID = chunkID;
+    public Grids_ChunkBooleanArray(Grids_GridBoolean g, Grids_2D_ID_int i) {
+        super(g, i);
         initData();
     }
 

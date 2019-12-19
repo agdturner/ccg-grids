@@ -35,24 +35,23 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridIteratorBoolean() {
-    }
-
     /**
      * @param g The Grids_GridBoolean to iterate over.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorBoolean(
-            Grids_GridBoolean g) throws IOException, ClassNotFoundException, Exception {
+    public Grids_GridIteratorBoolean(Grids_GridBoolean g) throws IOException, 
+            ClassNotFoundException, Exception {
         super(g);
         GridIterator = g.getChunkIDChunkMap().keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkBooleanArray) g.getChunkIDChunkMap().get(ChunkID);
+            Chunk = (Grids_ChunkBooleanArray) g.getChunkIDChunkMap()
+                    .get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_ChunkBooleanArray) g.getChunkIDChunkMap().get(ChunkID);
+                Chunk = (Grids_ChunkBooleanArray) g.getChunkIDChunkMap()
+                        .get(ChunkID);
             }
             initChunkIterator();
         }
@@ -74,8 +73,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_ChunkIteratorBooleanArray getChunkIterator(
-            Grids_Chunk chunk) {
+    public Grids_ChunkIteratorBooleanArray getChunkIterator(Grids_Chunk chunk) {
         if (chunk instanceof Grids_ChunkBooleanArray) {
             return new Grids_ChunkIteratorBooleanArray(
                     (Grids_ChunkBooleanArray) chunk);
@@ -91,9 +89,9 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
         return (Grids_GridBoolean) Grid;
     }
     
-    public Grids_ChunkIteratorBooleanArray getChunkIterator(Grids_2D_ID_int ChunkID) 
+    public Grids_ChunkIteratorBooleanArray getChunkIterator(Grids_2D_ID_int i) 
             throws IOException, ClassNotFoundException, Exception {
-        return getChunkIterator(getGrid().getChunk(ChunkID));
+        return getChunkIterator(getGrid().getChunk(i));
     }
     
     /**

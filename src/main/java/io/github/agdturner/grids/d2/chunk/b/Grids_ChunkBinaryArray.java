@@ -31,12 +31,8 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     
     boolean[][] data;
 
-    protected Grids_ChunkBinaryArray() {}
-
-    public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int chunkID) {
-        super();
-        this.Grid = g;
-        ChunkID = chunkID;
+    public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int i) {
+        super(g, i, true);
         initData();
     }
 

@@ -49,10 +49,6 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    //private static final long serialVersionUID = 1L;
-    protected Grids_ImageExporter() {
-    }
-
     /**
      * Creates a new instance of ImageExporter
      *

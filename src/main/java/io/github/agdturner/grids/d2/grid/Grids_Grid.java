@@ -269,19 +269,17 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Sets the references to this in the chunks
+     * Sets the references to this in the chunks.
      */
     protected void setReferenceInChunkIDChunkMap() {
         Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
         while (ite.hasNext()) {
-            Grids_2D_ID_int chunkID = ite.next();
-            Grids_Chunk chunk = chunkIDChunkMap.get(chunkID);
-            chunk.setGrid(this);
+            chunkIDChunkMap.get(ite.next()).initGrid(this);
         }
     }
 
     /**
-     * @return HashSet containing all ChunkIDs.
+     * @return A HashSet containing all chunk IDs.
      */
     public HashSet<Grids_2D_ID_int> getChunkIDs() {
         HashSet<Grids_2D_ID_int> result = new HashSet<>();
@@ -2577,4 +2575,18 @@ public abstract class Grids_Grid extends Grids_Object {
     public Path getPathThisFile(Generic_Path p) {
         return Paths.get(p.toString(), "thisFile");
     }
+    
+    /**
+     * POJO for getting nearest value cell IDs and distance.
+     */
+    public class NearestValuesCellIDsAndDistance {
+
+        public Grids_2D_ID_long[] cellIDs;
+        public BigDecimal distance;
+
+        public NearestValuesCellIDsAndDistance() {
+        }
+    }
+
+    
 }

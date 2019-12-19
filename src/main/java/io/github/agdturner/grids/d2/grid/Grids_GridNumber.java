@@ -162,16 +162,6 @@ public abstract class Grids_GridNumber extends Grids_Grid {
         return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
     }
 
-    public class NearestValuesCellIDsAndDistance {
-
-        public Grids_2D_ID_long[] cellIDs;
-        public BigDecimal distance;
-
-        public NearestValuesCellIDsAndDistance() {
-        }
-
-    }
-
     @Override
     public Grids_StatsNumber getStats(boolean hoome) throws IOException,
             Exception {

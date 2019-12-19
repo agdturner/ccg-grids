@@ -35,9 +35,6 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
      */
     public double Value;
 
-    protected Grids_ChunkDoubleSinglet() {
-    }
-
     /**
      * Creates a new Grids_GridChunkDouble with value set to value.
      *

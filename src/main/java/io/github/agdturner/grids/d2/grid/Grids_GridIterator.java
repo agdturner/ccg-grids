@@ -36,12 +36,8 @@ public abstract class Grids_GridIterator extends Grids_Object {
     protected Grids_Grid Grid;
     protected Grids_Chunk Chunk;
     protected Grids_2D_ID_int ChunkID;
-//    protected Iterator<Grids_AbstractGridChunk> GridIterator;
     protected Iterator<Grids_2D_ID_int> GridIterator;
     protected Grids_ChunkIterator ChunkIterator;
-
-    protected Grids_GridIterator() {
-    }
 
     public Grids_GridIterator(Grids_Grid grid) {
         super(grid.env);
@@ -59,19 +55,13 @@ public abstract class Grids_GridIterator extends Grids_Object {
     public abstract Grids_ChunkIterator getChunkIterator();
 
     /**
-     * ChunkIterator
-     *
-     * @param chunk
-     * @return
+     * @param chunk The chunk for which the iterator is returned.
+     * @return An appropriate iterator for iterating over the values in {@code chunk}.
      */
     public abstract Grids_ChunkIterator getChunkIterator(Grids_Chunk chunk);
 
     /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements.
+     * @return {@code true} if the iterator has more elements.
      */
     public boolean hasNext() {
         if (ChunkIterator.hasNext()) {
@@ -85,8 +75,7 @@ public abstract class Grids_GridIterator extends Grids_Object {
     }
 
     /**
-     *
-     * @return Chunk.ChunkID
+     * @return {@link ChunkID}
      */
     public Grids_2D_ID_int getChunkID() {
         return ChunkID;

@@ -39,9 +39,6 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_GridIteratorDouble() {
-    }
-
     /**
      * @param g The grid to iterate over.
      * @throws java.io.IOException

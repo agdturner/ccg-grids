@@ -15,7 +15,6 @@
  */
 package io.github.agdturner.grids.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
@@ -46,8 +45,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      * @param env
      */
     public Grids_ESRIAsciiGridExporter(Grids_Environment env) {
-        this.env = env;
-        //this.initMemoryReserve( hoome );
+        super(env);
     }
 
     /**

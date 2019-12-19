@@ -58,7 +58,7 @@ public class Grids_ChunkIteratorIntMapASpatial
         if (DataMapBitSetIte.hasNext()) {
             hasNext = true;
             DataMapBitSetValue = DataMapBitSetIte.next();
-            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
         }
         NumberOfNoDataValues -= DataMapBitSetNumberOfValues;
         DataMapBitSetIte = DataMapBitSet.keySet().iterator();
@@ -101,14 +101,16 @@ public class Grids_ChunkIteratorIntMapASpatial
                 if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
                     if (DataMapBitSetIte.hasNext()) {
                         DataMapBitSetValue = DataMapBitSetIte.next();
-                        DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue)._BitSet.cardinality();
+                        DataMapBitSetNumberOfValues = DataMapBitSet
+                                .get(DataMapBitSetValue).bitSet.cardinality();
                         DataMapBitSetIndex = 0;
                         return DataMapBitSetValue;
                     } else {
                         if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
                             if (DataMapHashSetIte.hasNext()) {
                                 DataMapHashSetValue = DataMapHashSetIte.next();
-                                DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
+                                DataMapHashSetNumberOfValues = DataMapHashSet
+                                        .get(DataMapHashSetValue).size();
                                 DataMapHashSetIndex = 0;
                                 return DataMapHashSetValue;
                             } else {
