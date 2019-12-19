@@ -262,7 +262,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     public Grids_GridDouble create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(env, store, store.getNextID(),
-                gridFile);
+                gridFile, NoDataValue);
         store.addDir();
         return r;
     }

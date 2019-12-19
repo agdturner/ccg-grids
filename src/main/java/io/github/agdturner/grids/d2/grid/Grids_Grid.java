@@ -520,6 +520,22 @@ public abstract class Grids_Grid extends Grids_Object {
     public final BigDecimal getCellsize() {
         return getDimensions().getCellsize();
     }
+    
+    /**
+     * @param distance The length of a straight line for which the cell distance is returned.
+     * @return An integer value equal to the number of cells in a vertical or horizontal direction that 
+     * a line of distance would intersect. On the boundary is in.
+     */
+    public final BigDecimal getCellDistance(BigDecimal distance) {
+        BigDecimal[] dar = distance.divideAndRemainder(getCellsize());
+            BigDecimal r = dar[0];
+            if (dar[1].compareTo(BigDecimal.ZERO) == 1) {
+                r = r.add(BigDecimal.ONE);
+            }
+            return r;
+    }
+    
+    
 
     /**
      * @return Set of chunk IDs for cells that's centroids are intersected by

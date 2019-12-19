@@ -28,6 +28,8 @@ import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.util.Grids_Kernel;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.RoundingMode;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
  * Class of methods for processing and generating geographically weighted
@@ -88,21 +90,20 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * 2DSquareCellDoubleFactory used to create grids @return @param gf @return
      */
     public List<Grids_GridNumber> regionUnivariateStatistics(
-            Grids_GridDouble grid,
-            //Vector statistics,
-            List<String> statistics,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException, Exception {
+            Grids_GridDouble grid, List<String> statistics, BigDecimal distance,
+            BigDecimal weightIntersect, int weightFactor,
+            Grids_GridFactoryDouble gf, int dp, RoundingMode rm) throws
+            IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> result = new ArrayList<>();
         //Vector result = new Vector();
 
         long ncols = grid.getNCols();
         long nrows = grid.getNRows();
         Grids_Dimensions dimensions = grid.getDimensions();
-        double ndv = grid.getNoDataValue();
-        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble());
+        BigDecimal ndv = grid.ndv;
+        double ndvd = grid.getNoDataValue();
+
+        int cellDistance = grid.getCellDistance(distance).intValue();
 
         // @HACK If cellDistance is so great that data for a single kernel is
         // unlikely to fit in memory
@@ -113,7 +114,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     distance,
                     weightIntersect,
                     weightFactor,
-                    gf);
+                    gf, dp, rm);
         }
 
         boolean doSum = false;
@@ -254,14 +255,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         //Grid2DSquareCellDouble zscoreGrid = null;
         //Grid2DSquareCellDouble weightedZscoreGrid = null;
-        double cellX;
-        double cellY;
-        double thisDistance;
-        double thisCellX;
-        double thisCellY;
-        double value;
-
-        gf.setNoDataValue(ndv);
+        gf.setNoDataValue(ndvd);
 
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doSum || doWSum || doNWSum || doWSumN || doMean || doWMean1
@@ -301,25 +295,16 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 wMeanNGrid = (Grids_GridDouble) gf.create(nrows, ncols,
                         dimensions);
             }
-            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
-                    cellDistance, distance, weightIntersect, weightFactor);
-            double totalSumWeight = kernelParameters[0];
-            double totalCells = kernelParameters[1];
-            double weight;
-            double sumWeight;
-            double sumCells;
-            double sum;
-            double wSum;
-            double nWSum;
-            double wSumN;
-            double wMean;
-            double nWMean;
-            //double wMeanN;
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
+                    cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal totalSumWeight = kernelParameters[0];
+            BigDecimal totalCells = kernelParameters[1];
             long row;
             long col;
             int p;
             int q;
-            double[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
+            BigDecimal[][] kernel = Grids_Kernel.getKernelWeights(grid,
+                    distance, weightIntersect, weightFactor, dp, rm);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             for (row = 0; row < nrows; row++) {
 //                //debug
@@ -333,83 +318,88 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         data = getRowProcessData(grid, data, cellDistance, row,
                                 col);
                     }
-                    sumCells = 0.0d;
-                    sumWeight = 0.0d;
-                    sum = 0.0d;
-                    wSum = 0.0d;
-                    nWSum = 0.0d;
-                    wSumN = 0.0d;
-                    wMean = 0.0d;
-                    nWMean = 0.0d;
+                    BigDecimal sumCells = BigDecimal.ZERO;
+                    BigDecimal sumWeight = BigDecimal.ZERO;
+                    BigDecimal sum = BigDecimal.ZERO;
+                    BigDecimal wSum = BigDecimal.ZERO;
+                    BigDecimal nWSum = BigDecimal.ZERO;
+                    BigDecimal wSumN = BigDecimal.ZERO;
+                    BigDecimal wMean = BigDecimal.ZERO;
+                    BigDecimal nWMean = BigDecimal.ZERO;
                     //wMeanN = 0.0d;
                     // Error thrown from here!
                     // GC overhead limit exceeded
                     // java.lang.OutOfMemoryError: GC overhead limit exceeded
                     // There is probably a better doing way?
-                    cellX = grid.getCellXDouble(col);
-                    cellY = grid.getCellYDouble(row);
+                    BigDecimal cellX = grid.getCellXBigDecimal(col);
+                    BigDecimal cellY = grid.getCellYBigDecimal(row);
                     // Calculate sumWeights and non-weighted stats
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
-                            value = data[p][q];
-                            weight = kernel[p][q];
-                            if (weight != ndv && value != ndv) {
-                                sumWeight += weight;
-                                sumCells += 1.0d;
-                                sum += value;
+                            double v = data[p][q];
+                            BigDecimal weight = kernel[p][q];
+                            if ((weight.compareTo(ndv) != 0) && v != ndvd) {
+                                sumWeight = sumWeight.add(weight);
+                                sumCells = sumCells.add(BigDecimal.ONE);
+                                sum = sum.add(BigDecimal.valueOf(v));
                             }
                         }
                     }
                     // Calculate weighted stats and store results
-                    if (sumCells > 0.0d && sumWeight > 0.0d) {
+                    if ((sumCells.compareTo(BigDecimal.ZERO) == 1)
+                            && (sumWeight.compareTo(BigDecimal.ZERO) == 1)) {
                         for (p = 0; p <= cellDistance * 2; p++) {
                             for (q = 0; q <= cellDistance * 2; q++) {
-                                value = data[p][q];
-                                weight = kernel[p][q];
-                                if (weight != ndv && value != ndv) {
-                                    sumWeight += weight;
-                                    sumCells += 1.0d;
-                                    sum += value;
-                                    nWSum += value
-                                            * (sumWeight / totalSumWeight)
-                                            * weight;
-                                    wSum += value * weight;
-                                    wMean += (value / sumWeight) * weight;
+                                double v = data[p][q];
+                                BigDecimal weight = kernel[p][q];
+                                if ((weight.compareTo(ndv) != 0) && v != ndvd) {
+                                    BigDecimal vbd = BigDecimal.valueOf(v);
+                                    sumWeight = sumWeight.add(weight);
+                                    sumCells = sumCells.add(BigDecimal.ONE);
+                                    sum = sum.add(vbd);
+                                    nWSum = nWSum.add(vbd.multiply(
+                                            Math_BigDecimal
+                                                    .divideRoundIfNecessary(
+                                                            sumWeight, totalSumWeight, dp, rm)).multiply(weight));
+                                    wSum = wSum.add(vbd.multiply(weight));
+                                    wMean = wMean.add(Math_BigDecimal
+                                            .divideRoundIfNecessary(vbd,
+                                                    sumWeight, dp, rm).multiply(weight));
                                 }
                             }
                         }
                         sumWeightGrid.setCell(row, col,
-                                sumWeight / totalSumWeight);
+                                sumWeight.doubleValue() / totalSumWeight.doubleValue());
                         //if ( doSum ) { sumGrid.setCell( row, col, sum ); }
                         if (doSum) {
                             sumGrid.setCell(row, col,
-                                    sum * sumCells / totalCells);
+                                    sum.multiply(sumCells).doubleValue() / totalCells.doubleValue());
                         }
                         if (doWSum) {
-                            wSumGrid.setCell(row, col, wSum);
+                            wSumGrid.setCell(row, col, wSum.doubleValue());
                         }
                         if (doNWSum) {
-                            nWSumGrid.setCell(row, col, nWSum);
+                            nWSumGrid.setCell(row, col, nWSum.doubleValue());
                         }
                         if (doWSumN) {
                             wSumNGrid.setCell(row, col,
-                                    wSum * sumWeight / totalSumWeight);
+                                    wSum.multiply(sumWeight).doubleValue() / totalSumWeight.doubleValue());
                         }
                         if (doMean) {
-                            meanGrid.setCell(row, col, sum / sumCells);
+                            meanGrid.setCell(row, col, sum.doubleValue() / sumCells.doubleValue());
                         }
                         if (doWMean1) {
-                            wMean1Grid.setCell(row, col, wSum / sumWeight);
+                            wMean1Grid.setCell(row, col, wSum.doubleValue() / sumWeight.doubleValue());
                         }
                         if (doWMean2) {
-                            wMean2Grid.setCell(row, col, wMean);
+                            wMean2Grid.setCell(row, col, wMean.doubleValue());
                         }
                         if (doNWMean) {
-                            nWMeanGrid.setCell(row, col, nWSum / sumWeight);
+                            nWMeanGrid.setCell(row, col, nWSum.doubleValue() / sumWeight.doubleValue());
                         }
                         if (doWMeanN) {
                             wMeanNGrid.setCell(row, col,
-                                    wMean * sumWeight / totalSumWeight);
+                                    (wMean.multiply(sumWeight)).doubleValue() / totalSumWeight.doubleValue());
                         }
 
                     }
@@ -450,30 +440,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWCSkew) {
                 wCSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
-            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
-                    cellDistance, distance, weightIntersect, weightFactor);
-            double totalSumWeight = kernelParameters[0];
-            double totalCells = kernelParameters[1];
-            double weight;
-            double sumWeight;
-            double wMean;
-            double sDWMean;
-            double sDMean;
-            double sDWMeanPow2;
-            double sDWMeanPow3;
-            double sDWMeanPow4;
-            //double sumCells;
-            //double mean = 0.0d;
-            //double sDMeanPow2;
-            //double sDMeanPow3;
-            //double sDMeanPow4;
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
+                    cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal totalSumWeight = kernelParameters[0];
+            BigDecimal totalCells = kernelParameters[1];
             double numerator;
             double denominator;
             long row;
             long col;
             int p;
             int q;
-            double[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor);
+            BigDecimal[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor, dp, rm);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             //double[][] meanData = getRowProcessInitialData( meanGrid, cellDistance, 0 );
             double[][] wMeanData = getRowProcessInitialData(wMean1Grid, cellDistance, 0);
@@ -491,25 +468,26 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     //sDMeanPow3 = 0.0d;
                     //sDMeanPow4 = 0.0d;
                     //sumCells = 0.0d;
-                    sDWMean = 0.0d;
-                    sDWMeanPow2 = 0.0d;
-                    sDWMeanPow3 = 0.0d;
-                    sDWMeanPow4 = 0.0d;
-                    sumWeight = 0.0d;
-                    cellX = grid.getCellXDouble(col);
-                    cellY = grid.getCellYDouble(row);
+                    BigDecimal sDWMean = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow2 = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow3 = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow4 = BigDecimal.ZERO;
+                    BigDecimal sumWeight = BigDecimal.ZERO;
+                    BigDecimal cellX = grid.getCellXBigDecimal(col);
+                    BigDecimal cellY = grid.getCellYBigDecimal(row);
                     // Take moments
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
-                            value = data[p][q];
-                            wMean = wMeanData[p][q];
-                            weight = kernel[p][q];
-                            if (value != ndv && weight != ndv) {
-                                sumWeight += weight;
-                                sDWMean += (value - wMean) * weight;
-                                sDWMeanPow2 += Math.pow((value - wMean), 2.0d) * weight;
-                                sDWMeanPow3 += Math.pow((value - wMean), 3.0d) * weight;
-                                sDWMeanPow4 += Math.pow((value - wMean), 4.0d) * weight;
+                            double v = data[p][q];
+                            BigDecimal wMean = BigDecimal.valueOf(wMeanData[p][q]);
+                            BigDecimal weight = kernel[p][q];
+                            if (v != ndvd && (weight.compareTo(ndv) != 0)) {
+                                BigDecimal vbd = BigDecimal.valueOf(v);
+                                sumWeight = sumWeight.add(weight);
+                                sDWMean = sDWMean.add((vbd.subtract(wMean)).multiply(weight));
+                                sDWMeanPow2 = sDWMeanPow2.add((vbd.subtract(wMean)).pow(2).multiply(weight));
+                                sDWMeanPow3 = sDWMeanPow3.add((vbd.subtract(wMean)).pow(3).multiply(weight));
+                                sDWMeanPow4 = sDWMeanPow4.add((vbd.subtract(wMean)).pow(4).multiply(weight));
                                 //sumCells += 1.0d;
                                 //if ( doMean ) {
                                 //    sDMean += ( value - mean );
@@ -521,18 +499,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         }
                     }
                     //if ( sumCells > 0.0d && sumWeight > 0.0d ) {
-                    if (sumWeight > 0.0d) {
+                    if (sumWeight.compareTo(BigDecimal.ZERO) == 1) {
                         //if ( doProp ) {
                         //    propGrid.setCell( row, col, ( sDMean / sumCells ) );
                         //}
                         if (doWProp) {
-                            wPropGrid.setCell(row, col, sDWMean / sumWeight);
+                            wPropGrid.setCell(row, col, sDWMean.doubleValue() / sumWeight.doubleValue());
                         }
                         //if ( doVar ) {
                         //    varGrid.setCell( row, col, ( sDMeanPow2 / sumCells ) );
                         //}
                         if (doWVar) {
-                            wVarGrid.setCell(row, col, sDWMeanPow2 / sumWeight);
+                            wVarGrid.setCell(row, col, sDWMeanPow2.doubleValue() / sumWeight.doubleValue());
                         }
                         //if ( doSkew ) {
                         //    // Need to control for Math.pow as it does not do roots of negative numbers at all well!
@@ -549,7 +527,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         //}
                         if (doWSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            numerator = sDWMeanPow3 / sumWeight;
+                            numerator = sDWMeanPow3.doubleValue() / sumWeight.doubleValue();
                             if (numerator > 0.0d) {
                                 wSkewGrid.setCell(row, col,
                                         (Math.pow(numerator, 1.0d / 3.0d)));
@@ -573,9 +551,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         //}
                         if (doWCVar) {
                             denominator = wVarGrid.getCell(row, col);
-                            if (denominator > 0.0d && denominator != ndv) {
+                            if (denominator > 0.0d && denominator != ndvd) {
                                 numerator = wPropGrid.getCell(row, col);
-                                if (numerator != ndv) {
+                                if (numerator != ndvd) {
                                     wCVarGrid.setCell(row, col,
                                             (numerator / denominator));
                                 }
@@ -600,8 +578,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         if (doWCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
                             denominator = wVarGrid.getCell(row, col);
-                            if (denominator > 0.0d && denominator != ndv) {
-                                numerator = sDWMeanPow3 / sumWeight;
+                            if (denominator > 0.0d && denominator != ndvd) {
+                                numerator = sDWMeanPow3.doubleValue() / sumWeight.doubleValue();
                                 if (numerator > 0.0d) {
                                     wCSkewGrid.setCell(row, col,
                                             (Math.pow(numerator, 1.0d / 3.0d)) / denominator);
@@ -757,10 +735,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_GridDouble grid,
             //Vector statistics,
             List<String> statistics,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException, Exception {
+            BigDecimal distance,
+            BigDecimal weightIntersect,
+            int weightFactor,
+            Grids_GridFactoryDouble gridFactory, int dp, RoundingMode rm)
+            throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         List<Grids_GridNumber> result = new ArrayList<>();
         //        Vector result = new Vector();
@@ -769,7 +748,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_Dimensions dimensions = grid.getDimensions();
         //double cellsize = dimensions[0].doubleValue();
         double noDataValue = grid.getNoDataValue();
-        int cellDistance = (int) Math.ceil(distance / grid.getCellsizeDouble());
+        int cellDistance = grid.getCellDistance(distance).intValue();
         boolean doMean = false;
         boolean doWMean = false;
         boolean doSum = false;
@@ -894,12 +873,6 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble wCVarGrid = null;
         Grids_GridDouble cSkewGrid = null;
         Grids_GridDouble wCSkewGrid = null;
-        double cellX;
-        double cellY;
-        double thisDistance;
-        double thisCellX;
-        double thisCellY;
-        double value;
         gridFactory.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
@@ -916,39 +889,32 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWSum) {
                 wSumGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
             }
-            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
-            double totalSumWeight = kernelParameters[0];
-            double totalCells = kernelParameters[1];
-            double weight;
-            double sumWeight;
-            double wMean;
-            double mean;
-            double sumCells;
-            double wSum;
-            double sum;
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal totalSumWeight = kernelParameters[0];
+            BigDecimal totalCells = kernelParameters[1];
             for (row = 0; row < nrows; row++) {
                 //debug
                 System.out.println("processing row " + row + " out of " + nrows);
                 for (col = 0; col < ncols; col++) {
-                    sumWeight = 0.0d;
-                    wMean = 0.0d;
-                    sumCells = 0.0d;
-                    wSum = 0.0d;
-                    sum = 0.0d;
-                    cellX = grid.getCellXDouble(col);
-                    cellY = grid.getCellYDouble(row);
+                    BigDecimal sumWeight = BigDecimal.ZERO;
+                    BigDecimal wMean = BigDecimal.ZERO;
+                    BigDecimal sumCells = BigDecimal.ZERO;
+                    BigDecimal wSum = BigDecimal.ZERO;
+                    BigDecimal sum = BigDecimal.ZERO;
+                    BigDecimal cellX = grid.getCellXBigDecimal(col);
+                    BigDecimal cellY = grid.getCellYBigDecimal(row);
                     // Calculate sumWeights and non-weighted stats
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            value = grid.getCell(row + p, col + q);
-                            if (value != noDataValue) {
-                                thisCellX = grid.getCellXDouble(col + q);
-                                thisCellY = grid.getCellYDouble(row + p);
-                                thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
-                                if (thisDistance < distance) {
-                                    sumWeight += Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                    sumCells += 1.0d;
-                                    sum += value;
+                            double v = grid.getCell(row + p, col + q);
+                            if (v != noDataValue) {
+                                BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
+                                BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
+                                if (thisDistance.compareTo(distance) == -1) {
+                                    sumWeight = sumWeight.add(Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm));
+                                    sumCells = sumCells.add(BigDecimal.ONE);
+                                    sum = sum.add(BigDecimal.valueOf(v));
                                 }
                             }
                         }
@@ -956,36 +922,36 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     //sumWeightGrid.setCell( i, j, sumWeight );
                     //sumCellGrid.setCell( i, j, sumCells );
                     // Calculate weighted stats and store results
-                    if (sumCells > 0.0d && sumWeight > 0.0d) {
+                    if (sumCells.compareTo(BigDecimal.ZERO) == 1 && sumWeight.compareTo(BigDecimal.ZERO) == 1) {
                         for (int p = -cellDistance; p <= cellDistance; p++) {
                             for (int q = -cellDistance; q <= cellDistance; q++) {
-                                value = grid.getCell(row + p, col + q);
-                                if (value != noDataValue) {
-                                    thisCellX = grid.getCellXDouble(col + q);
-                                    thisCellY = grid.getCellYDouble(row + p);
-                                    thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
-                                    if (thisDistance < distance) {
-                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                double v = grid.getCell(row + p, col + q);
+                                if (v != noDataValue) {
+                                    BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
+                                    BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                    BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                        BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
                                         //wMean += ( value / sumWeight ) * weight;
                                         //wMean += ( value / sumCells ) * weight;
-                                        wSum += value * weight;
+                                        wSum = wSum.add(BigDecimal.valueOf(v).multiply(weight));
                                     }
                                 }
                             }
                         }
                         if (doMean) {
-                            meanGrid.setCell(row, col, sum / sumCells);
+                            meanGrid.setCell(row, col, sum.doubleValue() / sumCells.doubleValue());
                         }
                         if (doWMean) {
-                            wMeanGrid.setCell(row, col, wSum / sumWeight);
+                            wMeanGrid.setCell(row, col, wSum.doubleValue() / sumWeight.doubleValue());
                         }
                         //if ( doSum ) { sumGrid.setCell( row, col, sum ); }
                         //if ( doWSum ) { wSumGrid.setCell( row, col, wSum ); }
                         if (doSum) {
-                            sumGrid.setCell(row, col, sum * sumCells / totalCells);
+                            sumGrid.setCell(row, col, (sum.multiply(sumCells)).doubleValue() / totalCells.doubleValue());
                         }
                         if (doWSum) {
-                            wSumGrid.setCell(row, col, wSum * sumWeight / totalSumWeight);
+                            wSumGrid.setCell(row, col, (wSum.multiply(sumWeight)).doubleValue() / totalSumWeight.doubleValue());
                         }
                     }
                 }
@@ -1025,83 +991,71 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWCSkew) {
                 wCSkewGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
             }
-            double[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor);
-            double totalSumWeight = kernelParameters[0];
-            double totalCells = kernelParameters[1];
-            double weight;
-            double sumWeight;
-            double sDWMean;
-            double sDMean;
-            double sDWMeanPow2;
-            double sDWMeanPow3;
-            double sDWMeanPow4;
-            double sumCells;
-            double wMean;
-            double mean = 0.0d;
-            double sDMeanPow2;
-            double sDMeanPow3;
-            double sDMeanPow4;
-            double numerator;
-            double denominator;
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal totalSumWeight = kernelParameters[0];
+            BigDecimal totalCells = kernelParameters[1];
+            BigDecimal mean = BigDecimal.ZERO;
             for (row = 0; row < nrows; row++) {
                 //debug
                 System.out.println("processing row " + row + " out of " + nrows);
                 for (col = 0; col < ncols; col++) {
-                    sDMean = 0.0d;
-                    sDMeanPow2 = 0.0d;
-                    sDMeanPow3 = 0.0d;
-                    sDMeanPow4 = 0.0d;
-                    sumCells = 0.0d;
-                    sDWMean = 0.0d;
-                    sDWMeanPow2 = 0.0d;
-                    sDWMeanPow3 = 0.0d;
-                    sDWMeanPow4 = 0.0d;
-                    sumWeight = 0.0d;
-                    cellX = grid.getCellXDouble(col);
-                    cellY = grid.getCellYDouble(row);
+                    BigDecimal sDMean = BigDecimal.ZERO;
+                    BigDecimal sDMeanPow2 = BigDecimal.ZERO;
+                    BigDecimal sDMeanPow3 = BigDecimal.ZERO;
+                    BigDecimal sDMeanPow4 = BigDecimal.ZERO;
+                    BigDecimal sumCells = BigDecimal.ZERO;
+                    BigDecimal sDWMean = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow2 = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow3 = BigDecimal.ZERO;
+                    BigDecimal sDWMeanPow4 = BigDecimal.ZERO;
+                    BigDecimal sumWeight = BigDecimal.ZERO;
+                    BigDecimal cellX = grid.getCellXBigDecimal(col);
+                    BigDecimal cellY = grid.getCellYBigDecimal(row);
                     // Take moments
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            value = grid.getCell(row + p, col + q);
-                            if (value != noDataValue) {
-                                thisCellX = grid.getCellXDouble(col + q);
-                                thisCellY = grid.getCellYDouble(row + p);
-                                thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY);
-                                if (thisDistance < distance) {
-                                    wMean = wMeanGrid.getCell(row + p, col + q);
-                                    weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                    sumWeight += weight;
-                                    sDWMean += (value - wMean) * weight;
-                                    sDWMeanPow2 += Math.pow((value - wMean), 2.0d) * weight;
-                                    sDWMeanPow3 += Math.pow((value - wMean), 3.0d) * weight;
-                                    sDWMeanPow4 += Math.pow((value - wMean), 4.0d) * weight;
-                                    sumCells += 1.0d;
+                            double v = grid.getCell(row + p, col + q);
+                            if (v != noDataValue) {
+                                BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
+                                BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
+                                if (thisDistance.compareTo(distance) == -1) {
+                                    BigDecimal vbd = BigDecimal.valueOf(v);
+                                    BigDecimal wMean = BigDecimal.valueOf(wMeanGrid.getCell(row + p, col + q));
+                                    BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                    sumWeight = sumWeight.add(weight);
+                                    BigDecimal delta = vbd.subtract(wMean);
+                                    sDWMean = sDWMean.add(delta.multiply(weight));
+                                    sDWMeanPow2 = sDWMeanPow2.add(delta.pow(2).multiply(weight));
+                                    sDWMeanPow3 = sDWMeanPow3.add(delta.pow(3).multiply(weight));
+                                    sDWMeanPow4 = sDWMeanPow4.add(delta.pow(4).multiply(weight));
+                                    sumCells = sumCells.add(BigDecimal.ONE);
                                     if (doMean) {
-                                        sDMean += (value - mean);
-                                        sDMeanPow2 += Math.pow((value - mean), 2.0d);
-                                        sDMeanPow3 += Math.pow((value - mean), 3.0d);
-                                        sDMeanPow4 += Math.pow((value - mean), 4.0d);
+                                        sDMean = sDMean.add((vbd.subtract(mean)));
+                                        sDMeanPow2 = sDMeanPow2.add(delta.pow(2));
+                                        sDMeanPow3 = sDMeanPow3.add(delta.pow(3));
+                                        sDMeanPow4 = sDMeanPow4.add(delta.pow(4));
                                     }
                                 }
                             }
                         }
                     }
-                    if (sumCells > 0.0d && sumWeight > 0.0d) {
+                    if (sumCells.compareTo(BigDecimal.ZERO) == 1 && sumWeight.compareTo(BigDecimal.ZERO) == 1) {
                         if (doProp) {
-                            propGrid.setCell(row, col, (sDMean / sumCells));
+                            propGrid.setCell(row, col, (sDMean.doubleValue() / sumCells.doubleValue()));
                         }
                         if (doWProp) {
-                            wPropGrid.setCell(row, col, (sDWMean / sumWeight));
+                            wPropGrid.setCell(row, col, (sDWMean.doubleValue() / sumWeight.doubleValue()));
                         }
                         if (doVar) {
-                            varGrid.setCell(row, col, (sDMeanPow2 / sumCells));
+                            varGrid.setCell(row, col, (sDMeanPow2.doubleValue() / sumCells.doubleValue()));
                         }
                         if (doWVar) {
-                            wVarGrid.setCell(row, col, (sDWMeanPow2 / sumWeight));
+                            wVarGrid.setCell(row, col, (sDWMeanPow2.doubleValue() / sumWeight.doubleValue()));
                         }
                         if (doSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            numerator = sDMeanPow3 / sumCells;
+                            double numerator = sDMeanPow3.doubleValue() / sumCells.doubleValue();
                             if (numerator > 0.0d) {
                                 skewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)));
                             }
@@ -1114,7 +1068,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         }
                         if (doWSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            numerator = sDWMeanPow3 / sumWeight;
+                            double numerator = sDWMeanPow3.doubleValue() / sumWeight.doubleValue();
                             if (numerator > 0.0d) {
                                 wSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)));
                             }
@@ -1126,18 +1080,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                         }
                         if (doCVar) {
-                            denominator = varGrid.getCell(row, col);
+                            double denominator = varGrid.getCell(row, col);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = propGrid.getCell(row, col);
+                                double numerator = propGrid.getCell(row, col);
                                 if (numerator != noDataValue) {
                                     cVarGrid.setCell(row, col, (numerator / denominator));
                                 }
                             }
                         }
                         if (doWCVar) {
-                            denominator = wVarGrid.getCell(row, col);
+                            double denominator = wVarGrid.getCell(row, col);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = wPropGrid.getCell(row, col);
+                                double numerator = wPropGrid.getCell(row, col);
                                 if (numerator != noDataValue) {
                                     wCVarGrid.setCell(row, col, (numerator / denominator));
                                 }
@@ -1145,9 +1099,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         }
                         if (doCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            denominator = varGrid.getCell(row, col);
+                            double denominator = varGrid.getCell(row, col);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = sDMeanPow3 / sumCells;
+                                double numerator = sDMeanPow3.doubleValue() / sumCells.doubleValue();
                                 if (numerator > 0.0d) {
                                     cSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator);
                                 }
@@ -1161,9 +1115,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         }
                         if (doWCSkew) {
                             // Need to control for Math.pow as it does not do roots of negative numbers at all well!
-                            denominator = wVarGrid.getCell(row, col);
+                            double denominator = wVarGrid.getCell(row, col);
                             if (denominator > 0.0d && denominator != noDataValue) {
-                                numerator = sDWMeanPow3 / sumWeight;
+                                double numerator = sDWMeanPow3.doubleValue() / sumWeight.doubleValue();
                                 if (numerator > 0.0d) {
                                     wCSkewGrid.setCell(row, col, (Math.pow(numerator, 1.0d / 3.0d)) / denominator);
                                 }
@@ -1413,10 +1367,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @param gridFactory - the Grids_GridFactoryDouble to be used in processing
      * @return
      */
-    public Grids_GridDouble[] geometricDensity(
-            Grids_GridDouble grid,
-            double distance,
-            Grids_GridFactoryDouble gridFactory) throws IOException, ClassNotFoundException, Exception {
+    public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
+            BigDecimal distance, Grids_GridFactoryDouble gridFactory)
+            throws IOException, ClassNotFoundException, Exception {
         long n;
         n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
@@ -1425,9 +1378,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );
 
         Grids_Dimensions dimensions = grid.getDimensions();
-        double cellsize = grid.getCellsizeDouble();
+        double cellsize = grid.getCellsize().doubleValue();
         double noDataValue = grid.getNoDataValue();
-        int cellDistance = (int) Math.ceil(distance / cellsize);
+        int cellDistance = grid.getCellDistance(distance).intValue();
         double d1;
         double d2;
         double d3;
@@ -1743,9 +1696,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * no data space.) @param gridFactory @return @param gf @return
      */
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
-            Grids_GridDouble grid1, ArrayList statistics, double distance,
-            double weightIntersect, double weightFactor,
-            Grids_GridFactoryDouble gf) throws IOException, ClassNotFoundException, Exception {
+            Grids_GridDouble grid1, ArrayList statistics, BigDecimal distance,
+            BigDecimal weightIntersect, int weightFactor,
+            Grids_GridFactoryDouble gf, int dp, RoundingMode rm) 
+            throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         // Initialisation
         boolean dodiff = false;
@@ -1791,24 +1745,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_Dimensions grid1Dimensions = grid1.getDimensions();
         double grid1NoDataValue = grid1.getNoDataValue();
         double noDataValue = grid0NoDataValue;
-        int grid0CellDistance = (int) Math.ceil(distance / grid1.getCellsizeDouble());
+        int grid0CellDistance = grid0.getCellDistance(distance).intValue();
 
         // setNumberOfPairs is the number of pairs of values needed to calculate
         // the comparison statistics. It must be > 2
         int setNumberOfPairs = 20;
 
         int n;
-        double thisDistance;
-        double x0;
-        double x1;
-        double y0;
-        double y1;
-        double n0;
-        double n1;
-        double value0;
-        double value1;
-        double weight;
-        double sumWeight;
         // Intersection check
         BigDecimal grid0Cellsize;
         BigDecimal grid1Cellsize;
@@ -1831,8 +1774,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Set the total sum of all the weights (totalSumWeights) in a
         // region that would have no noDataValues
-        double[] kernelParameters = Grids_Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor);
-        double totalSumWeight = kernelParameters[0];
+        BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor, dp, rm);
+        BigDecimal totalSumWeight = kernelParameters[0];
 
         // Difference
         if (dodiff) {
@@ -1842,42 +1785,30 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             normalisedDiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             weightedNormalisedDiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
 
-            double max0;
-            double max1;
-            double min0;
-            double min1;
-            double range0;
-            double range1;
-            double diff;
-            double weightedDiff;
-            double normalisedDiff;
-            double weightedNormalisedDiff;
-            double dummy0;
-            double dummy1;
             long row;
             long col;
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
-                    max0 = Double.MIN_VALUE;
-                    max1 = Double.MIN_VALUE;
-                    min0 = Double.MAX_VALUE;
-                    min1 = Double.MAX_VALUE;
-                    x0 = grid0.getCellXDouble(col);
-                    y0 = grid0.getCellYDouble(row);
-                    diff = 0.0d;
-                    weightedDiff = 0.0d;
-                    normalisedDiff = 0.0d;
-                    weightedNormalisedDiff = 0.0d;
-                    sumWeight = 0.0d;
+                    double max0 = Double.MIN_VALUE;
+                    double max1 = Double.MIN_VALUE;
+                    double min0 = Double.MAX_VALUE;
+                    double min1 = Double.MAX_VALUE;
+                    BigDecimal x0 = grid0.getCellXBigDecimal(col);
+                    BigDecimal y0 = grid0.getCellYBigDecimal(row);
+                    BigDecimal diff = BigDecimal.ZERO;
+                    BigDecimal weightedDiff = BigDecimal.ZERO;
+                    BigDecimal normalisedDiff = BigDecimal.ZERO;
+                    BigDecimal weightedNormalisedDiff = BigDecimal.ZERO;
+                    BigDecimal sumWeight = BigDecimal.ZERO;
                     n = 0;
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            x1 = grid0.getCellXDouble(col + q);
-                            y1 = grid0.getCellYDouble(row + p);
-                            thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                            if (thisDistance < distance) {
-                                value0 = grid0.getCell(x1, y1);
-                                value1 = grid1.getCell(x1, y1);
+                            BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                            BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                            BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                            if (thisDistance.compareTo(distance) == -1) {
+                               double value0 = grid0.getCell(x1, y1);
+                               double value1 = grid1.getCell(x1, y1);
                                 if (value0 != grid0NoDataValue) {
                                     max0 = Math.max(max0, value0);
                                     min0 = Math.min(min0, value0);
@@ -1888,49 +1819,53 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                 }
                                 if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                     n++;
-                                    weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                    sumWeight += weight;
-                                    weightedDiff += (value0 - value1) * weight;
-                                    diff += value0 - value1;
+                                   BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                    sumWeight = sumWeight.add(weight);
+                                    BigDecimal diff2 = BigDecimal.valueOf(value0).subtract(BigDecimal.valueOf(value1));
+                                    weightedDiff = weightedDiff.add(diff2.multiply(weight));
+                                    diff = diff.add(diff2);
                                 }
                             }
                         }
                     }
                     if (n > setNumberOfPairs) {
                         if (max0 != Double.MIN_VALUE && min0 != Double.MAX_VALUE && max1 != Double.MIN_VALUE && min1 != Double.MAX_VALUE) {
-                            range0 = max0 - min0;
-                            range1 = max1 - min1;
+                           double range0 = max0 - min0;
+                           double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q);
-                                    y1 = grid0.getCellYDouble(row + p);
-                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                                    if (thisDistance < distance) {
-                                        value0 = grid0.getCell(x1, y1);
-                                        value1 = grid1.getCell(x1, y1);
-                                        if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
-                                            weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                       double v0 = grid0.getCell(x1, y1);
+                                       double v1 = grid1.getCell(x1, y1);
+                                        if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
+                                           BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp , rm);
+                                            double dummy0;
                                             if (range0 > 0.0d) {
-                                                dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
+                                                dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy0 = 1.0d;
                                             }
+                                            double dummy1;
                                             if (range1 > 0.0d) {
-                                                dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
+                                                dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            normalisedDiff += dummy0 - dummy1;
-                                            weightedNormalisedDiff += (dummy0 - dummy1) * weight;
+                                            BigDecimal ddiff = BigDecimal.valueOf(dummy0 - dummy1);
+                                            normalisedDiff = normalisedDiff.add(ddiff);
+                                            weightedNormalisedDiff = weightedNormalisedDiff.add(ddiff.multiply(weight));
                                         }
                                     }
                                 }
                             }
                         }
-                        diffGrid.setCell(row, col, diff);
-                        weightedDiffGrid.setCell(row, col, weightedDiff * sumWeight / totalSumWeight);
-                        normalisedDiffGrid.setCell(row, col, normalisedDiff);
-                        weightedNormalisedDiffGrid.setCell(row, col, weightedNormalisedDiff * sumWeight / totalSumWeight);
+                        diffGrid.setCell(row, col, diff.doubleValue());
+                        weightedDiffGrid.setCell(row, col, weightedDiff.multiply(sumWeight).doubleValue() / totalSumWeight.doubleValue());
+                        normalisedDiffGrid.setCell(row, col, normalisedDiff.doubleValue());
+                        weightedNormalisedDiffGrid.setCell(row, col, (weightedNormalisedDiff.multiply(sumWeight)).doubleValue() / totalSumWeight.doubleValue());
                     }
                 }
             }
@@ -1945,32 +1880,6 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             weightedZdiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             zdiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             // setNumberOfPairs defines how many cells are needed to calculate correlation
-            double max0;
-            double max1;
-            double min0;
-            double min1;
-            double range0;
-            double range1;
-            double sumWeight0;
-            double sumWeight1;
-            double weightedMean0;
-            double weightedMean1;
-            double weightedSum0Squared;
-            double weightedSum1Squared;
-            double weightedSum01;
-            double weightedStandardDeviation0;
-            double weightedStandardDeviation1;
-            double weightedZdiff;
-            double mean0;
-            double mean1;
-            double sum0Squared;
-            double sum1Squared;
-            double sum01;
-            double standardDeviation0;
-            double standardDeviation1;
-            double zdiff;
-            double denominator;
-            double normaliser;
             double dummy0 = Double.MIN_VALUE;
             double dummy1 = Double.MIN_VALUE;
             long row;
@@ -1978,56 +1887,56 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
                     //if ( grid0.getCell( row, col ) != grid0NoDataValue ) {
-                    x0 = grid0.getCellXDouble(col);
-                    y0 = grid0.getCellYDouble(row);
-                    max0 = Double.MIN_VALUE;
-                    max1 = Double.MIN_VALUE;
-                    min0 = Double.MAX_VALUE;
-                    min1 = Double.MAX_VALUE;
-                    sumWeight0 = 0.0d;
-                    sumWeight1 = 0.0d;
-                    weightedMean0 = 0.0d;
-                    weightedMean1 = 0.0d;
-                    weightedSum0Squared = 0.0d;
-                    weightedSum1Squared = 0.0d;
-                    weightedSum01 = 0.0d;
-                    weightedStandardDeviation0 = 0.0d;
-                    weightedStandardDeviation1 = 0.0d;
-                    weightedZdiff = 0.0d;
-                    mean0 = 0.0d;
-                    mean1 = 0.0d;
-                    sum0Squared = 0.0d;
-                    sum1Squared = 0.0d;
-                    sum01 = 0.0d;
-                    standardDeviation0 = 0.0d;
-                    standardDeviation1 = 0.0d;
-                    zdiff = 0.0d;
+                   BigDecimal x0 = grid0.getCellXBigDecimal(col);
+                   BigDecimal y0 = grid0.getCellYBigDecimal(row);
+                   double max0 = Double.MIN_VALUE;
+                   double max1 = Double.MIN_VALUE;
+                   double min0 = Double.MAX_VALUE;
+                    double min1 = Double.MAX_VALUE;
+                   BigDecimal sumWeight0 = BigDecimal.ZERO;
+                   BigDecimal sumWeight1 = BigDecimal.ZERO;
+                   BigDecimal weightedMean0 = BigDecimal.ZERO;
+                   BigDecimal weightedMean1 = BigDecimal.ZERO;
+                   BigDecimal weightedSum0Squared = BigDecimal.ZERO;
+                   BigDecimal weightedSum1Squared = BigDecimal.ZERO;
+                   BigDecimal weightedSum01 = BigDecimal.ZERO;
+                  BigDecimal  weightedStandardDeviation0 = BigDecimal.ZERO;
+                  BigDecimal  weightedStandardDeviation1 = BigDecimal.ZERO;
+                  BigDecimal  weightedZdiff = BigDecimal.ZERO;
+                  BigDecimal  mean0 = BigDecimal.ZERO;
+                  BigDecimal  mean1 = BigDecimal.ZERO;
+                  BigDecimal  sum0Squared = BigDecimal.ZERO;
+                  BigDecimal  sum1Squared = BigDecimal.ZERO;
+                  BigDecimal  sum01 = BigDecimal.ZERO;
+                  BigDecimal  standardDeviation0 = BigDecimal.ZERO;
+                  BigDecimal  standardDeviation1 = BigDecimal.ZERO;
+                  BigDecimal  zdiff = BigDecimal.ZERO;
                     n = 0;
-                    n0 = 0.0d;
-                    n1 = 0.0d;
+                   double n0 = 0.0d;
+                    double n1 = 0.0d;
                     // Calculate max min range sumWeight
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            x1 = grid0.getCellXDouble(col + q);
-                            y1 = grid0.getCellYDouble(row + p);
-                            thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                            if (thisDistance < distance) {
-                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                value0 = grid0.getCell(x1, y1);
-                                value1 = grid1.getCell(x1, y1);
-                                if (value0 != grid0NoDataValue) {
-                                    max0 = Math.max(max0, value0);
-                                    min0 = Math.min(min0, value0);
+                           BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                           BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                           BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                            if (thisDistance.compareTo(distance) == -1) {
+                               BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                               double v0 = grid0.getCell(x1, y1);
+                               double v1 = grid1.getCell(x1, y1);
+                                if (v0 != grid0NoDataValue) {
+                                    max0 = Math.max(max0, v0);
+                                    min0 = Math.min(min0, v0);
                                     n0 += 1.0d;
-                                    sumWeight0 += weight;
+                                    sumWeight0 = sumWeight0.add(weight);
                                 }
-                                if (value1 != grid1NoDataValue) {
-                                    max1 = Math.max(max1, value1);
-                                    min1 = Math.min(min1, value1);
+                                if (v1 != grid1NoDataValue) {
+                                    max1 = Math.max(max1, v1);
+                                    min1 = Math.min(min1, v1);
                                     n1 += 1.0d;
-                                    sumWeight1 += weight;
+                                    sumWeight1 = sumWeight1.add(weight);
                                 }
-                                if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
+                                if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                     n++;
                                 }
                             }
@@ -2035,147 +1944,152 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     }
                     if (n > setNumberOfPairs) {
                         if (max0 != Double.MIN_VALUE && min0 != Double.MAX_VALUE && max1 != Double.MIN_VALUE && min1 != Double.MAX_VALUE) {
-                            range0 = max0 - min0;
-                            range1 = max1 - min1;
+                           double range0 = max0 - min0;
+                           double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q);
-                                    y1 = grid0.getCellYDouble(row + p);
-                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                                    if (thisDistance < distance) {
-                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                        value0 = grid0.getCell(row + p, col + q);
-                                        value1 = grid1.getCell(row + p, col + q);
-                                        if (value0 != grid0NoDataValue) {
+                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                       BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                       double v0 = grid0.getCell(row + p, col + q);
+                                       double v1 = grid1.getCell(row + p, col + q);
+                                        if (v0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
-                                                dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
+                                                dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy0 = 1.0d;
                                             }
-                                            weightedMean0 += (dummy0 / sumWeight0) * weight;
-                                            mean0 += (dummy0 / n0);
+                                            weightedMean0 = weightedMean0.add(BigDecimal.valueOf(dummy0 / sumWeight0.doubleValue()).multiply(weight));
+                                            mean0 = mean0.add(BigDecimal.valueOf(dummy0 / n0));
                                         }
-                                        if (value1 != grid1NoDataValue) {
+                                        if (v1 != grid1NoDataValue) {
                                             if (range1 > 0.0d) {
-                                                dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
+                                                dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            weightedMean1 += (dummy1 / sumWeight1) * weight;
-                                            mean1 += (dummy1 / n1);
+                                            weightedMean1 = weightedMean1.add(BigDecimal.valueOf(dummy1 / sumWeight1.doubleValue()).multiply(weight));
+                                            mean1 = mean1.add(BigDecimal.valueOf(dummy1 / n1));
                                         }
                                     }
                                 }
                             }
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    x1 = grid0.getCellXDouble(col + q);
-                                    y1 = grid0.getCellYDouble(row + p);
-                                    thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                                    if (thisDistance < distance) {
-                                        weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
-                                        value0 = grid0.getCell(x1, y1);
-                                        if (value0 != grid0NoDataValue) {
+                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                       double v0 = grid0.getCell(x1, y1);
+                                        if (v0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
-                                                dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
+                                                dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy0 = 1.0d;
                                             }
-                                            standardDeviation0 += Math.pow((dummy0 - mean0), 2.0d);
-                                            weightedStandardDeviation0 += Math.pow((dummy0 - weightedMean0), 2.0d) * weight;
+                                            standardDeviation0 = standardDeviation0.add(BigDecimal.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
+                                            weightedStandardDeviation0 = weightedStandardDeviation0.add(BigDecimal.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
                                         }
-                                        value1 = grid1.getCell(x1, y1);
-                                        if (value1 != grid1NoDataValue) {
+                                       double v1 = grid1.getCell(x1, y1);
+                                        if (v1 != grid1NoDataValue) {
                                             if (range1 > 0.0d) {
-                                                dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
+                                                dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            standardDeviation1 += Math.pow((dummy1 - mean1), 2.0d);
-                                            weightedStandardDeviation1 += Math.pow((dummy1 - weightedMean1), 2.0d) * weight;
+                                            standardDeviation1 = standardDeviation1.add(BigDecimal.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
+                                            weightedStandardDeviation1 = weightedStandardDeviation1.add(BigDecimal.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
                                         }
-                                        if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
+                                        if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                             //weightedSum0Squared += Math.pow( ( ( value0 * weight ) - weightedMean0 ), 2.0d );
                                             //weightedSum1Squared += Math.pow( ( ( value1 * weight ) - weightedMean1 ), 2.0d );
                                             //weightedSum01 += ( ( value0 * weight ) - weightedMean0 ) * ( ( value1 * weight ) - weightedMean1 );
-                                            weightedSum0Squared += Math.pow((dummy0 - weightedMean0), 2.0d) * weight;
-                                            weightedSum1Squared += Math.pow((dummy1 - weightedMean1), 2.0d) * weight;
-                                            weightedSum01 += (dummy0 - weightedMean0) * (dummy1 - weightedMean1) * weight;
-                                            sum0Squared += Math.pow((dummy0 - mean0), 2.0d);
-                                            sum1Squared += Math.pow((dummy1 - mean1), 2.0d);
-                                            sum01 += (dummy0 - mean0) * (dummy1 - mean1);
+                                            weightedSum0Squared = weightedSum0Squared.add(BigDecimal.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
+                                            weightedSum1Squared = weightedSum1Squared.add(BigDecimal.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
+                                            weightedSum01 = weightedSum01.add(BigDecimal.valueOf((dummy0 - weightedMean0.doubleValue()) * (dummy1 - weightedMean1.doubleValue())).multiply(weight));
+                                            sum0Squared = sum0Squared.add(BigDecimal.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
+                                            sum1Squared = sum1Squared.add(BigDecimal.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
+                                            sum01 = sum01.add(BigDecimal.valueOf((dummy0 - mean0.doubleValue()) * (dummy1 - mean1.doubleValue())));
                                         }
                                     }
                                 }
                             }
-                            denominator = Math.sqrt(weightedSum0Squared) * Math.sqrt(weightedSum1Squared);
-                            if (denominator > 0.0d && denominator != noDataValue) {
-                                weightedCorrelationGrid.setCell(row, col, weightedSum01 / denominator);
+                           BigDecimal denominator = Math_BigDecimal.sqrt(weightedSum0Squared, dp, rm).multiply(Math_BigDecimal.sqrt(weightedSum1Squared, dp, rm));
+                            if (denominator.compareTo(BigDecimal.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
+                                weightedCorrelationGrid.setCell(row, col, weightedSum01.doubleValue() / denominator.doubleValue());
                             }
-                            denominator = Math.sqrt(sum0Squared) * Math.sqrt(sum1Squared);
-                            if (denominator > 0.0d && denominator != noDataValue) {
-                                correlationGrid.setCell(row, col, sum01 / denominator);
+                            denominator = Math_BigDecimal.sqrt(sum0Squared, dp, rm).multiply(Math_BigDecimal.sqrt(sum1Squared, dp, rm));
+                            if (denominator.compareTo(BigDecimal.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
+                                correlationGrid.setCell(row, col, sum01.doubleValue() / denominator.doubleValue());
                             }
-                            weightedStandardDeviation0 = Math.sqrt(weightedStandardDeviation0 / (n0 - 1.0d));
-                            standardDeviation0 = Math.sqrt(standardDeviation0 / (n0 - 1.0d));
-                            weightedStandardDeviation1 = Math.sqrt(weightedStandardDeviation1 / (n1 - 1.0d));
-                            standardDeviation1 = Math.sqrt(standardDeviation1 / (n1 - 1.0d));
+                           weightedStandardDeviation0 = BigDecimal.valueOf(Math.sqrt(weightedStandardDeviation0.doubleValue() / (n0 - 1.0d)));
+                            standardDeviation0 = BigDecimal.valueOf(Math.sqrt(standardDeviation0.doubleValue() / (n0 - 1.0d)));
+                            weightedStandardDeviation1 = BigDecimal.valueOf(Math.sqrt(weightedStandardDeviation1.doubleValue() / (n1 - 1.0d)));
+                            standardDeviation1 = BigDecimal.valueOf(Math.sqrt(standardDeviation1.doubleValue() / (n1 - 1.0d)));
                             // Calculate z scores and difference
-                            if (weightedStandardDeviation0 > 0.0d && weightedStandardDeviation1 > 0.0d) {
+                            if (weightedStandardDeviation0.compareTo(BigDecimal.ZERO) == 1 && weightedStandardDeviation1.compareTo(BigDecimal.ZERO) == 1) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        x1 = grid0.getCellXDouble(col + q);
-                                        y1 = grid0.getCellYDouble(row + p);
-                                        thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                                        if (thisDistance < distance) {
-                                            value0 = grid0.getCell(x1, y1);
-                                            value1 = grid1.getCell(x1, y1);
-                                            if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
+                                       BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                                       BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                       BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                   double v0 = grid0.getCell(x1, y1);
+                                           double v1 = grid1.getCell(x1, y1);
+                                            if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
-                                                    dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
+                                                    dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
                                                 } else {
                                                     dummy0 = 1.0d;
                                                 }
                                                 if (range1 > 0.0d) {
-                                                    dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
+                                                    dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                                weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance);
+                                               BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
                                                 //weightedZdiff += ( ( ( ( value0 * weight ) - weightedMean0 ) / weightedStandardDeviation0 ) - ( ( ( value1 * weight ) - weightedMean1 ) / weightedStandardDeviation1 ) );
-                                                weightedZdiff += (((dummy0 - weightedMean0) / weightedStandardDeviation0) - ((dummy1 - weightedMean1) / weightedStandardDeviation1)) * weight;
+                                                weightedZdiff = weightedZdiff.add(BigDecimal.valueOf(((
+                                                        ((dummy0 - weightedMean0.doubleValue()) / weightedStandardDeviation0.doubleValue())
+                                                                - ((dummy1 - weightedMean1.doubleValue()) / weightedStandardDeviation1.doubleValue())) * weight.doubleValue())));
+//                                                weightedZdiff += (((dummy0 - weightedMean0) / weightedStandardDeviation0)
+//                                                        - ((dummy1 - weightedMean1) / weightedStandardDeviation1)) * weight;
                                             }
                                         }
                                     }
                                 }
-                                weightedZdiffGrid.setCell(row, col, weightedZdiff);
+                                weightedZdiffGrid.setCell(row, col, weightedZdiff.doubleValue());
                             }
-                            if (standardDeviation0 > 0.0d && standardDeviation1 > 0.0d) {
+                            if (standardDeviation0.doubleValue() > 0.0d && standardDeviation1.doubleValue() > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        x1 = grid0.getCellXDouble(col + q);
-                                        y1 = grid0.getCellYDouble(row + p);
-                                        thisDistance = Grids_Utilities.distance(x0, y0, x1, y1);
-                                        if (thisDistance < distance) {
-                                            value0 = grid0.getCell(x1, y1);
-                                            value1 = grid1.getCell(x1, y1);
-                                            if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
+                                       BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
+                                       BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                       BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    if (thisDistance.compareTo(distance) == -1) {
+                                   double v0 = grid0.getCell(x1, y1);
+                                           double v1 = grid1.getCell(x1, y1);
+                                            if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
-                                                    dummy0 = (((value0 - min0) / range0) * 9.0d) + 1.0d;
+                                                    dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
                                                 } else {
                                                     dummy0 = 1.0d;
                                                 }
                                                 if (range1 > 0.0d) {
-                                                    dummy1 = (((value1 - min1) / range1) * 9.0d) + 1.0d;
+                                                    dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                                zdiff += (((dummy0 - mean0) / standardDeviation0) - ((dummy1 - mean1) / standardDeviation1));
+                                                zdiff = zdiff.add(BigDecimal.valueOf((((dummy0 - mean0.doubleValue()) / standardDeviation0.doubleValue()) - ((dummy1 - mean1.doubleValue()) / standardDeviation1.doubleValue()))));
+                                                //zdiff += (((dummy0 - mean0) / standardDeviation0) - ((dummy1 - mean1) / standardDeviation1));
                                             }
                                         }
                                     }
                                 }
-                                zdiffGrid.setCell(row, col, zdiff);
+                                zdiffGrid.setCell(row, col, zdiff.doubleValue());
                             }
                         }
                     }

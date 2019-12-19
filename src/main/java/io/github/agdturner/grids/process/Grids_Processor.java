@@ -2329,23 +2329,23 @@ public class Grids_Processor extends Grids_Object {
     protected double[][] getRowProcessData(Grids_GridDouble g,
             double[][] previous, int cellDistance, long row, long col)
             throws IOException, Exception, ClassNotFoundException {
-        double[][] result = previous;
+        double[][] r = previous;
         if (col == 0) {
             return getRowProcessInitialData(g, cellDistance, row);
         } else {
             // shift columns one left
             for (int i = 0; i <= cellDistance * 2; i++) {
                 for (int j = 0; j <= (cellDistance * 2) - 1; j++) {
-                    result[i][j] = previous[i][j + 1];
+                    r[i][j] = previous[i][j + 1];
                 }
             }
             // getLastColumn
             for (int i = -cellDistance; i <= cellDistance; i++) {
-                result[i + cellDistance][cellDistance * 2]
+                r[i + cellDistance][cellDistance * 2]
                         = g.getCell((long) i + row, (long) col + cellDistance);
             }
         }
-        return result;
+        return r;
     }
 
     /**

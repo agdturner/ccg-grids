@@ -245,7 +245,6 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
     }
 
     /**
-     * @param dir The directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * returned.
@@ -254,7 +253,8 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
     @Override
     public Grids_GridInt create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_GridInt r = new Grids_GridInt(env, store, store.getNextID(), gridFile);
+        Grids_GridInt r = new Grids_GridInt(env, store, store.getNextID(), 
+                gridFile, NoDataValue);
         store.addDir();
         return r;
     }
