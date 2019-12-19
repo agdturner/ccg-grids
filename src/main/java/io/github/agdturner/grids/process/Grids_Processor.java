@@ -16,7 +16,6 @@
 package io.github.agdturner.grids.process;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -198,7 +197,7 @@ public class Grids_Processor extends Grids_Object {
      * @param ge
      */
     public Grids_Processor(Grids_Environment ge) throws Exception, IOException,
-            ClassNotFoundException, Exception {
+            ClassNotFoundException {
         super(ge);
         StartTime = System.currentTimeMillis();
         files = ge.files;
@@ -372,8 +371,7 @@ public class Grids_Processor extends Grids_Object {
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble maskDouble;
-                maskDouble = (Grids_GridDouble) mask;
+                Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
                 double maskNoDataValue = maskDouble.getNoDataValue();
                 double value;
                 Iterator<Grids_2D_ID_int> ite = maskDouble.iterator().getGridIterator();
@@ -442,11 +440,10 @@ public class Grids_Processor extends Grids_Object {
                 Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
                 double maskNoDataValue = maskDouble.getNoDataValue();
                 double value;
-                Iterator ite = maskDouble.getChunkIDs().iterator();
+                Iterator<Grids_2D_ID_int> ite = maskDouble.getChunkIDs().iterator();
                 Grids_ChunkDouble maskChunk;
                 while (ite.hasNext()) {
-                    maskChunk = (Grids_ChunkDouble) mask.getChunk(
-                            (Grids_2D_ID_int) ite.next());
+                    maskChunk = (Grids_ChunkDouble) mask.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
                     env.addToNotToCache(g, chunkID);
                     env.addToNotToCache(mask, chunkID);
@@ -926,42 +923,20 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Adds value to grid for cells with CellID in _CellIDs
+     * Adds value to grid for cells with cell ID in cellIDs.
      *
-     * @param grid The Grids_GridDouble to be processed
-     * @param cellIDs A HashSet containing CellIDs.
-     * @param value The value to be added.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then cache operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param g The grid to be processed.
+     * @param cellIDs The cell IDs.
+     * @param v The value to be added.
      */
-    public void addToGrid(
-            Grids_GridDouble grid,
-            HashSet cellIDs,
-            double value,
-            boolean hoome) throws IOException, ClassNotFoundException, Exception {
-        try {
-            env.checkAndMaybeFreeMemory(hoome);
-            Iterator iterator1 = cellIDs.iterator();
-            while (iterator1.hasNext()) {
-                //grid.addToCell( ( CellID ) iterator1.next(), value );
-                Grids_2D_ID_long cellID = (Grids_2D_ID_long) iterator1.next();
-                if (cellID != null) {
-                    grid.addToCell(cellID, value);
-                }
-            }
-            env.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve();
-                if (!env.cacheChunk(env.HOOMEF)) {
-                    throw e;
-                }
-                env.initMemoryReserve();
-                addToGrid(grid, cellIDs, value, hoome);
-            } else {
-                throw e;
-            }
+    public void addToGrid(Grids_GridDouble g, HashSet<Grids_2D_ID_long> cellIDs,
+            double v) throws IOException, ClassNotFoundException,
+            Exception {
+        env.checkAndMaybeFreeMemory();
+        Iterator<Grids_2D_ID_long> ite = cellIDs.iterator();
+        while (ite.hasNext()) {
+            g.addToCell(ite.next(), v);
+            env.checkAndMaybeFreeMemory();
         }
     }
 
@@ -1846,10 +1821,10 @@ public class Grids_Processor extends Grids_Object {
             double halfCellsize = cH.doubleValue();
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
-                   BigDecimal value = grid.getCellBigDecimal(row, col);
+                    BigDecimal value = grid.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
-                       BigDecimal x = grid.getCellXBigDecimal(col);
-                       BigDecimal y = grid.getCellYBigDecimal(row);
+                        BigDecimal x = grid.getCellXBigDecimal(col);
+                        BigDecimal y = grid.getCellYBigDecimal(row);
                         bounds = grid.getCellBounds(cH, row, col);
                         max = r.getCell(bounds[0], bounds[3]);
                         if (max != ndvd) {
@@ -1890,8 +1865,8 @@ public class Grids_Processor extends Grids_Object {
                     BigDecimal value = grid.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
                         double vD = value.doubleValue();
-                       BigDecimal x = grid.getCellXBigDecimal(col);
-                       BigDecimal y = grid.getCellYBigDecimal(row);
+                        BigDecimal x = grid.getCellXBigDecimal(col);
+                        BigDecimal y = grid.getCellYBigDecimal(row);
                         bounds = grid.getCellBounds(cH, row, col);
                         min = r.getCell(bounds[0], bounds[3]);
                         if (min != ndvd) {

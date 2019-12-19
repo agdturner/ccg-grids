@@ -18,7 +18,6 @@ package io.github.agdturner.grids.core;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.grid.Grids_Grid;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -32,8 +31,6 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import io.github.agdturner.grids.io.Grids_Files;
 import io.github.agdturner.grids.process.Grids_Processor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Grids_Environment.
@@ -601,7 +598,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException
      */
     @Override
-    public long initMemoryReserve_Account(boolean hoome) throws IOException, 
+    public long initMemoryReserve_Account(boolean hoome) throws IOException,
             Exception {
         try {
             initMemoryReserve();
@@ -830,9 +827,9 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>>
-            initMemoryReserve_AccountDetail(Grids_Grid g, 
-                    Grids_2D_ID_int chunkID, boolean hoome) throws IOException, 
-                    Exception {
+            initMemoryReserve_AccountDetail(Grids_Grid g,
+                    Grids_2D_ID_int chunkID, boolean hoome) throws IOException,
+            Exception {
         try {
             initMemoryReserve();
             return checkAndMaybeFreeMemory_AccountDetail(g, chunkID, hoome);
@@ -1160,30 +1157,34 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to check and maybe free fast access memory by writing chunks to
-     * file. If available fast access memory is not low then this simply returns
-     * true. If available fast access memory is low, then an attempt is made to
-     * cache some chunks. Chunks in NotToCache are not cached unless desperate.
+     * A method to check and maybe free fast access memory by clearing chunks
+     * from memory. If available fast access memory is not low then this simply
+     * returns true. If available fast access memory is low, then an attempt is
+     * made to cache some chunks. Chunks in NotToCache are not cached unless
+     * desperate.
      *
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
     @Override
     public boolean checkAndMaybeFreeMemory() throws IOException, Exception {
-        if (notToCache.isEmpty()) {
-            return checkAndMaybeFreeMemory_CacheAny();
-        } else {
-            do {
-                if (cacheChunkExcept(notToCache)) {
-                    if (getTotalFreeMemory() < Memory_Threshold) {
-                        return true;
+        if (getTotalFreeMemory() < Memory_Threshold) {
+            if (notToCache.isEmpty()) {
+                return checkAndMaybeFreeMemory_CacheAny();
+            } else {
+                do {
+                    if (cacheChunkExcept(notToCache)) {
+                        if (getTotalFreeMemory() < Memory_Threshold) {
+                            return true;
+                        }
+                    } else {
+                        break;
                     }
-                } else {
-                    break;
-                }
-            } while (getTotalFreeMemory() < Memory_Threshold);
-            return checkAndMaybeFreeMemory_CacheAny();
+                } while (getTotalFreeMemory() < Memory_Threshold);
+                return checkAndMaybeFreeMemory_CacheAny();
+            }
         }
+        return true;
     }
 
     /**
