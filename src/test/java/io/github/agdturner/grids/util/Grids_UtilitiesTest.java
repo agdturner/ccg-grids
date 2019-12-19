@@ -566,6 +566,8 @@ public class Grids_UtilitiesTest {
         Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
         long nrows = 10L;
         long ncols = 10L;
+        int dp = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
         Grids_Dimensions dimensions = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.valueOf(ncols), BigDecimal.ZERO,
                 BigDecimal.valueOf(nrows), BigDecimal.ONE);
@@ -575,7 +577,7 @@ public class Grids_UtilitiesTest {
         setRandom(ge, yGrid);
         int divisions = 10;
         //Object[] expResult = null;
-        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp);
+        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, dp, rm);
         Grids_ImageExporter ie = new Grids_ImageExporter(ge);
         String type = "PNG";
         Path file = Generic_IO.createNewFile(gp.env.files.getGeneratedDir()
