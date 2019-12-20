@@ -2,42 +2,46 @@
 
 https://github.com/agdturner/grids
 
-A Java library for 2D square celled (and in the future 3D cube celled) spatial raster data processing. The library evolved to be capable of processing many hundreds of input and output grids each with potentially many thousands of rows and columns using computers with a few hundred megabytes of fast access memory and a few gigabytes of available disk space.
+A Java library for storing and processing two-dimensional (2D) lattice based raster data otherwise known as grids. It is capable of processing multiple input and output grids, each of which may be too large to store in the fast access memory of a computer (commonly refered to as ram or memory) - for which some of the data must be stored in slower access storage (commonly refered to as disk). Currently the lattice or grids are assumed to be square celled with the cells aligning with 2D coordinate axes X znd Y which reference the locations of the values for each lattice point or cell. Each cell is also referenced by a row (an alignment of lattice points with the same Y) and a column (an alignment of lattice points with the same X) which are composed into identifiers called cell IDs.
 
-Each individual 2D square celled spatial raster data layer (grid) contains a specific type of value and is comprised of chunks. Currently boolean, int and double type value grids are supported. The number of rows and columns in a typical chunk are set. Those chunks in the last column and last row of chunks may have a smaller number of rows and columns.
+The library has been used to process many hundreds of grids with many tens of thousands of rows and columns simultaneously using computers with a few hundred megabytes of fast access memory and a few gigabytes of available disk space.
 
-Each chunk of each grid may be stored either in the fast access memeory or on the disk using a few different supported structures. For each different type of grid (those containing boolean, int, or double values) the values in each chunk can be stored in a two dimensional array. For numerical types, there are other options which might be more efficient.
+Each grid can be subdivided into chunks with a smaller number of rows and columns in each chunk, or they can comprise of a single chunk. All the chunks and the grid itself represent lattice point or cell values all of the same specific type. Currently boolean, Boolean, int and double type value grids are supported, but there are plans to also support BigInteger and BigDecimal values. The number of rows and columns of cells in each chunk is optional. Those chunks in the last column and last row of chunks may have a smaller number of rows and columns.
 
-Most of the methods attempt to prevent OutOfMemoryErrors being thrown and also recover if they are. This happens by attempting to swap chunks between the fast access memory and disk as necessary.
+Each chunk of each grid may be stored in the fast access memory of the computer and/or on the disk. There are three main different types of chunk containing boolean, Boolean, int, or double values: singlets - where a single value is used to store all the values at each lattice point or cell; maps - where there are default values and BitSets and Maps that indicate the locations at which there are values which are the same; and, arrays - which are 2D and where the first element indexes the row and the second element indexes the column of the chunk for the lattice or cell value. Each chunk is typically only stored in one type, but it is possible to cache out different types and swap between these. There has to be a chunged in chunk type if a singlet type storage has been used, but a different value is to be set at some location in the chunk to change if more than one type of value is to be stored that chunk. Whether a map or an array is more approriate depends on the density and variety of values stored, how much the values are changing and the importance of compactness of data storage of each chunk. For efficiency, it is the density of data values in the chunks of the entire grid and the number of rows and columns in each chunk that are likely to have the biggest efects. Often it is most sensible to either have the number of rows in each chunk being an exact integer division of the number of rows in the grid (and likewise the number of columns being an exact integer division of the number of columns in the grid); or to set the number of rows in each chunk and the number of columns in each chunk to be the same and process square shaped chunks. But this all depends on how stripey or chequered the data values are in the grid. Sometimes they are neither, but sometimes the user knows and can thus make adjustments to improve efficiency. Always currently the first row and first column in the chunk in the first row and column of chunks is for row 0 and column 0. Whilst the number of rows or columns in any chunk can be as low as 1 at most the chunk must contain fewer that 2147483648 lattice points or cells. It is suggested to use 65536 (256 x 256) or something between 256 (64 x 64) and 4194304 (2048 x 2048) and not go beyond 1073741824 (32768 X 32768) unless really testing the limits of the library. A further limit is that there can be no more than 2147483648 chunks in a single grid. So the theoretical limit for the number of rows (and columns) of a square grid is 2147483648. For many applications this will be sufficient and 
+currently only super computers could handle anything nearly so large.
 
-The library has evolved since around the year 2000 and is actively being developed. Some more details about the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
+For each chunk it is known whether the version cached on disk is up to date.
+
+The library attempts to prevent and handle OutOfMemoryErrors. If however the grids enviornment does not have approriate memory to clear then OutOfMemoryErrors are thrown upwards in the hope that some other part of the data processing environment has more approriate data to clear. If this is not the case then the processing is likely to grind on, but is perhaps unlikely to complete in a reasonable time frame. Currently no information is provided to the user if this is happeneing, but in a future version this feature can be added so that the user is aware that they should either consider changing the data structure increase the size of the virtual machine in which the program is running and/or re-run the process on a computer with more memory.
+
+The library has evolved since around the year 2000 and is actively being developed. Some more history abou the evolution of the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
 
 ## Usages
-1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were used in various projects for a range of geographical modelling tasks and to explore for evidence of geographical clustering. In this respect it has most recently been used in the Digital Welfare Project to reveal a change in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
+1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were used in various academic research projects for a range of geographical modelling tasks and to explore for evidence of geographical clustering and changes to geographical clustering over time. In this respect it has most recently been used in the Digital Welfare Project to reveal changes in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
 2. Processing digital elevation data into geomorphometrics - see: https://github.com/agdturner/agdt-java-project-Geomorphometrics.
 3. Producing density plots of lines and points to help reveal relationships between variables.
 4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-generic-vector
 
-More example usages are wanted. If you use this library please add to this list.
+More example usages are wanted. If you use this library please get in contact to add your usage to this list.
 
 ## Code status and development roadmap
 This code is actively being developed.
 For a 1.0.0 release, the plan is:
-1. To remove dependencies on JAI and to move the JAI dependent code to a plugin or delete it permanently as there is not much advnatage gained from using this.
-2. To develop some more usage examples to showcase what the library can do.
-3. To produce more unit tests to test the core functionality and capabilities of the library.
-4. To update the source code documentation.
-For a 2.0.0 release the plan is to additionally support BigInteger and BigDecimal type numerical grids.
-For a 3.0.0 Support 3D grids.
+* To provide a rationalised documented well tested code base. The processing classes geared for processing digital elevation data and for generating geographically weighted statistics will be moved to other libraries. The testing will focus on the Grids_Processing methods which should cover things that need testing for users. It is not envisaged to have a full test suite at this stage to test absoultely everything and provide in that way robustness for development going forwards (although that would be a good thing to have, it would come at a cost of not doing other things that could be more important!)
+* Push artifacts to Maven Central: https://mvnrepository.com/repos/central
+Version 2 aims to provide support for BigInteger and BigDecimal type numerical grids.
+Version 3 aims to provide support for 3D grids.
 
 ## Dependencies
+There are no third party dependencies except for those used in testing.
 Please see the pom.xml for details.
 
-## Contributions
-Please raise issues and submit pull requests in the usual way. Contributions will be acknowledged.
+## Contributions and collaboration
+Currently there is no community development of this library and there are no known users other than the developer. Developing a community and sustaining software development over th lon-term is hard. If you find this software useful and you want to help develop it, then please contact the developer and we can try to come up with a plan. It might be better ultimately to try to integrate this code into another code base or for you to simply fork the library, but let us first consider if and how best to work together.
 
 ## Acknowledgements
-A very early version of this library was based on some raster code from GeoTools originally developed by James MacGill and Ian Turton. The development has been supported by numerous research grants and the University of Leeds. 
+A very early version of this library was based on code developed by James MacGill and Ian Turton that formed part of GeoTools. The development has been supported by numerous research grants and the University of Leeds. 
 
 ## LICENCE
 Please see the standard Apache 2.0 open source LICENCE.
