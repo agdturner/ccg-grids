@@ -208,7 +208,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             write(nCols, nRows, gridImageArray, type, file);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunkExcept_Account(g, env.HOOMEF) < 1) {
                     env.cacheChunks(env.HOOMEF);
                 }

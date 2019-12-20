@@ -579,11 +579,11 @@ public class Grids_Processor extends Grids_Object {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return rescale(g, type, min, max, hoome);
             } else {
                 throw e;
@@ -734,11 +734,11 @@ public class Grids_Processor extends Grids_Object {
             return rescale(g, type, min, max);
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return rescale(g, type, min, max, hoome);
             } else {
                 throw e;
@@ -2396,11 +2396,11 @@ public class Grids_Processor extends Grids_Object {
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 outputImage(g, outDir, ie, imageTypes, hoome);
             } else {
                 throw e;
@@ -2437,11 +2437,11 @@ public class Grids_Processor extends Grids_Object {
             eage.toAsciiFile(g, file, ndv);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 outputESRIAsciiGrid(g, outDir, eage, hoome);
             } else {
                 throw e;

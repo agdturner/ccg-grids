@@ -881,7 +881,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunk_AccountDetail();
                 if (r.isEmpty()) {
@@ -944,14 +944,14 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 Grids_2D_ID_int r = cacheChunk_AccountChunk();
                 if (r == null) {
                     if (!env.cacheChunk(env.HOOMEF)) {
                         throw e;
                     }
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return cacheChunk_AccountChunk(camfm, hoome);
             } else {
                 throw e;
@@ -1020,14 +1020,14 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 Grids_2D_ID_int r = cacheChunkExcept_AccountChunk(chunkIDs);
                 if (r == null) {
                     if (!env.cacheChunk(env.HOOMEF)) {
                         throw e;
                     }
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return r;
             } else {
                 throw e;
@@ -1087,7 +1087,7 @@ public abstract class Grids_Grid extends Grids_Object {
             }
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
                 cacheChunk(chunkID, camfm, hoome);
             } else {
@@ -1135,7 +1135,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
                 return cacheChunk(camfm, hoome);
             } else {
@@ -1185,7 +1185,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunkExcept_AccountDetail(cid);
                 if (r.isEmpty()) {
@@ -1259,7 +1259,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 Grids_2D_ID_int r = cacheChunkExcept_AccountChunk(cid);
                 if (r == null) {
                     if (env.cacheChunkExcept_Account(this, cid, false) < 1L) {
@@ -1324,7 +1324,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunkExcept_AccountDetail(i);
                 if (r.isEmpty()) {
@@ -1390,7 +1390,7 @@ public abstract class Grids_Grid extends Grids_Object {
             env.checkAndMaybeFreeMemory(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
                 cacheChunks(hoome);
             } else {
@@ -1442,7 +1442,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 long r = env.cacheChunkExcept_Account(this, s, false);
                 if (r < 1L) {
                     r = env.cacheChunkExcept_Account(this, s, false);
@@ -1485,7 +1485,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunkExcept_AccountDetail(s);
                 if (r.isEmpty()) {
@@ -1561,7 +1561,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 long r = env.cacheChunkExcept_Account(this, i, false);
                 if (r < 1L) {
                     r = env.cacheChunkExcept_Account(this, i, false);
@@ -1624,7 +1624,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 long r = env.cacheChunkExcept_Account(this, i, false);
                 if (r < 1L) {
                     r = env.cacheChunkExcept_Account(this, i, false);
@@ -1723,7 +1723,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunkExcept_AccountDetail(s);
                 if (r == null) {
@@ -1731,7 +1731,7 @@ public abstract class Grids_Grid extends Grids_Object {
                         throw e;
                     }
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return r;
             } else {
                 throw e;
@@ -1792,7 +1792,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> r
                         = cacheChunks_AccountDetail();
                 if (r.isEmpty()) {
@@ -1865,12 +1865,12 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (!cacheChunk()) {
                     throw e;
                 }
                 long r = 1;
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 r += cacheChunks_Account(cri0, cci0, cri1, cci1, hoome);
                 return r;
             } else {
@@ -2388,7 +2388,7 @@ public abstract class Grids_Grid extends Grids_Object {
 
     public void freeSomeMemoryAndResetReserve(
             int chunkRow, int chunkCol, OutOfMemoryError e) throws IOException, Exception {
-        //env.clearMemoryReserve();
+        //env.clearMemoryReserve(env.env);
         Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
         freeSomeMemoryAndResetReserve(chunkID, e);
     }
@@ -2416,7 +2416,7 @@ public abstract class Grids_Grid extends Grids_Object {
         if (!env.cacheChunk(env.HOOMEF)) {
             throw e;
         }
-        env.initMemoryReserve();
+        env.initMemoryReserve(env.env);
     }
 
     public void freeSomeMemoryAndResetReserve(OutOfMemoryError e) throws IOException, Exception {
@@ -2579,7 +2579,7 @@ public abstract class Grids_Grid extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
                 return getStats(hoome);
             } else {

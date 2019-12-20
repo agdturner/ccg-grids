@@ -556,11 +556,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             return slopeAndAspect;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return getSlopeAspect(g, distance, weightIntersect, weightFactor, dp, rm, hoome);
             }
             throw e;
@@ -1800,12 +1800,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     metrics1[i].setName(metrics1Names[i]);
                     isInitialised = true;
                 } catch (OutOfMemoryError e) {
-                    env.clearMemoryReserve();
+                    env.clearMemoryReserve(env.env);
                     System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
                     if (!env.cacheChunk(env.HOOMEF)) {
                         throw e;
                     }
-                    env.initMemoryReserve();
+                    env.initMemoryReserve(env.env);
                 }
                 System.out.println("Initialised result[" + i + "]");
             } while (!isInitialised);
@@ -3792,11 +3792,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             return upSlopeAreaMetrics;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 getUpSlopeAreaMetrics(grid, distance, weightFactor,
                         weightIntersect, gf, hoome);
             }

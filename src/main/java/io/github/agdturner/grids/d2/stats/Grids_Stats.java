@@ -102,11 +102,11 @@ public abstract class Grids_Stats extends Grids_Object {
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (!env.cacheChunk(env.HOOMEF)) {
                     throw e;
                 }
-                env.initMemoryReserve();
+                env.initMemoryReserve(env.env);
                 return toString(hoome);
             } else {
                 throw e;

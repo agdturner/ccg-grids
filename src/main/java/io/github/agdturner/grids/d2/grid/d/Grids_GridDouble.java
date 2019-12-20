@@ -355,7 +355,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             env.removeFromNotToCache(g, gChunkID);
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
-                                env.clearMemoryReserve();
+                                env.clearMemoryReserve(env.env);
                                 freeSomeMemoryAndResetReserve(e);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
                                 if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) { // Should also not cache out the chunk of grid thats values are being used to initialise this.
@@ -440,7 +440,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
-                                env.clearMemoryReserve();
+                                env.clearMemoryReserve(env.env);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
                                 if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**

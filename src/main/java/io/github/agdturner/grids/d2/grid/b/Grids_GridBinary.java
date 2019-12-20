@@ -288,7 +288,7 @@ public class Grids_GridBinary extends Grids_Grid {
             env.removeFromNotToCache(g, gChunkID);
         } catch (OutOfMemoryError e) {
             if (env.HOOME) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(e);
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(gcr, gcc);
                 HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToSwapOut 

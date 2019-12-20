@@ -229,7 +229,7 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
                     throw e;
                 }
@@ -265,7 +265,7 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
             return result;
         } catch (OutOfMemoryError e) {
             if (hoome) {
-                env.clearMemoryReserve();
+                env.clearMemoryReserve(env.env);
                 if (env.cacheChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
                     throw e;
                 }
