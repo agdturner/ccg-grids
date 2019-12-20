@@ -1,8 +1,8 @@
 # Grids
 
-https://github.com/agdturner/agdt-java-generic-grids
+https://github.com/agdturner/grids
 
-A Java library for 2D square celled raster data processing. The library evolved to be capable of processing many hundreds of input and output grids each with potentially many thousands of rows and columns using computers with a few hundred megabytes of fast access memory and a few gigabytes of available disk space.
+A Java library for 2D square celled (and in the future 3D cube celled) spatial raster data processing. The library evolved to be capable of processing many hundreds of input and output grids each with potentially many thousands of rows and columns using computers with a few hundred megabytes of fast access memory and a few gigabytes of available disk space.
 
 Each individual 2D square celled spatial raster data layer (grid) contains a specific type of value and is comprised of chunks. Currently boolean, int and double type value grids are supported. The number of rows and columns in a typical chunk are set. Those chunks in the last column and last row of chunks may have a smaller number of rows and columns.
 
