@@ -29,15 +29,12 @@ import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.Grids_GridNumber;
-import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDouble;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDouble;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleArray;
-import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleMap;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntArray;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntMap;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridFactoryInt;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
@@ -50,17 +47,13 @@ import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
-import io.github.agdturner.grids.d2.stats.Grids_StatsDouble;
-import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedDouble;
-import io.github.agdturner.grids.d2.stats.Grids_StatsInt;
-import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedInt;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridExporter;
 import io.github.agdturner.grids.io.Grids_Files;
 import io.github.agdturner.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
- * A class holding methods for processing individual or multiple grids.
+ * General methods for processing individual or multiple grids.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -82,28 +75,8 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_ChunkFactoryInt
      */
-    public Grids_ChunkFactoryInt defaultChunkIntFactory;
+//    public Grids_ChunkFactoryInt defaultChunkIntFactory;
 
-    /**
-     * Grids_ChunkFactoryIntSinglet
-     */
-    //public Grids_ChunkFactoryBoolean chunkBooleanFactory;
-    /**
-     * Grids_ChunkFactoryIntSinglet
-     */
-    //public Grids_ChunkFactoryBinary chunkBinaryFactory;
-    /**
-     * Grids_ChunkFactoryIntSinglet
-     */
-    //public Grids_ChunkFactoryIntSinglet GridChunkIntFactory;
-    /**
-     * Grids_ChunkIntArrayFactory
-     */
-    //public Grids_ChunkIntArrayFactory GridChunkIntArrayFactory;
-    /**
-     * Grids_ChunkFactoryIntMap
-     */
-    //public Grids_ChunkFactoryIntMap GridChunkIntMapFactory;
     /**
      * Grids_GridFactoryBoolean
      */
@@ -578,8 +551,8 @@ public class Grids_Processor extends Grids_Object {
                             for (int ccc = 0; ccc < chunkNCols; ccc++) {
                                 double value = gChunk.getCell(ccr, ccc);
                                 if (value != ndv) {
-                                    v = (((value - minGrid)
-                                            / rangeGrid) * range) + min;
+                                    v = (((value - minGrid) / rangeGrid) 
+                                            * range) + min;
                                     r.setCell(rChunk, ccr, ccc, v);
                                 }
                             }

@@ -24,14 +24,14 @@ import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleMap;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleArray;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
-import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkIteratorDouble;
+import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkIteratorDoubleSinglet;
 import io.github.agdturner.grids.d2.grid.Grids_GridIterator;
 
 /**
  * For iterating through the values in a Grids_GridDouble. The values are
  * returned chunk by chunk in row major order. The values within each chunk are
  * also returned in row major order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -44,7 +44,7 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public Grids_GridIteratorDouble(Grids_GridDouble g) throws IOException, 
+    public Grids_GridIteratorDouble(Grids_GridDouble g) throws IOException,
             ClassNotFoundException, Exception {
         super(g);
         TreeMap<Grids_2D_ID_int, Grids_Chunk> m = g.getChunkIDChunkMap();
@@ -72,31 +72,32 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
             ChunkIterator = new Grids_ChunkIteratorDoubleArrayOrMap(
                     (Grids_ChunkDoubleMap) Chunk);
         } else {
-            ChunkIterator = new Grids_ChunkIteratorDouble(
+            ChunkIterator = new Grids_ChunkIteratorDoubleSinglet(
                     (Grids_ChunkDoubleSinglet) Chunk);
         }
     }
 
     /**
-     * @param chunk
-     * @return Grids_AbstractIterator to iterate over values in chunk.
+     * @param c The chunk for which the iterator is returned.
+     * @return A {@link Grids_ChunkRowMajorOrderIterator} to iterate over values
+     * in {@code c}.
      */
     @Override
-    public Grids_ChunkRowMajorOrderIterator getChunkIterator(
-            Grids_Chunk chunk) {
-        if (chunk instanceof Grids_ChunkDoubleArray) {
+    public Grids_ChunkRowMajorOrderIterator getChunkIterator(Grids_Chunk c) 
+            throws Exception {
+        if (c instanceof Grids_ChunkDoubleArray) {
             return new Grids_ChunkIteratorDoubleArrayOrMap(
-                    (Grids_ChunkDoubleArray) chunk);
-        } else if (chunk instanceof Grids_ChunkDoubleMap) {
+                    (Grids_ChunkDoubleArray) c);
+        } else if (c instanceof Grids_ChunkDoubleMap) {
             return new Grids_ChunkIteratorDoubleArrayOrMap(
-                    (Grids_ChunkDoubleMap) chunk);
-        } else if (chunk instanceof Grids_ChunkDoubleSinglet) {
-            return new Grids_ChunkIteratorDouble( 
-                    (Grids_ChunkDoubleSinglet) chunk);
+                    (Grids_ChunkDoubleMap) c);
+        } else if (c instanceof Grids_ChunkDoubleSinglet) {
+            return new Grids_ChunkIteratorDoubleSinglet(
+                    (Grids_ChunkDoubleSinglet) c);
         } else {
-            throw new Error("Unrecognised type of chunk "
-                        + this.getClass().getName()
-                        + ".getChunkIterator(Chunk(" + chunk.toString() + "))");
+            throw new Exception("Unrecognised type of chunk "
+                    + this.getClass().getName()
+                    + ".getChunkIterator(Chunk(" + c.toString() + "))");
         }
     }
 
@@ -104,12 +105,12 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
     public Grids_GridDouble getGrid() {
         return (Grids_GridDouble) Grid;
     }
-    
+
     /**
      * @return The next value iterating over the entire grid chunk by chunk. If
      * there is no such value, then {@code null} is returned.
      * @throws IOException If encountered.
-     * @throws ClassNotFoundException If there is a problem 
+     * @throws ClassNotFoundException If there is a problem
      */
     public Double next() throws IOException, ClassNotFoundException, Exception {
         if (!ChunkIterator.hasNext()) {
@@ -127,7 +128,6 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
         }
     }
 
-    
     @Override
     public Grids_ChunkIteratorDoubleArrayOrMap getChunkIterator() {
         return (Grids_ChunkIteratorDoubleArrayOrMap) ChunkIterator;

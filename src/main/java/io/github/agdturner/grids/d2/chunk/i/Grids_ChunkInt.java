@@ -77,15 +77,17 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     public abstract void initCell(int row, int col, int v);
 
     /**
-     * Returns the value at position given by: chunk cell row chunkRow; chunk
-     * cell row chunkCol and sets it to valueToSet
+     * Returns the value at chunk cell row index {@code r}. chunk cell column
+     * index {@param c} and sets it to {@code v}.
      *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param valueToSet the value the cell is to be set to
-     * @return
+     * @param r The chunk cell row index. of the cell w.r.t. the origin of this chunk
+     * @param c the column index of the cell w.r.t. the origin of this chunk
+     * @param v the value the cell is to be set to
+     * @return The value at chunk cell row index {@code r}. chunk cell column
+     * index {@param c} before it is set.
+     * @throws Exception If encountered.
      */
-    public abstract int setCell(int row, int col, int valueToSet);
+    public abstract int setCell(int r, int c, int v) throws Exception;
 
     /**
      * Returns values in row major order as an int[].

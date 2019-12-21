@@ -23,7 +23,7 @@ import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntArray;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIteratorIntArrayOrMap;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntSingletIterator;
+import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIteratorIntSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntMap;
 
 /**
@@ -70,7 +70,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
             ChunkIterator = new Grids_ChunkIteratorIntArrayOrMap(
                     (Grids_ChunkIntMap) Chunk);
         } else {
-            ChunkIterator = new Grids_ChunkIntSingletIterator(
+            ChunkIterator = new Grids_ChunkIteratorIntSinglet(
                     (Grids_ChunkIntSinglet) Chunk);
         }
     }
@@ -80,7 +80,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override
-    public Grids_ChunkRowMajorOrderIterator getChunkIterator(Grids_Chunk gc) {
+    public Grids_ChunkRowMajorOrderIterator getChunkIterator(Grids_Chunk gc) throws Exception {
         if (gc instanceof Grids_ChunkIntArray) {
             return new Grids_ChunkIteratorIntArrayOrMap(
                     (Grids_ChunkIntArray) gc);
@@ -88,10 +88,10 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
             return new Grids_ChunkIteratorIntArrayOrMap(
                     (Grids_ChunkIntMap) gc);
         } else if (gc instanceof Grids_ChunkIntSinglet) {
-            return new Grids_ChunkIntSingletIterator(
+            return new Grids_ChunkIteratorIntSinglet(
                     (Grids_ChunkIntSinglet) gc);
         } else {
-            throw new Error("Unrecognised type of chunk "
+            throw new Exception("Unrecognised type of chunk "
                     + this.getClass().getName()
                     + ".getChunkIterator(Chunk(" + gc.toString() + "))");
         }
@@ -108,7 +108,8 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem
      */
-    public Integer next() throws IOException, Exception, ClassNotFoundException {
+    public Integer next() throws IOException, Exception, 
+            ClassNotFoundException {
         if (!ChunkIterator.hasNext()) {
             if (GridIterator.hasNext()) {
                 ChunkID = GridIterator.next();

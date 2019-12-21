@@ -19,7 +19,7 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 
 /**
- * A factory for constructing int chunk arrays.
+ * A factory for constructing {@link Grids_ChunkIntArray} instances.
  *
  * @author Andy Turner
  * @version 1.0.0

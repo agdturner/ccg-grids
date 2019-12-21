@@ -15,16 +15,17 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
+import java.util.Iterator;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 
 /**
- * For iterating through the values in a Grids_GridChunkInt
- * instance. The values are not returned in any particular order.
-*
+ * For iterating through the values in a Grids_ChunkIntSinglet.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIntSingletIterator extends Grids_ChunkRowMajorOrderIterator {
+public class Grids_ChunkIteratorIntSinglet
+        extends Grids_ChunkRowMajorOrderIterator implements Iterator<Integer> {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,20 +34,24 @@ public class Grids_ChunkIntSingletIterator extends Grids_ChunkRowMajorOrderItera
     /**
      * Creates a new instance of Grids_GridChunkIntIterator
      *
-     * @param chunk The Grids_ChunkIntSinglet to iterate over.
+     * @param c The chunk to iterate over.
      */
-    public Grids_ChunkIntSingletIterator(Grids_ChunkIntSinglet chunk) {
-        super(chunk);
-        v = chunk.getValue();
+    public Grids_ChunkIteratorIntSinglet(Grids_ChunkIntSinglet c) {
+        super(c);
+        v = c.getValue();
     }
 
     /**
-     * Returns the next element in the iteration.
-     *
      * @return the next element in the iteration.
      */
+    @Override
     public Integer next() {
         next0();
         return v;
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -78,16 +78,17 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     public abstract void initCell(int row, int col, double v);
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * valueToSet. The noDataValue is passed in for convenience.
+     * Returns the value at chunk cell row index {@code r}. chunk cell column
+     * index {@param c} and sets it to {@code v}.
      *
-     * @param row The row of the cell w.r.t. the origin of this chunk.
-     * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @param v The value the cell is to be set to.
-     * @return The value at position given by: row, col prior to it being
-     * potentially being set to something different.
+     * @param r The chunk cell row index. of the cell w.r.t. the origin of this chunk
+     * @param c the column index of the cell w.r.t. the origin of this chunk
+     * @param v the value the cell is to be set to
+     * @return The value at chunk cell row index {@code r}. chunk cell column
+     * index {@param c} before it is set.
+     * @throws Exception If encountered.
      */
-    public abstract double setCell(int row, int col, double v);
+    public abstract double setCell(int r, int c, double v) throws Exception;
 
     /**
      * @return All the values including noDataValue's in row major order as a double[].

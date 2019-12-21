@@ -15,43 +15,44 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryInt;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 
 /**
- * A factory for constructing Grids_ChunkIntMap instances.
-*
+ * A factory for constructing {@link Grids_ChunkIntMap} instances.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkFactoryIntMap
-        extends Grids_ChunkFactoryInt {
+public class Grids_ChunkFactoryIntMap extends Grids_ChunkFactoryInt {
+
+    private static final long serialVersionUID = 1L;
 
     public Grids_ChunkFactoryIntMap() {
     }
 
     @Override
-    public Grids_ChunkIntMap create(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkIntMap(g, chunkID);
+    public Grids_ChunkIntMap create(Grids_GridInt g, Grids_2D_ID_int i) {
+        return new Grids_ChunkIntMap(g, i);
     }
 
     @Override
-    public Grids_ChunkIntMap create(
-            Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkIntMap(chunk, chunkID,
-                chunk.getGrid().getNoDataValue());
+    public Grids_ChunkIntMap create(Grids_ChunkInt c, Grids_2D_ID_int i) {
+        return new Grids_ChunkIntMap(c, i, c.getGrid().getNoDataValue());
     }
 
-    public Grids_ChunkIntMap create(
-            Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID,
-            int defaultValue) {
-        return new Grids_ChunkIntMap(chunk, chunkID, defaultValue);
+    /**
+     * Creates a chunk with values taken from {@code chunk}. The chunk is put
+     * (as a value) with {@code i} (as the key) into {@code g.chunkIDChunkMap}.
+     *
+     * @param c The chunk to get values from.
+     * @param i The ID of the chunk to create.
+     * @param dv The default value.
+     * @return A chunk.
+     */
+    public Grids_ChunkIntMap create(Grids_ChunkInt c, Grids_2D_ID_int i, 
+            int dv) {
+        return new Grids_ChunkIntMap(c, i, dv);
     }
 
 }

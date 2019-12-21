@@ -20,35 +20,39 @@ import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 
 /**
  * A factory for constructing Grids_ChunkDouble instances.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkFactoryDoubleSinglet
-        extends Grids_ChunkFactoryDouble {
+public class Grids_ChunkFactoryDoubleSinglet extends Grids_ChunkFactoryDouble {
+
+    private static final long serialVersionUID = 1L;
 
     double DefaultValue;
 
+    /**
+     * Creates a new Grids_ChunkFactoryDoubleSinglet.
+     */
     protected Grids_ChunkFactoryDoubleSinglet() {
     }
 
-    public Grids_ChunkFactoryDoubleSinglet(double defaultValue) {
-        DefaultValue = defaultValue;
+    /**
+     * Creates a new Grids_ChunkFactoryDoubleSinglet.
+     *
+     * @param dv What {@link #DefaultValue} is set to.
+     */
+    public Grids_ChunkFactoryDoubleSinglet(double dv) {
+        DefaultValue = dv;
     }
 
     @Override
-    public Grids_ChunkDouble create(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleSinglet(g, chunkID, DefaultValue);
+    public Grids_ChunkDouble create(Grids_GridDouble g, Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleSinglet(g, i, DefaultValue);
     }
 
     @Override
-    public Grids_ChunkDouble create(
-            Grids_ChunkDouble chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleSinglet(chunk.getGrid(), chunkID, 
-                DefaultValue);
+    public Grids_ChunkDouble create(Grids_ChunkDouble c, Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleSinglet(c.getGrid(), i, DefaultValue);
     }
 
 }

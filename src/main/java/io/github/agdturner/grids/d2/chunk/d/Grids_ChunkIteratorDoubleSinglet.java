@@ -20,37 +20,34 @@ import io.github.agdturner.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 
 /**
  * For iterating through the values in a Grids_ChunkDoubleSinglet.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIteratorDouble 
-        extends Grids_ChunkRowMajorOrderIterator
-            implements Iterator<Double> {
+public class Grids_ChunkIteratorDoubleSinglet
+        extends Grids_ChunkRowMajorOrderIterator implements Iterator<Double> {
 
     private static final long serialVersionUID = 1L;
 
-    protected double Value;
+    protected double v;
 
     /**
      * Creates a new instance of Grids_GridChunkDoubleIterator
      *
-     * @param chunk The Grids_ChunkDoubleSinglet to iterate over.
+     * @param c The chunk to iterate over.
      */
-    public Grids_ChunkIteratorDouble(Grids_ChunkDoubleSinglet chunk) {
-        super(chunk);
-        Value = chunk.getValue();
+    public Grids_ChunkIteratorDoubleSinglet(Grids_ChunkDoubleSinglet c) {
+        super(c);
+        v = c.getValue();
     }
 
     /**
-     * Returns the next element in the iteration.
-     *
      * @return the next element in the iteration.
      */
     @Override
     public Double next() {
         next0();
-        return Value;
+        return v;
     }
 
     @Override

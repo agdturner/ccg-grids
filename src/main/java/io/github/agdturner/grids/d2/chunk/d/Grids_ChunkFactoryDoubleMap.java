@@ -19,37 +19,40 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 
 /**
- * A factory for constructing Grids_ChunkDoubleMap instances.
-*
+ * A factory for constructing {@link Grids_ChunkDoubleMap} instances.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkFactoryDoubleMap
-        extends Grids_ChunkFactoryDouble {
+public class Grids_ChunkFactoryDoubleMap extends Grids_ChunkFactoryDouble {
+
+    private static final long serialVersionUID = 1L;
 
     public Grids_ChunkFactoryDoubleMap() {
     }
 
     @Override
-    public Grids_ChunkDoubleMap create(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleMap(g, chunkID);
+    public Grids_ChunkDoubleMap create(Grids_GridDouble g, Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleMap(g, i);
     }
 
     @Override
-    public Grids_ChunkDoubleMap create(
-            Grids_ChunkDouble chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleMap(chunk, chunkID, 
-                chunk.getGrid().getNoDataValue());
+    public Grids_ChunkDoubleMap create(Grids_ChunkDouble c, Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleMap(c, i, c.getGrid().getNoDataValue());
     }
 
-    public Grids_ChunkDoubleMap create(
-            Grids_ChunkDouble chunk,
-            Grids_2D_ID_int chunkID,
-            double defaultValue) {
-        return new Grids_ChunkDoubleMap(chunk, chunkID, defaultValue);
+    /**
+     * Creates a chunk with values taken from {@code chunk}. The chunk is put
+     * (as a value) with {@code i} (as the key) into {@code g.chunkIDChunkMap}.
+     *
+     * @param c The chunk to get values from.
+     * @param i The ID of the chunk to create.
+     * @param dv The default value.
+     * @return A chunk.
+     */
+    public Grids_ChunkDoubleMap create(Grids_ChunkDouble c, Grids_2D_ID_int i,
+            double dv) {
+        return new Grids_ChunkDoubleMap(c, i, dv);
     }
 
 }

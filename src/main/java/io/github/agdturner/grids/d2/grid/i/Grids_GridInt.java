@@ -823,7 +823,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 Grids_ChunkIntSinglet gc = (Grids_ChunkIntSinglet) chunk;
                 if (value != gc.Value) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().defaultChunkIntFactory.create(
+                    chunk = env.getProcessor().GridIntFactory.DefaultGridChunkIntFactory.create(
                             chunk, chunkID);
                     chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
                     chunkIDChunkMap.put(chunkID, chunk);
@@ -1064,7 +1064,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public int setCell(Grids_ChunkInt chunk, int ccr, int ccc, int v) 
+    public int setCell(Grids_ChunkInt chunk, int ccr, int ccc, int v)
             throws IOException, Exception, ClassNotFoundException {
         int r = NoDataValue;
         if (chunk instanceof Grids_ChunkIntArray) {
@@ -1095,13 +1095,12 @@ public class Grids_GridInt extends Grids_GridNumber {
     /**
      * Convert chunk to another type of chunk.
      */
-    private Grids_ChunkInt convertToAnotherTypeOfChunk(
-            Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID) throws IOException, ClassNotFoundException, Exception {
+    private Grids_ChunkInt convertToAnotherTypeOfChunk(Grids_ChunkInt chunk,
+            Grids_2D_ID_int i) throws IOException, ClassNotFoundException, 
+            Exception {
         Grids_ChunkInt r;
-        Grids_ChunkFactoryInt f = env.getProcessor().defaultChunkIntFactory;
-        r = f.create(chunk, chunkID);
-        chunkIDChunkMap.put(chunkID, r);
+        r = env.getProcessor().GridIntFactory.DefaultGridChunkIntFactory.create(chunk, i);
+        chunkIDChunkMap.put(i, r);
         return r;
     }
 

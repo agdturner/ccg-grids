@@ -20,38 +20,35 @@ import io.github.agdturner.grids.d2.chunk.Grids_ChunkFactory;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 
 /**
- * Abstract Class for defining (an interface for) chunk factory methods. These
- * methods generally would work as protected, but are tested externally and so
- * are declared public. Really no user should have a chunk without a grid even
- * if the grid contains only one chunk.
-*
+ * For factories that return double type chunks.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkFactoryDouble
-        extends Grids_ChunkFactory {
+public abstract class Grids_ChunkFactoryDouble extends Grids_ChunkFactory {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * For creating a new Grids_ChunkDouble containing all
- noDataValues that is linked to g via chunkID.
+     * Creates a chunk containing no data values. The chunk is put (as a value)
+     * with {@code i} (as the key) into {@code g.chunkIDChunkMap}.
      *
-     * @param g
-     * @param chunkID
-     * @return
+     * @param g The grid.
+     * @param i The chunk ID.
+     * @return A chunk.
      */
-    public abstract Grids_ChunkDouble create(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID);
+    public abstract Grids_ChunkDouble create(Grids_GridDouble g,
+            Grids_2D_ID_int i);
 
     /**
-     * Creates a new Grids_ChunkDouble with values taken from chunk.
+     * Creates a chunk with values taken from {@code chunk}. The chunk is put
+     * (as a value) with {@code i} (as the key) into {@code g.chunkIDChunkMap}.
      *
-     * @param chunk
-     * @param chunkID
-     * @return
+     * @param c The chunk to get values from.
+     * @param i The ID of the chunk to create.
+     * @return A chunk.
      */
-    public abstract Grids_ChunkDouble create(
-            Grids_ChunkDouble chunk,
-            Grids_2D_ID_int chunkID);
+    public abstract Grids_ChunkDouble create(Grids_ChunkDouble c,
+            Grids_2D_ID_int i);
 
 }

@@ -101,13 +101,12 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
      *
      * @return
      */
-    public Grids_ChunkIteratorDouble iterator() {
-        return new Grids_ChunkIteratorDouble(this);
+    public Grids_ChunkIteratorDoubleSinglet iterator() {
+        return new Grids_ChunkIteratorDoubleSinglet(this);
     }
 
     @Override
-    public void initCell(int row, int col, double valueToInitialise) {
-    }
+    public void initCell(int r, int c, double v) {}
 
     public double getSumDouble() {
         return getN() * Value;

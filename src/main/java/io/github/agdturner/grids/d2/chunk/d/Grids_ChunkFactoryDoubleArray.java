@@ -22,29 +22,28 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 
 /**
- * A factory for constructing Grids_ChunkDoubleArray instances.
-*
+ * A factory for constructing {@link Grids_ChunkDoubleArray} instances.
+ * 
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkFactoryDoubleArray
-        extends Grids_ChunkFactoryDouble {
+public class Grids_ChunkFactoryDoubleArray  extends Grids_ChunkFactoryDouble {
+
+    private static final long serialVersionUID = 1L;
 
     public Grids_ChunkFactoryDoubleArray() {
     }
 
     @Override
-    public Grids_ChunkDoubleArray create(
-            Grids_GridDouble g,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleArray(g, chunkID);
+    public Grids_ChunkDoubleArray create(Grids_GridDouble g, 
+            Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleArray(g, i);
     }
 
     @Override
-    public Grids_ChunkDoubleArray create(
-            Grids_ChunkDouble chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkDoubleArray(chunk, chunkID);
+    public Grids_ChunkDoubleArray create(            Grids_ChunkDouble chunk,
+            Grids_2D_ID_int i) {
+        return new Grids_ChunkDoubleArray(chunk, i);
     }
 
 }

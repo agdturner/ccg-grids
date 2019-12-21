@@ -36,7 +36,7 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     public int Value;
 
     /**
-     * Creates a new Grids_GridChunkDouble with value set to value.
+     * Creates a chunk with {@link #Value} set to {@code v}.
      *
      * @param g What {@link #Grid} is set to.
      * @param i What {@link #ChunkID} is set to.
@@ -93,8 +93,8 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
      *
      * @return
      */
-    public Grids_ChunkIntSingletIterator iterator() {
-        return new Grids_ChunkIntSingletIterator(this);
+    public Grids_ChunkIteratorIntSinglet iterator() {
+        return new Grids_ChunkIteratorIntSinglet(this);
     }
 
     @Override

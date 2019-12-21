@@ -25,7 +25,7 @@ import io.github.agdturner.grids.d2.chunk.Grids_ChunkIterator;
  * For iterating through the values in a Grid. The values are returned chunk by
  * chunk in row major order. The values within each chunk are also returned in
  * row major order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -55,10 +55,13 @@ public abstract class Grids_GridIterator extends Grids_Object {
     public abstract Grids_ChunkIterator getChunkIterator();
 
     /**
-     * @param chunk The chunk for which the iterator is returned.
-     * @return An appropriate iterator for iterating over the values in {@code chunk}.
+     * @param c The chunk for which the iterator is returned.
+     * @return An appropriate iterator for iterating over the values in
+     * {@code c}.
+     * @throws java.lang.Exception If the type of chunk is not recognised.
      */
-    public abstract Grids_ChunkIterator getChunkIterator(Grids_Chunk chunk);
+    public abstract Grids_ChunkIterator getChunkIterator(Grids_Chunk c)
+            throws Exception;
 
     /**
      * @return {@code true} if the iterator has more elements.
