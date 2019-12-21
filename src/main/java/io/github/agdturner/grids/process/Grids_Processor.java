@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
@@ -38,7 +36,7 @@ import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleArray;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleMap;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntArrayFactory;
+import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntArray;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntMap;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridFactoryInt;
 import io.github.agdturner.grids.core.Grids_Environment;
@@ -76,25 +74,11 @@ public class Grids_Processor extends Grids_Object {
      */
     public final long StartTime;
 
-//    /**
-//     * The Log for recording progress and information about the processing.
-//     */
-//    protected PrintWriter Log;
-    /**
-     * The Log indentation (how many spaces before a Log message line is
-     * output).
-     */
-    protected int LogIndentation;
-
     /**
      * For convenience.
      */
     protected Grids_Files files;
 
-//    /**
-//     * Workspace directory for the processing.
-//     */
-//    protected File Directory;
     /**
      * Grids_ChunkFactoryInt
      */
@@ -103,28 +87,23 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_ChunkFactoryIntSinglet
      */
-    public Grids_ChunkFactoryBoolean chunkBooleanFactory;
-
+    //public Grids_ChunkFactoryBoolean chunkBooleanFactory;
     /**
      * Grids_ChunkFactoryIntSinglet
      */
-    public Grids_ChunkFactoryBinary chunkBinaryFactory;
-
+    //public Grids_ChunkFactoryBinary chunkBinaryFactory;
     /**
      * Grids_ChunkFactoryIntSinglet
      */
-    public Grids_ChunkFactoryIntSinglet GridChunkIntFactory;
-
+    //public Grids_ChunkFactoryIntSinglet GridChunkIntFactory;
     /**
      * Grids_ChunkIntArrayFactory
      */
-    public Grids_ChunkIntArrayFactory GridChunkIntArrayFactory;
-
+    //public Grids_ChunkIntArrayFactory GridChunkIntArrayFactory;
     /**
      * Grids_ChunkFactoryIntMap
      */
-    public Grids_ChunkFactoryIntMap GridChunkIntMapFactory;
-
+    //public Grids_ChunkFactoryIntMap GridChunkIntMapFactory;
     /**
      * Grids_GridFactoryBoolean
      */
@@ -143,65 +122,35 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_ChunkFactoryDouble
      */
-    public Grids_ChunkFactoryDouble DefaultGridChunkDoubleFactory;
-
+    //public Grids_ChunkFactoryDouble DefaultGridChunkDoubleFactory;
     /**
      * Grids_ChunkFactoryDoubleSinglet
      */
-    public Grids_ChunkFactoryDoubleSinglet GridChunkDoubleFactory;
-
+    //public Grids_ChunkFactoryDoubleSinglet GridChunkDoubleFactory;
     /**
      * Grids_ChunkFactoryDoubleArray
      */
-    public Grids_ChunkFactoryDoubleArray GridChunkDoubleArrayFactory;
-
+//    public Grids_ChunkFactoryDoubleArray GridChunkDoubleArrayFactory;
     /**
      * Grids_ChunkFactoryDoubleMap
      */
-    public Grids_ChunkFactoryDoubleMap GridChunkDoubleMapFactory;
-
+//    public Grids_ChunkFactoryDoubleMap GridChunkDoubleMapFactory;
     /**
      * Grids_GridFactoryDouble
      */
     public Grids_GridFactoryDouble GridDoubleFactory;
 
     /**
-     * Grids_StatsDouble
+     * @param e The grids environment.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_StatsDouble GridDoubleStatistics;
-
-    /**
-     * Grids_StatsNotUpdatedDouble
-     */
-    public Grids_StatsNotUpdatedDouble GridDoubleStatisticsNotUpdated;
-
-    /**
-     * Grids_StatsInt
-     */
-    public Grids_StatsInt GridIntStatistics;
-
-    /**
-     * Grids_StatsNotUpdatedInt
-     */
-    public Grids_StatsNotUpdatedInt GridIntStatisticsNotUpdated;
-
-    public Generic_FileStore fsGridBinary;
-    public Generic_FileStore fsGridBoolean;
-    public Generic_FileStore fsGridInt;
-    public Generic_FileStore fsGridDouble;
-
-    /**
-     * Creates a new instance of Grids_Processor. The Log file in directory will
-     * be overwritten if appendToLogFile is false.
-     *
-     * @param ge
-     */
-    public Grids_Processor(Grids_Environment ge) throws Exception, IOException,
+    public Grids_Processor(Grids_Environment e) throws Exception, IOException,
             ClassNotFoundException {
-        super(ge);
+        super(e);
         StartTime = System.currentTimeMillis();
-        files = ge.files;
-        String s = Grids_Strings.s_Processor;
+        files = e.files;
         int chunkNRows = 512;
         int chunkNCols = 512;
         initFactoriesAndFileStores(chunkNRows, chunkNCols);
@@ -212,74 +161,57 @@ public class Grids_Processor extends Grids_Object {
      */
     private void initFactoriesAndFileStores(int chunkNRows, int chunkNCols)
             throws Exception {
-        initChunkFactories();
         // Boolean
         String s = Grids_Strings.s_GridBoolean;
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
+        Generic_FileStore store;
         if (Files.exists(dir)) {
-            fsGridBoolean = new Generic_FileStore(dir);
+            store = new Generic_FileStore(dir);
         } else {
-            fsGridBoolean = new Generic_FileStore(files.getGeneratedDir(), s);
+            store = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBooleanFactory = new Grids_GridFactoryBoolean(env, fsGridBoolean,
-                chunkBooleanFactory, chunkNRows, chunkNCols);
+        GridBooleanFactory = new Grids_GridFactoryBoolean(env, store,
+                new Grids_ChunkFactoryBoolean(), chunkNRows, chunkNCols);
         // Binary
         s = Grids_Strings.s_GridBinary;
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
         if (Files.exists(dir)) {
-            fsGridBinary = new Generic_FileStore(dir);
+            store = new Generic_FileStore(dir);
         } else {
-            fsGridBinary = new Generic_FileStore(files.getGeneratedDir(), s);
+            store = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBinaryFactory = new Grids_GridFactoryBinary(env, fsGridBinary,
-                chunkBinaryFactory, chunkNRows, chunkNCols);
+        GridBinaryFactory = new Grids_GridFactoryBinary(env, store,
+                new Grids_ChunkFactoryBinary(), chunkNRows, chunkNCols);
         // Int
         s = Grids_Strings.s_GridInt;
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
         if (Files.exists(dir)) {
-            fsGridInt = new Generic_FileStore(dir);
+            store = new Generic_FileStore(dir);
         } else {
-            fsGridInt = new Generic_FileStore(files.getGeneratedDir(), s);
+            store = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridIntFactory = new Grids_GridFactoryInt(env, fsGridInt, GridChunkIntFactory,
-                defaultChunkIntFactory, chunkNRows, chunkNCols);
-        // Double
-        s = Grids_Strings.s_GridDouble;
-        dir = Paths.get(files.getGeneratedGridDoubleDir().toString());
-        if (Files.exists(dir)) {
-            fsGridDouble = new Generic_FileStore(dir);
-        } else {
-            fsGridDouble = new Generic_FileStore(files.getGeneratedDir(), s);
-        }
-        GridDoubleFactory = new Grids_GridFactoryDouble(env, fsGridDouble,
-                GridChunkDoubleFactory, DefaultGridChunkDoubleFactory,
+        GridIntFactory = new Grids_GridFactoryInt(env, store,
+                new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
+                new Grids_ChunkFactoryIntArray(),
                 chunkNRows, chunkNCols);
-        initGridStatistics();
+        // Double
+        store = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
+                Grids_Strings.s_GridDouble);
+        GridDoubleFactory = new Grids_GridFactoryDouble(env, store,
+                new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
+                new Grids_ChunkFactoryDoubleArray(),
+                chunkNRows, chunkNCols);
     }
 
-    /**
-     * Initialises chunk Factories.
-     */
-    private void initChunkFactories() {
-        GridChunkIntArrayFactory = new Grids_ChunkIntArrayFactory();
-        GridChunkIntMapFactory = new Grids_ChunkFactoryIntMap();
-        GridChunkIntFactory = new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE);
-        defaultChunkIntFactory = GridChunkIntArrayFactory;
-        GridChunkDoubleArrayFactory = new Grids_ChunkFactoryDoubleArray();
-        GridChunkDoubleMapFactory = new Grids_ChunkFactoryDoubleMap();
-        GridChunkDoubleFactory = new Grids_ChunkFactoryDoubleSinglet(
-                -Double.MAX_VALUE);
-        DefaultGridChunkDoubleFactory = GridChunkDoubleArrayFactory;
-    }
-
-    /**
-     * Initialises Stats.
-     */
-    private void initGridStatistics() {
-        GridDoubleStatistics = new Grids_StatsDouble(env);
-        GridDoubleStatisticsNotUpdated = new Grids_StatsNotUpdatedDouble(env);
-        GridIntStatistics = new Grids_StatsInt(env);
-        GridIntStatisticsNotUpdated = new Grids_StatsNotUpdatedInt(env);
+    protected Generic_FileStore getStore(Path dir, String s) throws IOException,
+            Exception {
+        Generic_FileStore r;
+        if (Files.exists(dir)) {
+            r = new Generic_FileStore(dir);
+        } else {
+            r = new Generic_FileStore(files.getGeneratedDir(), s);
+        }
+        return r;
     }
 
     /**
@@ -292,29 +224,6 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Writes string to Log file and the console (standard output) indenting
-     * string by LogIndentation amount of white-space.
-     *
-     * @param logIndentation The indentation of string.
-     * @param s The message to Log.
-     */
-    public final void log(int logIndentation, String s) {
-        if (s.endsWith("}")) {
-            logIndentation--;
-            LogIndentation--;
-        }
-        String s2 = "";
-        for (int i = 0; i < logIndentation; i++) {
-            s2 += " ";
-        }
-        s2 += s + System.getProperty("line.separator");
-        if (s.endsWith("{")) {
-            LogIndentation++;
-        }
-        env.env.log(s2);
-    }
-
-    /**
      * Modifies grid by setting to grid.noDataValue those cells coincident with
      * mask.noDataValue cells. Warning!!! The grid and mask are assumed to be
      * coincident have the same origin and the same chunk structure. @TODO add
@@ -322,6 +231,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g The Grids_GridNumber that the mask will be applied to.
      * @param mask The Grids_GridNumber to use as a mask.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void mask(Grids_GridNumber g, Grids_GridNumber mask)
             throws IOException, ClassNotFoundException, Exception {
@@ -622,12 +534,8 @@ public class Grids_Processor extends Grids_Object {
         r = GridDoubleFactory.create(g, 0, 0, nrows - 1, ncols - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
-        int chunkRow;
-        int chunkCol;
-        int cellRow;
-        int cellCol;
         Grids_ChunkDouble gridChunk;
-        Grids_ChunkDouble resultChunk;
+        Grids_ChunkDouble rChunk;
         Grids_2D_ID_int chunkID;
         if (type == null) {
             // if range of either input or output range is zero return min for all non noDataValues
@@ -635,22 +543,21 @@ public class Grids_Processor extends Grids_Object {
                 // Better to go through chunks rather than rows. Though it 
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    chunkNRows = g.getChunkNRows(chunkRow);
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                for (int cr = 0; cr < nChunkRows; cr++) {
+                    chunkNRows = g.getChunkNRows(cr);
+                    for (int cc = 0; cc < nChunkCols; cc++) {
+                        chunkID = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToCache(g, chunkID);
                         env.addToNotToCache(r, chunkID);
                         env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(chunkCol);
+                        chunkNCols = g.getChunkNCols(cc);
                         gridChunk = g.getChunk(chunkID);
-                        resultChunk = r.getChunk(chunkID);
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(cellRow, cellCol);
+                        rChunk = r.getChunk(chunkID);
+                        for (int ccr = 0; ccr < chunkNRows; ccr++) {
+                            for (int ccc = 0; ccc < chunkNCols; ccc++) {
+                                value = gridChunk.getCell(ccr, ccc);
                                 if (value != ndv) {
-                                    r.setCell(resultChunk, cellRow,
-                                            cellCol, min);
+                                    r.setCell(rChunk, ccr, ccc, min);
                                 }
                             }
                         }
@@ -661,24 +568,26 @@ public class Grids_Processor extends Grids_Object {
                 // assumes that the structure of the grid and outputGrid are the
                 // same.
                 double v;
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    chunkNRows = g.getChunkNRows(chunkRow);
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
+                for (int cr = 0; cr < nChunkRows; cr++) {
+                    chunkNRows = g.getChunkNRows(cr);
+                    for (int cc = 0; cc < nChunkCols; cc++) {
+                        chunkID = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToCache(g, chunkID);
                         env.addToNotToCache(r, chunkID);
                         env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(chunkCol);
+                        chunkNCols = g.getChunkNCols(cc);
                         gridChunk = g.getChunk(chunkID);
-                        resultChunk = r.getChunk(chunkID);
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(cellRow, cellCol);
+                        rChunk = r.getChunk(chunkID);
+                        for (int ccr = 0; ccr < chunkNRows; ccr++) {
+                            for (int ccc = 0; ccc < chunkNCols; ccc++) {
+                                
+                                System.out.println("ccr="+ ccr+ ", ccc" + ccc);
+                                
+                                value = gridChunk.getCell(ccr, ccc);
                                 if (value != ndv) {
                                     v = (((value - minGrid)
                                             / rangeGrid) * range) + min;
-                                    r.setCell(resultChunk, cellRow,
-                                            cellCol, v);
+                                    r.setCell(rChunk, ccr, ccc, v);
                                 }
                             }
                         }
@@ -706,12 +615,8 @@ public class Grids_Processor extends Grids_Object {
                 r.setName(g.getName() + "_logRescale");
                 env.checkAndMaybeFreeMemory();
             } else {
-                try {
-                    throw new Exception("Unable to rescale: type " + type
-                            + "not recognised.");
-                } catch (Exception ex) {
-                    Logger.getLogger(Grids_Processor.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                throw new Exception("Unable to rescale: type " + type
+                        + "not recognised.");
             }
         }
         return r;
@@ -888,6 +793,9 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g The Grids_GridDouble to be processed.
      * @param cellIDs The CellIDs of the cells to be processed.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void setLarger(Grids_GridDouble g, HashSet<Grids_2D_ID_long> cellIDs)
             throws IOException, ClassNotFoundException, Exception {
@@ -928,6 +836,9 @@ public class Grids_Processor extends Grids_Object {
      * @param g The grid to be processed.
      * @param cellIDs The cell IDs.
      * @param v The value to be added.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void addToGrid(Grids_GridDouble g, HashSet<Grids_2D_ID_long> cellIDs,
             double v) throws IOException, ClassNotFoundException,
@@ -968,6 +879,9 @@ public class Grids_Processor extends Grids_Object {
      * @param grid The Grids_GridDouble to be processed
      * @param cellIDs Array of CellIDs.
      * @param value The value to be added.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void addToGrid(
             Grids_GridDouble grid,
@@ -1267,6 +1181,9 @@ public class Grids_Processor extends Grids_Object {
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to mulitply
      * @return
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1)
             throws IOException, ClassNotFoundException, Exception {
@@ -1351,7 +1268,9 @@ public class Grids_Processor extends Grids_Object {
      * noDataValues are simply ignored. Formerly noDataValues were treated as
      * the average of values within a result cell. TODO: implement median, mode
      * and variance aggregations. @return @param colOffset @param gridFactory
-     * @param colOffset @param gridFactory @return
+     * @param colOffset @param gridFactory @return @throws java.lang.Exception
+     * If encountered. @throws java.io.IOException If encountered. @throws
+     * java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble aggregate(Grids_GridNumber grid,
             int cellFactor, String statistic, int rowOffset, int colOffset,
@@ -1595,10 +1514,14 @@ public class Grids_Processor extends Grids_Object {
      * <a name="aggregate(AbstractGrid2DSquareCell,
      * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
      * @return
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble aggregate(Grids_GridNumber grid,
             String statistic, Grids_Dimensions rD,
-            Grids_GridFactoryDouble gf, int dp, RoundingMode rm) throws IOException, ClassNotFoundException, Exception {
+            Grids_GridFactoryDouble gf, int dp, RoundingMode rm)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         // Initialistaion
         long nrows = grid.getNRows();
@@ -2274,6 +2197,9 @@ public class Grids_Processor extends Grids_Object {
      * @param row
      * @param cellDistance
      * @return
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[][] getRowProcessInitialData(Grids_GridDouble g,
             int cellDistance, long row) throws IOException, Exception, ClassNotFoundException {
@@ -2300,6 +2226,9 @@ public class Grids_Processor extends Grids_Object {
      * @param cellDistance
      * @param row
      * @return
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[][] getRowProcessData(Grids_GridDouble g,
             double[][] previous, int cellDistance, long row, long col)

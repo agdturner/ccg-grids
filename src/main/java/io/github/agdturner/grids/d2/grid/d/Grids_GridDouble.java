@@ -759,49 +759,36 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     private void initCell(long row, long col, double value, boolean fast)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_ChunkDouble chunk;
-        int chunkRow;
-        int chunkCol;
-        Grids_2D_ID_int chunkID;
-        chunkRow = getChunkRow(row);
-        chunkCol = getChunkCol(col);
-        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        /**
-         * Ensure this chunkID is not cacheped and initialise it if it does not
-         * already exist.
-         */
-        env.addToNotToCache(this, chunkID);
-        if (!chunkIDChunkMap.containsKey(chunkID)) {
-            Grids_ChunkDoubleSinglet gc;
-            gc = new Grids_ChunkDoubleSinglet(this, chunkID, value);
-            chunkIDChunkMap.put(chunkID, gc);
+        Grids_2D_ID_int i = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
+        env.addToNotToCache(this, i);
+        if (!chunkIDChunkMap.containsKey(i)) {
+            Grids_ChunkDoubleSinglet gc = new Grids_ChunkDoubleSinglet(this, i, value);
+            chunkIDChunkMap.put(i, gc);
             if (!(gc instanceof Grids_ChunkDoubleSinglet)) {
-                ChunkIDsOfChunksWorthCaching.add(chunkID);
+                ChunkIDsOfChunksWorthCaching.add(i);
             }
         } else {
-            Grids_Chunk c;
-            c = chunkIDChunkMap.get(chunkID);
+            Grids_Chunk c = chunkIDChunkMap.get(i);
             if (c == null) {
-                loadIntoCacheChunk(chunkID);
+                loadIntoCacheChunk(i);
             }
-            chunk = (Grids_ChunkDouble) chunkIDChunkMap.get(chunkID);
+            Grids_ChunkDouble chunk = getChunk(i);
             if (chunk instanceof Grids_ChunkDoubleSinglet) {
                 Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
                 if (value != gc.Value) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().DefaultGridChunkDoubleFactory.create(
-                            chunk, chunkID);
-                    chunkIDChunkMap.put(chunkID, chunk);
+                    chunk = env.getProcessor().GridDoubleFactory.DefaultGridChunkDoubleFactory.create(chunk, i);
+                    chunkIDChunkMap.put(i, chunk);
                     if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
-                        ChunkIDsOfChunksWorthCaching.add(chunkID);
+                        ChunkIDsOfChunksWorthCaching.add(i);
                     }
-                    chunk.initCell(getCellRow(row), getCellCol(col), value);
+                    chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
                 }
             } else {
                 if (fast) {
                     initCellFast(chunk, row, col, value);
                 } else {
-                    initCell(chunk, chunkID, row, col, value);
+                    initCell(chunk, i, row, col, value);
                 }
             }
         }
@@ -919,167 +906,162 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @param row The row.
-     * @param col The column.
-     * @return The value at row, col.
+     * @param r The grid cell row index for which the value is returned.
+     * @param c The grid cell column index for which the value is returned
+     * @return The value in the grid at grid cell row index {@code r}, grid cell
+     * column index {@code c} or {@link #NoDataValue} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public double getCell(long row, long col) throws IOException, Exception,
+    public double getCell(long r, long c) throws IOException, Exception,
             ClassNotFoundException {
-//        boolean isInGrid = isInGrid(row, col);
-//        if (isInGrid) {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        Grids_ChunkDouble c = (Grids_ChunkDouble) getChunk(chunkRow, chunkCol);
-        int cellRow = getCellRow(row);
-        int cellCol = getCellCol(col);
-        return getCell(c, cellRow, cellCol);
-//        }
-//        return ndv;
-    }
-
-    /**
-     * For getting the value in chunk at cellRow, cellCol.
-     *
-     * @param chunk
-     * @param cellRow The chunk cell row index of the cell thats value is
-     * returned.
-     * @param cellCol The chunk cell column index of the cell thats value is
-     * returned.
-     * @return Value at position given by chunk row index _ChunkRowIndex, chunk
-     * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
-     * column index cellCol.
-     *
-     */
-    public double getCell(Grids_ChunkDouble chunk, int cellRow,
-            int cellCol) {
-        if (chunk.getClass() == Grids_ChunkDoubleArray.class) {
-            return ((Grids_ChunkDoubleArray) chunk).getCell(cellRow, cellCol);
-        } else if (chunk.getClass() == Grids_ChunkDoubleMap.class) {
-            return ((Grids_ChunkDoubleMap) chunk).getCell(cellRow, cellCol);
-        } else {
-            return ((Grids_ChunkDoubleSinglet) chunk).getCell(cellRow, cellCol);
-        }
-    }
-
-    /**
-     * For getting the value at x-coordinate x, y-coordinate y.
-     *
-     * @param x the x-coordinate of the point.
-     * @param y the y-coordinate of the point.
-     * @return The value at x, y.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    public final double getCell(BigDecimal x, BigDecimal y) throws IOException,
-            Exception, ClassNotFoundException {
-        long row = getRow(y);
-        long col = getCol(x);
-        boolean isInGrid = isInGrid(row, col);
-        if (isInGrid) {
-            return getCell(row, col);
+        if (isInGrid(r, c)) {
+            return getCell((Grids_ChunkDouble) getChunk(getChunkRow(r),
+                    getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c));
         }
         return NoDataValue;
     }
 
     /**
-     * @param cellID the Grids_2D_ID_long of the cell.
-     * @return The value of the cell with cellID.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
+     * For getting the value in chunk at chunk cell row {@code r}, chunk cell
+     * col {@code c}.
+     *
+     * @param chunk The chunk.
+     * @param r The chunk cell row index of the value returned.
+     * @param c The chunk cell column index of the value returned.
+     * @return Value in chunk at chunk cell row {@code r}, chunk cell col
+     * {@code c} or {@link #NoDataValue} if there is no such value.
      */
-    public final double getCell(Grids_2D_ID_long cellID) throws IOException,
-            Exception, ClassNotFoundException {
-        return getCell(cellID.getRow(), cellID.getCol());
+    public double getCell(Grids_ChunkDouble chunk, int r, int c) {
+        if (chunk.inChunk(r, c)) {
+            return chunk.getCell(r, c);
+        }
+        return NoDataValue;
     }
 
     /**
-     * For setting the value at x-coordinate x, y-coordinate y.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @return The value at (x, y) or {@link #NoDataValue} if there is no such
+     * value.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public final double getCell(BigDecimal x, BigDecimal y) throws IOException,
+            ClassNotFoundException, Exception {
+        return getCell(getRow(y), getCol(x));
+    }
+
+    /**
+     * @param i The cell ID.
+     * @return The value of the cell with cell ID {@code i} or
+     * {@link #NoDataValue} if there is no such cell in the grid.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public final double getCell(Grids_2D_ID_long i) throws IOException,
+            ClassNotFoundException, Exception {
+        return getCell(i.getRow(), i.getCol());
+    }
+
+    /**
+     * For setting the value at x-coordinate {@code x}, y-coordinate {@code y}.
      *
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      * @param v The value to set in the cell.
+     * @return The value at x-coordinate {@code x}, y-coordinate {@code y} or
+     * {@link #NoDataValue} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final void setCell(BigDecimal x, BigDecimal y, double v)
+    public final double setCell(BigDecimal x, BigDecimal y, double v)
             throws IOException, Exception, ClassNotFoundException, Exception {
-        setCell(getRow(x), getCol(y), v);
+        return setCell(getRow(x), getCol(y), v);
     }
 
     /**
-     * For setting the value at row, col.
+     * For setting the value at cell row index {@code r}, cell column index
+     * {@code c}.
      *
-     * @param row The row in the grid of the value to set.
-     * @param col The column in the grid of the value to set.
-     * @param v The value to set.
+     * @param r The cell row index of the value to set.
+     * @param c The cell column index of the value to set.
+     * @param v The value to set at cell row index {@code r}, cell column index
+     * {@code c}.
+     * @return The value at cell row index {@code r}, cell column index
+     * {@code c} or {@link #NoDataValue} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(long row, long col, double v) throws IOException,
-            ClassNotFoundException, Exception {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        int cellRow = getCellRow(row);
-        int cellCol = getCellCol(col);
-        Grids_ChunkDouble chunk;
-        chunk = (Grids_ChunkDouble) getChunk(chunkRow, chunkCol);
-        setCell(chunk, cellRow, cellCol, v);
+    public double setCell(long r, long c, double v)
+            throws IOException, ClassNotFoundException, Exception {
+        if (isInGrid(r, c)) {
+            return setCell((Grids_ChunkDouble) getChunk(getChunkRow(r),
+                    getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c), v);
+        }
+        return NoDataValue;
     }
 
     /**
-     * For setting the value at chunkRow, chunkCol, cellRow, cellCol.
+     * For setting the value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * {@code ccr}, chunk cell column (@code ccc}.
      *
-     * @param chunkRow The chunkRow.
-     * @param chunkCol The chunkCol.
-     * @param cellRow The cellRow.
-     * @param cellCol The cellCol.
-     * @param v The value to set.
+     * @param cr The chunk row of the chunk in which the value is set.
+     * @param cc The chunk column of the chunk in which the value is set.
+     * @param ccr The chunk cell row of the value to set.
+     * @param ccc The chunk cell column of the value to set.
+     * @param v The value to set in chunk ({@code cr}, {@code cc}) at chunk cell
+     * row {@code ccr}, chunk cell column (@code ccc}.
+     * @return The value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * {@code ccr}, chunk cell column (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(int chunkRow, int chunkCol, int cellRow, int cellCol,
-            double v) throws IOException, ClassNotFoundException, Exception {
-        Grids_ChunkDouble chunk;
-        chunk = (Grids_ChunkDouble) getChunk(chunkRow, chunkCol);
-        setCell(chunk, cellRow, cellCol, v);
+    public double setCell(int cr, int cc, int ccr, int ccc, double v)
+            throws IOException, ClassNotFoundException, Exception {
+        return setCell((Grids_ChunkDouble) getChunk(cr, cc), ccr, ccc, v);
     }
 
     /**
-     * @param chunk The chunk.
-     * @param cellCol The cellCol.
-     * @param cellRow The cellRow.
-     * @param v The value to set.
+     * For setting the value in chunk at chunk cell row {@code ccr}, chunk cell
+     * column (@code ccc}.
+     *
+     * @param chunk The chunk in which the value is to be set.
+     * @param ccr The row in chunk of the value to set.
+     * @param ccc The column in chunk of the value to set.
+     * @param v The value to set in chunk at chunk cell row {@code ccr}, chunk
+     * cell column (@code ccc}.
+     * @return The value in chunk at chunk cell row {@code ccr}, chunk cell
+     * column (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(Grids_ChunkDouble chunk, int cellRow,
-            int cellCol, double v) throws IOException,
-            ClassNotFoundException, Exception {
-        double v2 = NoDataValue;
+    public double setCell(Grids_ChunkDouble chunk, int ccr, int ccc, double v) 
+            throws IOException, Exception, ClassNotFoundException {
+        double r = NoDataValue;
         if (chunk instanceof Grids_ChunkDoubleArray) {
-            v2 = ((Grids_ChunkDoubleArray) chunk).setCell(cellRow, cellCol, v);
+            r = ((Grids_ChunkDoubleArray) chunk).setCell(ccr, ccc, v);
         } else if (chunk instanceof Grids_ChunkDoubleMap) {
-            v2 = ((Grids_ChunkDoubleMap) chunk).setCell(cellRow, cellCol, v);
+            r = ((Grids_ChunkDoubleMap) chunk).setCell(ccr, ccc, v);
         } else {
             Grids_ChunkDoubleSinglet c = (Grids_ChunkDoubleSinglet) chunk;
             if (c != null) {
                 if (v != c.Value) {
                     // Convert chunk to another type
                     chunk = convertToAnotherTypeOfChunk(chunk, c.getChunkID());
-                    v2 = chunk.setCell(cellRow, cellCol, v);
+                    r = chunk.setCell(ccr, ccc, v);
                 } else {
-                    v2 = c.Value;
+                    r = c.Value;
                 }
             }
         }
         // Update stats
-        if (v != v2) {
+        if (v != r) {
             if (stats.isUpdated()) {
-                updateStats(v, v2);
+                updateStats(v, r);
             }
         }
+        return r;
     }
 
     /**
@@ -1089,7 +1071,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkDouble r;
-        Grids_ChunkFactoryDouble f = env.getProcessor().DefaultGridChunkDoubleFactory;
+        Grids_ChunkFactoryDouble f = env.getProcessor().GridDoubleFactory.DefaultGridChunkDoubleFactory;
         r = f.create(chunk, chunkID);
         chunkIDChunkMap.put(chunkID, r);
         if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
@@ -1116,13 +1098,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDoubleSinglet gridChunk = (Grids_ChunkDoubleSinglet) chunk;
             if (v != gridChunk.Value) {
                 chunk = convertToAnotherTypeOfChunk(chunk, i);
-                chunk.initCell(getCellRow(row), getCellCol(col), v);
+                chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             } else {
                 return;
             }
         } else {
             if (chunk != null) {
-                chunk.initCell(getCellRow(row), getCellCol(col), v);
+                chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             }
         }
         // Update stats
@@ -1175,7 +1157,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
 //        int chunkCol = getChunkCol(col);
 //        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
 //        Grids_ChunkDouble chunk = getChunk(chunkID);
-        chunk.initCell(getCellRow(row), getCellCol(col), value);
+        chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
     }
 
     /**

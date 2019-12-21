@@ -121,13 +121,9 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
         NoDataValue = noDataValue;
     }
 
-    /////////////////////////
-    // Create from scratch //
-    /////////////////////////
     /**
      * Returns A new Grids_GridDouble with all values as NoDataValues.
      *
-     * @param dir The Directory to be used for storing grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
@@ -144,7 +140,6 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     /**
      * @param stats The type of Grids_StatsDouble to accompany the returned
      * grid.
-     * @param dir The Directory to be used for storing grid.
      * @param cf The preferred Grids_ChunkFactoryDouble for creating chunks that
      * the constructed Grid is to be made of.
      * @param nRows The number of rows in the grid.

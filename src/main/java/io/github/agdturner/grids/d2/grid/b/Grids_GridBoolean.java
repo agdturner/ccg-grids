@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Set;
 import java.util.Iterator;
 import java.util.Objects;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
@@ -37,6 +37,7 @@ import io.github.agdturner.grids.d2.stats.Grids_StatsBoolean;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.util.HashSet;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
@@ -293,11 +294,11 @@ public class Grids_GridBoolean extends Grids_Grid {
                 env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(e);
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(gcr, gcc);
-                HashMap<Grids_Grid, HashSet<Grids_2D_ID_int>> notToSwapOut
+                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwapOut
                         = new HashMap<>();
                 notToSwapOut.put(g, g.getChunkIDs(startRow, endRow, startCol,
                         endCol));
-                HashSet<Grids_2D_ID_int> s = new HashSet<>();
+                Set<Grids_2D_ID_int> s = new HashSet<>();
                 s.add(chunkID);
                 notToSwapOut.put(this, s);
                 if (env.cacheChunksExcept_Account(notToSwapOut,
@@ -536,137 +537,143 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * @param row The row for which the value is returned.
-     * @param col The column for which the value is returned
-     * @return The value at (row, col).
+     * @param r The grid cell row index for which the value is returned.
+     * @param c The grid cell column index for which the value is returned
+     * @return The value in the grid at grid cell row index {@code r}, grid cell
+     * column index {@code c} or {@code null} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Boolean getCell(long row, long col) throws IOException, ClassNotFoundException, Exception {
-//        boolean isInGrid = isInGrid(row, col);
-//        if (isInGrid) {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        Grids_ChunkBooleanArray c = (Grids_ChunkBooleanArray) getChunk(chunkRow, chunkCol);
-        int cellRow = getCellRow(row);
-        int cellCol = getCellCol(col);
-        return getCell(c, cellRow, cellCol);
-//        }
-//        return null;
+    public Boolean getCell(long r, long c) throws IOException,
+            ClassNotFoundException, Exception {
+        if (isInGrid(r, c)) {
+            return getCell((Grids_ChunkBooleanArray) getChunk(getChunkRow(r),
+                    getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c));
+        }
+        return null;
     }
 
     /**
-     * For getting the value in chunk at cellRow, cellCol.
+     * For getting the value in chunk at chunk cell row {@code r}, chunk cell
+     * col {@code c}.
      *
-     * @param chunk The chunk in which the value is returned.
-     * @param cellRow The chunk cell row index of the cell that's value is
-     * returned.
-     * @param cellCol The chunk cell column index of the cell that's value is
-     * returned.
-     * @return Value at position given by chunk row index _ChunkRowIndex, chunk
-     * column index _ChunkColIndex, chunk cell row index cellRow, chunk cell
-     * column index cellCol.
-     *
+     * @param chunk The chunk.
+     * @param r The chunk cell row index of the value returned.
+     * @param c The chunk cell column index of the value returned.
+     * @return Value in chunk at chunk cell row {@code r}, chunk cell col
+     * {@code c} or {@code null} if there is no such value.
      */
-    public Boolean getCell(Grids_ChunkBooleanArray chunk, int cellRow, int cellCol) {
-        return chunk.getCell(cellRow, cellCol);
+    public Boolean getCell(Grids_ChunkBooleanArray chunk, int r, int c) {
+        if (chunk.inChunk(r, c)) {
+            return chunk.getCell(r, c);
+        }
+        return null;
     }
 
     /**
-     * @param x the x-coordinate of the point.
-     * @param y the y-coordinate of the point.
-     * @return The value at (x, y).
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @return The value at x-coordinate {@code x}, y-coordinate {@code y} or
+     * {@code null} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public final boolean getCell(BigDecimal x, BigDecimal y) throws IOException,
             ClassNotFoundException, Exception {
-        long row = getRow(y);
-        long col = getCol(x);
-        boolean isInGrid = isInGrid(row, col);
-        if (isInGrid) {
-            return getCell(row, col);
-        }
-        return false;
+        return getCell(getRow(y), getCol(x));
     }
 
     /**
-     * @param cellID the Grids_2D_ID_long of the cell.
-     * @return The value of the cell with cellID.
+     * @param i The cell ID.
+     * @return The value of the cell with cell ID {@code i} or {@code null} if
+     * there is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean getCell(Grids_2D_ID_long cellID) throws IOException,
+    public final Boolean getCell(Grids_2D_ID_long i) throws IOException,
             ClassNotFoundException, Exception {
-        return getCell(cellID.getRow(), cellID.getCol());
+        return getCell(i.getRow(), i.getCol());
     }
 
     /**
-     * For setting the value at x-coordinate x, y-coordinate y.
+     * For setting value at x-coordinate {@code x}, y-coordinate {@code y}.
      *
-     * @param x the x-coordinate of the point.
-     * @param y the y-coordinate of the point.
-     * @param value The value to set at (x, y).
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param v The value to set at (x, y).
+     * @return The value at x-coordinate {@code x}, y-coordinate {@code y} or
+     * {@code null} if there is no such value.
+     *
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final void setCell(BigDecimal x, BigDecimal y, Boolean value)
+    public Boolean setCell(BigDecimal x, BigDecimal y, Boolean v)
             throws IOException, ClassNotFoundException, Exception {
-        setCell(getRow(y), getCol(x), value);
+        return setCell(getRow(y), getCol(x), v);
     }
 
     /**
-     * For setting the value at row, col.
+     * For setting the value at cell row index {@code r}, cell column index
+     * {@code c}.
      *
-     * @param row The cell row of the value to set.
-     * @param col The cell column of the value to set.
-     * @param value The value to set at (x, y).
+     * @param r The cell row index of the value to set.
+     * @param c The cell column index of the value to set.
+     * @param v The value to set at cell row index {@code r}, cell column index
+     * {@code c}.
+     * @return The value at cell row index {@code r}, cell column index
+     * {@code c} or {@code null} if there is no such value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(long row, long col, Boolean value) throws IOException,
-            ClassNotFoundException, Exception {
-        int chunkRow = getChunkRow(row);
-        int chunkCol = getChunkCol(col);
-        int cellRow = getCellRow(row);
-        int cellCol = getCellCol(col);
-        setCell((Grids_ChunkBooleanArray) getChunk(chunkRow, chunkCol), cellRow,
-                cellCol, value);
+    public Boolean setCell(long r, long c, Boolean v)
+            throws IOException, ClassNotFoundException, Exception {
+        if (isInGrid(r, c)) {
+            return setCell((Grids_ChunkBooleanArray) getChunk(getChunkRow(r),
+                    getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c), v);
+        }
+        return null;
     }
 
     /**
-     * For setting the value at chunkRow, chunkCol, cellRow, cellCol.
+     * For setting the value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * {@code ccr}, chunk cell column (@code ccc}.
      *
-     * @param chunkRow The chunkRow of the value to set.
-     * @param chunkCol The chunkCol of the value to set.
-     * @param cellRow The cellRow of the value to set.
-     * @param cellCol The cellCol of the value to set.
-     * @param value The value to set at chunkRow, chunkCol, cellRow, cellCol.
+     * @param cr The chunk row of the chunk in which the value is set.
+     * @param cc The chunk column of the chunk in which the value is set.
+     * @param ccr The chunk cell row of the value to set.
+     * @param ccc The chunk cell column of the value to set.
+     * @param v The value to set in chunk ({@code cr}, {@code cc}) at chunk cell
+     * row {@code ccr}, chunk cell column (@code ccc}.
+     * @return The value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * {@code ccr}, chunk cell column (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(int chunkRow, int chunkCol, int cellRow, int cellCol,
-            boolean value) throws IOException, ClassNotFoundException, Exception {
-        Grids_ChunkBooleanArray chunk;
-        chunk = (Grids_ChunkBooleanArray) getChunk(chunkRow, chunkCol);
-        setCell(chunk, cellRow, cellCol, value);
+    public Boolean setCell(int cr, int cc, int ccr, int ccc, boolean v)
+            throws IOException, ClassNotFoundException, Exception {
+        return setCell((Grids_ChunkBooleanArray) getChunk(cr, cc), ccr, ccc, v);
     }
 
     /**
-     * For setting the value in chunk at cellRow, cellCol.
+     * For setting the value in chunk at chunk cell row {@code ccr}, chunk cell
+     * column (@code ccc}.
      *
      * @param chunk The chunk in which the value is to be set.
-     * @param cellRow The row in chunk of the value to set.
-     * @param cellCol The col in chunk of the value to set.
-     * @param value The value to set in chunk at cellRow, cellCol.
+     * @param ccr The row in chunk of the value to set.
+     * @param ccc The column in chunk of the value to set.
+     * @param v The value to set in chunk at chunk cell row {@code ccr}, chunk
+     * cell column (@code ccc}.
+     * @return The value in chunk at chunk cell row {@code ccr}, chunk cell
+     * column (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void setCell(Grids_ChunkBooleanArray chunk, int cellRow, int cellCol,
-            boolean value) throws IOException, Exception, ClassNotFoundException {
-        boolean v = chunk.setCell(cellRow, cellCol, value);
+    public Boolean setCell(Grids_ChunkBooleanArray chunk, int ccr, int ccc,
+            Boolean v) throws IOException, Exception, ClassNotFoundException {
+        Boolean r = chunk.setCell(ccr, ccc, v);
         // Update stats
-        upDateGridStatistics(value, v);
+        upDateGridStatistics(v, r);
+        return r;
     }
 
     /**
@@ -674,17 +681,17 @@ public class Grids_GridBoolean extends Grids_Grid {
      * {@link #stats} are updated.
      *
      * @param chunk The chunk in which the cell value is initialised.
-     * @param row The row in the grid containing the cell which value is to be
+     * @param r The row in the grid containing the cell which value is to be
      * set.
-     * @param col The column in the grid containing the cell which value is to
-     * be set.
+     * @param c The column in the grid containing the cell which value is to be
+     * set.
      * @param value The value to initialise.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkBooleanArray chunk, long row, long col,
+    protected void initCell(Grids_ChunkBooleanArray chunk, long r, long c,
             Boolean value) throws IOException, Exception, ClassNotFoundException {
-        chunk.initCell(getCellRow(row), getCellCol(col), value);
+        chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), value);
         if (value != null) {
             stats.setN(stats.getN() + 1);
         }
@@ -702,7 +709,7 @@ public class Grids_GridBoolean extends Grids_Grid {
      */
     protected void initCellFast(Grids_ChunkBooleanArray chunk, long row, long col,
             Boolean value) {
-        chunk.initCell(getCellRow(row), getCellCol(col), value);
+        chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
     }
 
     /**

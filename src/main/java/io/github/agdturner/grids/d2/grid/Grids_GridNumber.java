@@ -56,8 +56,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y) 
             throws IOException,            Exception, ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(y), getChunkCol(x), getCellRow(y),
-                getCellCol(x));
+        return getCellBigDecimal(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
+                getChunkCellCol(x));
     }
 
     /**
@@ -70,8 +70,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal getCellBigDecimal(long row, long col) throws IOException, Exception,
             ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(row), getChunkCol(col), getCellRow(row),
-                getCellCol(col));
+        return getCellBigDecimal(getChunkRow(row), getChunkCol(col), getChunkCellRow(row),
+                getChunkCellCol(col));
     }
 
     /**

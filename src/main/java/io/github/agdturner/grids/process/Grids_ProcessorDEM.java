@@ -17,10 +17,8 @@ package io.github.agdturner.grids.process;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
@@ -52,11 +50,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance of Grids_ProcessorDEM. By default the logs are
-     * appended to the end of the Log _File if it exists. To overwrite the Log
-     * _File use: Grids_ProcessorDEM( Directory, false );
+     * Creates a new instance of Grids_ProcessorDEM.
      *
-     * @param e
+     * @param e The grids environment.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_ProcessorDEM(Grids_Environment e) throws IOException,
             ClassNotFoundException, Exception {
@@ -68,20 +66,20 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * Grids_GridNumber _Grid2DSquareCell passed in.
      *
      * @param g The Grids_GridNumber to be processed. Defaults: kernel to have
-     * distance = ( _Grid2DSquareCell.getDimensions( hoome )[ 0 ].doubleValue()
-     * ) * ( 3.0d / 2.0d ); weightIntersect = 1.0d; weightFactor = 0.0d;
+     * distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
+     * weightIntersect = 1.0d; weightFactor = 0.0d;
      * @return Grids_GridDouble[] slopeAndAspect. /n
-     * @throws java.io.IOException
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g, int dp,
-            RoundingMode rm)
-            throws IOException, ClassNotFoundException, Exception {
+            RoundingMode rm) throws IOException, ClassNotFoundException,
+            Exception {
         boolean hoome = true;
         // Default distance to contain centroids of immediate neighbours
         // ( ( square root of 2 ) * cellsize ) < distance < ( 2 * cellsize ).
         Grids_Dimensions dimensions = g.getDimensions();
-        double distance;
-        distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
+        double distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
         double weightIntersect = 1.0d;
         double weightFactor = 0.0d;
         return getSlopeAspect(g, BigDecimal.valueOf(distance), weightIntersect,
@@ -116,7 +114,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * slopeAndAspect[7] Is the sine of slopeAndAspect[1] + ( ( Pi * 5 ) / 8).
      * slopeAndAspect[8] Is the sine of slopeAndAspect[1] + ( ( Pi * 6 ) / 8).
      * slopeAndAspect[9] Is the sine of slopeAndAspect[1] + ( ( Pi * 7 ) / 8).
-     * @throws java.io.IOException
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g,
             BigDecimal distance, double weightIntersect, double weightFactor,
@@ -282,7 +281,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            slopeAndAspect[5] = (Grids_GridDouble) GridDoubleFactory.create(
+            slopeAndAspect[5] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[5].setName(filename);
             slopeAndAspect[5].writeToFile();
@@ -310,7 +309,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            slopeAndAspect[7] = (Grids_GridDouble) GridDoubleFactory.create(
+            slopeAndAspect[7] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[7].setName(filename);
             slopeAndAspect[7].writeToFile();
@@ -377,7 +376,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                         BigDecimal thisY = g.getCellYBigDecimal(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                long0 = col + q;
                                                 BigDecimal thisX = BigDecimal.valueOf(q * cellsize);
                                                 BigDecimal thisDistance = Grids_Utilities.distance(BigDecimal.ZERO,
                                                         BigDecimal.ZERO, thisX, thisY, dp, rm);
@@ -586,6 +584,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param weightIntersect the kernel weighting weight at centre.
      * @param weightFactor the kernel weighting distance decay.
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, BigDecimal x,
             BigDecimal y, BigDecimal distance, BigDecimal weightIntersect,
@@ -714,25 +714,21 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * </ol>
      * This algorithm was optimised by processing each hollow in turn and
      * dealing with the situation around each hollow.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble getHollowFilledDEM(Grids_GridNumber g,
-            Grids_GridFactoryDouble gdf, double outflowHeight, int maxIterations,
-            HashSet outflowCellIDsSet, boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
+            Grids_GridFactoryDouble gdf, double outflowHeight,
+            int maxIterations, HashSet<Grids_2D_ID_long> outflowCellIDsSet,
+            boolean treatNoDataValueAsOutflow) throws IOException,
+            ClassNotFoundException, Exception {
         env.getGrids().add(g);
-        // Intitialise variables
-        Grids_GridDouble result;
-        long nRows;
-        long nCols;
-//        int chunkNrows = g.getChunkNRows();
-//        int chunkNcols = g.getChunkNCols();
-//        String resultName = g.getName() + "HollowFilledDEM_" + maxIterations;
-        String resultName = "HollowFilledDEM_" + maxIterations;
-        result = (Grids_GridDouble) gdf.create(g);
-        result.setName(resultName);
-        nRows = result.getNRows();
-        nCols = result.getNCols();
-        double minHeight;
-        minHeight = result.getStats().getMin(true);
+        Grids_GridDouble res = (Grids_GridDouble) gdf.create(g);
+        String rName = "HollowFilledDEM_" + maxIterations;
+        res.setName(rName);
+        long nRows = res.getNRows();
+        long nCols = res.getNCols();
+        double minHeight = res.getStats().getMin(true);
         if (outflowHeight < minHeight) {
             outflowHeight = minHeight;
         }
@@ -741,15 +737,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             int noDataValue = gi.getNoDataValue();
             double height;
             // Initialise outflowCellIDs
-            HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
-                    outflowCellIDsSet, outflowHeight, gi, nRows, nCols,
-                    treatNoDataValueAsOutflow);
+            HashSet<Grids_2D_ID_long> outflowCellIDs
+                    = getHollowFilledDEMOutflowCellIDs(outflowCellIDsSet,
+                            outflowHeight, gi, nRows, nCols,
+                            treatNoDataValueAsOutflow);
             // Initialise hollowsHashSet
-            HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                    gi, nRows, nCols, treatNoDataValueAsOutflow);
+            HashSet<Grids_2D_ID_long> hollowsHashSet
+                    = getHollowFilledDEMInitialHollowsHashSet(gi, nRows, nCols,
+                            treatNoDataValueAsOutflow);
             // Remove outflowCellIDs from hollowsHashSet
             hollowsHashSet.removeAll(outflowCellIDs);
-            HashSet hollows2 = hollowsHashSet;
+            HashSet<Grids_2D_ID_long> hollows2 = hollowsHashSet;
             int numberOfHollows = hollowsHashSet.size();
             boolean calculated1 = false;
             boolean calculated2;
@@ -757,31 +755,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 calculated1 = true;
             }
             int iteration1 = 0;
-            int iteration2;
-            int counter1 = 0;
-            long row;
-            long col;
-            long p;
-            long q;
-            long r;
-            long s;
-            //int cellID1;
-            //int cellID2;
-            //int cellID3;
-            Iterator iterator1;
-            Iterator iterator2;
-            //Integer cellID1;
-            //Integer cellID2;
-            //Integer cellID3;
+            Iterator<Grids_2D_ID_long> ite1;
+            Iterator<Grids_2D_ID_long> ite2;
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
-            HashSet toVisitSet1;
-            HashSet toVisitSet2;
-            HashSet toVisitSet3;
-            HashSet visitedSet1;
-            HashSet visitedSet2;
-            HashSet hollows1;
-            HashSet hollowsVisited;
-            HashSet hollowSet;
             double height0;
             int noDataCount;
             int outflowCellCount;
@@ -794,77 +770,79 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             + " out of a maximum " + maxIterations
                             + ": Number of hollows " + numberOfHollows);
                     if (numberOfHollows > 0) {
-                        visitedSet1 = new HashSet();
-                        hollowsVisited = new HashSet();
+                        HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
+                        HashSet<Grids_2D_ID_long> hollowsVisited = new HashSet<>();
                         //hollowsVisited.addAll( outflowCellIDs );
                         // Raise all hollows by a small amount
-                        setLarger(result, hollows2);
+                        setLarger(res, hollows2);
                         // Recalculate hollows in hollows2 neighbourhood
-                        toVisitSet1 = new HashSet();
-                        iterator1 = hollows2.iterator();
-                        while (iterator1.hasNext()) {
-                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                            row = cellIDs[0].getRow();
-                            col = cellIDs[0].getCol();
-                            for (p = -1; p < 2; p++) {
-                                for (q = -1; q < 2; q++) {
+                        HashSet<Grids_2D_ID_long> toVisitSet1 = new HashSet<>();
+                        ite1 = hollows2.iterator();
+                        while (ite1.hasNext()) {
+                            cellIDs[0] = ite1.next();
+                            long row = cellIDs[0].getRow();
+                            long col = cellIDs[0].getCol();
+                            for (long p = -1; p < 2; p++) {
+                                for (long q = -1; q < 2; q++) {
                                     //if ( ! ( p == 0 && q == 0 ) ) {
                                     if (g.isInGrid(row + p, col + q)) {
-                                        toVisitSet1.add(g.getCellID(row + p, col + q));
+                                        toVisitSet1.add(g.getCellID(row + p,
+                                                col + q));
                                     }
                                     //}
                                 }
                             }
                         }
-                        hollows1 = getHollowsInNeighbourhood(
-                                result,
-                                toVisitSet1,
-                                treatNoDataValueAsOutflow);
+                        HashSet<Grids_2D_ID_long> hollows1
+                                = getHollowsInNeighbourhood(res, toVisitSet1,
+                                        treatNoDataValueAsOutflow);
                         hollows1.removeAll(outflowCellIDs);
                         hollows2.clear();
                         toVisitSet1.clear();
                         /*
-                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood( result, hollows2 );
+                             hollows1 = getHollowFilledDEMCalculateHollowsInNeighbourhood(
+                                    res, hollows2 );
                              hollows1.removeAll( outflowCellIDs );
                              hollows2.clear();
                          */
                         // Trace bottom of each hollow and raise to the height of the lowest cell around it.
-                        iterator1 = hollows1.iterator();
-                        while (iterator1.hasNext()) {
-                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                        ite1 = hollows1.iterator();
+                        while (ite1.hasNext()) {
+                            cellIDs[0] = ite1.next();
                             if (!hollowsVisited.contains(cellIDs[0])) {
-                                hollowSet = new HashSet();
+                                HashSet<Grids_2D_ID_long> hollowSet = new HashSet<>();
                                 hollowSet.add(cellIDs[0]);
-                                row = cellIDs[0].getRow();
-                                col = cellIDs[0].getCol();
-                                toVisitSet1 = new HashSet();
+                                long row = cellIDs[0].getRow();
+                                long col = cellIDs[0].getCol();
+                                toVisitSet1 = new HashSet<>();
                                 // Step 1: Add all cells in adjoining hollows to hollowSet
-                                for (p = -1; p < 2; p++) {
-                                    for (q = -1; q < 2; q++) {
+                                for (long p = -1; p < 2; p++) {
+                                    for (long q = -1; q < 2; q++) {
                                         if (!(p == 0 && q == 0)) {
                                             if (g.isInGrid(row + p, col + q)) {
-                                                cellIDs[1] = g.getCellID(row + p, col + q);
+                                                cellIDs[1] = g.getCellID(
+                                                        row + p, col + q);
                                                 toVisitSet1.add(cellIDs[1]);
                                             }
                                         }
                                     }
                                 }
                                 toVisitSet1.removeAll(outflowCellIDs);
-                                visitedSet2 = new HashSet();
+                                HashSet<Grids_2D_ID_long> visitedSet2 = new HashSet<>();
                                 visitedSet2.add(cellIDs[0]);
-                                toVisitSet3 = new HashSet();
+                                HashSet<Grids_2D_ID_long> toVisitSet3 = new HashSet<>();
                                 toVisitSet3.addAll(toVisitSet1);
                                 calculated2 = false;
                                 while (!calculated2) {
-                                    toVisitSet2 = new HashSet();
-                                    iterator2 = toVisitSet1.iterator();
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
+                                    ite2 = toVisitSet1.iterator();
+                                    while (ite2.hasNext()) {
+                                        cellIDs[1] = ite2.next();
                                         visitedSet2.add(cellIDs[1]);
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        for (p = -1; p < 2; p++) {
-                                            for (q = -1; q < 2; q++) {
+                                        for (long p = -1; p < 2; p++) {
+                                            for (long q = -1; q < 2; q++) {
                                                 if (!(p == 0 && q == 0)) {
                                                     if (g.isInGrid(row + p, col + q)) {
                                                         cellIDs[2] = g.getCellID(row + p, col + q);
@@ -872,8 +850,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                                         // If a hollow then add to hollow set and visit neighbours if not done already
                                                         if (hollows1.contains(cellIDs[2])) {
                                                             hollowSet.add(cellIDs[2]);
-                                                            for (r = -1; r < 2; r++) {
-                                                                for (s = -1; s < 2; s++) {
+                                                            for (long r = -1; r < 2; r++) {
+                                                                for (long s = -1; s < 2; s++) {
                                                                     if (!(r == 0 && s == 0)) { // Is this correct?
                                                                         if (g.isInGrid(row + p + r, col + q + s)) {
                                                                             toVisitSet2.add(g.getCellID(row + p + r, col + q + s));
@@ -900,19 +878,19 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 // NB. toVisitSet3 contains all cells which neighbour the traced hollow
                                 calculated2 = false;
                                 minHeight = Double.MAX_VALUE;
-                                height0 = result.getCell(row, col);
+                                height0 = res.getCell(row, col);
                                 while (!calculated2) {
-                                    toVisitSet2 = new HashSet();
+                                    HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
                                     //toVisitSet2.addAll( toVisitSet3 );
-                                    iterator2 = toVisitSet3.iterator();
+                                    ite2 = toVisitSet3.iterator();
                                     noDataCount = 0;
                                     outflowCellCount = 0;
                                     // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    while (ite2.hasNext()) {
+                                        cellIDs[1] = ite2.next();
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        height = result.getCell(row, col);
+                                        height = res.getCell(row, col);
                                         if (height == noDataValue) {
                                             noDataCount++;
                                         } else {
@@ -935,17 +913,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                         // If minHeight is higher then add cells with this height to the
                                         // hollow set and their neighbours to toVisitSet2
                                         if (minHeight > height0) {
-                                            iterator2 = toVisitSet3.iterator();
-                                            while (iterator2.hasNext()) {
-                                                cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            ite2 = toVisitSet3.iterator();
+                                            while (ite2.hasNext()) {
+                                                cellIDs[1] = ite2.next();
                                                 row = cellIDs[1].getRow();
                                                 col = cellIDs[1].getCol();
-                                                height = result.getCell(row, col);
+                                                height = res.getCell(row, col);
                                                 if (height == minHeight) {
                                                     hollowSet.add(cellIDs[1]);
                                                     toVisitSet2.remove(cellIDs[1]);
-                                                    for (r = -1; r < 2; r++) {
-                                                        for (s = -1; s < 2; s++) {
+                                                    for (long r = -1; r < 2; r++) {
+                                                        for (long s = -1; s < 2; s++) {
                                                             if (!(r == 0L && s == 0L)) {
                                                                 if (g.isInGrid(row + r, col + s)) {
                                                                     toVisitSet2.add(g.getCellID(row + r, col + s));
@@ -966,18 +944,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 }
                                 // Step 3 Raise all cells in hollowSet
                                 hollowSet.removeAll(outflowCellIDs);
-                                iterator2 = hollowSet.iterator();
-                                while (iterator2.hasNext()) {
-                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                ite2 = hollowSet.iterator();
+                                while (ite2.hasNext()) {
+                                    cellIDs[1] = ite2.next();
                                     row = cellIDs[1].getRow();
                                     col = cellIDs[1].getCol();
-                                    result.setCell(row, col, Grids_Utilities.getLarger(height0));
+                                    res.setCell(row, col, Math.nextUp(height0));
                                 }
                                 hollowsVisited.addAll(hollowSet);
                                 visitedSet1.addAll(hollowSet);
                             }
                         }
-                        hollows2 = getHollowsInNeighbourhood(result,
+                        hollows2 = getHollowsInNeighbourhood(res,
                                 visitedSet1, treatNoDataValueAsOutflow);
                     } else {
                         calculated1 = true;
@@ -989,20 +967,22 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         } else {
             // ( g.getClass() == Grids_GridDouble.class )
             Grids_GridDouble gd = (Grids_GridDouble) g;
-            double noDataValue = gd.getNoDataValue();
+            double ndv = gd.getNoDataValue();
             double height;
             double heightDouble;
-            double resultNoDataValue = result.getNoDataValue();
+            double resultNoDataValue = res.getNoDataValue();
             // Initialise outflowCellIDs
-            HashSet outflowCellIDs = getHollowFilledDEMOutflowCellIDs(
-                    outflowCellIDsSet, outflowHeight, gd, nRows, nCols,
-                    treatNoDataValueAsOutflow);
+            HashSet<Grids_2D_ID_long> outflowCellIDs
+                    = getHollowFilledDEMOutflowCellIDs(outflowCellIDsSet,
+                            outflowHeight, gd, nRows, nCols,
+                            treatNoDataValueAsOutflow);
             // Initialise hollowsHashSet
-            HashSet hollowsHashSet = getHollowFilledDEMInitialHollowsHashSet(
-                    gd, nRows, nCols, treatNoDataValueAsOutflow);
+            HashSet<Grids_2D_ID_long> hollowsHashSet
+                    = getHollowFilledDEMInitialHollowsHashSet(gd, nRows, nCols,
+                            treatNoDataValueAsOutflow);
             // Remove outflowCellIDs from hollowsHashSet
             hollowsHashSet.removeAll(outflowCellIDs);
-            HashSet hollows2 = hollowsHashSet;
+            HashSet<Grids_2D_ID_long> hollows2 = hollowsHashSet;
             int numberOfHollows = hollowsHashSet.size();
             boolean calculated1 = false;
             boolean calculated2;
@@ -1010,31 +990,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 calculated1 = true;
             }
             int iteration1 = 0;
-            int iteration2;
-            int counter1 = 0;
-            long row;
-            long col;
-            long p;
-            long q;
-            long r;
-            long s;
-            //int cellID1;
-            //int cellID2;
-            //int cellID3;
-            Iterator iterator1;
-            Iterator iterator2;
-            //Integer cellID1;
-            //Integer cellID2;
-            //Integer cellID3;
+            Iterator<Grids_2D_ID_long> ite1;
+            Iterator<Grids_2D_ID_long> ite2;
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[3];
-            HashSet toVisitSet1;
-            HashSet toVisitSet2;
-            HashSet toVisitSet3;
-            HashSet visitedSet1;
-            HashSet visitedSet2;
-            HashSet hollows1;
-            HashSet hollowsVisited;
-            HashSet hollowSet;
             double height0;
             int noDataCount;
             int outflowCellCount;
@@ -1050,20 +1008,20 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         boolean _DEBUG;
                     }
                     if (numberOfHollows > 0) {
-                        visitedSet1 = new HashSet();
-                        hollowsVisited = new HashSet();
+                        HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
+                        HashSet<Grids_2D_ID_long> hollowsVisited = new HashSet<>();
                         //hollowsVisited.addAll( outflowCellIDs );
                         // Raise all hollows by a small amount
-                        setLarger(result, hollows2);
+                        setLarger(res, hollows2);
                         // Recalculate hollows in hollows2 neighbourhood
-                        toVisitSet1 = new HashSet();
-                        iterator1 = hollows2.iterator();
-                        while (iterator1.hasNext()) {
-                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
-                            row = cellIDs[0].getRow();
-                            col = cellIDs[0].getCol();
-                            for (p = -1; p < 2; p++) {
-                                for (q = -1; q < 2; q++) {
+                        HashSet<Grids_2D_ID_long> toVisitSet1 = new HashSet<>();
+                        ite1 = hollows2.iterator();
+                        while (ite1.hasNext()) {
+                            cellIDs[0] = ite1.next();
+                            long row = cellIDs[0].getRow();
+                            long col = cellIDs[0].getCol();
+                            for (long p = -1; p < 2; p++) {
+                                for (long q = -1; q < 2; q++) {
                                     //if ( ! ( p == 0 && q == 0 ) ) {
                                     if (g.isInGrid(row + p, col + q)) {
                                         toVisitSet1.add(g.getCellID(row + p, col + q));
@@ -1072,10 +1030,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 }
                             }
                         }
-                        hollows1 = getHollowsInNeighbourhood(
-                                result,
-                                toVisitSet1,
-                                treatNoDataValueAsOutflow);
+                        HashSet<Grids_2D_ID_long> hollows1
+                                = getHollowsInNeighbourhood(res, toVisitSet1,
+                                        treatNoDataValueAsOutflow);
                         hollows1.removeAll(outflowCellIDs);
                         hollows2.clear();
                         toVisitSet1.clear();
@@ -1085,18 +1042,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                              hollows2.clear();
                          */
                         // Trace bottom of each hollow and raise to the height of the lowest cell around it.
-                        iterator1 = hollows1.iterator();
-                        while (iterator1.hasNext()) {
-                            cellIDs[0] = (Grids_2D_ID_long) iterator1.next();
+                        ite1 = hollows1.iterator();
+                        while (ite1.hasNext()) {
+                            cellIDs[0] = ite1.next();
                             if (!hollowsVisited.contains(cellIDs[0])) {
-                                hollowSet = new HashSet();
+                                HashSet<Grids_2D_ID_long> hollowSet = new HashSet<>();
                                 hollowSet.add(cellIDs[0]);
-                                row = cellIDs[0].getRow();
-                                col = cellIDs[0].getCol();
-                                toVisitSet1 = new HashSet();
+                                long row = cellIDs[0].getRow();
+                                long col = cellIDs[0].getCol();
+                                toVisitSet1 = new HashSet<>();
                                 // Step 1: Add all cells in adjoining hollows to hollowSet
-                                for (p = -1; p < 2; p++) {
-                                    for (q = -1; q < 2; q++) {
+                                for (long p = -1; p < 2; p++) {
+                                    for (long q = -1; q < 2; q++) {
                                         if (!(p == 0 && q == 0)) {
                                             if (g.isInGrid(row + p, col + q)) {
                                                 cellIDs[1] = g.getCellID(row + p, col + q);
@@ -1106,21 +1063,21 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     }
                                 }
                                 toVisitSet1.removeAll(outflowCellIDs);
-                                visitedSet2 = new HashSet();
+                                HashSet<Grids_2D_ID_long> visitedSet2 = new HashSet<>();
                                 visitedSet2.add(cellIDs[0]);
-                                toVisitSet3 = new HashSet();
+                                HashSet<Grids_2D_ID_long> toVisitSet3 = new HashSet<>();
                                 toVisitSet3.addAll(toVisitSet1);
                                 calculated2 = false;
                                 while (!calculated2) {
-                                    toVisitSet2 = new HashSet();
-                                    iterator2 = toVisitSet1.iterator();
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
+                                    ite2 = toVisitSet1.iterator();
+                                    while (ite2.hasNext()) {
+                                        cellIDs[1] = ite2.next();
                                         visitedSet2.add(cellIDs[1]);
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        for (p = -1; p < 2; p++) {
-                                            for (q = -1; q < 2; q++) {
+                                        for (long p = -1; p < 2; p++) {
+                                            for (long q = -1; q < 2; q++) {
                                                 if (!(p == 0 && q == 0)) {
                                                     if (g.isInGrid(row + p, col + q)) {
                                                         cellIDs[2] = g.getCellID(row + p, col + q);
@@ -1128,8 +1085,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                                         // If a hollow then add to hollow set and visit neighbours if not done already
                                                         if (hollows1.contains(cellIDs[2])) {
                                                             hollowSet.add(cellIDs[2]);
-                                                            for (r = -1; r < 2; r++) {
-                                                                for (s = -1; s < 2; s++) {
+                                                            for (long r = -1; r < 2; r++) {
+                                                                for (long s = -1; s < 2; s++) {
                                                                     if (!(r == 0 && s == 0)) { // Is this correct?
                                                                         if (g.isInGrid(row + p + r, col + q + s)) {
                                                                             toVisitSet2.add(g.getCellID(row + p + r, col + q + s));
@@ -1156,19 +1113,19 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 // NB. toVisitSet3 contains all cells which neighbour the traced hollow
                                 calculated2 = false;
                                 minHeight = Double.MAX_VALUE;
-                                height0 = result.getCell(row, col);
+                                height0 = res.getCell(row, col);
                                 while (!calculated2) {
-                                    toVisitSet2 = new HashSet();
+                                    HashSet<Grids_2D_ID_long> toVisitSet2 = new HashSet<>();
                                     //toVisitSet2.addAll( toVisitSet3 );
-                                    iterator2 = toVisitSet3.iterator();
+                                    ite2 = toVisitSet3.iterator();
                                     noDataCount = 0;
                                     outflowCellCount = 0;
                                     // Step 2.1 Calculate height of the lowest neighbour minHeight // (that is not an outflow cell???)
-                                    while (iterator2.hasNext()) {
-                                        cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                    while (ite2.hasNext()) {
+                                        cellIDs[1] = ite2.next();
                                         row = cellIDs[1].getRow();
                                         col = cellIDs[1].getCol();
-                                        heightDouble = result.getCell(row, col);
+                                        heightDouble = res.getCell(row, col);
                                         if (heightDouble == resultNoDataValue) {
                                             noDataCount++;
                                         } else {
@@ -1191,17 +1148,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                         // If minHeight is higher then add cells with this height to the
                                         // hollow set and their neighbours to toVisitSet2
                                         if (minHeight > height0) {
-                                            iterator2 = toVisitSet3.iterator();
-                                            while (iterator2.hasNext()) {
-                                                cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                            ite2 = toVisitSet3.iterator();
+                                            while (ite2.hasNext()) {
+                                                cellIDs[1] = ite2.next();
                                                 row = cellIDs[1].getRow();
                                                 col = cellIDs[1].getCol();
-                                                heightDouble = result.getCell(row, col);
+                                                heightDouble = res.getCell(row, col);
                                                 if (heightDouble == minHeight) {
                                                     hollowSet.add(cellIDs[1]);
                                                     toVisitSet2.remove(cellIDs[1]);
-                                                    for (r = -1; r < 2; r++) {
-                                                        for (s = -1; s < 2; s++) {
+                                                    for (long r = -1; r < 2; r++) {
+                                                        for (long s = -1; s < 2; s++) {
                                                             if (!(r == 0L && s == 0L)) {
                                                                 if (g.isInGrid(row + r, col + s)) {
                                                                     toVisitSet2.add(g.getCellID(row + r, col + s));
@@ -1222,20 +1179,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 }
                                 // Step 3 Raise all cells in hollowSet
                                 hollowSet.removeAll(outflowCellIDs);
-                                iterator2 = hollowSet.iterator();
-                                while (iterator2.hasNext()) {
-                                    cellIDs[1] = (Grids_2D_ID_long) iterator2.next();
+                                ite2 = hollowSet.iterator();
+                                while (ite2.hasNext()) {
+                                    cellIDs[1] = ite2.next();
                                     row = cellIDs[1].getRow();
                                     col = cellIDs[1].getCol();
-                                    result.setCell(row, col, Grids_Utilities.getLarger(height0));
+                                    res.setCell(row, col, Math.nextUp(height0));
                                 }
                                 hollowsVisited.addAll(hollowSet);
                                 visitedSet1.addAll(hollowSet);
                             }
                         }
-                        hollows2 = getHollowsInNeighbourhood(
-                                result,
-                                visitedSet1,
+                        hollows2 = getHollowsInNeighbourhood(res, visitedSet1,
                                 treatNoDataValueAsOutflow);
                     } else {
                         calculated1 = true;
@@ -1245,7 +1200,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 }
             }
         }
-        return result;
+        return res;
     }
 
     /**
@@ -1263,34 +1218,28 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
      * cell with a value of NoDataValue.
      */
-    private HashSet getHollowFilledDEMOutflowCellIDs(
-            HashSet outflowCellIDsSet,
-            double outflowHeight,
-            Grids_GridNumber g,
-            long nrows,
-            long ncols,
-            boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
-        boolean checkAndMaybeFreeMemory = env.checkAndMaybeFreeMemory();
-        HashSet outflowCellIDs = new HashSet();
+    private HashSet<Grids_2D_ID_long> getHollowFilledDEMOutflowCellIDs(
+            HashSet<Grids_2D_ID_long> outflowCellIDsSet, double outflowHeight,
+            Grids_GridNumber g, long nrows, long ncols,
+            boolean treatNoDataValueAsOutflow) throws IOException,
+            ClassNotFoundException, Exception {
+        boolean camfm = env.checkAndMaybeFreeMemory();
+        HashSet<Grids_2D_ID_long> outflowCellIDs = new HashSet<>();
         if (!(outflowCellIDsSet == null)) {
             outflowCellIDs.addAll(outflowCellIDsSet);
         }
-        long row;
-        long col;
-
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
-            int noDataValue = gi.getNoDataValue();
-            int height;
-            for (row = 0; row < nrows; row++) {
-                for (col = 0; col < ncols; col++) {
-                    height = gi.getCell(row, col);
+            int ndv = gi.getNoDataValue();
+            for (int row = 0; row < nrows; row++) {
+                for (int col = 0; col < ncols; col++) {
+                    int height = gi.getCell(row, col);
                     if (treatNoDataValueAsOutflow) {
-                        if ((height == noDataValue) || (height <= outflowHeight)) {
+                        if ((height == ndv) || (height <= outflowHeight)) {
                             outflowCellIDs.add(gi.getCellID(row, col));
                         }
                     } else {
-                        if ((height != noDataValue) && (height <= outflowHeight)) {
+                        if ((height != ndv) && (height <= outflowHeight)) {
                             outflowCellIDs.add(gi.getCellID(row, col));
                         }
                     }
@@ -1299,17 +1248,16 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         } else {
             // ( _Grid2DSquareCell.getClass() == Grids_GridDouble.class )
             Grids_GridDouble gd = (Grids_GridDouble) g;
-            double noDataValue = gd.getNoDataValue();
-            double height;
-            for (row = 0; row < nrows; row++) {
-                for (col = 0; col < ncols; col++) {
-                    height = gd.getCell(row, col);
+            double ndv = gd.getNoDataValue();
+            for (int row = 0; row < nrows; row++) {
+                for (int col = 0; col < ncols; col++) {
+                    double height = gd.getCell(row, col);
                     if (treatNoDataValueAsOutflow) {
-                        if ((height == noDataValue) || (height <= outflowHeight)) {
+                        if ((height == ndv) || (height <= outflowHeight)) {
                             outflowCellIDs.add(gd.getCellID(row, col));
                         }
                     } else {
-                        if ((height != noDataValue) && (height <= outflowHeight)) {
+                        if ((height != ndv) && (height <= outflowHeight)) {
                             outflowCellIDs.add(gd.getCellID(row, col));
                         }
                     }
@@ -1335,12 +1283,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * then hollows are cells for which all neighbouring cells in the immediate
      * 8 cell neighbourhood are either the same value or higher or noDataValues.
      */
-    private HashSet getHollowFilledDEMInitialHollowsHashSet(
+    private HashSet<Grids_2D_ID_long> getHollowFilledDEMInitialHollowsHashSet(
             Grids_GridNumber g, long nrows, long ncols,
             boolean treatNoDataValueAsOutflow) throws IOException,
             ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        HashSet initialHollowsHashSet = new HashSet();
+        HashSet<Grids_2D_ID_long> initialHollowsHashSet = new HashSet<>();
         int k;
         // Initialise hollows
         long row;
@@ -1448,13 +1396,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param g The Grids_GridNumber to be processed.
      * @param cellIDs the HashSet storing _CellIDs that must be examined.
      */
-    private HashSet getHollowsInNeighbourhood(
-            Grids_GridNumber g,
-            HashSet cellIDs,
+    private HashSet<Grids_2D_ID_long> getHollowsInNeighbourhood(
+            Grids_GridNumber g, HashSet<Grids_2D_ID_long> cellIDs,
             boolean treatNoDataValueAsOutflow) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        HashSet result = new HashSet();
-        HashSet visited1 = new HashSet();
+        HashSet<Grids_2D_ID_long> r = new HashSet<>();
+        HashSet<Grids_2D_ID_long> visited1 = new HashSet<>();
         Grids_2D_ID_long cellID;
         long row;
         long col;
@@ -1463,13 +1410,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         long p;
         long q;
         int k;
-        Iterator iterator1 = cellIDs.iterator();
+        Iterator<Grids_2D_ID_long> ite1 = cellIDs.iterator();
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
             int ndv = gi.getNoDataValue();
             int[] h = new int[9];
-            while (iterator1.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator1.next();
+            while (ite1.hasNext()) {
+                cellID = ite1.next();
                 if (!visited1.contains(cellID)) {
                     row = cellID.getRow();
                     col = cellID.getCol();
@@ -1499,7 +1446,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             && (h[6] >= h[0])
                                             && (h[7] >= h[0])
                                             && (h[8] >= h[0])) {
-                                        result.add(g.getCellID(row + a, col + b));
+                                        r.add(g.getCellID(row + a, col + b));
                                     }
                                 } else {
                                     if ((h[1] >= h[0] || h[1] == ndv)
@@ -1510,7 +1457,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             && (h[6] >= h[0] || h[6] == ndv)
                                             && (h[7] >= h[0] || h[7] == ndv)
                                             && (h[8] >= h[0] || h[8] == ndv)) {
-                                        result.add(gi.getCellID(row + a, col + b));
+                                        r.add(gi.getCellID(row + a, col + b));
                                     }
                                 }
                             }
@@ -1523,8 +1470,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double ndv = gd.getNoDataValue();
             double[] h = new double[9];
-            while (iterator1.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator1.next();
+            while (ite1.hasNext()) {
+                cellID = ite1.next();
                 if (!visited1.contains(cellID)) {
                     row = cellID.getRow();
                     col = cellID.getCol();
@@ -1554,7 +1501,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             && (h[6] >= h[0])
                                             && (h[7] >= h[0])
                                             && (h[8] >= h[0])) {
-                                        result.add(g.getCellID(row + a, col + b));
+                                        r.add(g.getCellID(row + a, col + b));
                                     }
                                 } else {
                                     if ((h[1] >= h[0] || h[1] == ndv)
@@ -1565,7 +1512,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                             && (h[6] >= h[0] || h[6] == ndv)
                                             && (h[7] >= h[0] || h[7] == ndv)
                                             && (h[8] >= h[0] || h[8] == ndv)) {
-                                        result.add(gd.getCellID(row + a, col + b));
+                                        r.add(gd.getCellID(row + a, col + b));
                                     }
                                 }
                             }
@@ -1574,17 +1521,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 }
             }
         }
-        return result;
+        return r;
     }
 
-    private HashSet getHollowFilledDEMCalculateHollows(
-            Grids_GridNumber g,
-            HashSet cellIDs) throws IOException, ClassNotFoundException, Exception {
+    private HashSet<Grids_2D_ID_long> getHollowFilledDEMCalculateHollows(
+            Grids_GridNumber g, HashSet<Grids_2D_ID_long> cellIDs)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if ((g.getNCols() * g.getNRows()) / 4 < cellIDs.size()) {
             // return getInitialHollowsHashSet( grid );
         }
-        HashSet result = new HashSet();
+        HashSet<Grids_2D_ID_long> r = new HashSet<>();
         Grids_2D_ID_long cellID;
         long row;
         long col;
@@ -1592,13 +1539,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         long q;
         int k;
         //int noDataCount;
-        Iterator iterator1 = cellIDs.iterator();
+        Iterator<Grids_2D_ID_long> ite1 = cellIDs.iterator();
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
             int ndv = gi.getNoDataValue();
             int[] h = new int[9];
-            while (iterator1.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator1.next();
+            while (ite1.hasNext()) {
+                cellID = ite1.next();
                 row = cellID.getRow();
                 col = cellID.getCol();
                 h[0] = gi.getCell(row, col);
@@ -1626,7 +1573,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             && (h[6] >= h[0] || h[6] == ndv)
                             && (h[7] >= h[0] || h[7] == ndv)
                             && (h[8] >= h[0] || h[8] == ndv)) {
-                        result.add(cellID);
+                        r.add(cellID);
                     }
                     //}
                 }
@@ -1635,8 +1582,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double ndv = gd.getNoDataValue();
             double[] h = new double[9];
-            while (iterator1.hasNext()) {
-                cellID = (Grids_2D_ID_long) iterator1.next();
+            while (ite1.hasNext()) {
+                cellID = ite1.next();
                 row = cellID.getRow();
                 col = cellID.getCol();
                 h[0] = gd.getCell(row, col);
@@ -1665,17 +1612,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             && (h[6] >= h[0] || h[6] == ndv)
                             && (h[7] >= h[0] || h[7] == ndv)
                             && (h[8] >= h[0] || h[8] == ndv)) {
-                        result.add(cellID);
+                        r.add(cellID);
 
                     } //}
                 }
             }
         }
-        return result;
-    }
-
-    private boolean isGridInt(int i) {
-        return i == 0 || i == 13 || i == 24 || i == 35 || i == 46 || i == 57 || i == 63;
+        return r;
     }
 
     /**
@@ -1766,15 +1709,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param cacheOutInitialisedFiles
      * @param cacheOutProcessedChunks
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
             Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
-            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException, Exception {
+            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
                 || gdf.getChunkNRows() != gif.getChunkNRows()) {
-            log(0, "Warning! ((gridDoubleFactory.getChunkNcols() "
+            env.env.log("Warning! ((gridDoubleFactory.getChunkNcols() "
                     + "!= gridIntFactory.getChunkNcols()) || "
                     + "(gridDoubleFactory.getChunkNrows() != "
                     + "gridIntFactory.getChunkNrows()))");
@@ -1789,11 +1735,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             env.checkAndMaybeFreeMemory();
             do {
                 try {
-                    if (isGridInt(i)) {
-                        metrics1[i] = gif.create(nrows, ncols, dimensions);
-                    } else {
-                        metrics1[i] = gdf.create(nrows, ncols, dimensions);
-                    }
+                    metrics1[i] = gdf.create(nrows, ncols, dimensions);
                     if (cacheOutInitialisedFiles) {
                         metrics1[i].writeToFile();
                     }
@@ -1985,15 +1927,14 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * Perhaps set this to true for large grids if the process seems to get
      * stuck.
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridNumber[] getMetrics1(
-            Grids_GridNumber[] metrics1,
-            Grids_GridNumber g,
-            Grids_Dimensions dimensions,
-            double distance,
-            double weightIntersect,
-            double weightFactor,
-            boolean cacheOutProcessedChunks) throws IOException, ClassNotFoundException, Exception {
+    public Grids_GridNumber[] getMetrics1(Grids_GridNumber[] metrics1,
+            Grids_GridNumber g, Grids_Dimensions dimensions, double distance,
+            double weightIntersect, double weightFactor,
+            boolean cacheOutProcessedChunks) throws IOException,
+            ClassNotFoundException, Exception {
         String methodName;
         methodName = "getMetrics1("
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
@@ -2154,20 +2095,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 BigDecimal cellHeight = gridChunkInt.getCellBigDecimal(cellRow, cellCol);
                                 if (cellHeight.compareTo(ndv) != 0) {
                                     env.checkAndMaybeFreeMemory();
-                                    metrics1Calculate_All(
-                                            gridInt,
-                                            ndv,
-                                            row,
-                                            col,
-                                            x,
-                                            y,
-                                            cellHeight,
-                                            cellDistance,
-                                            weights,
-                                            metrics1ForCell,
-                                            heights,
-                                            diff,
-                                            dummyDiff);
+                                    metrics1Calculate_All(gridInt, ndv, row,
+                                            col, x, y, cellHeight, cellDistance,
+                                            weights, metrics1ForCell, heights,
+                                            diff, dummyDiff);
                                     for (i = 0; i < metrics1.length; i++) {
                                         if (metrics1[i] instanceof Grids_GridInt) {
                                             ((Grids_GridInt) metrics1[i]).setCell(
@@ -2434,16 +2365,16 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             BigDecimal[] dummyDiffbd,
             double weight,
             double averageDiff) {
-        
+
         // Temporary hack
         int l = diffbd.length;
         double[] diff = new double[l];
         double[] dummyDiff = new double[l];
-        for (int i = 0; i < l; i ++) {
+        for (int i = 0; i < l; i++) {
             diff[i] = diffbd[i].doubleValue();
             dummyDiff[i] = dummyDiffbd[i].doubleValue();
         }
-        
+
         int caseSwitch = metrics1Calculate_CaseSwitch(diff);
         // 81 cases
         // Each orthoganal equidistant cell is either heigher, lower, or
@@ -3590,11 +3521,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param samplingDensity
      * @param gf
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, BigDecimal distance,
             BigDecimal weightIntersect, int weightFactor, int samplingDensity,
-            Grids_GridFactoryDouble gf, int dp, RoundingMode rm, boolean hoome) 
-            throws IOException, 
+            Grids_GridFactoryDouble gf, int dp, RoundingMode rm, boolean hoome)
+            throws IOException,
             ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
@@ -3619,8 +3552,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             for (row = 0; row < nrows; row++) {
                 for (col = 0; col < ncols; col++) {
                     if (g.getCell(row, col) != gridNoDataValue) {
-                       double slope = r[0].getCell(row, col);
-                       double aspect = r[1].getCell(row, col);
+                        double slope = r[0].getCell(row, col);
+                        double aspect = r[1].getCell(row, col);
                         metrics2Points = getMetrics2Points(slopeAndAspect,
                                 distance, samplingDensity);
                         weights = Grids_Kernel.getKernelWeights(g, row, col,
@@ -3679,6 +3612,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param gf the Grids_GridFactoryDouble used to create result
      * @param hoome
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble getMaxFlowDirection(Grids_GridDouble g,
             Grids_GridFactoryDouble gf, boolean hoome) throws IOException,
@@ -3773,35 +3708,23 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridDouble getUpSlopeAreaMetrics(Grids_GridDouble grid,
             double distance, double weightFactor, double weightIntersect,
-            Grids_GridFactoryDouble gf, boolean hoome) throws IOException, ClassNotFoundException, Exception {
-        try {
-            env.checkAndMaybeFreeMemory();
-            Grids_GridDouble upSlopeAreaMetrics = gf.create(
-                    grid.getNRows(), grid.getNCols(), grid.getDimensions());
-            // Get Peaks and set their value to 1.0d
-            HashSet initialPeaksHashSet;
-            initialPeaksHashSet = getInitialPeaksHashSetAndSetTheirValue(grid,
-                    upSlopeAreaMetrics, hoome);
-            // For each Peak find its neighbours and add a proportional value to
-            // them based on slope. If the slope is zero then the neighbour is still
-            // passed a proportion. This can be configured based on infiltration
-            // rates or slope dependent distance decay stuff.
-            //        HashSet neighboursOfInitialPeaksHashSet = getNeighboursOfInitialPeaksHashSetAndSetTheirValue( initialPeaksHashSet, grid, upSlopeAreaMetrics );
-            // Add to neighbouring cells a value based on the amount of slope
-            //        upSlopeMetricsAddToNeighbours( grid, peaks );
-            return upSlopeAreaMetrics;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (!env.cacheChunk(env.HOOMEF)) {
-                    throw e;
-                }
-                env.initMemoryReserve(env.env);
-                getUpSlopeAreaMetrics(grid, distance, weightFactor,
-                        weightIntersect, gf, hoome);
-            }
-            throw e;
-        }
+            Grids_GridFactoryDouble gf) throws IOException,
+            ClassNotFoundException, Exception {
+        env.checkAndMaybeFreeMemory();
+        Grids_GridDouble upSlopeAreaMetrics = gf.create(
+                grid.getNRows(), grid.getNCols(), grid.getDimensions());
+        // Get Peaks and set their value to 1.0d
+        HashSet<Grids_2D_ID_long> initialPeaksHashSet
+                = getInitialPeaksHashSetAndSetTheirValue(grid,
+                        upSlopeAreaMetrics);
+        // For each Peak find its neighbours and add a proportional value to
+        // them based on slope. If the slope is zero then the neighbour is still
+        // passed a proportion. This can be configured based on infiltration
+        // rates or slope dependent distance decay stuff.
+        //        HashSet neighboursOfInitialPeaksHashSet = getNeighboursOfInitialPeaksHashSetAndSetTheirValue( initialPeaksHashSet, grid, upSlopeAreaMetrics );
+        // Add to neighbouring cells a value based on the amount of slope
+        //        upSlopeMetricsAddToNeighbours( grid, peaks );
+        return upSlopeAreaMetrics;
     }
 
     /**
@@ -3809,59 +3732,61 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * neighbouring cells in the immediate 8 cell neighbourhood that are either
      * the same value, lower or noDataValues
      *
-     * @param grid - the Grids_GridDouble to be processed
+     * @param g - the Grids_GridDouble to be processed
      * @param upSlopeAreaMetrics
      * @param hoome
      * @return
      */
-    public HashSet getInitialPeaksHashSetAndSetTheirValue(Grids_GridDouble grid,
-            Grids_GridDouble upSlopeAreaMetrics, boolean hoome)
+    public HashSet<Grids_2D_ID_long> getInitialPeaksHashSetAndSetTheirValue(
+            Grids_GridDouble g, Grids_GridDouble upSlopeAreaMetrics)
             throws IOException, ClassNotFoundException, Exception {
-        try {
-            env.checkAndMaybeFreeMemory();
-            HashSet initialPeaksHashSet = new HashSet();
-            long nrows = grid.getNRows();
-            long ncols = grid.getNCols();
-            double ndv = grid.getNoDataValue();
-            double[] h = new double[9];
-            int k;
-            for (int row = 0; row < nrows; row++) {
-                for (int col = 0; col < ncols; col++) {
-                    h[0] = grid.getCell(row, col);
-                    if (h[0] != ndv) {
-                        k = 0;
-                        for (int p = -1; p < 2; p++) {
-                            for (int q = -1; q < 2; q++) {
-                                if (!(p == 0 && q == 0)) {
-                                    k++;
-                                    h[k] = grid.getCell(row + p, col + q);
+        env.checkAndMaybeFreeMemory();
+        HashSet<Grids_2D_ID_long> initialPeaksHashSet = new HashSet<>();
+        long nrows = g.getNRows();
+        long ncols = g.getNCols();
+        double ndv = g.getNoDataValue();
+        double[] h = new double[9];
+        int k;
+        int nChunkRows = g.getNChunkRows();
+        int nChunkCols = g.getNChunkCols();
+        for (int cr = 0; cr < nChunkRows; cr++) {
+            for (int cc = 0; cc < nChunkCols; cc++) {
+                Grids_2D_ID_int cid = new Grids_2D_ID_int(cr, cc);
+                Grids_ChunkDouble c = g.getChunk(cid, cr, cc);
+                int chunkNRows = g.getChunkNRows(cr);
+                int chunkNCols = g.getChunkNCols(cc);
+                for (int row = 0; row < chunkNRows; row++) {
+                    for (int col = 0; col < chunkNCols; col++) {
+                        h[0] = c.getCell(row, col);
+                        if (h[0] != ndv) {
+                            k = 0;
+                            for (int p = -1; p < 2; p++) {
+                                for (int q = -1; q < 2; q++) {
+                                    if (!(p == 0 && q == 0)) {
+                                        k++;
+                                        //g.getCellRow(longnrows)
+                                        h[k] = g.getCell(row + p, col + q);
+                                    }
                                 }
                             }
-                        }
-                        // This deals with single isolated cells surrounded by noDataValues
-                        if ((h[1] <= h[0] || h[1] == ndv)
-                                && (h[2] <= h[0] || h[2] == ndv)
-                                && (h[3] <= h[0] || h[3] == ndv)
-                                && (h[4] <= h[0] || h[4] == ndv)
-                                && (h[5] <= h[0] || h[5] == ndv)
-                                && (h[6] <= h[0] || h[6] == ndv)
-                                && (h[7] <= h[0] || h[7] == ndv)
-                                && (h[8] <= h[0] || h[8] == ndv)) {
-                            initialPeaksHashSet.add(grid.getCellID(row, col));
-                            upSlopeAreaMetrics.addToCell(row, col, 1.0d);
+                            // This deals with single isolated cells surrounded by noDataValues
+                            if ((h[1] <= h[0] || h[1] == ndv)
+                                    && (h[2] <= h[0] || h[2] == ndv)
+                                    && (h[3] <= h[0] || h[3] == ndv)
+                                    && (h[4] <= h[0] || h[4] == ndv)
+                                    && (h[5] <= h[0] || h[5] == ndv)
+                                    && (h[6] <= h[0] || h[6] == ndv)
+                                    && (h[7] <= h[0] || h[7] == ndv)
+                                    && (h[8] <= h[0] || h[8] == ndv)) {
+                                initialPeaksHashSet.add(g.getCellID(row, col));
+                                upSlopeAreaMetrics.addToCell(row, col, 1.0d);
+                            }
                         }
                     }
                 }
             }
-            return initialPeaksHashSet;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                return getInitialPeaksHashSetAndSetTheirValue(grid,
-                        upSlopeAreaMetrics, hoome);
-            } else {
-                throw e;
-            }
         }
+        return initialPeaksHashSet;
     }
     /**
      * @param grid the Grid2DSquareCellDouble to be processed

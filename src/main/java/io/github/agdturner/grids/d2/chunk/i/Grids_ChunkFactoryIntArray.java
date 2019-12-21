@@ -15,35 +15,30 @@
  */
 package io.github.agdturner.grids.d2.chunk.i;
 
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryInt;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 
 /**
- * A factory for constructing Grid2DSquareCellIntChunkArray instances.
-*
+ * A factory for constructing int chunk arrays.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIntArrayFactory
-        extends Grids_ChunkFactoryInt {
+public class Grids_ChunkFactoryIntArray extends Grids_ChunkFactoryInt {
 
-    public Grids_ChunkIntArrayFactory() {
+    private static final long serialVersionUID = 1L;
+
+    public Grids_ChunkFactoryIntArray() {
     }
 
     @Override
-    public Grids_ChunkIntArray create(
-            Grids_GridInt g,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkIntArray(g, chunkID);
+    public Grids_ChunkIntArray create(Grids_GridInt g, Grids_2D_ID_int i) {
+        return new Grids_ChunkIntArray(g, i);
     }
 
     @Override
-    public Grids_ChunkIntArray create(
-            Grids_ChunkInt chunk,
-            Grids_2D_ID_int chunkID) {
-        return new Grids_ChunkIntArray(chunk, chunkID);
+    public Grids_ChunkIntArray create(Grids_ChunkInt chunk, Grids_2D_ID_int i) {
+        return new Grids_ChunkIntArray(chunk, i);
     }
 
 }
