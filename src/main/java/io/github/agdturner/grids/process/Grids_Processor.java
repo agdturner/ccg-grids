@@ -522,19 +522,15 @@ public class Grids_Processor extends Grids_Object {
         long ncols = g.getNCols();
         int nChunkCols = g.getNChunkCols();
         int nChunkRows = g.getNChunkRows();
-        int chunkNCols;
-        int chunkNRows;
         double ndv = g.getNoDataValue();
         double range = max - min;
         Grids_StatsNumber stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
-        double value;
         r = GridDoubleFactory.create(g, 0, 0, nrows - 1, ncols - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
-        Grids_ChunkDouble gridChunk;
         Grids_ChunkDouble rChunk;
         Grids_2D_ID_int chunkID;
         if (type == null) {
@@ -544,18 +540,18 @@ public class Grids_Processor extends Grids_Object {
                 // does assume that the structure of the grid and outputGrid 
                 // are the same.
                 for (int cr = 0; cr < nChunkRows; cr++) {
-                    chunkNRows = g.getChunkNRows(cr);
+                    int chunkNRows = g.getChunkNRows(cr);
                     for (int cc = 0; cc < nChunkCols; cc++) {
                         chunkID = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToCache(g, chunkID);
                         env.addToNotToCache(r, chunkID);
                         env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(cc);
-                        gridChunk = g.getChunk(chunkID);
+                        int chunkNCols = g.getChunkNCols(cc);
+                        Grids_ChunkDouble gChunk = g.getChunk(chunkID);
                         rChunk = r.getChunk(chunkID);
                         for (int ccr = 0; ccr < chunkNRows; ccr++) {
                             for (int ccc = 0; ccc < chunkNCols; ccc++) {
-                                value = gridChunk.getCell(ccr, ccc);
+                                double value = gChunk.getCell(ccr, ccc);
                                 if (value != ndv) {
                                     r.setCell(rChunk, ccr, ccc, min);
                                 }
@@ -569,21 +565,18 @@ public class Grids_Processor extends Grids_Object {
                 // same.
                 double v;
                 for (int cr = 0; cr < nChunkRows; cr++) {
-                    chunkNRows = g.getChunkNRows(cr);
+                    int chunkNRows = g.getChunkNRows(cr);
                     for (int cc = 0; cc < nChunkCols; cc++) {
                         chunkID = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToCache(g, chunkID);
                         env.addToNotToCache(r, chunkID);
                         env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(cc);
-                        gridChunk = g.getChunk(chunkID);
+                        int chunkNCols = g.getChunkNCols(cc);
+                        Grids_ChunkDouble gChunk = g.getChunk(chunkID);
                         rChunk = r.getChunk(chunkID);
                         for (int ccr = 0; ccr < chunkNRows; ccr++) {
                             for (int ccc = 0; ccc < chunkNCols; ccc++) {
-                                
-                                System.out.println("ccr="+ ccr+ ", ccc" + ccc);
-                                
-                                value = gridChunk.getCell(ccr, ccc);
+                                double value = gChunk.getCell(ccr, ccc);
                                 if (value != ndv) {
                                     v = (((value - minGrid)
                                             / rangeGrid) * range) + min;
@@ -605,7 +598,7 @@ public class Grids_Processor extends Grids_Object {
                 // Probably better to do this by chunks
                 for (row = 0; row < nrows; row++) {
                     for (col = 0; col < ncols; col++) {
-                        value = g.getCell(row, col);
+                        double value = g.getCell(row, col);
                         if (value != ndv) {
                             r.setCell(row, col, Math.log(value));
                         }

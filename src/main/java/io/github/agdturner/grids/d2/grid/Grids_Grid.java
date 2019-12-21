@@ -262,8 +262,8 @@ public abstract class Grids_Grid extends Grids_Object {
     protected void init(Grids_Grid g, Grids_Stats stats, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) {
-        NRows = endRow - startRow;
-        NCols = endCol - startCol;
+        NRows = endRow - startRow + 1;
+        NCols = endCol - startCol + 1;
         initDimensions(g, startRow, startCol);
         init(stats, chunkNRows, chunkNCols);
     }
