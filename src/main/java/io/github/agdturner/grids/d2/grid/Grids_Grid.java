@@ -216,7 +216,7 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     protected void init() throws IOException {
-        env.setDataToCache(true);
+        env.setDataToClear(true);
         env.addGrid(this);
     }
 
@@ -1491,7 +1491,7 @@ public abstract class Grids_Grid extends Grids_Object {
                 HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                         = cacheChunkExcept_AccountDetail(s);
                 if (r.isEmpty()) {
-                    env.addToNotToCache(this, s);
+                    env.addToNotToClear(this, s);
                     r = env.cacheChunk_AccountDetail(env.HOOMEF);
                     if (r.isEmpty()) {
                         throw e;

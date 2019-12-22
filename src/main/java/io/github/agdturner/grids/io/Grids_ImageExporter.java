@@ -72,7 +72,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             Path file, String type)
             throws IOException, ClassNotFoundException, Exception {
         // Initialisation
-        env.initNotToCache();
+        env.initNotToClear();
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
@@ -151,7 +151,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                 chunkNCols = r.getChunkNCols(chunkCol);
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                env.addToNotToCache(r, chunkID);
+                env.addToNotToClear(r, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunk = r.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
@@ -179,7 +179,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                         gridImageArray[p] = pixel.getRGB();
                     }
                 }
-                env.removeFromNotToCache(g, chunkID);
+                env.removeFromNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
             }
         }
@@ -267,7 +267,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             throws IOException, ClassNotFoundException, Exception {
         String methodName = "toColourImage(int,TreeMap<Double,Color>,Color,"
                 + "Grids_GridDouble,File,String)";
-        env.initNotToCache();
+        env.initNotToClear();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
         // Check int precision OK here.
@@ -334,7 +334,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                 chunkNCols = g.getChunkNCols(chunkCol);
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                env.addToNotToCache(g, chunkID);
+                env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunk = (Grids_ChunkDouble) g.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {

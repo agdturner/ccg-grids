@@ -353,7 +353,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     for (cci = 0; cci < chunkCols; cci++) {
                         cd = (Grids_ChunkDouble) gd.getChunk(cri, cci);
                         chunkID = cd.getChunkID();
-                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToClear(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNrows = g.getChunkNRows(cri);
                         chunkNcols = g.getChunkNCols(cci);
@@ -439,7 +439,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 }
                             }
                         }
-                        env.removeFromNotToCache(g, chunkID);
+                        env.removeFromNotToClear(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -460,7 +460,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNcols = g.getChunkNCols(cci);
                         ci = (Grids_ChunkInt) gridInt.getChunk(cri, cci);
                         chunkID = ci.getChunkID();
-                        env.addToNotToCache(g, chunkID);
+                        env.addToNotToClear(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
@@ -546,7 +546,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                 }
                             }
                         }
-                        env.removeFromNotToCache(g, chunkID);
+                        env.removeFromNotToClear(g, chunkID);
                         System.out.println("Done Chunk ( " + cri + ", " + cci + " )");
                     }
                 }
@@ -1993,11 +1993,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkCol(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    env.initNotToCache();
-                    env.addToNotToCache(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToClear();
+                    env.addToNotToClear(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
-                    //ge.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(metrics1, chunkID);
+                    //ge.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
                     gridChunkDouble = (Grids_ChunkDouble) gridDouble.getChunk(
                             chunkRow, chunkCol);
@@ -2070,11 +2070,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                     System.out.println("chunkColIndex(" + chunkCol + ")");
                     chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                    env.initNotToCache();
-                    env.addToNotToCache(g, chunkID, chunkRow, chunkCol,
+                    env.initNotToClear();
+                    env.addToNotToClear(g, chunkID, chunkRow, chunkCol,
                             normalChunkNRows, normalChunkNCols, cellDistance);
-                    //ge.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(metrics1, chunkID);
+                    //ge.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
                     gridChunkInt = (Grids_ChunkInt) gridInt.getChunk(
                             chunkRow, chunkCol);

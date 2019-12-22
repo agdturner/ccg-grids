@@ -31,18 +31,18 @@ public class Grids_2D_ID_long extends Object implements Serializable,
     /**
      * For storing the row.
      */
-    protected long Row;
+    protected long row;
     /**
      * For storing the column.
      */
-    protected long Col;
+    protected long col;
 
     protected Grids_2D_ID_long() {
     }
 
     public Grids_2D_ID_long(Grids_2D_ID_long i) {
-        Col = i.Col;
-        Row = i.Row;
+        col = i.col;
+        row = i.row;
     }
 
     /**
@@ -51,22 +51,22 @@ public class Grids_2D_ID_long extends Object implements Serializable,
      * @param col The column.
      */
     public Grids_2D_ID_long(long row, long col) {
-        Row = row;
-        Col = col;
+        this.row = row;
+        this.col = col;
     }
 
     /**
-     * @return Row
+     * @return row
      */
     public long getRow() {
-        return Row;
+        return row;
     }
 
     /**
-     * @return Col
+     * @return col
      */
     public long getCol() {
-        return Col;
+        return col;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Grids_2D_ID_long extends Object implements Serializable,
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[Row=" + Row + ", Col=" + Col + "]";
+        return getClass().getSimpleName() + "[Row=" + row + ", Col=" + col + "]";
     }
 
     /**
@@ -92,15 +92,15 @@ public class Grids_2D_ID_long extends Object implements Serializable,
             return false;
         }
         Grids_2D_ID_long i = (Grids_2D_ID_long) object;
-        return ((Col == i.Col)
-                && (Row == i.Row));
+        return ((col == i.col)
+                && (row == i.row));
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + (int) (Row ^ (Row >>> 32));
-        hash = 13 * hash + (int) (Col ^ (Col >>> 32));
+        hash = 13 * hash + (int) (row ^ (row >>> 32));
+        hash = 13 * hash + (int) (col ^ (col >>> 32));
         return hash;
     }
 
@@ -112,16 +112,16 @@ public class Grids_2D_ID_long extends Object implements Serializable,
      */
     @Override
     public int compareTo(Grids_2D_ID_long t) {
-        if (t.Row > Row) {
+        if (t.row > row) {
             return 1;
         }
-        if (t.Row < Row) {
+        if (t.row < row) {
             return -1;
         }
-        if (t.Col > Col) {
+        if (t.col > col) {
             return 1;
         }
-        if (t.Col < Col) {
+        if (t.col < col) {
             return -1;
         }
         return 0;

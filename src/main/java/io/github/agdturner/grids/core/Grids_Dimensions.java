@@ -19,21 +19,61 @@ import java.math.BigDecimal;
 
 /**
  * A POJO for storing the dimensions of a grid.
- * 
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
 public class Grids_Dimensions {
 
-    private final BigDecimal XMin;
-    private final BigDecimal XMax;
-    private final BigDecimal YMin;
-    private final BigDecimal YMax;
-    private final BigDecimal Cellsize;
-    private final BigDecimal HalfCellsize;
-    private final BigDecimal Width;
-    private final BigDecimal Height;
-    private final BigDecimal Area;
+    /**
+     * The minimum x.
+     */
+    private final BigDecimal xMin;
+
+    /**
+     * The maximum x.
+     */
+    private final BigDecimal xMax;
+
+    /**
+     * The minimum y.
+     */
+    private final BigDecimal yMin;
+
+    /**
+     * The maximum y.
+     */
+    private final BigDecimal yMax;
+
+    /**
+     * The cellsize (width or height.
+     */
+    private final BigDecimal cellsize;
+
+    /**
+     * Half the cellsize.
+     */
+    private final BigDecimal halfCellsize;
+
+    /**
+     * The cellsize squared.
+     */
+    private final BigDecimal cellsizeSquared;
+
+    /**
+     * The width.
+     */
+    private final BigDecimal width;
+
+    /**
+     * The height.
+     */
+    private final BigDecimal height;
+
+    /**
+     * The area.
+     */
+    private final BigDecimal area;
 
     public Grids_Dimensions(int nRows, int nCols) {
         this(BigDecimal.ZERO, new BigDecimal(nCols), BigDecimal.ZERO,
@@ -59,78 +99,98 @@ public class Grids_Dimensions {
      * @param yMax The maximum y coordinate.
      * @param cellsize The cellsize.
      */
-    public Grids_Dimensions(BigDecimal xMin, BigDecimal xMax, BigDecimal yMin, 
+    public Grids_Dimensions(BigDecimal xMin, BigDecimal xMax, BigDecimal yMin,
             BigDecimal yMax, BigDecimal cellsize) {
-        this.XMin = xMin;
-        this.XMax = xMax;
-        this.YMin = yMin;
-        this.YMax = yMax;
-        Cellsize = cellsize;
-        Width = XMax.subtract(XMin);
-        Height = YMax.subtract(YMin);
-        Area = Width.multiply(Height);
-        HalfCellsize = Cellsize.divide(BigDecimal.valueOf(2L));
+        this.xMin = xMin;
+        this.xMax = xMax;
+        this.yMin = yMin;
+        this.yMax = yMax;
+        this.cellsize = cellsize;
+        width = this.xMax.subtract(this.xMin);
+        height = this.yMax.subtract(this.yMin);
+        area = width.multiply(height);
+        halfCellsize = this.cellsize.divide(BigDecimal.valueOf(2L));
+        cellsizeSquared = this.cellsize.multiply(this.cellsize);
     }
 
     /**
-     * @return a description of this
+     * @return A text description of this.
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[XMin=" + XMin + ", XMax=" + XMax 
-                + ", YMin=" + YMin + ", YMax=" + YMax + ", Cellsize=" + Cellsize 
-                + "]";
+        return getClass().getSimpleName() + "[XMin=" + getXMin() + ", XMax="
+                + getXMax() + ", YMin=" + getYMin() + ", YMax=" + getYMax()
+                + ", Cellsize=" + getCellsize() + "]";
     }
 
     /**
-     * @return the XMin
+     * @return the xMin
      */
     public BigDecimal getXMin() {
-        return XMin;
+        return xMin;
     }
 
     /**
-     * @return the XMax
+     * @return the xMax
      */
     public BigDecimal getXMax() {
-        return XMax;
+        return xMax;
     }
 
     /**
-     * @return the YMin
+     * @return the yMin
      */
     public BigDecimal getYMin() {
-        return YMin;
+        return yMin;
     }
 
     /**
-     * @return the YMax
+     * @return the yMax
      */
     public BigDecimal getYMax() {
-        return YMax;
+        return yMax;
     }
 
     /**
-     * @return the Cellsize
+     * @return the cellsize
      */
     public BigDecimal getCellsize() {
-        return Cellsize;
+        return cellsize;
     }
 
-    public BigDecimal getWidth() {
-        return Width;
-    }
-
-    public BigDecimal getHeight() {
-        return Height;
-    }
-
-    public BigDecimal getArea() {
-        return Area;
-    }
-
+    /**
+     * @return the halfCellsize
+     */
     public BigDecimal getHalfCellsize() {
-        return HalfCellsize;
+        return halfCellsize;
+    }
+
+    /**
+     * @return the cellsizeSquared
+     */
+    public BigDecimal getCellsizeSquared() {
+        return cellsizeSquared;
+    }
+
+    /**
+     * @return the width
+     */
+    public BigDecimal getWidth() {
+        return width;
+    }
+
+    /**
+     * @return the height
+     */
+    public BigDecimal getHeight() {
+        return height;
+    }
+
+    /**
+     * @return the area
+     */
+    public BigDecimal getArea() {
+        return area;
     }
 
 }

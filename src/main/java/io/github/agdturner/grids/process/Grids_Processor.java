@@ -232,8 +232,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     Grids_ChunkInt maskIntChunk = maskInt.getChunk(ite.next());
                     chunkID = maskIntChunk.getChunkID();
-                    env.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(mask, chunkID);
+                    env.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
@@ -251,8 +251,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToCache(g, chunkID);
-                    env.removeFromNotToCache(mask, chunkID);
+                    env.removeFromNotToClear(g, chunkID);
+                    env.removeFromNotToClear(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -263,8 +263,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     Grids_ChunkDouble maskChunk = maskDouble.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(mask, chunkID);
+                    env.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
@@ -282,8 +282,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToCache(g, chunkID);
-                    env.removeFromNotToCache(mask, chunkID);
+                    env.removeFromNotToClear(g, chunkID);
+                    env.removeFromNotToClear(mask, chunkID);
                 }
             }
         } else {
@@ -298,8 +298,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     Grids_ChunkInt maskChunk = maskInt.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(mask, chunkID);
+                    env.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskInt.getChunkNRows(chunkID);
                     chunkNCols = maskInt.getChunkNCols(chunkID);
@@ -317,8 +317,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToCache(g, chunkID);
-                    env.removeFromNotToCache(mask, chunkID);
+                    env.removeFromNotToClear(g, chunkID);
+                    env.removeFromNotToClear(mask, chunkID);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
@@ -330,8 +330,8 @@ public class Grids_Processor extends Grids_Object {
                 while (ite.hasNext()) {
                     maskChunk = (Grids_ChunkDouble) mask.getChunk(ite.next());
                     chunkID = maskChunk.getChunkID();
-                    env.addToNotToCache(g, chunkID);
-                    env.addToNotToCache(mask, chunkID);
+                    env.addToNotToClear(g, chunkID);
+                    env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
                     chunkNRows = maskDouble.getChunkNRows(chunkID);
                     chunkNCols = maskDouble.getChunkNCols(chunkID);
@@ -349,8 +349,8 @@ public class Grids_Processor extends Grids_Object {
                             }
                         }
                     }
-                    env.removeFromNotToCache(g, chunkID);
-                    env.removeFromNotToCache(mask, chunkID);
+                    env.removeFromNotToClear(g, chunkID);
+                    env.removeFromNotToClear(mask, chunkID);
                 }
             }
         }
@@ -383,7 +383,7 @@ public class Grids_Processor extends Grids_Object {
             while (ite.hasNext()) {
                 Grids_ChunkInt chunk = gi.getChunk(ite.next());
                 chunkID = chunk.getChunkID();
-                env.addToNotToCache(g, chunkID);
+                env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = gi.getChunkNRows(chunkID);
                 chunkNCols = gi.getChunkNCols(chunkID);
@@ -395,7 +395,7 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                env.removeFromNotToCache(g, chunkID);
+                env.removeFromNotToClear(g, chunkID);
             }
         } else {
             // ( grid.getClass() == Grids_GridDouble.class )
@@ -406,7 +406,7 @@ public class Grids_Processor extends Grids_Object {
             while (ite.hasNext()) {
                 Grids_ChunkDouble chunk = gd.getChunk(ite.next());
                 chunkID = chunk.getChunkID();
-                env.addToNotToCache(g, chunkID);
+                env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = g.getChunkNRows(chunkID);
                 chunkNCols = g.getChunkNCols(chunkID);
@@ -418,7 +418,7 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
-                env.removeFromNotToCache(g, chunkID);
+                env.removeFromNotToClear(g, chunkID);
             }
         }
         //grid.setName( grid.getName() + "_mask" );
@@ -516,8 +516,8 @@ public class Grids_Processor extends Grids_Object {
                     int chunkNRows = g.getChunkNRows(cr);
                     for (int cc = 0; cc < nChunkCols; cc++) {
                         chunkID = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToCache(g, chunkID);
-                        env.addToNotToCache(r, chunkID);
+                        env.addToNotToClear(g, chunkID);
+                        env.addToNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                         int chunkNCols = g.getChunkNCols(cc);
                         Grids_ChunkDouble gChunk = g.getChunk(chunkID);
@@ -541,8 +541,8 @@ public class Grids_Processor extends Grids_Object {
                     int chunkNRows = g.getChunkNRows(cr);
                     for (int cc = 0; cc < nChunkCols; cc++) {
                         chunkID = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToCache(g, chunkID);
-                        env.addToNotToCache(r, chunkID);
+                        env.addToNotToClear(g, chunkID);
+                        env.addToNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                         int chunkNCols = g.getChunkNCols(cc);
                         Grids_ChunkDouble gChunk = g.getChunk(chunkID);
@@ -667,8 +667,8 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToCache(g, chunkID);
-                        env.addToNotToCache(r, chunkID);
+                        env.addToNotToClear(g, chunkID);
+                        env.addToNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
@@ -685,8 +685,8 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        env.removeFromNotToCache(g, chunkID);
-                        env.removeFromNotToCache(r, chunkID);
+                        env.removeFromNotToClear(g, chunkID);
+                        env.removeFromNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                     }
                 }
@@ -700,8 +700,8 @@ public class Grids_Processor extends Grids_Object {
                     for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                         Grids_2D_ID_int chunkID;
                         chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToCache(g, chunkID);
-                        env.addToNotToCache(r, chunkID);
+                        env.addToNotToClear(g, chunkID);
+                        env.addToNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNCols = g.getChunkNCols(chunkCol);
                         chunkNRows = g.getChunkNRows(chunkRow);
@@ -720,8 +720,8 @@ public class Grids_Processor extends Grids_Object {
                                 }
                             }
                         }
-                        env.removeFromNotToCache(g, chunkID);
-                        env.removeFromNotToCache(r, chunkID);
+                        env.removeFromNotToClear(g, chunkID);
+                        env.removeFromNotToClear(r, chunkID);
                         env.checkAndMaybeFreeMemory();
                     }
                 }

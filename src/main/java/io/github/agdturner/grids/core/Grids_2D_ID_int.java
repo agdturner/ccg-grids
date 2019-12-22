@@ -31,18 +31,18 @@ public class Grids_2D_ID_int extends Object implements Serializable,
     /**
      * For storing the row.
      */
-    protected int Row;
+    protected int row;
     /**
      * For storing the column.
      */
-    protected int Col;
+    protected int col;
 
     protected Grids_2D_ID_int() {
     }
 
     public Grids_2D_ID_int(Grids_2D_ID_int i) {
-        Col = i.Col;
-        Row = i.Row;
+        col = i.col;
+        row = i.row;
     }
 
     /**
@@ -51,22 +51,22 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      * @param col The column.
      */
     public Grids_2D_ID_int(int row, int col) {
-        Row = row;
-        Col = col;
+        this.row = row;
+        this.col = col;
     }
 
     /**
-     * @return Row
+     * @return row
      */
     public int getRow() {
-        return Row;
+        return row;
     }
 
     /**
-     * @return Col
+     * @return col
      */
     public int getCol() {
-        return Col;
+        return col;
     }
 
     /**
@@ -74,14 +74,14 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[Row=" + Row + ", Col=" + Col + "]";
+        return getClass().getSimpleName() + "[Row=" + row + ", Col=" + col + "]";
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Row;
-        hash = 97 * hash + Col;
+        hash = 97 * hash + row;
+        hash = 97 * hash + col;
         return hash;
     }
 
@@ -100,8 +100,8 @@ public class Grids_2D_ID_int extends Object implements Serializable,
             return false;
         }
         Grids_2D_ID_int i = (Grids_2D_ID_int) object;
-        return ((Col == i.Col)
-                && (Row == i.Row));
+        return ((col == i.col)
+                && (row == i.row));
     }
 
     /**
@@ -112,16 +112,16 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      */
     @Override
     public int compareTo(Grids_2D_ID_int t) {
-        if (t.Row > Row) {
+        if (t.row > row) {
             return 1;
         }
-        if (t.Row < Row) {
+        if (t.row < row) {
             return -1;
         }
-        if (t.Col > Col) {
+        if (t.col > col) {
             return 1;
         }
-        if (t.Col < Col) {
+        if (t.col < col) {
             return -1;
         }
         return 0;

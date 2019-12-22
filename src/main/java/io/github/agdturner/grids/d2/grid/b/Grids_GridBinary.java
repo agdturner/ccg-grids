@@ -287,7 +287,7 @@ public class Grids_GridBinary extends Grids_Grid {
             loadChunk(gChunkID, g, gb, gcc, gcr, cf, gChunkNRows, startRow,
                     endRow, startCol, endCol);
             isLoadedChunk = true;
-            env.removeFromNotToCache(g, gChunkID);
+            env.removeFromNotToClear(g, gChunkID);
         } catch (OutOfMemoryError e) {
             if (env.HOOME) {
                 env.clearMemoryReserve(env.env);
@@ -316,7 +316,7 @@ public class Grids_GridBinary extends Grids_Grid {
             Grids_ChunkFactoryBinary cf, int gChunkNRows, long startRow,
             long endRow, long startCol, long endCol) throws IOException,
             java.lang.ClassNotFoundException, Exception {
-        env.addToNotToCache(g, gChunkID);
+        env.addToNotToClear(g, gChunkID);
         env.checkAndMaybeFreeMemory();
         Grids_ChunkBinaryArray c = gb.getChunk(gChunkID);
         int gChunkNCols = g.getChunkNCols(gcc);
@@ -338,7 +338,7 @@ public class Grids_GridBinary extends Grids_Grid {
                         if (isInGrid(row, col)) {
                             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                                     chunkRow, chunkCol);
-                            //ge.addToNotToCache(this, chunkID);
+                            //ge.addToNotToClear(this, chunkID);
                             Grids_ChunkBinaryArray chunk;
                             if (!chunkIDChunkMap.containsKey(chunkID)) {
                                 chunk = cf.create(this, chunkID);
@@ -351,7 +351,7 @@ public class Grids_GridBinary extends Grids_Grid {
                             if (gValue) {
                                 initCell(chunk, row, col, gValue);
                             }
-                            //ge.removeFromNotToCache(this, chunkID);
+                            //ge.removeFromNotToClear(this, chunkID);
                         }
                     }
                 }
@@ -439,7 +439,7 @@ public class Grids_GridBinary extends Grids_Grid {
          * Ensure the chunk with chunkID is not swapped out and initialise it if
          * it does not already exist.
          */
-        env.addToNotToCache(this, chunkID);
+        env.addToNotToClear(this, chunkID);
         if (!chunkIDChunkMap.containsKey(chunkID)) {
             Grids_ChunkBinaryArray gc = new Grids_ChunkBinaryArray(this, chunkID);
             chunkIDChunkMap.put(chunkID, gc);

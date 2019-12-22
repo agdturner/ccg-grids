@@ -212,7 +212,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     @Override
     protected void init() throws IOException {
         super.init();
-        env.setDataToCache(true);
+        env.setDataToClear(true);
         env.addGrid(this);
         if (!stats.isUpdated()) {
             ((Grids_StatsNotUpdatedDouble) stats).setUpToDate(false);
@@ -302,7 +302,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            env.addToNotToCache(g, gChunkID);
+                            env.addToNotToClear(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                             c = gd.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
@@ -325,7 +325,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                              */
                                             if (isInGrid(row, col)) {
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                                                //ge.addToNotToCache(this, chunkID);
+                                                //ge.addToNotToClear(this, chunkID);
                                                 if (!chunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     chunkIDChunkMap.put(chunkID, chunk);
@@ -346,14 +346,14 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                                         initCell(chunk, chunkID, row, col, ndv);
                                                     }
                                                 }
-                                                //ge.removeFromNotToCache(this, chunkID);
+                                                //ge.removeFromNotToClear(this, chunkID);
                                             }
                                         }
                                     }
                                 }
                             }
                             isLoadedChunk = true;
-                            env.removeFromNotToCache(g, gChunkID);
+                            env.removeFromNotToClear(g, gChunkID);
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
                                 env.clearMemoryReserve(env.env);
@@ -386,7 +386,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                         try {
                             // Try to load chunk.
                             gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            env.addToNotToCache(g, gChunkID);
+                            env.addToNotToClear(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                             c = gi.getChunk(gChunkID);
                             gChunkNCols = g.getChunkNCols(gcc);
@@ -409,7 +409,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                              */
                                             if (isInGrid(row, col)) {
                                                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                                                env.addToNotToCache(this, chunkID);
+                                                env.addToNotToClear(this, chunkID);
                                                 if (!chunkIDChunkMap.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     chunkIDChunkMap.put(chunkID, chunk);
@@ -430,14 +430,14 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                                         initCell(chunk, chunkID, row, col, ndv);
                                                     }
                                                 }
-                                                env.removeFromNotToCache(this, chunkID);
+                                                env.removeFromNotToClear(this, chunkID);
                                             }
                                         }
                                     }
                                 }
                             }
                             isLoadedChunk = true;
-                            env.removeFromNotToCache(g, gChunkID);
+                            env.removeFromNotToClear(g, gChunkID);
                             env.checkAndMaybeFreeMemory();
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
@@ -523,7 +523,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 initCell(row, col, value, false);
@@ -536,7 +536,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -554,7 +554,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -570,7 +570,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 initCell(row, col, value, true);
@@ -645,7 +645,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 initCell(row, col, value, false);
@@ -658,7 +658,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -676,7 +676,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     if (stats.isUpdated()) {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -692,7 +692,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     } else {
                         for (row = (NRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
-                            env.initNotToCache();
+                            env.initNotToClear();
                             for (col = 0; col < NCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
@@ -761,7 +761,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     private void initCell(long row, long col, double value, boolean fast)
             throws IOException, ClassNotFoundException, Exception {
         Grids_2D_ID_int i = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
-        env.addToNotToCache(this, i);
+        env.addToNotToClear(this, i);
         if (!chunkIDChunkMap.containsKey(i)) {
             Grids_ChunkDoubleSinglet gc = new Grids_ChunkDoubleSinglet(this, i, value);
             chunkIDChunkMap.put(i, gc);
