@@ -18,10 +18,12 @@ package io.github.agdturner.grids.d2.chunk;
 import java.io.Serializable;
 
 /**
- * Basic wrapper.
+ * Factory for creating chunks.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
 public abstract class Grids_ChunkFactory implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 }

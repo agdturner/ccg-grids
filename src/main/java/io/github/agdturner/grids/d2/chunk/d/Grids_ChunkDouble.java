@@ -21,10 +21,12 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkNumber;
+import java.math.RoundingMode;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
- * For chunks that represent values at cell locations that are
- * {@code double} type numbers.
+ * For chunks that represent values at cell locations that are {@code double}
+ * type numbers.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -38,9 +40,9 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * @param i What {@link #id} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
-    protected Grids_ChunkDouble(Grids_GridDouble g, Grids_2D_ID_int i, 
+    protected Grids_ChunkDouble(Grids_GridDouble g, Grids_2D_ID_int i,
             boolean worthClearing) {
-        super(g, i, worthClearing); 
+        super(g, i, worthClearing);
     }
 
     /**
@@ -52,46 +54,49 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * @param row The row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @return The value at row, col.
+     * @param r The chunk cell row index.
+     * @param c The chunk cell column index.
+     * @return The value at chunk cell row {@link r}, chunk cell column index
+     * {@link c}.
      */
-    public abstract double getCell(int row, int col);
+    public abstract double getCell(int r, int c);
 
     /**
-     * @param row The row of the cell w.r.t. the origin of this chunk.
-     * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @return The value at row, col as a double.
+     * @param r The chunk cell row index.
+     * @param c The chunk cell column index.
+     * @return The value at chunk cell row {@link r}, chunk cell column index
+     * {@link c} as a BigDecimal.
      */
     @Override
-    public BigDecimal getCellBigDecimal(int row, int col) {
-        return BigDecimal.valueOf(getCell(row, col));
+    public BigDecimal getCellBigDecimal(int r, int c) {
+        return BigDecimal.valueOf(getCell(r, c));
     }
 
     /**
      * Initialises the value at position given by: row, col.
      *
-     * @param row The row of the cell w.r.t. the origin of this chunk.
-     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @param r The chunk cell row index.
+     * @param c The chunk cell column index.
      * @param v The value to initialise.
      */
-    public abstract void initCell(int row, int col, double v);
+    public abstract void initCell(int r, int c, double v);
 
     /**
      * Returns the value at chunk cell row index {@code r}. chunk cell column
-     * index {@param c} and sets it to {@code v}.
+     * index {@code c} and sets it to {@code v}.
      *
-     * @param r The chunk cell row index. of the cell w.r.t. the origin of this chunk
-     * @param c the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to
+     * @param r The chunk cell row index.
+     * @param c The chunk cell column index.
+     * @param v The value the cell is to be set to.
      * @return The value at chunk cell row index {@code r}. chunk cell column
-     * index {@param c} before it is set.
+     * index {@code c} before it is set.
      * @throws Exception If encountered.
      */
     public abstract double setCell(int r, int c, double v) throws Exception;
-
+    
     /**
-     * @return All the values including noDataValue's in row major order as a double[].
+     * @return All the values including noDataValue's in row major order as a
+     * double[].
      */
     public double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
@@ -109,7 +114,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * @return All the values excluding noDataValues in row major order as a double[].
+     * @return All the values excluding noDataValues in row major order as a
+     * double[].
      */
     public double[] toArrayNotIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
@@ -340,25 +346,21 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * @param p the row index of the cell from which counting starts
-     * @param q the column index of the cell from which counting starts
-     * @param nrows
-     * @param ncols
-     * @param value the value to be counted
-     * @return A count of cells with value = value starting from p, q.
+     * @param p The row index of the cell from which counting starts.
+     * @param q The column index of the cell from which counting starts.
+     * @param nrows The number of rows in the chunk.
+     * @param ncols The number of columns in the chunk.
+     * @param v The value to be counted.
+     * @return A count of the remaining cells with value {@code v} starting from
+     * p, q and going in row major order.
      */
-    private long count(
-            int p,
-            int q,
-            int nrows,
-            int ncols,
-            double value) {
+    private long count(int p, int q, int nrows, int ncols, double v) {
         long count = 1L;
         double thisValue;
         // Do remainder of the row
         for (q++; q < ncols; q++) {
             thisValue = getCell(p, q);
-            if (thisValue == value) {
+            if (thisValue == v) {
                 count++;
             }
         }
@@ -366,7 +368,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         for (p++; p < nrows; p++) {
             for (q = 0; q < ncols; q++) {
                 thisValue = getCell(p, q);
-                if (thisValue == value) {
+                if (thisValue == v) {
                     count++;
                 }
             }
@@ -484,8 +486,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      *
      * @return
      */
-    @Override
-    public double getMedianDouble() {
+    public double getMedian() {
         long n = getN();
         BigInteger n2 = BigInteger.valueOf(n);
         if (n > 0) {
@@ -505,31 +506,30 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the standard deviation of all data values as a double.
-     *
-     * @return
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The rounding mode.
+     * @return The standard deviation of all data values.
      */
-    @Override
-    protected double getStandardDeviationDouble() {
-        double sd = 0.0d;
-        double mean = getArithmeticMeanDouble();
+    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
+        BigDecimal sd = BigDecimal.ZERO;
+        BigDecimal mean = getArithmeticMean(dp, rm);
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
         double noDataValue = g.getNoDataValue();
-        double value;
-        double count = 0.0d;
+        long count = 0;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (value != noDataValue) {
-                    sd += (value - mean) * (value - mean);
-                    count += 1.0d;
+                double v = getCell(row, col);
+                if (v != noDataValue) {
+                    sd = sd.add(BigDecimal.valueOf(v).subtract(mean).pow(2));
+                    count++;
                 }
             }
         }
-        if ((count - 1.0d) > 0.0d) {
-            return Math.sqrt(sd / (count - 1.0d));
+        if ((count - 1L) > 0L) {
+            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
+                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
         } else {
             return sd;
         }

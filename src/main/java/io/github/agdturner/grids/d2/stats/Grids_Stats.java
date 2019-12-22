@@ -16,19 +16,20 @@
 package io.github.agdturner.grids.d2.stats;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
 import io.github.agdturner.grids.d2.grid.Grids_Grid;
+import java.math.BigInteger;
 
 /**
- *
+ * Grids stats.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
 public abstract class Grids_Stats extends Grids_Object {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * A reference to the Grid.
@@ -38,23 +39,23 @@ public abstract class Grids_Stats extends Grids_Object {
     /**
      * For storing the number of cells with values.
      */
-    protected long n;
+    protected BigInteger n;
 
     public Grids_Stats(Grids_Environment ge) {
         super(ge);
-        n = 0;
+        n = BigInteger.ZERO;
     }
 
     protected void init() {
-        n = 0;
+        n = BigInteger.ZERO;
     }
 
-    public abstract long getN()throws IOException, Exception, ClassNotFoundException;
+    public abstract BigInteger getN()throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @param n to set n to.
      */
-    public void setN(long n) {
+    public void setN(BigInteger n) {
         this.n = n;
     }
 
@@ -67,8 +68,11 @@ public abstract class Grids_Stats extends Grids_Object {
     /**
      * Updates by going through all values in grid if the fields are likely not
      * be up to date.
+     * @throws java.io.IOException If encountered.
+      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract void update() throws IOException, Exception, ClassNotFoundException ;
+    protected abstract void update() throws IOException, Exception, 
+            ClassNotFoundException ;
 
     public void update(Grids_Stats stats) {
         n = stats.n;
@@ -88,52 +92,25 @@ public abstract class Grids_Stats extends Grids_Object {
     }
 
     /**
-     * Returns a String describing this instance
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
+     * @return A text description of this.
+     * @throws java.io.IOException If encountered.
+      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public String toString(boolean hoome) throws IOException, Exception {
-        try {
-            String r = toString();
-            env.checkAndMaybeFreeMemory();
-            return r;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (!env.cacheChunk(env.HOOMEF)) {
-                    throw e;
-                }
-                env.initMemoryReserve(env.env);
-                return toString(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Override to provide a more detailed fields description.
-     *
-     * @return
-     */
-    public String getFieldsDescription() throws IOException, Exception, ClassNotFoundException {
+    public String getFieldsDescription() throws IOException, Exception, 
+            ClassNotFoundException {
         return "N=" + n;
     }
 
     /**
-     * Returns a string describing this instance.
-     *
-     * @return
+     * @return A text description of this.
      */
     @Override
     public String toString() {
         try {
             return getClass().getSimpleName() + "[" + getFieldsDescription() + "]";
         } catch (Exception ex) {
-            Logger.getLogger(Grids_Stats.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace(System.err);
+            env.env.log(ex.getMessage());
         }
         return null;
     }

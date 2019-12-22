@@ -22,6 +22,7 @@ import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridIteratorBinary;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinaryArray;
+import java.math.BigInteger;
 
 /**
  * Used by Grids_GridBinary instances to access statistics. This class is to be
@@ -75,28 +76,24 @@ public class Grids_StatsBinary extends Grids_Stats {
         while (ite.hasNext()) {
             v = ite.next();
             if (v) {
-                n++;
+                n = n.add(BigInteger.ONE);
             }
         }
     }
 
     /**
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
-     * @TODO Take advantage of the data structures of some types of chunk to
-     * optimise this. Probably the best way to do this is to iterate over the
-     * chunks and sum all the N from each chunk.
-     * @return
+     * @return The total number of {@code true} values in the grid. 
+     * @throws java.io.IOException If encountered.
+      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
-        long r = 0;
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
+        BigInteger r = BigInteger.ZERO;
         Grids_GridBinary g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
-            Grids_2D_ID_int chunkID = (Grids_2D_ID_int) ite.next();
-            Grids_ChunkBinaryArray chunk = g.getChunk(chunkID);
-            r += chunk.getN();
+            r = r.add(BigInteger.valueOf(g.getChunk(ite.next()).getN()));
+            env.checkAndMaybeFreeMemory();
         }
         return r;
     }

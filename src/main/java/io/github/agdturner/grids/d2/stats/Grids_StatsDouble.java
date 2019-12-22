@@ -107,7 +107,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
     }
 
     protected void update(double v, BigDecimal vBD) {
-        n++;
+        n = n.add(BigInteger.ONE);
         setSum(Sum.add(vBD));
         if (v < Min) {
             NMin = 1;
@@ -172,12 +172,12 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
-        long r = 0;
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
+        BigInteger r = BigInteger.ZERO;
         Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
-            r += g.getChunk(ite.next()).getN();
+            r = r.add(BigInteger.valueOf(g.getChunk(ite.next()).getN()));
             env.checkAndMaybeFreeMemory();
         }
         return r;
@@ -241,10 +241,10 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getStandardDeviation(int dp)
+    public BigDecimal getStandardDeviation(int dp, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         BigDecimal stdev = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp * 2);
+        BigDecimal mean = getArithmeticMean(dp * 2, rm);
         BigDecimal dataValueCount = BigDecimal.ZERO;
         Grids_GridDouble g = (Grids_GridDouble) grid;
         double ndv = g.getNoDataValue();
@@ -262,8 +262,8 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }
-        stdev = stdev.divide(dataValueCount, dp, RoundingMode.HALF_EVEN);
-        return Math_BigDecimal.sqrt(stdev, dp, env.bd.getRoundingMode());
+        stdev = stdev.divide(dataValueCount, dp * 2, rm);
+        return Math_BigDecimal.sqrt(stdev, dp, rm);
     }
 
     /**

@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
+import java.math.RoundingMode;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
  * Stores cell values in: a TreeMap with keys as cell values and values as
@@ -794,13 +796,12 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
      * @return
      */
     @Override
-    public double getMedianDouble() {
+    public double getMedian() {
         TreeMap<Double, Integer> valueCount = new TreeMap<>();
         int nCells = ChunkNCols * ChunkNRows;
         int numberOfDefaultValues = getNumberOfDefaultValues(nCells);
         valueCount.put(DefaultValue, numberOfDefaultValues);
-        Iterator<Double> ite;
-        ite = Data.DataMapBitSet.keySet().iterator();
+        Iterator<Double> ite = Data.DataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             double v = ite.next();
             valueCount.put(v, Data.DataMapBitSet.get(v).bitSet.cardinality());
@@ -850,13 +851,14 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
      * @return
      */
     @Override
-    protected double getStandardDeviationDouble() {
-        double r = 0.0d;
-        double mean = getArithmeticMeanDouble();
+    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
+        BigDecimal r = BigDecimal.ZERO;
+        BigDecimal mean = getArithmeticMean(dp, rm);
         // Calculate the number of default values
         int n = ChunkNRows * ChunkNCols;
         int nValues = getNumberOfDefaultValues(n);
-        r += ((DefaultValue - mean) * (DefaultValue - mean)) * nValues;
+        r = r.add((BigDecimal.valueOf(DefaultValue).subtract(mean).pow(2))
+                .multiply(BigDecimal.valueOf(nValues)));
         Iterator<Double> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -868,7 +870,8 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
             offsetBitSet = Data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
-            r += ((v - mean) * (v - mean)) * n;
+            r = r.add((BigDecimal.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigDecimal.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -878,10 +881,12 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
             double v = ite.next();
             n = Data.DataMapHashSet.get(v).size();
             nValues += n;
-            r += ((v - mean) * (v - mean)) * n;
+            r = r.add((BigDecimal.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigDecimal.valueOf(n)));
         }
-        if ((nValues - 1.0d) > 0) {
-            return Math.sqrt(r / (double) (nValues - 1L));
+        if ((nValues - 1L) > 0L) {
+            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
+                    r, BigInteger.valueOf(nValues - 1L), dp * 2, rm), dp, rm);
         } else {
             return r;
         }

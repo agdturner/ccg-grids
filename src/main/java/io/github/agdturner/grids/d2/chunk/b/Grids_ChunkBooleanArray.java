@@ -113,7 +113,8 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
         long n = 0;
         Grids_ChunkIteratorBooleanArray ite = iterator();
         while (ite.hasNext()) {
-            if (ite.next()) {
+            Boolean b = ite.next();
+            if (b != null) {
                 n++;
             }
         }

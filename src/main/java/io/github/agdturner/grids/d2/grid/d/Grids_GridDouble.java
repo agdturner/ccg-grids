@@ -42,6 +42,7 @@ import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
@@ -847,7 +848,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    dStats.setN(dStats.getN() - 1L);
+                    dStats.setN(dStats.getN().subtract(BigInteger.ONE));
                     dStats.setSum(dStats.getSum().subtract(oldValueBD));
                     double min = dStats.getMin(false);
                     if (oldValue == min) {
@@ -859,7 +860,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     }
                 }
                 BigDecimal newValueBD = new BigDecimal(newValue);
-                dStats.setN(dStats.getN() + 1);
+                dStats.setN(dStats.getN().add(BigInteger.ONE));
                 dStats.setSum(dStats.getSum().add(newValueBD));
                 updateStats(newValue);
                 if (dStats.getNMin() < 1) {
@@ -1120,7 +1121,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         Grids_StatsDouble dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             BigDecimal valueBD = new BigDecimal(value);
-            dStats.setN(dStats.getN() + 1);
+            dStats.setN(dStats.getN().add(BigInteger.ONE));
             dStats.setSum(dStats.getSum().add(valueBD));
             double min = dStats.getMin(false);
             if (value < min) {

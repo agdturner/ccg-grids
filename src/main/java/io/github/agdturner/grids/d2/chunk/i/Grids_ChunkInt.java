@@ -21,10 +21,12 @@ import java.util.HashSet;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.d2.chunk.Grids_ChunkNumber;
+import java.math.RoundingMode;
+import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
- * For chunks that represent values at cell locations that are
- * {@code int} type numbers.
+ * For chunks that represent values at cell locations that are {@code int} type
+ * numbers.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -33,10 +35,10 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int i, 
+    protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int i,
             boolean worthClearing) {
         super(g, i, worthClearing);
-    } 
+    }
 
     /**
      * @return (Grids_GridInt) Grid;
@@ -78,21 +80,20 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
 
     /**
      * Returns the value at chunk cell row index {@code r}. chunk cell column
-     * index {@param c} and sets it to {@code v}.
+     * index {@code c} and sets it to {@code v}.
      *
-     * @param r The chunk cell row index. of the cell w.r.t. the origin of this chunk
+     * @param r The chunk cell row index. of the cell w.r.t. the origin of this
+     * chunk
      * @param c the column index of the cell w.r.t. the origin of this chunk
      * @param v the value the cell is to be set to
      * @return The value at chunk cell row index {@code r}. chunk cell column
-     * index {@param c} before it is set.
+     * index {@code c} before it is set.
      * @throws Exception If encountered.
      */
     public abstract int setCell(int r, int c, int v) throws Exception;
 
     /**
-     * Returns values in row major order as an int[].
-     *
-     * @return
+     * @return Values in row major order as an int[].
      */
     protected int[] toArrayIncludingNoDataValues() {
         Grids_GridInt g = getGrid();
@@ -120,10 +121,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns values (except those that are noDataValues) in row major order as
+     * @return Values (except those that are noDataValues) in row major order as
      * an int[].
-     *
-     * @return
      */
     protected int[] toArrayNotIncludingNoDataValues() {
         Grids_GridInt g = getGrid();
@@ -149,9 +148,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * For returning the number of cells with noDataValues as a BigInteger.
-     *
-     * @return
+     * @return The number of cells with no data values as a BigInteger.
      */
     @Override
     public Long getN() {
@@ -472,8 +469,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      *
      * @return
      */
-    @Override
-    public double getMedianDouble() {
+    public double getMedian() {
         long n = getN();
         BigInteger n2 = BigInteger.valueOf(n);
         if (n > 0) {
@@ -493,31 +489,30 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the standard deviation of all data values as a double.
-     *
-     * @return
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The rounding mode.
+     * @return The standard deviation of all data values.
      */
-    @Override
-    protected double getStandardDeviationDouble() {
-        double sd = 0.0d;
-        double mean = getArithmeticMeanDouble();
+    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
+        BigDecimal sd = BigDecimal.ZERO;
+        BigDecimal mean = getArithmeticMean(dp, rm);
         Grids_GridInt g = getGrid();
         int nrows = g.getChunkNRows(ChunkID);
         int ncols = g.getChunkNCols(ChunkID);
-        int noDataValue = g.getNoDataValue();
-        int value;
-        double count = 0.0d;
+        int ndv = g.getNoDataValue();
+        long count = 0;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (value != noDataValue) {
-                    sd += (value - mean) * (value - mean);
-                    count += 1.0d;
+                int v = getCell(row, col);
+                if (v != ndv) {
+                    sd = sd.add(BigDecimal.valueOf(v).subtract(mean).pow(2));
+                    count++;
                 }
             }
         }
-        if ((count - 1.0d) > 0.0d) {
-            return Math.sqrt(sd / (count - 1.0d));
+        if ((count - 1L) > 0L) {
+            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
+                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
         } else {
             return sd;
         }

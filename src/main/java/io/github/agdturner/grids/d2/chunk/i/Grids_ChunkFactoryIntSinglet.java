@@ -46,12 +46,12 @@ public class Grids_ChunkFactoryIntSinglet extends Grids_ChunkFactoryInt {
     }
 
     @Override
-    public Grids_ChunkInt create(Grids_GridInt g, Grids_2D_ID_int i) {
+    public Grids_ChunkIntSinglet create(Grids_GridInt g, Grids_2D_ID_int i) {
         return new Grids_ChunkIntSinglet(g, i, DefaultValue);
     }
 
     @Override
-    public Grids_ChunkInt create(Grids_ChunkInt c, Grids_2D_ID_int i) {
+    public Grids_ChunkIntSinglet create(Grids_ChunkInt c, Grids_2D_ID_int i) {
         return new Grids_ChunkIntSinglet(c.getGrid(), i, DefaultValue);
     }
 

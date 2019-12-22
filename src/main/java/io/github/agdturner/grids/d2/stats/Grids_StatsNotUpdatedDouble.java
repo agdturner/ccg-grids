@@ -17,8 +17,8 @@ package io.github.agdturner.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.io.Serializable;
 import io.github.agdturner.grids.core.Grids_Environment;
+import java.math.BigInteger;
 
 /**
  * Used by Grids_AbstractGridNumber instances to access statistics. This class
@@ -30,9 +30,9 @@ import io.github.agdturner.grids.core.Grids_Environment;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsNotUpdatedDouble
-        extends Grids_StatsDouble
-        implements Serializable {
+public class Grids_StatsNotUpdatedDouble extends Grids_StatsDouble {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Is true iff fields are upToDate else is false.
@@ -95,7 +95,7 @@ public class Grids_StatsNotUpdatedDouble
      * @return
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }

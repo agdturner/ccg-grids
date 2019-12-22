@@ -37,6 +37,7 @@ import io.github.agdturner.grids.d2.stats.Grids_StatsBoolean;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
@@ -517,9 +518,9 @@ public class Grids_GridBoolean extends Grids_Grid {
             if (stats.getClass() == Grids_StatsBoolean.class) {
                 if (newValue == false) {
                     if (oldValue == false) {
-                        stats.setN(stats.getN() - 1L);
+                        stats.setN(stats.getN().subtract(BigInteger.ONE));
                     }
-                    stats.setN(stats.getN() + 1);
+                    stats.setN(stats.getN().add(BigInteger.ONE));
                 }
             } else {
                 if (newValue == null) {
@@ -693,7 +694,7 @@ public class Grids_GridBoolean extends Grids_Grid {
             Boolean value) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), value);
         if (value != null) {
-            stats.setN(stats.getN() + 1);
+            stats.setN(stats.getN().add(BigInteger.ONE));
         }
     }
 

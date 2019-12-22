@@ -43,6 +43,7 @@ import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
 import io.github.agdturner.grids.process.Grids_Processor;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
@@ -889,7 +890,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             if (newValue != NoDataValue) {
                 if (oldValue != NoDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    iStats.setN(iStats.getN() - 1);
+                    iStats.setN(iStats.getN().subtract(BigInteger.ONE));
                     iStats.setSum(iStats.getSum().subtract(oldValueBD));
                     int min = iStats.getMin(false);
                     if (oldValue == min) {
@@ -902,7 +903,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 }
                 if (newValue != NoDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    iStats.setN(iStats.getN() + 1);
+                    iStats.setN(iStats.getN().add(BigInteger.ONE));
                     iStats.setSum(iStats.getSum().add(newValueBD));
                     updateStats(newValue);
                     if (iStats.getNMin() < 1) {
@@ -1143,7 +1144,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             ClassNotFoundException {
         Grids_StatsInt iStats = getStats();
         BigDecimal valueBD = new BigDecimal(value);
-        iStats.setN(iStats.getN() + 1);
+        iStats.setN(iStats.getN().add(BigInteger.ONE));
         iStats.setSum(iStats.getSum().add(valueBD));
         int min = iStats.getMin(false);
         if (value < min) {

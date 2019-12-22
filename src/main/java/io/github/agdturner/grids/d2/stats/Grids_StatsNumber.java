@@ -686,15 +686,14 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      * For returning the arithmetic mean of all data values. Throws an
      * ArithmeticException if N is equal to zero.
      *
-     * @param numberOfDecimalPlaces The result returned uses BigDecimal
+     * @param dp The result returned uses BigDecimal
      * arithmetic to ensure the result is correct given a round scheme to this
      * many decimal places.
      *
      * @return
      */
-    public BigDecimal getArithmeticMean(int numberOfDecimalPlaces) {
-        return Sum.divide(new BigDecimal(n), numberOfDecimalPlaces,
-                RoundingMode.HALF_EVEN);
+    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
+        return Sum.divide(new BigDecimal(n), dp, rm);
     }
 
 //    /**

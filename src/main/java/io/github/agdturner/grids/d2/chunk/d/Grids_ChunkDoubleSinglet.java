@@ -82,24 +82,18 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
      * @return
      */
     @Override
-    public double setCell(int row, int col,
-            double v) {
+    public double setCell(int row, int col, double v) throws Exception {
         if (v == Value) {
             return Value;
         } else {
-            // @TODO
-            throw new Error("Unable to set value as this chunk is supposed "
-                    + "to all contain the same value. What is needed is to "
-                    + "transform the chunk to use a richer data structure to "
-                    + "store valueToSet in ust this cell.");
+            throw new Exception("Unable to set value as this chunk is supposed "
+                    + "to all contain the same value. Maybe need to convert to "
+                    + "another chunk type.");
         }
     }
 
     /**
-     * Returns a Grids_GridChunkDoubleArrayIterator for iterating over the cells
-     * in this.
-     *
-     * @return
+     * @return A Grids_ChunkIteratorDoubleSinglet for iterating over the values.
      */
     public Grids_ChunkIteratorDoubleSinglet iterator() {
         return new Grids_ChunkIteratorDoubleSinglet(this);
@@ -126,10 +120,4 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
         return BigDecimal.valueOf(Value);
     }
-
-    @Override
-    public double getArithmeticMeanDouble() {
-        return Value;
-    }
-
 }

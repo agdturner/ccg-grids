@@ -119,9 +119,4 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
         return BigDecimal.valueOf(Value);
     }
-
-    @Override
-    public double getArithmeticMeanDouble() {
-        return Value;
-    }
 }

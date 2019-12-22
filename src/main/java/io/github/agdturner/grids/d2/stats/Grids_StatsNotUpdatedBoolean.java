@@ -17,6 +17,7 @@ package io.github.agdturner.grids.d2.stats;
 
 import java.io.IOException;
 import io.github.agdturner.grids.core.Grids_Environment;
+import java.math.BigInteger;
 
 /**
  * Used by Grids_AbstractGrid instances (grids) to access statistics. This class
@@ -93,7 +94,7 @@ public class Grids_StatsNotUpdatedBoolean extends Grids_StatsBoolean {
      * @return
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }

@@ -15,7 +15,6 @@
  */
 package io.github.agdturner.grids.d2.chunk;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -58,108 +57,17 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
      */
     public abstract BigDecimal getCellBigDecimal(int row, int col);
 
-//    /**
-//     * Returns the number of cells with data values.
-//     *
-//     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * cache operations are initiated, then the method is re-called. If false
-//     * then OutOfMemoryErrors are caught and thrown.
-//     * @return
-//     */
-//    @Override
-//    public Long getN(boolean hoome) {
-//        try {
-//            long result = getN();
-//            env.checkAndMaybeFreeMemory(hoome);
-//            return result;
-//        } catch (OutOfMemoryError e) {
-//            if (hoome) {
-//                env.clearMemoryReserve();
-//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-//                    throw e;
-//                }
-//                env.initMemoryReserve(Grid, ChunkID, hoome);
-//                return Grids_ChunkNumber.this.getN(hoome);
-//            } else {
-//                throw e;
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Returns the sum of all data values.
-//     *
-//     * @param handleOutOfMemoryError If true then OutOfMemoryErrors are caught,
-//     * cache operations are initiated, then the method is re-called. If false
-//     * then OutOfMemoryErrors are caught and thrown.
-//     * @return
-//     */
-//    @Override
-//    public BigDecimal getSum(boolean handleOutOfMemoryError) {
-//        try {
-//            BigDecimal result = getSum();
-//            env.checkAndMaybeFreeMemory(handleOutOfMemoryError);
-//            return result;
-//        } catch (OutOfMemoryError e) {
-//            if (handleOutOfMemoryError) {
-//                env.clearMemoryReserve();
-//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-//                    throw e;
-//                }
-//                env.initMemoryReserve(Grid, ChunkID, handleOutOfMemoryError);
-//                return Grids_ChunkNumber.this.getSum(handleOutOfMemoryError);
-//            } else {
-//                throw e;
-//            }
-//        }
-//    }
-//
     /**
-     * Returns the sum of all data values.
-     *
-     * @return
+     * @return The sum of all data values.
      */
     @Override
     public abstract BigDecimal getSum();
 
-//    /**
-//     * Returns the Arithmetic Mean of all data values. If
-//     * all cells are NoDataValues, then null is returned.
-//     *
-//     * @param numberOfDecimalPlaces The number of decimal places to which the
-//     * result is precise.
-//     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * cache operations are initiated, then the method is re-called. If false
-//     * then OutOfMemoryErrors are caught and thrown.
-//     * @return
-//     */
-//    @Override
-//    public BigDecimal getArithmeticMean(
-//            int numberOfDecimalPlaces,
-//            boolean hoome) {
-//        try {
-//            BigDecimal result = getArithmeticMean(numberOfDecimalPlaces);
-//            env.checkAndMaybeFreeMemory(hoome);
-//            return result;
-//        } catch (OutOfMemoryError e) {
-//            if (hoome) {
-//                env.clearMemoryReserve();
-//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-//                    throw e;
-//                }
-//                env.initMemoryReserve(Grid, ChunkID, hoome);
-//                return getArithmeticMean(numberOfDecimalPlaces, hoome);
-//            } else {
-//                throw e;
-//            }
-//        }
-//    }
     /**
-     * Returns the Arithmetic Mean of all non _NoDataValues as a BigDecimal. If
-     * all cells are _NoDataValues, then null is returned.
-     *
      * @param dp The number of decimal places to which the result is precise.
-     * @return
+     * @param rm The RoundingMode used if necessary for rounding.
+     * @return The Arithmetic Mean of all non no data values as a BigDecimal. If
+     * all cells are no data values, then {@code null} is returned.
      */
     @Override
     public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
@@ -171,117 +79,4 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
         }
         return null;
     }
-
-//    /**
-//     * Returns the Arithmetic Mean of all data values as a double. If all
-//     * cells are NoDataValues, then Grid.NoDataValue is returned.
-//     *
-//     * @param hoome If true then OutOfMemoryErrors are caught,
-//     * cache operations are initiated, then the method is re-called. If false
-//     * then OutOfMemoryErrors are caught and thrown.
-//     * @return
-//     */
-//    public double getArithmeticMeanDouble(boolean hoome) {
-//        try {
-//            double result = getArithmeticMeanDouble();
-//            env.checkAndMaybeFreeMemory(hoome);
-//            return result;
-//        } catch (OutOfMemoryError e) {
-//            if (hoome) {
-//                env.clearMemoryReserve();
-//                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-//                    throw e;
-//                }
-//                env.initMemoryReserve(Grid, ChunkID, hoome);
-//                return getArithmeticMeanDouble(hoome);
-//            } else {
-//                throw e;
-//            }
-//        }
-//    }
-    /**
-     * Returns the Arithmetic Mean of all data values as a double. If all cells
-     * are NoDataValues, then Grid.NoDataValue is returned.
-     *
-     * @return
-     */
-    public double getArithmeticMeanDouble() {
-        double result;
-        long n = getN();
-        double sum = getSum().doubleValue();
-        result = sum / (double) n;
-        return result;
-    }
-
-    /**
-     * Returns the median of all data values as a double.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getMedianDouble(boolean hoome)
-            throws IOException, ClassNotFoundException, Exception {
-        try {
-            double r = getMedianDouble();
-            env.checkAndMaybeFreeMemory(hoome);
-            return r;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (env.cacheChunkExcept_Account(Grid, ChunkID, false) < 1L) {
-                    throw e;
-                }
-                env.initMemoryReserve(Grid, ChunkID, hoome);
-                return getMedianDouble(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the median of all data values as a double. This method requires
-     * that all data in chunk can be stored as a new array.
-     *
-     * @return
-     */
-    public abstract double getMedianDouble();
-
-    /**
-     * Returns the standard deviation of all data values as a double.
-     *
-     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return
-     */
-    public double getStandardDeviationDouble(boolean hoome) throws IOException,
-            ClassNotFoundException, Exception {
-        try {
-            double result = getStandardDeviationDouble();
-            env.checkAndMaybeFreeMemory(hoome);
-            return result;
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (env.cacheChunkExcept_Account(Grid, ChunkID, hoome) < 1L) {
-                    throw e;
-                }
-                env.initMemoryReserve(Grid, ChunkID, hoome);
-                return getStandardDeviationDouble(hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * Returns the standard deviation of all data values as a double.
-     *
-     * @return
-     */
-    protected abstract double getStandardDeviationDouble();
-
 }

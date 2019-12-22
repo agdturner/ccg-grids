@@ -28,6 +28,7 @@ import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.util.Grids_Kernel;
 import io.github.agdturner.grids.util.Grids_Utilities;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
@@ -1370,7 +1371,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
             BigDecimal distance, Grids_GridFactoryDouble gridFactory)
             throws IOException, ClassNotFoundException, Exception {
-        long n;
+        BigInteger n;
         n = grid.getStats().getN();
         //double sparseness = grid.getStats().getSparseness();
         long nrows = grid.getNRows();
@@ -1406,7 +1407,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble[] result = new Grids_GridDouble[numberOfIterations];
         Generic_Path dir;
         // If all values are noDataValues return noDataValue density results
-        if (n == 0) {
+        if (n.compareTo(BigInteger.ZERO) == 0) {
             for (int i = 0; i < numberOfIterations; i++) {
                 result[i] = (Grids_GridDouble) gridFactory.create(grid);
             }

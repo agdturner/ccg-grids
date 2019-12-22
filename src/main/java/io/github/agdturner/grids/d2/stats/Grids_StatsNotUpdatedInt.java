@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import io.github.agdturner.grids.core.Grids_Environment;
+import java.math.BigInteger;
 
 /**
  * Used by Grids_AbstractGridNumber instances to access statistics. This class
@@ -95,7 +96,7 @@ public class Grids_StatsNotUpdatedInt
      * @return
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }

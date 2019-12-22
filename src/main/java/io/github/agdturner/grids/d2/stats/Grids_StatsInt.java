@@ -40,8 +40,7 @@ import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkInt;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsInt extends Grids_StatsNumber
-        implements Serializable {
+public class Grids_StatsInt extends Grids_StatsNumber {
 
     private static final long serialVersionUID = 1L;
 
@@ -111,7 +110,7 @@ public class Grids_StatsInt extends Grids_StatsNumber
     }
 
     protected void update(int value, BigDecimal valueBD) {
-        n++;
+        n = n.add(BigInteger.ZERO);
         setSum(Sum.add(valueBD));
         if (value < Min) {
             NMin++;
@@ -176,12 +175,12 @@ public class Grids_StatsInt extends Grids_StatsNumber
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
-        long r = 0;
+    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
+        BigInteger r = BigInteger.ZERO;
         Grids_GridInt g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
-            r += g.getChunk(ite.next()).getN();
+            r = r.add(BigInteger.valueOf(g.getChunk(ite.next()).getN()));
             env.checkAndMaybeFreeMemory();
         }
         return r;
@@ -245,10 +244,10 @@ public class Grids_StatsInt extends Grids_StatsNumber
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getStandardDeviation(int dp)
+    public BigDecimal getStandardDeviation(int dp, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         BigDecimal stdev = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp * 2);
+        BigDecimal mean = getArithmeticMean(dp * 2, rm);
         BigDecimal dataValueCount = BigDecimal.ZERO;
         Grids_GridInt g = (Grids_GridInt) grid;
         double ndv = g.getNoDataValue();
@@ -266,8 +265,8 @@ public class Grids_StatsInt extends Grids_StatsNumber
         if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
             return stdev;
         }
-        stdev = stdev.divide(dataValueCount, dp, RoundingMode.HALF_EVEN);
-        return Math_BigDecimal.sqrt(stdev, dp, env.bd.getRoundingMode());
+        stdev = stdev.divide(dataValueCount, dp * 2, rm);
+        return Math_BigDecimal.sqrt(stdev, dp, rm);
     }
 
     /**
