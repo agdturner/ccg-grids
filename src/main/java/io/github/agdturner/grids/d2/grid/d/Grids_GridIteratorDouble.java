@@ -47,7 +47,7 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
     public Grids_GridIteratorDouble(Grids_GridDouble g) throws IOException,
             ClassNotFoundException, Exception {
         super(g);
-        TreeMap<Grids_2D_ID_int, Grids_Chunk> m = g.getChunkIDChunkMap();
+        TreeMap<Grids_2D_ID_int, Grids_Chunk> m = g.getData();
         GridIterator = m.keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();

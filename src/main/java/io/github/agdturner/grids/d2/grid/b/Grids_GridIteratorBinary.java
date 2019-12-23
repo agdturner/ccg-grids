@@ -43,14 +43,14 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
     public Grids_GridIteratorBinary(Grids_GridBinary g) throws IOException, 
             ClassNotFoundException, Exception {
         super(g);
-        GridIterator = g.getChunkIDChunkMap().keySet().iterator();
+        GridIterator = g.getData().keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap()
+            Chunk = (Grids_ChunkBinaryArray) g.getData()
                     .get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_ChunkBinaryArray) g.getChunkIDChunkMap()
+                Chunk = (Grids_ChunkBinaryArray) g.getData()
                         .get(ChunkID);
             }
             initChunkIterator();

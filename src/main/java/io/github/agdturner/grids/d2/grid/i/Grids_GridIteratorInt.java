@@ -46,13 +46,13 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
     public Grids_GridIteratorInt(Grids_GridInt g) throws IOException, Exception,
             ClassNotFoundException {
         super(g);
-        GridIterator = g.getChunkIDChunkMap().keySet().iterator();
+        GridIterator = g.getData().keySet().iterator();
         if (GridIterator.hasNext()) {
             ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkInt) g.getChunkIDChunkMap().get(ChunkID);
+            Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
             if (Chunk == null) {
                 Grid.loadIntoCacheChunk(ChunkID);
-                Chunk = (Grids_ChunkInt) g.getChunkIDChunkMap().get(ChunkID);
+                Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
             }
             initChunkIterator();
         }

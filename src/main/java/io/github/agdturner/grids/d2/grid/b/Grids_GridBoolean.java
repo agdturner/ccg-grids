@@ -63,14 +63,14 @@ public class Grids_GridBoolean extends Grids_Grid {
      * and all chunks of the same type.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param fs What {@link #store} is set to.
-     * @param id What {@link #id} is set to.
+     * @param fs What {@link #fs} is set to.
+     * @param id What {@link #fsID} is set to.
      * @param cf The factory used to create chunks.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
-     * @param nRows What {@link #NRows} is set to.
-     * @param nCols What {@link #NCols} is set to.
-     * @param dimensions What {@link #Dimensions} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param nRows What {@link #nRows} is set to.
+     * @param nCols What {@link #nCols} is set to.
+     * @param dimensions What {@link #dim} is set to.
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
@@ -86,12 +86,12 @@ public class Grids_GridBoolean extends Grids_Grid {
      * Creates a new Grids_GridBinary based on values in grid.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param fs What {@link #store} is set to.
-     * @param id What {@link #id} is set to.
+     * @param fs What {@link #fs} is set to.
+     * @param id What {@link #fsID} is set to.
      * @param g The {@link Grids_Grid} used to construct this.
      * @param cf The factory used to create chunks.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param startRow The row of {@code g} which is the bottom most row of
      * this.
      * @param startCol The column of {@code g} which is the left most column of
@@ -116,13 +116,13 @@ public class Grids_GridBoolean extends Grids_Grid {
      * gridFile.
      *
      * @param stats What {@link #stats}T is set to.
-     * @param fs What {@link #store} is set to.
-     * @param id What {@link #id} is set to.
+     * @param fs What {@link #fs} is set to.
+     * @param id What {@link #fsID} is set to.
      * @param gridFile The directory containing a grid that is to be loaded to
      * initialise this.
      * @param cf The factory used to create chunks.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param startRow The row of {@code g} which is the bottom most row of
      * this.
      * @param startCol The column of {@code g} which is the left most column of
@@ -149,8 +149,8 @@ public class Grids_GridBoolean extends Grids_Grid {
      * {@code gridFile}.
      *
      * @param e The grids environment.
-     * @param fs What {@link #store} is set to.
-     * @param id What {@link #id} is set to.
+     * @param fs What {@link #fs} is set to.
+     * @param id What {@link #fsID} is set to.
      * @param gridFile The directory containing a grid that is to be loaded to
      * initialise this.
      * @throws java.io.IOException If encountered.
@@ -172,9 +172,9 @@ public class Grids_GridBoolean extends Grids_Grid {
     private void init(Grids_GridBoolean g) throws IOException, Exception {
         stats = g.stats;
         super.init(g);
-        chunkIDChunkMap = g.chunkIDChunkMap;
-        setReferenceInChunkIDChunkMap();
-        ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
+        data = g.data;
+        setReferenceInChunks();
+        worthSwapping = g.worthSwapping;
         // Set the reference to this in stats
         stats.setGrid(this);
         super.init();
@@ -192,11 +192,11 @@ public class Grids_GridBoolean extends Grids_Grid {
     /**
      * @param stats What {@link #stats} is set to.
      * @param cf The factory used to create chunks.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
-     * @param nRows What {@link #NRows} is set to.
-     * @param nCols What {@link #NCols} is set to.
-     * @param dimensions What {@link #Dimensions} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param nRows What {@link #nRows} is set to.
+     * @param nCols What {@link #nCols} is set to.
+     * @param dimensions What {@link #dim} is set to.
      * @throws java.io.IOException If encountered.
      */
     private void init(Grids_StatsBoolean stats, Grids_ChunkFactoryBoolean cf,
@@ -204,15 +204,15 @@ public class Grids_GridBoolean extends Grids_Grid {
             Grids_Dimensions dimensions) throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
         init(stats, chunkNRows, chunkNCols, nRows, nCols, dimensions);
-        for (int r = 0; r < NChunkRows; r++) {
-            for (int c = 0; c < NChunkCols; c++) {
+        for (int r = 0; r < nChunkRows; r++) {
+            for (int c = 0; c < nChunkCols; c++) {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(r, c);
                 Grids_ChunkBooleanArray chunk = cf.create(this, chunkID);
-                chunkIDChunkMap.put(chunkID, chunk);
+                data.put(chunkID, chunk);
             }
-            env.env.log("Done chunkRow " + r + " out of " + NChunkRows);
+            env.env.log("Done chunkRow " + r + " out of " + nChunkRows);
         }
         init();
     }
@@ -221,11 +221,11 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param stats What {@link #stats} is set to.
      * @param g The grid to initialise the values in this from.
      * @param cf The factory used to create chunks.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
-     * @param nRows What {@link #NRows} is set to.
-     * @param nCols What {@link #NCols} is set to.
-     * @param dimensions What {@link #Dimensions} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param nRows What {@link #nRows} is set to.
+     * @param nCols What {@link #nCols} is set to.
+     * @param dimensions What {@link #dim} is set to.
      * @throws java.io.IOException If encountered.
      * @param startRow The row of {@code g} which is the bottom most row of
      * this.
@@ -343,11 +343,11 @@ public class Grids_GridBoolean extends Grids_Grid {
                                     chunkRow, chunkCol);
                             //ge.addToNotToClear(this, chunkID);
                             Grids_ChunkBooleanArray chunk;
-                            if (!chunkIDChunkMap.containsKey(chunkID)) {
+                            if (!data.containsKey(chunkID)) {
                                 chunk = cf.create(this, chunkID);
-                                chunkIDChunkMap.put(chunkID, chunk);
+                                data.put(chunkID, chunk);
                             } else {
-                                chunk = (Grids_ChunkBooleanArray) chunkIDChunkMap.get(chunkID);
+                                chunk = (Grids_ChunkBooleanArray) data.get(chunkID);
                             }
                             boolean gValue = gb.getCell(c, cr, cc);
                             if (gValue) {
@@ -414,9 +414,9 @@ public class Grids_GridBoolean extends Grids_Grid {
                 Grids_GridBoolean g = (Grids_GridBoolean) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
                 init(g);
-                //this.chunkIDChunkMap = g.chunkIDChunkMap;
-                this.ChunkIDsOfChunksWorthCaching = g.ChunkIDsOfChunksWorthCaching;
-                this.Dimensions = g.Dimensions;
+                //this.data = g.data;
+                this.worthSwapping = g.worthSwapping;
+                this.dim = g.dim;
                 this.stats = stats;
                 this.stats.grid = this;
             }
@@ -444,15 +444,15 @@ public class Grids_GridBoolean extends Grids_Grid {
          * it does not already exist.
          */
         env.addToNotToClear(this, chunkID);
-        if (!chunkIDChunkMap.containsKey(chunkID)) {
+        if (!data.containsKey(chunkID)) {
             Grids_ChunkBooleanArray gc = new Grids_ChunkBooleanArray(this, chunkID);
-            chunkIDChunkMap.put(chunkID, gc);
+            data.put(chunkID, gc);
         } else {
-            Grids_Chunk c = chunkIDChunkMap.get(chunkID);
+            Grids_Chunk c = data.get(chunkID);
             if (c == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            chunk = (Grids_ChunkBooleanArray) chunkIDChunkMap.get(chunkID);
+            chunk = (Grids_ChunkBooleanArray) data.get(chunkID);
             if (fast) {
                 initCellFast(chunk, row, col, value);
             } else {
@@ -471,10 +471,10 @@ public class Grids_GridBoolean extends Grids_Grid {
     public Grids_ChunkBooleanArray getChunk(Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkID)) {
-            if (chunkIDChunkMap.get(chunkID) == null) {
+            if (data.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_ChunkBooleanArray) chunkIDChunkMap.get(chunkID);
+            return (Grids_ChunkBooleanArray) data.get(chunkID);
         }
         return null;
     }
@@ -491,10 +491,10 @@ public class Grids_GridBoolean extends Grids_Grid {
     public Grids_ChunkBooleanArray getChunk(Grids_2D_ID_int chunkID, int chunkRow,
             int chunkCol) throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkRow, chunkCol)) {
-            if (chunkIDChunkMap.get(chunkID) == null) {
+            if (data.get(chunkID) == null) {
                 loadIntoCacheChunk(chunkID);
             }
-            return (Grids_ChunkBooleanArray) chunkIDChunkMap.get(chunkID);
+            return (Grids_ChunkBooleanArray) data.get(chunkID);
         }
         return null;
     }
@@ -807,8 +807,8 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void initCells(Boolean v) throws IOException, ClassNotFoundException, Exception {
-        Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
-        int nChunks = chunkIDChunkMap.size();
+        Iterator<Grids_2D_ID_int> ite = data.keySet().iterator();
+        int nChunks = data.size();
         int counter = 0;
         while (ite.hasNext()) {
             env.checkAndMaybeFreeMemory();

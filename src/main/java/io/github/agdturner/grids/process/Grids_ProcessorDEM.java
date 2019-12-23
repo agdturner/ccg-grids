@@ -215,7 +215,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[0] = GridDoubleFactory.create(nrows, ncols,
                     dimensions);
             slopeAndAspect[0].setName(filename);
-            slopeAndAspect[0].writeToFile();
             System.out.println(slopeAndAspect[0].toString());
             System.out.println("Initialising slopeAndAspect[ 1 ]");
             if (shortName) {
@@ -229,7 +228,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[1] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[1].setName(filename);
-            slopeAndAspect[1].writeToFile();
             env.getGrids().add(slopeAndAspect[1]);
             System.out.println("Initialising slopeAndAspect[ 2 ]");
             if (shortName) {
@@ -242,7 +240,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             }
             slopeAndAspect[2] = GridDoubleFactory.create(nrows, ncols, dimensions);
             slopeAndAspect[2].setName(filename);
-            slopeAndAspect[2].writeToFile();
             System.out.println(slopeAndAspect[2].toString());
             System.out.println("Initialising slopeAndAspect[ 3 ]");
             if (shortName) {
@@ -256,7 +253,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[3] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[3].setName(filename);
-            slopeAndAspect[3].writeToFile();
             System.out.println(slopeAndAspect[3].toString());
             System.out.println("Initialising slopeAndAspect[ 4 ]");
             if (shortName) {
@@ -270,7 +266,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[4] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[4].setName(filename);
-            slopeAndAspect[4].writeToFile();
             System.out.println(slopeAndAspect[4].toString());
             System.out.println("Initialising slopeAndAspect[ 5 ]");
             if (shortName) {
@@ -284,7 +279,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[5] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[5].setName(filename);
-            slopeAndAspect[5].writeToFile();
             System.out.println(slopeAndAspect[5].toString());
             System.out.println("Initialising slopeAndAspect[ 6 ]");
             if (shortName) {
@@ -298,7 +292,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[6] = (Grids_GridDouble) GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[6].setName(filename);
-            slopeAndAspect[6].writeToFile();
             System.out.println(slopeAndAspect[6].toString());
             System.out.println("Initialising slopeAndAspect[ 7 ]");
             if (shortName) {
@@ -312,7 +305,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[7] = GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[7].setName(filename);
-            slopeAndAspect[7].writeToFile();
             System.out.println(slopeAndAspect[7].toString());
             System.out.println("Initialising slopeAndAspect[ 8 ]");
             if (shortName) {
@@ -326,7 +318,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[8] = (Grids_GridDouble) GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[8].setName(filename);
-            slopeAndAspect[8].writeToFile();
             System.out.println(slopeAndAspect[8].toString());
             System.out.println("Initialising slopeAndAspect[ 9 ]");
             if (shortName) {
@@ -340,7 +331,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[9] = (Grids_GridDouble) GridDoubleFactory.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[9].setName(filename);
-            slopeAndAspect[9].writeToFile();
             System.out.println("Initialised Results");
             System.out.println(g.toString());
             Grids_2D_ID_int chunkID;
@@ -1737,7 +1727,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 try {
                     metrics1[i] = gdf.create(nrows, ncols, dimensions);
                     if (cacheOutInitialisedFiles) {
-                        metrics1[i].writeToFile();
+                        metrics1[i].cache();
                     }
                     metrics1[i].setName(metrics1Names[i]);
                     isInitialised = true;
@@ -2053,7 +2043,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     if (cacheOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
-                            metrics1[i].cacheChunk(chunkID, true, env.HOOME);
+                            metrics1[i].swap(chunkID, true, env.HOOME);
                         }
                     }
                 }
@@ -2119,7 +2109,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     if (cacheOutProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
-                            metrics1[i].cacheChunk(chunkID, true, env.HOOME);
+                            metrics1[i].swap(chunkID, true, env.HOOME);
                         }
                     }
                 }

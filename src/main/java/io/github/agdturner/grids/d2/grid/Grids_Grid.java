@@ -37,7 +37,7 @@ import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import io.github.agdturner.grids.d2.stats.Grids_Stats;
-import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Grids_ESRIAsciiGridHeader;
+import io.github.agdturner.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import io.github.agdturner.grids.util.Grids_Utilities;
 import java.util.HashSet;
 
@@ -54,7 +54,7 @@ import java.util.HashSet;
  * cells in a grid are indexed by positive {@code long} values and these can
  * provide a unique {@link Grids_2D_ID_long} identifier for each cell - though
  * typically these are not used as grids are subdivided into chunks and it is
- * the rows and columns of cells in these rows and columns of chunks what are
+ * the rows and columns of cells in these rows and columns of chunks that are
  * primarily used.
  *
  * Chunks are organised into a map with each chunk indexed by a unique
@@ -95,8 +95,7 @@ import java.util.HashSet;
  * for other purposes. When required chunks that are not currently loaded can be
  * reloaded from the cache. Whether a cache effectively represents the same set
  * of values as a chunk in memory will all depend on whether and how the values
- * of the chunk have changed and if they are any different to those in any
- * cache.
+ * of the chunk have changed.
  *
  * What the most appropriate type of chunk is for storing values will depend on
  * whether the data are changing, what the variety and distribution of values
@@ -109,9 +108,9 @@ import java.util.HashSet;
  * memory; how much the data are changing; and the relative importance of the
  * speed of computation over the memory footprint.
  *
- * Both a grid and each chunk has a {@link Grid_Stats}. These provide access to
- * summary statistics about the grid and each chunk. These are broadly of two
- * types: those which are kept more up-to-date as the underlying data are
+ * Both a grid and each chunk has a {@link Grid_Stats} instance. These provide
+ * access to summary statistics about the grid and each chunk. These are broadly
+ * of two types: those which are kept more up-to-date as the underlying data are
  * changed; those where there is no effort to keep them up-to-date as the
  * underlying data changes. Having ready access to summary statistics about the
  * values in a grid or a chunk can be very useful, but there are costs
@@ -138,64 +137,66 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * The file store in which this is stored.
      */
-    protected final Generic_FileStore store;
+    protected final Generic_FileStore fs;
 
     /**
-     * The file store id for this grid.
+     * The file store ID for this grid.
      */
-    protected final long id;
+    protected final long fsID;
 
     /**
-     * The Grids_Chunk data cache.
+     * The data are stored in a map with chunk ID keys and values that are
+     * either chunks, or {@code null} - if the chunk is not stored in the fast
+     * access memory, but in the file store {@link #fs}.
      */
-    protected TreeMap<Grids_2D_ID_int, Grids_Chunk> chunkIDChunkMap;
+    protected TreeMap<Grids_2D_ID_int, Grids_Chunk> data;
 
     /**
-     * The Grids_Chunk data cache.
+     * A set of chunks worth swapping. These do not include singlet type chunks.
      */
-    protected HashSet<Grids_2D_ID_int> ChunkIDsOfChunksWorthCaching;
+    protected HashSet<Grids_2D_ID_int> worthSwapping;
 
     /**
      * For storing the number of chunk rows.
      */
-    protected int NChunkRows;
+    protected int nChunkRows;
 
     /**
      * For storing the number of chunk columns.
      */
-    protected int NChunkCols;
+    protected int nChunkCols;
 
     /**
      * For storing the (usual) number of rows of cells in a chunk. The number of
      * rows in the final chunk row may be less.
      */
-    protected int ChunkNRows;
+    protected int chunkNRows;
 
     /**
      * For storing the (usual) number of columns of cells in a chunk. The number
      * of columns in the final chunk column may be less.
      */
-    protected int ChunkNCols;
+    protected int chunkNCols;
 
     /**
      * For storing the number of rows in the grid.
      */
-    protected long NRows;
+    protected long nRows;
 
     /**
      * For storing the number of columns in the grid.
      */
-    protected long NCols;
+    protected long nCols;
 
     /**
      * For storing the Name of the grid.
      */
-    protected String Name;
+    protected String name;
 
     /**
      * @see {@link Grids_Dimensions}
      */
-    protected Grids_Dimensions Dimensions;
+    protected Grids_Dimensions dim;
 
     /**
      * A reference to the grid stats.
@@ -211,8 +212,8 @@ public abstract class Grids_Grid extends Grids_Object {
     protected Grids_Grid(Grids_Environment e, Generic_FileStore fs, long id)
             throws Exception {
         super(e);
-        this.store = fs;
-        this.id = id;
+        this.fs = fs;
+        this.fsID = id;
     }
 
     protected void init() throws IOException {
@@ -228,42 +229,42 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     protected void init(Grids_Grid g) throws IOException {
-        ChunkNCols = g.ChunkNCols;
-        ChunkNRows = g.ChunkNRows;
-        Dimensions = g.Dimensions;
-        Name = g.Name;
-        NChunkCols = g.NChunkCols;
-        NChunkRows = g.NChunkRows;
-        NCols = g.NCols;
-        NRows = g.NRows;
+        chunkNCols = g.chunkNCols;
+        chunkNRows = g.chunkNRows;
+        dim = g.dim;
+        name = g.name;
+        nChunkCols = g.nChunkCols;
+        nChunkRows = g.nChunkRows;
+        nCols = g.nCols;
+        nRows = g.nRows;
         init();
     }
 
     protected void init(Grids_Stats stats, int chunkNRows, int chunkNCols) {
         this.stats = stats;
         this.stats.setGrid(this);
-        ChunkNRows = chunkNRows;
-        ChunkNCols = chunkNCols;
-        Name = store.getBaseDir().getFileName().toString() + id;
+        this.chunkNRows = chunkNRows;
+        this.chunkNCols = chunkNCols;
+        name = fs.getBaseDir().getFileName().toString() + fsID;
         initNChunkRows();
         initNChunkCols();
-        chunkIDChunkMap = new TreeMap<>();
-        ChunkIDsOfChunksWorthCaching = new HashSet<>();
+        data = new TreeMap<>();
+        worthSwapping = new HashSet<>();
     }
 
     protected void init(Grids_Stats stats, int chunkNRows, int chunkNCols,
             long nRows, long nCols, Grids_Dimensions dimensions) {
-        NRows = nRows;
-        NCols = nCols;
-        Dimensions = dimensions;
+        this.nRows = nRows;
+        this.nCols = nCols;
+        dim = dimensions;
         init(stats, chunkNRows, chunkNCols);
     }
 
     protected void init(Grids_Grid g, Grids_Stats stats, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) {
-        NRows = endRow - startRow + 1;
-        NCols = endCol - startCol + 1;
+        nRows = endRow - startRow + 1;
+        nCols = endCol - startCol + 1;
         initDimensions(g, startRow, startCol);
         init(stats, chunkNRows, chunkNCols);
     }
@@ -271,10 +272,10 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * Sets the references to this in the chunks.
      */
-    protected void setReferenceInChunkIDChunkMap() {
-        Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
+    protected void setReferenceInChunks() {
+        Iterator<Grids_2D_ID_int> ite = data.keySet().iterator();
         while (ite.hasNext()) {
-            chunkIDChunkMap.get(ite.next()).initGrid(this);
+            data.get(ite.next()).initGrid(this);
         }
     }
 
@@ -282,7 +283,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return A set of all chunk IDs.
      */
     public Set<Grids_2D_ID_int> getChunkIDs() {
-        return chunkIDChunkMap.keySet();
+        return data.keySet();
     }
 
     /**
@@ -291,26 +292,26 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return A text decription of the fields of this.
      */
     public String getFieldsDescription() {
-        String r = "ChunkNcols=" + ChunkNCols + ", ";
-        r += "ChunkNrows=" + ChunkNRows + ", ";
-        r += "NChunkCols=" + NChunkCols + ", ";
-        r += "NChunkRows=" + NChunkRows + ", ";
-        r += "NCols=" + NCols + ", ";
-        r += "NRows=" + NRows + ", ";
-        r += "store=" + store.toString() + ", ";
-        r += "id=" + id + ", ";
-        r += "Name=" + Name + ", ";
-        r += "Dimensions=" + getDimensions().toString() + ", ";
-        if (chunkIDChunkMap == null) {
-            r += "ChunkIDChunkMap=null, ";
+        String r = "chunkNcols=" + chunkNCols + ", ";
+        r += "chunkNrows=" + chunkNRows + ", ";
+        r += "nChunkCols=" + nChunkCols + ", ";
+        r += "nChunkRows=" + nChunkRows + ", ";
+        r += "nCols=" + nCols + ", ";
+        r += "nRows=" + nRows + ", ";
+        r += "fs=" + fs.toString() + ", ";
+        r += "id=" + fsID + ", ";
+        r += "name=" + name + ", ";
+        r += "dimensions=" + getDimensions().toString() + ", ";
+        if (data == null) {
+            r += "data=null, ";
         } else {
-            r += "ChunkIDChunkMap.size()=" + chunkIDChunkMap.size() + ", ";
+            r += "data.size()=" + data.size() + ", ";
         }
         Set<Grids_Grid> grids = env.getGrids();
         if (grids == null) {
-            r += "Grids=null, ";
+            r += "grids=null, ";
         } else {
-            r += "Grids.size()=" + grids.size() + ", ";
+            r += "grids.size()=" + grids.size() + ", ";
         }
         r += getStats().toString();
         return r;
@@ -325,74 +326,74 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return The path to the directory in {@link #store} where this is
-     * currently stored.
+     * @return The path to the directory in {@link #fs} where this is currently
+     * stored.
      */
     public Generic_Path getDirectory() {
-        return new Generic_Path(store.getPath(id));
+        return new Generic_Path(fs.getPath(fsID));
     }
 
     /**
-     * @return {@link #Name}
+     * @return {@link #name}
      */
     public String getName() {
-        return Name;
+        return name;
     }
 
     /**
-     * Sets {@link #Name} to {@code name}.
+     * Sets {@link #name} to {@code name}.
      *
-     * @param name What {@link #Name} is set to.
+     * @param name What {@link #name} is set to.
      */
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     /**
-     * @return {@link #NCols}
+     * @return {@link #nCols}
      */
     public final long getNCols() {
-        return NCols;
+        return nCols;
     }
 
     /**
-     * @return {@link #NRows}.
+     * @return {@link #nRows}.
      */
     public final long getNRows() {
-        return NRows;
+        return nRows;
     }
 
     /**
-     * @return {@link #NChunkRows}
+     * @return {@link #nChunkRows}
      */
     public final int getNChunkRows() {
-        return NChunkRows;
+        return nChunkRows;
     }
 
     /**
      * Initialises NChunkRows.
      */
     protected final void initNChunkRows() {
-        long chunkNrows = (long) ChunkNRows;
-        if ((NRows % chunkNrows) != 0) {
-            NChunkRows = (int) (NRows / chunkNrows) + 1;
+        long cnr = (long) chunkNRows;
+        if ((nRows % cnr) != 0) {
+            nChunkRows = (int) (nRows / cnr) + 1;
         } else {
-            NChunkRows = (int) (NRows / chunkNrows);
+            nChunkRows = (int) (nRows / cnr);
         }
     }
 
     /**
-     * @return {@link #NChunkCols}.
+     * @return {@link #nChunkCols}.
      */
     public final int getNChunkCols() {
-        return NChunkCols;
+        return nChunkCols;
     }
 
     /**
      * @return the number of chunks in this as a long.
      */
     public final long getNChunks() {
-        long nChunks = (long) NChunkRows * (long) NChunkCols;
+        long nChunks = (long) nChunkRows * (long) nChunkCols;
         if (nChunks > Integer.MAX_VALUE) {
             System.err.println("Error nChunks > Integer.MAX_VALUE in "
                     + this.getClass().getName() + ".getNChunks()");
@@ -405,19 +406,19 @@ public abstract class Grids_Grid extends Grids_Object {
      * Initialises NChunkCols.
      */
     protected final void initNChunkCols() {
-        long chunkNCols = (long) ChunkNCols;
-        if ((NCols % chunkNCols) != 0) {
-            NChunkCols = (int) (NCols / chunkNCols) + 1;
+        long cnc = (long) this.chunkNCols;
+        if ((nCols % cnc) != 0) {
+            nChunkCols = (int) (nCols / cnc) + 1;
         } else {
-            NChunkCols = (int) (NCols / chunkNCols);
+            nChunkCols = (int) (nCols / cnc);
         }
     }
 
     /**
-     * @return {@link #ChunkNRows}
+     * @return {@link #chunkNRows}
      */
     public final int getChunkNRows() {
-        return ChunkNRows;
+        return chunkNRows;
     }
 
     /**
@@ -427,11 +428,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * indexed by {@code i}.
      */
     public final int getChunkNRows(int i) {
-        if (i > -1 && i < NChunkRows) {
-            if (i == (NChunkRows - 1)) {
+        if (i > -1 && i < nChunkRows) {
+            if (i == (nChunkRows - 1)) {
                 return getChunkNRowsFinalRowChunk();
             } else {
-                return ChunkNRows;
+                return chunkNRows;
             }
         } else {
             return 0;
@@ -439,10 +440,10 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return {@link #ChunkNCols}
+     * @return {@link #chunkNCols}
      */
     public final int getChunkNCols() {
-        return ChunkNCols;
+        return chunkNCols;
     }
 
     /**
@@ -452,11 +453,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * by {@code i}.
      */
     public final int getChunkNCols(int i) {
-        if (i > -1 && i < NChunkCols) {
-            if (i == (NChunkCols - 1)) {
+        if (i > -1 && i < nChunkCols) {
+            if (i == (nChunkCols - 1)) {
                 return getChunkNColsFinalColChunk();
             } else {
-                return ChunkNCols;
+                return chunkNCols;
             }
         } else {
             return 0;
@@ -468,7 +469,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * chunks.
      */
     public final int getChunkNRowsFinalRowChunk() {
-        return (int) (NRows - ((long) (NChunkRows - 1) * (long) ChunkNRows));
+        return (int) (nRows - ((long) (nChunkRows - 1) * (long) chunkNRows));
     }
 
     /**
@@ -476,7 +477,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * of chunks.
      */
     public final int getChunkNColsFinalColChunk() {
-        return (int) (NCols - ((long) (NChunkCols - 1) * (long) ChunkNCols));
+        return (int) (nCols - ((long) (nChunkCols - 1) * (long) chunkNCols));
     }
 
     /**
@@ -484,8 +485,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param i The ID of the chunk for which the number of rows in that chunk.
      */
     public final int getChunkNRows(Grids_2D_ID_int i) {
-        if (i.getRow() < (NChunkRows - 1)) {
-            return ChunkNRows;
+        if (i.getRow() < (nChunkRows - 1)) {
+            return chunkNRows;
         } else {
             return getChunkNRowsFinalRowChunk();
         }
@@ -498,8 +499,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * columns is returned.
      */
     public final int getChunkNCols(Grids_2D_ID_int chunkID) {
-        if (chunkID.getCol() < (NChunkCols - 1)) {
-            return ChunkNCols;
+        if (chunkID.getCol() < (nChunkCols - 1)) {
+            return chunkNCols;
         } else {
             return getChunkNColsFinalColChunk();
         }
@@ -509,7 +510,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return the Dimensions
      */
     public Grids_Dimensions getDimensions() {
-        return Dimensions;
+        return dim;
     }
 
     /**
@@ -556,7 +557,8 @@ public abstract class Grids_Grid extends Grids_Object {
             BigDecimal x, BigDecimal y, long row, long col, int dp,
             RoundingMode rm) {
         Set<Grids_2D_ID_int> r = new HashSet<>();
-        long delta = distance.divideToIntegralValue(getCellsize()).longValueExact();
+        long delta = distance.divideToIntegralValue(getCellsize())
+                .longValueExact();
         for (long p = -delta; p <= delta; p++) {
             BigDecimal cellY = getCellYBigDecimal(row + p);
             for (long q = -delta; q <= delta; q++) {
@@ -587,10 +589,10 @@ public abstract class Grids_Grid extends Grids_Object {
         int cnr = getChunkNRows();
         int cnc = getChunkNCols();
         for (long row = rowMin; row <= rowMax; row += cnr) {
-            int cri = getChunkRow(row);
+            int cr = getChunkRow(row);
             for (long col = colMin; col <= colMax; col += cnc) {
-                int cci = getChunkCol(col);
-                r.add(new Grids_2D_ID_int(cri, cci));
+                int cc = getChunkCol(col);
+                r.add(new Grids_2D_ID_int(cr, cc));
             }
         }
         return r;
@@ -613,7 +615,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param col
      */
     public final int getChunkCol(long col) {
-        return (int) (col / (long) ChunkNCols);
+        return (int) (col / (long) chunkNCols);
     }
 
     /**
@@ -633,7 +635,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      */
     public final int getChunkCellCol(long col) {
-        return (int) (col - (getChunkCol(col) * ChunkNCols));
+        return (int) (col - (getChunkCol(col) * chunkNCols));
     }
 
     /**
@@ -652,7 +654,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      */
     public final int getChunkCellRow(long row) {
-        return (int) (row - (getChunkRow(row) * ChunkNRows));
+        return (int) (row - (getChunkRow(row) * chunkNRows));
     }
 
     /**
@@ -671,7 +673,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol
      */
     public final long getCol(int chunkCol, int cellCol) {
-        return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol;
+        return ((long) chunkCol * (long) chunkNCols) + (long) cellCol;
     }
 
     /**
@@ -686,12 +688,11 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * @return Chunk row index for the chunk intersecting the cells with cell
-     * row index _CellRowIndex.
-     * @param row The cell row index of the cells thats chunk row index is
-     * returned.
+     * row index {@code row}.
+     * @param row The cell row of the cells that's chunk row index is returned.
      */
     public final int getChunkRow(long row) {
-        return (int) (row / (long) ChunkNRows);
+        return (int) (row / (long) chunkNRows);
     }
 
     /**
@@ -705,29 +706,36 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param chunkRow
-     * @param cellRow
-     * @return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
-     * chunkCellRowIndex.
+     * For getting the cell row index from the chunk row index of a chunk in
+     * chunk row {@code chunkRow}.
+     *
+     * @param chunkRow The chunk row.
+     * @param cellRow The cell row in the chunk.
+     * @return {@code ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;}
      */
     public final long getRow(int chunkRow, int cellRow) {
-        return ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;
+        return ((long) chunkRow * (long) chunkNRows) + (long) cellRow;
     }
 
     /**
-     * @param row
-     * @param col
-     * @return Grids_2D_ID_long of the cell given by cell row index
-     * _CellRowIndex, cell column index _CellColIndex. A Grids_2D_ID_long is
-     * returned even if that cell would not be in the grid.
+     * A new cell ID for the cell given by cell row index {@code row}, cell
+     * column index {@code col}. An ID is returned even if that cell would not
+     * be in the grid.
+     *
+     * @param row The cell row index.
+     * @param col The cell column index.
+     * @return A new cell ID for the cell given by cell row index {@code row}.
      */
     public final Grids_2D_ID_long getCellID(long row, long col) {
         return new Grids_2D_ID_long(row, col);
     }
 
     /**
-     * @return a Grids_2D_ID_long of the cell given by x-coordinate x,
-     * y-coordinate y even if that cell would not be in the grid.
+     * A new cell ID for the x-coordinate {@code x}, y-coordinate {@code y}. An
+     * ID is returned even if that cell would not be in the grid.
+     *
+     * @return A new cell ID for the x-coordinate {@code x}, y-coordinate
+     * {@code y}.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      */
@@ -740,78 +748,52 @@ public abstract class Grids_Grid extends Grids_Object {
      *
      * @throws java.io.IOException If encountered.
      */
-    public void writeToFile() throws IOException, Exception {
+    public void cache() throws IOException, Exception {
+        swapChunks();
         Generic_IO.writeObject(this, Paths.get(getDirectory().toString(),
                 "thisFile"));
     }
 
     /**
-     * Attempts to write this instance to Files located in the _Directory
-     * returned by getDirectory().Chunks are all cached to file.
+     * Attempts to write to file a chunk in {@link #data}. The chunks are
+     * iterated through in row major order. The first chunk in
+     * {@link #worthSwapping} is written out. This method does not consider
+     * those chunks in {@link #env}.notToClear.
      *
+     * @return The chunk ID of the chunk that was cached or {@code null} if no
+     * chunk was cached.
      * @throws java.io.IOException If encountered.
      */
-    public void writeToFileCaching() throws IOException, Exception {
-        cacheChunks();
-        writeToFile();
-    }
-
-    /**
-     * Attempts to write to file a chunk in ChunkIDChunkMap. The chunks are
-     * iterated through in row major order. Only chunks that are not single
-     * values chunks are written out. This method is low level and does not
-     * consider ge,NotToCache. Other handling is required prior to calling this
-     * method in order to first prefer to not to cache those chunks in
-     * ge.NotToCache.
-     *
-     * @return Grids_2D_ID_int of the chunk which was cached or null if there
-     * are no suitable chunks to cache.
-     * @throws java.io.IOException If encountered.
-     */
-    public final Grids_2D_ID_int writeToFileChunk() throws IOException, Exception {
-        if (ChunkIDsOfChunksWorthCaching.isEmpty()) {
+    public final Grids_2D_ID_int swapChunk() throws IOException,
+            Exception {
+        if (worthSwapping.isEmpty()) {
             return null;
         }
-        Iterator<Grids_2D_ID_int> ite = ChunkIDsOfChunksWorthCaching.iterator();
-        while (ite.hasNext()) {
-            Grids_2D_ID_int chunkID = ite.next();
-            writeToFileChunk(chunkID);
-            return chunkID;
-        }
-//        if (chunkIDChunkMap.isEmpty()) {
-//            return null;
-//        }
-//        Grids_2D_ID_int chunkID;
-//        Iterator<Grids_2D_ID_int> ite = chunkIDChunkMap.keySet().iterator();
-//        while (ite.hasNext()) {
-//            chunkID = ite.next();
-//            if (!isChunkSingleValueChunk(chunkID)) {
-//                writeToFileChunk(chunkID);
-//                return chunkID;
-//            }
-//        }
-        return null;
+        Grids_2D_ID_int i = worthSwapping.stream().findAny().get();
+        cacheAndClearChunk(i);
+        return i;
     }
 
     /**
-     * Attempts to write to File a serialised version of the chunk with chunkID.
+     * Attempts to cache the chunk with chunk ID {@code i} if there is not
+     * already an up-to-date cache.
      *
-     * @param chunkID The ID of the Chunk. to be written.
+     * @param i The chunk ID of the chunk to be cached.
      * @return True if Grids_Chunk on file is up to date.
      * @throws java.io.IOException If encountered.
      */
-    public final boolean writeToFileChunk(Grids_2D_ID_int chunkID)
+    public final boolean cache(Grids_2D_ID_int i)
             throws IOException, Exception {
         boolean r = true;
-        Grids_Chunk gridChunk = chunkIDChunkMap.get(chunkID);
-        if (gridChunk != null) {
-            if (!gridChunk.isCacheUpToDate()) {
+        Grids_Chunk c = data.get(i);
+        if (c != null) {
+            if (!c.isCacheUpToDate()) {
                 Path file = Paths.get(getDirectory().toString(),
-                        chunkID.getRow() + "_" + chunkID.getCol());
+                        i.getRow() + "_" + i.getCol());
                 //Files.createDirectory(file.getParent());
-                Generic_IO.writeObject(gridChunk, file);
+                Generic_IO.writeObject(c, file);
                 //System.gc();
-                gridChunk.setCacheUpToDate(true);
+                c.setCacheUpToDate(true);
             }
         } else {
             r = false;
@@ -820,40 +802,31 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to write to File serialised versions of all chunks in
-     * chunkIDChunkMap that are not single valued chunks.
+     * Attempts to write to File serialised versions of all chunks in data that
+     * are not single valued chunks.
      *
      * @throws java.io.IOException If encountered.
      */
-    public final void writeToFileChunks() throws IOException, Exception {
-        Iterator<Grids_2D_ID_int> ite = ChunkIDsOfChunksWorthCaching.iterator();
+    public final void cacheChunks() throws IOException, Exception {
+        Iterator<Grids_2D_ID_int> ite = worthSwapping.iterator();
         while (ite.hasNext()) {
-            writeToFileChunk(ite.next());
+            cache(ite.next());
         }
-//        ite = chunkIDChunkMap.keySet().iterator();
-//        Grids_2D_ID_int chunkID;
-//        while (ite.hasNext()) {
-//            chunkID = (Grids_2D_ID_int) ite.next();
-//            if (isWorthCaching(chunkID)) {
-//                writeToFileChunk(chunkID);
-//            }
-//        }
     }
 
     /**
-     * Attempts to write to File chunks that have a chunkID in chunkIDs.
+     * Attempts to cache chunks that have a chunk ID in {@code s}.
      *
-     * @param chunkIDs A Set containing the Grids_2D_ID_int of the Grids_Chunk
-     * to be written to file.
+     * @param s A Set containing the chunk IDs of the chunks to cache.
      * @throws java.io.IOException If encountered.
      */
-    public final void writeToFileChunks(Set<Grids_2D_ID_int> chunkIDs)
+    public final void cacheChunks(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
-        Iterator<Grids_2D_ID_int> ite = chunkIDs.iterator();
+        Iterator<Grids_2D_ID_int> ite = s.iterator();
         while (ite.hasNext()) {
             Grids_2D_ID_int cid = ite.next();
             if (isWorthCaching(cid)) {
-                writeToFileChunk(cid);
+                cache(cid);
             }
         }
     }
@@ -912,7 +885,7 @@ public abstract class Grids_Grid extends Grids_Object {
             cacheChunk_AccountDetail() throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                 = new HashMap<>(1);
-        Grids_2D_ID_int chunkID = writeToFileChunk();
+        Grids_2D_ID_int chunkID = swapChunk();
         if (chunkID != null) {
             Set<Grids_2D_ID_int> chunks = new HashSet<>(1);
             clearChunk(chunkID);
@@ -969,7 +942,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.io.IOException If encountered.
      */
     public Grids_2D_ID_int cacheChunk_AccountChunk() throws IOException, Exception {
-        Grids_2D_ID_int cid = writeToFileChunk();
+        Grids_2D_ID_int cid = swapChunk();
         if (cid != null) {
             clearChunk(cid);
         }
@@ -978,10 +951,10 @@ public abstract class Grids_Grid extends Grids_Object {
 
     public long cacheChunks_Account() throws IOException, Exception {
         long r = 0L;
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int cid = new Grids_2D_ID_int(cri, cci);
-                if (writeToFileChunk(cid)) {
+                if (cache(cid)) {
                     clearChunk(cid);
                     r++;
                 }
@@ -995,7 +968,7 @@ public abstract class Grids_Grid extends Grids_Object {
         Iterator<Grids_2D_ID_int> ite = chunkIDs.iterator();
         while (ite.hasNext()) {
             Grids_2D_ID_int cid = ite.next();
-            if (writeToFileChunk(cid)) {
+            if (cache(cid)) {
                 clearChunk(cid);
                 r++;
             }
@@ -1037,13 +1010,20 @@ public abstract class Grids_Grid extends Grids_Object {
         }
     }
 
+    /**
+     *
+     * @param s
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     public Grids_2D_ID_int cacheChunkExcept_AccountChunk(
-            Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
-        Iterator<Grids_2D_ID_int> ite = ChunkIDsOfChunksWorthCaching.iterator();
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
+        Iterator<Grids_2D_ID_int> ite = worthSwapping.iterator();
         while (ite.hasNext()) {
             Grids_2D_ID_int cid = ite.next();
-            if (!chunkIDs.contains(cid)) {
-                writeToFileChunk(cid);
+            if (!s.contains(cid)) {
+                cache(cid);
                 clearChunk(cid);
                 return cid;
             }
@@ -1053,7 +1033,7 @@ public abstract class Grids_Grid extends Grids_Object {
 //                chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
 //                if (!chunkIDs.contains(chunkID)) {
 //                    if (isWorthCaching(chunkID)) {
-//                        writeToFileChunk(chunkID);
+//                        swapChunk(chunkID);
 //                        clearChunk(chunkID);
 //                        return chunkID;
 //                    }
@@ -1068,22 +1048,22 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return {@code true} if chunk is of a singlet type.
      */
     public boolean isChunkSingleValueChunk(Grids_2D_ID_int i) {
-        return chunkIDChunkMap.get(i) instanceof Grids_ChunkDoubleSinglet
-                || chunkIDChunkMap.get(i) instanceof Grids_ChunkIntSinglet;
+        return data.get(i) instanceof Grids_ChunkDoubleSinglet
+                || data.get(i) instanceof Grids_ChunkIntSinglet;
     }
 
     /**
      * Caches the chunk with chunkID to file.
      *
-     * @param chunkID
-     * @param camfm checkAndMaybeFreeMemory
+     * @param i
+     * @param camfm If {@code true} then after the chukncheckAndMaybeFreeMemory
      * @param hoome
      * @throws java.io.IOException
      */
-    public void cacheChunk(Grids_2D_ID_int chunkID, boolean camfm,
-            boolean hoome) throws IOException, Exception {
+    public void swap(Grids_2D_ID_int i, boolean camfm, boolean hoome)
+            throws IOException, Exception {
         try {
-            cacheChunk(chunkID);
+            cacheAndClearChunk(i);
             if (camfm) {
                 env.checkAndMaybeFreeMemory(hoome);
             }
@@ -1091,7 +1071,7 @@ public abstract class Grids_Grid extends Grids_Object {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
-                cacheChunk(chunkID, camfm, hoome);
+                Grids_Grid.this.swap(i, camfm, hoome);
             } else {
                 throw e;
             }
@@ -1099,19 +1079,19 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Caches the chunk with chunkID to file. This will return true if the chunk
-     * is cached and false otherwise.TIt is not sensible to cache some types of
-     * chunk and in these cases false is returned.
+     * Checks the chunk with chunk ID {@code i}. If there is not already an up
+     * to date cache then it is cached. If the chunk is cached, then it is
+     * cleared from memory.
      *
-     * @param chunkID
-     * @return
+     * @param i The chunk ID of the chunk to cache (if the cache is not already
+     * up to date) and anyway clear.
+     * @return {@code true} if the chunk is cleared.
      * @throws java.io.IOException
      */
-    public boolean cacheChunk(Grids_2D_ID_int chunkID) throws IOException,
-            Exception {
-        if (writeToFileChunk(chunkID)) {
-            clearChunk(chunkID);
-            return true;
+    public long cacheAndClearChunk(Grids_2D_ID_int i) throws IOException, Exception {
+        if (cache(i)) {
+            clearChunk(i);
+            return 1L;
         }
         return false;
     }
@@ -1127,10 +1107,10 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return True if a chunk is cached.
      * @throws java.io.IOException
      */
-    public boolean cacheChunk(boolean camfm, boolean hoome) throws IOException,
+    public boolean cacheAndClearChunk(boolean camfm, boolean hoome) throws IOException,
             Exception {
         try {
-            boolean r = cacheChunk();
+            boolean r = cacheAndClearChunk();
             if (camfm) {
                 env.checkAndMaybeFreeMemory(hoome);
             }
@@ -1139,7 +1119,7 @@ public abstract class Grids_Grid extends Grids_Object {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
                 freeSomeMemoryAndResetReserve(hoome, e);
-                return cacheChunk(camfm, hoome);
+                return cacheAndClearChunk(camfm, hoome);
             } else {
                 throw e;
             }
@@ -1153,13 +1133,13 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return
      * @throws java.io.IOException
      */
-    public boolean cacheChunk() throws IOException, Exception {
-        Grids_2D_ID_int cid = writeToFileChunk();
+    public long cacheAndClearChunk() throws IOException, Exception {
+        Grids_2D_ID_int cid = swapChunk();
         if (cid != null) {
-            clearChunk(cid);
-            return true;
+            //clearChunk(cid);
+            return 1L;//true;
         }
-        return false;
+        return 0L;false;
     }
 
     /**
@@ -1220,12 +1200,12 @@ public abstract class Grids_Grid extends Grids_Object {
             cacheChunkExcept_AccountDetail(Grids_2D_ID_int chunkID)
             throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int bid = new Grids_2D_ID_int(cri, cci);
                 if (!bid.equals(chunkID)) {
                     if (isWorthCaching(bid)) {
-                        writeToFileChunk(bid);
+                        cache(bid);
                         clearChunk(bid);
                         Set<Grids_2D_ID_int> chunks;
                         chunks = new HashSet<>(1);
@@ -1285,12 +1265,12 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public Grids_2D_ID_int cacheChunkExcept_AccountChunk(
             Grids_2D_ID_int cid) throws IOException, Exception {
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int r = new Grids_2D_ID_int(cri, cci);
                 if (!r.equals(cid)) {
                     if (isWorthCaching(r)) {
-                        writeToFileChunk(r);
+                        cache(r);
                         clearChunk(r);
                         return r;
                     }
@@ -1361,12 +1341,13 @@ public abstract class Grids_Grid extends Grids_Object {
             throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
         Set<Grids_2D_ID_int> s = new HashSet<>();
-        for (int chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
-            for (int chunkCol = 0; chunkCol < NChunkCols; chunkCol++) {
+
+        for (int chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+            for (int chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                 Grids_2D_ID_int i2 = new Grids_2D_ID_int(chunkRow, chunkCol);
                 if (!i.equals(i2)) {
                     if (isWorthCaching(i2)) {
-                        writeToFileChunk(i2);
+                        cache(i2);
                         clearChunk(i2);
                         s.add(i2);
                     }
@@ -1378,46 +1359,18 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to swap out or clear from memory all chunks in this.
-     *
-     * @param hoome If true then an attempt is made to handle any encountered
-     * {@link OutOfMemoryError}.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.Exception If encountered.
-     * @throws OutOfMemoryError If this cannot be handled.
+     * Swap out or clear from memory all chunks in this that are in
+     * {@link #worthSwapping}.
      */
-    public void cacheChunks(boolean hoome) throws IOException, Exception {
-        try {
-            cacheChunks();
-            env.checkAndMaybeFreeMemory(hoome);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                freeSomeMemoryAndResetReserve(hoome, e);
-                cacheChunks(hoome);
-            } else {
-                throw e;
+    public void swapChunks() {
+        worthSwapping.parallelStream().forEach(i -> {
+            try {
+                cacheAndClearChunk(i);
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+                env.env.log(ex.getMessage());
             }
-        }
-    }
-
-    /**
-     * Attempts to swap out or clear from memory all chunks in this.
-     *
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.Exception If encountered.
-     * @throws OutOfMemoryError If this cannot be handled.
-     */
-    public void cacheChunks() throws IOException, Exception {
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
-                Grids_2D_ID_int i = new Grids_2D_ID_int(cri, cci);
-                if (isWorthCaching(i)) {
-                    writeToFileChunk(i);
-                    clearChunk(i);
-                }
-            }
-        }
+        });
     }
 
     /**
@@ -1523,12 +1476,12 @@ public abstract class Grids_Grid extends Grids_Object {
             throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
         Set<Grids_2D_ID_int> s2 = new HashSet<>();
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri, cci);
                 if (!s.contains(i)) {
                     if (isWorthCaching(i)) {
-                        writeToFileChunk(i);
+                        cache(i);
                         clearChunk(i);
                         s2.add(i);
                     }
@@ -1591,18 +1544,20 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final long cacheChunkExcept_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
-                Grids_2D_ID_int i2 = new Grids_2D_ID_int(cri, cci);
-                if (!i.equals(i2)) {
-                    if (isWorthCaching(i2)) {
-                        writeToFileChunk(i2);
-                        clearChunk(i2);
-                        return 1L;
-                    }
-                }
-            }
-        }
+        return cacheAndClearChunk(worthSwapping.stream().filter(i2 -> i2 != i)
+                .findAny().get());
+//        for (int cri = 0; cri < nChunkRows; cri++) {
+//            for (int cci = 0; cci < nChunkCols; cci++) {
+//                Grids_2D_ID_int i2 = new Grids_2D_ID_int(cri, cci);
+//                if (!i.equals(i2)) {
+//                    if (isWorthCaching(i2)) {
+//                        cache(i2);
+//                        clearChunk(i2);
+//                        return 1L;
+//                    }
+//                }
+//            }
+//        }
         return 0L;
     }
 
@@ -1656,12 +1611,12 @@ public abstract class Grids_Grid extends Grids_Object {
     public final long cacheChunksExcept_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
         long r = 0L;
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int id2 = new Grids_2D_ID_int(cri, cci);
                 if (i != id2) {
                     if (isWorthCaching(i)) {
-                        writeToFileChunk(i);
+                        cache(i);
                         clearChunk(i);
                         r++;
                     }
@@ -1684,12 +1639,12 @@ public abstract class Grids_Grid extends Grids_Object {
     public final long cacheChunksExcept_Account(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
         long r = 0L;
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(cri, cci);
                 if (!s.contains(chunkID)) {
                     if (isWorthCaching(chunkID)) {
-                        writeToFileChunk(chunkID);
+                        cache(chunkID);
                         clearChunk(chunkID);
                         r++;
                     }
@@ -1755,12 +1710,12 @@ public abstract class Grids_Grid extends Grids_Object {
             cacheChunkExcept_AccountDetail(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri, cci);
                 if (!s.contains(i)) {
                     if (isWorthCaching(i)) {
-                        writeToFileChunk(i);
+                        cache(i);
                         clearChunk(i);
                         r.put(this, s);
                         return r;
@@ -1827,11 +1782,11 @@ public abstract class Grids_Grid extends Grids_Object {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                 = new HashMap<>(1);
         Set<Grids_2D_ID_int> s = new HashSet<>();
-        for (int cri = 0; cri < NChunkRows; cri++) {
-            for (int cci = 0; cci < NChunkCols; cci++) {
+        for (int cri = 0; cri < nChunkRows; cri++) {
+            for (int cci = 0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri, cci);
                 if (isWorthCaching(i)) {
-                    writeToFileChunk(i);
+                    cache(i);
                     clearChunk(i);
                     s.add(i);
                 }
@@ -1868,7 +1823,7 @@ public abstract class Grids_Grid extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (!cacheChunk()) {
+                if (!Grids_Grid.this.cacheAndClearChunk()) {
                     throw e;
                 }
                 long r = 1;
@@ -1898,19 +1853,19 @@ public abstract class Grids_Grid extends Grids_Object {
             int cci1) throws IOException, Exception {
         long r = 0L;
         if (cri0 != cri1) {
-            for (int cci = cci0; cci < NChunkCols; cci++) {
+            for (int cci = cci0; cci < nChunkCols; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri0, cci);
                 if (isWorthCaching(i)) {
-                    writeToFileChunk(i);
+                    cache(i);
                     clearChunk(i);
                     r++;
                 }
             }
             for (int cri = cri0 + 1; cri < cri1; cri++) {
-                for (int cci = 0; cci < NChunkCols; cci++) {
+                for (int cci = 0; cci < nChunkCols; cci++) {
                     Grids_2D_ID_int i = new Grids_2D_ID_int(cri, cci);
                     if (isWorthCaching(i)) {
-                        writeToFileChunk(i);
+                        cache(i);
                         clearChunk(i);
                         r++;
                     }
@@ -1919,7 +1874,7 @@ public abstract class Grids_Grid extends Grids_Object {
             for (int cci = 0; cci < cci1; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri1, cci);
                 if (isWorthCaching(i)) {
-                    writeToFileChunk(i);
+                    cache(i);
                     clearChunk(i);
                     r++;
                 }
@@ -1928,7 +1883,7 @@ public abstract class Grids_Grid extends Grids_Object {
             for (int cci = cci0; cci < cci1 + 1; cci++) {
                 Grids_2D_ID_int i = new Grids_2D_ID_int(cri0, cci);
                 if (isWorthCaching(i)) {
-                    writeToFileChunk(i);
+                    cache(i);
                     clearChunk(i);
                     r++;
                 }
@@ -1944,8 +1899,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * access memory.
      */
     public final boolean isInCache(Grids_2D_ID_int i) {
-        return chunkIDChunkMap.get(i) != null;
-//        return chunkIDChunkMap.containsKey(chunkID);
+        return data.get(i) != null;
+//        return data.containsKey(chunkID);
     }
 
     /**
@@ -1968,22 +1923,20 @@ public abstract class Grids_Grid extends Grids_Object {
      * cleared.
      */
     public final void clearChunk(Grids_2D_ID_int chunkID) {
-        chunkIDChunkMap.replace(chunkID, null);
-        ChunkIDsOfChunksWorthCaching.remove(chunkID);
+        data.replace(chunkID, null);
+        worthSwapping.remove(chunkID);
         //System.gc();
     }
 
     /**
-     * For releasing all Grids_Chunk in
-     * this._ChunkID_AbstractGrid2DSquareCellChunk_HashMap.
+     * Clear all chunks by setting them to null in {@link #data}.
      */
     public final void clearChunks() {
-        Iterator<Grids_2D_ID_int> ite;
-        ite = chunkIDChunkMap.keySet().iterator();
+        Iterator<Grids_2D_ID_int> ite = data.keySet().iterator();
         while (ite.hasNext()) {
-            chunkIDChunkMap.replace(ite.next(), null);
+            data.replace(ite.next(), null);
         }
-        ChunkIDsOfChunksWorthCaching = new HashSet<>();
+        worthSwapping = new HashSet<>();
         //System.gc();
     }
 
@@ -2102,35 +2055,35 @@ public abstract class Grids_Grid extends Grids_Object {
         if (!isInGrid) {
             long p;
             long q;
-            if (x.compareTo(Dimensions.getXMax()) >= 0) {
-                q = NCols - 1;
-                if (y.compareTo(Dimensions.getYMax()) == 1) {
+            if (x.compareTo(dim.getXMax()) >= 0) {
+                q = nCols - 1;
+                if (y.compareTo(dim.getYMax()) == 1) {
                     p = 0;
                 } else {
-                    if (y.compareTo(Dimensions.getYMin()) == -1) {
-                        p = NRows - 1;
+                    if (y.compareTo(dim.getYMin()) == -1) {
+                        p = nRows - 1;
                     } else {
                         p = getRow(y);
                     }
                 }
             } else {
-                if (x.compareTo(Dimensions.getXMin()) == -1) {
+                if (x.compareTo(dim.getXMin()) == -1) {
                     q = 0;
-                    if (y.compareTo(Dimensions.getYMax()) >= 0) {
+                    if (y.compareTo(dim.getYMax()) >= 0) {
                         p = 0;
                     } else {
-                        if (y.compareTo(Dimensions.getYMin()) == -1) {
-                            p = NRows - 1;
+                        if (y.compareTo(dim.getYMin()) == -1) {
+                            p = nRows - 1;
                         } else {
                             p = getRow(y);
                         }
                     }
                 } else {
                     q = getCol(x);
-                    if (y.compareTo(Dimensions.getYMax()) >= 0) {
+                    if (y.compareTo(dim.getYMax()) >= 0) {
                         p = 0;
                     } else {
-                        p = NRows - 1;
+                        p = nRows - 1;
                     }
                 }
             }
@@ -2152,7 +2105,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return Height of the grid.
      */
     public final BigDecimal getHeightBigDecimal() {
-        return Dimensions.getYMax().subtract(Dimensions.getYMin());
+        return dim.getYMax().subtract(dim.getYMin());
     }
 
     /**
@@ -2166,7 +2119,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return Width of the grid as a BigDecimal.
      */
     public final BigDecimal getWidthBigDecimal() {
-        return Dimensions.getXMax().subtract(Dimensions.getXMin());
+        return dim.getXMax().subtract(dim.getXMin());
     }
 
     /**
@@ -2176,10 +2129,10 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param y The y-coordinate of the point.
      */
     public final boolean isInGrid(BigDecimal x, BigDecimal y) {
-        return x.compareTo(Dimensions.getXMin()) != -1
-                && y.compareTo(Dimensions.getYMin()) != -1
-                && x.compareTo(Dimensions.getXMax()) != 1
-                && y.compareTo(Dimensions.getYMax()) != 1;
+        return x.compareTo(dim.getXMin()) != -1
+                && y.compareTo(dim.getYMin()) != -1
+                && x.compareTo(dim.getXMax()) != 1
+                && y.compareTo(dim.getYMax()) != 1;
     }
 
     /**
@@ -2188,7 +2141,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return True if (row, col) in the Grid.
      */
     public final boolean isInGrid(long row, long col) {
-        return row >= 0 && row < NRows && col >= 0 && col < NCols;
+        return row >= 0 && row < nRows && col >= 0 && col < nCols;
     }
 
     /**
@@ -2226,8 +2179,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return the x-coordinate of the centroid of col as a BigDecimal.
      */
     public final BigDecimal getCellXBigDecimal(long col) {
-        return Dimensions.getXMin().add(Dimensions.getCellsize().multiply(
-                BigDecimal.valueOf(col))).add(Dimensions.getHalfCellsize());
+        return dim.getXMin().add(dim.getCellsize().multiply(
+                BigDecimal.valueOf(col))).add(dim.getHalfCellsize());
     }
 
     /**
@@ -2245,9 +2198,8 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final BigDecimal getCellYBigDecimal(long row) {
         BigDecimal offSetFromOrigin;
-        offSetFromOrigin = Dimensions.getYMin().add(
-                Dimensions.getCellsize().multiply(BigDecimal.valueOf(row)));
-        BigDecimal halfCellsize = Dimensions.getHalfCellsize();
+        offSetFromOrigin = dim.getYMin().add(dim.getCellsize().multiply(BigDecimal.valueOf(row)));
+        BigDecimal halfCellsize = dim.getHalfCellsize();
         return offSetFromOrigin.add(halfCellsize);
     }
 
@@ -2387,27 +2339,27 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return the chunkIDChunkMap
+     * @return the data
      */
-    public TreeMap<Grids_2D_ID_int, Grids_Chunk> getChunkIDChunkMap() {
-        return chunkIDChunkMap;
+    public TreeMap<Grids_2D_ID_int, Grids_Chunk> getData() {
+        return data;
     }
 
     /**
-     * Initialises {@link #Dimensions} from {@code header}.
+     * Initialises {@link #dim} from {@code header}.
      *
      * @param header
      * @param startRowIndex
      * @param startColIndex
      */
-    public void initDimensions(Grids_ESRIAsciiGridHeader header,
+    public void initDimensions(Header header,
             long startRowIndex, long startColIndex) {
         BigDecimal cellsize = header.cellsize;
         BigDecimal xMin = header.xll.add(cellsize.multiply(new BigDecimal(startColIndex)));
         BigDecimal yMin = header.yll.add(cellsize.multiply(new BigDecimal(startRowIndex)));
-        BigDecimal xMax = xMin.add(new BigDecimal(Long.toString(NCols)).multiply(cellsize));
-        BigDecimal yMax = yMin.add(new BigDecimal(Long.toString(NRows)).multiply(cellsize));
-        Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
+        BigDecimal xMax = xMin.add(new BigDecimal(Long.toString(nCols)).multiply(cellsize));
+        BigDecimal yMax = yMin.add(new BigDecimal(Long.toString(nRows)).multiply(cellsize));
+        dim = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
     /**
@@ -2419,30 +2371,30 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public void initDimensions(Grids_Grid g, long startRowIndex,
             long startColIndex) {
-        Dimensions = g.getDimensions(); // temporary assignment
+        dim = g.getDimensions(); // temporary assignment
         BigDecimal startColIndexBigDecimal = new BigDecimal(startColIndex);
         BigDecimal startRowIndexBigDecimal = new BigDecimal(startRowIndex);
-        BigDecimal nRowsBigDecimal = new BigDecimal(NRows);
-        BigDecimal nColsBigDecimal = new BigDecimal(NCols);
+        BigDecimal nRowsBigDecimal = new BigDecimal(nRows);
+        BigDecimal nColsBigDecimal = new BigDecimal(nCols);
         BigDecimal xMin;
         BigDecimal yMin;
         BigDecimal xMax;
         BigDecimal yMax;
         BigDecimal cellsize;
-        if (Dimensions == null) {
+        if (dim == null) {
             cellsize = BigDecimal.ONE;
             xMin = startColIndexBigDecimal;
             yMin = startRowIndexBigDecimal;
             xMax = xMin.add(nColsBigDecimal);
             yMax = yMin.add(nRowsBigDecimal);
         } else {
-            cellsize = Dimensions.getCellsize();
-            xMin = Dimensions.getXMin().add(startColIndexBigDecimal.multiply(cellsize));
-            yMin = Dimensions.getYMin().add(startRowIndexBigDecimal.multiply(cellsize));
-            xMax = Dimensions.getXMin().add(nColsBigDecimal.multiply(cellsize));
-            yMax = Dimensions.getYMin().add(nRowsBigDecimal.multiply(cellsize));
+            cellsize = dim.getCellsize();
+            xMin = dim.getXMin().add(startColIndexBigDecimal.multiply(cellsize));
+            yMin = dim.getYMin().add(startRowIndexBigDecimal.multiply(cellsize));
+            xMax = dim.getXMin().add(nColsBigDecimal.multiply(cellsize));
+            yMax = dim.getYMin().add(nRowsBigDecimal.multiply(cellsize));
         }
-        Dimensions = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
+        dim = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
     /**
@@ -2476,7 +2428,7 @@ public abstract class Grids_Grid extends Grids_Object {
                 chunk.env = env;
                 chunk.initGrid(this);
                 chunk.initChunkID(chunkID);
-                chunkIDChunkMap.put(chunkID, chunk);
+                data.put(chunkID, chunk);
             } else {
                 /**
                  * It is assumed that the chunk is all noDataValues so if this

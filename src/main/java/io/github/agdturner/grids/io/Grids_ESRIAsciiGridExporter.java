@@ -57,8 +57,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
      */
     public Path toAsciiFile(Grids_GridNumber g) throws IOException, Exception, 
             ClassNotFoundException {
-        Generic_Path directory = g.getDirectory();
-        Path file = Paths.get(directory.getParent().toString(), g.getName() + ".asc");
+        Path file = Paths.get(g.getDirectory().getParent().toString(), 
+                g.getName() + ".asc");
         return toAsciiFile(g, file);
     }
 
@@ -93,16 +93,15 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
         env.initNotToClear();
         env.checkAndMaybeFreeMemory();
         try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {
-            Grids_Dimensions dimensions;
-            dimensions = g.getDimensions();
+            Grids_Dimensions d = g.getDimensions();
             long nrows = g.getNRows();
             long ncols = g.getNCols();
             long nrows_minus_1 = nrows - 1L;
             pw.println("ncols " + ncols);
             pw.println("nrows " + nrows);
-            pw.println("xllcorner " + dimensions.getXMin().toString());
-            pw.println("yllcorner " + dimensions.getYMin().toString());
-            pw.println("cellsize " + dimensions.getCellsize().toString());
+            pw.println("xllcorner " + d.getXMin().toString());
+            pw.println("yllcorner " + d.getYMin().toString());
+            pw.println("cellsize " + d.getCellsize().toString());
             long row;
             long col;
             int chunkRow0 = g.getChunkRow(nrows_minus_1);

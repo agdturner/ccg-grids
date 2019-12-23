@@ -24,6 +24,7 @@ import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 
 /**
  * Class for importing ESRI Asciigrid.
@@ -53,7 +54,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     /**
      * For storing the header.
      */
-    private Grids_ESRIAsciiGridHeader header;
+    private Header header;
 
     /**
      * @param f The File.
@@ -68,11 +69,11 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
 
     private void init(Generic_Path f) throws FileNotFoundException, IOException {
         file = f;
-        br = env.env.io.getBufferedReader(file.getPath());
+        br = Generic_IO.getBufferedReader(file.getPath());
         st = new StreamTokenizer(br);
     }
 
-    public class Grids_ESRIAsciiGridHeader {
+    public class Header {
 
         /**
          * For storing the number of columns.
@@ -104,18 +105,18 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
          */
         public BigDecimal ndv;
 
-        public Grids_ESRIAsciiGridHeader() {
+        public Header() {
         }
     }
 
     /**
      * If {@link #header} is null, this reads the header of the file and returns 
-     * a {@link Grids_ESRIAsciiGridHeader}. Otherwise this returns {@link #header}.
-     * @return a {@link Grids_ESRIAsciiGridHeader}.
+     * a {@link Header}. Otherwise this returns {@link #header}.
+     * @return a {@link Header}.
      */
-    public Grids_ESRIAsciiGridHeader getHeader() {
+    public Header getHeader() {
         if (header == null) {
-            header = new Grids_ESRIAsciiGridHeader();
+            header = new Header();
             try {
                 setSyntax0();
                 this.st.wordChars('0', '9');

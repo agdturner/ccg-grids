@@ -1187,7 +1187,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to check and maybe free fast access memory by writing chunks to
+     * Check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
      * true. If available fast access memory is low, then an attempt is made to
      * cache some chunks. Chunks in NotToCache are not cached unless desperate.
@@ -1219,8 +1219,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryError is thrown.
      *
      * @param g The grid from which chunks are not cleared.
-     * @param hoome
-     * @return true if there is sufficient memory to continue and throws an
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return {@code true} if there is sufficient memory to continue and throws an
      * OutOfMemoryError otherwise.
      * @throws java.io.IOException If encountered.
      */
@@ -1255,13 +1257,13 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to check and maybe free fast access memory by writing chunks to
-     * file. If available fast access memory is not low then this simply returns
-     * true. If available fast access memory is low, then an attempt is made to
-     * cache some chunks. Chunks in NotToCache are not cached unless desperate.
-     * No chunk in g is cached.
+     * file. If available fast access memory is not low then this returns
+     * {@code true}. If available fast access memory is low, then an attempt is
+     * made to clear some chunks. Chunks in {@link #notToClear} are not cleared
+     * unless desperate. No chunk in {@code g} is cleared.
      *
-     * @param g
-     * @return true if there is sufficient memory to continue and false
+     * @param g The grid from which chunks are not cleared.
+     * @return {@code true} if there is sufficient memory to continue and {@code false}
      * otherwise.
      * @throws java.io.IOException If encountered.
      */
@@ -1293,9 +1295,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * No chunk with chunkId in g is cached. If there is not enough free memory
      * then an OutOfMemoryError is thrown.
      *
-     * @param g
+     * @param g The grid from which chunks are not cleared.
      * @param i
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      * @throws java.io.IOException If encountered.
@@ -1337,21 +1341,21 @@ public class Grids_Environment extends Grids_MemoryManager
      * No chunk with chunkId in g is cached.
      *
      * @param g
-     * @param chunkID
+     * @param i
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
     protected boolean checkAndMaybeFreeMemory(Grids_Grid g,
-            Grids_2D_ID_int chunkID) throws IOException, Exception {
+            Grids_2D_ID_int i) throws IOException, Exception {
         if (getTotalFreeMemory() < Memory_Threshold) {
-            addToNotToClear(g, chunkID);
+            addToNotToClear(g, i);
             do {
                 if (!cacheChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (cacheChunkExcept_Account(g, chunkID) < 1) {
+                if (cacheChunkExcept_Account(g, i) < 1) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1370,13 +1374,15 @@ public class Grids_Environment extends Grids_MemoryManager
      * an OutOfMemoryError is thrown.
      *
      * @param i
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
     @Override
-    public boolean checkAndMaybeFreeMemory(Grids_2D_ID_int i,
-            boolean hoome) throws IOException, Exception {
+    public boolean checkAndMaybeFreeMemory(Grids_2D_ID_int i, boolean hoome)
+            throws IOException, Exception {
         try {
             if (!checkAndMaybeFreeMemory(i)) {
                 String message = "Warning! Not enough data to cache in "
@@ -1445,7 +1451,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryError is thrown.
      *
      * @param m
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
@@ -1517,7 +1525,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * returned otherwise true is returned.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param s
      * @return true if there is sufficient memory to continue and false
      * otherwise.
@@ -1609,7 +1619,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * OutOfMemoryError is encountered and hoome is true. This method may throw
      * an OutOfMemoryError if there is not enough data to cache in Grids.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
      */
@@ -1686,7 +1698,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * data is cached from g.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return Number of chunks cached.
      */
     @Override
@@ -1767,7 +1781,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Chunk with chunkID from g is not cached.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param chunkID
      * @return Number of chunks cached.
      */
@@ -1852,7 +1868,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Chunk with chunkID is not cached.
      *
      * @param i
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return Number of chunks cached.
      */
     @Override
@@ -1935,7 +1953,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * identified by m.
      *
      * @param m
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return Number of chunks cached.
      */
     @Override
@@ -2016,7 +2036,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * identified by m. No data is cached from chunks in g.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param chunks
      * @return Number of chunks cached.
      */
@@ -2096,7 +2118,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * encountered and hoome is true. This method may throw an OutOfMemoryError
      * if there is no grid chunk to cache in Grids.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return A map of the grid chunks cached.
      */
     @Override
@@ -2186,7 +2210,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * in Grids. No data is cached from g.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap identifying chunks cached.
      */
     @Override
@@ -2273,7 +2299,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory to continue. The Chunk with chunkID from g is not cached.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param i
      * @return HashMap identifying chunks cached.
      */
@@ -2370,7 +2398,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * is cached with chunkID.
      *
      * @param chunkID
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap identifying chunks cached.
      */
     @Override
@@ -2473,8 +2503,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * is cached as identified by m.
      *
      * @param m Identifies data not to be cached.
-     * @param hoome If true then if an OutOfMemoryError is encountered then an
-     * attempt is made to handle this otherwise not and the error is thrown.
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap identifying chunks cached or null if nothing is cached.
      */
     @Override
@@ -2570,7 +2601,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * chunks with ChunkID in chunkIDs are cached from g.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param s
      * @return HashMap identifying chunks cached.
      */
@@ -2658,9 +2691,9 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * Attempts to cache all chunks in grids.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then cache operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory. OutOfMemoryErrors are caught and thrown.
      * @return
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>> cacheChunks_AccountDetail(
@@ -2739,9 +2772,9 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * Attempts to cache all chunks in env.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then cache operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory. OutOfMemoryErrors are caught and thrown.
      * @return A count of the number of chunks cached.
      */
     public long cacheChunks_Account(boolean hoome) throws IOException,
@@ -2800,9 +2833,9 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * Attempts to cache all Grids_Chunk in this.grids.
      *
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then cache operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      */
     public void cacheChunks(boolean hoome) throws IOException, Exception {
         try {
@@ -2842,7 +2875,7 @@ public class Grids_Environment extends Grids_MemoryManager
     protected boolean cacheChunks() throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            ite.next().cacheChunks();
+            ite.next().swapChunks();
         }
         dataToClear = false;
         return true;
@@ -2854,9 +2887,9 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then cache operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown.
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             cacheChunk_AccountDetail(boolean hoome) throws IOException,
@@ -2898,7 +2931,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to cache any chunk in grids trying first not to cache any in
      * notToClear.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return
      */
     public boolean cacheChunk(boolean hoome) throws IOException, Exception {
@@ -2928,7 +2963,7 @@ public class Grids_Environment extends Grids_MemoryManager
                     throw e;
                 }
                 initMemoryReserve(env);
-                // No need for recursive call: cacheChunk(hoome);
+                // No need for recursive call: swap(hoome);
                 return true;
             } else {
                 throw e;
@@ -2950,7 +2985,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (cacheChunkExcept(notToClear)) {
                 return true;
             }
-            if (g.cacheChunk()) {
+            if (g.cacheAndClearChunk()) {
                 return true;
             }
         }
@@ -2962,7 +2997,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Cache to File any GridChunk in grids except one in g.
      *
      * @param g
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      */
     public void cacheChunkExcept(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
@@ -3009,7 +3046,7 @@ public class Grids_Environment extends Grids_MemoryManager
         while (ite.hasNext()) {
             Grids_Grid bg = ite.next();
             if (bg != g) {
-                if (bg.cacheChunk()) {
+                if (bg.cacheAndClearChunk()) {
                     return true;
                 }
             }
@@ -3069,7 +3106,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in with
@@ -3151,7 +3190,9 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      *
      * @param i
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return
      */
     public long cacheChunkExcept_Account(Grids_2D_ID_int i, boolean hoome)
@@ -3233,7 +3274,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in
@@ -3389,7 +3432,9 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @param i
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -3486,7 +3531,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @param s
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
@@ -3549,7 +3596,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_Grid g2 = ite.next();
             if (g2 != g) {
                 TreeMap<Grids_2D_ID_int, Grids_Chunk> m
-                        = g2.getChunkIDChunkMap();
+                        = g2.getData();
                 Set<Grids_2D_ID_int> s2 = m.keySet();
                 Iterator<Grids_2D_ID_int> iteb = s2.iterator();
                 while (iteb.hasNext()) {
@@ -3557,7 +3604,7 @@ public class Grids_Environment extends Grids_MemoryManager
                     if (!s.contains(i)) {
                         //Check it can be cached
                         if (m.get(i) != null) {
-                            g2.cacheChunk(i);
+                            g2.cacheAndClearChunk(i);
                             return 1;
                         }
                     }
@@ -3568,7 +3615,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for that in _Grid2DSquareCell
@@ -3632,7 +3681,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in g.
@@ -3702,7 +3753,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
      * Grids_Grid.ID _ChunkID.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param chunkID The i.ID not to be cached.
@@ -3779,7 +3832,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
      * Grids_Grid.ID _ChunkID.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached. cached.
@@ -3853,6 +3908,16 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+    /**
+     *
+     * @param g
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     public long cacheChunksExcept_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
         try {
@@ -3909,7 +3974,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
      * Grids_Grid.ID _ChunkID.
      *
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
@@ -3964,6 +4031,17 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
+    /**
+     *
+     * @param g
+     * @param i
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     public long cacheChunksExcept_Account(Grids_Grid g, Grids_2D_ID_int i,
             boolean hoome) throws IOException, Exception {
         try {
@@ -4110,7 +4188,9 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * @param m
-     * @param hoome
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
      * @return
      */
     public long cacheChunksExcept_Account(
@@ -4169,6 +4249,15 @@ public class Grids_Environment extends Grids_MemoryManager
         cacheChunks();
     }
 
+    /**
+     *
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     @Override
     public boolean cacheDataAny(boolean hoome) throws IOException, Exception {
         try {
@@ -4210,6 +4299,16 @@ public class Grids_Environment extends Grids_MemoryManager
         this.dataToClear = dataToClear;
     }
 
+    /**
+     *
+     * @param g
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(Grids_Grid g,
                     boolean hoome) throws IOException, Exception {
@@ -4221,10 +4320,22 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+    /**
+     *
+     * @param g
+     * @param chunks
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     *
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(
                     Grids_Grid g, Set<Grids_2D_ID_int> chunks, boolean hoome)
-                    throws IOException, Exception {
+            throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                 = checkAndMaybeFreeMemory_AccountDetail(g, chunks, hoome);
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
@@ -4233,8 +4344,18 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+    /**
+     *
+     * @param e
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            freeSomeMemoryAndResetReserve_AccountDetails(OutOfMemoryError e, 
+            freeSomeMemoryAndResetReserve_AccountDetails(OutOfMemoryError e,
                     boolean hoome) throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                 = cacheChunk_AccountDetail();
@@ -4247,6 +4368,15 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+    /**
+     *
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(boolean hoome) throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
@@ -4257,14 +4387,35 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+    /**
+     *
+     * @param g
+     * @param chunks
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected long freeSomeMemoryAndResetReserve_Account(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunks, boolean hoome) throws IOException, 
+            Set<Grids_2D_ID_int> chunks, boolean hoome) throws IOException,
             Exception {
         long r = checkAndMaybeFreeMemory_Account(g, chunks, hoome);
         r += initMemoryReserve_Account(g, chunks, hoome);
         return r;
     }
 
+    /**
+     *
+     * @param e
+     * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
+     * thrown, then an attempt is made to handle it by clearing data from the
+     * memory.
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
     protected long freeSomeMemoryAndResetReserve_Account(OutOfMemoryError e,
             boolean hoome) throws IOException, Exception {
         if (!cacheChunk()) {
