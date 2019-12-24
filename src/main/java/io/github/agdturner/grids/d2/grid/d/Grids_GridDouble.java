@@ -230,16 +230,15 @@ public class Grids_GridDouble extends Grids_GridNumber {
             for (int c = 0; c < nChunkCols; c++) {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(r, c);
+                Grids_2D_ID_int i = new Grids_2D_ID_int(r, c);
                 //env.checkAndMaybeFreeMemory();
-                Grids_ChunkDouble chunk = chunkFactory.create(this, chunkID);
-                data.put(chunkID, chunk);
+                Grids_ChunkDouble chunk = chunkFactory.create(this, i);
+                data.put(i, chunk);
                 if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
-                    worthSwapping.add(chunkID);
+                    worthSwapping.add(i);
                 }
             }
-            System.out.println("Done chunkRow " + r + " out of "
-                    + nChunkRows);
+            env.env.log("Done chunkRow " + r + " out of " + nChunkRows);
         }
         init();
     }
@@ -282,6 +281,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         int gChunkNCols;
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
+        int ncr = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridDouble) {
@@ -351,8 +351,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
                                 env.clearMemoryReserve(env.env);
-                                freeSomeMemoryAndResetReserve(e);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
+                                freeSomeMemoryAndResetReserve(chunkID, e);
                                 if (env.swapChunksExcept_Account(this, chunkID, false) < 1) { // Should also not cache out the chunk of grid thats values are being used to initialise this.
                                     throw e;
                                 }
@@ -366,7 +366,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     //loadedChunkCount++;
                     //cci1 = _ChunkColIndex;
                 }
-                System.out.println("Done chunkRow " + gcr + " out of " + nChunkRows);
+                env.env.log("Done chunkRow " + gcr + " out of " + ncr);
             }
         } else {
             Grids_GridInt gi = (Grids_GridInt) g;
@@ -453,7 +453,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     } while (!isLoadedChunk);
                     isLoadedChunk = false;
                 }
-                System.out.println("Done chunkRow " + gcr + " out of " + nChunkRows);
+                env.env.log("Done chunkRow " + gcr + " out of " + ncr);
             }
         }
         init();
@@ -523,7 +523,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -539,7 +539,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, true);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -557,7 +557,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -570,7 +570,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, true);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -645,7 +645,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -661,7 +661,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, true);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -679,7 +679,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -695,7 +695,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 initCell(row, col, value, true);
                             }
                             if (row % reportN == 0) {
-                                System.out.println("Done row " + row);
+                                env.env.log("Done row " + row);
                             }
                             env.checkAndMaybeFreeMemory();
                         }
@@ -890,10 +890,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected final void initNoDataValue(double ndv) {
         if (Double.isNaN(ndv)) {
-            System.out.println("NoDataValue cannot be set to NaN! NoDataValue "
+            env.env.log("NoDataValue cannot be set to NaN! NoDataValue "
                     + "remains as " + NoDataValue);
         } else if (Double.isInfinite(ndv)) {
-            System.out.println("NoDataValue cannot be infinite! NoDataValue "
+            env.env.log("NoDataValue cannot be infinite! NoDataValue "
                     + "remains as " + NoDataValue);
         } else {
             NoDataValue = ndv;
@@ -1031,7 +1031,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public double setCell(Grids_ChunkDouble chunk, int ccr, int ccc, double v) 
+    public double setCell(Grids_ChunkDouble chunk, int ccr, int ccc, double v)
             throws IOException, Exception, ClassNotFoundException {
         double r = NoDataValue;
         if (chunk instanceof Grids_ChunkDoubleArray) {
@@ -1207,9 +1207,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
         cells = new double[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellYBigDecimal(row);
+            BigDecimal thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellXBigDecimal(col);
+                BigDecimal thisX = getCellX(col);
                 if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
                         .compareTo(distance) <= 0) {
                     cells[count] = getCell(p, q);
@@ -1271,8 +1271,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         double value = getCell(row, col);
         if (value == NoDataValue) {
-            return getNearestValuesCellIDsAndDistance(getCellXBigDecimal(col),
-                    getCellYBigDecimal(row), row, col, dp, rm);
+            return getNearestValuesCellIDsAndDistance(getCellX(col),
+                    getCellY(row), row, col, dp, rm);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getCellID(row, col);
@@ -1367,12 +1367,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
             iterator = values.iterator();
             Grids_2D_ID_long cellID = iterator.next();
             r.distance = Grids_Utilities.distance(x, y,
-                    getCellXBigDecimal(cellID), getCellYBigDecimal(cellID),
+                    getCellX(cellID), getCellY(cellID),
                     dp, rm);
             while (iterator.hasNext()) {
                 cellID = iterator.next();
                 distance = Grids_Utilities.distance(x, y,
-                        getCellXBigDecimal(cellID), getCellYBigDecimal(cellID),
+                        getCellX(cellID), getCellY(cellID),
                         dp, rm);
                 if (distance.compareTo(r.distance) == -1) {
                     closest.clear();
@@ -1390,8 +1390,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1) != NoDataValue) {
                         distance = Grids_Utilities.distance(x, y,
-                                getCellXBigDecimal(cellID1),
-                                getCellYBigDecimal(cellID1), dp, rm);
+                                getCellX(cellID1),
+                                getCellY(cellID1), dp, rm);
                         if (distance.compareTo(r.distance) == -1) {
                             closest.clear();
                             closest.add(cellID1);
@@ -1476,16 +1476,15 @@ public class Grids_GridDouble extends Grids_GridNumber {
         int counter = 0;
         while (ite.hasNext()) {
             env.checkAndMaybeFreeMemory();
-            System.out.println("Initialising Chunk " + counter + " out of "
-                    + nChunks);
+            env.env.log("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             Grids_2D_ID_int i = ite.next();
             Grids_ChunkDouble chunk = getChunk(i);
-            int chunkNRows = getChunkNRows(i);
-            int chunkNCols = getChunkNCols(i);
-            for (int row = 0; row <= chunkNRows; row++) {
-                for (int col = 0; col <= chunkNCols; col++) {
-                    chunk.initCell(chunkNRows, chunkNCols, v);
+            int cnr = getChunkNRows(i);
+            int cnc = getChunkNCols(i);
+            for (int row = 0; row <= cnr; row++) {
+                for (int col = 0; col <= cnc; col++) {
+                    chunk.initCell(cnr, cnc, v);
                 }
             }
         }

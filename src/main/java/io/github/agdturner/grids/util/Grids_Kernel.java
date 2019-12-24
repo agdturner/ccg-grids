@@ -170,8 +170,8 @@ public abstract class Grids_Kernel {
         BigDecimal[][] weights = new BigDecimal[(delta * 2) + 1][(delta * 2) + 1];
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
-        BigDecimal x0 = g.getCellXBigDecimal(0L);
-        BigDecimal y0 = g.getCellYBigDecimal(0L);
+        BigDecimal x0 = g.getCellX(0L);
+        BigDecimal y0 = g.getCellY(0L);
         BigDecimal x1;
         BigDecimal y1;
         BigDecimal thisDistance;
@@ -179,8 +179,8 @@ public abstract class Grids_Kernel {
         int col;
         for (row = -delta; row <= delta; row++) {
             for (col = -delta; col <= delta; col++) {
-                x1 = g.getCellXBigDecimal(col);
-                y1 = g.getCellYBigDecimal(row);
+                x1 = g.getCellX(col);
+                y1 = g.getCellY(row);
                 thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance.compareTo(distance) == -1) {
@@ -216,11 +216,11 @@ public abstract class Grids_Kernel {
         // The following weight is just one example of a kernel that can be used!
         // It provides a general monotonic curve based on distance over bandwidth.
         Point2D.Double centroid = new Point2D.Double(
-                g.getCellXBigDecimal(colIndex).doubleValue(),
-                g.getCellYBigDecimal(rowIndex).doubleValue());
+                g.getCellX(colIndex).doubleValue(),
+                g.getCellY(rowIndex).doubleValue());
         for (int i = 0; i < points.length; i++) {
             BigDecimal thisDistance = Grids_Utilities.distance(
-                    g.getCellXBigDecimal(colIndex), g.getCellYBigDecimal(rowIndex),
+                    g.getCellX(colIndex), g.getCellY(rowIndex),
                     BigDecimal.valueOf(points[i].x), BigDecimal.valueOf(points[i].y), dp, rm);
             if (thisDistance.compareTo(distance) == -1) {
                 weights[i] = getKernelWeight(distance, weightIntersect,
@@ -279,12 +279,12 @@ public abstract class Grids_Kernel {
         BigDecimal kernelParameters[] = new BigDecimal[2];
         kernelParameters[0] = BigDecimal.ZERO;
         kernelParameters[1] = BigDecimal.ZERO;
-        BigDecimal x0 = g.getCellXBigDecimal(0);
-        BigDecimal y0 = g.getCellYBigDecimal(0);
+        BigDecimal x0 = g.getCellX(0);
+        BigDecimal y0 = g.getCellY(0);
         for (int p = -cellDistance; p <= cellDistance; p++) {
             for (int q = -cellDistance; q <= cellDistance; q++) {
-                BigDecimal x1 = g.getCellXBigDecimal(q);
-                BigDecimal y1 = g.getCellYBigDecimal(p);
+                BigDecimal x1 = g.getCellX(q);
+                BigDecimal y1 = g.getCellY(p);
                 BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance.compareTo(distance) == -1) {

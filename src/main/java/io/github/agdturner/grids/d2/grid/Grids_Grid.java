@@ -561,9 +561,9 @@ public abstract class Grids_Grid extends Grids_Object {
         long delta = distance.divideToIntegralValue(getCellsize())
                 .longValueExact();
         for (long p = -delta; p <= delta; p++) {
-            BigDecimal cellY = getCellYBigDecimal(row + p);
+            BigDecimal cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
-                BigDecimal cellX = getCellXBigDecimal(col + q);
+                BigDecimal cellX = getCellX(col + q);
                 BigDecimal d2 = Grids_Utilities.distance(cellX, cellY, x, y,
                         dp, rm);
                 if (d2.compareTo(distance) == -1) {
@@ -577,8 +577,7 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * This is for getting all the chunk IDs between (rowMin, colMin) and
-     * (rowMax, colMax). This way returns a subset of keys
-     * from {@link #data}.
+     * (rowMax, colMax). This way returns a subset of keys from {@link #data}.
      *
      * @return A set of chunk identifiers for all chunks in the range given by
      * rowMin, rowMax, colMin, colMax.
@@ -607,9 +606,8 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * This is for getting all the chunk IDs between (crMin, ccMin) and
-     * (crMax, ccMax). This way returns a subset of keys
-     * from {@link #data}.
+     * This is for getting all the chunk IDs between (crMin, ccMin) and (crMax,
+     * ccMax). This way returns a subset of keys from {@link #data}.
      *
      * @return A set of chunk identifiers for all chunks in the range given by
      * crMin, crMax, ccMin, ccMax.
@@ -637,7 +635,7 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return Chunk column index for the chunks intersecting the line 
+     * @return Chunk column index for the chunks intersecting the line
      * x-coordinate x.
      * @param x The x-coordinate of the line intersecting the chunk column index
      * returned.
@@ -657,7 +655,8 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return Chunk cell column index of the cells that intersect the line {@code x}.
+     * @return Chunk cell column index of the cells that intersect the line
+     * {@code x}.
      * @param x The x-coordinate of the line intersecting the chunk cell column
      * index returned.
      */
@@ -705,6 +704,7 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * The cell column.
+     *
      * @param cc The chunk column.
      * @param ccc The chunk cell column.
      * @return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol
@@ -733,7 +733,7 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param y
+     * @param y The y axis coordinate.
      * @return Cell row of the cells that intersect the y axis coordinate y.
      */
     public final long getRow(BigDecimal y) {
@@ -835,21 +835,33 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to cache chunks that have a chunk ID in {@code s}.
+     * Attempts to swap chunks that have a chunk ID in {@code s}.
      *
-     * @param s A Set containing the chunk IDs of the chunks to cache.
-     * @throws java.io.IOException If encountered.
+     * @param s A Set containing the chunk IDs of the chunks to swap.
+     * @return The number of chunks swapped.
      */
-    public final void swapChunks(Set<Grids_2D_ID_int> s)
-            throws IOException, Exception {
-
-        Iterator<Grids_2D_ID_int> ite = s.iterator();
-        while (ite.hasNext()) {
-            Grids_2D_ID_int cid = ite.next();
-            if (isWorthCaching(cid)) {
-                cache(cid);
-            }
-        }
+    public final int swapChunks(Set<Grids_2D_ID_int> s) {
+        return worthSwapping.parallelStream().filter(i -> s.contains(i))
+                .collect(Collectors.summingInt((Grids_2D_ID_int i) -> {
+                    try {
+                        return swapChunk(i);
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                        env.env.log(ex.getMessage());
+                    }
+                    return 0;
+                }));
+//        int r = 0;
+//        Iterator<Grids_2D_ID_int> ite = s.iterator();
+//        while (ite.hasNext()) {
+//            Grids_2D_ID_int cid = ite.next();
+//            if (isWorthCaching(cid)) {
+//                if (cache(cid)) {
+//                    r ++;
+//                }
+//            }
+//        }
+//        return r;
     }
 
     /**
@@ -1091,7 +1103,7 @@ public abstract class Grids_Grid extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                freeSomeMemoryAndResetReserve(hoome, e);
+                freeSomeMemoryAndResetReserve(i, e);
                 swap(i, camfm, hoome);
             } else {
                 throw e;
@@ -1139,7 +1151,7 @@ public abstract class Grids_Grid extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                freeSomeMemoryAndResetReserve(hoome, e);
+                freeSomeMemoryAndResetReserve(e);
                 return swapChunk(camfm, hoome);
             } else {
                 throw e;
@@ -1578,19 +1590,19 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.lang.Exception If encountered.
      * @throws OutOfMemoryError If this cannot be handled.
      */
-    public final long swapChunksExcept_Account(Grids_2D_ID_int i,
+    public final int swapChunksExcept_Account(Grids_2D_ID_int i,
             boolean hoome) throws IOException, Exception {
         try {
-            long r = swapChunksExcept_Account(i);
+            int r = swapChunksExcept_Account(i);
             env.checkAndMaybeFreeMemory(hoome);
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                long r = env.swapChunkExcept_Account(this, i, false);
-                if (r < 1L) {
+                int r = env.swapChunkExcept_Account(this, i, false);
+                if (r < 1) {
                     r = env.swapChunkExcept_Account(this, i, false);
-                    if (r < 1L) {
+                    if (r < 1) {
                         throw e;
                     }
                 }
@@ -1613,22 +1625,33 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.lang.Exception If encountered.
      * @throws OutOfMemoryError If this cannot be handled.
      */
-    public final long swapChunksExcept_Account(Grids_2D_ID_int i)
+    public final int swapChunksExcept_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
-        long r = 0L;
-        for (int cri = 0; cri < nChunkRows; cri++) {
-            for (int cci = 0; cci < nChunkCols; cci++) {
-                Grids_2D_ID_int id2 = new Grids_2D_ID_int(cri, cci);
-                if (i != id2) {
-                    if (isWorthCaching(i)) {
-                        cache(i);
-                        clearChunk(i);
-                        r++;
+        return worthSwapping.parallelStream().filter(i2 -> i2 != i)
+                .collect(Collectors.summingInt((Grids_2D_ID_int i2) -> {
+                    try {
+                        return swapChunk(i2);
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                        env.env.log(ex.getMessage());
                     }
-                }
-            }
-        }
-        return r;
+                    return 0;
+                }));
+//        int r = 0;
+//        for (int cri = 0; cri < nChunkRows; cri++) {
+//            for (int cci = 0; cci < nChunkCols; cci++) {
+//                Grids_2D_ID_int id2 = new Grids_2D_ID_int(cri, cci);
+//                r += swapChunkExcept_Account(i);
+//                if (i != id2) {
+//                    if (isWorthCaching(i)) {
+//                        cache(i);
+//                        clearChunk(i);
+//                        r++;
+//                    }
+//                }
+//            }
+//        }
+//        return r;
     }
 
     /**
@@ -1954,7 +1977,7 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
             BigDecimal distance, int dp, RoundingMode rm) {
-        return getCellIDs(getCellXBigDecimal(col), getCellYBigDecimal(row), row, col, distance, dp, rm);
+        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, dp, rm);
     }
 
     /**
@@ -1977,9 +2000,9 @@ public abstract class Grids_Grid extends Grids_Object {
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
         long delta = distance.divideToIntegralValue(getCellsize()).longValueExact();
         for (long p = -delta; p <= delta; p++) {
-            BigDecimal cellY = getCellYBigDecimal(row + p);
+            BigDecimal cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
-                BigDecimal cellX = getCellXBigDecimal(col + q);
+                BigDecimal cellX = getCellX(col + q);
                 BigDecimal d2 = Grids_Utilities.distance(cellX, cellY, x, y,
                         dp, rm);
                 if (d2.compareTo(distance) == -1) {
@@ -1992,37 +2015,30 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
-     * to point given by x-coordinate x, y-coordinate y.
-     * @param x the x-coordinate of the point.
-     * @param y the y-coordinate of the point.
+     * @return Nearest cell ID to point at x-coordinate {@code x}, y-coordinate {@code y}.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
      */
     public Grids_2D_ID_long getNearestCellID(BigDecimal x, BigDecimal y) {
         return getNearestCellID(x, y, getRow(y), getCol(x));
     }
 
     /**
-     * @return Nearest cells _CellRowIndex and _CellColIndex as a long[] from ID
-     * to point given by cell row index _CellRowIndex, cell column index
-     * _CellColIndex.
-     * @param row the row index from which nearest cell Grids_2D_ID_int is
-     * returned.
-     * @param col the column index from which nearest cell Grids_2D_ID_int is
-     * returned. TODO: return Grids_2D_ID_long[] as could be more than one
-     * nearest CellID
+     * @return Nearest cell ID to cell row {@code r}, cell column {@code c}.
+     * @param r The cell row.
+     * @param c the cell column.
      */
-    public Grids_2D_ID_long getNearestCellID(long row, long col) {
-        return getNearestCellID(getCellXBigDecimal(col), getCellYBigDecimal(row),
-                row, col);
+    public Grids_2D_ID_long getNearestCellID(long r, long c) {
+        return getNearestCellID(getCellX(c), getCellY(r), r, c);
     }
 
     /**
-     * @return Nearest Grids_2D_ID_long to point given by x-coordinate x,
-     * y-coordinate y in position given by _CellRowIndex, _CellColIndex.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param row The cell row index of cell containing point.
-     * @param col The cell column index of cell containing point.
+     * @return Nearest cell ID to point given by x-coordinate x, y-coordinate y
+     * in cell row {@code r}, cell column {@code c}.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @param row The cell row.
+     * @param col The cell column.
      */
     public Grids_2D_ID_long getNearestCellID(BigDecimal x, BigDecimal y,
             long row, long col) {
@@ -2073,36 +2089,26 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * @return Height of the grid.
      */
-    public final double getHeightDouble() {
-        return getHeightBigDecimal().doubleValue();
-    }
-
-    /**
-     * @return Height of the grid.
-     */
-    public final BigDecimal getHeightBigDecimal() {
+    public final BigDecimal getHeight() {
         return dim.getYMax().subtract(dim.getYMin());
     }
 
     /**
-     * @return Width of the grid as a double.
+     * @return Width of the grid.
      */
-    public final double getWidthDouble() {
-        return getWidthBigDecimal().doubleValue();
-    }
-
-    /**
-     * @return Width of the grid as a BigDecimal.
-     */
-    public final BigDecimal getWidthBigDecimal() {
+    public final BigDecimal getWidth() {
         return dim.getXMax().subtract(dim.getXMin());
     }
 
     /**
-     * @return true iff point given by x-coordinate x, y-coordinate y is in the
-     * Grid. Anything on the boundary is considered to be in.
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
+     * For finding out if point given by x-coordinate {@code x}, y-coordinate
+     * {@code y} is in this grid.
+     *
+     * @return {@code true} if point given by x-coordinate {@code x},
+     * y-coordinate {@code y} is in this grid. Anything on the boundary is
+     * considered to be in.
+     * @param x The x-coordinate of the point to test.
+     * @param y The y-coordinate of the point to test.
      */
     public final boolean isInGrid(BigDecimal x, BigDecimal y) {
         return x.compareTo(dim.getXMin()) != -1
@@ -2112,23 +2118,30 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param row The cell row index to test.
-     * @param col The cell column index to test.
+     * For finding out if the cell in row {@code r} and column {@code c} is in
+     * this grid.
+     *
+     * @param r The cell row to test.
+     * @param c The cell column to test.
      * @return True if (row, col) in the Grid.
      */
-    public final boolean isInGrid(long row, long col) {
-        return row >= 0 && row < nRows && col >= 0 && col < nCols;
+    public final boolean isInGrid(long r, long c) {
+        return r >= 0 && r < nRows && c >= 0 && c < nCols;
     }
 
     /**
+     * For finding out if the cell with cell ID {@code i} is in this grid.
+     *
      * @param i The cell ID to test.
-     * @return True if cell with cell ID {@code i} is in the Grid.
+     * @return {@code true} if cell with cell ID {@code i} is in the Grid.
      */
     public final boolean isInGrid(Grids_2D_ID_long i) {
         return isInGrid(i.getRow(), i.getCol());
     }
 
     /**
+     * For finding out if the chunk with chunk ID {@code i} is in this grid.
+     *
      * @param i The chunk ID to test.
      * @return True if chunk with ID {@code i} is in the Grid.
      */
@@ -2137,73 +2150,82 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * This does not necessitate loading the chunk.
+     * For finding out if the cell with chunk cell row {@code ccr} and chunk
+     * cell column {@code ccc} in chunk in chunk row {@code chunkRow} and chunk
+     * column {@code cc) is in the dimensions of this grid. This does not
+     * necessitate loading the chunk.
      *
      * @param cr The chunk row index to test.
      * @param cc The chunk column index to test.
      * @param ccr The row index in the chunk to test.
      * @param ccc The column index in the chunk to test.
-     * @return True if cell in chunk (chunkRow, chunkCol) indexed in that chunk
-     * by (cellRow, cellCol) is in the Grid.
+     * @return {@code true} if cell with chunk cell row {@code ccr} and chunk
+     * cell column {@code ccc} in chunk in chunk row {@code chunkRow} and chunk
+     * column {@code cc) is in the dimensions of this grid.
      */
     public final boolean isInGrid(int cr, int cc, int ccr, int ccc) {
         return isInGrid(getRow(cr, ccr), getCol(cc, ccc));
     }
 
     /**
-     * @param col
-     * @return the x-coordinate of the centroid of col as a BigDecimal.
+     * @param col The cell col index for which the centroid x-coordinate is
+     * returned.
+     * @return The x-coordinate of the centroid of col as a BigDecimal.
      */
-    public final BigDecimal getCellXBigDecimal(long col) {
+    public final BigDecimal getCellX(long col) {
         return dim.getXMin().add(dim.getCellsize().multiply(
                 BigDecimal.valueOf(col))).add(dim.getHalfCellsize());
     }
 
     /**
-     * @return x-coordinate of the centroid for cell with cell Grids_2D_ID_int
-     * _CellID as a BigDecimal.
-     * @param chunkID
+     * @return The x-coordinate of the centroid for cell with cell with ID
+     * {@code i}.
+     * @param i The chunk ID.
      */
-    public final BigDecimal getCellXBigDecimal(Grids_2D_ID_long chunkID) {
-        return getCellXBigDecimal(chunkID.getCol());
+    public final BigDecimal getCellX(Grids_2D_ID_long i) {
+        return getCellX(i.getCol());
     }
 
     /**
-     * @param row
-     * @return y-coordinate of the centroid for row as a BigDecimal.
+     * @param row The cell row index for which the centroid y-coordinate is
+     * returned.
+     * @return The y-coordinate of the centroid for row as a BigDecimal.
      */
-    public final BigDecimal getCellYBigDecimal(long row) {
-        BigDecimal offSetFromOrigin;
-        offSetFromOrigin = dim.getYMin().add(dim.getCellsize().multiply(BigDecimal.valueOf(row)));
-        BigDecimal halfCellsize = dim.getHalfCellsize();
-        return offSetFromOrigin.add(halfCellsize);
+    public final BigDecimal getCellY(long row) {
+        return dim.getYMin().add(dim.getCellsize().multiply(
+                BigDecimal.valueOf(row))).add(dim.getHalfCellsize());
     }
 
     /**
-     * @param chunkID
-     * @return y-coordinate of the centroid of cell with Grids_2D_ID_long
-     * _CellID as a BigDecimal.
+     * @param i The cell ID for which the centroid x-coordinate is returned.
+     * @return The y-coordinate of the centroid of cell with cell ID {@code i}.
      */
-    public final BigDecimal getCellYBigDecimal(Grids_2D_ID_long chunkID) {
-        return getCellYBigDecimal(chunkID.getRow());
+    public final BigDecimal getCellY(Grids_2D_ID_long i) {
+        return getCellY(i.getRow());
     }
 
     /**
      * @param halfCellsize Half the grid cellsize.
-     * @return BigDecimal[] r where; r[0] xmin, left most x-coordinate of cell
-     * that intersects point at (x,y) r[1] ymin, lowest y-coordinate of cell
-     * that intersects point at (x,y) r[2] xmax, right most x-coordinate of cell
-     * that intersects point at (x,y) r[3] ymax, highest y-coordinate of cell
-     * that intersects point at (x,y).
+     * @return BigDecimal[] r where;
+     * <ul>
+     * <li>r[0] xmin, left most x-coordinate of cell that intersects point at
+     * (x,y)</li>
+     * <li>r[1] ymin, lowest y-coordinate of cell that intersects point at
+     * (x,y)</li>
+     * <li>r[2] xmax, right most x-coordinate of cell that intersects point at
+     * (x,y)</li>
+     * <li>r[3] ymax, highest y-coordinate of cell that intersects point at
+     * (x,y).</li>
+     * </ul>
      * @param row The row index of the cell for which the bounds are returned.
-     * @param col The cloumn index of the cell for which the bounds are
+     * @param col The column index of the cell for which the bounds are
      * returned.
      */
     public final BigDecimal[] getCellBounds(BigDecimal halfCellsize,
             long row, long col) {
         BigDecimal[] r = new BigDecimal[4];
-        BigDecimal x = getCellXBigDecimal(col);
-        BigDecimal y = getCellYBigDecimal(row);
+        BigDecimal x = getCellX(col);
+        BigDecimal y = getCellY(row);
         r[0] = x.subtract(halfCellsize);
         r[1] = y.subtract(halfCellsize);
         r[2] = x.add(halfCellsize);
@@ -2212,144 +2234,168 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return the next Grids_2D_ID_int in row major order from _ChunkID, or
-     * null.
-     * @param chunkID
-     * @param nChunkRows
-     * @param nChunkCols
+     * @return The next chunk ID to {@code i} in a row major order of chunk IDs,
+     * or {@code null}.
+     * @param i The chunkID of the current chunk in a row major order of chunks.
+     * @param ncr The number of chunk rows.
+     * @param ncc The number of chunk columns.
      */
-    public Grids_2D_ID_int getNextChunk(Grids_2D_ID_int chunkID, int nChunkRows,
-            int nChunkCols) {
-        int chunkRow = chunkID.getRow();
-        int chunkCol = chunkID.getCol();
-        if (chunkCol < nChunkCols - 1) {
-            return new Grids_2D_ID_int(chunkRow, chunkCol + 1);
+    public Grids_2D_ID_int getNextChunkID(Grids_2D_ID_int i, int ncr, int ncc) {
+        int r = i.getRow();
+        int c = i.getCol();
+        if (c < ncc - 1) {
+            return new Grids_2D_ID_int(r, c + 1);
         } else {
-            if (chunkRow < nChunkRows - 1) {
-                return new Grids_2D_ID_int(chunkRow + 1, 0);
+            if (r < ncr - 1) {
+                return new Grids_2D_ID_int(r + 1, 0);
             }
         }
         return null;
     }
 
     /**
-     * @param chunkID
-     * @param nChunkCols
-     * @param nChunkRows
-     * @return the next Grids_2D_ID_int in row major order from this, or null.
+     * @return The previous chunk ID to {@code i} in a row major order of chunk
+     * IDs, or {@code null}.
+     * @param i The chunkID of the current chunk in a row major order of chunks.
+     * @param ncr The number of chunk rows.
+     * @param ncc The number of chunk columns.
      */
-    public Grids_2D_ID_int getPreviousChunk(Grids_2D_ID_int chunkID,
-            int nChunkRows, int nChunkCols) {
-        int chunkRow = chunkID.getRow();
-        int chunkCol = chunkID.getCol();
-        if (chunkCol > 0) {
-            return new Grids_2D_ID_int(chunkRow, chunkCol - 1);
+    public Grids_2D_ID_int getPreviousChunkID(Grids_2D_ID_int i, int ncr,
+            int ncc) {
+        int r = i.getRow();
+        int c = i.getCol();
+        if (c > 0) {
+            return new Grids_2D_ID_int(r, c - 1);
         } else {
-            if (chunkRow > 0) {
-                return new Grids_2D_ID_int(chunkRow - 1, 0);
+            if (r > 0) {
+                return new Grids_2D_ID_int(r - 1, 0);
             }
         }
         return null;
     }
 
     /**
+     * For freeing memory and resetting the memory reserve.
      *
-     * @param chunksNotToCacheToFile
-     * @param e
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.Exception If encountered.
+     * @param notToClear Chunks not to clear in memory management.
+     * @param e An OutOfMemoryError that may get thrown.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public void freeSomeMemoryAndResetReserve(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToCacheToFile,
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToClear,
             OutOfMemoryError e) throws IOException, Exception {
-        Iterator<Grids_Grid> ite = chunksNotToCacheToFile.keySet().iterator();
+        Iterator<Grids_Grid> ite = notToClear.keySet().iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            Set<Grids_2D_ID_int> chunkIDs = chunksNotToCacheToFile.get(g);
-            if (env.swapChunkExcept_Account(g, chunkIDs, false) > 0) {
-                env.initMemoryReserve(chunksNotToCacheToFile, env.HOOMET);
+            if (env.swapChunkExcept_Account(g, notToClear.get(g), false) > 0) {
+                env.initMemoryReserve(notToClear, env.HOOMET);
                 return;
             }
         }
         throw e;
     }
 
-    public void freeSomeMemoryAndResetReserve(
-            int chunkRow, int chunkCol, OutOfMemoryError e) throws IOException, Exception {
+    /**
+     * For freeing memory and resetting the memory reserve.
+     *
+     * @param cr Chunk row index of a chunk not to swap.
+     * @param cc Chunk column index of a chunk not to swap.
+     * @param e An OutOfMemoryError that may get thrown.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public void freeSomeMemoryAndResetReserve(int cr, int cc,
+            OutOfMemoryError e) throws IOException, Exception {
         //env.clearMemoryReserve(env.env);
-        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-        freeSomeMemoryAndResetReserve(chunkID, e);
+        freeSomeMemoryAndResetReserve(new Grids_2D_ID_int(cr, cc), e);
     }
 
-    public void freeSomeMemoryAndResetReserve(
-            Set<Grids_2D_ID_int> chunkIDs, OutOfMemoryError e) throws IOException, Exception {
-        if (env.swapChunkExcept_Account(this, chunkIDs, false) < 1L) {
+    /**
+     * For freeing memory and resetting the memory reserve.
+     *
+     * @param s A set containing chunk IDs not to swap.
+     * @param e An OutOfMemoryError that may get thrown.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public void freeSomeMemoryAndResetReserve(Set<Grids_2D_ID_int> s,
+            OutOfMemoryError e) throws IOException, Exception {
+        if (env.swapChunkExcept_Account(this, s, false) < 1L) {
             throw e;
         }
-        env.initMemoryReserve(this, chunkIDs, env.HOOMET);
+        env.initMemoryReserve(this, s, env.HOOMET);
     }
 
-    public void freeSomeMemoryAndResetReserve(
-            Grids_2D_ID_int chunkID, OutOfMemoryError e) throws IOException, Exception {
-        if (env.swapChunkExcept_Account(this, false) < 1L) {
-            if (env.swapChunkExcept_Account(this, chunkID, false) < 1L) {
-                throw e;
-            }
+    /**
+     * For freeing memory and resetting the memory reserve.
+     *
+     * @param i Chunk ID of a chunk not to clear.
+     * @param e An OutOfMemoryError that may get thrown.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public void freeSomeMemoryAndResetReserve(Grids_2D_ID_int i,
+            OutOfMemoryError e) throws IOException, Exception {
+        if (env.swapChunkExcept_Account(this, i, false) == 0) {
+            throw e;
         }
-        env.initMemoryReserve(this, chunkID, env.HOOMET);
+        env.initMemoryReserve(this, i, env.HOOMET);
     }
 
-    public void freeSomeMemoryAndResetReserve(
-            boolean hoome, OutOfMemoryError e) throws IOException, Exception {
+    /**
+     * For freeing memory and resetting the memory reserve.
+     *
+     * @param e An OutOfMemoryError that may get thrown.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public void freeSomeMemoryAndResetReserve(OutOfMemoryError e)
+            throws IOException, Exception {
         if (!env.swapChunk(env.HOOMEF)) {
             throw e;
         }
         env.initMemoryReserve(env.env);
     }
 
-    public void freeSomeMemoryAndResetReserve(OutOfMemoryError e) throws IOException, Exception {
-        if (env.swapChunkExcept_Account(this, false) < 1L) {
-            throw e;
-        }
-        env.initMemoryReserve(this, env.HOOMET);
-    }
-
     /**
-     * @return the data
+     * @return {@link #data}
      */
     public TreeMap<Grids_2D_ID_int, Grids_Chunk> getData() {
         return data;
     }
 
     /**
-     * Initialises {@link #dim} from {@code header}.
+     * Initialises {@link #dim} from {@code header}. This assumes that
+     * {@link #nRows} and {@link #nCols} are already initialised.
      *
-     * @param header
-     * @param startRowIndex
-     * @param startColIndex
+     * @param header The header.
+     * @param r The start row index.
+     * @param c The start column index.
      */
-    public void initDimensions(Header header,
-            long startRowIndex, long startColIndex) {
+    public void initDimensions(Header header, long r, long c) {
         BigDecimal cellsize = header.cellsize;
-        BigDecimal xMin = header.xll.add(cellsize.multiply(new BigDecimal(startColIndex)));
-        BigDecimal yMin = header.yll.add(cellsize.multiply(new BigDecimal(startRowIndex)));
-        BigDecimal xMax = xMin.add(new BigDecimal(Long.toString(nCols)).multiply(cellsize));
-        BigDecimal yMax = yMin.add(new BigDecimal(Long.toString(nRows)).multiply(cellsize));
+        BigDecimal xMin = header.xll.add(cellsize.multiply(new BigDecimal(c)));
+        BigDecimal yMin = header.yll.add(cellsize.multiply(new BigDecimal(r)));
+        BigDecimal xMax = xMin.add(new BigDecimal(Long.toString(nCols))
+                .multiply(cellsize));
+        BigDecimal yMax = yMin.add(new BigDecimal(Long.toString(nRows))
+                .multiply(cellsize));
         dim = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
 
     /**
-     * Assumes nrows and ncols are already initialised.
+     * For initialising {@link #dim}. This assumes that {@link #nRows} and
+     * {@link #nCols} are already initialised.
      *
-     * @param g
-     * @param startRowIndex
-     * @param startColIndex
+     * @param g The grid.
+     * @param r The start row index in {@code g}.
+     * @param c The start column index in {@code g}.
      */
-    public void initDimensions(Grids_Grid g, long startRowIndex,
-            long startColIndex) {
+    public void initDimensions(Grids_Grid g, long r, long c) {
         dim = g.getDimensions(); // temporary assignment
-        BigDecimal startColIndexBigDecimal = new BigDecimal(startColIndex);
-        BigDecimal startRowIndexBigDecimal = new BigDecimal(startRowIndex);
+        BigDecimal startColIndexBigDecimal = new BigDecimal(c);
+        BigDecimal startRowIndexBigDecimal = new BigDecimal(r);
         BigDecimal nRowsBigDecimal = new BigDecimal(nRows);
         BigDecimal nColsBigDecimal = new BigDecimal(nCols);
         BigDecimal xMin;
@@ -2374,13 +2420,15 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @return Grids_Chunk for the given chunkID.
-     * @param chunkID
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     * @throws java.lang.Exception If encountered.
+     * For getting the chunk with chunk ID {@code i}.
+     *
+     * @return The chunk with chunk ID {@code i}.
+     * @param i The chunk ID.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
      */
-    public abstract Grids_Chunk getChunk(Grids_2D_ID_int chunkID)
+    public abstract Grids_Chunk getChunk(Grids_2D_ID_int i)
             throws IOException, ClassNotFoundException, Exception;
 
     /**
@@ -2390,8 +2438,9 @@ public abstract class Grids_Grid extends Grids_Object {
      *
      * @param i The chunk ID of the chunk to be loaded.
      * @return {@code true} if the chunk was loaded and {@code false} otherwise.
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
      */
     public boolean loadChunk(Grids_2D_ID_int i) throws IOException,
             ClassNotFoundException, Exception {
@@ -2399,7 +2448,7 @@ public abstract class Grids_Grid extends Grids_Object {
             Path f = Paths.get(getDirectory().toString(),
                     "" + i.getRow() + "_" + i.getCol());
             if (Files.exists(f)) {
-                //System.out.println("Loading chunk from file" + f);
+                //env.env.log("Loading chunk from file" + f);
                 Object o = Generic_IO.readObject(f);
                 Grids_Chunk chunk = (Grids_Chunk) o;
                 chunk.env = env;
@@ -2421,35 +2470,40 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param chunkRow
-     * @param chunkCol
+     * For getting the chunk at chunk row index {@code r}, chunk col index
+     * {@code c}.
+     *
+     * @param cr The chunk row index.
+     * @param cc The chunk column index.
      * @return Grids_AbstractGridChunkDouble.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     * @throws java.lang.Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
      */
-    public final Grids_Chunk getChunk(int chunkRow, int chunkCol)
+    public final Grids_Chunk getChunk(int cr, int cc)
             throws IOException, ClassNotFoundException, Exception {
-        return getChunk(new Grids_2D_ID_int(chunkRow, chunkCol));
+        return getChunk(new Grids_2D_ID_int(cr, cc));
     }
 
     /**
-     * @param chunkID
-     * @param chunkRow
-     * @param chunkCol
-     * @return Grids_Chunk.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     * @throws java.lang.Exception If encountered.
+     * For getting the chunk with chunk ID {@code i} at chunk row index
+     * {@code r}, chunk col index {@code c}.
+     *
+     * @param i The chunk ID.
+     * @param cr The chunk row index.
+     * @param cc The chunk column index.
+     * @return The specific chunk
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
      */
-    public abstract Grids_Chunk getChunk(Grids_2D_ID_int chunkID,
-            int chunkRow, int chunkCol) throws IOException,
-            ClassNotFoundException, Exception;
+    public abstract Grids_Chunk getChunk(Grids_2D_ID_int i, int cr, int cc)
+            throws IOException, ClassNotFoundException, Exception;
 
     /**
-     * For getting the grid statistics - a type of {@link #stats}.
+     * For getting the grid statistics.
      *
-     * @return
+     * @return The {@link #stats} cast appropriately.
      */
     public abstract Grids_Stats getStats();
 

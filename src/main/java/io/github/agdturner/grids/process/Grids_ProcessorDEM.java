@@ -349,10 +349,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNcols = g.getChunkNCols(cci);
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
-                            double y = g.getCellYBigDecimal(row).doubleValue();
+                            double y = g.getCellY(row).doubleValue();
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
                                 col = g.getCol(cci, cellCol);
-                                double x = g.getCellXBigDecimal(col).doubleValue();
+                                double x = g.getCellX(col).doubleValue();
                                 h = cd.getCell(cellRow, cellCol);
                                 if (h != noDataValue) {
                                     diffX = 0.0d;
@@ -363,7 +363,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
                                         long0 = row + p;
-                                        BigDecimal thisY = g.getCellYBigDecimal(long0);
+                                        BigDecimal thisY = g.getCellY(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 BigDecimal thisX = BigDecimal.valueOf(q * cellsize);
@@ -454,11 +454,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
-                            BigDecimal y = g.getCellYBigDecimal(row);
+                            BigDecimal y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
                                 env.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
-                                BigDecimal x = g.getCellXBigDecimal(col);
+                                BigDecimal x = g.getCellX(col);
                                 heightInt = ci.getCell(cellRow, cellCol);
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
@@ -469,11 +469,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
                                         long0 = row + p;
-                                        BigDecimal thisY = g.getCellYBigDecimal(long0);
+                                        BigDecimal thisY = g.getCellY(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = col + q;
-                                                BigDecimal thisX = g.getCellXBigDecimal(long0);
+                                                BigDecimal thisX = g.getCellX(long0);
                                                 BigDecimal thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, dp, rm);
                                                 if (thisDistance.compareTo(distance) != 1) {
                                                     thisHeightInt = gridInt.getCell(
@@ -2001,10 +2001,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             long row = g.getRow(chunkRow, cellRow);
-                            BigDecimal y = g.getCellYBigDecimal(row);
+                            BigDecimal y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 long col = g.getCol(chunkCol, cellCol);
-                                BigDecimal x = gridDouble.getCellXBigDecimal(col);
+                                BigDecimal x = gridDouble.getCellX(col);
                                 //height = _Grid2DSquareCellDouble.getCell( cellRowIndex, cellColIndex, hoome );
                                 BigDecimal cellHeight = gridChunkDouble.getCellBigDecimal(
                                         cellRow, cellCol);
@@ -2078,10 +2078,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             long row = g.getRow(chunkRow, cellRow);
-                            BigDecimal y = g.getCellYBigDecimal(row);
+                            BigDecimal y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 long col = g.getCol(chunkCol, cellCol);
-                                BigDecimal x = gridInt.getCellXBigDecimal(cellCol);
+                                BigDecimal x = gridInt.getCellX(cellCol);
                                 BigDecimal cellHeight = gridChunkInt.getCellBigDecimal(cellRow, cellCol);
                                 if (cellHeight.compareTo(ndv) != 0) {
                                     env.checkAndMaybeFreeMemory();
@@ -2255,11 +2255,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         int p;
         int q;
         for (p = 0; p <= cellDistance; p++) {
-            BigDecimal y = g.getCellYBigDecimal(row + p);
+            BigDecimal y = g.getCellY(row + p);
             BigDecimal yDiff = y.subtract(cellY);
             for (q = 1; q <= cellDistance; q++) {
                 noDataCount = 0.0d;
-                BigDecimal x = g.getCellXBigDecimal(col + q);
+                BigDecimal x = g.getCellX(col + q);
                 weight = weights[p][q];
                 if (weight > 0) {
                     BigDecimal xDiff = x.subtract(cellX);

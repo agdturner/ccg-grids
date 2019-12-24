@@ -246,6 +246,7 @@ public class Grids_GridBoolean extends Grids_Grid {
                 endCol);
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
+        int ncr = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridBoolean) {
@@ -257,7 +258,7 @@ public class Grids_GridBoolean extends Grids_Grid {
                     do {
                         isLoadedChunk = loadChunk(g, cf, chunkNRows, chunkNCols,
                                 startRow, startCol, endRow, endCol,
-                                startChunkRow, endChunkRow, nChunkRows,
+                                startChunkRow, endChunkRow,
                                 startChunkCol, endChunkCol, gb, gcr,
                                 gChunkNRows, gcc);
                     } while (!isLoadedChunk);
@@ -275,10 +276,32 @@ public class Grids_GridBoolean extends Grids_Grid {
         init();
     }
 
+    /**
+     *
+     * @param g
+     * @param cf
+     * @param chunkNRows Chunk NRows
+     * @param chunkNCols Chunk NCols
+     * @param startRow Start row.
+     * @param startCol Start column.
+     * @param endRow End row. 
+     * @param endCol End column.
+     * @param startChunkRow Start chunk row.
+     * @param endChunkRow End chunk row.
+     * @param startChunkCol
+     * @param endChunkCol
+     * @param gb
+     * @param gcr
+     * @param gChunkNRows
+     * @param gcc
+     * @return {@code true} if chunk was loaded.
+     * @throws ClassNotFoundException
+     * @throws Exception 
+     */
     protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBoolean cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int startChunkRow, int endChunkRow,
-            int nChunkRows, int startChunkCol, int endChunkCol,
+            int startChunkCol, int endChunkCol,
             Grids_GridBoolean gb, int gcr, int gChunkNRows, int gcc)
             throws ClassNotFoundException, Exception {
         boolean isLoadedChunk = false;
@@ -292,19 +315,19 @@ public class Grids_GridBoolean extends Grids_Grid {
         } catch (OutOfMemoryError e) {
             if (env.HOOME) {
                 env.clearMemoryReserve(env.env);
-                freeSomeMemoryAndResetReserve(e);
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(gcr, gcc);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwapOut
+                Grids_2D_ID_int i = new Grids_2D_ID_int(gcr, gcc);
+                freeSomeMemoryAndResetReserve(i, e);
+                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToClear
                         = new HashMap<>();
-                notToSwapOut.put(g, g.getChunkIDs(startRow, endRow, startCol,
+                notToClear.put(g, g.getChunkIDs(startRow, endRow, startCol,
                         endCol));
                 Set<Grids_2D_ID_int> s = new HashSet<>();
-                s.add(chunkID);
-                notToSwapOut.put(this, s);
-                if (env.swapChunksExcept_Account(notToSwapOut, false) < 1) {
+                s.add(i);
+                notToClear.put(this, s);
+                if (env.swapChunksExcept_Account(notToClear, false) < 1) {
                     throw e;
                 }
-                env.initMemoryReserve(this, chunkID, env.HOOME);
+                env.initMemoryReserve(this, i, env.HOOME);
             } else {
                 throw e;
             }
@@ -312,6 +335,23 @@ public class Grids_GridBoolean extends Grids_Grid {
         return isLoadedChunk;
     }
 
+    /**
+     * 
+     * @param gChunkID
+     * @param g
+     * @param gb
+     * @param gcc
+     * @param gcr
+     * @param cf
+     * @param gChunkNRows
+     * @param startRow
+     * @param endRow
+     * @param startCol
+     * @param endCol
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws Exception 
+     */
     public void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBoolean gb, int gcc, int gcr,
             Grids_ChunkFactoryBoolean cf, int gChunkNRows, long startRow,
@@ -337,15 +377,15 @@ public class Grids_GridBoolean extends Grids_Grid {
                          * not be a chunk for the chunkID.
                          */
                         if (isInGrid(row, col)) {
-                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
+                            Grids_2D_ID_int i = new Grids_2D_ID_int(
                                     chunkRow, chunkCol);
                             //ge.addToNotToClear(this, chunkID);
                             Grids_ChunkBooleanArray chunk;
-                            if (!data.containsKey(chunkID)) {
-                                chunk = cf.create(this, chunkID);
-                                data.put(chunkID, chunk);
+                            if (!data.containsKey(i)) {
+                                chunk = cf.create(this, i);
+                                data.put(i, chunk);
                             } else {
-                                chunk = (Grids_ChunkBooleanArray) data.get(chunkID);
+                                chunk = (Grids_ChunkBooleanArray) data.get(i);
                             }
                             boolean gValue = gb.getCell(c, cr, cc);
                             if (gValue) {
@@ -751,7 +791,7 @@ public class Grids_GridBoolean extends Grids_Grid {
      */
     public Boolean[] getCells(long row, long col, BigDecimal distance, int dp,
             RoundingMode rm) throws IOException, ClassNotFoundException, Exception {
-        return getCells(getCellXBigDecimal(col), getCellYBigDecimal(row), row,
+        return getCells(getCellX(col), getCellY(row), row,
                 col, distance, dp, rm);
     }
 
@@ -782,9 +822,9 @@ public class Grids_GridBoolean extends Grids_Grid {
         Boolean[] cells = new Boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellYBigDecimal(row);
+            BigDecimal thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellXBigDecimal(col);
+                BigDecimal thisX = getCellX(col);
                 if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
                         .compareTo(distance) == -1) {
                     cells[count] = getCell(p, q);

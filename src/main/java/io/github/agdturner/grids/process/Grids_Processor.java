@@ -956,9 +956,9 @@ public class Grids_Processor extends Grids_Object {
                 // rather than using x and y.
                 for (long row = startRow; row <= endRow; row++) {
                     env.checkAndMaybeFreeMemory();
-                    BigDecimal y = g2.getCellYBigDecimal(row);
+                    BigDecimal y = g2.getCellY(row);
                     for (long col = startCol; col <= endCol; col++) {
-                        BigDecimal x = g2.getCellXBigDecimal(col);
+                        BigDecimal x = g2.getCellX(col);
                         double v = g2.getCell(row, col);
                         if (v != g2NoDataValue) {
                             if (v != 0.0d) {
@@ -1071,19 +1071,19 @@ public class Grids_Processor extends Grids_Object {
         if (i1.equals(i2) || i1.equals(i3)) {
             if (i1.equals(i2)) {
                 aP = Math.abs((((bounds[3]).subtract(
-                        g2.getCellYBigDecimal(i1).subtract(
+                        g2.getCellY(i1).subtract(
                                 g2CH)).multiply(gC)).divide(
                         g2CS, dp, rm)).doubleValue());
             } else {
-                aP = Math.abs(((((g2.getCellXBigDecimal(i1).add(
+                aP = Math.abs(((((g2.getCellX(i1).add(
                         g2CH)).subtract((bounds[0]))).multiply(
                         gC)).divide(g2CS, dp, rm)).doubleValue());
             }
         } else {
             aP = Math.abs(
                     (((bounds[3]).subtract(
-                            g2.getCellYBigDecimal(i1).subtract(g2CH))).multiply(
-                            (g2.getCellXBigDecimal(i1).add(
+                            g2.getCellY(i1).subtract(g2CH))).multiply(
+                            (g2.getCellX(i1).add(
                                     g2CH.subtract((bounds[0])))).divide(
                                     g2CS, dp, rm))).doubleValue());
         }
@@ -1097,14 +1097,14 @@ public class Grids_Processor extends Grids_Object {
         double aP;
         if (i1.equals(i3)) {
             aP = Math.abs(((((bounds[2]).subtract(
-                    g2.getCellXBigDecimal(i1).subtract(
+                    g2.getCellX(i1).subtract(
                             g2CH))).multiply(gC)).divide(
                     g2CS, dp, rm)).doubleValue());
         } else {
             aP = Math.abs((((bounds[3]).subtract(
-                    g2.getCellYBigDecimal(i1).subtract(
+                    g2.getCellY(i1).subtract(
                             g2CH))).multiply((bounds[2]).subtract(
-                            g2.getCellXBigDecimal(i1).subtract(
+                            g2.getCellX(i1).subtract(
                                     g2CH))).divide(g2CS, dp, rm)).doubleValue());
         }
         return aP;
@@ -1116,13 +1116,13 @@ public class Grids_Processor extends Grids_Object {
             RoundingMode rm) {
         double aP;
         if (i2.equals(i3)) {
-            aP = Math.abs(((((g2.getCellYBigDecimal(i2).add(
+            aP = Math.abs(((((g2.getCellY(i2).add(
                     g2CH)).subtract((bounds[1]))).multiply(
                     gC)).divide(g2CS, dp, rm)).doubleValue());
         } else {
-            aP = Math.abs(((((g2.getCellYBigDecimal(i2).add(
+            aP = Math.abs(((((g2.getCellY(i2).add(
                     g2CH)).subtract((bounds[1]))).multiply(
-                    (g2.getCellXBigDecimal(i2).add(g2CH))
+                    (g2.getCellX(i2).add(g2CH))
                             .subtract((bounds[0])))).divide(g2CS, dp, rm))
                     .doubleValue());
         }
@@ -1133,9 +1133,9 @@ public class Grids_Processor extends Grids_Object {
             Grids_2D_ID_long i3, BigDecimal gC, BigDecimal g2CS,
             BigDecimal g2CH, int dp, RoundingMode rm) {
         double aP;
-        aP = Math.abs(((((g2.getCellYBigDecimal(i3).add(g2CH)).subtract(
+        aP = Math.abs(((((g2.getCellY(i3).add(g2CH)).subtract(
                 (bounds[1]))).multiply((bounds[2]).subtract(
-                        (g2.getCellXBigDecimal(i3)).subtract(
+                        (g2.getCellX(i3)).subtract(
                                 g2CH)))).divide(g2CS, dp, rm)).doubleValue());
         return aP;
     }
@@ -1307,8 +1307,8 @@ public class Grids_Processor extends Grids_Object {
                     rNcols, rD);
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellXBigDecimal(col);
-                    BigDecimal y = grid.getCellYBigDecimal(row);
+                    BigDecimal x = grid.getCellX(col);
+                    BigDecimal y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1352,8 +1352,8 @@ public class Grids_Processor extends Grids_Object {
                     rNrows, rNcols, rD);
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellXBigDecimal(col);
-                    BigDecimal y = grid.getCellYBigDecimal(row);
+                    BigDecimal x = grid.getCellX(col);
+                    BigDecimal y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1378,8 +1378,8 @@ public class Grids_Processor extends Grids_Object {
         if (statistic.equalsIgnoreCase("min")) {
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellXBigDecimal(col);
-                    BigDecimal y = grid.getCellYBigDecimal(row);
+                    BigDecimal x = grid.getCellX(col);
+                    BigDecimal y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1400,8 +1400,8 @@ public class Grids_Processor extends Grids_Object {
             double max;
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellXBigDecimal(col);
-                    BigDecimal y = grid.getCellYBigDecimal(row);
+                    BigDecimal x = grid.getCellX(col);
+                    BigDecimal y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1712,8 +1712,8 @@ public class Grids_Processor extends Grids_Object {
                 for (long col = 0; col < ncols; col++) {
                     BigDecimal value = grid.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
-                        BigDecimal x = grid.getCellXBigDecimal(col);
-                        BigDecimal y = grid.getCellYBigDecimal(row);
+                        BigDecimal x = grid.getCellX(col);
+                        BigDecimal y = grid.getCellY(row);
                         bounds = grid.getCellBounds(cH, row, col);
                         max = r.getCell(bounds[0], bounds[3]);
                         if (max != ndvd) {
@@ -1754,8 +1754,8 @@ public class Grids_Processor extends Grids_Object {
                     BigDecimal value = grid.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
                         double vD = value.doubleValue();
-                        BigDecimal x = grid.getCellXBigDecimal(col);
-                        BigDecimal y = grid.getCellYBigDecimal(row);
+                        BigDecimal x = grid.getCellX(col);
+                        BigDecimal y = grid.getCellY(row);
                         bounds = grid.getCellBounds(cH, row, col);
                         min = r.getCell(bounds[0], bounds[3]);
                         if (min != ndvd) {

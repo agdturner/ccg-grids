@@ -244,6 +244,7 @@ public class Grids_GridBinary extends Grids_Grid {
         init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
+        int ncr = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridBinary) {
@@ -262,7 +263,7 @@ public class Grids_GridBinary extends Grids_Grid {
                     //loadedChunkCount++;
                     //cci1 = _ChunkColIndex;
                 }
-                env.env.log("Done chunkRow " + gcr + " out of " + nChunkRows);
+                env.env.log("Done chunkRow " + gcr + " out of " + ncr);
             }
         } else if (g instanceof Grids_GridBinary) {
             // Implementation needed...
@@ -290,8 +291,8 @@ public class Grids_GridBinary extends Grids_Grid {
         } catch (OutOfMemoryError e) {
             if (env.HOOME) {
                 env.clearMemoryReserve(env.env);
-                freeSomeMemoryAndResetReserve(e);
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(gcr, gcc);
+                freeSomeMemoryAndResetReserve(chunkID, e);
                 HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwapOut
                         = new HashMap<>();
                 notToSwapOut.put(g, g.getChunkIDs(startRow, endRow, startCol,
@@ -740,7 +741,7 @@ public class Grids_GridBinary extends Grids_Grid {
     public boolean[] getCells(long row, long col, BigDecimal distance, int dp,
             RoundingMode rm) throws IOException, ClassNotFoundException,
             Exception {
-        return getCells(getCellXBigDecimal(col), getCellYBigDecimal(row), row,
+        return getCells(getCellX(col), getCellY(row), row,
                 col, distance, dp, rm);
     }
 
@@ -771,9 +772,9 @@ public class Grids_GridBinary extends Grids_Grid {
         boolean[] cells = new boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellYBigDecimal(row);
+            BigDecimal thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellXBigDecimal(col);
+                BigDecimal thisX = getCellX(col);
                 if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
                         .compareTo(distance) == -1) {
                     cells[count] = getCell(p, q);
@@ -804,10 +805,10 @@ public class Grids_GridBinary extends Grids_Grid {
             counter++;
             Grids_2D_ID_int chunkID = ite.next();
             Grids_ChunkBinaryArray chunk = getChunk(chunkID);
-            int chunkNRows = getChunkNRows(chunkID);
-            int chunkNCols = getChunkNCols(chunkID);
-            for (int row = 0; row < chunkNRows; row++) {
-                for (int col = 0; col < chunkNCols; col++) {
+            int cnr = getChunkNRows(chunkID);
+            int cnc = getChunkNCols(chunkID);
+            for (int row = 0; row < cnr; row++) {
+                for (int col = 0; col < cnc; col++) {
                     chunk.initCell(row, col, v);
                 }
             }

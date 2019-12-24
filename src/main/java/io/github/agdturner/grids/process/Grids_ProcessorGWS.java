@@ -332,8 +332,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     // GC overhead limit exceeded
                     // java.lang.OutOfMemoryError: GC overhead limit exceeded
                     // There is probably a better doing way?
-                    BigDecimal cellX = grid.getCellXBigDecimal(col);
-                    BigDecimal cellY = grid.getCellYBigDecimal(row);
+                    BigDecimal cellX = grid.getCellX(col);
+                    BigDecimal cellY = grid.getCellY(row);
                     // Calculate sumWeights and non-weighted stats
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
@@ -474,8 +474,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     BigDecimal sDWMeanPow3 = BigDecimal.ZERO;
                     BigDecimal sDWMeanPow4 = BigDecimal.ZERO;
                     BigDecimal sumWeight = BigDecimal.ZERO;
-                    BigDecimal cellX = grid.getCellXBigDecimal(col);
-                    BigDecimal cellY = grid.getCellYBigDecimal(row);
+                    BigDecimal cellX = grid.getCellX(col);
+                    BigDecimal cellY = grid.getCellY(row);
                     // Take moments
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
@@ -902,15 +902,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     BigDecimal sumCells = BigDecimal.ZERO;
                     BigDecimal wSum = BigDecimal.ZERO;
                     BigDecimal sum = BigDecimal.ZERO;
-                    BigDecimal cellX = grid.getCellXBigDecimal(col);
-                    BigDecimal cellY = grid.getCellYBigDecimal(row);
+                    BigDecimal cellX = grid.getCellX(col);
+                    BigDecimal cellY = grid.getCellY(row);
                     // Calculate sumWeights and non-weighted stats
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
                             double v = grid.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
-                                BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                BigDecimal thisCellX = grid.getCellX(col + q);
+                                BigDecimal thisCellY = grid.getCellY(row + p);
                                 BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
                                 if (thisDistance.compareTo(distance) == -1) {
                                     sumWeight = sumWeight.add(Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm));
@@ -928,8 +928,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             for (int q = -cellDistance; q <= cellDistance; q++) {
                                 double v = grid.getCell(row + p, col + q);
                                 if (v != noDataValue) {
-                                    BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
-                                    BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                    BigDecimal thisCellX = grid.getCellX(col + q);
+                                    BigDecimal thisCellY = grid.getCellY(row + p);
                                     BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                         BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
@@ -1010,15 +1010,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     BigDecimal sDWMeanPow3 = BigDecimal.ZERO;
                     BigDecimal sDWMeanPow4 = BigDecimal.ZERO;
                     BigDecimal sumWeight = BigDecimal.ZERO;
-                    BigDecimal cellX = grid.getCellXBigDecimal(col);
-                    BigDecimal cellY = grid.getCellYBigDecimal(row);
+                    BigDecimal cellX = grid.getCellX(col);
+                    BigDecimal cellY = grid.getCellY(row);
                     // Take moments
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
                             double v = grid.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                BigDecimal thisCellX = grid.getCellXBigDecimal(col + q);
-                                BigDecimal thisCellY = grid.getCellYBigDecimal(row + p);
+                                BigDecimal thisCellX = grid.getCellX(col + q);
+                                BigDecimal thisCellY = grid.getCellY(row + p);
                                 BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
                                 if (thisDistance.compareTo(distance) == -1) {
                                     BigDecimal vbd = BigDecimal.valueOf(v);
@@ -1794,8 +1794,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     double max1 = Double.MIN_VALUE;
                     double min0 = Double.MAX_VALUE;
                     double min1 = Double.MAX_VALUE;
-                    BigDecimal x0 = grid0.getCellXBigDecimal(col);
-                    BigDecimal y0 = grid0.getCellYBigDecimal(row);
+                    BigDecimal x0 = grid0.getCellX(col);
+                    BigDecimal y0 = grid0.getCellY(row);
                     BigDecimal diff = BigDecimal.ZERO;
                     BigDecimal weightedDiff = BigDecimal.ZERO;
                     BigDecimal normalisedDiff = BigDecimal.ZERO;
@@ -1804,8 +1804,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     n = 0;
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                            BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                            BigDecimal x1 = grid0.getCellX(col + q);
+                            BigDecimal y1 = grid0.getCellY(row + p);
                             BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                             if (thisDistance.compareTo(distance) == -1) {
                                double value0 = grid0.getCell(x1, y1);
@@ -1835,8 +1835,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                            double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal x1 = grid0.getCellX(col + q);
+                                   BigDecimal y1 = grid0.getCellY(row + p);
                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                        double v0 = grid0.getCell(x1, y1);
@@ -1888,8 +1888,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
                     //if ( grid0.getCell( row, col ) != grid0NoDataValue ) {
-                   BigDecimal x0 = grid0.getCellXBigDecimal(col);
-                   BigDecimal y0 = grid0.getCellYBigDecimal(row);
+                   BigDecimal x0 = grid0.getCellX(col);
+                   BigDecimal y0 = grid0.getCellY(row);
                    double max0 = Double.MIN_VALUE;
                    double max1 = Double.MIN_VALUE;
                    double min0 = Double.MAX_VALUE;
@@ -1918,8 +1918,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     // Calculate max min range sumWeight
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                           BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                           BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                           BigDecimal x1 = grid0.getCellX(col + q);
+                           BigDecimal y1 = grid0.getCellY(row + p);
                            BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                             if (thisDistance.compareTo(distance) == -1) {
                                BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
@@ -1949,8 +1949,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                            double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal x1 = grid0.getCellX(col + q);
+                                   BigDecimal y1 = grid0.getCellY(row + p);
                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                        BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
@@ -1979,8 +1979,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                                   BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                   BigDecimal x1 = grid0.getCellX(col + q);
+                                   BigDecimal y1 = grid0.getCellY(row + p);
                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                 BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
@@ -2034,8 +2034,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (weightedStandardDeviation0.compareTo(BigDecimal.ZERO) == 1 && weightedStandardDeviation1.compareTo(BigDecimal.ZERO) == 1) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                       BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                                       BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                       BigDecimal x1 = grid0.getCellX(col + q);
+                                       BigDecimal y1 = grid0.getCellY(row + p);
                                        BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                    double v0 = grid0.getCell(x1, y1);
@@ -2067,8 +2067,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (standardDeviation0.doubleValue() > 0.0d && standardDeviation1.doubleValue() > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                       BigDecimal x1 = grid0.getCellXBigDecimal(col + q);
-                                       BigDecimal y1 = grid0.getCellYBigDecimal(row + p);
+                                       BigDecimal x1 = grid0.getCellX(col + q);
+                                       BigDecimal y1 = grid0.getCellY(row + p);
                                        BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                    double v0 = grid0.getCell(x1, y1);
