@@ -21,7 +21,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -209,8 +208,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (env.cacheChunkExcept_Account(g, env.HOOMEF) < 1) {
-                    env.cacheChunks(env.HOOMEF);
+                if (env.swapChunkExcept_Account(g, env.HOOMEF) < 1) {
+                    env.swapChunks(env.HOOMEF);
                 }
                 env.initMemoryReserve(g, hoome);
                 env.checkAndMaybeFreeMemory();

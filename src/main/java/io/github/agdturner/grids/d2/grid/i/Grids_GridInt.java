@@ -294,8 +294,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         startChunkRow = g.getChunkRow(startRow);
         int endChunkRow;
         endChunkRow = g.getChunkRow(endRow);
-        int nChunkRows;
-        nChunkRows = endChunkRow - startChunkRow + 1;
+        int ncr = endChunkRow - startChunkRow + 1;
         int startChunkCol;
         startChunkCol = g.getChunkCol(startCol);
         int endChunkCol;
@@ -370,7 +369,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                                 env.clearMemoryReserve(env.env);
                                 freeSomeMemoryAndResetReserve(e);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1) {
                                     /**
                                      * TODO: Should also not cache out the chunk
                                      * of grid that's values are being used to
@@ -388,7 +387,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                     //loadedChunkCount++;
                     //cci1 = _ChunkColIndex;
                 }
-                System.out.println("Done chunkRow " + gcr + " out of " + nChunkRows);
+                System.out.println("Done chunkRow " + gcr + " out of " + ncr);
             }
         } else {
             Grids_GridInt gi = (Grids_GridInt) g;
@@ -461,7 +460,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                             if (env.HOOME) {
                                 env.clearMemoryReserve(env.env);
                                 chunkID = new Grids_2D_ID_int(gcr, gcc);
-                                if (env.cacheChunksExcept_Account(this, chunkID, false) < 1L) {
+                                if (env.swapChunksExcept_Account(this, chunkID, false) < 1L) {
                                     /**
                                      * TODO: Should also not cache out the chunk
                                      * of grid thats values are being used to
@@ -478,7 +477,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                     isLoadedChunk = false;
                 }
                 System.out.println("Done chunkRow " + gcr + " out of "
-                        + nChunkRows);
+                        + ncr);
             }
         }
         init();
@@ -750,9 +749,9 @@ public class Grids_GridInt extends Grids_GridNumber {
 //     * @param chunkID The chunk ID of the chunk to be restored.
 //     */
 //    @Override
-//    public void loadIntoCacheChunk(Grids_2D_ID_int chunkID) {
-//        boolean isInCache = isInCache(chunkID);
-//        if (!isInCache) {
+//    public void loadChunk(Grids_2D_ID_int chunkID) {
+//        boolean isLoaded = isLoaded(chunkID);
+//        if (!isLoaded) {
 //            File f = new File(getDirectory(),
 //                    "" + chunkID.getRow() + "_" + chunkID.getCol());
 //            Object o = env.env.io.readObject(f);
@@ -772,7 +771,7 @@ public class Grids_GridInt extends Grids_GridNumber {
 //            } else {
 //                throw new Error("Unrecognised type of chunk or null "
 //                        + this.getClass().getName()
-//                        + ".loadIntoCacheChunk(ChunkID(" + chunkID.toString()
+//                        + ".loadChunk(ChunkID(" + chunkID.toString()
 //                        + "))");
 //            }
 //            chunk.env = env;
@@ -817,7 +816,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Grids_Chunk c;
             c = data.get(chunkID);
             if (c == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             chunk = (Grids_ChunkInt) data.get(chunkID);
             if (chunk instanceof Grids_ChunkIntSinglet) {
@@ -851,7 +850,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             ClassNotFoundException, Exception {
         if (isInGrid(chunkID)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkInt) data.get(chunkID);
         }
@@ -868,7 +867,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Exception {
         if (isInGrid(chunkRow, chunkCol)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkInt) data.get(chunkID);
         }

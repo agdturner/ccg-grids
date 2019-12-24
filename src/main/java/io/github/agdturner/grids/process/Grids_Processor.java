@@ -465,7 +465,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);
@@ -606,7 +606,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);
@@ -2292,7 +2292,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (env.cacheChunksExcept_Account(g, hoome) < 1) {
+                if (env.swapChunksExcept_Account(g, hoome) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);
@@ -2333,7 +2333,7 @@ public class Grids_Processor extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (!env.cacheChunk(env.HOOMEF)) {
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);

@@ -244,7 +244,6 @@ public class Grids_GridBinary extends Grids_Grid {
         init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
-        int nChunkRows = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridBinary) {
@@ -256,7 +255,7 @@ public class Grids_GridBinary extends Grids_Grid {
                     do {
                         isLoadedChunk = loadChunk(g, cf, chunkNRows, chunkNCols,
                                 startRow, startCol, endRow, endCol,
-                                startChunkRow, endChunkRow, nChunkRows,
+                                startChunkRow, endChunkRow, 
                                 startChunkCol, endChunkCol, gb, gcr,
                                 gChunkNRows, gcc);
                     } while (!isLoadedChunk);
@@ -277,7 +276,7 @@ public class Grids_GridBinary extends Grids_Grid {
     protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBinary cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int startChunkRow, int endChunkRow,
-            int nChunkRows, int startChunkCol, int endChunkCol,
+            int startChunkCol, int endChunkCol,
             Grids_GridBinary gb, int gcr, int gChunkNRows, int gcc)
             throws ClassNotFoundException, Exception {
         boolean isLoadedChunk = false;
@@ -300,7 +299,7 @@ public class Grids_GridBinary extends Grids_Grid {
                 Set<Grids_2D_ID_int> s = new HashSet<>();
                 s.add(chunkID);
                 notToSwapOut.put(this, s);
-                if (env.cacheChunksExcept_Account(notToSwapOut, false) < 1L) {
+                if (env.swapChunksExcept_Account(notToSwapOut, false) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(this, chunkID, env.HOOME);
@@ -446,7 +445,7 @@ public class Grids_GridBinary extends Grids_Grid {
         } else {
             Grids_Chunk c = data.get(chunkID);
             if (c == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             chunk = (Grids_ChunkBinaryArray) data.get(chunkID);
             if (fast) {
@@ -468,7 +467,7 @@ public class Grids_GridBinary extends Grids_Grid {
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkID)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkBinaryArray) data.get(chunkID);
         }
@@ -489,7 +488,7 @@ public class Grids_GridBinary extends Grids_Grid {
             Exception {
         if (isInGrid(chunkRow, chunkCol)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkBinaryArray) data.get(chunkID);
         }

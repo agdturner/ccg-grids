@@ -246,7 +246,6 @@ public class Grids_GridBoolean extends Grids_Grid {
                 endCol);
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
-        int nChunkRows = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridBoolean) {
@@ -302,8 +301,7 @@ public class Grids_GridBoolean extends Grids_Grid {
                 Set<Grids_2D_ID_int> s = new HashSet<>();
                 s.add(chunkID);
                 notToSwapOut.put(this, s);
-                if (env.cacheChunksExcept_Account(notToSwapOut,
-                        false) < 1L) {
+                if (env.swapChunksExcept_Account(notToSwapOut, false) < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(this, chunkID, env.HOOME);
@@ -450,7 +448,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         } else {
             Grids_Chunk c = data.get(chunkID);
             if (c == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             chunk = (Grids_ChunkBooleanArray) data.get(chunkID);
             if (fast) {
@@ -472,7 +470,7 @@ public class Grids_GridBoolean extends Grids_Grid {
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkID)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkBooleanArray) data.get(chunkID);
         }
@@ -492,7 +490,7 @@ public class Grids_GridBoolean extends Grids_Grid {
             int chunkCol) throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(chunkRow, chunkCol)) {
             if (data.get(chunkID) == null) {
-                loadIntoCacheChunk(chunkID);
+                loadChunk(chunkID);
             }
             return (Grids_ChunkBooleanArray) data.get(chunkID);
         }
@@ -816,10 +814,10 @@ public class Grids_GridBoolean extends Grids_Grid {
             counter++;
             Grids_2D_ID_int chunkID = ite.next();
             Grids_ChunkBooleanArray chunk = getChunk(chunkID);
-            int chunkNRows = getChunkNRows(chunkID);
-            int chunkNCols = getChunkNCols(chunkID);
-            for (int row = 0; row < chunkNRows; row++) {
-                for (int col = 0; col < chunkNCols; col++) {
+            int cnr = getChunkNRows(chunkID);
+            int cnc = getChunkNCols(chunkID);
+            for (int row = 0; row < cnr; row++) {
+                for (int col = 0; col < cnc; col++) {
                     chunk.initCell(row, col, v);
                 }
             }

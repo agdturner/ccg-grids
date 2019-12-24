@@ -545,7 +545,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                if (!env.cacheChunk(env.HOOMEF)) {
+                if (!env.swapChunk(env.HOOMEF)) {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);
@@ -1734,7 +1734,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 } catch (OutOfMemoryError e) {
                     env.clearMemoryReserve(env.env);
                     System.err.println("OutOfMemoryError in getMetrics1(...) initialisation");
-                    if (!env.cacheChunk(env.HOOMEF)) {
+                    if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
                     }
                     env.initMemoryReserve(env.env);

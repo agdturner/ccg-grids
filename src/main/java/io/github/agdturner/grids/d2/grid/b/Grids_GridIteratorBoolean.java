@@ -49,7 +49,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
             Chunk = (Grids_ChunkBooleanArray) g.getData()
                     .get(ChunkID);
             if (Chunk == null) {
-                Grid.loadIntoCacheChunk(ChunkID);
+                Grid.loadChunk(ChunkID);
                 Chunk = (Grids_ChunkBooleanArray) g.getData()
                         .get(ChunkID);
             }

@@ -18,7 +18,6 @@ package io.github.agdturner.grids.d2.grid;
 import java.io.IOException;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
-import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
@@ -155,11 +154,5 @@ public abstract class Grids_GridNumber extends Grids_Grid {
             BigDecimal y, int dp, RoundingMode rm) throws IOException,
             Exception, ClassNotFoundException {
         return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
-    }
-
-    @Override
-    public Grids_StatsNumber getStats(boolean hoome) throws IOException,
-            Exception {
-        return (Grids_StatsNumber) super.getStats(hoome);
     }
 }

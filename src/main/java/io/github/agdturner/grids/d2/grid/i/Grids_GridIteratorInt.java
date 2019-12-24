@@ -51,7 +51,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
             ChunkID = GridIterator.next();
             Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
             if (Chunk == null) {
-                Grid.loadIntoCacheChunk(ChunkID);
+                Grid.loadChunk(ChunkID);
                 Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
             }
             initChunkIterator();

@@ -49,7 +49,7 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
             Chunk = (Grids_ChunkBinaryArray) g.getData()
                     .get(ChunkID);
             if (Chunk == null) {
-                Grid.loadIntoCacheChunk(ChunkID);
+                Grid.loadChunk(ChunkID);
                 Chunk = (Grids_ChunkBinaryArray) g.getData()
                         .get(ChunkID);
             }
