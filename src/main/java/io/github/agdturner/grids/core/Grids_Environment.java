@@ -1017,7 +1017,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory before calling this method again.
-     * @throws java.io.IOException If encountered.
+     * @throws IOException If encountered.
      */
     @Override
     public final void initMemoryReserve(Grids_Grid g, Set<Grids_2D_ID_int> s,
@@ -1187,10 +1187,10 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Check and maybe free fast access memory by writing chunks to
-     * file. If available fast access memory is not low then this simply returns
-     * true. If available fast access memory is low, then an attempt is made to
-     * cache some chunks. Chunks in NotToCache are not cached unless desperate.
+     * Check and maybe free fast access memory by writing chunks to file. If
+     * available fast access memory is not low then this simply returns true. If
+     * available fast access memory is low, then an attempt is made to cache
+     * some chunks. Chunks in NotToCache are not cached unless desperate.
      *
      * @return true if there is sufficient memory to continue and false
      * otherwise.
@@ -1222,8 +1222,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return {@code true} if there is sufficient memory to continue and throws an
-     * OutOfMemoryError otherwise.
+     * @return {@code true} if there is sufficient memory to continue and throws
+     * an OutOfMemoryError otherwise.
      * @throws java.io.IOException If encountered.
      */
     @Override
@@ -1263,8 +1263,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * unless desperate. No chunk in {@code g} is cleared.
      *
      * @param g The grid from which chunks are not cleared.
-     * @return {@code true} if there is sufficient memory to continue and {@code false}
-     * otherwise.
+     * @return {@code true} if there is sufficient memory to continue and
+     * {@code false} otherwise.
      * @throws java.io.IOException If encountered.
      */
     protected boolean checkAndMaybeFreeMemory(Grids_Grid g) throws IOException,
@@ -1290,19 +1290,22 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * A method to check and maybe free fast access memory by writing chunks to
      * file. If available fast access memory is not low then this simply returns
-     * true. If available fast access memory is low, then an attempt is made to
-     * cache some chunks. Chunks in NotToCache are not cached unless desperate.
-     * No chunk with chunkId in g is cached. If there is not enough free memory
-     * then an OutOfMemoryError is thrown.
+     * {@code true}. If available fast access memory is low, then an attempt is
+     * made to cache some chunks. Chunks in {@link #notToClear} are not cached
+     * unless desperate. The chunk with chunk ID {@code i} in {@code g} is not
+     * cleared . If there is not enough free memory then an OutOfMemoryError is
+     * thrown.
      *
-     * @param g The grid from which chunks are not cleared.
-     * @param i
+     * @param g The grid from which the chunk with ID {@code i} is not cleared.
+     * @param i The chunk from {
+     * @grid g} that is not cleared.
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return true if there is sufficient memory to continue and false
-     * otherwise.
-     * @throws java.io.IOException If encountered.
+     * @return {@code true} if there is sufficient memory to continue and
+     * {@code false} otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public boolean checkAndMaybeFreeMemory(Grids_Grid g, Grids_2D_ID_int i,
@@ -1334,16 +1337,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to check and maybe free fast access memory by writing chunks to
-     * file. If available fast access memory is not low then this simply returns
-     * true. If available fast access memory is low, then an attempt is made to
-     * cache some chunks. Chunks in NotToCache are not cached unless desperate.
-     * No chunk with chunkId in g is cached.
+     * A method to check and maybe free fast access memory by clearing chunks.
+     * If available fast access memory is not low then this simply returns {@code true}.
+     * If available fast access memory is low, then an attempt is made to cache
+     * some chunks. Chunks in {@link #notToClear} are not swapped. The
+     * chunk with chunk ID {@code i} in {@code g} is not swapped.
      *
-     * @param g
-     * @param i
-     * @return true if there is sufficient memory to continue and false
+     * @param g The grid from which {@code i} is not swapped.
+     * @param i The chunk ID for which the chunk in {@code g} is not swapped.
+     * @return {@code true} if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean checkAndMaybeFreeMemory(Grids_Grid g,
             Grids_2D_ID_int i) throws IOException, Exception {
@@ -1379,6 +1384,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public boolean checkAndMaybeFreeMemory(Grids_2D_ID_int i, boolean hoome)
@@ -1417,6 +1424,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param i
      * @return true if there is i memory to continue and false otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean checkAndMaybeFreeMemory(Grids_2D_ID_int i)
             throws IOException, Exception {
@@ -1456,6 +1465,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public boolean checkAndMaybeFreeMemory(
@@ -1496,6 +1507,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean checkAndMaybeFreeMemory(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
@@ -1531,6 +1544,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param s
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public boolean checkAndMaybeFreeMemory(Grids_Grid g, Set<Grids_2D_ID_int> s,
@@ -1584,6 +1599,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param s
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean checkAndMaybeFreeMemory(Grids_Grid g,
             Set<Grids_2D_ID_int> s) throws IOException, Exception {
@@ -1624,6 +1641,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @return true if there is sufficient memory to continue and false
      * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1660,6 +1679,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * file.
      *
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected Account checkAndMaybeFreeMemory_Account() throws IOException,
             Exception {
@@ -1702,6 +1723,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return Number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
@@ -1743,6 +1766,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected Account checkAndMaybeFreeMemory_Account(Grids_Grid g)
             throws IOException, Exception {
@@ -1786,6 +1811,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @param chunkID
      * @return Number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
@@ -1829,6 +1856,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param i
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
             Grids_2D_ID_int i) throws IOException, Exception {
@@ -1872,6 +1901,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return Number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(Grids_2D_ID_int i,
@@ -1912,6 +1943,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param i
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Account checkAndMaybeFreeMemory_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
@@ -1957,6 +1990,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return Number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(
@@ -1998,6 +2033,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param m
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Account checkAndMaybeFreeMemory_Account(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException, Exception {
@@ -2041,6 +2078,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @param chunks
      * @return Number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public long checkAndMaybeFreeMemory_Account(Grids_Grid g,
@@ -2081,6 +2120,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param chunkIDs
      * @return Account of data cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
             Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
@@ -2122,6 +2163,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return A map of the grid chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2163,6 +2206,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory to continue.
      *
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail()
             throws IOException, Exception {
@@ -2214,6 +2259,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return HashMap identifying chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2254,6 +2301,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             Grids_Grid g) throws IOException, Exception {
@@ -2304,6 +2353,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @param i
      * @return HashMap identifying chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2352,6 +2403,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param chunkID
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             Grids_Grid g, Grids_2D_ID_int chunkID) throws IOException, Exception {
@@ -2402,6 +2455,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return HashMap identifying chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2448,6 +2503,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param chunkID
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             Grids_2D_ID_int i) throws IOException, Exception {
@@ -2507,6 +2564,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return HashMap identifying chunks cached or null if nothing is cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2554,6 +2613,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param m Identifies data not to be cached.
      * @return HashMap identifying chunks cached or null if nothing is cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
@@ -2606,6 +2667,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      * @param s
      * @return HashMap identifying chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
@@ -2651,6 +2714,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param s
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected AccountDetail checkAndMaybeFreeMemory_AccountDetail(
             Grids_Grid g, Set<Grids_2D_ID_int> s) throws IOException, Exception {
@@ -2695,6 +2760,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory. OutOfMemoryErrors are caught and thrown.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>> swapChunks_AccountDetail(
             boolean hoome) throws IOException, Exception, Exception {
@@ -2737,6 +2804,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to cache all Grids_Chunk in this.grids.
      *
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunks_AccountDetail() throws IOException, Exception {
@@ -2776,6 +2845,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory. OutOfMemoryErrors are caught and thrown.
      * @return A count of the number of chunks cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunks_Account(boolean hoome) throws IOException,
             Exception {
@@ -2819,6 +2890,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to cache all chunks in env.
      *
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long swapChunks_Account() throws IOException, Exception {
         long r = 0L;
@@ -2836,6 +2909,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public void swapChunks(boolean hoome) throws IOException, Exception {
         try {
@@ -2871,6 +2946,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * Attempts to cache all Grids_Chunk in grids.
      *
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean swapChunks() throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
@@ -2890,6 +2967,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunk_AccountDetail(boolean hoome) throws IOException,
@@ -2935,6 +3014,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public boolean swapChunk(boolean hoome) throws IOException, Exception {
         try {
@@ -2976,6 +3057,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * notToClear.
      *
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean swapChunk() throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
@@ -3000,6 +3083,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public void swapChunkExcept(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
@@ -3039,6 +3124,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean swapChunkExcept(Grids_Grid g) throws IOException,
             Exception {
@@ -3087,6 +3174,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunk_AccountDetail() throws IOException, Exception {
@@ -3114,6 +3203,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * cache any Grids_Chunk in this.grids except for those in with
      * Grids_Grid.ID = _ChunkID.
      * @param chunkID The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID,
@@ -3168,6 +3259,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * cache any Grids_Chunk in this.grids except for those in with
      * Grids_Grid.ID = _ChunkID.
      * @param chunkID The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID)
@@ -3194,6 +3287,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunkExcept_Account(Grids_2D_ID_int i, boolean hoome)
             throws IOException, Exception {
@@ -3237,6 +3332,8 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param i The id of the GridChunk not to be cached.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long swapChunkExcept_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
@@ -3260,6 +3357,8 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * @param i The ID of the chunk not to be cached.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean swapChunkExcept(Grids_2D_ID_int i) throws IOException,
             Exception {
@@ -3284,6 +3383,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m HashMap with Grids_Grid as keys and a respective Set of
      * Grids_Grid.ChunkIDs as values. Collectively these identifying those
      * chunks not to be cached from the Grids_Grid.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(
@@ -3334,6 +3435,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in
      * _Grid2DSquareCell_ChunkIDSet.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(
@@ -3367,6 +3470,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param chunkIDs
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_Grid g,
@@ -3400,6 +3505,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g
      * @param i
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i)
@@ -3436,6 +3543,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
@@ -3466,6 +3575,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunkExcept_AccountDetail(Grids_Grid g) throws IOException,
@@ -3512,6 +3623,13 @@ public class Grids_Environment extends Grids_MemoryManager
         return 0L; // If here then nothing could be cached!
     }
 
+    /**
+     * 
+     * @param m
+     * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected boolean swapChunkExcept(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
             Exception {
@@ -3540,6 +3658,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * cache any Grids_Chunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
      * @param g Grids_Grid that's chunks are not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunkExcept_Account(Grids_Grid g, Set<Grids_2D_ID_int> s,
             boolean hoome) throws IOException, Exception {
@@ -3588,6 +3708,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * cache any Grids_Chunk in this.grids except for those in g with ChunkIDs
      * in chunkIDs.
      * @param g Grids_Grid that's chunks are not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long swapChunkExcept_Account(Grids_Grid g,
             Set<Grids_2D_ID_int> s) throws IOException, Exception {
@@ -3624,6 +3746,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * with Grids_Grid._ChunkID _ChunkID.
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param i The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public int swapChunkExcept_Account(Grids_Grid g, Grids_2D_ID_int i,
             boolean hoome) throws IOException, Exception {
@@ -3670,6 +3794,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * with Grids_Grid._ChunkID _ChunkID.
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param chunkID The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected int swapChunkExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException, Exception {
@@ -3688,6 +3814,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in g.
      * @param g Grids_Grid that's chunks are not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunkExcept_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
@@ -3733,6 +3861,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * cache any Grids_Chunk in this.grids except for those in
      * _Grid2DSquareCell.
      * @param g Grids_Grid that's chunks are not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected int swapChunkExcept_Account(Grids_Grid g) throws IOException,
             Exception {
@@ -3759,6 +3889,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param chunkID The i.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_2D_ID_int i, boolean hoome)
@@ -3815,6 +3947,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached. i chunkID The
      * Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_2D_ID_int i)
@@ -3838,6 +3972,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached. cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_Grid g, boolean hoome)
@@ -3894,6 +4030,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_Grid g) throws IOException, Exception {
@@ -3917,6 +4055,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return
      * @throws IOException
      * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunksExcept_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
@@ -3957,6 +4097,13 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
+    /**
+     * 
+     * @param g
+     * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected long swapChunksExcept_Account(Grids_Grid g) throws IOException,
             Exception {
         long r = 0L;
@@ -3981,6 +4128,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param i The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
@@ -4039,8 +4188,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunksExcept_Account(Grids_Grid g, Grids_2D_ID_int i,
             boolean hoome) throws IOException, Exception {
@@ -4082,6 +4231,14 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
+    /**
+     * 
+     * @param g
+     * @param chunkID
+     * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected long swapChunksExcept_Account(Grids_Grid g,
             Grids_2D_ID_int chunkID) throws IOException, Exception {
         long r = 0L;
@@ -4109,6 +4266,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param chunkID The Grids_Grid.ID not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_Grid g,
@@ -4131,6 +4290,14 @@ public class Grids_Environment extends Grids_MemoryManager
         return r;
     }
 
+            /**
+             * 
+             * @param g
+             * @param chunkIDs
+             * @return
+             * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunksExcept_AccountDetail(Grids_Grid g,
                     Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
@@ -4165,6 +4332,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param chunkIDs The chunk IDs in g not to be cached.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long swapChunksExcept_Account(Grids_Grid g,
             Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
@@ -4192,6 +4361,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public long swapChunksExcept_Account(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
@@ -4233,6 +4404,13 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
+    /**
+     * 
+     * @param m
+     * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected long swapChunksExcept_Account(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
             Exception {
@@ -4255,8 +4433,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     @Override
     public boolean swapSomeData(boolean hoome) throws IOException, Exception {
@@ -4284,6 +4462,12 @@ public class Grids_Environment extends Grids_MemoryManager
         }
     }
 
+    /**
+     * 
+     * @return
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     @Override
     public boolean swapSomeData() throws IOException, Exception {
         return swapChunk();
@@ -4306,8 +4490,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(Grids_Grid g,
@@ -4329,8 +4513,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory.
      *
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(
@@ -4351,8 +4535,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(OutOfMemoryError e,
@@ -4374,8 +4558,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             freeSomeMemoryAndResetReserve_AccountDetails(boolean hoome) throws IOException, Exception {
@@ -4395,8 +4579,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long freeSomeMemoryAndResetReserve_Account(Grids_Grid g,
             Set<Grids_2D_ID_int> chunks, boolean hoome) throws IOException,
@@ -4413,8 +4597,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @return
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected long freeSomeMemoryAndResetReserve_Account(OutOfMemoryError e,
             boolean hoome) throws IOException, Exception {

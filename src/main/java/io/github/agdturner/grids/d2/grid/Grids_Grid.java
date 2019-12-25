@@ -1358,7 +1358,6 @@ public abstract class Grids_Grid extends Grids_Object {
             throws IOException, Exception {
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
         Set<Grids_2D_ID_int> s = new HashSet<>();
-
         for (int chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
             for (int chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                 Grids_2D_ID_int i2 = new Grids_2D_ID_int(chunkRow, chunkCol);
@@ -1404,8 +1403,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.lang.Exception If encountered.
      * @throws OutOfMemoryError If this cannot be handled.
      */
-    public long swapChunksExcept_Account(Set<Grids_2D_ID_int> s,
-            boolean camfm, boolean hoome) throws IOException, Exception {
+    public long swapChunksExcept_Account(Set<Grids_2D_ID_int> s, boolean camfm, 
+            boolean hoome) throws IOException, Exception {
         try {
             long r = swapChunksExcept_Account(s);
             if (camfm) {
@@ -1416,9 +1415,9 @@ public abstract class Grids_Grid extends Grids_Object {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
                 long r = env.swapChunkExcept_Account(this, s, false);
-                if (r < 1L) {
+                if (r == 0) {
                     r = env.swapChunkExcept_Account(this, s, false);
-                    if (r < 1L) {
+                    if (r == 0) {
                         throw e;
                     }
                 }
@@ -1446,8 +1445,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws OutOfMemoryError If this cannot be handled.
      */
     public final HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Set<Grids_2D_ID_int> s,
-                    boolean camfm, boolean hoome) throws IOException, Exception {
+            swapChunksExcept_AccountDetail(Set<Grids_2D_ID_int> s, 
+                    boolean camfm, boolean hoome) throws IOException, 
+                    Exception {
         try {
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                     = swapChunksExcept_AccountDetail(s);
@@ -1590,8 +1590,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.lang.Exception If encountered.
      * @throws OutOfMemoryError If this cannot be handled.
      */
-    public final int swapChunksExcept_Account(Grids_2D_ID_int i,
-            boolean hoome) throws IOException, Exception {
+    public final int swapChunksExcept_Account(Grids_2D_ID_int i, boolean hoome) 
+            throws IOException, Exception {
         try {
             int r = swapChunksExcept_Account(i);
             env.checkAndMaybeFreeMemory(hoome);
@@ -1666,20 +1666,30 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final long swapChunksExcept_Account(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
-        long r = 0L;
-        for (int cri = 0; cri < nChunkRows; cri++) {
-            for (int cci = 0; cci < nChunkCols; cci++) {
-                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(cri, cci);
-                if (!s.contains(chunkID)) {
-                    if (isWorthCaching(chunkID)) {
-                        cache(chunkID);
-                        clearChunk(chunkID);
-                        r++;
+        return worthSwapping.parallelStream().filter(i2 -> !s.contains(i2))
+                .collect(Collectors.summingInt((Grids_2D_ID_int i2) -> {
+                    try {
+                        return swapChunk(i2);
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                        env.env.log(ex.getMessage());
                     }
-                }
-            }
-        }
-        return r;
+                    return 0;
+                }));
+//        long r = 0L;
+//        for (int cri = 0; cri < nChunkRows; cri++) {
+//            for (int cci = 0; cci < nChunkCols; cci++) {
+//                Grids_2D_ID_int chunkID = new Grids_2D_ID_int(cri, cci);
+//                if (!s.contains(chunkID)) {
+//                    if (isWorthCaching(chunkID)) {
+//                        cache(chunkID);
+//                        clearChunk(chunkID);
+//                        r++;
+//                    }
+//                }
+//            }
+//        }
+//        return r;
     }
 
     /**
@@ -1697,8 +1707,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws OutOfMemoryError If this cannot be handled.
      */
     public final HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Set<Grids_2D_ID_int> s,
-                    boolean camfm, boolean hoome) throws IOException, Exception {
+            swapChunkExcept_AccountDetail(Set<Grids_2D_ID_int> s, boolean camfm,
+                    boolean hoome) throws IOException, Exception {
         try {
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
                     = swapChunkExcept_AccountDetail(s);
@@ -1807,8 +1817,7 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
             swapChunks_AccountDetail() throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                = new HashMap<>(1);
+        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
         Set<Grids_2D_ID_int> s = new HashSet<>();
         for (int cri = 0; cri < nChunkRows; cri++) {
             for (int cci = 0; cci < nChunkCols; cci++) {
@@ -1977,7 +1986,8 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
             BigDecimal distance, int dp, RoundingMode rm) {
-        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, dp, rm);
+        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, dp, 
+                rm);
     }
 
     /**
@@ -2026,7 +2036,7 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * @return Nearest cell ID to cell row {@code r}, cell column {@code c}.
      * @param r The cell row.
-     * @param c the cell column.
+     * @param c The cell column.
      */
     public Grids_2D_ID_long getNearestCellID(long r, long c) {
         return getNearestCellID(getCellX(c), getCellY(r), r, c);
