@@ -30,6 +30,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_2D_ID_long;
+import io.github.agdturner.grids.core.Grids_AccountDetail;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
@@ -1744,9 +1745,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * @throws java.lang.Exception If encountered.
      * @throws OutOfMemoryError If this cannot be handled.
      */
-    public final HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunkExcept_AccountDetail(Set<Grids_2D_ID_int> s)
-            throws IOException, Exception {
+    public final Grids_AccountDetail swapChunkExcept_AccountDetail(
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
         for (int cri = 0; cri < nChunkRows; cri++) {
             for (int cci = 0; cci < nChunkCols; cci++) {
