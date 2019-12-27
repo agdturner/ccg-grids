@@ -31,6 +31,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import io.github.agdturner.grids.io.Grids_Files;
 import io.github.agdturner.grids.process.Grids_Processor;
+import java.util.stream.Collectors;
 
 /**
  * Grids_Environment.
@@ -482,7 +483,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!swapChunk_Account().success) {
+                if (!swapChunk()) {
                     throw e;
                 }
                 initGridsAndMemoryReserve(grids, hoome);
@@ -519,8 +520,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_AccountDetail initMemoryReserve_AccountDetail(boolean hoome) throws IOException,
-            Exception {
+    public Grids_AccountDetail initMemoryReserve_AccountDetail(boolean hoome)
+            throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_AccountDetail(hoome);
@@ -549,18 +550,19 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_Account initMemoryReserve_Account(boolean hoome) throws IOException,
-            Exception {
+    public Grids_Account initMemoryReserve_Account(boolean hoome)
+            throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_Account(hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                Grids_Account r = swapChunk_Account();
-                if (!r.success) {
+                Grids_Account r = new Grids_Account();
+                if (!swapChunk()) {
                     throw e;
                 }
+                r.add(1);
                 r.add(checkAndMaybeFreeMemory_Account(hoome));
                 r.add(initMemoryReserve_Account(hoome));
                 return r;
@@ -591,7 +593,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (swapChunkExcept_Account(g) < 1L) {
+                if (swapChunkExcept_Account(g).detail < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, hoome);
@@ -622,7 +624,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (swapChunkExcept_Account(i) < 1L) {
+                if (swapChunkExcept_Account(i).detail < 1L) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(i, hoome);
@@ -655,7 +657,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve(env);
                 Grids_AccountDetail r = swapChunkExcept_AccountDetail(i);
-                if (r.isEmpty()) {
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
                 r.add(initMemoryReserve_AccountDetail(i, hoome));
@@ -687,11 +689,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(i);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(i);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(i, hoome);
+                r.add(initMemoryReserve_Account(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -720,7 +722,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (swapChunkExcept_Account(g, i) < 1L) {
+                if (swapChunkExcept(g, i)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, i, hoome);
@@ -741,24 +743,26 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory before calling this method again.
-     * @return The number of chunks cleared.
+     * @return An account of any clearing.
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_Account initMemoryReserve_Account(Grids_Grid g, Grids_2D_ID_int i,
-            boolean hoome) throws IOException, Exception {
+    public Grids_Account initMemoryReserve_Account(Grids_Grid g,
+            Grids_2D_ID_int i, boolean hoome) throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_Account(g, i, hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g, i);
-                if (r < 1L) {
+                Grids_Account r = new Grids_Account();
+                if (swapChunkExcept(g, i)) {
+                    r.add();
+                } else {
                     throw e;
                 }
-                r += checkAndMaybeFreeMemory_Account(g, i, hoome);
-                r += initMemoryReserve_Account(g, i, hoome);
+                r.add(checkAndMaybeFreeMemory_Account(g, i, hoome));
+                r.add(initMemoryReserve_Account(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -780,24 +784,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
-                    boolean hoome) throws IOException, Exception {
+    public Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g,
+            Grids_2D_ID_int i, boolean hoome) throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_AccountDetail(g, i, hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(g, i);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g, i);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = checkAndMaybeFreeMemory_AccountDetail(g, i, hoome);
-                combine(r, pr);
-                pr = initMemoryReserve_AccountDetail(g, i, hoome);
-                combine(r, pr);
+                r.add(checkAndMaybeFreeMemory_AccountDetail(g, i, hoome));
+                r.add(initMemoryReserve_AccountDetail(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -822,7 +822,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g,
-                    Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
+            Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
             Exception {
         try {
             initMemoryReserve(env);
@@ -830,16 +830,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(g, s);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g, s);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = checkAndMaybeFreeMemory_AccountDetail(g, s, hoome);
-                combine(r, pr);
-                pr = initMemoryReserve_AccountDetail(g, s, hoome);
-                combine(r, pr);
+                r.add(checkAndMaybeFreeMemory_AccountDetail(g, s, hoome));
+                r.add(initMemoryReserve_AccountDetail(g, s, hoome));
                 return r;
             } else {
                 throw e;
@@ -869,16 +865,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(g);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
-                combine(r, pr);
-                pr = initMemoryReserve_AccountDetail(g, hoome);
-                combine(r, pr);
+                r.add(checkAndMaybeFreeMemory_AccountDetail(g, hoome));
+                r.add(initMemoryReserve_AccountDetail(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -909,12 +901,13 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!swapChunkExcept_Account(m).success) {
+                Grids_Account r = new Grids_Account();
+                if (Grids_Environment.this.swapChunkExcept(m)) {
                     throw e;
                 }
-                long r = 1;
-                r += checkAndMaybeFreeMemory_Account(m, hoome);
-                r += initMemoryReserve_Account(m, hoome);
+                r.add(1);
+                r.add(checkAndMaybeFreeMemory_Account(m, hoome));
+                r.add(initMemoryReserve_Account(m, hoome));
                 return r;
             } else {
                 throw e;
@@ -943,12 +936,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(g);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += checkAndMaybeFreeMemory_Account(g, hoome);
-                r += initMemoryReserve_Account(g, hoome);
+                r.add(checkAndMaybeFreeMemory_Account(g, hoome));
+                r.add(initMemoryReserve_Account(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -972,20 +965,22 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_Account initMemoryReserve_Account(Grids_Grid g, Set<Grids_2D_ID_int> s,
-            boolean hoome) throws IOException, Exception {
+    public Grids_Account initMemoryReserve_Account(Grids_Grid g,
+            Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
+            Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_Account(g, s, hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g, s);
-                if (r < 1L) {
+                Grids_Account r = new Grids_Account();
+                if (!Grids_Environment.this.swapChunkExcept(g, s)) {
                     throw e;
                 }
-                r += checkAndMaybeFreeMemory_Account(g, s, hoome);
-                r += initMemoryReserve_Account(g, s, hoome);
+                r.add(1);
+                r.add(checkAndMaybeFreeMemory_Account(g, s, hoome));
+                r.add(initMemoryReserve_Account(g, s, hoome));
                 return r;
             } else {
                 throw e;
@@ -1016,7 +1011,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (swapChunkExcept_Account(g, s) < 1L) {
+                if (!Grids_Environment.this.swapChunkExcept(g, s)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, s, hoome);
@@ -1048,7 +1043,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!swapChunkExcept_Account(m).success) {
+                if (!Grids_Environment.this.swapChunkExcept(m)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(m, hoome);
@@ -1074,24 +1069,20 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail initMemoryReserve_AccountDetail(
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
-                    boolean hoome) throws IOException, Exception {
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
+            boolean hoome) throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_AccountDetail(m, hoome);
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(m);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(m);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
-                combine(r, pr);
-                pr = initMemoryReserve_AccountDetail(m, hoome);
-                combine(r, pr);
+                r.add(checkAndMaybeFreeMemory_AccountDetail(m, hoome));
+                r.add(initMemoryReserve_AccountDetail(m, hoome));
                 return r;
             } else {
                 throw e;
@@ -1156,10 +1147,10 @@ public class Grids_Environment extends Grids_MemoryManager
     public boolean checkAndMaybeFreeMemory() throws IOException, Exception {
         if (getTotalFreeMemory() < Memory_Threshold) {
             if (notToClear.isEmpty()) {
-                return checkAndMaybeFreeMemory_CacheAny();
+                return checkAndMaybeFreeMemory_ClearAny();
             } else {
                 do {
-                    if (swapChunkExcept_Account(notToClear).success) {
+                    if (Grids_Environment.this.swapChunkExcept(notToClear)) {
                         if (getTotalFreeMemory() < Memory_Threshold) {
                             return true;
                         }
@@ -1167,7 +1158,7 @@ public class Grids_Environment extends Grids_MemoryManager
                         break;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
-                return checkAndMaybeFreeMemory_CacheAny();
+                return checkAndMaybeFreeMemory_ClearAny();
             }
         }
         return false;
@@ -1183,11 +1174,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * otherwise.
      * @throws java.io.IOException If encountered.
      */
-    protected boolean checkAndMaybeFreeMemory_CacheAny() throws IOException,
+    protected boolean checkAndMaybeFreeMemory_ClearAny() throws IOException,
             Exception {
         if (getTotalFreeMemory() < Memory_Threshold) {
             do {
-                if (!swapChunk_Account().success) {
+                if (!swapChunk()) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1259,12 +1250,12 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             notToClear.put(g, g.getChunkIDs());
             do {
-                if (!swapChunkExcept(notToClear)) {
+                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (!swapChunkExcept(g)) {
+                if (!Grids_Environment.this.swapChunkExcept(g)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1350,12 +1341,12 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToClear(g, i);
             do {
-                if (!swapChunkExcept(notToClear)) {
+                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(g, i) < 1) {
+                if (swapChunkExcept(g, i)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1438,7 +1429,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Iterator<Grids_Grid> ite = grids.iterator();
             while (ite.hasNext()) {
                 addToNotToClear(ite.next(), i);
-                if (swapChunkExcept(notToClear)) {
+                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1446,7 +1437,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             ite = grids.iterator();
             while (ite.hasNext()) {
-                if (swapChunkExcept(i)) {
+                if (Grids_Environment.this.swapChunkExcept(i)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1532,12 +1523,12 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToClear(m);
             do {
-                if (!swapChunkExcept(notToClear)) {
+                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(m) < 1) {
+                if (swapChunkExcept(m)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1576,7 +1567,7 @@ public class Grids_Environment extends Grids_MemoryManager
             boolean hoome) throws IOException, Exception {
         try {
             while (getTotalFreeMemory() < Memory_Threshold) {
-                if (swapChunkExcept_Account(g, s) < 1) {
+                if (swapChunkExcept(g, s)) {
                     env.log("Warning! No data to clear in "
                             + this.getClass().getName()
                             + ".checkAndMaybeFreeMemory(" + g.getClass().getName()
@@ -1592,7 +1583,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 clearMemoryReserve(env);
                 boolean createdRoom = false;
                 while (!createdRoom) {
-                    if (swapChunkExcept_Account(g, s) < 1L) {
+                    if (swapChunkExcept(g, s)) {
                         System.out.println(
                                 "Warning! Nothing to cache in "
                                 + this.getClass().getName()
@@ -1648,7 +1639,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (swapChunkExcept_Account(g, s) < 1) {
+                if (swapChunkExcept(g, s)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1720,7 +1711,7 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_Account r = new Grids_Account();
             do {
-                if (swapChunkExcept(notToClear)) {
+                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
                     r.detail++;
                 } else {
                     break;
@@ -1763,26 +1754,23 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
             boolean hoome) throws IOException, Exception {
         try {
-            Grids_Account test = checkAndMaybeFreeMemory_Account(g);
-            if (test == null) {
-                return 0;
+            Grids_Account r = checkAndMaybeFreeMemory_Account(g);
+            if (r == null) {
+                return r;
             }
-            if (!test.success) {
-                String message = "Warning! Not enough data to cache in "
-                        + this.getClass().getName()
-                        + ".checkAndMaybeFreeMemory_Account(" + g.getClass().getName()
-                        + ",boolean)";
-                System.out.println(message);
+            if (!r.success) {
+                String message = "No data to clear.";
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = checkAndMaybeFreeMemory_Account(g, hoome);
-                r += initMemoryReserve_Account(g, hoome);
+                Grids_Account r = checkAndMaybeFreeMemory_Account(g, hoome);
+                r.add(initMemoryReserve_Account(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -1808,7 +1796,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_Account r = new Grids_Account();
             addToNotToClear(g);
             do {
-                if (swapChunkExcept(notToClear)) {
+                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
                     r.detail++;
                 } else {
                     break;
@@ -1818,7 +1806,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 r.success = true;
             } else {
                 do {
-                    if (swapChunkExcept(g)) {
+                    if (Grids_Environment.this.swapChunkExcept(g)) {
                         r.detail++;
                     } else {
                         break;
@@ -1842,36 +1830,32 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @param chunkID
+     * @param i
      * @return Number of chunks cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
     @Override
     public Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
-            Grids_2D_ID_int chunkID, boolean hoome) throws IOException, Exception {
+            Grids_2D_ID_int i, boolean hoome) throws IOException, Exception {
         try {
-            Grids_Account r = checkAndMaybeFreeMemory_Account(g, chunkID);
+            Grids_Account r = checkAndMaybeFreeMemory_Account(g, i);
             if (r == null) {
-                return 0;
+                return r;
             }
             if (!r.success) {
-                String message = "Warning! Not enough data to cache in "
-                        + this.getClass().getName()
-                        + ".checkAndMaybeFreeMemory_Account("
-                        + g.getClass().getName() + ","
-                        + chunkID.getClass().getName() + ",boolean)";
-                System.out.println(message);
+                String message = "Not enough data to clear.";
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return r.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = checkAndMaybeFreeMemory_Account(g, chunkID, hoome);
-                r += initMemoryReserve_Account(g, chunkID, hoome);
+                Grids_Account r = checkAndMaybeFreeMemory_Account(g, i, hoome);
+                r.add(initMemoryReserve_Account(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -1908,11 +1892,10 @@ public class Grids_Environment extends Grids_MemoryManager
                 r.success = true;
             } else {
                 do {
-                    long caches = swapChunkExcept_Account(g, i);
-                    if (caches < 1L) {
+                    if (swapChunkExcept(g, i)) {
                         break;
                     } else {
-                        r.detail += caches;
+                        r.add();
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 r.success = getTotalFreeMemory() < Memory_Threshold;
@@ -1943,24 +1926,21 @@ public class Grids_Environment extends Grids_MemoryManager
         try {
             Grids_Account r = checkAndMaybeFreeMemory_Account(i);
             if (r == null) {
-                return 0;
+                return r;
             }
             if (!r.success) {
-                String message = "Warning! Not enough data to cache in "
-                        + this.getClass().getName()
-                        + ".checkAndMaybeFreeMemory_Account("
-                        + i.getClass().getName() + ",boolean)";
-                System.out.println(message);
+                String message = "Not enough data to clear.";
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return r.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = checkAndMaybeFreeMemory_Account(i, hoome);
-                r += initMemoryReserve_Account(i, hoome);
+                Grids_Account r = checkAndMaybeFreeMemory_Account(i, hoome);
+                r.add(initMemoryReserve_Account(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -1987,9 +1967,8 @@ public class Grids_Environment extends Grids_MemoryManager
             while (ite.hasNext()) {
                 Grids_Grid g = ite.next();
                 addToNotToClear(g, i);
-                long cache = swapChunkExcept_Account(notToClear);
-                r.detail += cache;
-                if (cache > 0L) {
+                if (swapChunkExcept(notToClear)) {
+                    r.add();
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -1999,9 +1978,7 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 Grids_Grid g = ite.next();
-                long cache = swapChunkExcept_Account(g, i);
-                r.detail += cache;
-                if (cache > 0L) {
+                if (swapChunkExcept(g, i)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2028,14 +2005,14 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_Account checkAndMaybeFreeMemory_Account(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
-            boolean hoome) throws IOException, Exception {
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m, boolean hoome)
+            throws IOException, Exception {
         try {
-            Grids_Account test = checkAndMaybeFreeMemory_Account(m);
-            if (test == null) {
-                return 0;
+            Grids_Account r = checkAndMaybeFreeMemory_Account(m);
+            if (r == null) {
+                return r;
             }
-            if (!test.success) {
+            if (!r.success) {
                 String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_Account("
@@ -2045,12 +2022,12 @@ public class Grids_Environment extends Grids_MemoryManager
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = checkAndMaybeFreeMemory_Account(m, hoome);
-                r += initMemoryReserve_Account(m, hoome);
+                Grids_Account r = checkAndMaybeFreeMemory_Account(m, hoome);
+                r.add(initMemoryReserve_Account(m, hoome));
                 return r;
             } else {
                 throw e;
@@ -2076,7 +2053,7 @@ public class Grids_Environment extends Grids_MemoryManager
             addToNotToClear(m);
             do {
                 if (swapChunkExcept(notToClear)) {
-                    r.detail++;
+                    r.add(1);
                 } else {
                     break;
                 }
@@ -2085,11 +2062,10 @@ public class Grids_Environment extends Grids_MemoryManager
                 r.success = true;
             } else {
                 do {
-                    long caches = swapChunkExcept_Account(m);
-                    if (caches < 1L) {
-                        break;
+                    if (swapChunkExcept(m)) {
+                        r.add(1);
                     } else {
-                        r.detail += caches;
+                        break;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 r.success = getTotalFreeMemory() < Memory_Threshold;
@@ -2148,19 +2124,19 @@ public class Grids_Environment extends Grids_MemoryManager
      * identified by m. No data is cached from chunks in g.
      *
      * @param g
-     * @param chunkIDs
+     * @param s
      * @return Grids_Account of data cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
     public Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_Account r = new Grids_Account();
-            addToNotToClear(g, chunkIDs);
+            addToNotToClear(g, s);
             do {
                 if (swapChunkExcept(notToClear)) {
-                    r.detail++;
+                    r.add();
                 } else {
                     break;
                 }
@@ -2169,11 +2145,10 @@ public class Grids_Environment extends Grids_MemoryManager
                 r.success = true;
             } else {
                 do {
-                    long caches = swapChunkExcept_Account(g, chunkIDs);
-                    if (caches < 1L) {
-                        break;
+                    if (swapChunkExcept(g, s)) {
+                        r.add();
                     } else {
-                        r.detail += caches;
+                        break;
                     }
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 r.success = getTotalFreeMemory() < Memory_Threshold;
@@ -2237,13 +2212,13 @@ public class Grids_Environment extends Grids_MemoryManager
             throws IOException, Exception {
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_AccountDetail r = new Grids_AccountDetail();
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+            Grids_AccountDetail pr;
             do {
                 pr = swapChunkExcept_AccountDetail(notToClear);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2252,10 +2227,10 @@ public class Grids_Environment extends Grids_MemoryManager
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
                 pr = swapChunk_AccountDetail();
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2287,14 +2262,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws Exception If encountered.
      */
     @Override
-    public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_Grid g, boolean hoome)
-            throws IOException, Exception {
+    public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(
+            Grids_Grid g, boolean hoome) throws IOException, Exception {
         try {
-            Grids_AccountDetail test = checkAndMaybeFreeMemory_AccountDetail(g);
-            if (test == null) {
+            Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g);
+            if (r == null) {
                 return null;
             }
-            if (!test.success) {
+            if (!r.success) {
                 String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
@@ -2303,7 +2278,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
@@ -2316,10 +2291,10 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * A method to ensure there is enough memory to continue. This method will
-     * quickly return null if there is enough memory to continue. If there is
-     * not enough memory to continue it will attempt to make room and will pass
-     * back a detailed account of this and an indication if there is enough
-     * memory to continue. No data is cached from g.
+     * quickly return {@code null} if there is enough memory to continue. If
+     * there is not enough memory to continue it will attempt to make room and
+     * will pass back a detailed account of this and an indication if there is
+     * enough memory to continue. No data is cached from g.
      *
      * @param g
      * @return
@@ -2331,13 +2306,13 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_AccountDetail r = new Grids_AccountDetail();
             addToNotToClear(g);
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+            Grids_AccountDetail pr;
             do {
                 pr = swapChunkExcept_AccountDetail(notToClear);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2346,10 +2321,10 @@ public class Grids_Environment extends Grids_MemoryManager
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
                 pr = swapChunkExcept_AccountDetail(g);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2380,14 +2355,14 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_Grid g,
-                    Grids_2D_ID_int i, boolean hoome) throws IOException,
+            Grids_2D_ID_int i, boolean hoome) throws IOException,
             Exception {
         try {
-            Grids_AccountDetail test = checkAndMaybeFreeMemory_AccountDetail(g, i);
-            if (test == null) {
+            Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g, i);
+            if (r == null) {
                 return null;
             }
-            if (!test.success) {
+            if (!r.success) {
                 String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
@@ -2397,15 +2372,12 @@ public class Grids_Environment extends Grids_MemoryManager
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = checkAndMaybeFreeMemory_AccountDetail(g, i, hoome);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = initMemoryReserve_AccountDetail(g, i, hoome);
-                combine(r, pr);
+                Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g, i, hoome);
+                r.add(initMemoryReserve_AccountDetail(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -2431,13 +2403,13 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_AccountDetail r = new Grids_AccountDetail();
             addToNotToClear(g, chunkID);
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+            Grids_AccountDetail pr;
             do {
                 pr = swapChunkExcept_AccountDetail(notToClear);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2446,10 +2418,10 @@ public class Grids_Environment extends Grids_MemoryManager
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
                 pr = swapChunkExcept_AccountDetail(g, chunkID);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2480,7 +2452,7 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_2D_ID_int chunkID,
-                    boolean hoome) throws IOException, Exception {
+            boolean hoome) throws IOException, Exception {
         try {
             Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(chunkID);
             if (r == null) {
@@ -2491,20 +2463,17 @@ public class Grids_Environment extends Grids_MemoryManager
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + chunkID.getClass().getName() + ",boolean)";
-                System.out.println(message);
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return r.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = checkAndMaybeFreeMemory_AccountDetail(chunkID, hoome);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = initMemoryReserve_AccountDetail(chunkID, hoome);
-                combine(r, pr);
+                Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(chunkID, hoome);
+                r.add(initMemoryReserve_AccountDetail(chunkID, hoome));
                 return r;
             } else {
                 throw e;
@@ -2520,7 +2489,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * memory to continue. The Chunk with chunkID from g is not cached. No data
      * is cached with chunkID.
      *
-     * @param chunkID
+     * @param i
      * @return
      * @throws IOException If encountered.
      * @throws Exception If encountered.
@@ -2533,13 +2502,13 @@ public class Grids_Environment extends Grids_MemoryManager
             while (ite.hasNext()) {
                 Grids_Grid g = ite.next();
                 addToNotToClear(g, i);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+                Grids_AccountDetail pr;
                 do {
                     pr = swapChunkExcept_AccountDetail(notToClear);
-                    if (pr.isEmpty()) {
+                    if (pr.detail.isEmpty()) {
                         break;
                     } else {
-                        combine(r.detail, pr);
+                        r.add(pr);
                         if (getTotalFreeMemory() < Memory_Threshold) {
                             r.success = true;
                             return r;
@@ -2550,13 +2519,13 @@ public class Grids_Environment extends Grids_MemoryManager
             ite = grids.iterator();
             while (ite.hasNext()) {
                 Grids_Grid g = ite.next();
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+                Grids_AccountDetail pr;
                 do {
                     pr = swapChunkExcept_AccountDetail(g, i);
-                    if (pr.isEmpty()) {
+                    if (pr.detail.isEmpty()) {
                         break;
                     } else {
-                        combine(r.detail, pr);
+                        r.add(pr);
                         if (getTotalFreeMemory() < Memory_Threshold) {
                             r.success = true;
                             return r;
@@ -2588,32 +2557,29 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m, boolean hoome)
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m, boolean hoome)
             throws IOException, Exception {
         try {
-            Grids_AccountDetail test = checkAndMaybeFreeMemory_AccountDetail(m);
-            if (test == null) {
+            Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(m);
+            if (r == null) {
                 return null;
             }
-            if (test.success) {
+            if (r.success) {
                 String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + m.getClass().getName() + ",boolean)";
-                System.out.println(message);
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = initMemoryReserve_AccountDetail(m, hoome);
-                combine(r, pr);
+                Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(m, hoome);
+                r.add(initMemoryReserve_AccountDetail(m, hoome));
                 return r;
             } else {
                 throw e;
@@ -2640,13 +2606,13 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_AccountDetail r = new Grids_AccountDetail();
             addToNotToClear(m);
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+            Grids_AccountDetail pr;
             do {
                 pr = swapChunkExcept_AccountDetail(notToClear);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2655,10 +2621,10 @@ public class Grids_Environment extends Grids_MemoryManager
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
                 pr = swapChunkExcept_AccountDetail(m);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2690,25 +2656,25 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     @Override
     public Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_Grid g,
-                    Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
+            Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
             Exception {
         try {
-            Grids_AccountDetail test = checkAndMaybeFreeMemory_AccountDetail(g, s);
-            if (test == null) {
+            Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g, s);
+            if (r == null) {
                 return null;
             }
-            if (!test.success) {
+            if (!r.success) {
                 String message = "Warning! Not enough data to cache in "
                         + this.getClass().getName()
                         + ".checkAndMaybeFreeMemory_AccountDetail("
                         + g.getClass().getName() + ","
                         + s.getClass().getName() + ",boolean)";
-                System.out.println(message);
+                //System.out.println(message);
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
                 throw new OutOfMemoryError(message);
             }
-            return test.detail;
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
@@ -2739,13 +2705,13 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_AccountDetail r = new Grids_AccountDetail();
             addToNotToClear(g, s);
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr;
+            Grids_AccountDetail pr;
             do {
                 pr = swapChunkExcept_AccountDetail(notToClear);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2754,10 +2720,10 @@ public class Grids_Environment extends Grids_MemoryManager
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
                 pr = swapChunkExcept_AccountDetail(g, s);
-                if (pr.isEmpty()) {
+                if (pr.detail.isEmpty()) {
                     break;
                 } else {
-                    combine(r.detail, pr);
+                    r.add(pr);
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         r.success = true;
                         return r;
@@ -2780,25 +2746,24 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public HashMap<Grids_Grid, Set<Grids_2D_ID_int>> swapChunks_AccountDetail(
+    public Grids_AccountDetail swapChunks_AccountDetail(
             boolean hoome) throws IOException, Exception, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunks_AccountDetail(notToClear);
+            Grids_AccountDetail r = swapChunks_AccountDetail(notToClear);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account = checkAndMaybeFreeMemory_AccountDetail();
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
+                if (r.detail.isEmpty()) {
+                    Grids_AccountDetail a = checkAndMaybeFreeMemory_AccountDetail();
+                    if (a != null) {
+                        if (a.success) {
+                            r.add(a);
                         } else {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
+                    Grids_AccountDetail pr
                             = checkAndMaybeFreeMemory_AccountDetail(hoome);
-                    combine(r, pr);
+                    r.add(pr);
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -2824,12 +2789,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunks_AccountDetail() throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>();
+    protected Grids_AccountDetail swapChunks_AccountDetail() throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            combine(r, ite.next().swapChunks_AccountDetail());
+            r.add(ite.next().swapChunks_AccountDetail());
         }
         return r;
     }
@@ -2840,17 +2804,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      * @return
      */
-    protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunks_AccountDetail(
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m)
-            throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>();
+    protected Grids_AccountDetail swapChunks_AccountDetail(
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException, 
+            Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                    = g.swapChunksExcept_AccountDetail(m.get(g));
-            combine(r, pr);
+            g.swapChunksExcept(m.get(g), r);
         }
         return r;
     }
@@ -2865,23 +2826,21 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public long swapChunks_Account(boolean hoome) throws IOException,
+    public Grids_Account swapChunks_Account(boolean hoome) throws IOException,
             Exception {
         try {
-            long r;
+            Grids_Account r;
             try {
                 r = swapChunks_Account();
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account();
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account();
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(hoome));
                 }
             } catch (OutOfMemoryError e) {
                 /**
@@ -2894,8 +2853,8 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = freeSomeMemoryAndResetReserve_Account(e, hoome);
-                r += swapChunks_Account(hoome);
+                Grids_Account r = freeSomeMemoryAndResetReserve_Account(e, hoome);
+                r.add(swapChunks_Account(hoome));
                 return r;
             } else {
                 throw e;
@@ -2910,11 +2869,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected long swapChunks_Account() throws IOException, Exception {
-        long r = 0L;
+    protected Grids_Account swapChunks_Account() throws IOException, Exception {
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
-            r += ite.next().swapChunks_Account();
+            r.add(ite.next().swapChunks_Account());
         }
         dataToClear = false;
         return r;
@@ -2990,21 +2949,17 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome) throws IOException,
             Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunk_AccountDetail();
+            Grids_AccountDetail r = swapChunk_AccountDetail();
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail();
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail();
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    combine(r, checkAndMaybeFreeMemory_AccountDetail(hoome));
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3076,22 +3031,22 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account swapChunk_Account() throws IOException, Exception {
+    protected boolean swapChunk() throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
-        Grids_Grid g = ite.next();
-        Grids_Account r = swapChunkExcept_Account(g, notToClear);
-        if (r.success) {
-            return r;
-        }
         while (ite.hasNext()) {
-            g = ite.next();
-            Grids_Account pr = swapChunkExcept_Account(g, notToClear);
-            if (pr.success) {
-                r.add(pr);
-                return r;
-            }
-            if (g.swapChunk() != null) {
-                return true;
+            Grids_Grid g = ite.next();
+            if (notToClear.containsKey(g)) {
+                Set<Grids_2D_ID_int> s = notToClear.get(g);
+                if (!s.isEmpty()) {
+                    Grids_2D_ID_int i = g.swapChunkExcept_AccountChunk(s);
+                    if (i != null) {
+                        return true;
+                    }
+                }
+            } else {
+                if (g.swapChunk() != null) {
+                    return true;
+                }
             }
         }
         dataToClear = false;
@@ -3102,39 +3057,37 @@ public class Grids_Environment extends Grids_MemoryManager
      * Cache to File any GridChunk in grids except one in g.
      *
      * @param g
+     * @param camfm
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public void swapChunkExcept(Grids_Grid g, boolean hoome)
+    public boolean swapChunkExcept(Grids_Grid g, boolean camfm, boolean hoome)
             throws IOException, Exception {
         try {
-            boolean success = swapChunkExcept(g);
-            try {
-                if (!success) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(g);
-                    if (account != null) {
-                        if (!account.success) {
-                            throw new OutOfMemoryError();
-                        }
-                    }
-                } else {
-                    checkAndMaybeFreeMemory(g, hoome);
+            boolean r = Grids_Environment.this.swapChunkExcept(g);
+            if (camfm) {
+                try {
+                    checkAndMaybeFreeMemory();
+                } catch (OutOfMemoryError e) {
+                    hoome = false;
+                    throw e;
                 }
-            } catch (OutOfMemoryError e) {
-                // Set hoome = false to exit method by throwing OutOfMemoryError
-                hoome = false;
-                throw e;
             }
+            return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (swapChunkExcept_Account(g) < 1L) {
+                if (!Grids_Environment.this.swapChunkExcept(g)) {
                     throw e;
                 }
+                if (camfm) {
+                    checkAndMaybeFreeMemory();
+                }
                 initMemoryReserve(g, hoome);
+                return true;
             } else {
                 throw e;
             }
@@ -3196,31 +3149,25 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in with
      * Grids_Grid.ID = _ChunkID.
-     * @param chunkID The Grids_Grid.ID not to be cached.
+     * @param i The Grids_Grid.ID not to be cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID,
-                    boolean hoome) throws IOException, Exception {
+    public Grids_AccountDetail swapChunkExcept_AccountDetail(
+            Grids_2D_ID_int i,
+            boolean hoome) throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r;
-            r = swapChunkExcept_AccountDetail(chunkID);
+            Grids_AccountDetail r = swapChunkExcept_AccountDetail(i);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail(chunkID);
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail(i);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                            = checkAndMaybeFreeMemory_AccountDetail(chunkID,
-                                    hoome);
-                    combine(r, pr);
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(i, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3231,14 +3178,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(chunkID);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(i);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = initMemoryReserve_AccountDetail(chunkID, hoome);
-                combine(r, pr);
+                r.add(initMemoryReserve_AccountDetail(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -3251,21 +3195,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
      * cache any Grids_Chunk in this.grids except for those in with
      * Grids_Grid.ID = _ChunkID.
-     * @param chunkID The Grids_Grid.ID not to be cached.
+     * @param i The Grids_Grid.ID not to be cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_2D_ID_int chunkID)
-            throws IOException, Exception {
+    protected Grids_AccountDetail swapChunkExcept_AccountDetail(
+            Grids_2D_ID_int i) throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = g.swapChunkExcept_AccountDetail(chunkID);
-            if (!r.isEmpty()) {
+            Grids_AccountDetail r = g.swapChunkExcept_AccountDetail(i);
+            if (!r.detail.isEmpty()) {
                 Set<Grids_2D_ID_int> s = new HashSet<>(1);
-                s.add(chunkID);
-                r.put(g, s);
+                s.add(i);
+                r.detail.put(g, s);
                 return r;
             }
         }
@@ -3285,35 +3228,33 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Account swapChunkExcept_Account(Grids_2D_ID_int i, boolean hoome)
             throws IOException, Exception {
         try {
-            long r = swapChunkExcept_Account(i);
+            Grids_Account r = swapChunkExcept_Account(i);
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(i);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account(i);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(i, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(i, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
                 hoome = false;
                 throw e;
             }
-            r += checkAndMaybeFreeMemory_Account(hoome);
+            r.add(checkAndMaybeFreeMemory_Account(hoome));
             return r;
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(i);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(i);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(i, hoome);
+                r.add(initMemoryReserve_Account(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -3329,17 +3270,13 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected Grids_Account swapChunkExcept_Account(Grids_2D_ID_int i)
             throws IOException, Exception {
-        long r = 0L;
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
             addToNotToClear(g, i);
-            if (!swapChunkExcept(notToClear)) {
-                r += swapChunkExcept_Account(i);
-            } else {
-                r += 1L;
-            }
-            if (r > 0L) {
+            if (swapChunkExcept(notToClear)) {
+                r.add();
                 return r;
             }
         }
@@ -3357,7 +3294,7 @@ public class Grids_Environment extends Grids_MemoryManager
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            if (swapChunkExcept_Account(g, i) > 0) {
+            if (swapChunkExcept(g, i)) {
                 return true;
             }
         }
@@ -3379,24 +3316,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws Exception If encountered.
      */
     public Grids_AccountDetail swapChunkExcept_AccountDetail(
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
-                    boolean hoome) throws IOException, Exception {
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m, boolean hoome)
+            throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunkExcept_AccountDetail(m);
+            Grids_AccountDetail r = swapChunkExcept_AccountDetail(m);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail(m);
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail(m);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    combine(r, checkAndMaybeFreeMemory_AccountDetail(m, hoome));
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(m, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3407,12 +3340,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(m);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(m);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                initMemoryReserve(m, hoome);
+                r.add(initMemoryReserve_AccountDetail(m, hoome));
                 return r;
             } else {
                 throw e;
@@ -3429,26 +3361,26 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail  swapChunkExcept_AccountDetail(
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m)
+    protected Grids_AccountDetail swapChunkExcept_AccountDetail(
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m)
             throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
-        Set<Grids_2D_ID_int> s = new HashSet<>(1);
+        Set<Grids_2D_ID_int> s = new HashSet<>();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
             if (m.containsKey(g)) {
                 Grids_2D_ID_int i = g.swapChunkExcept_AccountChunk(m.get(g));
                 if (i != null) {
                     s.add(i);
-                    r.put(g, s);
+                    r.detail.put(g, s);
                     return r;
                 }
             }
             Grids_2D_ID_int i = g.swapChunk_AccountChunk();
             if (i != null) {
                 s.add(i);
-                r.put(g, s);
+                r.detail.put(g, s);
                 return r;
             }
         }
@@ -3464,29 +3396,29 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws Exception If encountered.
      */
     protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g,
-                    Set<Grids_2D_ID_int> s) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
-        Set<Grids_2D_ID_int> rp = new HashSet<>(1);
+        Set<Grids_2D_ID_int> s2 = new HashSet<>();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (g == gb) {
                 Grids_2D_ID_int i = gb.swapChunkExcept_AccountChunk(s);
                 if (i != null) {
-                    rp.add(i);
-                    r.put(g, rp);
+                    s2.add(i);
+                    r.detail.put(g, s2);
                     return r;
                 }
             } else {
                 Grids_2D_ID_int i = g.swapChunk_AccountChunk();
                 if (i != null) {
-                    rp.add(i);
-                    r.put(g, rp);
+                    s2.add(i);
+                    r.detail.put(g, s2);
                     return r;
                 }
             }
         }
-        return r; // If here then nothing could be cached!
+        return r; // If here then nothing could be cleared!
     }
 
     /**
@@ -3497,25 +3429,25 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i)
-            throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
+    protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g,
+            Grids_2D_ID_int i) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
-        Set<Grids_2D_ID_int> rp = new HashSet<>(1);
+        Set<Grids_2D_ID_int> s = new HashSet<>(1);
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (g == gb) {
                 Grids_2D_ID_int i2 = gb.swapChunkExcept_AccountChunk(i);
                 if (i2 != null) {
-                    rp.add(i2);
-                    r.put(g, rp);
+                    s.add(i2);
+                    r.detail.put(g, s);
                     return r;
                 }
             } else {
                 Grids_2D_ID_int i2 = g.swapChunk_AccountChunk();
                 if (i2 != null) {
-                    rp.add(i2);
-                    r.put(g, rp);
+                    s.add(i2);
+                    r.detail.put(g, s);
                     return r;
                 }
             }
@@ -3534,23 +3466,19 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
-                    boolean hoome) throws IOException, Exception {
+    public Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g,
+            Grids_2D_ID_int i, boolean hoome) throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunkExcept_AccountDetail(g, i);
+            Grids_AccountDetail r = swapChunkExcept_AccountDetail(g, i);
             return r;
         } catch (java.lang.OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                        = swapChunkExcept_AccountDetail(g, i);
-                if (rp.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g, i);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = initMemoryReserve_AccountDetail(g, i, hoome);
-                combine(r, rp);
+                r.add(initMemoryReserve_AccountDetail(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -3565,9 +3493,9 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g) throws IOException,
-            Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>(1);
+    protected Grids_AccountDetail swapChunkExcept_AccountDetail(Grids_Grid g)
+            throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         Set<Grids_2D_ID_int> rp = new HashSet<>(1);
         while (ite.hasNext()) {
@@ -3576,7 +3504,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 Grids_2D_ID_int i = gb.swapChunk_AccountChunk();
                 if (i != null) {
                     rp.add(i);
-                    r.put(g, rp);
+                    r.detail.put(g, rp);
                     return r;
                 }
             }
@@ -3589,24 +3517,23 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param m
      * @return
      */
-    protected Grids_Account swapChunkExcept_Account(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
-            Exception {
+    protected boolean swapChunkExcept(HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m)
+            throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
             if (m.containsKey(g)) {
                 Grids_2D_ID_int i = g.swapChunkExcept_AccountChunk(m.get(g));
                 if (i != null) {
-                    return 1L;
+                    return true;
                 }
             }
             Grids_2D_ID_int i = g.swapChunk_AccountChunk();
             if (i != null) {
-                return 1L;
+                return true;
             }
         }
-        return 0L; // If here then nothing could be cached!
+        return false; // If here then nothing could be cleared!
     }
 
 //    /**
@@ -3616,7 +3543,7 @@ public class Grids_Environment extends Grids_MemoryManager
 //     * @throws IOException If encountered.
 //     * @throws Exception If encountered.
 //     */
-//    protected boolean swapChunkExcept_Account(
+//    protected boolean swapChunkExcept(
 //            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
 //            Exception {
 //        Iterator<Grids_Grid> ite = grids.iterator();
@@ -3646,22 +3573,25 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_Account swapChunkExcept_Account(Grids_Grid g, Set<Grids_2D_ID_int> s,
-            boolean hoome) throws IOException, Exception {
+    public Grids_Account swapChunkExcept_Account(Grids_Grid g,
+            Set<Grids_2D_ID_int> s, boolean hoome) throws IOException,
+            Exception {
         try {
-            long r = swapChunkExcept_Account(g, s);
+            addToNotToClear(g, s);
+            Grids_Account r = swapChunkExcept_Account(g);
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(g, s);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    if (g.swapChunkExcept_AccountChunk(s) != null) {
+                        r.add();
+                    }
+                    r = checkAndMaybeFreeMemory_Account(g, s);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(g, s, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(g, s, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 /**
@@ -3674,11 +3604,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g, s);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(g);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(g, s, hoome);
+                r.add(initMemoryReserve_Account(g, s, hoome));
                 return r;
             } else {
                 throw e;
@@ -3696,14 +3626,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account swapChunkExcept_Account(Grids_Grid g,
+    protected boolean swapChunkExcept(Grids_Grid g,
             Set<Grids_2D_ID_int> s) throws IOException, Exception {
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g2 = ite.next();
             if (g2 != g) {
-                TreeMap<Grids_2D_ID_int, Grids_Chunk> m
-                        = g2.getData();
+                TreeMap<Grids_2D_ID_int, Grids_Chunk> m = g2.getData();
                 Set<Grids_2D_ID_int> s2 = m.keySet();
                 Iterator<Grids_2D_ID_int> iteb = s2.iterator();
                 while (iteb.hasNext()) {
@@ -3711,14 +3640,15 @@ public class Grids_Environment extends Grids_MemoryManager
                     if (!s.contains(i)) {
                         //Check it can be cached
                         if (m.get(i) != null) {
-                            g2.swapChunk(i);
-                            return 1;
+                            if (g2.swapChunk(i)) {
+                                return true;
+                            }
                         }
                     }
                 }
             }
         }
-        return 0L;
+        return false;
     }
 
     /**
@@ -3735,21 +3665,22 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws Exception If encountered.
      */
     public Grids_Account swapChunkExcept_Account(Grids_Grid g, Grids_2D_ID_int i,
-            boolean hoome) throws IOException, Exception {
+            boolean camfm, boolean hoome) throws IOException, Exception {
         try {
-            int r = swapChunkExcept_Account(g, i);
+            Grids_Account r = new Grids_Account();
+            if (swapChunkExcept(g, i)) {
+                r.add();
+            }
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(g, i);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (camfm) {
+                    if (r.detail < 1L) {
+                        r.add(checkAndMaybeFreeMemory_Account(g, i));
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
+                    } else {
+                        r.add(checkAndMaybeFreeMemory_Account(g, i, hoome));
                     }
-                } else {
-                    r += checkAndMaybeFreeMemory_Account(g, i, hoome);
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3760,11 +3691,14 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                int r = swapChunkExcept_Account(g, i);
-                if (r < 1) {
+                Grids_Account r = new Grids_Account();
+                if (swapChunkExcept(g, i)) {
+                    r.add();
+                } else {
                     throw e;
                 }
-                r += initMemoryReserve_Account(g, i, hoome);
+                r.add(initMemoryReserve_Account(g, i, hoome));
+                r.add(checkAndMaybeFreeMemory_Account(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -3773,22 +3707,22 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
-     * cache any Grids_Chunk in this.grids except for that in _Grid2DSquareCell
-     * with Grids_Grid._ChunkID _ChunkID.
-     * @param g Grids_Grid that's chunks are not to be cached.
-     * @param chunkID The Grids_Grid.ID not to be cached.
+     * First attempts to swap a chunk from a grid other than {@code g} - if
+     * nothing is swapped, then an attempt is made to swap a chunk in {@code g}
+     * other than that with chunk ID {@code i}.
+     *
+     * @return An account of what is swapped.
+     * @param g The grid from which chunks are preferred not to be swapped.
+     * @param i The chunk ID of the chunk in {@code g} not to be cleared.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account swapChunkExcept_Account(Grids_Grid g,
-            Grids_2D_ID_int chunkID) throws IOException, Exception {
-        int r = swapChunkExcept_Account(g);
-        if (r < 1L) {
-            r = g.swapChunkExcept_Account(chunkID);
+    protected boolean swapChunkExcept(Grids_Grid g,
+            Grids_2D_ID_int i) throws IOException, Exception {
+        if (swapChunkExcept(g)) {
+            return true;
         }
-        return r;
+        return g.swapChunkExcept(i);
     }
 
     /**
@@ -3805,19 +3739,17 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Account swapChunkExcept_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
         try {
-            long r = swapChunkExcept_Account(g);
+            Grids_Account r = swapChunkExcept_Account(g);
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(g);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account(g);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(g, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(g, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3828,11 +3760,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(g);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(g, hoome);
+                r.add(initMemoryReserve_Account(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -3841,27 +3773,25 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
-     * cache any Grids_Chunk in this.grids except for those in
-     * _Grid2DSquareCell.
-     * @param g Grids_Grid that's chunks are not to be cached.
+     * @return . @param g Grids_Grid that's chunks are not to be cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
     protected Grids_Account swapChunkExcept_Account(Grids_Grid g) throws IOException,
             Exception {
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (gb != g) {
                 Grids_2D_ID_int i = gb.swapChunk_AccountChunk();
                 if (i != null) {
-                    return 1;
+                    r.add();
+                    return r;
                 }
             }
         }
-        return 0;
+        return r;
     }
 
     /**
@@ -3880,23 +3810,17 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_2D_ID_int i, boolean hoome)
             throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunksExcept_AccountDetail(i);
+            Grids_AccountDetail r = swapChunksExcept_AccountDetail(i);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail(i);
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail(i);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                            = checkAndMaybeFreeMemory_AccountDetail(i, hoome);
-                    combine(r, rp);
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(i, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3907,16 +3831,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(i);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(i);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                        = initMemoryReserve_AccountDetail(i, hoome);
-                combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(i, hoome);
-                combine(r, rp);
+                r.add(initMemoryReserve_AccountDetail(i, hoome));
+                r.add(swapChunksExcept_AccountDetail(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -3936,11 +3856,11 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_2D_ID_int i)
             throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>();
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            combine(r, g.swapChunksExcept_AccountDetail(i));
+            r.add(g.swapChunksExcept_AccountDetail(i));
         }
         return r;
     }
@@ -3958,27 +3878,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_Grid g, boolean hoome)
+    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunksExcept_AccountDetail(g);
+            Grids_AccountDetail r = swapChunksExcept_AccountDetail(g);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail(g);
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail(g);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                            = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
-                    combine(r, rp);
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(g, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -3989,16 +3902,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(g);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                        = initMemoryReserve_AccountDetail(g, hoome);
-                combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(g, hoome);
-                combine(r, rp);
+                r.add(initMemoryReserve_AccountDetail(g, hoome));
+                r.add(swapChunksExcept_AccountDetail(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -4016,14 +3925,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_Grid g) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>();
+    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (gb != g) {
-                combine(r, gb.swapChunks_AccountDetail());
+                r.add(gb.swapChunks_AccountDetail());
             }
         }
         return r;
@@ -4044,19 +3952,17 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Account swapChunksExcept_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception {
         try {
-            long r = swapChunksExcept_Account(g);
+            Grids_Account r = swapChunksExcept_Account(g);
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(g);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account(g);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(g, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(g, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -4067,12 +3973,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g);
-                if (r < 1L) {
+                Grids_Account r = swapChunkExcept_Account(g);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(g, hoome);
-                r += swapChunksExcept_Account(g, hoome);
+                r.add(initMemoryReserve_Account(g, hoome));
+                r.add(swapChunksExcept_Account(g, hoome));
                 return r;
             } else {
                 throw e;
@@ -4087,14 +3993,14 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account swapChunksExcept_Account(Grids_Grid g) throws IOException,
-            Exception {
-        long r = 0L;
+    protected Grids_Account swapChunksExcept_Account(Grids_Grid g)
+            throws IOException, Exception {
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (gb != g) {
-                r += gb.env.swapChunks_Account();
+                r.add(gb.env.swapChunks_Account());
             }
         }
         return r;
@@ -4114,28 +4020,20 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
-                    boolean hoome) throws IOException, Exception {
+    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g, Grids_2D_ID_int i,
+            boolean hoome) throws IOException, Exception {
         try {
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                    = swapChunksExcept_AccountDetail(g, i);
+            Grids_AccountDetail r = swapChunksExcept_AccountDetail(g, i);
             try {
-                if (r.isEmpty()) {
-                    Grids_AccountDetail account
-                            = checkAndMaybeFreeMemory_AccountDetail(g, i);
-                    if (account != null) {
-                        if (account.success) {
-                            combine(r, account.detail);
-                        } else {
+                if (r.detail.isEmpty()) {
+                    r = checkAndMaybeFreeMemory_AccountDetail(g, i);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                            = checkAndMaybeFreeMemory_AccountDetail(g, i,
-                                    hoome);
-                    combine(r, rp);
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(g, i, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -4146,16 +4044,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                        = swapChunkExcept_AccountDetail(g, i);
-                if (r.isEmpty()) {
+                Grids_AccountDetail r = swapChunkExcept_AccountDetail(g, i);
+                if (r.detail.isEmpty()) {
                     throw e;
                 }
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                        = initMemoryReserve_AccountDetail(g, i, hoome);
-                combine(r, rp);
-                rp = swapChunksExcept_AccountDetail(g, i, hoome);
-                combine(r, rp);
+                r.add(initMemoryReserve_AccountDetail(g, i, hoome));
+                r.add(swapChunksExcept_AccountDetail(g, i, hoome));
                 return r;
             } else {
                 throw e;
@@ -4177,20 +4071,17 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Account swapChunksExcept_Account(Grids_Grid g, Grids_2D_ID_int i,
             boolean hoome) throws IOException, Exception {
         try {
-            long r = swapChunksExcept_Account(g, i);
+            Grids_Account r = swapChunksExcept_Account(g, i);
             try {
-                if (r < 1) {
-                    Grids_Account account
-                            = checkAndMaybeFreeMemory_Account(g, i);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account(g, i);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(g, i, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(g, i, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -4201,12 +4092,11 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                long r = swapChunkExcept_Account(g, i);
-                if (r < 1L) {
+                Grids_Account r = swapChunksExcept_Account(g, i);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                r += initMemoryReserve_Account(i, hoome);
-                r += swapChunkExcept_Account(g, i);
+                r.add(initMemoryReserve_Account(i, hoome));
                 return r;
             } else {
                 throw e;
@@ -4217,14 +4107,14 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      *
      * @param g
-     * @param chunkID
+     * @param i
      * @return
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
     protected Grids_Account swapChunksExcept_Account(Grids_Grid g,
-            Grids_2D_ID_int chunkID) throws IOException, Exception {
-        long r = 0L;
+            Grids_2D_ID_int i) throws IOException, Exception {
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
@@ -4233,9 +4123,9 @@ public class Grids_Environment extends Grids_MemoryManager
                 int cci0 = 0;
                 int cri1 = gb.getNChunkRows() - 1;
                 int cci1 = gb.getNChunkCols() - 1;
-                r += gb.swapChunks_Account(cri0, cci0, cri1, cci1);
+                r.add(gb.swapChunks_Account(cri0, cci0, cri1, cci1));
             } else {
-                r += gb.swapChunksExcept_Account(chunkID);
+                r.add(gb.swapChunksExcept(i));
             }
         }
         return r;
@@ -4248,26 +4138,21 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
-     * @param chunkID The Grids_Grid.ID not to be cached.
+     * @param i The Grids_Grid.ID not to be cached.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_Grid g,
-                    Grids_2D_ID_int chunkID) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r;
-        r = new HashMap<>();
+    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g,
+            Grids_2D_ID_int i) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         Grids_Grid bg;
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp;
         while (ite.hasNext()) {
             bg = ite.next();
             if (bg == g) {
-                rp = bg.swapChunksExcept_AccountDetail(chunkID);
-                combine(r, rp);
+                r.add(bg.swapChunksExcept_AccountDetail(i));
             } else {
-                rp = bg.swapChunks_AccountDetail(false, HOOMEF);
-                combine(r, rp);
+                r.add(bg.swapChunks_AccountDetail());
             }
         }
         return r;
@@ -4276,30 +4161,25 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      *
      * @param g
-     * @param chunkIDs
+     * @param s
      * @return
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected HashMap<Grids_Grid, Set<Grids_2D_ID_int>>
-            swapChunksExcept_AccountDetail(Grids_Grid g,
-                    Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r = new HashMap<>();
+    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g,
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
+        Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid gb = ite.next();
             if (gb != g) {
-                HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                        = gb.swapChunks_AccountDetail();
-                combine(r, pr);
+                r.add(gb.swapChunks_AccountDetail());
             } else {
                 Iterator<Grids_2D_ID_int> ite2 = g.getChunkIDs().iterator();
                 while (ite2.hasNext()) {
                     Grids_2D_ID_int i = ite2.next();
-                    if (!chunkIDs.contains(i)) {
-                        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> pr
-                                = swapChunksExcept_AccountDetail(i);
-                        combine(r, pr);
+                    if (!s.contains(i)) {
+                        r.add(swapChunksExcept_AccountDetail(i));
                     }
                 }
             }
@@ -4316,11 +4196,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param g Grids_Grid that's chunks are not to be cached.
      * @param chunkIDs The chunk IDs in g not to be cached.
      * @throws IOException If encountered.
-     * @throws Exception If encountered.
+     * @throws s If encountered.
      */
-    protected long swapChunksExcept_Account(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunkIDs) throws IOException, Exception {
-        long r = 0L;
+    protected Grids_Account swapChunksExcept_Account(Grids_Grid g,
+            Set<Grids_2D_ID_int> s) throws IOException, Exception {
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         Grids_Grid gb;
         while (ite.hasNext()) {
@@ -4330,9 +4210,9 @@ public class Grids_Environment extends Grids_MemoryManager
                 int cri1 = gb.getNChunkRows() - 1;
                 int cci0 = 0;
                 int cci1 = gb.getNChunkCols() - 1;
-                r += gb.swapChunks_Account(cri0, cci0, cri1, cci1);
+                r.add(gb.swapChunks_Account(cri0, cci0, cri1, cci1));
             } else {
-                r += gb.swapChunksExcept_Account(chunkIDs);
+                r.add(gb.swapChunksExcept(s));
             }
         }
         return r;
@@ -4351,19 +4231,17 @@ public class Grids_Environment extends Grids_MemoryManager
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m,
             boolean hoome) throws IOException, Exception {
         try {
-            long r = swapChunksExcept_Account(m);
+            Grids_Account r = swapChunksExcept_Account(m);
             try {
-                if (r < 1) {
-                    Grids_Account account = checkAndMaybeFreeMemory_Account(m);
-                    if (account != null) {
-                        if (account.success) {
-                            r += account.detail;
-                        } else {
+                if (r.detail < 1) {
+                    r = checkAndMaybeFreeMemory_Account(m);
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    r += checkAndMaybeFreeMemory_Account(m, hoome);
+                    r.add(checkAndMaybeFreeMemory_Account(m, hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -4374,12 +4252,12 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!swapChunkExcept(m)) {
+                Grids_Account r = swapChunksExcept_Account(m);
+                if (r.detail < 1L) {
                     throw e;
                 }
-                long r = 1L;
-                r += initMemoryReserve_Account(m, hoome);
-                r += swapChunksExcept_Account(m);
+                r.add(initMemoryReserve_Account(m, hoome));
+                r.add(swapChunksExcept_Account(m));
                 return r;
             } else {
                 throw e;
@@ -4397,17 +4275,13 @@ public class Grids_Environment extends Grids_MemoryManager
     protected Grids_Account swapChunksExcept_Account(
             HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
             Exception {
-        long r = 0L;
+        Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
             Grids_Grid g = ite.next();
-            r += g.swapChunksExcept_Account(m.get(g));
+            r.add(g.swapChunksExcept(m.get(g)));
         }
         return r;
-    }
-
-    public void cacheData() throws IOException, Exception {
-        swapChunks();
     }
 
     /**
@@ -4422,7 +4296,7 @@ public class Grids_Environment extends Grids_MemoryManager
     @Override
     public boolean swapSomeData(boolean hoome) throws IOException, Exception {
         try {
-            boolean r = swapChunk();
+            boolean r = swapChunk(hoome);
             try {
                 if (!checkAndMaybeFreeMemory()) {
                     throw new OutOfMemoryError();
@@ -4475,13 +4349,10 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail freeSomeMemoryAndResetReserve_AccountDetails(Grids_Grid g,
-                    boolean hoome) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                = initMemoryReserve_AccountDetail(g, hoome);
-        combine(r, rp);
+    protected Grids_AccountDetail freeSomeMemoryAndResetReserve_AccountDetails(
+            Grids_Grid g, boolean hoome) throws IOException, Exception {
+        Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g, hoome);
+        r.add(initMemoryReserve_AccountDetail(g, hoome));
         return r;
     }
 
@@ -4498,13 +4369,11 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws Exception If encountered.
      */
     protected Grids_AccountDetail freeSomeMemoryAndResetReserve_AccountDetails(
-                    Grids_Grid g, Set<Grids_2D_ID_int> chunks, boolean hoome)
+            Grids_Grid g, Set<Grids_2D_ID_int> chunks, boolean hoome)
             throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                = checkAndMaybeFreeMemory_AccountDetail(g, chunks, hoome);
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                = initMemoryReserve_AccountDetail(g, chunks, hoome);
-        combine(r, rp);
+        Grids_AccountDetail r = checkAndMaybeFreeMemory_AccountDetail(g, chunks,
+                hoome);
+        r.add(initMemoryReserve_AccountDetail(g, chunks, hoome));
         return r;
     }
 
@@ -4518,16 +4387,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail freeSomeMemoryAndResetReserve_AccountDetails(OutOfMemoryError e,
-                    boolean hoome) throws IOException, Exception {
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> r
-                = swapChunk_AccountDetail();
-        if (r.isEmpty()) {
+    protected Grids_AccountDetail freeSomeMemoryAndResetReserve_AccountDetails(
+            OutOfMemoryError e, boolean hoome) throws IOException, Exception {
+        Grids_AccountDetail r = swapChunk_AccountDetail();
+        if (r.detail.isEmpty()) {
             throw e;
         }
-        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> rp
-                = initMemoryReserve_AccountDetail(hoome);
-        combine(r, rp);
+        r.add(initMemoryReserve_AccountDetail(hoome));
         return r;
     }
 
@@ -4576,12 +4442,13 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account freeSomeMemoryAndResetReserve_Account(OutOfMemoryError e,
-            boolean hoome) throws IOException, Exception {
-        Grids_Account r = swapChunk_Account();
-        if (!r.success) {
+    protected Grids_Account freeSomeMemoryAndResetReserve_Account(
+            OutOfMemoryError e, boolean hoome) throws IOException, Exception {
+        if (!swapChunk()) {
             throw e;
         }
+        Grids_Account r = new Grids_Account();
+        r.add();
         r.add(initMemoryReserve_Account(hoome));
         return r;
     }

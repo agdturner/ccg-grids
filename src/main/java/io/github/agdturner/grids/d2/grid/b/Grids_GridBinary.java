@@ -300,7 +300,7 @@ public class Grids_GridBinary extends Grids_Grid {
                 Set<Grids_2D_ID_int> s = new HashSet<>();
                 s.add(chunkID);
                 notToSwapOut.put(this, s);
-                if (env.swapChunksExcept_Account(notToSwapOut, false) < 1) {
+                if (env.swapChunksExcept_Account(notToSwapOut, false).detail < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(this, chunkID, env.HOOME);

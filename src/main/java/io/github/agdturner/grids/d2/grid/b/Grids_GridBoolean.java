@@ -324,7 +324,7 @@ public class Grids_GridBoolean extends Grids_Grid {
                 Set<Grids_2D_ID_int> s = new HashSet<>();
                 s.add(i);
                 notToClear.put(this, s);
-                if (env.swapChunksExcept_Account(notToClear, false) < 1) {
+                if (env.swapChunksExcept_Account(notToClear, false).detail < 1) {
                     throw e;
                 }
                 env.initMemoryReserve(this, i, env.HOOME);

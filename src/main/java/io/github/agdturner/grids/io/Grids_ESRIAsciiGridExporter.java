@@ -133,7 +133,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
 //                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
 //                                    g.getChunkRow(row, hoome),
 //                                    g.getChunkCol(col, hoome));
-//                            if (g.env.swapChunksExcept_Account(
+//                            if (g.env.swapChunksExcept(
 //                                    g,
 //                                    chunkID,
 //                                    hoome) < 1L) {
@@ -199,7 +199,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
 //                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
 //                                    g.getChunkRow(row, hoome),
 //                                    g.getChunkCol(col, hoome));
-//                            if (g.env.swapChunksExcept_Account(
+//                            if (g.env.swapChunksExcept(
 //                                    g,
 //                                    chunkID,
 //                                    hoome) < 1L) {

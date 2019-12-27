@@ -32,7 +32,7 @@ public class Grids_Account {
      */
     public boolean success;
 
-    protected Grids_Account() {
+    public Grids_Account() {
         detail = 0;
         success = false;
     }
@@ -40,6 +40,14 @@ public class Grids_Account {
     public void add(Grids_Account a) {
         detail += a.detail;
         success = a.success;
+    }
+
+    public void add() {
+        detail += 1;
+    }
+
+    public void add(int i) {
+        detail += i;
     }
 
 }

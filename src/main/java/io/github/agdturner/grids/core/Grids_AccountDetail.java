@@ -37,7 +37,7 @@ public class Grids_AccountDetail {
      */
     public boolean success;
 
-    protected Grids_AccountDetail() {
+    public Grids_AccountDetail() {
         detail = new HashMap<>();
         success = false;
     }
