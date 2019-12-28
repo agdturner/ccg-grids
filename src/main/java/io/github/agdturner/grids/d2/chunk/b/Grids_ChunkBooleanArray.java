@@ -38,17 +38,17 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
     @Override
     protected final void initData() {
         Grids_GridBoolean g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID);
-        int chunkNcols = g.getChunkNCols(ChunkID);
+        int chunkNrows = g.getChunkNRows(id);
+        int chunkNcols = g.getChunkNCols(id);
         data = new Boolean[chunkNrows][chunkNcols];
     }
 
     /**
-     * @return (Grids_GridBoolean) Grid;
+     * @return (Grids_GridBoolean) grid;
      */
     @Override
     public Grids_GridBoolean getGrid() {
-        return (Grids_GridBoolean) Grid;
+        return (Grids_GridBoolean) grid;
     }
 
     /**

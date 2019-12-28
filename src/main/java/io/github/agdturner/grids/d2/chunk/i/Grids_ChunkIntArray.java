@@ -32,7 +32,7 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     /**
      * For storing values arranged in rows and columns.
      */
-    private int[][] Data;
+    private int[][] data;
 
     /**
      * Creates a new chunk filled with noDataValues.
@@ -45,10 +45,10 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
         initData();
         int noDataValue = g.getNoDataValue();
         int row;
-        for (row = 0; row < ChunkNRows; row++) {
-            Arrays.fill(Data[row], noDataValue);
+        for (row = 0; row < chunkNRows; row++) {
+            Arrays.fill(data[row], noDataValue);
         }
-        CacheUpToDate = false;
+        cacheUpToDate = false;
     }
 
     /**
@@ -61,37 +61,37 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     protected Grids_ChunkIntArray(Grids_ChunkInt c, Grids_2D_ID_int i) {
         super(c.getGrid(), i);
         initData();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                Data[row][col] = c.getCell(row, col);
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                data[row][col] = c.getCell(row, col);
             }
         }
-        CacheUpToDate = false;
+        cacheUpToDate = false;
     }
 
     /**
-     * Initialises {@link #Data}.
+     * Initialises {@link #data}.
      */
     @Override
     protected final void initData() {
-        Data = new int[ChunkNRows][ChunkNCols];
+        data = new int[chunkNRows][chunkNCols];
     }
 
     /**
      * TODO: Should the array be copied and the copy returned?
      *
-     * @return {@link #Data}.
+     * @return {@link #data}.
      */
     protected int[][] getData() {
-        return Data;
+        return data;
     }
 
     /**
-     * Sets {@link #Data} to {@code null}.
+     * Sets {@link #data} to {@code null}.
      */
     @Override
     protected void clearData() {
-        Data = null;
+        data = null;
         //System.gc();
     }
 
@@ -99,11 +99,11 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
      * @param row The row index of the cell w.r.t. the origin of this chunk.
      * @param col The column index of the cell w.r.t. the origin of this chunk.
      * @return The value at position given by: chunk cell row {@code row}; chunk
-     * cell column {@link col}.
+     * cell column {@code col}.
      */
     @Override
     public int getCell(int row, int col) {
-        return Data[row][col];
+        return data[row][col];
     }
 
     /**
@@ -115,7 +115,7 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
      */
     @Override
     public void initCell(int row, int col, int v) {
-        Data[row][col] = v;
+        data[row][col] = v;
     }
 
     /**
@@ -129,8 +129,8 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
      */
     @Override
     public int setCell(int row, int col, int v) {
-        int oldValue = Data[row][col];
-        Data[row][col] = v;
+        int oldValue = data[row][col];
+        data[row][col] = v;
         if (isCacheUpToDate()) {
             if (v != oldValue) {
                 setCacheUpToDate(false);
@@ -149,12 +149,12 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
 
     @Override
     public Integer getMin(boolean update) {
-        Integer r = Data[0][0];
+        Integer r = data[0][0];
         Grids_GridInt g = getGrid();
         int noDataValue = g.getNoDataValue();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                int v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                int v = data[chunkNRows][chunkNCols];
                 if (v != noDataValue) {
                     r = Math.min(r, v);
                 }
@@ -165,12 +165,12 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
 
     @Override
     public Integer getMax(boolean update) {
-        Integer r = Data[0][0];
+        Integer r = data[0][0];
         Grids_GridInt g = getGrid();
         int noDataValue = g.getNoDataValue();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                int v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                int v = data[chunkNRows][chunkNCols];
                 if (v != noDataValue) {
                     r = Math.min(r, v);
                 }

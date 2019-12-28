@@ -26,6 +26,4 @@ import uk.ac.leeds.ccg.agdt.generic.memory.Generic_MemoryManager;
 public abstract class Grids_MemoryManager        extends Generic_MemoryManager
         implements Grids_Memory {
 
-    public long Memory_Threshold = 10000000;
-
 }

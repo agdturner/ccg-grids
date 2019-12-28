@@ -43,11 +43,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
- * A Boolean grid. This is a grid containing Boolean values. The noDataValue is
- * {@code null}.
- *
- * @see io.github.agdturner.grids.d2.grid.Grids_Grid
- *
+ * Grids with {@code Boolean} values. The noDataValue is {@code null}.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -284,7 +280,7 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param chunkNCols Chunk NCols
      * @param startRow Start row.
      * @param startCol Start column.
-     * @param endRow End row. 
+     * @param endRow End row.
      * @param endCol End column.
      * @param startChunkRow Start chunk row.
      * @param endChunkRow End chunk row.
@@ -296,7 +292,7 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param gcc
      * @return {@code true} if chunk was loaded.
      * @throws ClassNotFoundException
-     * @throws Exception 
+     * @throws Exception
      */
     protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBoolean cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
@@ -336,7 +332,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * 
+     *
      * @param gChunkID
      * @param g
      * @param gb
@@ -350,7 +346,7 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param endCol
      * @throws IOException
      * @throws ClassNotFoundException
-     * @throws Exception 
+     * @throws Exception
      */
     public void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBoolean gb, int gcc, int gcr,

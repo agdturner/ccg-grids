@@ -53,35 +53,28 @@ public class Grids_ChunkIteratorIntMapASpatial
         Data = chunk.getData();
         DataMapBitSet = Data.DataMapBitSet;
         DataMapHashSet = Data.DataMapHashSet;
-        DataMapBitSetNumberOfValues = 0;
+        dataMapBitSetNumberOfValues = 0;
         DataMapBitSetIte = DataMapBitSet.keySet().iterator();
         if (DataMapBitSetIte.hasNext()) {
             hasNext = true;
             DataMapBitSetValue = DataMapBitSetIte.next();
-            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
+            dataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
         }
-        NumberOfNoDataValues -= DataMapBitSetNumberOfValues;
+        NumberOfNoDataValues -= dataMapBitSetNumberOfValues;
         DataMapBitSetIte = DataMapBitSet.keySet().iterator();
-        DataMapBitSetIndex = 0;
-        DataMapHashSetNumberOfValues = 0;
+        dataMapBitSetIndex = 0;
+        dataMapHashSetNumberOfValues = 0;
         DataMapHashSetIte = DataMapHashSet.keySet().iterator();
         if (DataMapHashSetIte.hasNext()) {
             hasNext = true;
             DataMapHashSetValue = DataMapHashSetIte.next();
-            DataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
+            dataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
         }
-        NumberOfNoDataValues -= DataMapHashSetNumberOfValues;
+        NumberOfNoDataValues -= dataMapHashSetNumberOfValues;
         DataMapHashSetIte = DataMapHashSet.keySet().iterator();
-        DataMapHashSetIndex = 0;
+        dataMapHashSetIndex = 0;
     }
 
-    /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements.
-     */
     @Override
     public boolean hasNext() {
         return hasNext;
@@ -97,37 +90,37 @@ public class Grids_ChunkIteratorIntMapASpatial
      */
     public Integer next() {
         if (hasNext) {
-            if (DefaultValueIndex == NumberOfDefaultValues - 1) {
-                if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
+            if (defaultValueIndex == NumberOfDefaultValues - 1) {
+                if (dataMapBitSetIndex == dataMapBitSetNumberOfValues - 1) {
                     if (DataMapBitSetIte.hasNext()) {
                         DataMapBitSetValue = DataMapBitSetIte.next();
-                        DataMapBitSetNumberOfValues = DataMapBitSet
+                        dataMapBitSetNumberOfValues = DataMapBitSet
                                 .get(DataMapBitSetValue).bitSet.cardinality();
-                        DataMapBitSetIndex = 0;
+                        dataMapBitSetIndex = 0;
                         return DataMapBitSetValue;
                     } else {
-                        if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
+                        if (dataMapHashSetIndex == dataMapHashSetNumberOfValues - 1) {
                             if (DataMapHashSetIte.hasNext()) {
                                 DataMapHashSetValue = DataMapHashSetIte.next();
-                                DataMapHashSetNumberOfValues = DataMapHashSet
+                                dataMapHashSetNumberOfValues = DataMapHashSet
                                         .get(DataMapHashSetValue).size();
-                                DataMapHashSetIndex = 0;
+                                dataMapHashSetIndex = 0;
                                 return DataMapHashSetValue;
                             } else {
                                 hasNext = false;
                                 return null;
                             }
                         } else {
-                            DataMapHashSetIndex++;
+                            dataMapHashSetIndex++;
                             return DataMapHashSetValue;
                         }
                     }
                 } else {
-                    DataMapBitSetIndex++;
+                    dataMapBitSetIndex++;
                     return DataMapBitSetValue;
                 }
             } else {
-                DefaultValueIndex++;
+                defaultValueIndex++;
                 return DefaultValue;
             }
         } else {

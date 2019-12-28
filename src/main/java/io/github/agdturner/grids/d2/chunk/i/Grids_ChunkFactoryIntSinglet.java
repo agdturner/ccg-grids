@@ -28,7 +28,7 @@ public class Grids_ChunkFactoryIntSinglet extends Grids_ChunkFactoryInt {
 
     private static final long serialVersionUID = 1L;
 
-    int DefaultValue;
+    int defaultValue;
 
     /**
      * Creates a new Grids_ChunkFactoryIntSinglet.
@@ -39,20 +39,20 @@ public class Grids_ChunkFactoryIntSinglet extends Grids_ChunkFactoryInt {
     /**
      * Creates a new Grids_ChunkFactoryIntSinglet.
      *
-     * @param dv What {@link #DefaultValue} is set to.
+     * @param dv What {@link #defaultValue} is set to.
      */
     public Grids_ChunkFactoryIntSinglet(int dv) {
-        DefaultValue = dv;
+        defaultValue = dv;
     }
 
     @Override
     public Grids_ChunkIntSinglet create(Grids_GridInt g, Grids_2D_ID_int i) {
-        return new Grids_ChunkIntSinglet(g, i, DefaultValue);
+        return new Grids_ChunkIntSinglet(g, i, defaultValue);
     }
 
     @Override
     public Grids_ChunkIntSinglet create(Grids_ChunkInt c, Grids_2D_ID_int i) {
-        return new Grids_ChunkIntSinglet(c.getGrid(), i, DefaultValue);
+        return new Grids_ChunkIntSinglet(c.getGrid(), i, defaultValue);
     }
 
 }

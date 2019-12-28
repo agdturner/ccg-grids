@@ -36,7 +36,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param g What {@link #Grid} is set to.
+     * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
@@ -46,11 +46,11 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * @return (Grids_GridDouble) Grid;
+     * @return (Grids_GridDouble) grid;
      */
     @Override
     public final Grids_GridDouble getGrid() {
-        return (Grids_GridDouble) Grid;
+        return (Grids_GridDouble) grid;
     }
 
     /**
@@ -93,15 +93,15 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * @throws Exception If encountered.
      */
     public abstract double setCell(int r, int c, double v) throws Exception;
-    
+
     /**
      * @return All the values including noDataValue's in row major order as a
      * double[].
      */
     public double[] toArrayIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double[] array = new double[nrows * ncols];
         int count = 0;
         for (int row = 0; row < nrows; row++) {
@@ -119,8 +119,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      */
     public double[] toArrayNotIncludingNoDataValues() {
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         long n = getN();
         double[] array = new double[(int) n];
@@ -146,8 +146,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     public Long getN() {
         long n = 0;
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -171,8 +171,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     public BigDecimal getSum() {
         BigDecimal sum = BigDecimal.ZERO;
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         double value;
         int row;
@@ -198,8 +198,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     protected Double getMin() {
         double min = Double.POSITIVE_INFINITY;
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         double value;
         int row;
@@ -223,8 +223,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     protected Double getMax() {
         double max = Double.NEGATIVE_INFINITY;
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         double value;
         int row;
@@ -251,8 +251,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         long n = getN();
         if (n > 0) {
             Grids_GridDouble g = getGrid();
-            int nrows = g.getChunkNRows(ChunkID);
-            int ncols = g.getChunkNCols(ChunkID);
+            int nrows = g.getChunkNRows(id);
+            int ncols = g.getChunkNCols(id);
             double noDataValue = g.getNoDataValue();
             int p;
             int q;
@@ -310,10 +310,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      *
      * @see #getMode()
      */
-    private Object[] initMode(
-            int nrows,
-            int ncols,
-            double noDataValue) {
+    private Object[] initMode(int nrows, int ncols, double noDataValue) {
         Object[] initMode = new Object[3];
         long modeCount;
         int p;
@@ -514,8 +511,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         BigDecimal sd = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(dp, rm);
         Grids_GridDouble g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
         long count = 0;
         for (int row = 0; row < nrows; row++) {

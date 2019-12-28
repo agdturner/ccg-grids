@@ -15,71 +15,29 @@
  */
 package io.github.agdturner.grids.d2.chunk.b;
 
-import java.util.NoSuchElementException;
-import io.github.agdturner.grids.d2.chunk.Grids_ChunkIterator;
-import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
-
 /**
  * For iterating through the values in a Grids_GridChunkBinary instance. The
  * values are not returned in any particular order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIteratorBinaryArray extends Grids_ChunkIterator {
+public class Grids_ChunkIteratorBinaryArray extends Grids_ChunkIteratorBArray {
 
     private static final long serialVersionUID = 1L;
 
-    protected boolean[][] Data;
-    protected int Row;
-    protected int Col;
-    protected int NRows;
-    protected int NCols;
+    protected boolean[][] data;
 
     public Grids_ChunkIteratorBinaryArray(Grids_ChunkBinaryArray chunk) {
         super(chunk);
-        Data = chunk.getData();
-        Row = 0;
-        Col = 0;
-        Grids_GridBinary g = chunk.getGrid();
-        NRows = g.getChunkNRows(chunk.getChunkID());
-        NCols = g.getChunkNCols(chunk.getChunkID());
+        data = chunk.getData();
     }
 
     /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements. TODO: Try and
-     * catch ArrayOutOfboundsException should be faster
-     */
-    @Override
-    public boolean hasNext() {
-        if (Col + 1 == NCols) {
-            if (Row + 1 == NRows) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns the next element in the iteration.
-     *
      * @return the next element in the iteration.
      */
     public boolean next() {
-        if (Col + 1 == NCols) {
-            if (Row + 1 == NRows) {
-                throw new NoSuchElementException();
-            } else {
-                Row++;
-                Col = 0;
-            }
-        } else {
-            Col++;
-        }
-        return Data[Row][Col];
+        super.next0();
+        return data[row][col];
     }
 }

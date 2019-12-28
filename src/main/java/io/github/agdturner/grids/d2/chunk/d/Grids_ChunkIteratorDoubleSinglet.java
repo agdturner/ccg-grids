@@ -38,7 +38,7 @@ public class Grids_ChunkIteratorDoubleSinglet
      */
     public Grids_ChunkIteratorDoubleSinglet(Grids_ChunkDoubleSinglet c) {
         super(c);
-        v = c.getValue();
+        v = c.getV();
     }
 
     /**

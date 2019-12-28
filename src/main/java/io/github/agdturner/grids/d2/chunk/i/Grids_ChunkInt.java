@@ -41,11 +41,11 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * @return (Grids_GridInt) Grid;
+     * @return (Grids_GridInt) grid;
      */
     @Override
     public final Grids_GridInt getGrid() {
-        return (Grids_GridInt) Grid;
+        return (Grids_GridInt) grid;
     }
 
     /**
@@ -126,8 +126,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      */
     protected int[] toArrayNotIncludingNoDataValues() {
         Grids_GridInt g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID);
-        int chunkNcols = g.getChunkNCols(ChunkID);
+        int chunkNrows = g.getChunkNRows(id);
+        int chunkNcols = g.getChunkNCols(id);
         int noDataValue = g.getNoDataValue();
         long n = getN();
         if (n != (int) n) {
@@ -154,8 +154,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     public Long getN() {
         long n = 0;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         int noDataValue = g.getNoDataValue();
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -176,8 +176,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     public BigDecimal getSum() {
         BigDecimal sum = new BigDecimal(0.0d);
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         int noDataValue = g.getNoDataValue();
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -220,8 +220,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     protected Integer getMax() {
         int max = Integer.MIN_VALUE;
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         int noDataValue = g.getNoDataValue();
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -242,8 +242,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
         long n = getN();
         if (n > 0) {
             Grids_GridInt g = getGrid();
-            int nrows = g.getChunkNRows(ChunkID);
-            int ncols = g.getChunkNCols(ChunkID);
+            int nrows = g.getChunkNRows(id);
+            int ncols = g.getChunkNCols(id);
             int noDataValue = g.getNoDataValue();
             int p;
             int q;
@@ -497,8 +497,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
         BigDecimal sd = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(dp, rm);
         Grids_GridInt g = getGrid();
-        int nrows = g.getChunkNRows(ChunkID);
-        int ncols = g.getChunkNCols(ChunkID);
+        int nrows = g.getChunkNRows(id);
+        int ncols = g.getChunkNCols(id);
         int ndv = g.getNoDataValue();
         long count = 0;
         for (int row = 0; row < nrows; row++) {

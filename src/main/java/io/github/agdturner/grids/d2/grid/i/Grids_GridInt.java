@@ -48,9 +48,7 @@ import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
- * A class for representing grids of int values.
- *
- * @see Grids_GridNumber
+ * Grids with {@code int} values.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -1073,7 +1071,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             if (c != null) {
                 if (v != c.Value) {
                     // Convert chunk to another type
-                    chunk = convertToAnotherTypeOfChunk(chunk, c.getChunkID());
+                    chunk = convertToAnotherTypeOfChunk(chunk, c.getId());
                     r = chunk.setCell(ccr, ccc, v);
                 } else {
                     r = c.Value;

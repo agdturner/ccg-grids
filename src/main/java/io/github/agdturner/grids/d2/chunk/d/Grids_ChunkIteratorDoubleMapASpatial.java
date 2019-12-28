@@ -35,51 +35,44 @@ public class Grids_ChunkIteratorDoubleMapASpatial
 
     private static final long serialVersionUID = 1L;
 
-    protected int NumberOfDefaultValues;
-    protected int NumberOfNoDataValues;
+    protected int numberOfDefaultValues;
+    protected int numberOfNoDataValues;
 
-    protected double DefaultValue;
-    protected Grids_ChunkDoubleMap.GridChunkDoubleMapData Data;
-    protected TreeMap<Double, OffsetBitSet> DataMapBitSet;
-    protected Iterator<Double> DataMapBitSetIte;
-    protected double DataMapBitSetValue;
-    protected TreeMap<Double, HashSet<Grids_2D_ID_int>> DataMapHashSet;
-    protected Iterator<Double> DataMapHashSetIte;
-    protected double DataMapHashSetValue;
+    protected double defaultValue;
+    protected Grids_ChunkDoubleMap.GridChunkDoubleMapData data;
+    protected TreeMap<Double, OffsetBitSet> dataMapBitSet;
+    protected Iterator<Double> dataMapBitSetIte;
+    protected double dataMapBitSetValue;
+    protected TreeMap<Double, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+    protected Iterator<Double> dataMapHashSetIte;
+    protected double dataMapHashSetValue;
 
     public Grids_ChunkIteratorDoubleMapASpatial(
             Grids_ChunkDoubleMap chunk) {
         super(chunk);
-        Data = chunk.getData();
-        DataMapBitSet = Data.DataMapBitSet;
-        DataMapHashSet = Data.DataMapHashSet;
-        DataMapBitSetNumberOfValues = 0;
-        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
-        if (DataMapBitSetIte.hasNext()) {
+        data = chunk.getData();
+        dataMapBitSet = data.DataMapBitSet;
+        dataMapHashSet = data.DataMapHashSet;
+        dataMapBitSetNumberOfValues = 0;
+        dataMapBitSetIte = dataMapBitSet.keySet().iterator();
+        if (dataMapBitSetIte.hasNext()) {
             hasNext = true;
-            DataMapBitSetValue = DataMapBitSetIte.next();
-            DataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
+            dataMapBitSetValue = dataMapBitSetIte.next();
+            dataMapBitSetNumberOfValues += dataMapBitSet.get(dataMapBitSetValue).bitSet.cardinality();
         }
-        NumberOfNoDataValues -= DataMapBitSetNumberOfValues;
-        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
-        DataMapHashSetNumberOfValues = 0;
-        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
-        if (DataMapHashSetIte.hasNext()) {
+        numberOfNoDataValues -= dataMapBitSetNumberOfValues;
+        dataMapBitSetIte = dataMapBitSet.keySet().iterator();
+        dataMapHashSetNumberOfValues = 0;
+        dataMapHashSetIte = dataMapHashSet.keySet().iterator();
+        if (dataMapHashSetIte.hasNext()) {
             hasNext = true;
-            DataMapHashSetValue = DataMapHashSetIte.next();
-            DataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
+            dataMapHashSetValue = dataMapHashSetIte.next();
+            dataMapHashSetNumberOfValues += dataMapHashSet.get(dataMapHashSetValue).size();
         }
-        NumberOfNoDataValues -= DataMapHashSetNumberOfValues;
-        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
+        numberOfNoDataValues -= dataMapHashSetNumberOfValues;
+        dataMapHashSetIte = dataMapHashSet.keySet().iterator();
     }
 
-    /**
-     * Returns <tt>true</tt> if the iteration has more elements. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return an element
-     * rather than throwing an exception.)
-     *
-     * @return <tt>true</tt> if the iterator has more elements.
-     */
     @Override
     public boolean hasNext() {
         return hasNext;
@@ -95,36 +88,36 @@ public class Grids_ChunkIteratorDoubleMapASpatial
      */
     public Double next() {
         if (hasNext) {
-            if (DefaultValueIndex == NumberOfDefaultValues - 1) {
-                if (DataMapBitSetIndex == DataMapBitSetNumberOfValues - 1) {
-                    if (DataMapBitSetIte.hasNext()) {
-                        DataMapBitSetValue = DataMapBitSetIte.next();
-                        DataMapBitSetNumberOfValues = DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
-                        DataMapBitSetIndex = 0;
-                        return DataMapBitSetValue;
+            if (defaultValueIndex == numberOfDefaultValues - 1) {
+                if (dataMapBitSetIndex == dataMapBitSetNumberOfValues - 1) {
+                    if (dataMapBitSetIte.hasNext()) {
+                        dataMapBitSetValue = dataMapBitSetIte.next();
+                        dataMapBitSetNumberOfValues = dataMapBitSet.get(dataMapBitSetValue).bitSet.cardinality();
+                        dataMapBitSetIndex = 0;
+                        return dataMapBitSetValue;
                     } else {
-                        if (DataMapHashSetIndex == DataMapHashSetNumberOfValues - 1) {
-                            if (DataMapHashSetIte.hasNext()) {
-                                DataMapHashSetValue = DataMapHashSetIte.next();
-                                DataMapHashSetNumberOfValues = DataMapHashSet.get(DataMapHashSetValue).size();
-                                DataMapHashSetIndex = 0;
-                                return DataMapHashSetValue;
+                        if (dataMapHashSetIndex == dataMapHashSetNumberOfValues - 1) {
+                            if (dataMapHashSetIte.hasNext()) {
+                                dataMapHashSetValue = dataMapHashSetIte.next();
+                                dataMapHashSetNumberOfValues = dataMapHashSet.get(dataMapHashSetValue).size();
+                                dataMapHashSetIndex = 0;
+                                return dataMapHashSetValue;
                             } else {
                                 hasNext = false;
                                 return null;
                             }
                         } else {
-                            DataMapHashSetIndex++;
-                            return DataMapHashSetValue;
+                            dataMapHashSetIndex++;
+                            return dataMapHashSetValue;
                         }
                     }
                 } else {
-                    DataMapBitSetIndex++;
-                    return DataMapBitSetValue;
+                    dataMapBitSetIndex++;
+                    return dataMapBitSetValue;
                 }
             } else {
-                DefaultValueIndex++;
-                return DefaultValue;
+                defaultValueIndex++;
+                return defaultValue;
             }
         } else {
             return null;

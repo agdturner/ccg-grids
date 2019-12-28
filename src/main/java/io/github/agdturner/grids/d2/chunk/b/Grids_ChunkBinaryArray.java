@@ -39,17 +39,17 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     @Override
     protected final void initData() {
         Grids_GridBinary g = getGrid();
-        int chunkNrows = g.getChunkNRows(ChunkID);
-        int chunkNcols = g.getChunkNCols(ChunkID);
+        int chunkNrows = g.getChunkNRows(id);
+        int chunkNcols = g.getChunkNCols(id);
         data = new boolean[chunkNrows][chunkNcols];
     }
 
     /**
-     * @return (Grids_GridBoolean) Grid;
+     * @return (Grids_GridBoolean) grid;
      */
     @Override
     public Grids_GridBinary getGrid() {
-        return (Grids_GridBinary) Grid;
+        return (Grids_GridBinary) grid;
     }
 
     /**

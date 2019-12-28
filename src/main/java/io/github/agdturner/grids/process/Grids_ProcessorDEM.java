@@ -92,15 +92,15 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param weightIntersect The kernel weighting weight at centre.
      * @param weightFactor The kernel weighting distance decay.
      * @param hoome If true then OutOfMemoryErrors are caught in this method
-     * then caching operations are initiated prior to retrying. If false then
-     * OutOfMemoryErrors are caught and thrown. (NB. There are various
-     * strategies to reduce bias caused by noDataValues. Here: If the cell in
-     * grid for which slopeAndAspect is being calculated is a noDataValue then
-     * the cells in slopeAndAspect are assigned their noDataValue. If one of the
-     * cells in the calculation of slope and aspect is a noDataValue then its
-     * height is taken as the nearest cell value. (Formerly the difference in
-     * its height was taken as the average difference in height for those cells
-     * with values.) )
+ then caching operations are initiated prior to retrying. If false then
+ OutOfMemoryErrors are caught and thrown. (NB. There are various
+ strategies to reduce bias caused by noDataValues. Here: If the cell in
+ grid for which slopeAndAspect is being calculated is a noDataValue then
+ the cells in slopeAndAspect are assigned their noDataValue. If one of the
+ cells in the calculation of slope and aspect is a noDataValue then its
+ height is taken as the nearest cell v. (Formerly the difference in
+ its height was taken as the average difference in height for those cells
+ with values.) )
      * @return Grids_GridDouble[] slopeAndAspect where: slopeAndAspect[0] Is the
      * distance weighted aggregate slope over the region. This is normalised by
      * the sum of the weights used and the average distance to give a
@@ -342,7 +342,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                 for (cri = 0; cri < chunkRows; cri++) {
                     for (cci = 0; cci < chunkCols; cci++) {
                         cd = (Grids_ChunkDouble) gd.getChunk(cri, cci);
-                        chunkID = cd.getChunkID();
+                        chunkID = cd.getId();
                         env.addToNotToClear(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         chunkNrows = g.getChunkNRows(cri);
@@ -449,7 +449,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     for (cci = 0; cci < chunkCols; cci++) {
                         chunkNcols = g.getChunkNCols(cci);
                         ci = (Grids_ChunkInt) gridInt.getChunk(cri, cci);
-                        chunkID = ci.getChunkID();
+                        chunkID = ci.getId();
                         env.addToNotToClear(g, chunkID);
                         env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
@@ -1195,18 +1195,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
     /**
      * @param outflowCellIDsSet
-     * @param outflowHeight The value below which cells in _Grid2DSquareCell are
-     * regarded as outflow cells.
+     * @param outflowHeight The v below which cells in _Grid2DSquareCell are
+ regarded as outflow cells.
      * @param g Grids_GridNumber to process.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
      * @return HashSet containing Grids_GridNumber.CellIDs of those cells in
-     * _Grid2DSquareCell that are to be regarded as outflow cells. Outflow cells
-     * are those: with a value <= outflowHeight; those with CellID in
-     * outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
-     * cell with a value of NoDataValue.
+ _Grid2DSquareCell that are to be regarded as outflow cells. Outflow cells
+ are those: with a v <= outflowHeight; those with CellID in
+ outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
+ cell with a v of NoDataValue.
      */
     private HashSet<Grids_2D_ID_long> getHollowFilledDEMOutflowCellIDs(
             HashSet<Grids_2D_ID_long> outflowCellIDsSet, double outflowHeight,
@@ -1267,11 +1267,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
      * @return HashSet containing _CellIDs which identifies cells which are
-     * hollows. If _TreatNoDataValueAsOutflow is true then hollows are cells for
-     * which all neighbouring cells in the immediate 8 cell neighbourhood are
-     * either the same value or higher. If _TreatNoDataValueAsOutflow is false
-     * then hollows are cells for which all neighbouring cells in the immediate
-     * 8 cell neighbourhood are either the same value or higher or noDataValues.
+ hollows. If _TreatNoDataValueAsOutflow is true then hollows are cells for
+ which all neighbouring cells in the immediate 8 cell neighbourhood are
+ either the same v or higher. If _TreatNoDataValueAsOutflow is false
+ then hollows are cells for which all neighbouring cells in the immediate
+ 8 cell neighbourhood are either the same v or higher or noDataValues.
      */
     private HashSet<Grids_2D_ID_long> getHollowFilledDEMInitialHollowsHashSet(
             Grids_GridNumber g, long nrows, long ncols,
@@ -1993,7 +1993,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             chunkRow, chunkCol);
                     boolean doLoop = true;
                     if (gridChunkDouble instanceof Grids_ChunkDoubleSinglet) {
-                        if (((Grids_ChunkDoubleSinglet) gridChunkDouble).Value == ndvd) {
+                        if (((Grids_ChunkDoubleSinglet) gridChunkDouble).v == ndvd) {
                             doLoop = false;
                         }
                     }
@@ -3703,24 +3703,24 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         env.checkAndMaybeFreeMemory();
         Grids_GridDouble upSlopeAreaMetrics = gf.create(
                 grid.getNRows(), grid.getNCols(), grid.getDimensions());
-        // Get Peaks and set their value to 1.0d
+        // Get Peaks and set their v to 1.0d
         HashSet<Grids_2D_ID_long> initialPeaksHashSet
                 = getInitialPeaksHashSetAndSetTheirValue(grid,
                         upSlopeAreaMetrics);
-        // For each Peak find its neighbours and add a proportional value to
+        // For each Peak find its neighbours and add a proportional v to
         // them based on slope. If the slope is zero then the neighbour is still
         // passed a proportion. This can be configured based on infiltration
         // rates or slope dependent distance decay stuff.
         //        HashSet neighboursOfInitialPeaksHashSet = getNeighboursOfInitialPeaksHashSetAndSetTheirValue( initialPeaksHashSet, grid, upSlopeAreaMetrics );
-        // Add to neighbouring cells a value based on the amount of slope
+        // Add to neighbouring cells a v based on the amount of slope
         //        upSlopeMetricsAddToNeighbours( grid, peaks );
         return upSlopeAreaMetrics;
     }
 
     /**
      * Returns a HashSet containing _CellIDs which identifies cells for which
-     * neighbouring cells in the immediate 8 cell neighbourhood that are either
-     * the same value, lower or noDataValues
+ neighbouring cells in the immediate 8 cell neighbourhood that are either
+ the same v, lower or noDataValues
      *
      * @param g - the Grids_GridDouble to be processed
      * @param upSlopeAreaMetrics
@@ -3841,13 +3841,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //     * The algorithm is this:
 //     * An Grids_GridDouble height is initialised using grid
 //     * A coincident Grids_GridDouble accumulation is initialised
-//     * Step 1: A value of rainfall is added to all cells in accumulation.
+//     * Step 1: A v of rainfall is added to all cells in accumulation.
 //     * Step 2: A proportion of this rainfall is then distributed to neighbouring
 //     *         cells based on Mannings discharge equations.
 //     *
 //     * proportionally based on the difference in height of
 //     *         neighbouring cells which are down slope. If no immediate
-//     *         neighbours are downslope then the height cell is raised by value.
+//     *         neighbours are downslope then the height cell is raised by v.
 //     * Step 3: Repeat Steps 2 and 3 iterations number of times.
 //     * Step 4: Return height and accumulation.
 //     * NB Care needs to be taken to specify outflow cells

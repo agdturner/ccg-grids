@@ -31,29 +31,29 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     private static final long serialVersionUID = 1L;
 
     /**
-     * For storing the value of every cell in this grid.
+     * For storing the v of every cell in this grid.
      */
-    public double Value;
+    public double v;
 
     /**
-     * Creates a new Grids_GridChunkDouble with value set to value.
+     * Creates a new Grids_GridChunkDouble with v set to v.
      *
      * @param g What {@link #Grid} is set to.
      * @param i What {@link #ChunkID} is set to.
-     * @param v What {@link #Value} is set to.
+     * @param v What {@link #v} is set to.
      */
     public Grids_ChunkDoubleSinglet(Grids_GridDouble g, Grids_2D_ID_int i,
             double v) {
         super(g, i, false);
-        Value = v;
+        this.v = v;
     }
 
     @Override
     protected final void initData() {
     }
 
-    protected double getValue() {
-        return Value;
+    protected double getV() {
+        return v;
     }
 
     @Override
@@ -69,22 +69,23 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
      */
     @Override
     public double getCell(int row, int col) {
-        return Value;
+        return v;
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * valueToSet.
+     * Returns the v at position given by: row, col and sets it to
+ valueToSet.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to.
-     * @return
+     * @param v the v the cell is to be set to.
+     * @return The v at row, col.
+     * @throws java.lang.Exception If encountered.
      */
     @Override
     public double setCell(int row, int col, double v) throws Exception {
-        if (v == Value) {
-            return Value;
+        if (v == this.v) {
+            return this.v;
         } else {
             throw new Exception("Unable to set value as this chunk is supposed "
                     + "to all contain the same value. Maybe need to convert to "
@@ -103,21 +104,21 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     public void initCell(int r, int c, double v) {}
 
     public double getSumDouble() {
-        return getN() * Value;
+        return getN() * v;
     }
 
     @Override
     public Number getMin(boolean update) {
-        return Value;
+        return v;
     }
 
     @Override
     public Number getMax(boolean update) {
-        return Value;
+        return v;
     }
 
     @Override
     public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
-        return BigDecimal.valueOf(Value);
+        return BigDecimal.valueOf(v);
     }
 }

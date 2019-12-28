@@ -30,18 +30,18 @@ public class Grids_ChunkIteratorDoubleArrayOrMap
 
     private static final long serialVersionUID = 1L;
 
-    protected double[][] Data;
+    protected double[][] data;
 
     public Grids_ChunkIteratorDoubleArrayOrMap(
             Grids_ChunkDoubleArray chunk) {
         super(chunk);
-        Data = chunk.getData();
+        data = chunk.getData();
     }
 
     public Grids_ChunkIteratorDoubleArrayOrMap(
             Grids_ChunkDoubleMap chunk) {
         super(chunk);
-        Data = chunk.to2DDoubleArray();
+        data = chunk.to2DDoubleArray();
     }
 
     /**
@@ -51,10 +51,10 @@ public class Grids_ChunkIteratorDoubleArrayOrMap
      */
     public Double next() {
         next0();
-        return Data[Row][Col];
+        return data[row][col];
     }
 
     public void remove() {
-        Data[Row][Col] = ((Grids_GridDouble) Grid).getNoDataValue();
+        data[row][col] = ((Grids_GridDouble) grid).getNoDataValue();
     }
 }

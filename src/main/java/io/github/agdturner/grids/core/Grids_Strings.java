@@ -18,7 +18,7 @@ package io.github.agdturner.grids.core;
 import uk.ac.leeds.ccg.agdt.generic.core.Generic_Strings;
 
 /**
- *
+ * For commonly wanted Strings. 
  *
  * @author Andy Turner
  * @version 1.0.0

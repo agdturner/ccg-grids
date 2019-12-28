@@ -32,24 +32,24 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
     /**
      * For storing values arranged in rows and columns.
      */
-    private double[][] Data;
+    private double[][] data;
 
     /**
-     * Creates a new Grids_GridChunkDoubleArray for g containing all no Data
+     * Creates a new Grids_GridChunkDoubleArray for g containing all no data
      * values.
      *
      * @param g The Grids_GridDouble this is to be a chunk of.
-     * @param i The ID to be ChunkID.
+     * @param i The ID to be id.
      */
     protected Grids_ChunkDoubleArray(Grids_GridDouble g, Grids_2D_ID_int i) {
         super(g, i);
         double noDataValue = g.getNoDataValue();
-        Data = new double[ChunkNRows][ChunkNCols];
+        data = new double[chunkNRows][chunkNCols];
         int row;
-        for (row = 0; row < ChunkNRows; row++) {
-            Arrays.fill(Data[row], noDataValue);
+        for (row = 0; row < chunkNRows; row++) {
+            Arrays.fill(data[row], noDataValue);
         }
-        CacheUpToDate = false;
+        cacheUpToDate = false;
     }
 
     /**
@@ -63,37 +63,37 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
     protected Grids_ChunkDoubleArray(Grids_ChunkDouble c, Grids_2D_ID_int i) {
         super(c.getGrid(), i);
         initData();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                Data[row][col] = c.getCell(row, col);
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                data[row][col] = c.getCell(row, col);
             }
         }
-        CacheUpToDate = false;
+        cacheUpToDate = false;
     }
 
     /**
-     * Initialises {@link #Data}.
+     * Initialises {@link #data}.
      */
     @Override
     protected final void initData() {
-        Data = new double[ChunkNRows][ChunkNCols];
+        data = new double[chunkNRows][chunkNCols];
     }
 
     /**
      * TODO: Should the array be copied and the copy returned?
      *
-     * @return {@link #Data}.
+     * @return {@link #data}.
      */
     protected double[][] getData() {
-        return Data;
+        return data;
     }
 
     /**
-     * Sets {@link #Data} to {@code null}.
+     * Sets {@link #data} to {@code null}.
      */
     @Override
     protected void clearData() {
-        Data = null;
+        data = null;
         //System.gc();
     }
 
@@ -105,7 +105,7 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
      */
     @Override
     public double getCell(int row, int col) {
-        return Data[row][col];
+        return data[row][col];
     }
 
     /**
@@ -117,7 +117,7 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
      */
     @Override
     public void initCell(int row, int col, double v) {
-        Data[row][col] = v;
+        data[row][col] = v;
     }
 
     /**
@@ -131,8 +131,8 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
      */
     @Override
     public double setCell(int row, int col, double v) {
-        double oldValue = Data[row][col];
-        Data[row][col] = v;
+        double oldValue = data[row][col];
+        data[row][col] = v;
         if (isCacheUpToDate()) {
             if (v != oldValue) {
                 setCacheUpToDate(false);
@@ -142,7 +142,7 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * @return A {@link Grids_ChunkIteratorIntArrayOrMap} for iterating over the 
+     * @return A {@link Grids_ChunkIteratorIntArrayOrMap} for iterating over the
      * cells in this.
      */
     public Grids_ChunkIteratorDoubleArrayOrMap iterator() {
@@ -151,12 +151,12 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
 
     @Override
     public Double getMin(boolean update) {
-        Double r = Data[0][0];
+        Double r = data[0][0];
         Grids_GridDouble g = getGrid();
         double noDataValue = g.getNoDataValue();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                double v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                double v = data[chunkNRows][chunkNCols];
                 if (v != noDataValue) {
                     r = Math.min(r, v);
                 }
@@ -167,12 +167,12 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
 
     @Override
     public Number getMax(boolean update) {
-        Double r = Data[0][0];
+        Double r = data[0][0];
         Grids_GridDouble g = getGrid();
         double noDataValue = g.getNoDataValue();
-        for (int row = 0; row < ChunkNRows; row++) {
-            for (int col = 0; col < ChunkNCols; col++) {
-                double v = Data[ChunkNRows][ChunkNCols];
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                double v = data[chunkNRows][chunkNCols];
                 if (v != noDataValue) {
                     r = Math.max(r, v);
                 }

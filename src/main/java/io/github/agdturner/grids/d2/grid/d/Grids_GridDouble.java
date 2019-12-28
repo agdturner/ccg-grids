@@ -48,9 +48,7 @@ import java.util.Iterator;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 
 /**
- * A class for representing grids with {@code double} values.
- *
- * @see Grids_GridNumber
+ * Grids with {@code double} values.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -68,8 +66,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected double NoDataValue = -Double.MAX_VALUE;
 
     /**
-     * Each cell value equal to {@code ndv} and all chunks of the same type
-     * created via {@code cf}.
+     * Each cell v equal to {@code ndv} and all chunks of the same type created
+     * via {@code cf}.
      *
      * @param stats What {@link #stats} is set to.
      * @param fs What {@link #fs} is set to.
@@ -330,7 +328,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                                     chunk = (Grids_ChunkDouble) data.get(chunkID);
                                                 }
                                                 gValue = gd.getCell(c, cellRow, cellCol);
-                                                // Initialise value
+                                                // Initialise v
                                                 if (gValue == gndv) {
                                                     initCell(chunk, chunkID, row, col, ndv);
                                                 } else {
@@ -414,7 +412,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                                     chunk = (Grids_ChunkDouble) data.get(chunkID);
                                                 }
                                                 gValue = gi.getCell(c, cellRow, cellCol);
-                                                // Initialise value
+                                                // Initialise v
                                                 if (gValue == gndv) {
                                                     initCell(chunk, chunkID, row, col, ndv);
                                                 } else {
@@ -770,7 +768,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk = getChunk(i);
             if (chunk instanceof Grids_ChunkDoubleSinglet) {
                 Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
-                if (value != gc.Value) {
+                if (value != gc.v) {
                     // Convert chunk to another type
                     chunk = env.getProcessor().GridDoubleFactory.DefaultGridChunkDoubleFactory.create(chunk, i);
                     data.put(i, chunk);
@@ -808,20 +806,21 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
+     * @param cr The chunk row.
+     * @param cc The chunk col.
      * @return Grids_ChunkDouble for the given chunkID.
-     * @param chunkID
+     * @param i The chunk ID.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkDouble getChunk(Grids_2D_ID_int chunkID, int chunkRow,
-            int chunkCol) throws IOException, Exception,
-            ClassNotFoundException {
-        if (isInGrid(chunkRow, chunkCol)) {
-            if (data.get(chunkID) == null) {
-                loadChunk(chunkID);
+    public Grids_ChunkDouble getChunk(Grids_2D_ID_int i, int cr, int cc)
+            throws IOException, Exception, ClassNotFoundException {
+        if (isInGrid(cr, cc)) {
+            if (data.get(i) == null) {
+                loadChunk(i);
             }
-            return (Grids_ChunkDouble) data.get(chunkID);
+            return (Grids_ChunkDouble) data.get(i);
         }
         return null;
     }
@@ -830,8 +829,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * If newValue and oldValue are the same then stats won't change. A test
      * might be appropriate in set cell so that this method is not called.
      *
-     * @param newValue The value replacing oldValue.
-     * @param oldValue The value being replaced.
+     * @param newValue The v replacing oldValue.
+     * @param oldValue The v being replaced.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -886,7 +885,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * Double.POSITIVE_INFINITY then NoDataValue is left as the default of
      * Integer.MIN_VALUE and a warning message is written to std.out.
      *
-     * @param ndv The value ndv is initialised to.
+     * @param ndv The v ndv is initialised to.
      */
     protected final void initNoDataValue(double ndv) {
         if (Double.isNaN(ndv)) {
@@ -901,10 +900,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @param r The grid cell row index for which the value is returned.
-     * @param c The grid cell column index for which the value is returned
-     * @return The value in the grid at grid cell row index {@code r}, grid cell
-     * column index {@code c} or {@link #NoDataValue} if there is no such value.
+     * @param r The grid cell row index for which the v is returned.
+     * @param c The grid cell column index for which the v is returned
+     * @return The v in the grid at grid cell row index {@code r}, grid cell
+     * column index {@code c} or {@link #NoDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -918,14 +917,14 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * For getting the value in chunk at chunk cell row {@code r}, chunk cell
-     * col {@code c}.
+     * For getting the v in chunk at chunk cell row {@code r}, chunk cell col
+     * {@code c}.
      *
      * @param chunk The chunk.
-     * @param r The chunk cell row index of the value returned.
-     * @param c The chunk cell column index of the value returned.
-     * @return Value in chunk at chunk cell row {@code r}, chunk cell col
-     * {@code c} or {@link #NoDataValue} if there is no such value.
+     * @param r The chunk cell row index of the v returned.
+     * @param c The chunk cell column index of the v returned.
+     * @return v in chunk at chunk cell row {@code r}, chunk cell col {@code c}
+     * or {@link #NoDataValue} if there is no such v.
      */
     public double getCell(Grids_ChunkDouble chunk, int r, int c) {
         if (chunk.inChunk(r, c)) {
@@ -937,8 +936,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     /**
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @return The value at (x, y) or {@link #NoDataValue} if there is no such
-     * value.
+     * @return The v at (x, y) or {@link #NoDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -949,8 +947,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The value of the cell with cell ID {@code i} or
-     * {@link #NoDataValue} if there is no such cell in the grid.
+     * @return The v of the cell with cell ID {@code i} or {@link #NoDataValue}
+     * if there is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -960,13 +958,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * For setting the value at x-coordinate {@code x}, y-coordinate {@code y}.
+     * For setting the v at x-coordinate {@code x}, y-coordinate {@code y}.
      *
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param v The value to set in the cell.
-     * @return The value at x-coordinate {@code x}, y-coordinate {@code y} or
-     * {@link #NoDataValue} if there is no such value.
+     * @param v The v to set in the cell.
+     * @return The v at x-coordinate {@code x}, y-coordinate {@code y} or
+     * {@link #NoDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -976,15 +974,15 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * For setting the value at cell row index {@code r}, cell column index
+     * For setting the v at cell row index {@code r}, cell column index
      * {@code c}.
      *
-     * @param r The cell row index of the value to set.
-     * @param c The cell column index of the value to set.
-     * @param v The value to set at cell row index {@code r}, cell column index
+     * @param r The cell row index of the v to set.
+     * @param c The cell column index of the v to set.
+     * @param v The v to set at cell row index {@code r}, cell column index
      * {@code c}.
-     * @return The value at cell row index {@code r}, cell column index
-     * {@code c} or {@link #NoDataValue} if there is no such value.
+     * @return The v at cell row index {@code r}, cell column index {@code c} or
+     * {@link #NoDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -998,16 +996,16 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * For setting the value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * For setting the v in chunk ({@code cr}, {@code cc}) at chunk cell row
      * {@code ccr}, chunk cell column (@code ccc}.
      *
-     * @param cr The chunk row of the chunk in which the value is set.
-     * @param cc The chunk column of the chunk in which the value is set.
-     * @param ccr The chunk cell row of the value to set.
-     * @param ccc The chunk cell column of the value to set.
-     * @param v The value to set in chunk ({@code cr}, {@code cc}) at chunk cell
-     * row {@code ccr}, chunk cell column (@code ccc}.
-     * @return The value in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * @param cr The chunk row of the chunk in which the v is set.
+     * @param cc The chunk column of the chunk in which the v is set.
+     * @param ccr The chunk cell row of the v to set.
+     * @param ccc The chunk cell column of the v to set.
+     * @param v The v to set in chunk ({@code cr}, {@code cc}) at chunk cell row
+     * {@code ccr}, chunk cell column (@code ccc}.
+     * @return The v in chunk ({@code cr}, {@code cc}) at chunk cell row
      * {@code ccr}, chunk cell column (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -1018,16 +1016,16 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * For setting the value in chunk at chunk cell row {@code ccr}, chunk cell
+     * For setting the v in chunk at chunk cell row {@code ccr}, chunk cell
      * column (@code ccc}.
      *
-     * @param chunk The chunk in which the value is to be set.
-     * @param ccr The row in chunk of the value to set.
-     * @param ccc The column in chunk of the value to set.
-     * @param v The value to set in chunk at chunk cell row {@code ccr}, chunk
-     * cell column (@code ccc}.
-     * @return The value in chunk at chunk cell row {@code ccr}, chunk cell
+     * @param chunk The chunk in which the v is to be set.
+     * @param ccr The row in chunk of the v to set.
+     * @param ccc The column in chunk of the v to set.
+     * @param v The v to set in chunk at chunk cell row {@code ccr}, chunk cell
      * column (@code ccc}.
+     * @return The v in chunk at chunk cell row {@code ccr}, chunk cell column
+     * (@code ccc}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1041,12 +1039,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
         } else {
             Grids_ChunkDoubleSinglet c = (Grids_ChunkDoubleSinglet) chunk;
             if (c != null) {
-                if (v != c.Value) {
+                if (v != c.v) {
                     // Convert chunk to another type
-                    chunk = convertToAnotherTypeOfChunk(chunk, c.getChunkID());
+                    chunk = convertToAnotherTypeOfChunk(chunk, c.getId());
                     r = chunk.setCell(ccr, ccc, v);
                 } else {
-                    r = c.Value;
+                    r = c.v;
                 }
             }
         }
@@ -1076,13 +1074,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * Initialises the value in chunk at row, col.
+     * Initialises the v in chunk at row, col.
      *
      * @param chunk The chunk.
      * @param i The chunk ID.
      * @param row The row.
      * @param col The col.
-     * @param v The value.
+     * @param v The v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1090,8 +1088,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
             long row, long col, double v) throws IOException,
             ClassNotFoundException, Exception {
         if (chunk instanceof Grids_ChunkDoubleSinglet) {
-            Grids_ChunkDoubleSinglet gridChunk = (Grids_ChunkDoubleSinglet) chunk;
-            if (v != gridChunk.Value) {
+            Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
+            if (v != gc.v) {
                 chunk = convertToAnotherTypeOfChunk(chunk, i);
                 chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             } else {
@@ -1139,12 +1137,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * Initialises the value at row, col and does nothing about stats.
+     * Initialises the v at row, col and does nothing about stats.
      *
      * @param chunk The chunk.
      * @param row The row.
      * @param col The column.
-     * @param value The value.
+     * @param value The v.
      */
     protected void initCellFast(Grids_ChunkDouble chunk, long row,
             long col, double value) {
@@ -1307,7 +1305,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
         double nearestCellValue = getCell(row, col);
         if (nearestCellValue == NoDataValue) {
-            // Find a value Seeking outwards from nearestCellID
+            // Find a v Seeking outwards from nearestCellID
             // Initialise visitedSet1
             HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
             HashSet<Grids_2D_ID_long> visitedSet1 = new HashSet<>();
@@ -1384,7 +1382,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 }
                 r.distance = r.distance.min(distance);
             }
-            // Get cellIDs that are within distance of discovered value
+            // Get cellIDs that are within distance of discovered v
             Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, dp, rm);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
@@ -1419,7 +1417,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     /**
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
-     * @param v The value to be added to the cell containing the point (x, y).
+     * @param v The v to be added to the cell containing the point (x, y).
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1429,8 +1427,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @param cellID The ID of the cell to add to the value of.
-     * @param v The value to be added to the cell.
+     * @param cellID The ID of the cell to add to the v of.
+     * @param v The v to be added to the cell.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1442,9 +1440,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
     /**
      * @param row The row index of the cell.
      * @param col The column index of the cell.
-     * @param v The value to be added to the cell. NB1. If cell is not contained
-     * in this then then returns ndv. NB2. Adding to ndv is done as if adding to
-     * a cell with value of 0. TODO: Check Arithmetic
+     * @param v The v to be added to the cell. NB1. If cell is not contained in
+     * this then then returns ndv. NB2. Adding to ndv is done as if adding to a
+     * cell with v of 0. TODO: Check Arithmetic
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1463,9 +1461,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * Initialises all cells with value {@code v}.
+     * Initialises all cells with v {@code v}.
      *
-     * @param v The value to initialise all the cells with.
+     * @param v The v to initialise all the cells with.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

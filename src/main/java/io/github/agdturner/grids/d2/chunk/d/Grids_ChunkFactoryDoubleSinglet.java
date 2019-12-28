@@ -28,7 +28,7 @@ public class Grids_ChunkFactoryDoubleSinglet extends Grids_ChunkFactoryDouble {
 
     private static final long serialVersionUID = 1L;
 
-    double DefaultValue;
+    double defaultValue;
 
     /**
      * Creates a new Grids_ChunkFactoryDoubleSinglet.
@@ -39,20 +39,20 @@ public class Grids_ChunkFactoryDoubleSinglet extends Grids_ChunkFactoryDouble {
     /**
      * Creates a new Grids_ChunkFactoryDoubleSinglet.
      *
-     * @param dv What {@link #DefaultValue} is set to.
+     * @param dv What {@link #defaultValue} is set to.
      */
     public Grids_ChunkFactoryDoubleSinglet(double dv) {
-        DefaultValue = dv;
+        defaultValue = dv;
     }
 
     @Override
     public Grids_ChunkDoubleSinglet create(Grids_GridDouble g, Grids_2D_ID_int i) {
-        return new Grids_ChunkDoubleSinglet(g, i, DefaultValue);
+        return new Grids_ChunkDoubleSinglet(g, i, defaultValue);
     }
 
     @Override
     public Grids_ChunkDoubleSinglet create(Grids_ChunkDouble c, Grids_2D_ID_int i) {
-        return new Grids_ChunkDoubleSinglet(c.getGrid(), i, DefaultValue);
+        return new Grids_ChunkDoubleSinglet(c.getGrid(), i, defaultValue);
     }
 
 }

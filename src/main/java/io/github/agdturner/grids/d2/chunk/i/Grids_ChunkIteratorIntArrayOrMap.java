@@ -49,10 +49,10 @@ public class Grids_ChunkIteratorIntArrayOrMap
      */
     public Integer next() {
         next0();
-        return data[Row][Col];
+        return data[row][col];
     }
 
     public void remove() {
-        data[Row][Col] = ((Grids_GridInt) Grid).getNoDataValue();
+        data[row][col] = ((Grids_GridInt) grid).getNoDataValue();
     }
 }

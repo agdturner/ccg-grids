@@ -42,11 +42,9 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**
- * A binary grid. This is a grid containing boolean values. There is no
- * noDataValue for this type of grid. For this type of grid the N in the
- * {@link #stats} is the umber of true cells.
- *
- * @see io.github.agdturner.grids.d2.grids.Grids_Grid
+ * Grids with {@code boolean} values. There is no noDataValue. For this type of
+ * grid the N in the {@link #stats} is the number of cells with value equal to
+ * {@code true}.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -256,7 +254,7 @@ public class Grids_GridBinary extends Grids_Grid {
                     do {
                         isLoadedChunk = loadChunk(g, cf, chunkNRows, chunkNCols,
                                 startRow, startCol, endRow, endCol,
-                                startChunkRow, endChunkRow, 
+                                startChunkRow, endChunkRow,
                                 startChunkCol, endChunkCol, gb, gcr,
                                 gChunkNRows, gcc);
                     } while (!isLoadedChunk);

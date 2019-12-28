@@ -29,29 +29,29 @@ public abstract class Grids_Chunk extends Grids_Object {
     private static final long serialVersionUID = 1L;
 
     /**
-     * A reference to the Grid.
+     * A reference to the grid.
      */
-    protected transient Grids_Grid Grid;
+    protected transient Grids_Grid grid;
 
     /**
      * For storing the ID of this.
      */
-    protected Grids_2D_ID_int ChunkID;
+    protected Grids_2D_ID_int id;
 
     /**
      * The number of rows in the chunk.
      */
-    protected int ChunkNRows;
+    protected int chunkNRows;
 
     /**
      * The number of columns in the chunk.
      */
-    protected int ChunkNCols;
+    protected int chunkNCols;
 
     /**
      * Indicator for whether the cache of this chunk is upToDate.
      */
-    protected transient boolean CacheUpToDate;
+    protected transient boolean cacheUpToDate;
 
     /**
      * Indicator for whether the cache of this chunk is upToDate.
@@ -59,33 +59,33 @@ public abstract class Grids_Chunk extends Grids_Object {
     protected final boolean worthClearing;
 
     /**
-     * @param g What {@link #Grid} is set to.
-     * @param i What {@link #id} is set to.
+     * @param g What {@link #grid} is set to.
+     * @param i What {@link #ChunkId} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
     protected Grids_Chunk(Grids_Grid g, Grids_2D_ID_int i, 
             boolean worthClearing) {
         super(g.env);
-        Grid = g;
-        ChunkID = i;
-        ChunkNRows = Grid.getChunkNRows(ChunkID);
-        ChunkNCols = Grid.getChunkNCols(ChunkID);
-        CacheUpToDate = false;
+        grid = g;
+        id = i;
+        chunkNRows = grid.getChunkNRows(id);
+        chunkNCols = grid.getChunkNCols(id);
+        cacheUpToDate = false;
         this.worthClearing = worthClearing;
     }
 
     /**
-     * @return {@link #Grid}
+     * @return {@link #grid}
      */
     public abstract Grids_Grid getGrid();
 
     /**
-     * Initialises Grid = g.
+     * Initialises grid = g.
      *
      * @param g What {}
      */
     public final void initGrid(Grids_Grid g) {
-        Grid = g;
+        grid = g;
     }
 
     /**
@@ -94,16 +94,16 @@ public abstract class Grids_Chunk extends Grids_Object {
      * @param chunkID
      */
     public void initChunkID(Grids_2D_ID_int chunkID) {
-        ChunkID = chunkID;
+        id = chunkID;
     }
 
     /**
-     * Returns a copy of ChunkID.
+     * Returns a copy of id.
      *
      * @return
      */
-    public Grids_2D_ID_int getChunkID() {
-        return new Grids_2D_ID_int(ChunkID);
+    public Grids_2D_ID_int getId() {
+        return new Grids_2D_ID_int(id);
         //return this._ChunkID;
     }
 
@@ -114,16 +114,16 @@ public abstract class Grids_Chunk extends Grids_Object {
      * @return
      */
     public boolean isCacheUpToDate() {
-        return CacheUpToDate;
+        return cacheUpToDate;
     }
 
     /**
-     * Sets {@link #CacheUpToDate} to b.
+     * Sets {@link #cacheUpToDate} to b.
      *
      * @param b
      */
     public void setCacheUpToDate(boolean b) {
-        CacheUpToDate = b;
+        cacheUpToDate = b;
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class Grids_Chunk extends Grids_Object {
      * @return
      */
     protected String getDescription() {
-        return getName() + "(ChunkID(" + ChunkID.toString() + "))";
+        return getName() + "(ChunkID(" + id.toString() + "))";
     }
 
     /**
@@ -152,8 +152,8 @@ public abstract class Grids_Chunk extends Grids_Object {
      * @return
      */
     public boolean inChunk(int row, int col) {
-        if (row >= 0 && row < ChunkNRows) {
-            if (col >= 0 && col < ChunkNCols) {
+        if (row >= 0 && row < chunkNRows) {
+            if (col >= 0 && col < chunkNCols) {
                 return true;
             }
         }

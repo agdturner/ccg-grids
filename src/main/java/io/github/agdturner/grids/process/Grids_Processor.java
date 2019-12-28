@@ -231,7 +231,7 @@ public class Grids_Processor extends Grids_Object {
                 Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
                     Grids_ChunkInt maskIntChunk = maskInt.getChunk(ite.next());
-                    chunkID = maskIntChunk.getChunkID();
+                    chunkID = maskIntChunk.getId();
                     env.addToNotToClear(g, chunkID);
                     env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
@@ -262,7 +262,7 @@ public class Grids_Processor extends Grids_Object {
                 Iterator<Grids_2D_ID_int> ite = maskDouble.iterator().getGridIterator();
                 while (ite.hasNext()) {
                     Grids_ChunkDouble maskChunk = maskDouble.getChunk(ite.next());
-                    chunkID = maskChunk.getChunkID();
+                    chunkID = maskChunk.getId();
                     env.addToNotToClear(g, chunkID);
                     env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
@@ -297,7 +297,7 @@ public class Grids_Processor extends Grids_Object {
                 Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
                     Grids_ChunkInt maskChunk = maskInt.getChunk(ite.next());
-                    chunkID = maskChunk.getChunkID();
+                    chunkID = maskChunk.getId();
                     env.addToNotToClear(g, chunkID);
                     env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
@@ -329,7 +329,7 @@ public class Grids_Processor extends Grids_Object {
                 Grids_ChunkDouble maskChunk;
                 while (ite.hasNext()) {
                     maskChunk = (Grids_ChunkDouble) mask.getChunk(ite.next());
-                    chunkID = maskChunk.getChunkID();
+                    chunkID = maskChunk.getId();
                     env.addToNotToClear(g, chunkID);
                     env.addToNotToClear(mask, chunkID);
                     env.checkAndMaybeFreeMemory();
@@ -382,7 +382,7 @@ public class Grids_Processor extends Grids_Object {
             Iterator<Grids_2D_ID_int> ite = gi.iterator().getGridIterator();
             while (ite.hasNext()) {
                 Grids_ChunkInt chunk = gi.getChunk(ite.next());
-                chunkID = chunk.getChunkID();
+                chunkID = chunk.getId();
                 env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = gi.getChunkNRows(chunkID);
@@ -405,7 +405,7 @@ public class Grids_Processor extends Grids_Object {
             Iterator<Grids_2D_ID_int> ite = gd.iterator().getGridIterator();
             while (ite.hasNext()) {
                 Grids_ChunkDouble chunk = gd.getChunk(ite.next());
-                chunkID = chunk.getChunkID();
+                chunkID = chunk.getId();
                 env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
                 chunkNRows = g.getChunkNRows(chunkID);

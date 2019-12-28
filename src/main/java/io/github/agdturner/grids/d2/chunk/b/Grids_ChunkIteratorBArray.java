@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.agdturner.grids.d2.chunk;
+package io.github.agdturner.grids.d2.chunk.b;
 
 import java.util.NoSuchElementException;
+import io.github.agdturner.grids.d2.chunk.Grids_ChunkIterator;
+import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
+import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
- * For iterating over the values in a chunk in row major order.
- *
+ * For iterating through the values in a Grids_GridChunkBinary instance. The
+ * values are not returned in any particular order.
+*
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkRowMajorOrderIterator
-        extends Grids_ChunkIterator {
+public abstract class Grids_ChunkIteratorBArray extends Grids_ChunkIterator {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,17 +36,24 @@ public abstract class Grids_ChunkRowMajorOrderIterator
     protected int nRows;
     protected int nCols;
 
-    protected Grids_ChunkRowMajorOrderIterator(Grids_Chunk chunk) {
+    public Grids_ChunkIteratorBArray(Grids_ChunkBinaryArray chunk) {
         super(chunk);
         row = 0;
         col = 0;
-        nRows = grid.getChunkNRows(chunk.id);
-        nCols = grid.getChunkNCols(chunk.id);
+        Grids_GridBinary g = chunk.getGrid();
+        nRows = g.getChunkNRows(chunk.getId());
+        nCols = g.getChunkNCols(chunk.getId());
     }
 
-    /**
-     * @return {@code true} if the iterator has more elements.
-     */
+    public Grids_ChunkIteratorBArray(Grids_ChunkBooleanArray chunk) {
+        super(chunk);
+        row = 0;
+        col = 0;
+        Grids_GridBoolean g = chunk.getGrid();
+        nRows = g.getChunkNRows(chunk.getId());
+        nCols = g.getChunkNCols(chunk.getId());
+    }
+
     @Override
     public boolean hasNext() {
         if (col + 1 == nCols) {
@@ -54,7 +64,10 @@ public abstract class Grids_ChunkRowMajorOrderIterator
         return true;
     }
 
-    protected void next0() {
+    /**
+     * @throws NoSuchElementException if there is no such element.
+     */
+    public void next0() {
         if (col + 1 == nCols) {
             if (row + 1 == nRows) {
                 throw new NoSuchElementException();
@@ -66,5 +79,4 @@ public abstract class Grids_ChunkRowMajorOrderIterator
             col++;
         }
     }
-
 }

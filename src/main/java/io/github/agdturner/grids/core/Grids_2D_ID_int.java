@@ -109,7 +109,7 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      *
      * @param i The instance to compare with.
      * @return -1, 0, 1 depending on whether this is less than, the same or 
-     * greater than {@code i. 
+     * greater than {@code i}. 
      */
     @Override
     public int compareTo(Grids_2D_ID_int i) {

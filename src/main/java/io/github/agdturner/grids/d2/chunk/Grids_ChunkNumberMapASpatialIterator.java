@@ -27,24 +27,24 @@ public abstract class Grids_ChunkNumberMapASpatialIterator
 
     private static final long serialVersionUID = 1L;
 
-    protected int NumberOfCells;
-    protected int DefaultValueIndex;
-    protected int NoDataValueIndex;
-    protected int DataMapBitSetIndex;
-    protected int DataMapBitSetNumberOfValues;
-    protected int DataMapHashSetNumberOfValues;
-    protected int DataMapHashSetIndex;
+    protected int numberOfCells;
+    protected int defaultValueIndex;
+    protected int noDataValueIndex;
+    protected int dataMapBitSetIndex;
+    protected int dataMapBitSetNumberOfValues;
+    protected int dataMapHashSetNumberOfValues;
+    protected int dataMapHashSetIndex;
     protected boolean hasNext;
 
     public Grids_ChunkNumberMapASpatialIterator(Grids_Chunk chunk) {
         super(chunk);
-        NumberOfCells = chunk.ChunkNRows * chunk.ChunkNCols;
-        //NumberOfDefaultValues = chunk.getNumberOfDefaultValues(NumberOfCells);
-        DefaultValueIndex = 0;
+        numberOfCells = chunk.chunkNRows * chunk.chunkNCols;
+        //NumberOfDefaultValues = chunk.getNumberOfDefaultValues(numberOfCells);
+        defaultValueIndex = 0;
         hasNext = true;
-        //NumberOfNoDataValues = NumberOfCells - NumberOfDefaultValues;
-        DataMapBitSetIndex = 0;
-        DataMapHashSetIndex = 0;
+        //NumberOfNoDataValues = numberOfCells - NumberOfDefaultValues;
+        dataMapBitSetIndex = 0;
+        dataMapHashSetIndex = 0;
     }
 
     /**

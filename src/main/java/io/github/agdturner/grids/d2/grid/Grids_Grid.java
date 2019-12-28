@@ -111,21 +111,20 @@ import java.util.stream.Collectors;
  * memory; how much the data are changing; and the relative importance of the
  * speed of computation over the memory footprint.
  *
- * Both a grid and each chunk has a
- * {@link io.github.agdturner.grids.d2.stats.Grid_Stats} instance. These provide
- * access to summary statistics about the grid and each chunk. These are broadly
- * of two types: those which are kept more up-to-date as the underlying data are
- * changed; those where there is no effort to keep them up-to-date as the
+ * Each grid has a statistics instance associated with it which provides access
+ * to summary statistics about the grid. The statistics are broadly of two
+ * types: those which are more or less updated as the underlying data are
+ * changed; and, those where no effort is made to keep them up-to-date as the
  * underlying data changes. Having ready access to summary statistics about the
- * values in a grid or a chunk can be very useful, but there are costs
- * associated with keeping them more up to date if they are not going to be
- * used.
+ * values in a grid can be very useful, but there are costs associated with
+ * keeping them more up to date if they are not going to be used.
  *
  * It may require experiments and some understanding of the data and the
- * processing that will be done in order to decide what types of chunk and what
- * type of statistics to employ. In general, as the variety and density of the
- * of data increase, an array of values becomes more likely to be better than
- * anything else.
+ * processing that will be done in order to make a good decision about what
+ * types of statistic and chunks to use. In general, as the variety and density
+ * of data values increases the more likely it becomes that an array of values 
+ * will be best. For sparse data where the majority of a chunk is noDataValues 
+ * or is of the same value, then the better the map type storage is.
  *
  * There is a trade off between efficient storage, speed and flexibility. This
  * may further vary depending on the architecture and capabilities of the
