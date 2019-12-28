@@ -46,32 +46,32 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
     public Grids_GridIteratorInt(Grids_GridInt g) throws IOException, Exception,
             ClassNotFoundException {
         super(g);
-        GridIterator = g.getData().keySet().iterator();
-        if (GridIterator.hasNext()) {
-            ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
-            if (Chunk == null) {
-                Grid.loadChunk(ChunkID);
-                Chunk = (Grids_ChunkInt) g.getData().get(ChunkID);
+        gridIterator = g.getData().keySet().iterator();
+        if (gridIterator.hasNext()) {
+            chunkID = gridIterator.next();
+            chunk = (Grids_ChunkInt) g.getData().get(chunkID);
+            if (chunk == null) {
+                grid.loadChunk(chunkID);
+                chunk = (Grids_ChunkInt) g.getData().get(chunkID);
             }
             initChunkIterator();
         }
     }
 
     /**
-     * Initialises ChunkIterator.
+     * Initialises chunkIterator.
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_ChunkIntArray) {
-            ChunkIterator = new Grids_ChunkIteratorIntArrayOrMap(
-                    (Grids_ChunkIntArray) Chunk);
-        } else if (Chunk instanceof Grids_ChunkIntMap) {
-            ChunkIterator = new Grids_ChunkIteratorIntArrayOrMap(
-                    (Grids_ChunkIntMap) Chunk);
+        if (chunk instanceof Grids_ChunkIntArray) {
+            chunkIterator = new Grids_ChunkIteratorIntArrayOrMap(
+                    (Grids_ChunkIntArray) chunk);
+        } else if (chunk instanceof Grids_ChunkIntMap) {
+            chunkIterator = new Grids_ChunkIteratorIntArrayOrMap(
+                    (Grids_ChunkIntMap) chunk);
         } else {
-            ChunkIterator = new Grids_ChunkIteratorIntSinglet(
-                    (Grids_ChunkIntSinglet) Chunk);
+            chunkIterator = new Grids_ChunkIteratorIntSinglet(
+                    (Grids_ChunkIntSinglet) chunk);
         }
     }
 
@@ -99,7 +99,7 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
 
     @Override
     public Grids_GridInt getGrid() {
-        return (Grids_GridInt) Grid;
+        return (Grids_GridInt) grid;
     }
 
     /**
@@ -110,11 +110,11 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
      */
     public Integer next() throws IOException, Exception, 
             ClassNotFoundException {
-        if (!ChunkIterator.hasNext()) {
-            if (GridIterator.hasNext()) {
-                ChunkID = GridIterator.next();
-                Chunk = Grid.getChunk(ChunkID);
-                ChunkIterator = getChunkIterator(Chunk);
+        if (!chunkIterator.hasNext()) {
+            if (gridIterator.hasNext()) {
+                chunkID = gridIterator.next();
+                chunk = grid.getChunk(chunkID);
+                chunkIterator = getChunkIterator(chunk);
                 return getChunkIterator().next();
             } else {
                 return null;
@@ -126,6 +126,6 @@ public class Grids_GridIteratorInt extends Grids_GridIterator {
 
     @Override
     public Grids_ChunkIteratorIntArrayOrMap getChunkIterator() {
-        return (Grids_ChunkIteratorIntArrayOrMap) ChunkIterator;
+        return (Grids_ChunkIteratorIntArrayOrMap) chunkIterator;
     }
 }

@@ -1687,14 +1687,16 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * be used
      * @param weightIntersect typically a number between 0 and 1 which controls
      * the weight applied at the centre of the kernel
-     * @param weightFactor = 0.0d all values within distance will be equally
+     * @param weightFactor {@code = 0.0d all values within distance will be equally
      * weighted > 0.0d means the edge of the kernel has a zero weight < 0.0d
      * means that the edage of the kernel has a weight of 1 > -1.0d && < 1.0d
      * provides an inverse decay @param gridFactory the Abstract
      * 2DSquareCellDoubleFactory used to create grids TODO: Check and ensure
      * that reasonable answers are returned for grids with different spatial
      * frames. (NB. Sensibly the two grids being correlated should have the same
-     * no data space.) @param gridFactory @return @param gf @return
+     * no data space.)}
+     * @param gf Grid fatory.
+     * @return Grids_GridDouble[]
      */
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList statistics, BigDecimal distance,

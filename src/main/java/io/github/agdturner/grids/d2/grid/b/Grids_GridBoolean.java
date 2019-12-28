@@ -331,24 +331,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         return isLoadedChunk;
     }
 
-    /**
-     *
-     * @param gChunkID
-     * @param g
-     * @param gb
-     * @param gcc
-     * @param gcr
-     * @param cf
-     * @param gChunkNRows
-     * @param startRow
-     * @param endRow
-     * @param startCol
-     * @param endCol
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws Exception
-     */
-    public void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
+    protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBoolean gb, int gcc, int gcr,
             Grids_ChunkFactoryBoolean cf, int gChunkNRows, long startRow,
             long endRow, long startCol, long endCol) throws IOException,
@@ -395,22 +378,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         }
     }
 
-    /**
-     *
-     * @param stats
-     * @param gridFile
-     * @param cf
-     * @param chunkNRows
-     * @param chunkNCols
-     * @param startRow
-     * @param startCol
-     * @param endRow
-     * @param endCol
-     * @throws java.io.IOException If encountered or if gridFile is not a
-     * directory.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    private void init(Grids_StatsBoolean stats, Generic_Path gridFile,
+    protected final void init(Grids_StatsBoolean stats, Generic_Path gridFile,
             Grids_ChunkFactoryBoolean cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException, Exception {

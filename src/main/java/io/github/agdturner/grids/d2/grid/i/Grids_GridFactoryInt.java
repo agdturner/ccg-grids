@@ -149,8 +149,8 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
             Grids_Dimensions dimensions) throws IOException, 
             ClassNotFoundException, Exception {
         Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
-                store.getNextID(), cf, ChunkNRows,
-                ChunkNCols, nRows, nCols, dimensions, NoDataValue, env);
+                store.getNextID(), cf, chunkNRows,
+                chunkNCols, nRows, nCols, dimensions, NoDataValue, env);
         store.addDir();
         return r;
     }
@@ -192,7 +192,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
             Grids_ChunkFactoryInt cf, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException, Exception {
         Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
-                store.getNextID(), g, cf, ChunkNRows, ChunkNCols, startRow, 
+                store.getNextID(), g, cf, chunkNRows, chunkNCols, startRow, 
                 startCol, endRow, endCol, NoDataValue);
         store.addDir();
         return r;
@@ -240,7 +240,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridInt(getStats(stats), store, store.getNextID(), gridFile, cf,
-                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
+                chunkNRows, chunkNCols, startRow, startCol, endRow, endCol,
                 NoDataValue, env);
     }
 

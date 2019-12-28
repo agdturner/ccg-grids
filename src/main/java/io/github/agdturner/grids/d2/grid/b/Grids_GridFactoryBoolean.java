@@ -44,13 +44,13 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     /**
      * @see #Grids_GridFactoryBoolean(Grids_Environment,
      * Grids_ChunkFactoryBoolean, int, int, Grids_Dimensions,
-     * Grids_StatsBoolean) where {@link #Dimensions} is set to {@code null}.
+     * Grids_StatsBoolean) where {@link #dim} is set to {@code null}.
      * {@link #Stats} is set to {@code new Grids_StatsNotUpdatedBoolean(e)}.
      *
      * @param e What {@link #env} is set to.
      * @param factory What {@link #factory} is set to.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
      */
     public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore store,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols) {
@@ -61,9 +61,9 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     /**
      * @param e What {@link #env} is set to.
      * @param factory What {@link #factory} is set to.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
-     * @param dimensions What {@link #Dimensions} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param dimensions What {@link #dim} is set to.
      * @param stats What {@link #Stats} is set to.
      */
     public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore store,
@@ -115,8 +115,8 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             Grids_ChunkFactoryBoolean cf, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
-                store, store.getNextID(), cf, ChunkNRows,
-                ChunkNCols, nRows, nCols, dimensions, env);
+                store, store.getNextID(), cf, chunkNRows,
+                chunkNCols, nRows, nCols, dimensions, env);
         store.addDir();
         return r;
     }
@@ -178,8 +178,8 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
-                store, store.getNextID(), g, cf, ChunkNRows,
-                ChunkNCols, startRow, startCol, endRow, endCol);
+                store, store.getNextID(), g, cf, chunkNRows,
+                chunkNCols, startRow, startCol, endRow, endCol);
         store.addDir();
         return r;
     }
@@ -243,7 +243,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
                 store, store.getNextID(), gridFile, cf,
-                ChunkNRows, ChunkNCols, startRow, startCol, endRow, endCol,
+                chunkNRows, chunkNCols, startRow, startCol, endRow, endCol,
                 env);
         store.addDir();
         return r;

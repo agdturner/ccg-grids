@@ -20,7 +20,7 @@ import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 
 /**
- * Stores the data in a {@code Boolean[][]}.
+ * Stores the data in a {@code boolean[][]}.
 *
  * @author Andy Turner
  * @version 1.0.0
@@ -45,7 +45,7 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     }
 
     /**
-     * @return (Grids_GridBoolean) grid;
+     * @return (Grids_GridBinary) grid;
      */
     @Override
     public Grids_GridBinary getGrid() {

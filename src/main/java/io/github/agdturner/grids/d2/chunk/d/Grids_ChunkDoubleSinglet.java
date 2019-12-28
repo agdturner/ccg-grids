@@ -63,9 +63,9 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     /**
      * Beware OutOfMemoryErrors being thrown if calling this method.
      *
-     * @param row
-     * @param col
-     * @return
+     * @param row The row.
+     * @param col The column.
+     * @return The value at (row, col).
      */
     @Override
     public double getCell(int row, int col) {
@@ -73,8 +73,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     /**
-     * Returns the v at position given by: row, col and sets it to
- valueToSet.
+     * Returns the v at position given by: row, col and sets it to valueToSet.
      *
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
@@ -101,7 +100,8 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     @Override
-    public void initCell(int r, int c, double v) {}
+    public void initCell(int r, int c, double v) {
+    }
 
     public double getSumDouble() {
         return getN() * v;

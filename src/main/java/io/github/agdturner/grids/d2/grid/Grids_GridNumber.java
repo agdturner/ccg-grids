@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
 public abstract class Grids_GridNumber extends Grids_Grid {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The noDataValue for the grid.
      */
@@ -44,8 +44,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     /**
-     * @return Value at at point given by x-coordinate x and
-     * y-coordinate y as a BigDecimal.
+     * @return Value at at point given by x-coordinate x and y-coordinate y as a
+     * BigDecimal.
      * @param x The x coordinate of the point at which the cell value is
      * returned.
      * @param y The y coordinate of the point at which the cell value is
@@ -53,24 +53,24 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y) 
-            throws IOException,            Exception, ClassNotFoundException {
+    public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y)
+            throws IOException, Exception, ClassNotFoundException {
         return getCellBigDecimal(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
                 getChunkCellCol(x));
     }
 
     /**
-     * @param row
-     * @param col
-     * @return Grids_Chunk cell value at cell row index equal to _CellRowIndex,
-     * cell col index equal to _CellColIndex as a double.
+     * @param row The chunk cell row index.
+     * @param col The chunk cell column index.
+     * @return Value at cell row index {@code row}, cell col index {@code col}
+     * as a BigDecimal.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(long row, long col) throws IOException, Exception,
-            ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(row), getChunkCol(col), getChunkCellRow(row),
-                getChunkCellCol(col));
+    public BigDecimal getCellBigDecimal(long row, long col) throws IOException,
+            Exception, ClassNotFoundException {
+        return getCellBigDecimal(getChunkRow(row), getChunkCol(col),
+                getChunkCellRow(row), getChunkCellCol(col));
     }
 
     /**
@@ -125,8 +125,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected abstract NearestValuesCellIDsAndDistance
-         getNearestValuesCellIDsAndDistance(BigDecimal x, BigDecimal y, 
-                 long row, long col, int dp, RoundingMode rm)
+            getNearestValuesCellIDsAndDistance(BigDecimal x, BigDecimal y,
+                    long row, long col, int dp, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException;
 
     /**
@@ -135,11 +135,14 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param row The row index from which the cell IDs of the nearest cells
      * with data values are returned.
      * @param col
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The {@link RoundingMode} to use when rounding the result.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(long row,
-            long col, int dp, RoundingMode rm) throws IOException, Exception,
+    protected abstract NearestValuesCellIDsAndDistance
+            getNearestValuesCellIDsAndDistance(long row, long col, int dp,
+                    RoundingMode rm) throws IOException, Exception,
             ClassNotFoundException;
 
     /**
@@ -147,6 +150,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The {@link RoundingMode} to use when rounding the result.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

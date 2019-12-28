@@ -36,7 +36,7 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param g What {@link #Grid} is set to.
+     * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
@@ -49,11 +49,9 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
     public abstract Grids_GridNumber getGrid();
 
     /**
-     * Returns the value at row, col.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @param row The chunk row index.
+     * @param col The chunk column index.
+     * @return The value at row, col as a BigDecimal.
      */
     public abstract BigDecimal getCellBigDecimal(int row, int col);
 

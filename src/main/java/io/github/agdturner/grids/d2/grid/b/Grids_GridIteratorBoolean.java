@@ -43,28 +43,28 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
     public Grids_GridIteratorBoolean(Grids_GridBoolean g) throws IOException, 
             ClassNotFoundException, Exception {
         super(g);
-        GridIterator = g.getData().keySet().iterator();
-        if (GridIterator.hasNext()) {
-            ChunkID = GridIterator.next();
-            Chunk = (Grids_ChunkBooleanArray) g.getData()
-                    .get(ChunkID);
-            if (Chunk == null) {
-                Grid.loadChunk(ChunkID);
-                Chunk = (Grids_ChunkBooleanArray) g.getData()
-                        .get(ChunkID);
+        gridIterator = g.getData().keySet().iterator();
+        if (gridIterator.hasNext()) {
+            chunkID = gridIterator.next();
+            chunk = (Grids_ChunkBooleanArray) g.getData()
+                    .get(chunkID);
+            if (chunk == null) {
+                grid.loadChunk(chunkID);
+                chunk = (Grids_ChunkBooleanArray) g.getData()
+                        .get(chunkID);
             }
             initChunkIterator();
         }
     }
 
     /**
-     * Initialises ChunkIterator.
+     * Initialises chunkIterator.
      */
     @Override
     protected final void initChunkIterator() {
-        if (Chunk instanceof Grids_ChunkBooleanArray) {
-            ChunkIterator = new Grids_ChunkIteratorBooleanArray(
-                    (Grids_ChunkBooleanArray) Chunk);
+        if (chunk instanceof Grids_ChunkBooleanArray) {
+            chunkIterator = new Grids_ChunkIteratorBooleanArray(
+                    (Grids_ChunkBooleanArray) chunk);
         }
     }
 
@@ -86,7 +86,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
 
     @Override
     public Grids_GridBoolean getGrid() {
-        return (Grids_GridBoolean) Grid;
+        return (Grids_GridBoolean) grid;
     }
     
     public Grids_ChunkIteratorBooleanArray getChunkIterator(Grids_2D_ID_int i) 
@@ -101,10 +101,10 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
      * @throws ClassNotFoundException If there is a problem 
      */
     public Boolean next() throws IOException, ClassNotFoundException, Exception {
-        if (!ChunkIterator.hasNext()) {
-            if (GridIterator.hasNext()) {
-                ChunkID = GridIterator.next();
-                ChunkIterator = getChunkIterator(ChunkID);
+        if (!chunkIterator.hasNext()) {
+            if (gridIterator.hasNext()) {
+                chunkID = gridIterator.next();
+                chunkIterator = getChunkIterator(chunkID);
                 return next0();
             } else {
                 throw new NoSuchElementException();
@@ -116,12 +116,12 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
 
     private Boolean next0() throws IOException, Exception {
         boolean r = getChunkIterator().next();
-        env.checkAndMaybeFreeMemory(ChunkID, env.HOOMET);
+        env.checkAndMaybeFreeMemory(chunkID, env.HOOMET);
         return r;
     }
     
     @Override
     public Grids_ChunkIteratorBooleanArray getChunkIterator() {
-        return (Grids_ChunkIteratorBooleanArray) ChunkIterator;
+        return (Grids_ChunkIteratorBooleanArray) chunkIterator;
     }
 }

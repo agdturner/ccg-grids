@@ -41,17 +41,17 @@ public abstract class Grids_GridFactory extends Grids_Object {
     /**
      * The number of rows in a chunk.
      */
-    protected int ChunkNRows;
+    protected int chunkNRows;
 
     /**
      * The number of columns in a chunk.
      */
-    protected int ChunkNCols;
+    protected int chunkNCols;
 
     /**
      * The dimensions of the grid.
      */
-    protected Grids_Dimensions Dimensions;
+    protected Grids_Dimensions dim;
 
     /**
      * Creates a new grid factory.
@@ -69,26 +69,26 @@ public abstract class Grids_GridFactory extends Grids_Object {
      *
      * @param e What {@link #env} is set to.
      * @param store What {@link #store} is set to.
-     * @param chunkNRows What {@link #ChunkNRows} is set to.
-     * @param chunkNCols What {@link #ChunkNCols} is set to.
-     * @param dimensions What {@link #Dimensions} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param dimensions What {@link #dim} is set to.
      */
     public Grids_GridFactory(Grids_Environment e, Generic_FileStore store,
             int chunkNRows, int chunkNCols, Grids_Dimensions dimensions) {
         super(e);
         this.store = store;
-        ChunkNRows = chunkNRows;
-        ChunkNCols = chunkNCols;
-        Dimensions = dimensions;
+        this.chunkNRows = chunkNRows;
+        this.chunkNCols = chunkNCols;
+        dim = dimensions;
     }
 
     /**
      * Set dimensions.
      *
-     * @param d What {@link #Dimensions} is set to.
+     * @param d What {@link #dim} is set to.
      */
     public void setDimensions(Grids_Dimensions d) {
-        Dimensions = d;
+        dim = d;
     }
 
     /**
@@ -101,7 +101,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
     public Grids_Grid create(long nRows, long nCols)
             throws IOException, ClassNotFoundException, Exception {
         setDimensions(nRows, nCols);
-        return create(nRows, nCols, Dimensions);
+        return create(nRows, nCols, dim);
     }
 
     /**
@@ -174,46 +174,46 @@ public abstract class Grids_GridFactory extends Grids_Object {
             throws IOException, ClassNotFoundException, Exception;
 
     /**
-     * @return A copy of {@link #ChunkNRows}.
+     * @return A copy of {@link #chunkNRows}.
      */
     public int getChunkNRows() {
-        return ChunkNRows;
+        return chunkNRows;
     }
 
     /**
-     * Sets {@link #ChunkNRows}.
+     * Sets {@link #chunkNRows}.
      *
-     * @param chunkNRows The value to set {@link #ChunkNRows} to.
+     * @param chunkNRows The value to set {@link #chunkNRows} to.
      */
     public void setChunkNRows(int chunkNRows) {
-        ChunkNRows = chunkNRows;
+        this.chunkNRows = chunkNRows;
     }
 
     /**
      * @return A copy of {@link #getChunkNCols}.
      */
     public int getChunkNCols() {
-        return ChunkNCols;
+        return chunkNCols;
     }
 
     /**
-     * Sets {@link #ChunkNCols}.
+     * Sets {@link #chunkNCols}.
      *
-     * @param chunkNCols The value to set {@link #ChunkNCols} to.
+     * @param chunkNCols The value to set {@link #chunkNCols} to.
      */
     public void setChunkNCols(int chunkNCols) {
-        ChunkNCols = chunkNCols;
+        this.chunkNCols = chunkNCols;
     }
 
     /**
-     * @return {@link #Dimensions}
+     * @return {@link #dim}
      */
     public Grids_Dimensions getDimensions() {
-        return Dimensions;
+        return dim;
     }
 
     /**
-     * Initialises {@link #Dimensions}. {@link Grids_Dimensions#XMin} and
+     * Initialises {@link #dim}. {@link Grids_Dimensions#XMin} and
      * {@link Grids_Dimensions#XMin} are set to {@link BigDecimal#ZERO};
      * {@link Grids_Dimensions#Cellsize} is set to {@link BigDecimal#ONE};
      * {@link Grids_Dimensions#XMax} is set to {@code nCols} using
@@ -224,7 +224,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param nCols The number of columns in the grids to be created.
      */
     protected void setDimensions(long nRows, long nCols) {
-        Dimensions = new Grids_Dimensions(BigDecimal.ZERO,
+        dim = new Grids_Dimensions(BigDecimal.ZERO,
                 BigDecimal.valueOf(nRows), BigDecimal.ZERO,
                 BigDecimal.valueOf(nCols), BigDecimal.ONE);
     }

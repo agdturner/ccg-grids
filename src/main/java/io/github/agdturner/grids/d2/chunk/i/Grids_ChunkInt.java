@@ -49,20 +49,16 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the value at row, col.
-     *
      * @param row The row of the cell w.r.t. the origin of this chunk
      * @param col The column of the cell w.r.t. the origin of this chunk
-     * @return
+     * @return The value at row, col.
      */
     public abstract int getCell(int row, int col);
 
     /**
-     * Returns the value at row, col as a double.
-     *
-     * @param row the row of the cell w.r.t. the origin of this chunk.
-     * @param col the column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @param row The row of the cell w.r.t. the origin of this chunk.
+     * @param col The column of the cell w.r.t. the origin of this chunk.
+     * @return The value at row, col as a BigDecimal.
      */
     @Override
     public BigDecimal getCellBigDecimal(int row, int col) {
@@ -86,7 +82,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * chunk
      * @param c the column index of the cell w.r.t. the origin of this chunk
      * @param v the value the cell is to be set to
-     * @return The value at chunk cell row index {@code r}. chunk cell column
+     * @return The value at chunk cell row index {@code r}, chunk cell column
      * index {@code c} before it is set.
      * @throws Exception If encountered.
      */
@@ -168,9 +164,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * For returning the sum of all data values as a BigDecimal.
-     *
-     * @return
+     * @return The sum of all data values as a BigDecimal.
      */
     @Override
     public BigDecimal getSum() {
@@ -191,9 +185,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * For returning the minimum of all data values.
-     *
-     * @return
+     * @return The minimum of all data values.
      */
     public Integer getMin() {
         int min = Integer.MAX_VALUE;
@@ -213,9 +205,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * For returning the maximum of all data values.
-     *
-     * @return
+     * @return The maximum of all data values.
      */
     protected Integer getMax() {
         int max = Integer.MIN_VALUE;
@@ -464,10 +454,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the median of all non noDataValues as a double. This method
+     * @return The median of all non noDataValues as a double. This method
      * requires that all data in chunk can be stored as a new array.
-     *
-     * @return
      */
     public double getMedian() {
         long n = getN();

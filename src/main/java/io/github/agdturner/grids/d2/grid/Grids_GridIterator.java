@@ -33,15 +33,15 @@ public abstract class Grids_GridIterator extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
 
-    protected Grids_Grid Grid;
-    protected Grids_Chunk Chunk;
-    protected Grids_2D_ID_int ChunkID;
-    protected Iterator<Grids_2D_ID_int> GridIterator;
-    protected Grids_ChunkIterator ChunkIterator;
+    protected Grids_Grid grid;
+    protected Grids_Chunk chunk;
+    protected Grids_2D_ID_int chunkID;
+    protected Iterator<Grids_2D_ID_int> gridIterator;
+    protected Grids_ChunkIterator chunkIterator;
 
     public Grids_GridIterator(Grids_Grid grid) {
         super(grid.env);
-        Grid = grid;
+        this.grid = grid;
     }
 
     protected abstract void initChunkIterator();
@@ -49,7 +49,7 @@ public abstract class Grids_GridIterator extends Grids_Object {
     public abstract Grids_Grid getGrid();
 
     public Iterator<Grids_2D_ID_int> getGridIterator() {
-        return GridIterator;
+        return gridIterator;
     }
 
     public abstract Grids_ChunkIterator getChunkIterator();
@@ -67,10 +67,10 @@ public abstract class Grids_GridIterator extends Grids_Object {
      * @return {@code true} if the iterator has more elements.
      */
     public boolean hasNext() {
-        if (ChunkIterator.hasNext()) {
+        if (chunkIterator.hasNext()) {
             return true;
         } else {
-            if (GridIterator.hasNext()) {
+            if (gridIterator.hasNext()) {
                 return true;
             }
         }
@@ -78,10 +78,10 @@ public abstract class Grids_GridIterator extends Grids_Object {
     }
 
     /**
-     * @return {@link ChunkID}
+     * @return {@link ChunkID#chunkID}
      */
     public Grids_2D_ID_int getChunkID() {
-        return ChunkID;
+        return chunkID;
     }
 
 }

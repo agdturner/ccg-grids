@@ -309,7 +309,7 @@ public class Grids_GridBinary extends Grids_Grid {
         return isLoadedChunk;
     }
 
-    public void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
+    protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBinary gb, int gcc, int gcr,
             Grids_ChunkFactoryBinary cf, int gChunkNRows, long startRow,
             long endRow, long startCol, long endCol) throws IOException,

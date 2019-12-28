@@ -20,42 +20,38 @@ import java.math.RoundingMode;
 /**
  * An interface to be implemented by classes that provide statistics about
  * raster data.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
 public interface Grids_StatsInterface {
 
     /**
-     * For returning the number of cells with data values.
-     * @return
+     * @return The number of cells with data values. (Or in some cases the
+     * number of {@code true} values.)
      */
     public Number getN();
 
     /**
-     * For returning the sum of all data values.
-     * @return
+     * @return The sum of all data values.
      */
     public Number getSum();
 
     /**
-     * For returning the minimum of all data values.
-     *
      * @param update If true then an update of the statistics is made.
-     * @return
+     * @return The minimum of all data values.
      */
     public Number getMin(boolean update);
 
     /**
-     * For returning the maximum of all data values.
-     *
      * @param update If true then an update of the statistics is made.
-     * @return
+     * @return The maximum of all data values.
      */
     public Number getMax(boolean update);
 
-    /** 
-     * @param dp The number of decimal places the result is rounded to if necessary.
+    /**
+     * @param dp The number of decimal places the result is rounded to if
+     * necessary.
      * @param rm The Rounding mode for any necessary rounding.
      * @return The arithmetic mean of all data values.
      */

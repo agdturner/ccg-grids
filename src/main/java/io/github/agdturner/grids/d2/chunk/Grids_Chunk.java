@@ -20,7 +20,7 @@ import io.github.agdturner.grids.core.Grids_Object;
 
 /**
  * For chunks.
- * 
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -60,10 +60,10 @@ public abstract class Grids_Chunk extends Grids_Object {
 
     /**
      * @param g What {@link #grid} is set to.
-     * @param i What {@link #ChunkId} is set to.
+     * @param i What {@link #id} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
-    protected Grids_Chunk(Grids_Grid g, Grids_2D_ID_int i, 
+    protected Grids_Chunk(Grids_Grid g, Grids_2D_ID_int i,
             boolean worthClearing) {
         super(g.env);
         grid = g;
@@ -80,38 +80,32 @@ public abstract class Grids_Chunk extends Grids_Object {
     public abstract Grids_Grid getGrid();
 
     /**
-     * Initialises grid = g.
-     *
-     * @param g What {}
+     * @param g What {@link #grid} is set to.
      */
     public final void initGrid(Grids_Grid g) {
         grid = g;
     }
 
     /**
-     * Initialises _ChunkID.
-     *
-     * @param chunkID
+     * @param i What {@link id} is set to.
      */
-    public void initChunkID(Grids_2D_ID_int chunkID) {
-        id = chunkID;
+    public void initChunkID(Grids_2D_ID_int i) {
+        id = i;
     }
 
     /**
-     * Returns a copy of id.
-     *
-     * @return
+     * @return A copy of {@link #id}.
      */
     public Grids_2D_ID_int getId() {
         return new Grids_2D_ID_int(id);
-        //return this._ChunkID;
+        //return id;
     }
 
     /**
-     * Returns CacheUpToDate. This method is public so that it can be accessed
-     * in memory management without checking there is enough memory to continue.
+     * This method is public so that it can be accessed in memory management
+     * without checking there is enough memory to continue.
      *
-     * @return
+     * @return {@link #cacheUpToDate}
      */
     public boolean isCacheUpToDate() {
         return cacheUpToDate;
