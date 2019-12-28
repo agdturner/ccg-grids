@@ -31,7 +31,6 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 import io.github.agdturner.grids.io.Grids_Files;
 import io.github.agdturner.grids.process.Grids_Processor;
-import java.util.stream.Collectors;
 
 /**
  * Grids_Environment.
@@ -128,8 +127,7 @@ public class Grids_Environment extends Grids_MemoryManager
     /**
      * Creates a new Grids_Environment.
      *
-     * @see #Grids_Environment(Generic_Environment). The Generic_Environment is
-     * initialised using:
+     * The Generic_Environment is initialised using:
      * {@code new Generic_Environment(new Generic_Defaults())}.
      *
      * @throws java.io.IOException If encountered.
@@ -140,10 +138,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Creates a new Grids_Environment.
-     *
-     * @see #Grids_Environment(Generic_Environment, Generic_Path). The
-     * Generic_Path is obtained from {@code e}.
+     * Creates a new Grids_Environment. {@link #files} is initialised from
+     * {@code e.files.getDir()}.
      *
      * @param e The Generic_Environment.
      * @throws java.io.IOException If encountered.
@@ -157,8 +153,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * Creates a new Grids_Environment.
      *
      * @param e What {@link #env} is set to.
-     * @param dir Used to initialise {@link #files} using
-     * {@link Grids_Files(Generic_Path)}.
+     * @param dir Used to initialise {@link #files}.
      * @throws java.io.IOException If encountered.
      */
     public Grids_Environment(Generic_Environment e, Generic_Path dir)
@@ -174,7 +169,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * If {@link #processor} is not {@code null}, it is returned.If
+     * If {@link #processor} is not {@code null}, it is returned. If
      * {@link #processor} is {@code null} it is initialised and then returned.
      *
      * @return {@link #processor} initialising first if it is {@code null}.
@@ -203,7 +198,7 @@ public class Grids_Environment extends Grids_MemoryManager
 
     /**
      * Initialise or re-initialise a store of references to data that would
-     * ideally not be cached.
+     * ideally not be cleared.
      */
     public final void initNotToClear() {
         notToClear = new HashMap<>();
@@ -219,7 +214,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Removes {@code g} from the {@link #notToClear}.
+     * Removes the chunk IDs of {@code g} from {@link #notToClear}.
      *
      * @param g The grid to remove from {@link #notToClear}.
      */
@@ -228,8 +223,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Adds chunk row {@code chunkRow} of chunks of {@code g} to
-     * {@link #notToClear}.
+     * Adds chunk row {@code cr} of chunks of {@code g} to {@link #notToClear}.
      *
      * @param g The grid with chunks to add to {@link #notToClear}.
      * @param cr The row of chunks in {@code g} to add to {@link #notToClear}.
@@ -242,7 +236,7 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Removed chunk row {@code chunkRow} of chunks of {@code g} from
+     * Removed chunk row {@code cr} of chunks of {@code g} from
      * {@link #notToClear}.
      *
      * @param g The grid with chunks to remove from {@link #notToClear}.
@@ -339,22 +333,22 @@ public class Grids_Environment extends Grids_MemoryManager
      * {@link #notToClear}.
      *
      * @param g The grid with chunk IDs to add to {@link #notToClear}.
-     * @param chunkIDs The chunk IDs to add to {@link #notToClear}.
+     * @param s The chunk IDs to add to {@link #notToClear}.
      */
-    public final void addToNotToClear(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunkIDs) {
+    public final void addToNotToClear(Grids_Grid g, Set<Grids_2D_ID_int> s) {
         if (notToClear.containsKey(g)) {
-            notToClear.get(g).addAll(chunkIDs);
+            notToClear.get(g).addAll(s);
         } else {
-            notToClear.put(g, chunkIDs);
+            notToClear.put(g, s);
         }
     }
 
     /**
-     * Remove the chunk ID {@code i} from {@code g} from {@link #notToClear}.
+     * Remove the chunk with chunk ID {@code i} in {@code g} from
+     * {@link #notToClear}.
      *
      * @param g The grid with chunk ID {@code i} which will be removed from
-     * {@link #notToClear}.
+     * {@link #notToClear} if it is there.
      * @param i The chunk ID of {@code g} to remove from {@link #notToClear}.
      */
     public final void removeFromNotToClear(Grids_Grid g, Grids_2D_ID_int i) {
@@ -394,12 +388,12 @@ public class Grids_Environment extends Grids_MemoryManager
     public final void addToNotToClear(Grids_Grid g, Grids_2D_ID_int i,
             int chunkRow, int chunkCol, int chunkNRows, int chunkNCols,
             int cellDistance) {
-        Set<Grids_2D_ID_int> chunkIDs;
+        Set<Grids_2D_ID_int> s;
         if (notToClear.containsKey(g)) {
-            chunkIDs = notToClear.get(g);
+            s = notToClear.get(g);
         } else {
-            chunkIDs = new HashSet<>();
-            notToClear.put(g, chunkIDs);
+            s = new HashSet<>();
+            notToClear.put(g, s);
         }
         int t;
         int r = 0;
@@ -419,7 +413,7 @@ public class Grids_Environment extends Grids_MemoryManager
             for (int l = -j; l <= j; l++) {
                 int cc = chunkCol + l;
                 if (g.isInGrid(cr, cc)) {
-                    chunkIDs.add(new Grids_2D_ID_int(cr, cc));
+                    s.add(new Grids_2D_ID_int(cr, cc));
                 }
             }
         }
@@ -545,7 +539,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory before calling this method again.
-     * @return The number of chunks cleared in the process of initialising
+     * @return An account of chunks cleared in the process of initialising
      * {@link #MemoryReserve}.
      * @throws java.io.IOException If encountered.
      */
@@ -558,10 +552,10 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                Grids_Account r = new Grids_Account();
                 if (!swapChunk()) {
                     throw e;
                 }
+                Grids_Account r = new Grids_Account();
                 r.add(1);
                 r.add(checkAndMaybeFreeMemory_Account(hoome));
                 r.add(initMemoryReserve_Account(hoome));
@@ -681,8 +675,8 @@ public class Grids_Environment extends Grids_MemoryManager
      * @throws java.io.IOException If encountered.
      */
     @Override
-    public Grids_Account initMemoryReserve_Account(Grids_2D_ID_int i, boolean hoome)
-            throws IOException, Exception {
+    public Grids_Account initMemoryReserve_Account(Grids_2D_ID_int i,
+            boolean hoome) throws IOException, Exception {
         try {
             initMemoryReserve(env);
             return checkAndMaybeFreeMemory_Account(i, hoome);
@@ -2588,15 +2582,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to ensure there is enough memory to continue. This method will
-     * quickly return null if there is enough memory to continue. If there is
-     * not enough memory to continue it will attempt to make room and will pass
-     * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not cached. No data
-     * is cached as identified by m.
+     * A method to check and maybe free memory. This method will quickly return
+     * null if there is enough memory to continue. If there is not enough memory
+     * to continue it will attempt to make room and will pass back a detailed
+     * account of this and an indication of if there is enough memory to
+     * continue. No chunks from {@code m} are swapped.
      *
-     * @param m Identifies data not to be cached.
-     * @return HashMap identifying chunks cached or null if nothing is cached.
+     * @param m Chunks not to be cleared.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2638,19 +2631,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to ensure there is enough memory to continue. This method will
-     * quickly return null if there is enough memory to continue. If there is
-     * not enough memory to continue it will attempt to make room and will pass
-     * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not cached. No
-     * chunks with ChunkID in chunkIDs are cached from g.
+     * For checking available memory and maybe freeing some memory. This method
+     * will quickly return null if there is enough memory to continue. If there
+     * is not enough memory to continue then there is an attempt to make room.
+     * The chunks in grid {@code g} with chunk IDs in {@code s} are not swapped.
      *
-     * @param g
+     * @param g A grid in which chunks in {@code s} are not swapped.
+     * @param s A set of chunk IDs for which chunks in {@code g} are not
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @param s
-     * @return HashMap identifying chunks cached.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2687,16 +2678,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * A method to ensure there is enough memory to continue. This method will
-     * quickly return null if there is enough memory to continue. If there is
-     * not enough memory to continue it will attempt to make room and will pass
-     * back a detailed account of this and an indication if there is enough
-     * memory to continue. The Chunk with chunkID from g is not cached. No
-     * chunks with ChunkID in chunkIDs are cached from g.
+     * For checking available memory and maybe freeing some memory. This method
+     * will quickly return null if there is enough memory to continue. If there
+     * is not enough memory to continue then there is an attempt to make room.
+     * The chunks in grid {@code g} with chunk IDs in {@code s} are not swapped.
      *
-     * @param g
-     * @param s
-     * @return
+     * @param g A grid in which chunks in {@code s} are not swapped.
+     * @param s A set of chunk IDs for which chunks in {@code g} are not
+     * swapped.
+     * @return A detailed account of any chunks cleared.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2742,7 +2732,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory. OutOfMemoryErrors are caught and thrown.
-     * @return
+     * @return A detailed account of any chunks cleared.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2752,18 +2742,14 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_AccountDetail r = swapChunks_AccountDetail(notToClear);
             try {
                 if (r.detail.isEmpty()) {
-                    Grids_AccountDetail a = checkAndMaybeFreeMemory_AccountDetail();
-                    if (a != null) {
-                        if (a.success) {
-                            r.add(a);
-                        } else {
+                    r = checkAndMaybeFreeMemory_AccountDetail();
+                    if (r != null) {
+                        if (!r.success) {
                             throw new OutOfMemoryError();
                         }
                     }
                 } else {
-                    Grids_AccountDetail pr
-                            = checkAndMaybeFreeMemory_AccountDetail(hoome);
-                    r.add(pr);
+                    r.add(checkAndMaybeFreeMemory_AccountDetail(hoome));
                 }
             } catch (OutOfMemoryError e) {
                 // Set hoome = false to exit method by throwing OutOfMemoryError
@@ -2783,13 +2769,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_Chunk in this.grids.
+     * Attempts to swap all chunks in this grid.
      *
-     * @return
+     * @return A detailed account of any chunks cleared.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunks_AccountDetail() throws IOException, Exception {
+    protected Grids_AccountDetail swapChunks_AccountDetail() throws IOException,
+            Exception {
         Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
@@ -2799,13 +2786,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all Grids_Chunk in this.grids.
+     * Attempts to cache all chunks in {@link #grids} excpet those in {@code m}.
      *
-     * @param m
-     * @return
+     * @param m A map of chunks not to swap.
+     * @return A detailed account of any chunks cleared.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     protected Grids_AccountDetail swapChunks_AccountDetail(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException, 
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m) throws IOException,
             Exception {
         Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
@@ -2817,12 +2806,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all chunks in env.
+     * Attempts to swap all chunks in {@link #grids}.
      *
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory. OutOfMemoryErrors are caught and thrown.
-     * @return A count of the number of chunks cached.
+     * @return An account of the chunks swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2863,9 +2852,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache all chunks in env.
+     * Attempts to cache all chunks in {@link #grids}.
      *
-     * @return
+     * @return An account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -2935,19 +2924,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to cache any Grids_AbstractGridChunk in this.Grids. This is the
-     * lowest level of OutOfMemoryError handling in this class.
+     * Attempts to swap any chunk.
      *
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
+     * @return A detailed account of any swapping.
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome) throws IOException,
-            Exception {
+    public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome)
+            throws IOException, Exception {
         try {
             Grids_AccountDetail r = swapChunk_AccountDetail();
             try {
@@ -3061,6 +3048,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
+     * @return {@code
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3353,11 +3341,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @param m
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
-     * cache any Grids_Chunk in this.grids except for those in
-     * _Grid2DSquareCell_ChunkIDSet.
+     * @param m Indicated chunks not to be swapped.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3388,10 +3373,9 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     *
-     * @param g
-     * @param chunkIDs
-     * @return
+     * @param g The grid in which the chunks in {@code s} are not to be swapped.
+     * @param s Identifies the chunks in {@code g} not to be swapped.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3425,7 +3409,7 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g
      * @param i
-     * @return
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3462,7 +3446,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3487,9 +3471,8 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     *
-     * @param g
-     * @return
+     * @param g The grid with chunks not to swap.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3513,9 +3496,11 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * @param m Identifies the chunks not to be swapped.
+     * @return {@code true} if a chunk was swapped and {@code false} otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      *
-     * @param m
-     * @return
      */
     protected boolean swapChunkExcept(HashMap<Grids_Grid, Set<Grids_2D_ID_int>> m)
             throws IOException, Exception {
@@ -3655,12 +3640,12 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
-     * cache any Grids_Chunk in this.grids except for that in _Grid2DSquareCell
-     * with Grids_Grid._ChunkID _ChunkID.
-     * @param g Grids_Grid that's chunks are not to be cached.
-     * @param i The Grids_Grid.ID not to be cached.
+     * @param camfm If {@code true} that there is a check that may free memory.
+     * @return An account of any swapping.
+     * @param g A grid from which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param i The chunk ID of the chunk in {@code g} that is not to be
+     * swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3711,7 +3696,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * nothing is swapped, then an attempt is made to swap a chunk in {@code g}
      * other than that with chunk ID {@code i}.
      *
-     * @return An account of what is swapped.
+     * @return {@code true} if a chunk is swapped.
      * @param g The grid from which chunks are preferred not to be swapped.
      * @param i The chunk ID of the chunk in {@code g} not to be cleared.
      * @throws IOException If encountered.
@@ -3726,13 +3711,11 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * @param g Grids_Grid that's chunks are not to be cached.
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. Attempts to
-     * cache any Grids_Chunk in this.grids except for those in g.
-     * @param g Grids_Grid that's chunks are not to be cached.
+     * @return An account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3773,12 +3756,13 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * @return . @param g Grids_Grid that's chunks are not to be cached.
+     * @param g A grid that's chunks are not to be cached.
+     * @return An account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_Account swapChunkExcept_Account(Grids_Grid g) throws IOException,
-            Exception {
+    protected Grids_Account swapChunkExcept_Account(Grids_Grid g)
+            throws IOException, Exception {
         Grids_Account r = new Grids_Account();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
@@ -3795,20 +3779,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * Attempts to swap all chunks except those with chunk ID {@code i}.
      *
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param chunkID The i.ID not to be cached.
+     * @return A detailed account of any swapping.
+     * @param i The chunk ID of chunks not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_2D_ID_int i, boolean hoome)
-            throws IOException, Exception {
+    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_2D_ID_int i,
+            boolean hoome) throws IOException, Exception {
         try {
             Grids_AccountDetail r = swapChunksExcept_AccountDetail(i);
             try {
@@ -3845,17 +3827,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * Attempts to swap all chunks except those with chunk ID {@code i}.
      *
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached. i chunkID The
-     * Grids_Grid.ID not to be cached.
+     * @return A detailed account of any swapping.
+     * @param i The chunk ID of chunks not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_2D_ID_int i)
-            throws IOException, Exception {
+    protected Grids_AccountDetail swapChunksExcept_AccountDetail(
+            Grids_2D_ID_int i) throws IOException, Exception {
         Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
@@ -3866,20 +3846,18 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * Attempts to swap all chunks except those in grid {@code g}.
      *
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param g Grids_Grid that's chunks are not to be cached. cached.
+     * @return A detailed account of any swapping.
+     * @param g The grid that's chunks are not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g, boolean hoome)
-            throws IOException, Exception {
+    public Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g,
+            boolean hoome) throws IOException, Exception {
         try {
             Grids_AccountDetail r = swapChunksExcept_AccountDetail(g);
             try {
@@ -3916,16 +3894,15 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * Attempts to swap all chunks except those in grid {@code g}.
      *
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param g Grids_Grid that's chunks are not to be cached.
+     * @return A detailed account of any swapping.
+     * @param g The grid that's chunks are not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g) throws IOException, Exception {
+    protected Grids_AccountDetail swapChunksExcept_AccountDetail(Grids_Grid g)
+            throws IOException, Exception {
         Grids_AccountDetail r = new Grids_AccountDetail();
         Iterator<Grids_Grid> ite = grids.iterator();
         while (ite.hasNext()) {
@@ -3938,14 +3915,13 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * Attempts to swap all chunks except those in grid {@code g}.
      *
-     * @param g
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return
-     * @throws IOException
-     * @throws Exception
+     * @return An account of any swapping.
+     * @param g The grid that's chunks are not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -3987,9 +3963,10 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * Attempts to swap all chunks except those in grid {@code g}.
      *
-     * @param g
-     * @return
+     * @return An account of any swapping.
+     * @param g The grid that's chunks are not to be swapped.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4007,16 +3984,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * Attempts to swap chunks except that with chunk ID {@code i} in grid
+     * {@code g}.
      *
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param g Grids_Grid that's chunks are not to be cached.
-     * @param i The Grids_Grid.ID not to be cached.
+     * @param g The grid for which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param i The chunk ID of the chunk in {@code g} that is not to be swapped.
+     * @return A detailed account of any swapping.
+     *
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4058,13 +4036,17 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * Attempts to swap chunks except that with chunk ID {@code i} in grid
+     * {@code g}.
      *
-     * @param g
-     * @param i
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
-     * @return
+     * @param g The grid for which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param i The chunk ID of the chunk in {@code g} that is not to be swapped.
+     * @return An account of any swapping.
+     *
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4105,10 +4087,14 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * Attempts to swap chunks except that with chunk ID {@code i} in grid
+     * {@code g}.
      *
-     * @param g
-     * @param i
-     * @return
+     * @param g The grid for which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param i The chunk ID of the chunk in {@code g} that is not to be swapped.
+     * @return An account of any swapping.
+     *
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4132,13 +4118,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
-     * Attempts to Cache all Grids_Grid.ChunkIDs in this.grids except those with
-     * Grids_Grid.ID _ChunkID.
+     * For swapping all chunks except that with chunk ID {@code i} in grid {@code g}.
      *
-     * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
-     * was cached; and, value as the Grids_Chunk._ChunkID cached.
-     * @param g Grids_Grid that's chunks are not to be cached.
-     * @param i The Grids_Grid.ID not to be cached.
+     * @param g The grid for which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param i The chunk ID of the chunk in {@code g} that is not to be swapped.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4159,10 +4144,12 @@ public class Grids_Environment extends Grids_MemoryManager
     }
 
     /**
+     * For swapping all chunks except those with chunk IDs in {@code s} in grid {@code g}.
      *
-     * @param g
-     * @param s
-     * @return
+     * @param g The grid for which the chunk with chunk ID {@code i} is not
+     * swapped.
+     * @param s The chunk IDs of chunks in {@code g} that are not to be swapped.
+     * @return A detailed account of any swapping.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -4194,7 +4181,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @return HashMap with: key as the Grids_Grid from which the Grids_Chunk
      * was cached; and, value as the Grids_Chunk._ChunkID cached.
      * @param g Grids_Grid that's chunks are not to be cached.
-     * @param chunkIDs The chunk IDs in g not to be cached.
+     * @param s The chunk IDs in g not to be cached.
      * @throws IOException If encountered.
      * @throws s If encountered.
      */

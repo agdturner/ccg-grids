@@ -111,7 +111,8 @@ import java.util.stream.Collectors;
  * memory; how much the data are changing; and the relative importance of the
  * speed of computation over the memory footprint.
  *
- * Both a grid and each chunk has a {@link Grid_Stats} instance. These provide
+ * Both a grid and each chunk has a
+ * {@link io.github.agdturner.grids.d2.stats.Grid_Stats} instance. These provide
  * access to summary statistics about the grid and each chunk. These are broadly
  * of two types: those which are kept more up-to-date as the underlying data are
  * changed; those where there is no effort to keep them up-to-date as the
@@ -810,21 +811,22 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to swap a chunk in {@link #data} that is in 
-     * {@link #worthSwapping} and {@code s}.This method does not consider those chunks in {@link #env}.notToClear.
+     * Attempts to swap a chunk in {@link #data} that is in
+     * {@link #worthSwapping} and {@code s}.This method does not consider those
+     * chunks in {@link #env}.notToClear.
      *
      * @param s The set of chunk IDs for which one chunk may be cleared.
      * @return The chunk ID of the chunk that was cleared or {@code null} if no
      * chunk was cleared.
      * @throws java.io.IOException If encountered.
      */
-    public final Grids_2D_ID_int swapChunk(Set<Grids_2D_ID_int> s) 
+    public final Grids_2D_ID_int swapChunk(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
         if (worthSwapping.isEmpty()) {
             return null;
         }
-        Set<Grids_2D_ID_int> s2 = worthSwapping.stream().filter(i -> 
-                s.contains(i)).collect(Collectors.toSet());
+        Set<Grids_2D_ID_int> s2 = worthSwapping.stream().filter(i
+                -> s.contains(i)).collect(Collectors.toSet());
         Iterator<Grids_2D_ID_int> ite = s2.iterator();
         while (ite.hasNext()) {
             Grids_2D_ID_int i = ite.next();
@@ -834,7 +836,7 @@ public abstract class Grids_Grid extends Grids_Object {
         }
         return null;
     }
-    
+
     /**
      * Attempts to cache the chunk with chunk ID {@code i} if there is not
      * already an up-to-date cache.
@@ -872,7 +874,7 @@ public abstract class Grids_Grid extends Grids_Object {
         return worthSwapping.parallelStream().filter(i -> s.contains(i))
                 .collect(Collectors.summingInt((Grids_2D_ID_int i) -> {
                     try {
-                        if (swapChunk(i)){
+                        if (swapChunk(i)) {
                             return 1;
                         }
                     } catch (Exception ex) {
@@ -1419,7 +1421,7 @@ public abstract class Grids_Grid extends Grids_Object {
                 env.clearMemoryReserve(env.env);
                 Grids_Account r = env.swapChunkExcept_Account(this, s, false);
                 if (r.detail == 0) {
-                        throw e;
+                    throw e;
                 }
                 r.add(env.initMemoryReserve_Account(this, s, hoome));
                 r.add(swapChunksExcept_Account(s, camfm, hoome));
@@ -1520,7 +1522,7 @@ public abstract class Grids_Grid extends Grids_Object {
             boolean camfm, boolean hoome) throws IOException, Exception {
         try {
             Grids_Account r = new Grids_Account();
-            if (swapChunkExcept(i)){
+            if (swapChunkExcept(i)) {
                 r.add();
             }
             if (camfm) {
@@ -1631,7 +1633,7 @@ public abstract class Grids_Grid extends Grids_Object {
         return worthSwapping.parallelStream().filter(i2 -> i2 != i)
                 .collect(Collectors.summingInt((Grids_2D_ID_int i2) -> {
                     try {
-                        if (swapChunk(i2)){
+                        if (swapChunk(i2)) {
                             return 1;
                         }
                     } catch (Exception ex) {
@@ -1672,7 +1674,7 @@ public abstract class Grids_Grid extends Grids_Object {
         return worthSwapping.parallelStream().filter(i2 -> !s.contains(i2))
                 .collect(Collectors.summingInt((Grids_2D_ID_int i2) -> {
                     try {
-                        if (swapChunk(i2)){
+                        if (swapChunk(i2)) {
                             return 1;
                         }
                     } catch (Exception ex) {

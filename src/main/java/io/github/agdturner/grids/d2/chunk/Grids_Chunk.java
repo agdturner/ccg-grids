@@ -19,8 +19,8 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Object;
 
 /**
- * Each {@link Grids_Grid#} is comprised of a map of these
- *
+ * For chunks.
+ * 
  * @author Andy Turner
  * @version 1.0.0
  */

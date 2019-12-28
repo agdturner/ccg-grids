@@ -46,7 +46,7 @@ import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
  * noDataValue for this type of grid. For this type of grid the N in the
  * {@link #stats} is the umber of true cells.
  *
- * @see uk.ac.leeds.ccg.agdt.grids.d2.grids.Grids_Grid
+ * @see io.github.agdturner.grids.d2.grids.Grids_Grid
  *
  * @author Andy Turner
  * @version 1.0.0

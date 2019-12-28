@@ -86,20 +86,20 @@ public class Grids_2D_ID_int extends Object implements Serializable,
     }
 
     /**
-     * Overrides equals in Object
+     * Overrides equals in Object.
      *
-     * @param object
-     * @return
+     * @param o The Object to compare this with.
+     * @return {@code true} if this is equal to {@code o} and {@code false} otherwise.
      */
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ((object == null) || (object.getClass() != getClass())) {
+        if ((o == null) || (o.getClass() != getClass())) {
             return false;
         }
-        Grids_2D_ID_int i = (Grids_2D_ID_int) object;
+        Grids_2D_ID_int i = (Grids_2D_ID_int) o;
         return ((col == i.col)
                 && (row == i.row));
     }
@@ -107,21 +107,22 @@ public class Grids_2D_ID_int extends Object implements Serializable,
     /**
      * Method required by Comparable.
      *
-     * @param t
-     * @return
+     * @param i The instance to compare with.
+     * @return -1, 0, 1 depending on whether this is less than, the same or 
+     * greater than {@code i. 
      */
     @Override
-    public int compareTo(Grids_2D_ID_int t) {
-        if (t.row > row) {
+    public int compareTo(Grids_2D_ID_int i) {
+        if (i.row > row) {
             return 1;
         }
-        if (t.row < row) {
+        if (i.row < row) {
             return -1;
         }
-        if (t.col > col) {
+        if (i.col > col) {
             return 1;
         }
-        if (t.col < col) {
+        if (i.col < col) {
             return -1;
         }
         return 0;

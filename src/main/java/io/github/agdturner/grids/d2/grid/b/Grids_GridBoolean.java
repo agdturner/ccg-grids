@@ -46,7 +46,7 @@ import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
  * A Boolean grid. This is a grid containing Boolean values. The noDataValue is
  * {@code null}.
  *
- * @see uk.ac.leeds.ccg.agdt.grids.d2.grids.Grids_Grid
+ * @see io.github.agdturner.grids.d2.grid.Grids_Grid
  *
  *
  * @author Andy Turner
