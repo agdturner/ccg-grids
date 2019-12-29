@@ -15,6 +15,7 @@
  */
 package io.github.agdturner.grids.d2.grid;
 
+import io.github.agdturner.grids.core.Grids_2D_ID_long;
 import java.io.IOException;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
@@ -44,19 +45,19 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     /**
-     * @return Value at at point given by x-coordinate x and y-coordinate y as a
-     * BigDecimal.
-     * @param x The x coordinate of the point at which the cell value is
+     * @return The value at x-coordinate {@code x} and y-coordinate {@code y} as
+     * a BigDecimal.
+     * @param x The x-coordinate of the point at which the cell value is
      * returned.
-     * @param y The y coordinate of the point at which the cell value is
+     * @param y The y-coordinate of the point at which the cell value is
      * returned.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y)
             throws IOException, Exception, ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
-                getChunkCellCol(x));
+        return getCellBigDecimal(getChunkRow(y), getChunkCol(x),
+                getChunkCellRow(y), getChunkCellCol(x));
     }
 
     /**
@@ -74,45 +75,207 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     /**
-     * TODO
+     * For getting the value of chunk cell row {@code ccr} and chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
+     * a BigDecimal.
      *
-     * @param chunkRow
-     * @param chunkCol
-     * @return Grids_Chunk cell value at cell row index equal to _CellRowIndex,
-     * cell col index equal to _CellColIndex as a double.
-     * @param cellRow The cell row index of the chunk.
-     * @param cellCol The cell column index of the chunk.
+     * @param cr The chunk row.
+     * @param cc The chunk col.
+     * @param ccr The cell row index of the chunk.
+     * @param ccc The cell column index of the chunk.
+     * @return The value of chunk cell row {@code ccr}, chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
+     * a BigDecimal.
+     * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(int chunkRow, int chunkCol, int cellRow,
-            int cellCol) throws IOException, Exception, ClassNotFoundException {
-        if (!isInGrid(chunkRow, chunkCol, cellRow, cellCol)) {
+    public BigDecimal getCellBigDecimal(int cr, int cc, int ccr, int ccc)
+            throws IOException, Exception, ClassNotFoundException {
+        if (!isInGrid(cr, cc, ccr, ccc)) {
             return ndv;
         }
-        Grids_Chunk gridChunk = getChunk(chunkRow, chunkCol);
-        if (gridChunk == null) {
+        Grids_Chunk gc = getChunk(cr, cc);
+        if (gc == null) {
             return ndv;
         }
-        return getCellBigDecimal(gridChunk, chunkRow, chunkCol, cellRow, cellCol);
+        return getCellBigDecimal(gc, cr, cc, ccr, ccc);
     }
 
     /**
-     * @param chunkCol
-     * @param chunkRow
-     * @return Cell value at chunk cell row index cellRow, chunk cell col index
-     * cellCol of Grids_Chunk given by chunk row chunkRow, chunk col chunkCol.
+     * For getting the value of chunk cell row {@code ccr} and chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
+     * a BigDecimal.
+     *
      * @param chunk The Grids_Chunk containing the cell.
-     * @param cellRow The cell row index of the chunk.
-     * @param cellCol The cell column index of the chunk.
+     * @param cr The chunk row.
+     * @param cc The chunk col.
+     * @param ccr The cell row index of the chunk.
+     * @param ccc The cell column index of the chunk.
+     * @return The value of chunk cell row {@code ccr}, chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
+     * a BigDecimal.
      */
-    public abstract BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
-            int chunkCol, int cellRow, int cellCol);
+    public abstract BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr,
+            int cc, int ccr, int ccc);
 
     /**
-     * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
-     * values nearest to point with position given by: x-coordinate x,
-     * y-coordinate y; and, cell row index row, cell column index col.
+     * For setting the value of chunk cell row {@code ccr} and chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} to
+     * {@code v}.
+     *
+     * @param cr The chunk row.
+     * @param cc The chunk col.
+     * @param ccr The cell row index of the chunk.
+     * @param ccc The cell column index of the chunk.
+     * @param v The value to set.
+     * @return The value of chunk cell row {@code ccr}, chunk cell column
+     * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
+     * a BigDecimal.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public abstract Number setCell(int cr, int cc, int ccr, int ccc,
+            BigDecimal v) throws IOException, ClassNotFoundException,
+            Exception;
+
+    /**
+     * For setting the value at cell row index {@code r}, cell column index
+     * {@code c} to v.
+     *
+     * @param r The cell row.
+     * @param c The cell column.
+     * @param v The value to add.
+     * @return The value of at cell row index {@code r}, cell column index
+     * {@code c} before it is set to {@code v}.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public Number setCell(long r, long c, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        return setCell(getChunkRow(r), getChunkCol(c), getChunkCellRow(r),
+                getChunkCellCol(c), v);
+    }
+
+    /**
+     * For setting the value at cell with cell ID {@code cellID}.
+     *
+     * @param cellID The cell ID.
+     * @param v The value to add.
+     * @return The value of at cell row index {@code r}, cell column index
+     * {@code c} before it is set to {@code v}.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public Number setCell(Grids_2D_ID_long cellID, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        return setCell(cellID.getRow(), cellID.getCol(), v);
+    }
+
+    /**
+     * For setting the value at x-coordinate {@code x}, y-coordinate {@code y}
+     * to {@code v}.
+     *
+     * @param x The x-coordinate of the point at which the cell value is
+     * returned.
+     * @param y The y-coordinate of the point at which the cell value is
+     * returned.
+     * @param v The value to set.
+     * @return The value of at cell row index {@code r}, cell column index
+     * {@code c} before it is set to {@code v}.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public Number setCell(BigDecimal x, BigDecimal y, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        return setCell(getChunkRow(y), getChunkCol(x),
+                getChunkCellRow(y), getChunkCellCol(x), v);
+    }
+
+    /**
+     * For adding {@code v} to the value of chunk cell row {@code ccr}, chunk
+     * cell column {@code ccc} in chunk in chunk row {@code cr}, chunk column
+     * {@code cc} to {@code v}.
+     *
+     * @param cr The chunk row.
+     * @param cc The chunk col.
+     * @param ccr The cell row index of the chunk.
+     * @param ccc The cell column index of the chunk.
+     * @param v The value to add.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public void addToCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+            throws IOException, ClassNotFoundException, Exception {
+        if (v.compareTo(ndv) != 0) {
+            BigDecimal v2 = getCellBigDecimal(cr, cc, ccr, ccc);
+            if (v2.compareTo(ndv) == 0) {
+                setCell(cr, cc, ccr, ccc, v);
+            } else {
+                setCell(cr, cc, ccr, ccc, v.add(v2));
+            }
+        }
+    }
+
+    /**
+     * For adding {@code v} to the cell value at cell row index {@code r}, cell
+     * column index {@code c}.
+     *
+     * @param r The cell row.
+     * @param c The cell column.
+     * @param v The value to add.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public void addToCell(long r, long c, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        addToCell(getChunkRow(r), getChunkCol(c), getChunkCellRow(r),
+                getChunkCellCol(c), v);
+    }
+
+    /**
+     * For adding {@code v} to the cell with cell ID {@code cellID}.
+     *
+     * @param cellID The cell ID.
+     * @param v The value to add.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public void addToCell(Grids_2D_ID_long cellID, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        addToCell(cellID.getRow(), cellID.getCol(), v);
+    }
+
+    /**
+     * For setting the value at x-coordinate {@code x}, y-coordinate {@code y}
+     * to {@code v}.
+     *
+     * @param x The x-coordinate of the point at which the cell value is
+     * returned.
+     * @param y The y-coordinate of the point at which the cell value is
+     * returned.
+     * @param v The value to add.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public void addToCell(BigDecimal x, BigDecimal y, BigDecimal v)
+            throws IOException, Exception, ClassNotFoundException {
+        addToCell(getChunkRow(y), getChunkCol(x), getChunkCellRow(y), 
+                getChunkCellCol(x), v);
+    }
+
+    /**
+     * @return The CellIDs of the nearest cells with data values nearest to
+     * point with position given by: x-coordinate x, y-coordinate y; and, cell
+     * row index row, cell column index col.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
      * @param row The row index from which the cell IDs of the nearest cells

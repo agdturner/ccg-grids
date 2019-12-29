@@ -837,34 +837,40 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return Grids_ChunkInt for the given chunkID.
-     * @param chunkID
-     */
+     * @return Grids_ChunkInt for chunk ID @code i}.
+     * @param i The chunk ID.
+          * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+*/
     @Override
-    public Grids_ChunkInt getChunk(Grids_2D_ID_int chunkID) throws IOException,
+    public Grids_ChunkInt getChunk(Grids_2D_ID_int i) throws IOException,
             ClassNotFoundException, Exception {
-        if (isInGrid(chunkID)) {
-            if (data.get(chunkID) == null) {
-                loadChunk(chunkID);
+        if (isInGrid(i)) {
+            if (data.get(i) == null) {
+                loadChunk(i);
             }
-            return (Grids_ChunkInt) data.get(chunkID);
+            return (Grids_ChunkInt) data.get(i);
         }
         return null;
     }
 
     /**
-     * @return Grids_ChunkInt for the given chunkID.
-     * @param chunkID
+     * @param i The chunk ID.
+     * @param cr The chunk row.
+     * @param cc The chunk column.
+     * @return The chunk for the given chunkID {@code i}.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkInt getChunk(Grids_2D_ID_int chunkID, int chunkRow,
-            int chunkCol) throws IOException, ClassNotFoundException,
-            Exception {
-        if (isInGrid(chunkRow, chunkCol)) {
-            if (data.get(chunkID) == null) {
-                loadChunk(chunkID);
+    public Grids_ChunkInt getChunk(Grids_2D_ID_int i, int cr, int cc)
+            throws IOException, ClassNotFoundException, Exception {
+        if (isInGrid(cr, cc)) {
+            if (data.get(i) == null) {
+                loadChunk(i);
             }
-            return (Grids_ChunkInt) data.get(chunkID);
+            return (Grids_ChunkInt) data.get(i);
         }
         return null;
     }
@@ -1091,7 +1097,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * Convert chunk to another type of chunk.
      */
     private Grids_ChunkInt convertToAnotherTypeOfChunk(Grids_ChunkInt chunk,
-            Grids_2D_ID_int i) throws IOException, ClassNotFoundException, 
+            Grids_2D_ID_int i) throws IOException, ClassNotFoundException,
             Exception {
         Grids_ChunkInt r;
         r = env.getProcessor().GridIntFactory.DefaultGridChunkIntFactory.create(chunk, i);
@@ -1556,23 +1562,27 @@ public class Grids_GridInt extends Grids_GridNumber {
         this.stats = stats;
     }
 
-    public int getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
-            int cellRow, int cellCol) {
+    public int getCell(Grids_Chunk chunk, int cr, int cc, int ccr, int ccc) {
         Grids_ChunkInt c = (Grids_ChunkInt) chunk;
         if (chunk.getClass() == Grids_ChunkIntArray.class) {
-            return ((Grids_ChunkIntArray) c).getCell(cellRow, cellCol);
+            return ((Grids_ChunkIntArray) c).getCell(ccr, ccc);
         }
         if (chunk.getClass() == Grids_ChunkIntMap.class) {
-            return ((Grids_ChunkIntMap) c).getCell(cellRow, cellCol);
+            return ((Grids_ChunkIntMap) c).getCell(ccr, ccc);
         }
         return c.getGrid().NoDataValue;
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
-            int chunkCol, int cellRow, int cellCol) {
-        return BigDecimal.valueOf(getCell(chunk, chunkRow, chunkCol, cellRow,
-                cellCol));
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr,
+            int cc, int ccr, int ccc) {
+        return BigDecimal.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }
 
+    @Override
+    public Number setCell(int cr, int cc, int ccr, int ccc,
+            BigDecimal v) throws IOException, ClassNotFoundException,
+            Exception {
+        return setCell(cr, cc, ccr, ccc, v.intValue());
+    }
 }

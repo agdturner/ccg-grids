@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.d2.grid.Grids_GridNumber;
@@ -43,69 +42,47 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
     private static final long serialVersionUID = 1L;
 
-    /*
-     * Creates a new instance of Grids_ProcessorGWS.
-     *
-     */
     public Grids_ProcessorGWS(Grids_Environment e) throws IOException,
             ClassNotFoundException, Exception {
         super(e);
     }
 
-    //    /**
-    //     * Returns an Grids_GridDouble[] result with elements based on
-    //     * statistics, and values based on grid, distance, weightIntersect and
-    //     * weightFactor.
-    //     * @param grid the Grids_GridDouble to be processed
-    //     * @param distance the distance defining the region within which values will
-    //     *   be used
-    //     * @param weightIntersect typically a number between 0 and 1 which controls
-    //     *   the weight applied at the centre of the kernel
-    //     * @param weightFactor
-    //     *   = 0.0d all values within distance will be equally weighted
-    //     *   > 0.0d means the edge of the kernel has a zero weight
-    //     *   < 0.0d means that the edage of the kernel has a weight of 1
-    //     *   > -1.0d && < 1.0d provides an inverse decay
-    //     */
-    //    public Vector regionUnivariateStatistics( Grids_GridDouble grid, Vector statistics, double distance, double weightIntersect, double weightFactor ) {
-    //        try {
-    //            return regionUnivariateStatistics( grid, statistics, distance, weightIntersect, weightFactor, new Grids_GridFactoryDouble() );
-    //        } catch ( java.lang.OutOfMemoryError e ) {
-    //            return regionUnivariateStatistics( grid, statistics, distance, weightIntersect, weightFactor, new Grid2DSquareCellDoubleFileFactory() );
-    //        }
-    //    }
     /**
-     * Returns a Vector containing Grid2DSquareCellDoubles. Implements row
-     * processing (see Grid2DSquareCellDoubleProcessor.getRowProcessData()).
-     *
-     * @param grid the Grids_GridDouble to be processed
-     * @param statistics
-     * @param distance the distance defining the region within which values will
-     * be used. At distances weights if applied are zero
-     * @param weightIntersect typically a number between 0 and 1 which controls
+     * For getting region uni-variate statistics.
+     * @param grid The grid to be processed
+     * @param statistics A list of the statistics to generate.
+     * @param distance The distance defining the region within which values will
+     * be used.
+     * @param weightIntersect Typically a number between 0 and 1 which controls
      * the weight applied at the centre of the kernel
-     * @param weightFactor = 0.0d all values within distance will be equally
-     * weighted > 0.0d means the edge of the kernel has a zero weight < 0.0d
-     * means that the edge of the kernel has a weight of 1 > -1.0d && < 1.0d
-     * provides an inverse decay @param gridFactory the Abstract
-     * 2DSquareCellDoubleFactory used to create grids @return @param gf @return
+     * @param weightFactor
+     * <ul>
+     * <li>{@code 0.0d} all values within distance will be equally weighted</li>
+     * <li>{@code > 0.0d} means the edge of the kernel has a zero weight</li>
+     * <li>{@code < 0.0d} means that the edge of the kernel has a weight of
+     * 1</li>
+     * <li>{@code > -1.0d && < 1.0d} provides an inverse decay</li>
+     * </ul>
+     * @param gf The grid facory for creating result grids.
+     * @param dp Decimal places.
+     * @param rm The Rounding Mode
+     * @return A set of grid based region univariate statistics.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.Exception If encountered.
      */
     public List<Grids_GridNumber> regionUnivariateStatistics(
             Grids_GridDouble grid, List<String> statistics, BigDecimal distance,
             BigDecimal weightIntersect, int weightFactor,
             Grids_GridFactoryDouble gf, int dp, RoundingMode rm) throws
             IOException, ClassNotFoundException, Exception {
-        List<Grids_GridNumber> result = new ArrayList<>();
-        //Vector result = new Vector();
-
+        List<Grids_GridNumber> r = new ArrayList<>();
         long ncols = grid.getNCols();
         long nrows = grid.getNRows();
         Grids_Dimensions dimensions = grid.getDimensions();
         BigDecimal ndv = grid.ndv;
         double ndvd = grid.getNoDataValue();
-
         int cellDistance = grid.getCellDistance(distance).intValue();
-
         // @HACK If cellDistance is so great that data for a single kernel is
         // unlikely to fit in memory
         if (cellDistance > 1024) {
@@ -628,88 +605,88 @@ public class Grids_ProcessorGWS extends Grids_Processor {
          * meanZscoreGrid[ 0 ]; }
          */
         sumWeightGrid.setName("SumWeight_" + grid.getName());
-        result.add(sumWeightGrid);
+        r.add(sumWeightGrid);
 
         if (doSum) {
             sumGrid.setName("Sum_" + grid.getName());
-            result.add(sumGrid);
+            r.add(sumGrid);
         }
         if (doWSum) {
             wSumGrid.setName("WSum_" + grid.getName());
-            result.add(wSumGrid);
+            r.add(wSumGrid);
         }
         if (doNWSum) {
             nWSumGrid.setName("NWSum_" + grid.getName());
-            result.add(nWSumGrid);
+            r.add(nWSumGrid);
         }
         if (doWSumN) {
             wSumNGrid.setName("WSumN_" + grid.getName());
-            result.add(wSumNGrid);
+            r.add(wSumNGrid);
         }
 
         if (doMean) {
             meanGrid.setName("Mean_" + grid.getName());
-            result.add(meanGrid);
+            r.add(meanGrid);
         }
         if (doWMean1) {
             wMean1Grid.setName("WMean1_" + grid.getName());
-            result.add(wMean1Grid);
+            r.add(wMean1Grid);
         }
         if (doWMean2) {
             wMean2Grid.setName("WMean2_" + grid.getName());
-            result.add(wMean2Grid);
+            r.add(wMean2Grid);
         }
         if (doNWMean) {
             nWMeanGrid.setName("NWMean_" + grid.getName());
-            result.add(nWMeanGrid);
+            r.add(nWMeanGrid);
         }
         if (doWMeanN) {
             wMeanNGrid.setName("WMeanN_" + grid.getName());
-            result.add(wMeanNGrid);
+            r.add(wMeanNGrid);
         }
 
         if (doProp) {
             propGrid.setName("Prop_" + grid.getName());
-            result.add(propGrid);
+            r.add(propGrid);
         }
         if (doWProp) {
             wPropGrid.setName("WProp_" + grid.getName());
-            result.add(wPropGrid);
+            r.add(wPropGrid);
         }
         if (doVar) {
             varGrid.setName("Var_" + grid.getName());
-            result.add(varGrid);
+            r.add(varGrid);
         }
         if (doWVar) {
             wVarGrid.setName("WVar_" + grid.getName());
-            result.add(wVarGrid);
+            r.add(wVarGrid);
         }
         if (doSkew) {
             skewGrid.setName("Skew_" + grid.getName());
-            result.add(skewGrid);
+            r.add(skewGrid);
         }
         if (doWSkew) {
             wSkewGrid.setName("WSkew_" + grid.getName());
-            result.add(wSkewGrid);
+            r.add(wSkewGrid);
         }
         if (doCVar) {
             cVarGrid.setName("CVar_" + grid.getName());
-            result.add(cVarGrid);
+            r.add(cVarGrid);
         }
         if (doWCVar) {
             wCVarGrid.setName("WCVar_" + grid.getName());
-            result.add(wCVarGrid);
+            r.add(wCVarGrid);
         }
         if (doCSkew) {
             cSkewGrid.setName("CSkew" + grid.getName());
-            result.add(cSkewGrid);
+            r.add(cSkewGrid);
         }
         if (doWCSkew) {
             wCSkewGrid.setName("WCSkew_" + grid.getName());
-            result.add(wCSkewGrid);
+            r.add(wCSkewGrid);
         }
 
-        return result;
+        return r;
     }
 
     /**
@@ -721,12 +698,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * be used. At distances weights if applied are zero
      * @param weightIntersect typically a number between 0 and 1 which controls
      * the weight applied at the centre of the kernel
-     * @param weightFactor: <code>weightFactor = 0.0d</code> all values within
-     * distance will be equally weighted; <code>weightFactor > 0.0d</code> means
-     * the edge of the kernel has a zero weight;
-     * <code>weightFactor < 0.0d</code> means that the edage of the kernel has a
-     * weight of 1; <code>weightFactor > -1.0d && < 1.0d</code> provides an
-     * inverse decay.
+     * @param weightFactor:
      * @param gridFactory the Abstract2DSquareCellDoubleFactory used to create
      * grids
      * @return
@@ -1225,71 +1197,6 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     }
 
     /**
-     * TODO
-     *
-     * @param grid
-     * @param rowIndex the rowIndex of the cell about which the statistics are
-     * returned
-     * @param colIndex the rowIndex of the cell about which the statistics are
-     * returned
-     * @param statistic
-     * @param distance
-     * @param weightFactor
-     * @param weightIntersect
-     * @return
-     */
-    public double[] regionUnivariateStatistics(
-            Grids_GridDouble grid,
-            int rowIndex, int colIndex,
-            String statistic,
-            double distance,
-            double weightIntersect,
-            double weightFactor) {
-        return null;
-    }
-
-    //    /**
-    //     * TODO:
-    //     * @param scaleIntersect typically a number between 0 and 1 which controls
-    //     *                       the weight applied at the initial scale
-    //     * @param scaleFactor = 0.0d all scales equally weighted
-    //     *                    > 0.0d means that the last scale has a zero weight
-    //     *                    < 0.0d means that the final scale has a weight of 1
-    //     *                    > -1.0d && < 1.0d provides an inverse decay on scale weighting
-    //     */
-    //    public Vector regionUnivariateStatisticsCrossScale( Grids_GridDouble grid, Vector statistics, double distance, double weightIntersept, double weightFactor, double scaleIntersect, double scaleFactor ) {
-    //        try {
-    //            return regionUnivariateStatisticsCrossScale( grid, statistics, distance, weightIntersept, weightFactor, scaleIntersect, scaleFactor, new Grids_GridFactoryDouble() );
-    //        } catch ( java.lang.OutOfMemoryError e ) {
-    //            return regionUnivariateStatisticsCrossScale( grid, statistics, distance, weightIntersept, weightFactor, scaleIntersect, scaleFactor, new Grid2DSquareCellDoubleFileFactory() );
-    //        }
-    //    }
-    /**
-     * TODO
-     *
-     * @param grid
-     * @param statistics
-     * @param scaleIntersept typically a number between 0 and 1 which controls
-     * the weight applied at the initial scale
-     * @param weightIntersept
-     * @param weightFactor
-     * @param distance
-     * @param scaleFactor = 0.0d all scales equally weighted > 0.0d means that
-     * the last scale has a zero weight < 0.0d means that the final scale has a
-     * weight of 1 > -1.0d && < 1.0d provides an inverse decay on scale
-     * weighting @param gridFactory the Abstract2DSquareCellDoubleF actory used
-     * to create grids @param weightIntersept @param weightFactor @param
-     * gridFactory @return @param gridFactory @return @param gridFactory
-     */
-    public ArrayList regionUnivariateStatisticsCrossScale(Grids_GridDouble grid,
-            ArrayList statistics, double distance, double weightIntersept,
-            double weightFactor, double scaleIntersept, double scaleFactor,
-            Grids_GridFactoryDouble gridFactory) {
-        ArrayList result = new ArrayList();
-        return result;
-    }
-
-    /**
      * Returns an Grid2DSquareCellDouble[] containing geometric density
      * surfaces. The algorithm used for generating a geometric density surfaces
      * is described in: Turner A (2000) Density Data Generation for Spatial Data
@@ -1371,16 +1278,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
             BigDecimal distance, Grids_GridFactoryDouble gridFactory)
             throws IOException, ClassNotFoundException, Exception {
-        BigInteger n;
-        n = grid.getStats().getN();
-        //double sparseness = grid.getStats().getSparseness();
+        BigInteger n = grid.getStats().getN();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
-        //BigInteger cellCount = new BigInteger( Long.toString( nrows ) ).add( new BigInteger( Long.toString( ncols ) ) );
-
         Grids_Dimensions dimensions = grid.getDimensions();
-        double cellsize = grid.getCellsize().doubleValue();
-        double noDataValue = grid.getNoDataValue();
+        double ndv = grid.getNoDataValue();
         int cellDistance = grid.getCellDistance(distance).intValue();
         double d1;
         double d2;
@@ -1419,7 +1321,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         for (row = 0; row < nrows; row++) {
             for (col = 0; col < ncols; col++) {
                 d1 = grid.getCell(row, col);
-                if (d1 != noDataValue) {
+                if (d1 != ndv) {
                     //g2.initCell( row, col, d1 );
                     //g3.initCell( row, col, 1.0d );
                     g2.setCell(row, col, d1);
@@ -1485,7 +1387,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             //    with each iteration. Using alternative data structures and
             //    processing strategies this step can probably be speeded up a lot.
             //density = gridFactory.createGrid2DSquareCellDouble( nrows, ncols, 0.0d, 0.0d, cellsize, 0.0d );
-            gridFactory.setNoDataValue(noDataValue);
+            gridFactory.setNoDataValue(ndv);
             density = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
             for (row = 0; row < nrows; row += doubler) {
                 for (int p = 0; p < doubler; p++) {
@@ -1701,7 +1603,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList statistics, BigDecimal distance,
             BigDecimal weightIntersect, int weightFactor,
-            Grids_GridFactoryDouble gf, int dp, RoundingMode rm) 
+            Grids_GridFactoryDouble gf, int dp, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         // Initialisation
@@ -1810,8 +1712,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             BigDecimal y1 = grid0.getCellY(row + p);
                             BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                             if (thisDistance.compareTo(distance) == -1) {
-                               double value0 = grid0.getCell(x1, y1);
-                               double value1 = grid1.getCell(x1, y1);
+                                double value0 = grid0.getCell(x1, y1);
+                                double value1 = grid1.getCell(x1, y1);
                                 if (value0 != grid0NoDataValue) {
                                     max0 = Math.max(max0, value0);
                                     min0 = Math.min(min0, value0);
@@ -1822,7 +1724,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                 }
                                 if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                     n++;
-                                   BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                    BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
                                     sumWeight = sumWeight.add(weight);
                                     BigDecimal diff2 = BigDecimal.valueOf(value0).subtract(BigDecimal.valueOf(value1));
                                     weightedDiff = weightedDiff.add(diff2.multiply(weight));
@@ -1833,18 +1735,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     }
                     if (n > setNumberOfPairs) {
                         if (max0 != Double.MIN_VALUE && min0 != Double.MAX_VALUE && max1 != Double.MIN_VALUE && min1 != Double.MAX_VALUE) {
-                           double range0 = max0 - min0;
-                           double range1 = max1 - min1;
+                            double range0 = max0 - min0;
+                            double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellX(col + q);
-                                   BigDecimal y1 = grid0.getCellY(row + p);
-                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    BigDecimal x1 = grid0.getCellX(col + q);
+                                    BigDecimal y1 = grid0.getCellY(row + p);
+                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
-                                       double v0 = grid0.getCell(x1, y1);
-                                       double v1 = grid1.getCell(x1, y1);
+                                        double v0 = grid0.getCell(x1, y1);
+                                        double v1 = grid1.getCell(x1, y1);
                                         if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
-                                           BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp , rm);
+                                            BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
                                             double dummy0;
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
@@ -1890,43 +1792,43 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
                     //if ( grid0.getCell( row, col ) != grid0NoDataValue ) {
-                   BigDecimal x0 = grid0.getCellX(col);
-                   BigDecimal y0 = grid0.getCellY(row);
-                   double max0 = Double.MIN_VALUE;
-                   double max1 = Double.MIN_VALUE;
-                   double min0 = Double.MAX_VALUE;
+                    BigDecimal x0 = grid0.getCellX(col);
+                    BigDecimal y0 = grid0.getCellY(row);
+                    double max0 = Double.MIN_VALUE;
+                    double max1 = Double.MIN_VALUE;
+                    double min0 = Double.MAX_VALUE;
                     double min1 = Double.MAX_VALUE;
-                   BigDecimal sumWeight0 = BigDecimal.ZERO;
-                   BigDecimal sumWeight1 = BigDecimal.ZERO;
-                   BigDecimal weightedMean0 = BigDecimal.ZERO;
-                   BigDecimal weightedMean1 = BigDecimal.ZERO;
-                   BigDecimal weightedSum0Squared = BigDecimal.ZERO;
-                   BigDecimal weightedSum1Squared = BigDecimal.ZERO;
-                   BigDecimal weightedSum01 = BigDecimal.ZERO;
-                  BigDecimal  weightedStandardDeviation0 = BigDecimal.ZERO;
-                  BigDecimal  weightedStandardDeviation1 = BigDecimal.ZERO;
-                  BigDecimal  weightedZdiff = BigDecimal.ZERO;
-                  BigDecimal  mean0 = BigDecimal.ZERO;
-                  BigDecimal  mean1 = BigDecimal.ZERO;
-                  BigDecimal  sum0Squared = BigDecimal.ZERO;
-                  BigDecimal  sum1Squared = BigDecimal.ZERO;
-                  BigDecimal  sum01 = BigDecimal.ZERO;
-                  BigDecimal  standardDeviation0 = BigDecimal.ZERO;
-                  BigDecimal  standardDeviation1 = BigDecimal.ZERO;
-                  BigDecimal  zdiff = BigDecimal.ZERO;
+                    BigDecimal sumWeight0 = BigDecimal.ZERO;
+                    BigDecimal sumWeight1 = BigDecimal.ZERO;
+                    BigDecimal weightedMean0 = BigDecimal.ZERO;
+                    BigDecimal weightedMean1 = BigDecimal.ZERO;
+                    BigDecimal weightedSum0Squared = BigDecimal.ZERO;
+                    BigDecimal weightedSum1Squared = BigDecimal.ZERO;
+                    BigDecimal weightedSum01 = BigDecimal.ZERO;
+                    BigDecimal weightedStandardDeviation0 = BigDecimal.ZERO;
+                    BigDecimal weightedStandardDeviation1 = BigDecimal.ZERO;
+                    BigDecimal weightedZdiff = BigDecimal.ZERO;
+                    BigDecimal mean0 = BigDecimal.ZERO;
+                    BigDecimal mean1 = BigDecimal.ZERO;
+                    BigDecimal sum0Squared = BigDecimal.ZERO;
+                    BigDecimal sum1Squared = BigDecimal.ZERO;
+                    BigDecimal sum01 = BigDecimal.ZERO;
+                    BigDecimal standardDeviation0 = BigDecimal.ZERO;
+                    BigDecimal standardDeviation1 = BigDecimal.ZERO;
+                    BigDecimal zdiff = BigDecimal.ZERO;
                     n = 0;
-                   double n0 = 0.0d;
+                    double n0 = 0.0d;
                     double n1 = 0.0d;
                     // Calculate max min range sumWeight
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                           BigDecimal x1 = grid0.getCellX(col + q);
-                           BigDecimal y1 = grid0.getCellY(row + p);
-                           BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                            BigDecimal x1 = grid0.getCellX(col + q);
+                            BigDecimal y1 = grid0.getCellY(row + p);
+                            BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                             if (thisDistance.compareTo(distance) == -1) {
-                               BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
-                               double v0 = grid0.getCell(x1, y1);
-                               double v1 = grid1.getCell(x1, y1);
+                                BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                double v0 = grid0.getCell(x1, y1);
+                                double v1 = grid1.getCell(x1, y1);
                                 if (v0 != grid0NoDataValue) {
                                     max0 = Math.max(max0, v0);
                                     min0 = Math.min(min0, v0);
@@ -1947,17 +1849,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     }
                     if (n > setNumberOfPairs) {
                         if (max0 != Double.MIN_VALUE && min0 != Double.MAX_VALUE && max1 != Double.MIN_VALUE && min1 != Double.MAX_VALUE) {
-                           double range0 = max0 - min0;
-                           double range1 = max1 - min1;
+                            double range0 = max0 - min0;
+                            double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellX(col + q);
-                                   BigDecimal y1 = grid0.getCellY(row + p);
-                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    BigDecimal x1 = grid0.getCellX(col + q);
+                                    BigDecimal y1 = grid0.getCellY(row + p);
+                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
-                                       BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
-                                       double v0 = grid0.getCell(row + p, col + q);
-                                       double v1 = grid1.getCell(row + p, col + q);
+                                        BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                        double v0 = grid0.getCell(row + p, col + q);
+                                        double v1 = grid1.getCell(row + p, col + q);
                                         if (v0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
@@ -1981,12 +1883,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                   BigDecimal x1 = grid0.getCellX(col + q);
-                                   BigDecimal y1 = grid0.getCellY(row + p);
-                                   BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                    BigDecimal x1 = grid0.getCellX(col + q);
+                                    BigDecimal y1 = grid0.getCellY(row + p);
+                                    BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
-                                BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
-                                       double v0 = grid0.getCell(x1, y1);
+                                        BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                        double v0 = grid0.getCell(x1, y1);
                                         if (v0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
@@ -1996,7 +1898,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             standardDeviation0 = standardDeviation0.add(BigDecimal.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
                                             weightedStandardDeviation0 = weightedStandardDeviation0.add(BigDecimal.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
                                         }
-                                       double v1 = grid1.getCell(x1, y1);
+                                        double v1 = grid1.getCell(x1, y1);
                                         if (v1 != grid1NoDataValue) {
                                             if (range1 > 0.0d) {
                                                 dummy1 = (((v1 - min1) / range1) * 9.0d) + 1.0d;
@@ -2020,7 +1922,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                     }
                                 }
                             }
-                           BigDecimal denominator = Math_BigDecimal.sqrt(weightedSum0Squared, dp, rm).multiply(Math_BigDecimal.sqrt(weightedSum1Squared, dp, rm));
+                            BigDecimal denominator = Math_BigDecimal.sqrt(weightedSum0Squared, dp, rm).multiply(Math_BigDecimal.sqrt(weightedSum1Squared, dp, rm));
                             if (denominator.compareTo(BigDecimal.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
                                 weightedCorrelationGrid.setCell(row, col, weightedSum01.doubleValue() / denominator.doubleValue());
                             }
@@ -2028,7 +1930,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (denominator.compareTo(BigDecimal.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
                                 correlationGrid.setCell(row, col, sum01.doubleValue() / denominator.doubleValue());
                             }
-                           weightedStandardDeviation0 = BigDecimal.valueOf(Math.sqrt(weightedStandardDeviation0.doubleValue() / (n0 - 1.0d)));
+                            weightedStandardDeviation0 = BigDecimal.valueOf(Math.sqrt(weightedStandardDeviation0.doubleValue() / (n0 - 1.0d)));
                             standardDeviation0 = BigDecimal.valueOf(Math.sqrt(standardDeviation0.doubleValue() / (n0 - 1.0d)));
                             weightedStandardDeviation1 = BigDecimal.valueOf(Math.sqrt(weightedStandardDeviation1.doubleValue() / (n1 - 1.0d)));
                             standardDeviation1 = BigDecimal.valueOf(Math.sqrt(standardDeviation1.doubleValue() / (n1 - 1.0d)));
@@ -2036,12 +1938,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (weightedStandardDeviation0.compareTo(BigDecimal.ZERO) == 1 && weightedStandardDeviation1.compareTo(BigDecimal.ZERO) == 1) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                       BigDecimal x1 = grid0.getCellX(col + q);
-                                       BigDecimal y1 = grid0.getCellY(row + p);
-                                       BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
-                                    if (thisDistance.compareTo(distance) == -1) {
-                                   double v0 = grid0.getCell(x1, y1);
-                                           double v1 = grid1.getCell(x1, y1);
+                                        BigDecimal x1 = grid0.getCellX(col + q);
+                                        BigDecimal y1 = grid0.getCellY(row + p);
+                                        BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                        if (thisDistance.compareTo(distance) == -1) {
+                                            double v0 = grid0.getCell(x1, y1);
+                                            double v1 = grid1.getCell(x1, y1);
                                             if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
                                                     dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
@@ -2053,11 +1955,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                               BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                                BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
                                                 //weightedZdiff += ( ( ( ( value0 * weight ) - weightedMean0 ) / weightedStandardDeviation0 ) - ( ( ( value1 * weight ) - weightedMean1 ) / weightedStandardDeviation1 ) );
-                                                weightedZdiff = weightedZdiff.add(BigDecimal.valueOf(((
-                                                        ((dummy0 - weightedMean0.doubleValue()) / weightedStandardDeviation0.doubleValue())
-                                                                - ((dummy1 - weightedMean1.doubleValue()) / weightedStandardDeviation1.doubleValue())) * weight.doubleValue())));
+                                                weightedZdiff = weightedZdiff.add(BigDecimal.valueOf(((((dummy0 - weightedMean0.doubleValue()) / weightedStandardDeviation0.doubleValue())
+                                                        - ((dummy1 - weightedMean1.doubleValue()) / weightedStandardDeviation1.doubleValue())) * weight.doubleValue())));
 //                                                weightedZdiff += (((dummy0 - weightedMean0) / weightedStandardDeviation0)
 //                                                        - ((dummy1 - weightedMean1) / weightedStandardDeviation1)) * weight;
                                             }
@@ -2069,12 +1970,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (standardDeviation0.doubleValue() > 0.0d && standardDeviation1.doubleValue() > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                       BigDecimal x1 = grid0.getCellX(col + q);
-                                       BigDecimal y1 = grid0.getCellY(row + p);
-                                       BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
-                                    if (thisDistance.compareTo(distance) == -1) {
-                                   double v0 = grid0.getCell(x1, y1);
-                                           double v1 = grid1.getCell(x1, y1);
+                                        BigDecimal x1 = grid0.getCellX(col + q);
+                                        BigDecimal y1 = grid0.getCellY(row + p);
+                                        BigDecimal thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                                        if (thisDistance.compareTo(distance) == -1) {
+                                            double v0 = grid0.getCell(x1, y1);
+                                            double v1 = grid1.getCell(x1, y1);
                                             if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                                 if (range0 > 0.0d) {
                                                     dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;

@@ -63,7 +63,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * Double.NEGATIVE_INFINITY should not be used. N.B. Care should be taken so
      * that NoDataValue is not a data value.
      */
-    protected double NoDataValue = -Double.MAX_VALUE;
+    protected double noDataValue = -Double.MAX_VALUE;
 
     /**
      * Each cell v equal to {@code ndv} and all chunks of the same type created
@@ -177,7 +177,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     @Override
     public String getFieldsDescription() {
-        return "NoDataValue=" + NoDataValue + ", "
+        return "NoDataValue=" + noDataValue + ", "
                 + super.getFieldsDescription();
     }
 
@@ -189,7 +189,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered. *
      */
     private void init(Grids_GridDouble g) throws IOException {
-        NoDataValue = g.NoDataValue;
+        noDataValue = g.noDataValue;
 //        Grids_StatsDouble gStats;
 //        gStats = g.getStats();
 //        if (gStats instanceof Grids_StatsNotUpdatedDouble) {
@@ -511,7 +511,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
 //                Grids_ChunkDouble chunk;
 //                Grids_ChunkDoubleSinglet gridChunk;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
-                if (gridFileNoDataValue == NoDataValue) {
+                if (gridFileNoDataValue == this.noDataValue) {
                     if (stats.isUpdated()) {
                         for (row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
@@ -532,7 +532,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = NoDataValue;
+                                    value = this.noDataValue;
                                 }
                                 initCell(row, col, value, true);
                             }
@@ -550,7 +550,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = NoDataValue;
+                                    value = this.noDataValue;
                                 }
                                 initCell(row, col, value, false);
                             }
@@ -596,7 +596,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 init(g);
                 //this.data = g.data;
                 this.worthSwapping = g.worthSwapping;
-                this.NoDataValue = g.NoDataValue;
+                this.noDataValue = g.noDataValue;
                 this.dim = g.dim;
                 this.stats = stats;
                 this.stats.grid = this;
@@ -633,7 +633,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 long row;
                 long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
-                if (gridFileNoDataValue == NoDataValue) {
+                if (gridFileNoDataValue == noDataValue) {
                     if (stats.isUpdated()) {
                         for (row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
@@ -654,7 +654,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = NoDataValue;
+                                    value = noDataValue;
                                 }
                                 initCell(row, col, value, true);
                             }
@@ -672,7 +672,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = NoDataValue;
+                                    value = noDataValue;
                                 }
                                 initCell(row, col, value, false);
                             }
@@ -688,7 +688,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = NoDataValue;
+                                    value = noDataValue;
                                 }
                                 initCell(row, col, value, true);
                             }
@@ -770,7 +770,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
                 if (value != gc.v) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().GridDoubleFactory.DefaultGridChunkDoubleFactory.create(chunk, i);
+                    chunk = env.getProcessor().GridDoubleFactory.defaultGridChunkDoubleFactory.create(chunk, i);
                     data.put(i, chunk);
                     if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
                         worthSwapping.add(i);
@@ -806,10 +806,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
+     * @param i The chunk ID.
      * @param cr The chunk row.
      * @param cc The chunk col.
-     * @return Grids_ChunkDouble for the given chunkID.
-     * @param i The chunk ID.
+     * @return The chunk for the given chunkID {@code i}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -838,8 +838,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
             throws IOException, Exception, ClassNotFoundException {
         Grids_StatsDouble dStats = getStats();
         if (dStats.getClass() == Grids_StatsDouble.class) {
-            if (newValue != NoDataValue) {
-                if (oldValue != NoDataValue) {
+            if (newValue != noDataValue) {
+                if (oldValue != noDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
                     dStats.setN(dStats.getN().subtract(BigInteger.ONE));
                     dStats.setSum(dStats.getSum().subtract(oldValueBD));
@@ -876,7 +876,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @return ndv.
      */
     public final double getNoDataValue() {
-        return NoDataValue;
+        return noDataValue;
     }
 
     /**
@@ -890,12 +890,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected final void initNoDataValue(double ndv) {
         if (Double.isNaN(ndv)) {
             env.env.log("NoDataValue cannot be set to NaN! NoDataValue "
-                    + "remains as " + NoDataValue);
+                    + "remains as " + noDataValue);
         } else if (Double.isInfinite(ndv)) {
             env.env.log("NoDataValue cannot be infinite! NoDataValue "
-                    + "remains as " + NoDataValue);
+                    + "remains as " + noDataValue);
         } else {
-            NoDataValue = ndv;
+            noDataValue = ndv;
         }
     }
 
@@ -903,7 +903,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param r The grid cell row index for which the v is returned.
      * @param c The grid cell column index for which the v is returned
      * @return The v in the grid at grid cell row index {@code r}, grid cell
-     * column index {@code c} or {@link #NoDataValue} if there is no such v.
+     * column index {@code c} or {@link #noDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -913,7 +913,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             return getCell((Grids_ChunkDouble) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c));
         }
-        return NoDataValue;
+        return noDataValue;
     }
 
     /**
@@ -924,19 +924,19 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param r The chunk cell row index of the v returned.
      * @param c The chunk cell column index of the v returned.
      * @return v in chunk at chunk cell row {@code r}, chunk cell col {@code c}
-     * or {@link #NoDataValue} if there is no such v.
+     * or {@link #noDataValue} if there is no such v.
      */
     public double getCell(Grids_ChunkDouble chunk, int r, int c) {
         if (chunk.inChunk(r, c)) {
             return chunk.getCell(r, c);
         }
-        return NoDataValue;
+        return noDataValue;
     }
 
     /**
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @return The v at (x, y) or {@link #NoDataValue} if there is no such v.
+     * @return The v at (x, y) or {@link #noDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -947,7 +947,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The v of the cell with cell ID {@code i} or {@link #NoDataValue}
+     * @return The v of the cell with cell ID {@code i} or {@link #noDataValue}
      * if there is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -964,7 +964,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param y The y-coordinate of the point.
      * @param v The v to set in the cell.
      * @return The v at x-coordinate {@code x}, y-coordinate {@code y} or
-     * {@link #NoDataValue} if there is no such v.
+     * {@link #noDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -982,7 +982,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param v The v to set at cell row index {@code r}, cell column index
      * {@code c}.
      * @return The v at cell row index {@code r}, cell column index {@code c} or
-     * {@link #NoDataValue} if there is no such v.
+     * {@link #noDataValue} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -992,7 +992,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             return setCell((Grids_ChunkDouble) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c), v);
         }
-        return NoDataValue;
+        return noDataValue;
     }
 
     /**
@@ -1031,7 +1031,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     public double setCell(Grids_ChunkDouble chunk, int ccr, int ccc, double v)
             throws IOException, Exception, ClassNotFoundException {
-        double r = NoDataValue;
+        double r = noDataValue;
         if (chunk instanceof Grids_ChunkDoubleArray) {
             r = ((Grids_ChunkDoubleArray) chunk).setCell(ccr, ccc, v);
         } else if (chunk instanceof Grids_ChunkDoubleMap) {
@@ -1064,7 +1064,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkDouble r;
-        Grids_ChunkFactoryDouble f = env.getProcessor().GridDoubleFactory.DefaultGridChunkDoubleFactory;
+        Grids_ChunkFactoryDouble f = env.getProcessor().GridDoubleFactory.defaultGridChunkDoubleFactory;
         r = f.create(chunk, chunkID);
         data.put(chunkID, r);
         if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
@@ -1101,7 +1101,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             }
         }
         // Update stats
-        if (v != NoDataValue) {
+        if (v != noDataValue) {
             if (!(stats instanceof Grids_StatsNotUpdatedDouble)) {
                 updateStats(v);
             }
@@ -1238,7 +1238,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         double value = getCell(x, y);
-        if (value == NoDataValue) {
+        if (value == noDataValue) {
             return getNearestValuesCellIDsAndDistance(x, y, getRow(y),
                     getCol(x), dp, rm);
         }
@@ -1268,7 +1268,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         double value = getCell(row, col);
-        if (value == NoDataValue) {
+        if (value == noDataValue) {
             return getNearestValuesCellIDsAndDistance(getCellX(col),
                     getCellY(row), row, col, dp, rm);
         }
@@ -1304,7 +1304,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
         double nearestCellValue = getCell(row, col);
-        if (nearestCellValue == NoDataValue) {
+        if (nearestCellValue == noDataValue) {
             // Find a v Seeking outwards from nearestCellID
             // Initialise visitedSet1
             HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
@@ -1335,7 +1335,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     Grids_2D_ID_long cellID = iterator.next();
                     visitedSet2.add(cellID);
                     value = getCell(cellID);
-                    if (value != NoDataValue) {
+                    if (value != noDataValue) {
                         foundValue = true;
                         values.add(cellID);
                     } else {
@@ -1386,7 +1386,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, dp, rm);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
-                    if (getCell(cellID1) != NoDataValue) {
+                    if (getCell(cellID1) != noDataValue) {
                         distance = Grids_Utilities.distance(x, y,
                                 getCellX(cellID1),
                                 getCellY(cellID1), dp, rm);
@@ -1449,12 +1449,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
     public void addToCell(long row, long col, double v) throws IOException,
             ClassNotFoundException, Exception {
         double currentValue = getCell(row, col);
-        if (currentValue != NoDataValue) {
-            if (v != NoDataValue) {
+        if (currentValue != noDataValue) {
+            if (v != noDataValue) {
                 setCell(row, col, currentValue + v);
             }
         } else {
-            if (v != NoDataValue) {
+            if (v != noDataValue) {
                 setCell(row, col, v);
             }
         }
@@ -1517,14 +1517,18 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (chunk.getClass() == Grids_ChunkDoubleMap.class) {
             return ((Grids_ChunkDoubleMap) c).getCell(cellRow, cellCol);
         }
-        return c.getGrid().NoDataValue;
+        return c.getGrid().noDataValue;
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int chunkRow,
-            int chunkCol, int cellRow, int cellCol) {
-        return BigDecimal.valueOf(getCell(chunk, chunkRow, chunkCol, cellRow,
-                cellCol));
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc,
+            int ccr, int ccc) {
+        return BigDecimal.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }
 
+    @Override
+    public Number setCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+            throws IOException, ClassNotFoundException, Exception {
+        return setCell(cr, cc, ccr, ccc, v.doubleValue());
+    }
 }

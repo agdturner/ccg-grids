@@ -61,13 +61,15 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
     /**
      * Writes this grid as a Grey scale image
      *
-     * @param g
-     * @param gp
+     * @param g The grid to make into an image.
+     * @param gp The grid processor for processing.
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png",
      * "jpeg"
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void toGreyScaleImage(Grids_GridNumber g, Grids_Processor gp, 
+    public void toGreyScaleImage(Grids_GridNumber g, Grids_Processor gp,
             Path file, String type)
             throws IOException, ClassNotFoundException, Exception {
         // Initialisation
@@ -123,9 +125,9 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // If not already in the range 0 to 255, rescale grid into this range.
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
-            r = gp.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d, env.HOOMET);
+            r = gp.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
         } else {
-            r = gp.rescale((Grids_GridInt) g, null, 0.0d, 255.0d, env.HOOMET);
+            r = gp.rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
         }
         double noDataValue = r.getNoDataValue();
 //        System.out.println("r nrows " + r.getNRows(hoome));
@@ -260,6 +262,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png", *
      * "jpeg"
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void toColourImage(int duplication, TreeMap<Double, Color> colours,
             Color noDataValueColour, Grids_GridDouble g, Path file, String type)

@@ -1206,7 +1206,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
  _Grid2DSquareCell that are to be regarded as outflow cells. Outflow cells
  are those: with a v <= outflowHeight; those with CellID in
  outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
- cell with a v of NoDataValue.
+ cell with a v of noDataValue.
      */
     private HashSet<Grids_2D_ID_long> getHollowFilledDEMOutflowCellIDs(
             HashSet<Grids_2D_ID_long> outflowCellIDsSet, double outflowHeight,

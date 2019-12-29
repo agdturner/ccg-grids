@@ -41,7 +41,6 @@ import io.github.agdturner.grids.core.Grids_Object;
 import io.github.agdturner.grids.core.Grids_Strings;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBoolean;
-import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryInt;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
@@ -73,11 +72,6 @@ public class Grids_Processor extends Grids_Object {
     protected Grids_Files files;
 
     /**
-     * Grids_ChunkFactoryInt
-     */
-//    public Grids_ChunkFactoryInt defaultChunkIntFactory;
-
-    /**
      * Grids_GridFactoryBoolean
      */
     public Grids_GridFactoryBoolean GridBooleanFactory;
@@ -92,22 +86,6 @@ public class Grids_Processor extends Grids_Object {
      */
     public Grids_GridFactoryInt GridIntFactory;
 
-    /**
-     * Grids_ChunkFactoryDouble
-     */
-    //public Grids_ChunkFactoryDouble DefaultGridChunkDoubleFactory;
-    /**
-     * Grids_ChunkFactoryDoubleSinglet
-     */
-    //public Grids_ChunkFactoryDoubleSinglet GridChunkDoubleFactory;
-    /**
-     * Grids_ChunkFactoryDoubleArray
-     */
-//    public Grids_ChunkFactoryDoubleArray GridChunkDoubleArrayFactory;
-    /**
-     * Grids_ChunkFactoryDoubleMap
-     */
-//    public Grids_ChunkFactoryDoubleMap GridChunkDoubleMapFactory;
     /**
      * Grids_GridFactoryDouble
      */
@@ -137,40 +115,40 @@ public class Grids_Processor extends Grids_Object {
         // Boolean
         String s = Grids_Strings.s_GridBoolean;
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
-        Generic_FileStore store;
+        Generic_FileStore fs;
         if (Files.exists(dir)) {
-            store = new Generic_FileStore(dir);
+            fs = new Generic_FileStore(dir);
         } else {
-            store = new Generic_FileStore(files.getGeneratedDir(), s);
+            fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBooleanFactory = new Grids_GridFactoryBoolean(env, store,
+        GridBooleanFactory = new Grids_GridFactoryBoolean(env, fs,
                 new Grids_ChunkFactoryBoolean(), chunkNRows, chunkNCols);
         // Binary
         s = Grids_Strings.s_GridBinary;
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
         if (Files.exists(dir)) {
-            store = new Generic_FileStore(dir);
+            fs = new Generic_FileStore(dir);
         } else {
-            store = new Generic_FileStore(files.getGeneratedDir(), s);
+            fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBinaryFactory = new Grids_GridFactoryBinary(env, store,
+        GridBinaryFactory = new Grids_GridFactoryBinary(env, fs,
                 new Grids_ChunkFactoryBinary(), chunkNRows, chunkNCols);
         // Int
         s = Grids_Strings.s_GridInt;
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
         if (Files.exists(dir)) {
-            store = new Generic_FileStore(dir);
+            fs = new Generic_FileStore(dir);
         } else {
-            store = new Generic_FileStore(files.getGeneratedDir(), s);
+            fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridIntFactory = new Grids_GridFactoryInt(env, store,
+        GridIntFactory = new Grids_GridFactoryInt(env, fs,
                 new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
                 new Grids_ChunkFactoryIntArray(),
                 chunkNRows, chunkNCols);
         // Double
-        store = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
+        fs = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
                 Grids_Strings.s_GridDouble);
-        GridDoubleFactory = new Grids_GridFactoryDouble(env, store,
+        GridDoubleFactory = new Grids_GridFactoryDouble(env, fs,
                 new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
                 new Grids_ChunkFactoryDoubleArray(),
                 chunkNRows, chunkNCols);
@@ -211,146 +189,123 @@ public class Grids_Processor extends Grids_Object {
     public void mask(Grids_GridNumber g, Grids_GridNumber mask)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        int chunkNRows;
-        int chunkNCols;
-        int chunkRow;
-        int chunkCol;
-        int cellRow;
-        int cellCol;
-        long row;
-        long col;
-        Grids_2D_ID_int chunkID;
         if (g instanceof Grids_GridInt) {
             Grids_GridInt grid = (Grids_GridInt) g;
             int noDataValue = grid.getNoDataValue();
             if (mask instanceof Grids_GridInt) {
-                Grids_GridInt maskInt;
-                maskInt = (Grids_GridInt) mask;
-                int maskNoDataValue = maskInt.getNoDataValue();
-                int value;
-                Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
+                Grids_GridInt m = (Grids_GridInt) mask;
+                int maskNoDataValue = m.getNoDataValue();
+                Iterator<Grids_2D_ID_int> ite = m.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    Grids_ChunkInt maskIntChunk = maskInt.getChunk(ite.next());
-                    chunkID = maskIntChunk.getId();
-                    env.addToNotToClear(g, chunkID);
-                    env.addToNotToClear(mask, chunkID);
+                    Grids_ChunkInt maskIntChunk = m.getChunk(ite.next());
+                    Grids_2D_ID_int i = maskIntChunk.getId();
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(mask, i);
                     env.checkAndMaybeFreeMemory();
-                    chunkNRows = maskInt.getChunkNRows(chunkID);
-                    chunkNCols = maskInt.getChunkNCols(chunkID);
-                    chunkRow = chunkID.getRow();
-                    chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = maskIntChunk.getCell(cellRow, cellCol);
-                            if (value == maskNoDataValue) {
-                                row = ((long) chunkRow * (long) chunkNRows)
-                                        + (long) cellRow;
-                                col = ((long) chunkCol * (long) chunkNCols)
-                                        + (long) cellCol;
-                                grid.setCell(row, col, noDataValue);
+                    int cnr = m.getChunkNRows(i);
+                    int cnc = m.getChunkNCols(i);
+                    int cr = i.getRow();
+                    int cc = i.getCol();
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            int v = maskIntChunk.getCell(ccr, ccc);
+                            if (v == maskNoDataValue) {
+                                long r = ((long) cr * (long) cnr) + (long) ccr;
+                                long c = ((long) cc * (long) cnc) + (long) ccc;
+                                grid.setCell(r, c, noDataValue);
                             }
                         }
                     }
-                    env.removeFromNotToClear(g, chunkID);
-                    env.removeFromNotToClear(mask, chunkID);
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(mask, i);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
-                Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
-                double maskNoDataValue = maskDouble.getNoDataValue();
-                double value;
-                Iterator<Grids_2D_ID_int> ite = maskDouble.iterator().getGridIterator();
+                Grids_GridDouble m = (Grids_GridDouble) mask;
+                double maskNoDataValue = m.getNoDataValue();
+                Iterator<Grids_2D_ID_int> ite = m.iterator().getGridIterator();
                 while (ite.hasNext()) {
-                    Grids_ChunkDouble maskChunk = maskDouble.getChunk(ite.next());
-                    chunkID = maskChunk.getId();
-                    env.addToNotToClear(g, chunkID);
-                    env.addToNotToClear(mask, chunkID);
+                    Grids_ChunkDouble maskChunk = m.getChunk(ite.next());
+                    Grids_2D_ID_int i = maskChunk.getId();
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(mask, i);
                     env.checkAndMaybeFreeMemory();
-                    chunkNRows = maskDouble.getChunkNRows(chunkID);
-                    chunkNCols = maskDouble.getChunkNCols(chunkID);
-                    chunkRow = chunkID.getRow();
-                    chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = maskChunk.getCell(cellRow, cellCol);
-                            if (value == maskNoDataValue) {
-                                row = ((long) chunkRow * (long) chunkNRows)
-                                        + (long) cellRow;
-                                col = ((long) chunkCol * (long) chunkNCols)
-                                        + (long) cellCol;
-                                grid.setCell(row, col, noDataValue);
+                    int cnr = m.getChunkNRows(i);
+                    int cnc = m.getChunkNCols(i);
+                    int cr = i.getRow();
+                    int cc = i.getCol();
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            double v = maskChunk.getCell(ccr, ccc);
+                            if (v == maskNoDataValue) {
+                                long r = ((long) cr * (long) cnr) + (long) ccr;
+                                long c = ((long) cc * (long) cnc) + (long) ccc;
+                                grid.setCell(r, c, noDataValue);
                             }
                         }
                     }
-                    env.removeFromNotToClear(g, chunkID);
-                    env.removeFromNotToClear(mask, chunkID);
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(mask, i);
                 }
             }
         } else {
             Grids_GridDouble grid = (Grids_GridDouble) g;
-            double resultNoDataValue;
-            resultNoDataValue = grid.getNoDataValue();
+            double resultNoDataValue = grid.getNoDataValue();
             if (mask.getClass() == Grids_GridInt.class) {
                 Grids_GridInt maskInt = (Grids_GridInt) mask;
                 int maskNoDataValue = maskInt.getNoDataValue();
-                int value;
                 Iterator<Grids_2D_ID_int> ite = maskInt.iterator().getGridIterator();
                 while (ite.hasNext()) {
                     Grids_ChunkInt maskChunk = maskInt.getChunk(ite.next());
-                    chunkID = maskChunk.getId();
-                    env.addToNotToClear(g, chunkID);
-                    env.addToNotToClear(mask, chunkID);
+                    Grids_2D_ID_int i = maskChunk.getId();
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(mask, i);
                     env.checkAndMaybeFreeMemory();
-                    chunkNRows = maskInt.getChunkNRows(chunkID);
-                    chunkNCols = maskInt.getChunkNCols(chunkID);
-                    chunkRow = chunkID.getRow();
-                    chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = maskChunk.getCell(cellRow, cellCol);
-                            if (value == maskNoDataValue) {
-                                row = ((long) chunkRow * (long) chunkNRows)
-                                        + (long) cellRow;
-                                col = ((long) chunkCol * (long) chunkNCols)
-                                        + (long) cellCol;
-                                grid.setCell(row, col, resultNoDataValue);
+                    int cnr = maskInt.getChunkNRows(i);
+                    int cnc = maskInt.getChunkNCols(i);
+                    int cr = i.getRow();
+                    int cc = i.getCol();
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            int v = maskChunk.getCell(ccr, ccc);
+                            if (v == maskNoDataValue) {
+                                long r = ((long) cr * (long) cnr) + (long) ccr;
+                                long c = ((long) cc * (long) cnc) + (long) ccc;
+                                grid.setCell(r, c, resultNoDataValue);
                             }
                         }
                     }
-                    env.removeFromNotToClear(g, chunkID);
-                    env.removeFromNotToClear(mask, chunkID);
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(mask, i);
                 }
             } else {
                 // ( mask.getClass() == Grids_GridDouble.class )
                 Grids_GridDouble maskDouble = (Grids_GridDouble) mask;
                 double maskNoDataValue = maskDouble.getNoDataValue();
-                double value;
                 Iterator<Grids_2D_ID_int> ite = maskDouble.getChunkIDs().iterator();
                 Grids_ChunkDouble maskChunk;
                 while (ite.hasNext()) {
                     maskChunk = (Grids_ChunkDouble) mask.getChunk(ite.next());
-                    chunkID = maskChunk.getId();
-                    env.addToNotToClear(g, chunkID);
-                    env.addToNotToClear(mask, chunkID);
+                    Grids_2D_ID_int i = maskChunk.getId();
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(mask, i);
                     env.checkAndMaybeFreeMemory();
-                    chunkNRows = maskDouble.getChunkNRows(chunkID);
-                    chunkNCols = maskDouble.getChunkNCols(chunkID);
-                    chunkRow = chunkID.getRow();
-                    chunkCol = chunkID.getCol();
-                    for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                        for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                            value = maskChunk.getCell(cellRow, cellCol);
+                    int cnr = maskDouble.getChunkNRows(i);
+                    int cnc = maskDouble.getChunkNCols(i);
+                    int cr = i.getRow();
+                    int cc = i.getCol();
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            double value = maskChunk.getCell(ccr, ccc);
                             if (value == maskNoDataValue) {
-                                row = ((long) chunkRow * (long) chunkNRows)
-                                        + (long) cellRow;
-                                col = ((long) chunkCol * (long) chunkNCols)
-                                        + (long) cellCol;
-                                grid.setCell(row, col, resultNoDataValue);
+                                long r = ((long) cr * (long) cnr) + (long) ccr;
+                                long c = ((long) cc * (long) cnc) + (long) ccc;
+                                grid.setCell(r, c, resultNoDataValue);
                             }
                         }
                     }
-                    env.removeFromNotToClear(g, chunkID);
-                    env.removeFromNotToClear(mask, chunkID);
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(mask, i);
                 }
             }
         }
@@ -358,67 +313,66 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Modifies grid with the values of cells in the range [min,max] set to its
-     * g. (Existing noDataValue cells in grid remain as noDataValue.)
+     * Modifies grid {@code g} by setting all cells with values in the range
+     * [min,max] to it's noDataValue.
      *
-     * @param g The Grids_GridDouble to be masked.
+     * @param g The grid to be masked.
      * @param min The minimum value in the range.
      * @param max The maximum value in the range.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void mask(
-            Grids_GridNumber g,
-            double min,
-            double max) throws IOException, ClassNotFoundException, Exception {
+    public void mask(Grids_GridNumber g, BigDecimal min, BigDecimal max)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        int cellRow;
-        int cellCol;
-        int chunkNRows;
-        int chunkNCols;
-        Grids_2D_ID_int chunkID;
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
             int ndv = gi.getNoDataValue();
-            int value;
             Iterator<Grids_2D_ID_int> ite = gi.iterator().getGridIterator();
             while (ite.hasNext()) {
                 Grids_ChunkInt chunk = gi.getChunk(ite.next());
-                chunkID = chunk.getId();
-                env.addToNotToClear(g, chunkID);
+                Grids_2D_ID_int i = chunk.getId();
+                int cr = i.getRow();
+                int cc = i.getCol();
+                env.addToNotToClear(g, i);
                 env.checkAndMaybeFreeMemory();
-                chunkNRows = gi.getChunkNRows(chunkID);
-                chunkNCols = gi.getChunkNCols(chunkID);
-                for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                    for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                        value = gi.getCell(chunk, cellRow, cellCol);
-                        if (value >= min && value <= max) {
-                            gi.setCell(chunk, cellRow, cellCol, ndv);
+                int cnr = gi.getChunkNRows(i);
+                int cnc = gi.getChunkNCols(i);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        BigDecimal v = gi.getCellBigDecimal(chunk, cr, cc, ccr,
+                                ccc);
+                        if (v.compareTo(min) != -1 && v.compareTo(max) != 1) {
+                            gi.setCell(chunk, ccr, ccc, ndv);
                         }
                     }
                 }
-                env.removeFromNotToClear(g, chunkID);
+                env.removeFromNotToClear(g, i);
             }
         } else {
             // ( grid.getClass() == Grids_GridDouble.class )
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double ndv = gd.getNoDataValue();
-            double value;
             Iterator<Grids_2D_ID_int> ite = gd.iterator().getGridIterator();
             while (ite.hasNext()) {
                 Grids_ChunkDouble chunk = gd.getChunk(ite.next());
-                chunkID = chunk.getId();
-                env.addToNotToClear(g, chunkID);
+                Grids_2D_ID_int i = chunk.getId();
+                int cr = i.getRow();
+                int cc = i.getCol();
+                env.addToNotToClear(g, i);
                 env.checkAndMaybeFreeMemory();
-                chunkNRows = g.getChunkNRows(chunkID);
-                chunkNCols = g.getChunkNCols(chunkID);
-                for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                    for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                        value = gd.getCell(chunk, cellRow, cellCol);
-                        if (value >= min && value <= max) {
-                            gd.setCell(chunk, cellRow, cellCol, ndv);
+                int cnr = g.getChunkNRows(i);
+                int cnc = g.getChunkNCols(i);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        BigDecimal v = gd.getCellBigDecimal(chunk, cr, cc, ccr,
+                                ccc);
+                        if (v.compareTo(min) != -1 && v.compareTo(max) != 1) {
+                            gd.setCell(chunk, ccr, ccc, ndv);
                         }
                     }
                 }
-                env.removeFromNotToClear(g, chunkID);
+                env.removeFromNotToClear(g, i);
             }
         }
         //grid.setName( grid.getName() + "_mask" );
@@ -433,11 +387,10 @@ public class Grids_Processor extends Grids_Object {
      * "Log" then a Log rescale is done.
      * @param min The minimum value in the rescaled range.
      * @param max The maximum value in the rescaled range.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble rescale(
-            Grids_GridNumber g,
-            String type,
-            double min,
+    public Grids_GridDouble rescale(Grids_GridNumber g, String type, double min,
             double max) throws IOException, ClassNotFoundException, Exception {
         if (g instanceof Grids_GridDouble) {
             return rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
@@ -447,298 +400,125 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * @param g
-     * @param type If type == null then a linear rescale is done. If type ==
-     * "Log" then a Log rescale is done.
+     * For rescaling the {@code double} type grid {@code g}. The type of
+     * rescaling is determined by {@code type}. If {@code type == null} the a
+     * linear rescaling is done. If {@code type = "log" a log rescaling is done. For
+     * any other value of type this will throw an exception.
+     *
+     * There are other rescaling implementation that might be useful that are
+     * not currently implemented.
+     *
+     * @param g The grid for rescaling.
+     * @param type If {@code null} then a linear rescale is done. If
+     * {@code "log"}, then a log rescale is done.
+     *
      * @param min The minimum value in the rescaled range.
      * @param max The maximum value in the rescaled range.
-     * @param hoome
-     * @return A Grids_GridDouble with values from g either linearly rescaled
-     * into the range [min,max] or scaled using log.
-     * @TODO Improve log rescaling implementation.
+     * @return A grid which are the rescaled values of {@code g}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble rescale(Grids_GridDouble g, String type, double min,
-            double max, boolean hoome) throws IOException,
-            ClassNotFoundException, Exception {
-        try {
-            return rescale(g, type, min, max);
-        } catch (java.lang.OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (env.swapChunksExcept_Account(g, hoome).detail < 1) {
-                    throw e;
-                }
-                env.initMemoryReserve(env.env);
-                return rescale(g, type, min, max, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param g
-     * @return a new Grids_GridDouble Values are either linearly rescaled into
-     * the range [min,max]. Or some Log rescaling is done
-     * @param type If type == null then a linear rescale is done. If type ==
-     * "Log" then a Log rescale is done.
-     * @param min The minimum value in the rescaled range.
-     * @param max The maximum value in the rescaled range.
-     * @TODO Improve log rescaling implementation.
-     */
-    protected Grids_GridDouble rescale(Grids_GridDouble g, String type,
-            double min, double max) throws IOException, ClassNotFoundException,
-            Exception {
+    protected Grids_GridDouble rescale(Grids_GridDouble g, String type, double min,
+            double max) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        Grids_GridDouble r;
-        long nrows = g.getNRows();
-        long ncols = g.getNCols();
-        int nChunkCols = g.getNChunkCols();
-        int nChunkRows = g.getNChunkRows();
+        int ncc = g.getNChunkCols();
+        int ncr = g.getNChunkCols();
         double ndv = g.getNoDataValue();
         double range = max - min;
         Grids_StatsNumber stats = g.getStats();
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
-        r = GridDoubleFactory.create(g, 0, 0, nrows - 1, ncols - 1);
+        Grids_GridDouble r = GridDoubleFactory.create(g, 0, 0, g.getNRows() - 1,
+                g.getNCols() - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
-        Grids_ChunkDouble rChunk;
-        Grids_2D_ID_int chunkID;
-        if (type == null) {
-            // if range of either input or output range is zero return min for all non noDataValues
-            if (rangeGrid == 0.0d || range == 0.0d) {
-                // Better to go through chunks rather than rows. Though it 
-                // does assume that the structure of the grid and outputGrid 
-                // are the same.
-                for (int cr = 0; cr < nChunkRows; cr++) {
-                    int chunkNRows = g.getChunkNRows(cr);
-                    for (int cc = 0; cc < nChunkCols; cc++) {
-                        chunkID = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToClear(g, chunkID);
-                        env.addToNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
-                        int chunkNCols = g.getChunkNCols(cc);
-                        Grids_ChunkDouble gChunk = g.getChunk(chunkID);
-                        rChunk = r.getChunk(chunkID);
-                        for (int ccr = 0; ccr < chunkNRows; ccr++) {
-                            for (int ccc = 0; ccc < chunkNCols; ccc++) {
-                                double value = gChunk.getCell(ccr, ccc);
-                                if (value != ndv) {
-                                    r.setCell(rChunk, ccr, ccc, min);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                // Better to go through chunks rather than rows. Though this 
-                // assumes that the structure of the grid and outputGrid are the
-                // same.
-                double v;
-                for (int cr = 0; cr < nChunkRows; cr++) {
-                    int chunkNRows = g.getChunkNRows(cr);
-                    for (int cc = 0; cc < nChunkCols; cc++) {
-                        chunkID = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToClear(g, chunkID);
-                        env.addToNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
-                        int chunkNCols = g.getChunkNCols(cc);
-                        Grids_ChunkDouble gChunk = g.getChunk(chunkID);
-                        rChunk = r.getChunk(chunkID);
-                        for (int ccr = 0; ccr < chunkNRows; ccr++) {
-                            for (int ccc = 0; ccc < chunkNCols; ccc++) {
-                                double value = gChunk.getCell(ccr, ccc);
-                                if (value != ndv) {
-                                    v = (((value - minGrid) / rangeGrid) 
-                                            * range) + min;
-                                    r.setCell(rChunk, ccr, ccc, v);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            r.setName(g.getName() + "_linearRescale");
-            env.checkAndMaybeFreeMemory();
-        } else {
-            // @TODO this implementation could be much improved...
-            int row;
-            int col;
-            if (type.equalsIgnoreCase("log")) {
-                r = rescale(r, null, 1.0d, 1000000.0d);
-                // Probably better to do this by chunks
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        double value = g.getCell(row, col);
-                        if (value != ndv) {
-                            r.setCell(row, col, Math.log(value));
-                        }
-                    }
-                }
-                r = rescale(r, null, min, max);
-                r.setName(g.getName() + "_logRescale");
-                env.checkAndMaybeFreeMemory();
-            } else {
-                throw new Exception("Unable to rescale: type " + type
-                        + "not recognised.");
-            }
-        }
-        return r;
-    }
-
-    /**
-     * @param g
-     * @param type If type == null then a linear rescale is done. If type ==
-     * "Log" then a Log rescale is done.
-     * @param min The minimum value in the rescaled range.
-     * @param max The maximum value in the rescaled range.
-     * @param hoome
-     * @return A Grids_GridDouble with values from g either linearly rescaled
-     * into the range [min,max] or scaled using log.
-     * @TODO Improve log rescaling implementation.
-     */
-    public Grids_GridDouble rescale(Grids_GridInt g, String type, double min,
-            double max, boolean hoome) throws IOException, ClassNotFoundException, Exception {
-        try {
-            return rescale(g, type, min, max);
-        } catch (java.lang.OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (env.swapChunksExcept_Account(g, hoome).detail < 1) {
-                    throw e;
-                }
-                env.initMemoryReserve(env.env);
-                return rescale(g, type, min, max, hoome);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param g
-     * @return a new Grids_GridDouble Values are either linearly rescaled into
-     * the range [min,max]. Or some Log rescaling is done
-     * @param type If type == null then a linear rescale is done. If type ==
-     * "Log" then a Log rescale is done.
-     * @param min The minimum value in the rescaled range.
-     * @param max The maximum value in the rescaled range.
-     * @TODO Improve log rescaling implementation.
-     */
-    protected Grids_GridDouble rescale(Grids_GridInt g, String type, double min,
-            double max) throws IOException, ClassNotFoundException, Exception {
-        env.checkAndMaybeFreeMemory();
-        long nrows = g.getNRows();
-        long ncols = g.getNCols();
-        int nChunkCols = g.getNChunkCols();
-        int nChunkRows = g.getNChunkCols();
-        int ndv = g.getNoDataValue();
-        double range = max - min;
-        Grids_StatsNumber stats = g.getStats();
-        double minGrid = stats.getMin(true).doubleValue();
-        double maxGrid = stats.getMax(true).doubleValue();
-        double rangeGrid = maxGrid - minGrid;
-        double value;
-        double v;
-        Grids_GridDouble r = GridDoubleFactory.create(g, 0, 0, nrows - 1,
-                ncols - 1);
-        r.setName(g.getName());
-        System.out.println(r.toString());
-        int chunkNCols;
-        int chunkNRows;
-        int chunkRow;
-        int chunkCol;
-        int cellRow;
-        int cellCol;
-        if (type == null) {
+        /**
+         * If range of either input or output range is zero return min for all
+         * non noDataValues.
+         */
+        if (rangeGrid == 0.0d || range == 0.0d) {
             /**
-             * If range of either input or output range is zero return min for
-             * all non noDataValues.
+             * Better to go through chunks rather than rows. Though it does
+             * assume that the chunk structure of the grid and outputGrid are
+             * the same.
              */
-            if (rangeGrid == 0.0d || range == 0.0d) {
-                /**
-                 * Better to go through chunks rather than rows. Though it does
-                 * assume that the structure of the grid and outputGrid are the
-                 * same.
-                 */
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        Grids_2D_ID_int chunkID;
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToClear(g, chunkID);
-                        env.addToNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(chunkCol);
-                        chunkNRows = g.getChunkNRows(chunkRow);
-                        Grids_ChunkInt gridChunk;
-                        gridChunk = g.getChunk(chunkID);
-                        Grids_ChunkDouble outputGridChunk;
-                        outputGridChunk = r.getChunk(chunkID);
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != ndv) {
-                                    r.setCell(outputGridChunk, cellRow,
-                                            cellCol, min);
-                                }
+            for (int cr = 0; cr < ncr; cr++) {
+                for (int cc = 0; cc < ncc; cc++) {
+                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(r, i);
+                    env.checkAndMaybeFreeMemory();
+                    int cnc = g.getChunkNCols(cc);
+                    int cnr = g.getChunkNRows(cr);
+                    Grids_ChunkDouble gc = g.getChunk(i);
+                    Grids_ChunkDouble ogc = r.getChunk(i);
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            double v = gc.getCell(ccr, ccc);
+                            if (v != ndv) {
+                                r.setCell(ogc, ccr, ccc, min);
                             }
                         }
-                        env.removeFromNotToClear(g, chunkID);
-                        env.removeFromNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
                     }
-                }
-            } else {
-                /**
-                 * Better to go through chunks rather than rows. Though it does
-                 * assume that the structure of the grid and outputGrid are the
-                 * same.
-                 */
-                for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
-                    for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
-                        Grids_2D_ID_int chunkID;
-                        chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-                        env.addToNotToClear(g, chunkID);
-                        env.addToNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
-                        chunkNCols = g.getChunkNCols(chunkCol);
-                        chunkNRows = g.getChunkNRows(chunkRow);
-                        Grids_ChunkInt gridChunk;
-                        gridChunk = g.getChunk(chunkID);
-                        Grids_ChunkDouble outputGridChunk;
-                        outputGridChunk = r.getChunk(chunkID);
-                        for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
-                            for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
-                                value = gridChunk.getCell(cellRow, cellCol);
-                                if (value != ndv) {
-                                    v = (((value - minGrid) / rangeGrid)
-                                            * range) + min;
-                                    r.setCell(outputGridChunk,
-                                            cellRow, cellCol, v);
-                                }
-                            }
-                        }
-                        env.removeFromNotToClear(g, chunkID);
-                        env.removeFromNotToClear(r, chunkID);
-                        env.checkAndMaybeFreeMemory();
-                    }
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(r, i);
+                    env.checkAndMaybeFreeMemory();
                 }
             }
-            r.setName(g.getName() + "_linearRescale");
-            env.checkAndMaybeFreeMemory();
         } else {
-            // @TODO this is not a good implementation
-            if (type.equalsIgnoreCase("log")) {
+            if (type == null) {
+                /**
+                 * Better to go through chunks rather than rows. Though it does
+                 * assume that the structure of the grid and outputGrid are the
+                 * same.
+                 */
+                for (int cr = 0; cr < ncr; cr++) {
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g, i);
+                        env.addToNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnc = g.getChunkNCols(cc);
+                        int cnr = g.getChunkNRows(cr);
+                        Grids_ChunkDouble gc = g.getChunk(i);
+                        Grids_ChunkDouble ogc = r.getChunk(i);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                double v = gc.getCell(ccr, ccc);
+                                if (v != ndv) {
+                                    v = (((v - minGrid) / rangeGrid)
+                                            * range) + min;
+                                    r.setCell(ogc, ccr, ccc, v);
+                                }
+                            }
+                        }
+                        env.removeFromNotToClear(g, i);
+                        env.removeFromNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                    }
+                }
+                r.setName(g.getName() + "_linearRescale");
+                env.checkAndMaybeFreeMemory();
+            } else if (type.equalsIgnoreCase("log")) {
                 r = rescale(r, null, 1.0d, 1000000.0d);
-                long row;
-                long col;
-                for (row = 0; row < nrows; row++) {
-                    for (col = 0; col < ncols; col++) {
-                        value = g.getCell(row, col);
-                        if (value != ndv) {
-                            r.setCell(row, col, Math.log(value));
+                for (int cr = 0; cr < ncr; cr++) {
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g, i);
+                        env.addToNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnc = g.getChunkNCols(cc);
+                        int cnr = g.getChunkNRows(cr);
+                        Grids_ChunkDouble gc = g.getChunk(i);
+                        Grids_ChunkDouble ogc = r.getChunk(i);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                double v = gc.getCell(ccr, ccc);
+                                if (v != ndv) {
+                                    r.setCell(ogc, ccr, ccc, Math.log(v));
+                                }
+                            }
                         }
                     }
                 }
@@ -746,8 +526,140 @@ public class Grids_Processor extends Grids_Object {
                 //grid.setName( grid.getName() + "_logRescale" );
                 env.checkAndMaybeFreeMemory();
             } else {
-                System.out.println("Unable to rescale: type " + type
-                        + "not recognised. Returning a Grid2DSquareCellDouble.");
+                throw new Exception("Type " + type + "not recognised.");
+            }
+        }
+        return r;
+    }
+
+    /**
+     * For rescaling the {@code int} type grid {@code g}. The type of rescaling
+     * is determined by {@code type}. If {@code type == null} the a linear
+     * rescaling is done. If {@code type = "log" a log rescaling is done. For
+     * any other value of type this will throw an exception.
+     *
+     * There are other rescaling implementation that might be useful that are
+     * not currently implemented.
+     *
+     * @param g The grid for rescaling.
+     * @param type If {@code null} then a linear rescale is done. If
+     * {@code "log"}, then a log rescale is done.
+     *
+     * @param min The minimum value in the rescaled range.
+     * @param max The maximum value in the rescaled range.
+     * @return A grid which are the rescaled values of {@code g}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    protected Grids_GridDouble rescale(Grids_GridInt g, String type, double min,
+            double max) throws IOException, ClassNotFoundException, Exception {
+        env.checkAndMaybeFreeMemory();
+        int ncc = g.getNChunkCols();
+        int ncr = g.getNChunkCols();
+        int ndv = g.getNoDataValue();
+        double range = max - min;
+        Grids_StatsNumber stats = g.getStats();
+        double minGrid = stats.getMin(true).doubleValue();
+        double maxGrid = stats.getMax(true).doubleValue();
+        double rangeGrid = maxGrid - minGrid;
+        Grids_GridDouble r = GridDoubleFactory.create(g, 0, 0, g.getNRows() - 1,
+                g.getNCols() - 1);
+        r.setName(g.getName());
+        System.out.println(r.toString());
+        /**
+         * If range of either input or output range is zero return min for all
+         * non noDataValues.
+         */
+        if (rangeGrid == 0.0d || range == 0.0d) {
+            /**
+             * Better to go through chunks rather than rows. Though it does
+             * assume that the chunk structure of the grid and outputGrid are
+             * the same.
+             */
+            for (int cr = 0; cr < ncr; cr++) {
+                for (int cc = 0; cc < ncc; cc++) {
+                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                    env.addToNotToClear(g, i);
+                    env.addToNotToClear(r, i);
+                    env.checkAndMaybeFreeMemory();
+                    int cnc = g.getChunkNCols(cc);
+                    int cnr = g.getChunkNRows(cr);
+                    Grids_ChunkInt gc = g.getChunk(i);
+                    Grids_ChunkDouble ogc = r.getChunk(i);
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            double v = gc.getCell(ccr, ccc);
+                            if (v != ndv) {
+                                r.setCell(ogc, ccr, ccc, min);
+                            }
+                        }
+                    }
+                    env.removeFromNotToClear(g, i);
+                    env.removeFromNotToClear(r, i);
+                    env.checkAndMaybeFreeMemory();
+                }
+            }
+        } else {
+            if (type == null) {
+                /**
+                 * Better to go through chunks rather than rows. Though it does
+                 * assume that the structure of the grid and outputGrid are the
+                 * same.
+                 */
+                for (int cr = 0; cr < ncr; cr++) {
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g, i);
+                        env.addToNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnc = g.getChunkNCols(cc);
+                        int cnr = g.getChunkNRows(cr);
+                        Grids_ChunkInt gc = g.getChunk(i);
+                        Grids_ChunkDouble ogc = r.getChunk(i);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                double v = gc.getCell(ccr, ccc);
+                                if (v != ndv) {
+                                    v = (((v - minGrid) / rangeGrid)
+                                            * range) + min;
+                                    r.setCell(ogc, ccr, ccc, v);
+                                }
+                            }
+                        }
+                        env.removeFromNotToClear(g, i);
+                        env.removeFromNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                    }
+                }
+                r.setName(g.getName() + "_linearRescale");
+                env.checkAndMaybeFreeMemory();
+            } else if (type.equalsIgnoreCase("log")) {
+                r = rescale(r, null, 1.0d, 1000000.0d);
+                for (int cr = 0; cr < ncr; cr++) {
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g, i);
+                        env.addToNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnc = g.getChunkNCols(cc);
+                        int cnr = g.getChunkNRows(cr);
+                        Grids_ChunkInt gc = g.getChunk(i);
+                        Grids_ChunkDouble ogc = r.getChunk(i);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                double v = gc.getCell(ccr, ccc);
+                                if (v != ndv) {
+                                    r.setCell(ogc, ccr, ccc, Math.log(v));
+                                }
+                            }
+                        }
+                    }
+                }
+                r = rescale(r, null, min, max);
+                //grid.setName( grid.getName() + "_logRescale" );
+                env.checkAndMaybeFreeMemory();
+            } else {
+                throw new Exception("Type " + type + "not recognised.");
             }
         }
         return r;
@@ -782,6 +694,8 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g The Grids_GridDouble to be processed.
      * @param cellIDs The CellIDs of the cells to be processed.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void setSmaller(Grids_GridDouble g, HashSet<Grids_2D_ID_long> cellIDs)
             throws IOException, ClassNotFoundException, Exception {
@@ -806,8 +720,8 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(Grids_GridDouble g, HashSet<Grids_2D_ID_long> cellIDs,
-            double v) throws IOException, ClassNotFoundException,
+    public void addToGrid(Grids_GridNumber g, HashSet<Grids_2D_ID_long> cellIDs,
+            BigDecimal v) throws IOException, ClassNotFoundException,
             Exception {
         env.checkAndMaybeFreeMemory();
         Iterator<Grids_2D_ID_long> ite = cellIDs.iterator();
@@ -818,22 +732,28 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Adds value to every cell of grid.
+     * Adds value {@code v} to every cell of grid {@code g}.
      *
-     * @param grid The Grids_GridDouble to be processed
-     * @param value The value to be added
+     * @param g The grid which is to have value {@code v} added.
+     * @param v The value to be added
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(
-            Grids_GridDouble grid,
-            double value) throws IOException, ClassNotFoundException, Exception {
+    public void addToGrid(Grids_GridNumber g, BigDecimal v) throws IOException,
+            ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        long nrows = grid.getNRows();
-        long ncols = grid.getNCols();
-        long row;
-        long col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                grid.addToCell(row, col, value);
+        int ncr = g.getNChunkRows();
+        int ncc = g.getNChunkCols();
+        for (int cr = 0; cr < ncr; cr++) {
+            for (int cc = 0; cc < ncc; cc++) {
+                int cnr = g.getChunkNRows(cr);
+                int cnc = g.getChunkNCols(cc);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        g.addToCell(cr, cc, ccr, ccc, v);
+                    }
+                }
             }
         }
         env.checkAndMaybeFreeMemory();
@@ -842,20 +762,19 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Adds value to grid for cells with CellID in _CellIDs
      *
-     * @param grid The Grids_GridDouble to be processed
+     * @param g The Grids_GridDouble to be processed
      * @param cellIDs Array of CellIDs.
      * @param value The value to be added.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(
-            Grids_GridDouble grid,
-            Grids_2D_ID_long[] cellIDs,
-            double value) throws IOException, ClassNotFoundException, Exception {
+    public void addToGrid(Grids_GridNumber g, Grids_2D_ID_long[] cellIDs,
+            BigDecimal value) throws IOException, ClassNotFoundException,
+            Exception {
         env.checkAndMaybeFreeMemory();
         for (Grids_2D_ID_long cellID : cellIDs) {
-            grid.addToCell(cellID.getRow(), cellID.getCol(), value);
+            g.addToCell(cellID.getRow(), cellID.getCol(), value);
         }
         env.checkAndMaybeFreeMemory();
     }
@@ -866,8 +785,13 @@ public class Grids_Processor extends Grids_Object {
      * @param g Grid to be processed/modified.
      * @param g2 Grid from which values are added.
      * @param w Value g2 values are multiplied by.
+     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2, double w, int dp, RoundingMode rm)
+    public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2, BigDecimal w,
+            int dp, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (g2 != null) {
@@ -887,10 +811,15 @@ public class Grids_Processor extends Grids_Object {
      * @param endRow Index of the final row from which g2 values are added.
      * @param endCol Index of the final column from which g2 values are added.
      * @param w Value g2 values are multiplied by.
+     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
-            long startRow, long startCol, long endRow, long endCol, double w, int dp, RoundingMode rm)
-            throws IOException, ClassNotFoundException, Exception {
+    public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2,
+            long startRow, long startCol, long endRow, long endCol, BigDecimal w,
+            int dp, RoundingMode rm) throws IOException, ClassNotFoundException,
+            Exception {
         env.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
         BigDecimal xMin = dimensions.getXMin();
@@ -919,17 +848,21 @@ public class Grids_Processor extends Grids_Object {
      * @param dc Dimension constraints: XMin, YMin, XMax, YMax of the region of
      * g2 to be added.
      * @param w Value g2 values are multiplied by.
+     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToGrid(Grids_GridDouble g, Grids_GridDouble g2,
+    public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2,
             long startRow, long startCol, long endRow, long endCol,
-            BigDecimal[] dc, double w, int dp, RoundingMode rm) throws IOException,
-            ClassNotFoundException, Exception {
+            BigDecimal[] dc, BigDecimal w, int dp, RoundingMode rm)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
         long ncols = g.getNCols();
-        double noDataValue = g.getNoDataValue();
+        BigDecimal noDataValue = getNoDataValueBigDecimal(g);
         Grids_Dimensions gD = g.getDimensions();
-        double g2NoDataValue = g2.getNoDataValue();
+        BigDecimal g2NoDataValue = getNoDataValueBigDecimal(g);
         Grids_Dimensions g2D = g2.getDimensions();
         Grids_GridFactoryDouble gf = this.GridDoubleFactory;
         // If the region to be added is outside g then return.
@@ -959,10 +892,10 @@ public class Grids_Processor extends Grids_Object {
                     BigDecimal y = g2.getCellY(row);
                     for (long col = startCol; col <= endCol; col++) {
                         BigDecimal x = g2.getCellX(col);
-                        double v = g2.getCell(row, col);
-                        if (v != g2NoDataValue) {
-                            if (v != 0.0d) {
-                                g.addToCell(x, y, v * w);
+                        BigDecimal v = g2.getCellBigDecimal(row, col);
+                        if (v.compareTo(g2NoDataValue) != 0) {
+                            if (v.compareTo(BigDecimal.ZERO) != 0) {
+                                g.addToCell(x, y, v.multiply(w));
                             }
                         }
                     }
@@ -983,10 +916,6 @@ public class Grids_Processor extends Grids_Object {
                 Grids_2D_ID_long i1;
                 Grids_2D_ID_long i2;
                 Grids_2D_ID_long i3;
-                double d0;
-                double d1;
-                double d2;
-                double d3;
                 // gCellsize halved
                 BigDecimal gCH = g.getCellsize().divide(BigDecimal.valueOf(2));
                 // gCellsize squared
@@ -994,8 +923,8 @@ public class Grids_Processor extends Grids_Object {
                 // g2Cellsize squared
                 BigDecimal g2CS = g2C.multiply(g2C);
                 // Area proportions
-                double aP1 = (gCS.divide(g2CS, dp, rm)).doubleValue();
-                double aP;
+                BigDecimal aP1 = (gCS.divide(g2CS, dp, rm));
+                BigDecimal aP;
                 for (int r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
                     for (int c = 0; c < ncols; c++) {
@@ -1006,41 +935,41 @@ public class Grids_Processor extends Grids_Object {
                         i1 = g2.getCellID(bounds[2], bounds[3]);
                         i2 = g2.getCellID(bounds[0], bounds[1]);
                         i3 = g2.getCellID(bounds[2], bounds[1]);
-                        d0 = g2.getCell(i0.getRow(), i0.getCol());
+                        BigDecimal d0 = g2.getCellBigDecimal(i0.getRow(), i0.getCol());
                         if (i0.equals(i1) && i1.equals(i2)) {
                             if (d0 != g2NoDataValue) {
-                                tg1.addToCell(r, c, d0 * aP1);
+                                tg1.addToCell(r, c, d0.multiply(aP1));
                                 tg2.addToCell(r, c, aP1);
                             }
                         } else {
-                            d1 = g2.getCell(i1.getRow(), i1.getCol());
-                            d2 = g2.getCell(i2.getRow(), i2.getCol());
-                            d3 = g2.getCell(i3.getRow(), i3.getCol());
+                            BigDecimal d1 = g2.getCellBigDecimal(i1.getRow(), i1.getCol());
+                            BigDecimal d2 = g2.getCellBigDecimal(i2.getRow(), i2.getCol());
+                            BigDecimal d3 = g2.getCellBigDecimal(i3.getRow(), i3.getCol());
                             if (!g2.isInGrid(i0.getRow(), i0.getCol())
                                     && d0 != g2NoDataValue) {
                                 aP = getAP(bounds, g2, i0, i1, i2, gC, g2CS,
                                         g2CH, dp, rm);
-                                tg1.addToCell(r, c, d0 * aP);
+                                tg1.addToCell(r, c, d0.multiply(aP));
                                 tg2.addToCell(r, c, aP);
                             }
                             if (!g2.isInGrid(i1) && d1 != g2NoDataValue) {
                                 if (i1.equals(i0)) {
                                     aP = getAP13(bounds, g2, i1, i3, gC, g2CS, g2CH, dp, rm);
-                                    tg1.addToCell(r, c, d1 * aP);
+                                    tg1.addToCell(r, c, d1.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i2) && d2 != g2NoDataValue) {
                                 if (!i2.equals(i0)) {
                                     aP = getAP23(bounds, g2, i2, i3, gC, g2CS, g2CH, dp, rm);
-                                    tg1.addToCell(r, c, d2 * aP);
+                                    tg1.addToCell(r, c, d2.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i3) && d3 != g2NoDataValue) {
                                 if (i3 != i1 && i3 != i2) {
                                     aP = getAP3(bounds, g2, i3, gC, g2CS, g2CH, dp, rm);
-                                    tg1.addToCell(r, c, d3 * aP);
+                                    tg1.addToCell(r, c, d3.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
@@ -1052,9 +981,10 @@ public class Grids_Processor extends Grids_Object {
                 for (long r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
                     for (long c = 0; c < ncols; c++) {
-                        d0 = tg2.getCell(r, c);
-                        if (!(d0 == 0.0d || d0 == noDataValue)) {
-                            g.addToCell(r, c, w * tg1.getCell(r, c) / d0);
+                        double d0 = tg2.getCell(r, c);
+                        if (!(d0 != 0.0d || d0 != noDataValue.doubleValue())) {
+                            g.addToCell(r, c, w.multiply(BigDecimal
+                                    .valueOf(tg1.getCell(r, c) / d0)));
                         }
                     }
                 }
@@ -1063,81 +993,64 @@ public class Grids_Processor extends Grids_Object {
         env.checkAndMaybeFreeMemory();
     }
 
-    protected double getAP(BigDecimal[] bounds, Grids_GridNumber g2,
+    protected BigDecimal getAP(BigDecimal[] bounds, Grids_GridNumber g2,
             Grids_2D_ID_long i1, Grids_2D_ID_long i2, Grids_2D_ID_long i3,
             BigDecimal gC, BigDecimal g2CS, BigDecimal g2CH, int dp,
             RoundingMode rm) {
-        double aP;
+        BigDecimal aP;
         if (i1.equals(i2) || i1.equals(i3)) {
             if (i1.equals(i2)) {
-                aP = Math.abs((((bounds[3]).subtract(
-                        g2.getCellY(i1).subtract(
-                                g2CH)).multiply(gC)).divide(
-                        g2CS, dp, rm)).doubleValue());
+                aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH))
+                        .multiply(gC)).divide(g2CS, dp, rm)).abs();
             } else {
-                aP = Math.abs(((((g2.getCellX(i1).add(
-                        g2CH)).subtract((bounds[0]))).multiply(
-                        gC)).divide(g2CS, dp, rm)).doubleValue());
+                aP = ((((g2.getCellX(i1).add(g2CH)).subtract((bounds[0])))
+                        .multiply(gC)).divide(g2CS, dp, rm)).abs();
             }
         } else {
-            aP = Math.abs(
-                    (((bounds[3]).subtract(
-                            g2.getCellY(i1).subtract(g2CH))).multiply(
-                            (g2.getCellX(i1).add(
-                                    g2CH.subtract((bounds[0])))).divide(
-                                    g2CS, dp, rm))).doubleValue());
+            aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH)))
+                    .multiply((g2.getCellX(i1).add(g2CH.subtract((bounds[0]))))
+                            .divide(g2CS, dp, rm))).abs();
         }
         return aP;
     }
 
-    protected double getAP13(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i1, Grids_2D_ID_long i3,
-            BigDecimal gC, BigDecimal g2CS, BigDecimal g2CH, int dp,
-            RoundingMode rm) {
-        double aP;
+    protected BigDecimal getAP13(BigDecimal[] bounds, Grids_GridNumber g2,
+            Grids_2D_ID_long i1, Grids_2D_ID_long i3, BigDecimal gC,
+            BigDecimal g2CS, BigDecimal g2CH, int dp, RoundingMode rm) {
+        BigDecimal aP;
         if (i1.equals(i3)) {
-            aP = Math.abs(((((bounds[2]).subtract(
-                    g2.getCellX(i1).subtract(
-                            g2CH))).multiply(gC)).divide(
-                    g2CS, dp, rm)).doubleValue());
+            aP = ((((bounds[2]).subtract(g2.getCellX(i1).subtract(g2CH)))
+                    .multiply(gC)).divide(g2CS, dp, rm)).abs();
         } else {
-            aP = Math.abs((((bounds[3]).subtract(
-                    g2.getCellY(i1).subtract(
-                            g2CH))).multiply((bounds[2]).subtract(
-                            g2.getCellX(i1).subtract(
-                                    g2CH))).divide(g2CS, dp, rm)).doubleValue());
+            aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH)))
+                    .multiply((bounds[2]).subtract(g2.getCellX(i1)
+                            .subtract(g2CH))).divide(g2CS, dp, rm)).abs();
         }
         return aP;
     }
 
-    protected double getAP23(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i2, Grids_2D_ID_long i3,
-            BigDecimal gC, BigDecimal g2CS, BigDecimal g2CH, int dp,
-            RoundingMode rm) {
-        double aP;
+    protected BigDecimal getAP23(BigDecimal[] bounds, Grids_GridNumber g2,
+            Grids_2D_ID_long i2, Grids_2D_ID_long i3, BigDecimal gC,
+            BigDecimal g2CS, BigDecimal g2CH, int dp, RoundingMode rm) {
+        BigDecimal aP;
         if (i2.equals(i3)) {
-            aP = Math.abs(((((g2.getCellY(i2).add(
-                    g2CH)).subtract((bounds[1]))).multiply(
-                    gC)).divide(g2CS, dp, rm)).doubleValue());
+            aP = ((((g2.getCellY(i2).add(g2CH)).subtract((bounds[1])))
+                    .multiply(gC)).divide(g2CS, dp, rm)).abs();
         } else {
-            aP = Math.abs(((((g2.getCellY(i2).add(
-                    g2CH)).subtract((bounds[1]))).multiply(
-                    (g2.getCellX(i2).add(g2CH))
+            aP = ((((g2.getCellY(i2).add(g2CH)).subtract((bounds[1])))
+                    .multiply((g2.getCellX(i2).add(g2CH))
                             .subtract((bounds[0])))).divide(g2CS, dp, rm))
-                    .doubleValue());
+                    .abs();
         }
         return aP;
     }
 
-    protected double getAP3(BigDecimal[] bounds, Grids_GridNumber g2,
+    protected BigDecimal getAP3(BigDecimal[] bounds, Grids_GridNumber g2,
             Grids_2D_ID_long i3, BigDecimal gC, BigDecimal g2CS,
             BigDecimal g2CH, int dp, RoundingMode rm) {
-        double aP;
-        aP = Math.abs(((((g2.getCellY(i3).add(g2CH)).subtract(
-                (bounds[1]))).multiply((bounds[2]).subtract(
-                        (g2.getCellX(i3)).subtract(
-                                g2CH)))).divide(g2CS, dp, rm)).doubleValue());
-        return aP;
+        return ((((g2.getCellY(i3).add(g2CH)).subtract((bounds[1])))
+                .multiply((bounds[2]).subtract((g2.getCellX(i3))
+                        .subtract(g2CH)))).divide(g2CS, dp, rm)).abs();
     }
 
     /**
@@ -1180,6 +1093,8 @@ public class Grids_Processor extends Grids_Object {
      * @param g0 Numerator
      * @param g1 Denominator
      * @return
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble divide(Grids_GridDouble g0, Grids_GridDouble g1)
             throws IOException, ClassNotFoundException, Exception {
@@ -1206,41 +1121,42 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns an Grids_GridDouble at a lower level of resolution than grid. The
-     * result values are either the sum, mean, max or min of values in grid
-     * depending on statistic.
+     * For creating an aggregated Grids_GridDouble at a lower level of
+     * resolution than the grid {@code g}. The result values are either the sum,
+     * mean, max or min of values in grid depending on {@code statistic}.
      *
      * @param grid the Grids_GridDouble to be processed
      * @param cellFactor the number of times wider/higher the aggregated grid
      * cells are to be
      * @param statistic "sum", "mean", "max", or "min" depending on what
      * aggregate of values are wanted
-     * @param rowOffset the number of rows above or below the origin of grid
-     * where the aggregation is to start. > 0 result yllcorner will be above
-     * grid yllcorner < 0 result yllcorner will be below grid yllcorner @param
-     * colOffset the number of columns ab ove or below the origin of grid where
-     * the aggregation is to start. > 0 result xllcorner will be right of grid
-     * xllcorner < 0 result xllcorner will be left of grid xllcorner @param
-     * gridFactory the Abstract2DSquareCell DoubleFactory used to create result
-     * and temporary AbstractGrid2DSquareCellDoubles. @param colOffset @param
-     * gridFactory @param hoome If true then OutOfMemoryErrors are caught in
-     * this method then cache operations are initiated prior to ret r y ing. If
-     * false then OutOfMemoryErrors are caught and thrown. NB. In the
-     * calculation of the sum and the mean if there is a cell in grid which has
-     * a data value then the result which incorporates that cell has a data
-     * value. For this result cell, any of the cells in grid which have
-     * noDataValues their value is taken as that of the average of its nearest
-     * cells with a value. In the calculation of the max and the min
-     * noDataValues are simply ignored. Formerly noDataValues were treated as
-     * the average of values within a result cell. TODO: implement median, mode
-     * and variance aggregations. @return @param colOffset @param gridFactory
-     * @param colOffset @param gridFactory @return @throws java.lang.Exception
-     * If encountered. @throws java.io.IOException If encountered. @throws
-     * java.lang.ClassNotFoundException If encountered.
+     * @param rowOffset The number of rows above or below the origin of grid
+     * where the aggregation is to start.
+     * <ul>
+     * <li>If {@code rowOffset > 0} then the result yllcorner will be above grid
+     * yllcorner</li>
+     * <li>If {@code rowOffset < 0} result yllcorner will be below grid
+     * yllcorner</li>
+     * </ul>
+     * @param colOffset The number of columns above or below the origin of grid
+     * where the aggregation is to start.
+     * <ul>
+     * <li>If {@code colOffset > 0} result xllcorner will be right of grid
+     * xllcorner</li>
+     * <li>If {@code colOffset < 0} result xllcorner will be left of grid
+     * xllcorner</li>
+     * </ul>
+     * @param gf The grid factory used to create result and temporary grids.
+     * @return An aggregated Grids_GridDouble at a lower level of resolution
+     * than the grid {@code g}. The result values are either the sum, mean, max
+     * or min of values in grid depending on {@code statistic}.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble aggregate(Grids_GridNumber grid,
             int cellFactor, String statistic, int rowOffset, int colOffset,
-            Grids_GridFactoryDouble gridFactory) throws IOException,
+            Grids_GridFactoryDouble gf) throws IOException,
             ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         // Initial tests
@@ -1296,14 +1212,14 @@ public class Grids_Processor extends Grids_Object {
                 rXMax, rYMin, rYMax, rC);
         // Initialise result
         double ndvd = ndv.doubleValue();
-        gridFactory.setNoDataValue(ndv.doubleValue());
-        Grids_GridDouble r = gridFactory.create(rNrows, rNcols, rD);
+        gf.setNoDataValue(ndv.doubleValue());
+        Grids_GridDouble r = gf.create(rNrows, rNcols, rD);
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            Grids_GridDouble count = gridFactory.create(rNrows,
+            Grids_GridDouble count = gf.create(rNrows,
                     rNcols, rD);
-            Grids_GridDouble normaliser = gridFactory.create(rNrows,
+            Grids_GridDouble normaliser = gf.create(rNrows,
                     rNcols, rD);
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
@@ -1346,9 +1262,9 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            Grids_GridDouble numerator = gridFactory.create(rNrows,
+            Grids_GridDouble numerator = gf.create(rNrows,
                     rNcols, rD);
-            Grids_GridDouble denominator = gridFactory.create(
+            Grids_GridDouble denominator = gf.create(
                     rNrows, rNcols, rD);
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
@@ -1461,25 +1377,23 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Returns an Grids_GridDouble at a lower level of resolution than grid. The
      * result values are either the sum, mean, max or min of values in grid
-     * depending on statistic.
+     * depending on statistic. Use this aggregate method if result is to have a
+     * new spatial frame. NB. In the calculation of the sum and the mean if
+     * there is a cell in grid which has a data value then the result which
+     * incorporates that cell has a data value. For this result cell, any of the
+     * cells in grid which have noDataValues their value is taken as that of the
+     * average of its nearest cells with a value. In the calculation of the max
+     * and the min noDataValues are simply ignored. Formerly noDataValues were
+     * treated as the average of values within a result cell.
      *
      * @param grid The Grids_GridDouble to be processed
      * @param statistic "sum", "mean", "max", or "min" depending on what
      * aggregate of values are wanted
-     * @param rD
-     * @param gf The Abstract2DSquareCellDoubleFactory used to create
-     * _AbstractGrid2DSquareCell_HashSet Use this aggregate method if result is
-     * to have a new spatial frame. NB. In the calculation of the sum and the
-     * mean if there is a cell in grid which has a data value then the result
-     * which incorporates that cell has a data value. For this result cell, any
-     * of the cells in grid which have noDataValues their value is taken as that
-     * of the average of its nearest cells with a value. In the calculation of
-     * the max and the min noDataValues are simply ignored. Formerly
-     * noDataValues were treated as the average of values within a result cell.
-     * TODO: implement median, mode and variance aggregations.
-     * <a name="aggregate(AbstractGrid2DSquareCell,
-     * String,BigDecimal[],Grid2DSquareCellDoubleFactory,boolean)"></a>
-     * @return
+     * @param rD result dimensions.
+     * @param gf The grid factory used to create the result.
+     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @return An aggregate grid.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -1576,7 +1490,7 @@ public class Grids_Processor extends Grids_Object {
         gf.setNoDataValue(ndvd);
         Grids_GridDouble r = gf.create(rNrows, rNcols, rD);
         // sum
-        double aP;
+        BigDecimal aP;
         if (statistic.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea;
             totalValueArea = gf.create(rNrows, rNcols, rD);
@@ -1598,23 +1512,23 @@ public class Grids_Processor extends Grids_Object {
                         } else {
                             aP = getAP(bounds, r, cellIDs[0], cellIDs[1], cellIDs[2], c, rCS,
                                     rCH, dp, rm);
-                            r.addToCell(cellIDs[0], value.doubleValue() * aP);
+                            r.addToCell(cellIDs[0], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[1].equals(cellIDs[0])) {
                             aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c, rCS,
                                     rCH, dp, rm);
-                            r.addToCell(cellIDs[1], value.doubleValue() * aP);
+                            r.addToCell(cellIDs[1], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[2].equals(cellIDs[0])) {
                             aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c, rCS,
                                     rCH, dp, rm);
-                            r.addToCell(cellIDs[2], value.doubleValue() * aP);
+                            r.addToCell(cellIDs[2], value.multiply(aP));
                         }
                         if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3].equals(cellIDs[2])) {
                             aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH, dp, rm);
-                            r.addToCell(cellIDs[3], value.doubleValue() * aP);
+                            r.addToCell(cellIDs[3], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                     }
@@ -1700,7 +1614,7 @@ public class Grids_Processor extends Grids_Object {
         if (statistic.equalsIgnoreCase("mean")) {
             double denominator = (rC.doubleValue() * rC.doubleValue()) / (c.doubleValue() * c.doubleValue());
             Grids_GridDouble sum = aggregate(grid, "sum", rD, gf, dp, rm);
-            addToGrid(r, sum, 1.0d / denominator, dp, rm);
+            addToGrid(r, sum, BigDecimal.valueOf(1.0d / denominator), dp, rm);
         }
 
         // max
@@ -2226,6 +2140,9 @@ public class Grids_Processor extends Grids_Object {
      * @param ie
      * @param imageTypes
      * @param eage
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void output(Grids_GridNumber g, Path outDir,
             Grids_ImageExporter ie, String[] imageTypes,
@@ -2266,6 +2183,9 @@ public class Grids_Processor extends Grids_Object {
      * @param ie
      * @param imageTypes
      * @param hoome
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void outputImage(Grids_GridNumber g, Generic_Path outDir,
             Grids_ImageExporter ie, String[] imageTypes, boolean hoome)
@@ -2304,44 +2224,26 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     *
-     * @param g
-     * @param outDir
-     * @param eage
-     * @param hoome
+     * @param g The grid to output
+     * @param outDir The directory to output to.
+     * @param eage The exporter.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void outputESRIAsciiGrid(Grids_GridNumber g, Path outDir,
-            Grids_ESRIAsciiGridExporter eage, boolean hoome) throws IOException,
+            Grids_ESRIAsciiGridExporter eage) throws IOException,
             ClassNotFoundException, Exception {
-        try {
-            if (eage == null) {
-                eage = new Grids_ESRIAsciiGridExporter(env);
-            }
-            String methodName = "outputESRIAsciiGrid("
-                    + g.getClass().getName() + "(" + g.toString() + "),"
-                    + outDir.getClass().getName() + "(" + outDir + "),"
-                    + eage.getClass().getName() + "(" + eage.toString() + "),"
-                    + "boolean(" + hoome + "))";
-            System.out.println(methodName);
-            String string_DotASC = ".asc";
-            String ndv = "-9999.0";
-            String string;
-            Path file;
-            string = g.getName() + string_DotASC;
-            file = Paths.get(outDir.toString(), string);
-            eage.toAsciiFile(g, file, ndv);
-        } catch (OutOfMemoryError e) {
-            if (hoome) {
-                env.clearMemoryReserve(env.env);
-                if (!env.swapChunk(env.HOOMEF)) {
-                    throw e;
-                }
-                env.initMemoryReserve(env.env);
-                outputESRIAsciiGrid(g, outDir, eage, hoome);
-            } else {
-                throw e;
-            }
+        if (eage == null) {
+            eage = new Grids_ESRIAsciiGridExporter(env);
         }
+        String string_DotASC = ".asc";
+        String ndv = "-9999.0";
+        String string;
+        Path file;
+        string = g.getName() + string_DotASC;
+        file = Paths.get(outDir.toString(), string);
+        eage.toAsciiFile(g, file, ndv);
     }
 
 }

@@ -38,114 +38,124 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The NoDataValue for creating chunks.
+     * The noDataValue for creating chunks.
      */
-    protected double NoDataValue;
+    protected double noDataValue;
 
-    public Grids_ChunkFactoryDoubleSinglet GridChunkDoubleFactory;
+    public Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory;
 //    public Grids_GridChunkDoubleMapFactory ChunkDoubleMapFactory;
 //    public Grids_GridChunkDoubleArrayFactory ChunkDoubleArrayFactory;
-    public Grids_ChunkFactoryDouble DefaultGridChunkDoubleFactory;
+    public Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory;
 
-    public Grids_StatsDouble Stats;
+    public Grids_StatsDouble stats;
 
     /**
-     * Creates a new Grids_GridDoubleFactory.
+     * Creates a new Grids_GridDoubleFactory. {@link #noDataValue} is set to
+     * {@code -Double.MAX_VALUE}; {@link #dim} is set to {@code null};
+     * {@link #stats} is set to {@code  new Grids_StatsNotUpdatedDouble(e)}.
      *
-     * @param ge
-     * @param gridChunkDoubleFactory
-     * @param defaultGridChunkDoubleFactory
-     * @param chunkNRows The number of rows chunks have by default.
-     * @param chunkNCols The number of columns chunks have by default.
+     *
+     * @param e What {@link #env} is set to.
+     * @param fs What {@link #store} is set to.
+     * @param gcdf What {@link #gridChunkDoubleFactory} is set to.
+     * @param dgcdf What {@link #defaultGridChunkDoubleFactory} is set to.
+     * @param cnr What {@link #chunkNRows} is set to.
+     * @param cnc What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore store,
-            Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory,
-            Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory,
-            int chunkNRows, int chunkNCols) {
-        super(ge, store, chunkNRows, chunkNCols, null);
-        GridChunkDoubleFactory = gridChunkDoubleFactory;
-        DefaultGridChunkDoubleFactory = defaultGridChunkDoubleFactory;
-        Stats = new Grids_StatsNotUpdatedDouble(ge);
-        NoDataValue = -Double.MAX_VALUE;
+    public Grids_GridFactoryDouble(Grids_Environment e, Generic_FileStore fs,
+            Grids_ChunkFactoryDoubleSinglet gcdf,
+            Grids_ChunkFactoryDouble dgcdf, int cnr, int cnc) {
+        this(e, fs, gcdf, dgcdf, -Double.MAX_VALUE, cnr, cnc,
+                null, new Grids_StatsNotUpdatedDouble(e));
     }
 
     /**
      * Creates a new Grids_GridDoubleFactory.
      *
-     * @param ge
-     * @param gridChunkDoubleFactory
-     * @param defaultGridChunkDoubleFactory
-     * @param noDataValue
-     * @param chunkNRows The number of rows chunks have by default.
-     * @param chunkNCols The number of columns chunks have by default.
-     * @param dimensions
-     * @param stats
+     * @param ge What {@link #env} is set to.
+     * @param fs What {@link #store} is set to.
+     * @param gcdf What {@link #gridChunkDoubleFactory} is set to.
+     * @param dgcdf What {@link #defaultGridChunkDoubleFactory} is set to.
+     * @param ndv What {@link #noDataValue} is set to.
+     * @param chunkNRows What {@link #chunkNRows} is set to.
+     * @param chunkNCols What {@link #chunkNCols} is set to.
+     * @param dim What {@link #dim} is set to.
+     * @param stats What {@link #stats} is set to.
      */
-    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore store,
-            Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory,
-            Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory,
-            double noDataValue, int chunkNRows, int chunkNCols,
-            Grids_Dimensions dimensions, Grids_StatsDouble stats) {
-        super(ge, store, chunkNRows, chunkNCols, dimensions);
-        GridChunkDoubleFactory = gridChunkDoubleFactory;
-        DefaultGridChunkDoubleFactory = defaultGridChunkDoubleFactory;
-        Stats = stats;
-        NoDataValue = noDataValue;
+    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore fs,
+            Grids_ChunkFactoryDoubleSinglet gcdf,
+            Grids_ChunkFactoryDouble dgcdf, double ndv, int chunkNRows,
+            int chunkNCols, Grids_Dimensions dim, Grids_StatsDouble stats) {
+        super(ge, fs, chunkNRows, chunkNCols, dim);
+        gridChunkDoubleFactory = gcdf;
+        defaultGridChunkDoubleFactory = dgcdf;
+        this.stats = stats;
+        this.noDataValue = ndv;
     }
 
     /**
-     * Set DefaultGridChunkDoubleFactory to cf.
+     * For setting {@link #defaultGridChunkDoubleFactory}.
      *
-     * @param cf
+     * @param cf What {@link #defaultGridChunkDoubleFactory} is set to.
      */
-    public void setDefaultChunkFactory(
-            Grids_ChunkFactoryDouble cf) {
-        DefaultGridChunkDoubleFactory = cf;
+    public void setDefaultChunkFactory(Grids_ChunkFactoryDouble cf) {
+        defaultGridChunkDoubleFactory = cf;
     }
 
     /**
-     * Returns NoDataValue.
-     *
-     * @return
+     * @return {@link #noDataValue}
      */
     public double getNoDataValue() {
-        return NoDataValue;
+        return noDataValue;
     }
 
     /**
-     * Sets NoDataValue to noDataValue.
+     * Sets {@link #noDataValue}.
      *
-     * @param noDataValue
+     * @param ndv What {@link #noDataValue} is set to.
      */
-    public void setNoDataValue(double noDataValue) {
-        NoDataValue = noDataValue;
+    public void setNoDataValue(double ndv) {
+        this.noDataValue = ndv;
     }
 
     /**
-     * Returns A new Grids_GridDouble with all values as NoDataValues.
+     * Creates a new Grids_GridDouble with all values set to
+     * {@link #noDataValue} and with {@link #stats} that are not updated and
+     * with chunks made using {@link #gridChunkDoubleFactory}.
      *
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
-     * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @return
+     * @param dimensions The dimensions (xmin, ymin, xmax, ymax, cellsize) of
+     * the grid to be created.
+     * @return A new Grids_GridDouble with all values set to
+     * {@link #noDataValue} and with {@link #stats} that are not updated and
+     * with chunks made using {@link #gridChunkDoubleFactory}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridDouble create(long nRows, long nCols, 
-            Grids_Dimensions dimensions) throws IOException, 
+    public Grids_GridDouble create(long nRows, long nCols,
+            Grids_Dimensions dimensions) throws IOException,
             ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env), 
-                GridChunkDoubleFactory, nRows, nCols, dimensions);
+        return create(new Grids_StatsNotUpdatedDouble(env),
+                gridChunkDoubleFactory, nRows, nCols, dimensions);
     }
 
     /**
+     * Creates a new Grids_GridDouble with all values set to
+     * {@link #noDataValue}.
+     *
      * @param stats The type of Grids_StatsDouble to accompany the returned
      * grid.
-     * @param cf The preferred Grids_ChunkFactoryDouble for creating chunks that
-     * the constructed Grid is to be made of.
+     * @param cf The Grids_ChunkFactoryDouble for creating chunks that the
+     * constructed Grid is to be made of.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @return A new Grids_GridDouble grid with all values as NoDataValues.
+     * @return A new Grids_GridDouble with all values set to
+     * {@link #noDataValue}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble create(Grids_StatsDouble stats,
             Grids_ChunkFactoryDouble cf, long nRows, long nCols,
@@ -153,39 +163,47 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
             ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), cf, chunkNRows,
-                chunkNCols, nRows, nCols, dimensions, NoDataValue, env);
+                chunkNCols, nRows, nCols, dimensions, noDataValue, env);
         store.addDir();
         return r;
     }
 
     /**
-     * @param g The Grids_AbstractGridNumber from which values are used.
-     * @param startRow The topmost row index of g.
-     * @param startCol The leftmost column index of g.
-     * @param endRow The bottom row index of g.
-     * @param endCol The rightmost column index of g.
-     * @return A new Grids_GridDouble with all values taken from g.
+     * Creates a new Grids_GridDouble with values set from {@code #g}. The stats
+     * for the grid are not updated and the
+     * {@link #defaultGridChunkDoubleFactory} is used to create chunks.
+     *
+     * @param g The grid used to set the values of the grid created.
+     * @param startRow The start row index of {@code #g}.
+     * @param startCol The start column index of {@code #g}.
+     * @param endRow The end row index of {@code #g}.
+     * @param endCol The end column index of {@code #g}.
+     * @return A new Grids_GridDouble with all values set from {@code #g}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public Grids_GridDouble create(Grids_Grid g,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedDouble(env), g,
-                DefaultGridChunkDoubleFactory, startRow, startCol, endRow,
+                defaultGridChunkDoubleFactory, startRow, startCol, endRow,
                 endCol);
     }
 
     /**
-     * @param stats The type of Grids_StatsDouble to accompany the returned
-     * grid.
-     * @param cf The preferred Grids_ChunkFactoryDouble for creating chunks that
-     * the constructed Grid is to be made of.
-     * @param g The Grids_AbstractGridNumber from which grid values are used.
-     * @param startRow The topmost row index of g.
-     * @param startCol The leftmost column index of g.
-     * @param endRow The bottom row index of g.
-     * @param endCol The rightmost column index of g.
-     * @return A new Grids_GridDouble with all values taken from g.
+     * Creates a new Grids_GridDouble with values set from {@code #g}.
+     *
+     * @param stats The type of Grids_StatsDouble to accompany the created grid.
+     * @param g The grid used to set the values of the grid created.
+     * @param cf The chunk factory for creating chunks.
+     * @param startRow The start row index of {@code #g}.
+     * @param startCol The start column index of {@code #g}.
+     * @param endRow The end row index of {@code #g}.
+     * @param endCol The end column index of {@code #g}.
+     * @return A new Grids_GridDouble with all values set from {@code #g}.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble create(Grids_StatsDouble stats,
             Grids_Grid g, Grids_ChunkFactoryDouble cf,
@@ -193,16 +211,12 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), g, cf, chunkNRows,
-                chunkNCols, startRow, startCol, endRow, endCol, NoDataValue);
+                chunkNCols, startRow, startCol, endRow, endCol, noDataValue);
         store.addDir();
         return r;
     }
 
-    ////////////////////////
-    // Create from a File //
-    ////////////////////////
     /**
-     * @param dir The Directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * constructed.
@@ -211,20 +225,21 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridDouble with values obtained from gridFile.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public Grids_GridDouble create(Generic_Path gridFile, long startRow,
-            long startCol, long endRow, long endCol) throws IOException, 
+            long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedDouble(env),
-                gridFile, DefaultGridChunkDoubleFactory, startRow, startCol,
+                gridFile, defaultGridChunkDoubleFactory, startRow, startCol,
                 endRow, endCol);
     }
 
     /**
      * @param stats The type of Grids_StatsDouble to accompany the returned
      * grid.
-     * @param dir The directory to be used for storing the grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * constructed.
@@ -235,6 +250,8 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param endRow The bottom row index of the grid stored as gridFile.
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @return A new Grids_GridDouble with values obtained from gridFile.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble create(Grids_StatsDouble stats,
             Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
@@ -242,7 +259,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), gridFile, cf, chunkNRows, chunkNCols,
-                startRow, startCol, endRow, endCol, NoDataValue, env);
+                startRow, startCol, endRow, endCol, noDataValue, env);
         store.addDir();
         return r;
     }
@@ -252,18 +269,22 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * extension containing the data and information about the grid to be
      * returned.
      * @return A new Grids_GridDouble with values obtained from gridFile.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public Grids_GridDouble create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(env, store, store.getNextID(),
-                gridFile, NoDataValue);
+                gridFile, noDataValue);
         store.addDir();
         return r;
     }
 
     /**
-     * @param stats
+     * For duplicating stats.
+     * 
+     * @param stats What is to be duplicated.
      * @return A new Grids_StatsDouble of the same type for use.
      */
     private Grids_StatsDouble getStats(Grids_StatsDouble stats) {
