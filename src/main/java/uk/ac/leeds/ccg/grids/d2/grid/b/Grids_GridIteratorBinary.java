@@ -37,10 +37,11 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
 
     /**
      * @param g The Grids_GridBinary to iterate over.
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorBinary(Grids_GridBinary g) throws IOException, 
+    public Grids_GridIteratorBinary(Grids_GridBinary g) throws IOException,
             ClassNotFoundException, Exception {
         super(g);
         gridIterator = g.getData().keySet().iterator();
@@ -70,7 +71,8 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
 
     /**
      * @param chunk The chunk for which an iterator is returned.
-     * @return {@link Grids_ChunkIteratorBinaryArray} to iterate over values in chunk.
+     * @return {@link Grids_ChunkIteratorBinaryArray} to iterate over values in
+     * chunk.
      */
     @Override
     public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_Chunk chunk) {
@@ -97,8 +99,9 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
     /**
      * @return The next value iterating over the entire grid chunk by chunk. If
      * there is no such value, then {@code null} is returned.
+     * @throws Exception If encountered.
      * @throws IOException If encountered.
-     * @throws ClassNotFoundException If there is a problem
+     * @throws ClassNotFoundException If encountered.
      */
     public boolean next() throws IOException, ClassNotFoundException, Exception {
         if (!chunkIterator.hasNext()) {

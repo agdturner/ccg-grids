@@ -16,10 +16,21 @@
 
 package uk.ac.leeds.ccg.grids.d2;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 /**
- *
+ * A POJO point.
  * @author Andy Turner
  */
-public class Grids_Point {
-
+public class Grids_Point implements Serializable {
+    
+    public BigDecimal x;
+    public BigDecimal y;
+    
+    public Grids_Point(BigDecimal x, BigDecimal y) {
+        this.x = x;
+        this.y = y;
+    }
+    
 }

@@ -25,8 +25,8 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.util.Grids_Kernel;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
@@ -49,6 +49,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
     /**
      * For getting region uni-variate statistics.
+     *
      * @param grid The grid to be processed
      * @param statistics A list of the statistics to generate.
      * @param distance The distance defining the region within which values will
@@ -690,38 +691,33 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     }
 
     /**
-     * Returns a Vector containing Grid2DSquareCellDoubles
+     * Get region uni-variate statistics.
      *
-     * @param grid the Grids_GridDouble to be processed
-     * @param statistics
-     * @param distance the distance defining the region within which values will
-     * be used. At distances weights if applied are zero
-     * @param weightIntersect typically a number between 0 and 1 which controls
-     * the weight applied at the centre of the kernel
-     * @param weightFactor:
-     * @param gridFactory the Abstract2DSquareCellDoubleFactory used to create
-     * grids
-     * @return
+     * @param g The grid to be processed.
+     * @param statistics The statistics to generate.
+     * @param d The distance defining the region within which values will be
+     * used. At distances weights if applied are zero
+     * @param wi The weight intersect - typically a number between 0 and 1 which
+     * controls the weight applied at the centre of the kernel
+     * @param wf The weight factor.
+     * @param gf The factory used to create grids.
+     * @param dp The number of decimal places for BigDecimal arithmetic..
+     * @param rm The {@link RoundingMode} to use for BigDecimal arithmetic.
+     * @return Region uni-variate statistics.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    // public Vector regionUnivariateStatisticsSlow(
     public List<Grids_GridNumber> regionUnivariateStatisticsSlow(
-            Grids_GridDouble grid,
-            //Vector statistics,
-            List<String> statistics,
-            BigDecimal distance,
-            BigDecimal weightIntersect,
-            int weightFactor,
-            Grids_GridFactoryDouble gridFactory, int dp, RoundingMode rm)
+            Grids_GridDouble g, List<String> statistics, BigDecimal d,
+            BigDecimal wi, int wf, Grids_GridFactoryDouble gf, int dp,
+            RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
-        boolean hoome = true;
         List<Grids_GridNumber> result = new ArrayList<>();
-        //        Vector result = new Vector();
-        long ncols = grid.getNCols();
-        long nrows = grid.getNRows();
-        Grids_Dimensions dimensions = grid.getDimensions();
-        //double cellsize = dimensions[0].doubleValue();
-        double noDataValue = grid.getNoDataValue();
-        int cellDistance = grid.getCellDistance(distance).intValue();
+        long ncols = g.getNCols();
+        long nrows = g.getNRows();
+        Grids_Dimensions dimensions = g.getDimensions();
+        double noDataValue = g.getNoDataValue();
+        int cellDistance = g.getCellDistance(d).intValue();
         boolean doMean = false;
         boolean doWMean = false;
         boolean doSum = false;
@@ -846,23 +842,23 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble wCVarGrid = null;
         Grids_GridDouble cSkewGrid = null;
         Grids_GridDouble wCSkewGrid = null;
-        gridFactory.setNoDataValue(noDataValue);
+        gf.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
             Generic_Path dir;
             if (doMean) {
-                meanGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                meanGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWMean) {
-                wMeanGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wMeanGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doSum) {
-                sumGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                sumGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWSum) {
-                wSumGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSumGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
-            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, dp, rm);
             BigDecimal totalSumWeight = kernelParameters[0];
             BigDecimal totalCells = kernelParameters[1];
             for (row = 0; row < nrows; row++) {
@@ -874,18 +870,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     BigDecimal sumCells = BigDecimal.ZERO;
                     BigDecimal wSum = BigDecimal.ZERO;
                     BigDecimal sum = BigDecimal.ZERO;
-                    BigDecimal cellX = grid.getCellX(col);
-                    BigDecimal cellY = grid.getCellY(row);
+                    BigDecimal cellX = g.getCellX(col);
+                    BigDecimal cellY = g.getCellY(row);
                     // Calculate sumWeights and non-weighted stats
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            double v = grid.getCell(row + p, col + q);
+                            double v = g.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                BigDecimal thisCellX = grid.getCellX(col + q);
-                                BigDecimal thisCellY = grid.getCellY(row + p);
+                                BigDecimal thisCellX = g.getCellX(col + q);
+                                BigDecimal thisCellY = g.getCellY(row + p);
                                 BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
-                                if (thisDistance.compareTo(distance) == -1) {
-                                    sumWeight = sumWeight.add(Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm));
+                                if (thisDistance.compareTo(d) == -1) {
+                                    sumWeight = sumWeight.add(Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, dp, rm));
                                     sumCells = sumCells.add(BigDecimal.ONE);
                                     sum = sum.add(BigDecimal.valueOf(v));
                                 }
@@ -898,13 +894,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     if (sumCells.compareTo(BigDecimal.ZERO) == 1 && sumWeight.compareTo(BigDecimal.ZERO) == 1) {
                         for (int p = -cellDistance; p <= cellDistance; p++) {
                             for (int q = -cellDistance; q <= cellDistance; q++) {
-                                double v = grid.getCell(row + p, col + q);
+                                double v = g.getCell(row + p, col + q);
                                 if (v != noDataValue) {
-                                    BigDecimal thisCellX = grid.getCellX(col + q);
-                                    BigDecimal thisCellY = grid.getCellY(row + p);
+                                    BigDecimal thisCellX = g.getCellX(col + q);
+                                    BigDecimal thisCellY = g.getCellY(row + p);
                                     BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
-                                    if (thisDistance.compareTo(distance) == -1) {
-                                        BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                    if (thisDistance.compareTo(d) == -1) {
+                                        BigDecimal weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, dp, rm);
                                         //wMean += ( value / sumWeight ) * weight;
                                         //wMean += ( value / sumCells ) * weight;
                                         wSum = wSum.add(BigDecimal.valueOf(v).multiply(weight));
@@ -935,36 +931,36 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
             Generic_Path dir;
             if (doProp) {
-                propGrid = gridFactory.create(nrows, ncols, dimensions);
+                propGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWProp) {
-                wPropGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wPropGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doVar) {
-                varGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                varGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWVar) {
-                wVarGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doSkew) {
-                skewGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                skewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                wSkewGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doCVar) {
-                cVarGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                cVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                wCVarGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                cSkewGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                cSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                wCSkewGrid = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+                wCSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
-            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid, cellDistance, distance, weightIntersect, weightFactor, dp, rm);
+            BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, dp, rm);
             BigDecimal totalSumWeight = kernelParameters[0];
             BigDecimal totalCells = kernelParameters[1];
             BigDecimal mean = BigDecimal.ZERO;
@@ -982,20 +978,20 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     BigDecimal sDWMeanPow3 = BigDecimal.ZERO;
                     BigDecimal sDWMeanPow4 = BigDecimal.ZERO;
                     BigDecimal sumWeight = BigDecimal.ZERO;
-                    BigDecimal cellX = grid.getCellX(col);
-                    BigDecimal cellY = grid.getCellY(row);
+                    BigDecimal cellX = g.getCellX(col);
+                    BigDecimal cellY = g.getCellY(row);
                     // Take moments
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
-                            double v = grid.getCell(row + p, col + q);
+                            double v = g.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                BigDecimal thisCellX = grid.getCellX(col + q);
-                                BigDecimal thisCellY = grid.getCellY(row + p);
+                                BigDecimal thisCellX = g.getCellX(col + q);
+                                BigDecimal thisCellY = g.getCellY(row + p);
                                 BigDecimal thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, dp, rm);
-                                if (thisDistance.compareTo(distance) == -1) {
+                                if (thisDistance.compareTo(d) == -1) {
                                     BigDecimal vbd = BigDecimal.valueOf(v);
                                     BigDecimal wMean = BigDecimal.valueOf(wMeanGrid.getCell(row + p, col + q));
-                                    BigDecimal weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, dp, rm);
+                                    BigDecimal weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, dp, rm);
                                     sumWeight = sumWeight.add(weight);
                                     BigDecimal delta = vbd.subtract(wMean);
                                     sDWMean = sDWMean.add(delta.multiply(weight));
@@ -1273,7 +1269,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @param distance - the distance limiting the maximum scale of geometric
      * density surface produced
      * @param gridFactory - the Grids_GridFactoryDouble to be used in processing
-     * @return
+     * @return geometric density.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
             BigDecimal distance, Grids_GridFactoryDouble gridFactory)
@@ -1598,7 +1597,12 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * frames. (NB. Sensibly the two grids being correlated should have the same
      * no data space.)}
      * @param gf Grid fatory.
+     * @param dp The number of decimal places for BigDecimal arithmetic..
+     * @param rm The {@link RoundingMode} to use for BigDecimal arithmetic.
      * @return Grids_GridDouble[]
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList statistics, BigDecimal distance,

@@ -32,8 +32,8 @@ import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
-import uk.ac.leeds.ccg.grids.util.Grids_Kernel;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

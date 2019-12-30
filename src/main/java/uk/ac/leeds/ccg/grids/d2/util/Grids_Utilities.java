@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.util;
+package uk.ac.leeds.ccg.grids.d2.util;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.math.BigInteger;
-import java.math.MathContext;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
@@ -53,7 +51,7 @@ public class Grids_Utilities extends Grids_Object {
     }
 
     /**
-     * @param time
+     * @param time Time in milliseconds.
      * @return A string representing the number of days, hours, minutes, seconds
      * and milliseconds in the input time.
      */
@@ -73,7 +71,7 @@ public class Grids_Utilities extends Grids_Object {
     }
 
     /**
-     * @param time
+     * @param time in milliseconds.
      * @return A string representing the number of days, hours, minutes, seconds
      * and milliseconds in the input time.
      */
@@ -100,24 +98,24 @@ public class Grids_Utilities extends Grids_Object {
      * Deprecated since we can now simply use
      * {@link java.lang.Math#nextUp(double)}.
      *
-     * @param value The value for which a larger value is returned.
+     * @param v The value for which a larger value is returned.
      * @return A number immediately larger than value in the double range.
      */
     @Deprecated
-    public static double getLarger(double value) {
-        return Math.nextUp(value);
+    public static double getLarger(double v) {
+        return Math.nextUp(v);
     }
 
     /**
      * Deprecated since we can now simply use
      * {@link java.lang.Math#nextDown(double)}.
      *
-     * @param value The value for which a smaller value is returned.
+     * @param v The value for which a smaller value is returned.
      * @return A number immediately smaller than value in the double range.
      */
     @Deprecated
-    public static double getSmaller(double value) {
-        return Math.nextDown(value);
+    public static double getSmaller(double v) {
+        return Math.nextDown(v);
     }
 
     /**
@@ -134,8 +132,7 @@ public class Grids_Utilities extends Grids_Object {
      * @param nAngles sets how many samplesPoints to take at each sample
      * distance. Always the first sample is at angle from the vertical or
      * y-axis. The angles at which samples are taken are all the same.
-     * @return
-     *
+     * @return Sample points.
      */
     public static Point2D.Double[][] getSamplePoints(Point2D.Double point,
             double angle, double maxDistance, int nDistances, int nAngles) {
@@ -183,8 +180,8 @@ public class Grids_Utilities extends Grids_Object {
      * @return The distance between two points calculated using {@code double}
      * precision floating point numbers.
      */
-    public static final double distance(
-            double x1, double y1, double x2, double y2) {
+    public static final double distance(double x1, double y1, double x2,
+            double y2) {
         return Math.hypot((x1 - x2), (y1 - y2));
     }
 
@@ -252,18 +249,26 @@ public class Grids_Utilities extends Grids_Object {
      * cellsize of 1 and origin at ( 0, 0 ) (This enables easy comparison with
      * other density plots)
      *
-     * @param xGrid
-     * @param yGrid
-     * @param gp
+     * @param xGrid The grid with x values.
+     * @param yGrid The grid with y values
+     * @param gp The processor.
      * @param divisions The number of divisions in the plot. This has to be less
      * than the square root of {@link Integer#MAX_VALUE} ~ 46341 but should in
-     * practice be smaller than this. In general a detailed picture is often
-     * from 512.
-     * @return r[4] where r[0] is a = stdevy; r[1] = meany; r[2] = numy; r[3] =
-     * densityPlotGrid;
+     * practice be smaller than this. A sufficiently detailed picture can often
+     * be produced from 512.
+     * @return r[4] where:
+     * <ul>
+     * <li>r[0] is a = stdevy</li>
+     * <li>r[1] = meany</li>
+     * <li>r[2] = numy</li>
+     * <li>r[3] = densityPlotGrid;</li>
+     * </ul>
+     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param rm RoundingMode for BigDecimal arithmetic.
      *
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
             Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int dp,
@@ -351,7 +356,7 @@ public class Grids_Utilities extends Grids_Object {
                 if (numy[j].compareTo(BigDecimal.ONE) == 1) {
                     stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
                             ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j]))),
-                             ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
+                            ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
                 }
             }
 //            if (numy[j] > 0.0d) {
@@ -390,8 +395,10 @@ public class Grids_Utilities extends Grids_Object {
                 if (normalisers[j] != 0.0d) {
                     value = temp1.getCell(i, j);
                     if (value != xGridNoDataValue) {
-                        //densityPlotGrid.setCell( i, j, temp1.getCell( i, j ) / ( normalisers[ j ] + average ) );
-                        densityPlotGrid.setCell(i, j, temp1.getCell(i, j) / normalisers[j]);
+                        //densityPlotGrid.setCell( i, j, temp1.getCell( i, j )
+                        //        / ( normalisers[ j ] + average ) );
+                        densityPlotGrid.setCell(i, j, temp1.getCell(i, j)
+                                / normalisers[j]);
                     }
                 } else {
                     densityPlotGrid.setCell(i, j, 0.0d);
@@ -406,7 +413,9 @@ public class Grids_Utilities extends Grids_Object {
      * Generates a CSV file for a cumulative gains chart of observed and
      * indicator NB1. observed and indicator must have same spatial frame.
      */
-    /*public static void toGainsChartCSV( AbstractGrid2DSquareCellDouble observed, AbstractGrid2DSquareCellDouble indicator, int divisions, File csvFile ) {
+    /*
+    public static void toGainsChartCSV(Grids_Grid observed, 
+    Grids_Grid indicator, int divisions, File csvFile ) {
     int nrows = observed.getNrows();
     int ncols = observed.getNcols();
     AbstractGridStatistics indicatorStats = indicator.getGridStatistics();

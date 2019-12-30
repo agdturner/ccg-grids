@@ -39,82 +39,73 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
 
     public Grids_ChunkFactoryBoolean factory;
 
-    public Grids_StatsBoolean Stats;
+    public Grids_StatsBoolean stats;
 
     /**
-     * @see #Grids_GridFactoryBoolean(Grids_Environment,
-     * Grids_ChunkFactoryBoolean, int, int, Grids_Dimensions,
-     * Grids_StatsBoolean) where {@link #dim} is set to {@code null}.
-     * {@link #Stats} is set to {@code new Grids_StatsNotUpdatedBoolean(e)}.
+     * {@link #dim} is set to {@code null}. {@link #stats} is set to
+     * {@code new Grids_StatsNotUpdatedBoolean(e)}.
      *
      * @param e What {@link #env} is set to.
+     * @param fs What {@link #store} is set to.
      * @param factory What {@link #factory} is set to.
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore store,
+    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore fs,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols) {
-        this(e, store, factory, chunkNRows, chunkNCols, null,
+        this(e, fs, factory, chunkNRows, chunkNCols, null,
                 new Grids_StatsNotUpdatedBoolean(e));
     }
 
     /**
      * @param e What {@link #env} is set to.
+     * @param fs What {@link #store} is set to.
      * @param factory What {@link #factory} is set to.
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param dimensions What {@link #dim} is set to.
-     * @param stats What {@link #Stats} is set to.
+     * @param stats What {@link #stats} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore store,
+    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore fs,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBoolean stats) {
-        super(e, store, chunkNRows, chunkNCols, dimensions);
+        super(e, fs, chunkNRows, chunkNCols, dimensions);
         this.factory = factory;
-        Stats = stats;
+        this.stats = stats;
     }
 
     /**
-     * Create a {@link Grids_GridBoolean} from scratch with all values set to
-     * {@code null}.
+     * Create a grid with all values set to {@code null}.
      *
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The dimensions of the grid.
-     * @return A {@link Grids_GridBoolean} created from scratch with all values
-     * set to {@code null}. NoDataValues.
+     * @return A grid with all values set to {@code null}.
      * @throws java.io.IOException If encountered.
      */
     @Override
     public Grids_GridBoolean create(long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
-        return create(new Grids_StatsNotUpdatedBoolean(env), factory, nRows, 
+        return create(new Grids_StatsNotUpdatedBoolean(env), factory, nRows,
                 nCols, dimensions);
     }
 
     /**
-     * Create a {@link Grids_GridBoolean} with a coincident cell/lattice
-     * framework as a cached grid, but with potentially different dimensions,
-     * rows and columns to the cached grid. All values in the resulting grid are
-     * {@link null}.
+     * Create a grid with all values set to {@code null}.
      *
      * @param stats The type of Grids_StatsBoolean to accompany the returned
      * grid.
-     * @param cf The preferred {@link Grids_ChunkFactoryBoolean} for creating
-     * chunks in the grid.
+     * @param cf The preferred factory for creating chunks in the grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The dimensions of the grid.
-     * @return A {@link Grids_GridBoolean} with a coincident cell/lattice
-     * framework as a cached grid, but with potentially different dimensions,
-     * rows and columns to the cached grid. All values in the resulting grid are
-     * {@link null}.
+     * @return A grid with all values set to {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_GridBoolean create(Grids_StatsBoolean stats, 
+    public Grids_GridBoolean create(Grids_StatsBoolean stats,
             Grids_ChunkFactoryBoolean cf, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
-        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
+        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
                 store, store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, env);
         store.addDir();
@@ -122,11 +113,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     }
 
     /**
-     * Create a {@link Grids_GridBoolean} from {@code g}.
-     *
-     * @see {@link #create(Grids_StatsBoolean, Generic_Path, Grids_Grid,
-     * Grids_ChunkFactoryBoolean, long,
-     * long, long, long)} where the {@link Grids_StatsBoolean} is set to
+     * Create a Grids_GridBoolean from {@code g}. {@link #stats} is set to
      * {@code new Grids_StatsNotUpdatedBoolean(env)}.
      *
      * @param g The grid from which values are used to set the values in the
@@ -139,8 +126,10 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * used to set the values in the created grid.
      * @param endCol The rightmost column index of of {@code g} for which the
      * values are used to set the values in the created grid.
-     * @return A new {@link Grids_GridBoolean} with all values taken from
-     * {@code g}.
+     * @return A new Grids_GridBoolean with all values taken from {@code g}.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     @Override
     public Grids_GridBoolean create(Grids_Grid g,
@@ -173,11 +162,11 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridBoolean create(Grids_StatsBoolean stats, 
+    public Grids_GridBoolean create(Grids_StatsBoolean stats,
             Grids_Grid g, Grids_ChunkFactoryBoolean cf, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
-        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
+        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
                 store, store.getNextID(), g, cf, chunkNRows,
                 chunkNCols, startRow, startCol, endRow, endCol);
         store.addDir();
@@ -185,11 +174,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     }
 
     /**
-     * @see #create(Grids_StatsBoolean, Generic_Path, Generic_Path,
-     * Grids_ChunkFactoryBoolean, long, long, long, long)} where:
-     * {@link Grids_StatsBoolean} is set to {@code null}     
-     * {@code new Grids_StatsNotUpdatedBoolean(env)};
-     * {@link Grids_ChunkFactoryBoolean} is set to
+     * {@link #stats} is set to {@code null} {@link #factory} is set to
      * {@code new Grids_ChunkFactoryBoolean()}.
      *
      * @param gridFile The directory containing a cached grid that will be used
@@ -218,8 +203,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     }
 
     /**
-     * @param stats A {@link Grids_StatsBoolean} which is effectively duplicated
-     * but becomes the stats in the returned grid.
+     * @param stats The type of stats in the returned grid.
      * @param gridFile The directory containing a cached grid that will be used
      * to create the grid returned.
      * @param cf The preferred factory for creating chunks that the constructed
@@ -241,7 +225,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats), 
+        Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
                 store, store.getNextID(), gridFile, cf,
                 chunkNRows, chunkNCols, startRow, startCol, endRow, endCol,
                 env);
@@ -259,7 +243,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     @Override
     public Grids_GridBoolean create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_GridBoolean r = new Grids_GridBoolean(env, store, 
+        Grids_GridBoolean r = new Grids_GridBoolean(env, store,
                 store.getNextID(), gridFile);
         store.addDir();
         return r;

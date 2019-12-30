@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedDouble;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
@@ -132,8 +132,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
      * @param cf The factory preferred to construct chunks of this.
-     * @param chunkNRows
-     * @param chunkNCols
+     * @param chunkNRows The chunk NRows.
+     * @param chunkNCols The chunk NCols
      * @param startRow The row of the input that will be the bottom most row of
      * this.
      * @param startCol The column of the input that will be the left most column
@@ -788,19 +788,19 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return Grids_ChunkDouble for the given chunkID.
-     * @param chunkID
+     * @return Grids_ChunkDouble for chunk ID {@code i}.
+     * @param i The chunk ID.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkDouble getChunk(Grids_2D_ID_int chunkID)
+    public Grids_ChunkDouble getChunk(Grids_2D_ID_int i)
             throws IOException, Exception, ClassNotFoundException {
-        if (isInGrid(chunkID)) {
-            if (data.get(chunkID) == null) {
-                loadChunk(chunkID);
+        if (isInGrid(i)) {
+            if (data.get(i) == null) {
+                loadChunk(i);
             }
-            return (Grids_ChunkDouble) data.get(chunkID);
+            return (Grids_ChunkDouble) data.get(i);
         }
         return null;
     }
@@ -1166,8 +1166,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param dp The number of decimal places used in distance calculations.
      * @param rm The {@link RoundingMode} to use when rounding distance
      * calculations.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     protected double[] getCells(BigDecimal x, BigDecimal y,
             BigDecimal distance, int dp, RoundingMode rm) throws IOException,

@@ -41,8 +41,9 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
 
     /**
      * @param g The grid to iterate over.
-     * @throws java.io.IOException
-     * @throws java.lang.ClassNotFoundException
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridIteratorDouble(Grids_GridDouble g) throws IOException,
             ClassNotFoundException, Exception {
@@ -81,9 +82,10 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
      * @param c The chunk for which the iterator is returned.
      * @return A {@link Grids_ChunkRowMajorOrderIterator} to iterate over values
      * in {@code c}.
+     * @throws java.lang.Exception If encountered.
      */
     @Override
-    public Grids_ChunkRowMajorOrderIterator getChunkIterator(Grids_Chunk c) 
+    public Grids_ChunkRowMajorOrderIterator getChunkIterator(Grids_Chunk c)
             throws Exception {
         if (c instanceof Grids_ChunkDoubleArray) {
             return new Grids_ChunkIteratorDoubleArrayOrMap(
@@ -109,6 +111,7 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
     /**
      * @return The next value iterating over the entire grid chunk by chunk. If
      * there is no such value, then {@code null} is returned.
+     * @throws java.lang.Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem
      */

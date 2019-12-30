@@ -36,7 +36,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;

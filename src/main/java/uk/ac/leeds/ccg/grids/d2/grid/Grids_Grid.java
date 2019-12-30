@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_Stats;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 

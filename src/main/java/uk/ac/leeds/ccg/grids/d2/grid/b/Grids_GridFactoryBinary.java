@@ -75,14 +75,12 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     }
 
     /**
-     * Create a {@link Grids_GridBinary} from scratch with all values set to
-     * {@code null}.
+     * Create a grid with all values set to {@code false}.
      *
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The dimensions of the grid.
-     * @return A {@link Grids_GridBinary} created from scratch with all values
-     * set to {@code null}. NoDataValues.
+     * @return A grid with all values set to {@code false}.
      * @throws java.io.IOException If encountered.
      */
     @Override
@@ -93,23 +91,17 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     }
 
     /**
-     * Create a {@link Grids_GridBinary} with a coincident cell/lattice
-     * framework as a cached grid, but with potentially different dimensions,
-     * rows and columns to the cached grid. All values in the resulting grid are
-     * {@link null}.
+     * Create a grid with all values set to {@code false}.
      *
      * @param stats The type of Grids_StatsBinary to accompany the returned
      * grid.
-     * @param cf The preferred {@link Grids_ChunkFactoryBinary} for creating
-     * chunks in the grid.
+     * @param cf The preferred factory for creating chunks in the grid.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The dimensions of the grid.
-     * @return A {@link Grids_GridBinary} with a coincident cell/lattice
-     * framework as a cached grid, but with potentially different dimensions,
-     * rows and columns to the cached grid. All values in the resulting grid are
-     * {@link null}.
-     * @throws java.io.IOException, Exception If encountered.
+     * @return A grid with all values set to {@code false}.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
      */
     public Grids_GridBinary create(Grids_StatsBinary stats,
             Grids_ChunkFactoryBinary cf, long nRows, long nCols,

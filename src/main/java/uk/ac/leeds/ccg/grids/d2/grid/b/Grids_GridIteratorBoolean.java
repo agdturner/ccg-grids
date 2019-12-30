@@ -69,7 +69,7 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
     }
 
     /**
-     * @param chunk
+     * @param chunk The chunk to iterate over.
      * @return Grids_AbstractIterator to iterate over values in chunk.
      */
     @Override

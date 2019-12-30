@@ -405,7 +405,7 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * @param g
+     * @param g The grid.
      * @return a new Grids_GridDouble Values are either linearly rescaled into
      * the range [min,max]. Or some Log rescaling is done
      * @param type If type == null then a linear rescale is done. If type ==

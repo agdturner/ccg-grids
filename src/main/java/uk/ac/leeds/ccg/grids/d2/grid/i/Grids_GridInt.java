@@ -42,7 +42,7 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedInt;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
-import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
@@ -135,15 +135,12 @@ public class Grids_GridInt extends Grids_GridNumber {
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
      * @param cf The factory preferred to construct chunks of this.
-     * @param chunkNRows
-     * @param startRow The Grid2DSquareCell row which is the bottom most row of
-     * this.
+     * @param cnr The chunk nRows
      * @param cnc The chunk nCols. 
-     * @param startCol The Grid2DSquareCell column which is the left most column
-     * of this.
-     * @param endRow The Grid2DSquareCell row which is the top most row of this.
-     * @param endCol The Grid2DSquareCell column which is the right most column
-     * of this.
+     * @param startRow The start row.
+     * @param startCol The start col.
+     * @param endRow The end row.
+     * @param endCol The end column.
      * @param ndv The noDataValue for this.
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
@@ -151,12 +148,12 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
             long id, Generic_Path gridFile,
-            Grids_ChunkFactoryInt cf, int chunkNRows,
+            Grids_ChunkFactoryInt cf, int cnr,
             int cnc, long startRow, long startCol, long endRow,
             long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, gridFile, cf, chunkNRows, cnc, startRow, startCol,
+        init(stats, gridFile, cf, cnr, cnc, startRow, startCol,
                 endRow, endCol, ndv);
     }
 
