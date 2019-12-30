@@ -138,7 +138,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param chunkNRows
      * @param startRow The Grid2DSquareCell row which is the bottom most row of
      * this.
-     * @param chunkNCols
+     * @param cnc The chunk nCols. 
      * @param startCol The Grid2DSquareCell column which is the left most column
      * of this.
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
@@ -152,11 +152,11 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
             long id, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow,
+            int cnc, long startRow, long startCol, long endRow,
             long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
+        init(stats, gridFile, cf, chunkNRows, cnc, startRow, startCol,
                 endRow, endCol, ndv);
     }
 
@@ -818,7 +818,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 Grids_ChunkIntSinglet gc = (Grids_ChunkIntSinglet) chunk;
                 if (value != gc.Value) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().GridIntFactory.DefaultGridChunkIntFactory.create(
+                    chunk = env.getProcessor().GridIntFactory.defaultGridChunkIntFactory.create(
                             chunk, chunkID);
                     chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
                     data.put(chunkID, chunk);
@@ -839,9 +839,9 @@ public class Grids_GridInt extends Grids_GridNumber {
     /**
      * @return Grids_ChunkInt for chunk ID @code i}.
      * @param i The chunk ID.
-          * @throws java.io.IOException If encountered.
+     * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
-*/
+     */
     @Override
     public Grids_ChunkInt getChunk(Grids_2D_ID_int i) throws IOException,
             ClassNotFoundException, Exception {
@@ -1099,8 +1099,8 @@ public class Grids_GridInt extends Grids_GridNumber {
     private Grids_ChunkInt convertToAnotherTypeOfChunk(Grids_ChunkInt chunk,
             Grids_2D_ID_int i) throws IOException, ClassNotFoundException,
             Exception {
-        Grids_ChunkInt r;
-        r = env.getProcessor().GridIntFactory.DefaultGridChunkIntFactory.create(chunk, i);
+        Grids_ChunkInt r = env.getProcessor().GridIntFactory
+                .defaultGridChunkIntFactory.create(chunk, i);
         data.put(i, r);
         return r;
     }
@@ -1108,34 +1108,34 @@ public class Grids_GridInt extends Grids_GridNumber {
     /**
      * Initialises the value at row, col.
      *
-     * @param chunk
-     * @param chunkID
-     * @param row
-     * @param col
-     * @param value
+     * @param chunk The chunk.
+     * @param i The chunk ID.
+     * @param row The cell row.
+     * @param col The cell column.
+     * @param v The value.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkInt chunk, Grids_2D_ID_int chunkID,
-            long row, long col, int value) throws IOException,
-            ClassNotFoundException, Exception {
+    protected void initCell(Grids_ChunkInt chunk, Grids_2D_ID_int i, long row,
+            long col, int v) throws IOException, ClassNotFoundException, 
+            Exception {
         if (chunk instanceof Grids_ChunkIntSinglet) {
-            Grids_ChunkIntSinglet gridChunk = (Grids_ChunkIntSinglet) chunk;
-            if (value != gridChunk.Value) {
+            Grids_ChunkIntSinglet gc = (Grids_ChunkIntSinglet) chunk;
+            if (v != gc.Value) {
                 // Convert chunk to another type
-                chunk = convertToAnotherTypeOfChunk(chunk, chunkID);
-                chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
+                chunk = convertToAnotherTypeOfChunk(chunk, i);
+                chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             } else {
                 return;
             }
         }
         if (chunk != null) {
-            chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
+            chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
         }
         // Update stats
-        if (value != NoDataValue) {
+        if (v != NoDataValue) {
             if (stats.isUpdated()) {
-                updateStats(value);
+                updateStats(v);
             }
         }
     }
@@ -1169,20 +1169,14 @@ public class Grids_GridInt extends Grids_GridNumber {
     /**
      * Initialises the value at row, col and does nothing about stats
      *
-     * @param chunk
-     * @param row
-     * @param col
-     * @param value
+     * @param chunk The chunk.
+     * @param row Cell row.
+     * @param col Cell column.
+     * @param v Cell value.
      */
     protected void initCellFast(Grids_ChunkInt chunk, long row, long col,
-            int value) {
-//        int chunkRow = getChunkRow(row);
-//        int chunkCol = getChunkCol(col);
-//        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-//                chunkRow,
-//                chunkCol);
-//        Grids_ChunkInt chunk = getChunk(chunkID);
-        chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
+            int v) {
+        chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
     }
 
     /**

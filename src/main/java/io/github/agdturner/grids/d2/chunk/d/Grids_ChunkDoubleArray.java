@@ -101,7 +101,7 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
      * @param row The row index of the cell w.r.t. the origin of this chunk.
      * @param col The column index of the cell w.r.t. the origin of this chunk.
      * @return The value at position given by: chunk cell row {@code row}; chunk
-     * cell column {@link col}.
+     * cell column {@code col}.
      */
     @Override
     public double getCell(int row, int col) {
@@ -122,12 +122,12 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
 
     /**
      * Sets the value at position given by: chunk cell row {@code row}; chunk
-     * cell row {@code col} to {@code v).
+     * cell row {@code col} to {@code v}.
      * @param row The row index of the cell w.r.t. the origin of this chunk.
      * @param col The column index of the cell w.r.t. the origin of this chunk.
      * @param v The value set.
      * @return The value at position given by: chunk cell row {@code row};
-     * chunk cell row {@code col} prior to it being set to {@code v).
+     * chunk cell row {@code col} prior to it being set to {@code v}.
      */
     @Override
     public double setCell(int row, int col, double v) {
@@ -142,8 +142,7 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * @return A {@link Grids_ChunkIteratorIntArrayOrMap} for iterating over the
-     * cells in this.
+     * @return An iterator for iterating over the cells in this.
      */
     public Grids_ChunkIteratorDoubleArrayOrMap iterator() {
         return new Grids_ChunkIteratorDoubleArrayOrMap(this);

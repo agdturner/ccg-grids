@@ -36,7 +36,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     public double v;
 
     /**
-     * Creates a new Grids_GridChunkDouble with v set to v.
+     * Creates a new Grids_GridChunkDouble with {@link #v} set to {@code v}.
      *
      * @param g What {@link #Grid} is set to.
      * @param i What {@link #ChunkID} is set to.
@@ -78,7 +78,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
      * @param row the row index of the cell w.r.t. the origin of this chunk
      * @param col the column index of the cell w.r.t. the origin of this chunk
      * @param v the v the cell is to be set to.
-     * @return The v at row, col.
+     * @return The value v at row, col.
      * @throws java.lang.Exception If encountered.
      */
     @Override
@@ -87,13 +87,13 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
             return this.v;
         } else {
             throw new Exception("Unable to set value as this chunk is supposed "
-                    + "to all contain the same value. Maybe need to convert to "
-                    + "another chunk type.");
+                    + "to all contain the same value. Convert to another type "
+                    + "of chunk?");
         }
     }
 
     /**
-     * @return A Grids_ChunkIteratorDoubleSinglet for iterating over the values.
+     * @return An iterator for iterating over the values in this.
      */
     public Grids_ChunkIteratorDoubleSinglet iterator() {
         return new Grids_ChunkIteratorDoubleSinglet(this);
@@ -103,8 +103,12 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     public void initCell(int r, int c, double v) {
     }
 
-    public double getSumDouble() {
-        return getN() * v;
+    @Override
+    public BigDecimal getSum() {
+        if (v == getGrid().getNoDataValue()) {
+            return BigDecimal.ZERO;
+        }
+        return BigDecimal.valueOf(getN()).multiply(BigDecimal.valueOf(v));
     }
 
     @Override
