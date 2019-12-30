@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.agdturner.grids.util;
+package uk.ac.leeds.ccg.grids.util;
 
-import io.github.agdturner.grids.core.Grids_2D_ID_int;
-import io.github.agdturner.grids.core.Grids_Dimensions;
-import io.github.agdturner.grids.core.Grids_Environment;
-import io.github.agdturner.grids.core.Grids_Strings;
-import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkDouble;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridFactoryDouble;
-import io.github.agdturner.grids.d2.grid.d.Grids_GridIteratorDouble;
-import io.github.agdturner.grids.io.Grids_ImageExporter;
-import io.github.agdturner.grids.process.Grids_Processor;
+import uk.ac.leeds.ccg.grids.util.Grids_Utilities;
+import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
+import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.grids.core.Grids_Strings;
+import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridIteratorDouble;
+import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
+import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.math.BigDecimal;
