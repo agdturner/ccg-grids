@@ -21,7 +21,6 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBinary;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridIteratorBinary;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBinaryArray;
 import java.math.BigInteger;
 
 /**
@@ -64,7 +63,9 @@ public class Grids_StatsBinary extends Grids_Stats {
     /**
      * Updates by going through all values in grid.
      *
-     * @throws java.io.IOException
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public void update() throws IOException, Exception, ClassNotFoundException {
@@ -82,9 +83,9 @@ public class Grids_StatsBinary extends Grids_Stats {
     }
 
     /**
-     * @return The total number of {@code true} values in the grid. 
+     * @return The total number of {@code true} values in the grid.
      * @throws java.io.IOException If encountered.
-      * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public BigInteger getN() throws IOException, Exception, ClassNotFoundException {

@@ -23,8 +23,6 @@ import uk.ac.leeds.ccg.agdt.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Files;
 import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Strings;
-// The following imports are used in Javadoc documentation:
-import io.github.agdturner.grids.process.Grids_Processor;
 
 /**
  * For conveniently initialising and locating files and directories.
@@ -39,43 +37,42 @@ public class Grids_Files extends Generic_Files {
     /**
      * Indicates where grids holding {@link BigInteger} values are to be stored.
      */
-    protected Generic_Path GeneratedGridBigIntegerDir;
+    protected Generic_Path generatedGridBigIntegerDir;
 
     /**
      * Indicates where grids holding {@code int} values are to be stored.
      */
-    protected Generic_Path GeneratedGridIntDir;
+    protected Generic_Path generatedGridIntDir;
 
     /**
      * Indicates where grids holding {@link BigDecimal} values are to be stored.
      */
-    protected Generic_Path GeneratedGridBigDecimalDir;
+    protected Generic_Path generatedGridBigDecimalDir;
 
     /**
      * Indicates where grids holding {@code double} values are to be stored.
      */
-    protected Generic_Path GeneratedGridDoubleDir;
+    protected Generic_Path generatedGridDoubleDir;
 
     /**
      * Indicates where grids holding {@code float} values are to be stored.
      */
-    protected Generic_Path GeneratedGridFloatDir;
+    protected Generic_Path generatedGridFloatDir;
 
     /**
      * Indicates where grids holding {@code Boolean} values are to be stored.
      */
-    protected Generic_Path GeneratedGridBooleanDir;
+    protected Generic_Path generatedGridBooleanDir;
 
     /**
      * Indicates where grids holding {@code boolean} values are to be stored.
      */
-    protected Generic_Path GeneratedGridBinaryDir;
+    protected Generic_Path generatedGridBinaryDir;
 
     /**
-     * Indicates where grids processed using a {@link #Grids_Processor} are to
-     * be stored.
+     * Indicates where grids are to be stored.
      */
-    protected Generic_Path GeneratedProcessorDir;
+    protected Generic_Path generatedProcessorDir;
 
     /**
      * Creates a new instance.
@@ -98,127 +95,127 @@ public class Grids_Files extends Generic_Files {
     }
 
     /**
-     * If {@link #GeneratedGridBigIntegerDir} is {@code null} it will be
+     * If {@link #generatedGridBigIntegerDir} is {@code null} it will be
      * initialised.
      *
-     * @return {@link #GeneratedGridBigIntegerDir} initialised first if it is
+     * @return {@link #generatedGridBigIntegerDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridBigIntegerDir() throws IOException {
-        if (GeneratedGridBigIntegerDir == null) {
-            GeneratedGridBigIntegerDir = new Generic_Path(Paths.get(
+        if (generatedGridBigIntegerDir == null) {
+            generatedGridBigIntegerDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_BigInteger));
         }
-        return GeneratedGridBigIntegerDir;
+        return generatedGridBigIntegerDir;
     }
 
     /**
-     * If {@link #GeneratedGridIntDir} is {@code null} it will be initialised.
+     * If {@link #generatedGridIntDir} is {@code null} it will be initialised.
      *
-     * @return {@link #GeneratedGridIntDir} initialised first if it is
+     * @return {@link #generatedGridIntDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridIntDir() throws IOException {
-        if (GeneratedGridIntDir == null) {
-            GeneratedGridIntDir = new Generic_Path(Paths.get(
+        if (generatedGridIntDir == null) {
+            generatedGridIntDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridInt));
         }
-        return GeneratedGridIntDir;
+        return generatedGridIntDir;
     }
 
     /**
-     * If {@link #GeneratedGridBigDecimalDir} is {@code null} it will be
+     * If {@link #generatedGridBigDecimalDir} is {@code null} it will be
      * initialised.
      *
-     * @return {@link #GeneratedGridBigDecimalDir} initialised first if it is
+     * @return {@link #generatedGridBigDecimalDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridBigDecimalDir() throws IOException {
-        if (GeneratedGridBigDecimalDir == null) {
-            GeneratedGridBigDecimalDir = new Generic_Path(Paths.get(
+        if (generatedGridBigDecimalDir == null) {
+            generatedGridBigDecimalDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_BigDecimal));
         }
-        return GeneratedGridBigDecimalDir;
+        return generatedGridBigDecimalDir;
     }
 
     /**
-     * If {@link #GeneratedGridDoubleDir} is {@code null} it will be
+     * If {@link #generatedGridDoubleDir} is {@code null} it will be
      * initialised.
      *
-     * @return {@link #GeneratedGridDoubleDir} initialised first if it is
+     * @return {@link #generatedGridDoubleDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridDoubleDir() throws IOException {
-        if (GeneratedGridDoubleDir == null) {
-            GeneratedGridDoubleDir = new Generic_Path(Paths.get(
+        if (generatedGridDoubleDir == null) {
+            generatedGridDoubleDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridDouble));
         }
-        return GeneratedGridDoubleDir;
+        return generatedGridDoubleDir;
     }
 
     /**
-     * If {@link #GeneratedGridFloatDir} is {@code null} it will be initialised.
+     * If {@link #generatedGridFloatDir} is {@code null} it will be initialised.
      *
-     * @return {@link #GeneratedGridFloatDir} initialised first if it is
+     * @return {@link #generatedGridFloatDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridFloatDir() throws IOException {
-        if (GeneratedGridFloatDir == null) {
-            GeneratedGridFloatDir = new Generic_Path(Paths.get(
+        if (generatedGridFloatDir == null) {
+            generatedGridFloatDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridFloat));
         }
-        return GeneratedGridFloatDir;
+        return generatedGridFloatDir;
     }
 
     /**
-     * If {@link #GeneratedGridBooleanDir} is {@code null} it will be
+     * If {@link #generatedGridBooleanDir} is {@code null} it will be
      * initialised.
      *
-     * @return {@link #GeneratedGridBooleanDir} initialised first if it is
+     * @return {@link #generatedGridBooleanDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridBooleanDir() throws IOException {
-        if (GeneratedGridBooleanDir == null) {
-            GeneratedGridBooleanDir = new Generic_Path(Paths.get(
+        if (generatedGridBooleanDir == null) {
+            generatedGridBooleanDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridBoolean));
         }
-        return GeneratedGridBooleanDir;
+        return generatedGridBooleanDir;
     }
 
     /**
-     * If {@link #GeneratedGridBooleanDir} is {@code null} it will be
+     * If {@link #generatedGridBooleanDir} is {@code null} it will be
      * initialised.
      *
-     * @return {@link #GeneratedGridBinaryDir} initialised first if it is
+     * @return {@link #generatedGridBinaryDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedGridBinaryDir() throws IOException {
-        if (GeneratedGridBinaryDir == null) {
-            GeneratedGridBinaryDir = new Generic_Path(Paths.get(
+        if (generatedGridBinaryDir == null) {
+            generatedGridBinaryDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridBinary));
         }
-        return GeneratedGridBinaryDir;
+        return generatedGridBinaryDir;
     }
 
     /**
-     * If {@link #GeneratedProcessorDir} is {@code null} it will be initialised.
+     * If {@link #generatedProcessorDir} is {@code null} it will be initialised.
      *
-     * @return {@link #GeneratedProcessorDir} initialised first if it is
+     * @return {@link #generatedProcessorDir} initialised first if it is
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
     public Generic_Path getGeneratedProcessorDir() throws IOException {
-        if (GeneratedProcessorDir == null) {
-            GeneratedGridBooleanDir = new Generic_Path(Paths.get(
+        if (generatedProcessorDir == null) {
+            generatedGridBooleanDir = new Generic_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_Processor));
         }
-        return GeneratedProcessorDir;
+        return generatedProcessorDir;
     }
 }

@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
 import io.github.agdturner.grids.core.Grids_Dimensions;
 import io.github.agdturner.grids.d2.grid.Grids_GridNumber;
 import io.github.agdturner.grids.d2.grid.d.Grids_GridDouble;
 import io.github.agdturner.grids.d2.grid.i.Grids_GridInt;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.core.Grids_Object;
+import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
 
 /**
  * Class for exporting ESRI Asciigrid.
@@ -42,34 +42,40 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
     /**
      * Creates a new instance of ESRIAsciiGridExporter
      *
-     * @param env
+     * @param e The grids environment.
      */
-    public Grids_ESRIAsciiGridExporter(Grids_Environment env) {
-        super(env);
+    public Grids_ESRIAsciiGridExporter(Grids_Environment e) {
+        super(e);
     }
 
     /**
-     * Writes grid2DSquareCell out to file in ESRI Asciigrid format and returns
-     * a the File to which it was written.
+     * Writes grid {@code g} to a file in ESRI Asciigrid format and returns
+     * the Path to the file.
      *
-     * @param g Grid for export.
-     * @return
-     */
+     * @param g Grid to export.
+     * @return The path to the file.
+          * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.Exception If encountered.
+*/
     public Path toAsciiFile(Grids_GridNumber g) throws IOException, Exception, 
             ClassNotFoundException {
         Path file = Paths.get(g.getDirectory().getParent().toString(), 
                 g.getName() + ".asc");
-        return toAsciiFile(g, file);
+        toAsciiFile(g, file);
+        return file;
     }
 
     /**
-     * Writes g out to file in ESRI Asciigrid format and returns file.
+     * Writes grid {@code g} to file in ESRI Asciigrid format.
      *
-     * @param g TheAbstractGrid2DSquareCelll for export.
-     * @param file The File to export to.
-     * @return
-     */
-    public Path toAsciiFile(Grids_GridNumber g, Path file) 
+     * @param g The grid for export.
+     * @param file The file to export to.
+         * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.Exception If encountered.
+ */
+    public void toAsciiFile(Grids_GridNumber g, Path file) 
             throws IOException, Exception, ClassNotFoundException {
         String noDataValue = "";
         if (g instanceof Grids_GridDouble) {
@@ -77,22 +83,24 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
         } else if (g instanceof Grids_GridInt) {
             noDataValue = "" + ((Grids_GridInt) g).getNoDataValue();
         }
-        return toAsciiFile(g, file, noDataValue);
+        toAsciiFile(g, file, noDataValue);
     }
 
     /**
-     * Writes grid out to file in ESRI Asciigrid format and returns file.
+     * Writes grid out to file in ESRI Asciigrid format.
      *
      * @param g Grid for export.
      * @param file The File to export to.
      * @param ndv The value to be used or substituted as a noDataValue for g.
-     * @return
-     */
-    public Path toAsciiFile(Grids_GridNumber g, Path file, String ndv) 
+         * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.Exception If encountered.
+ */
+    public void toAsciiFile(Grids_GridNumber g, Path file, String ndv) 
             throws IOException, Exception, ClassNotFoundException {
         env.initNotToClear();
         env.checkAndMaybeFreeMemory();
-        try (PrintWriter pw = env.env.io.getPrintWriter(file, false)) {
+        try (PrintWriter pw = Generic_IO.getPrintWriter(file, false)) {
             Grids_Dimensions d = g.getDimensions();
             long nrows = g.getNRows();
             long ncols = g.getNCols();
@@ -111,7 +119,6 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                 Grids_GridInt gridInt = (Grids_GridInt) g;
                 int gridNoDataValue = gridInt.getNoDataValue();
                 pw.println("NODATA_Value " + ndv);
-                int value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     chunkRow = g.getChunkRow(row);
                     if (chunkRow0 != chunkRow) {
@@ -121,37 +128,12 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         chunkRow0 = chunkRow;
                     }
                     for (col = 0; col < ncols; col++) {
-                        //try {
-                        value = gridInt.getCell(row, col);
-                        if (value == gridNoDataValue) {
+                        int v = gridInt.getCell(row, col);
+                        if (v == gridNoDataValue) {
                             pw.print(ndv + " ");
                         } else {
-                            pw.print(value + " ");
+                            pw.print(v + " ");
                         }
-//                        } catch (OutOfMemoryError e) {
-//                            g.env.clearMemoryReserve();
-//                            Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
-//                                    g.getChunkRow(row, hoome),
-//                                    g.getChunkCol(col, hoome));
-//                            if (g.env.swapChunksExcept(
-//                                    g,
-//                                    chunkID,
-//                                    hoome) < 1L) {
-//                                throw e;
-//                            }
-//                            g.env.initMemoryReserve(hoome);
-//
-//                            //pw.print( grid.getCell( row, col ) + " " );
-//                            value = gridInt.getCell(
-//                                    row,
-//                                    col,
-//                                    hoome);
-//                            if (value == gridNoDataValue) {
-//                                pw.print(noDataValue + " ");
-//                            } else {
-//                                pw.print(value + " ");
-//                            }
-//                        }
                     }
                     pw.println("");
                 }
@@ -167,7 +149,6 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                             + "File(" + file.toString() + "))");
                 }
                 pw.println("NODATA_Value " + ndv);
-                double value;
                 for (row = nrows_minus_1; row >= 0; row--) {
                     for (col = 0; col < ncols; col++) {
                         chunkRow = g.getChunkRow(row);
@@ -179,8 +160,8 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                         }
 //                        try {
                         //pw.print( grid.getCell( row, col ) + " " );
-                        value = gridDouble.getCell(row, col);
-                        if (!Double.isFinite(value)) {
+                        double v = gridDouble.getCell(row, col);
+                        if (!Double.isFinite(v)) {
                             pw.print(ndv + " ");
                             System.out.println(
                                     "Warning!!! Infinitity or NaN encountered at "
@@ -188,10 +169,10 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
                                     + " column " + col + ""
                                     + " set to noDataValue " + ndv + ".");
                         } else {
-                            if (value == gridNoDataValue) {
+                            if (v == gridNoDataValue) {
                                 pw.print(ndv + " ");
                             } else {
-                                pw.print(value + " ");
+                                pw.print(v + " ");
                             }
                         }
 //                        } catch (OutOfMemoryError e) {
@@ -223,7 +204,5 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             // Flush output
             pw.flush();
         }
-        // No need to close pw as it implements AutoCloseable.
-        return file;
     }
 }

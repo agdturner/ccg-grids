@@ -3691,7 +3691,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param grid
      * @param distance
      * @param weightFactor
-     * @param hoome
      * @param weightIntersect
      * @param gf
      * @return
@@ -3718,13 +3717,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     /**
-     * Returns a HashSet containing _CellIDs which identifies cells for which
- neighbouring cells in the immediate 8 cell neighbourhood that are either
- the same v, lower or noDataValues
+     * Returns a Set of cell ID for cells  for which
+ neighbouring cells in the immediate 8 cell neighbourhood are either
+ the same, lower or noDataValues.
      *
-     * @param g - the Grids_GridDouble to be processed
+     * @param g The grid to process.
      * @param upSlopeAreaMetrics
-     * @param hoome
      * @return
      */
     public HashSet<Grids_2D_ID_long> getInitialPeaksHashSetAndSetTheirValue(
@@ -3778,6 +3776,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         }
         return initialPeaksHashSet;
     }
+    
     /**
      * @param grid the Grid2DSquareCellDouble to be processed
      */

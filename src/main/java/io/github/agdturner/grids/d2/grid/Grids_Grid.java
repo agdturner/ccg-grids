@@ -705,11 +705,11 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * The cell column.
+     * Get the cell column.
      *
      * @param cc The chunk column.
      * @param ccc The chunk cell column.
-     * @return ((long) chunkCol * (long) ChunkNCols) + (long) cellCol
+     * @return {@code ((long) cc * (long) chunkNCols) + (long) ccc}
      */
     public final long getCol(int cc, int ccc) {
         return ((long) cc * (long) chunkNCols) + (long) ccc;
@@ -745,15 +745,14 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * For getting the cell row index from the chunk row index of a chunk in
-     * chunk row {@code chunkRow}.
+     * Get the cell row.
      *
-     * @param chunkRow The chunk row.
-     * @param cellRow The cell row in the chunk.
-     * @return {@code ((long) chunkRow * (long) ChunkNRows) + (long) cellRow;}
+     * @param cr The chunk row.
+     * @param ccr The cell row in the chunk.
+     * @return {@code ((long) cr * (long) chunkNRows) + (long) ccr}
      */
-    public final long getRow(int chunkRow, int cellRow) {
-        return ((long) chunkRow * (long) chunkNRows) + (long) cellRow;
+    public final long getRow(int cr, int ccr) {
+        return ((long) cr * (long) chunkNRows) + (long) ccr;
     }
 
     /**

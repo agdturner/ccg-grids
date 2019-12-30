@@ -20,37 +20,31 @@ import io.github.agdturner.grids.core.Grids_Environment;
 import java.math.BigInteger;
 
 /**
- * Used by Grids_AbstractGrid instances (grids) to access statistics. This class
- * is to be instantiated for grids that do not keep all
- * statistic fields up to date as the underlying data is changed. (Keeping
- * statistic fields up to date as the underlying data is changed can be
- * expensive, but also it can be expensive to calculate statistics often!)
-*
+ * Statistic fields are not kept up to date as the underlying data is changed.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsNotUpdatedBinary
-        extends Grids_StatsBinary {
+public class Grids_StatsNotUpdatedBinary extends Grids_StatsBinary {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Is true iff fields are upToDate else is false.
+     * Is {@code true} if fields are up to date and {@code false} otherwise.
      */
-    protected boolean UpToDate;
+    protected boolean upToDate;
 
     /**
      * Creates a new instance of Grids_GridBinaryStatsNotUpdated.
      *
-     * @param ge
+     * @param e The grids environment.
      */
-    public Grids_StatsNotUpdatedBinary(Grids_Environment ge) {
-        super(ge);
+    public Grids_StatsNotUpdatedBinary(Grids_Environment e) {
+        super(e);
     }
 
     /**
-     * @return true iff the stats are kept up to date as the underlying data
-     * change.
+     * @return {@code false}.
      */
     @Override
     public boolean isUpdated() {
@@ -58,28 +52,29 @@ public class Grids_StatsNotUpdatedBinary
     }
 
     /**
-     * Returns upToDate.
-     *
-     * @return
+     * @return {@link #upToDate}.
      */
     public boolean isUpToDate() {
-        return UpToDate;
+        return upToDate;
     }
 
     /**
-     * Sets UpToDate to upToDate.
+     * Sets {@link #upToDate} to {@code b}.
      *
-     * @param upToDate
+     * @param b What {@link #upToDate} is set to.
      */
-    public void setUpToDate(
-            boolean upToDate) {
-        UpToDate = upToDate;
+    public void setUpToDate(boolean b) {
+        this.upToDate = b;
     }
 
     /**
-     * Updates by going through all values in {@link #grid} if the fields are likely not
-     * be up to date. (NB. After calling this it is inexpensive to convert to
-     * Grids_GridIntStatistics.)
+     * Updates by going through all values in {@link #grid} if the fields are
+     * likely not be up to date. (NB. After calling this it is inexpensive to
+     * convert to Grids_GridIntStatistics.)
+     *
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public void update() throws IOException, Exception, ClassNotFoundException {
@@ -90,9 +85,10 @@ public class Grids_StatsNotUpdatedBinary
     }
 
     /**
-     * For returning the number of cells with data values.
-     *
-     * @return
+     * @return The number of cells with {@code true} values.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public BigInteger getN() throws IOException, Exception, ClassNotFoundException {

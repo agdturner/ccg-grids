@@ -15,7 +15,9 @@
  */
 package io.github.agdturner.grids.core;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * A POJO for storing the dimensions of a grid.
@@ -23,8 +25,10 @@ import java.math.BigDecimal;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_Dimensions {
+public class Grids_Dimensions implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * The minimum x.
      */
@@ -121,6 +125,38 @@ public class Grids_Dimensions {
         return getClass().getSimpleName() + "[XMin=" + getXMin() + ", XMax="
                 + getXMax() + ", YMin=" + getYMin() + ", YMax=" + getYMax()
                 + ", Cellsize=" + getCellsize() + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Grids_Dimensions) {
+            Grids_Dimensions o2 = (Grids_Dimensions) o;
+            if (this.hashCode() == o2.hashCode()) {
+                if (this.cellsize == o2.cellsize) {
+                    if (this.xMin == o2.xMin) {
+                        if (this.xMax == o2.xMax) {
+                            if (this.yMin == o2.yMin) {
+                                if (this.yMax == o2.yMax) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.xMin);
+        hash = 37 * hash + Objects.hashCode(this.xMax);
+        hash = 37 * hash + Objects.hashCode(this.yMin);
+        hash = 37 * hash + Objects.hashCode(this.yMax);
+        hash = 37 * hash + Objects.hashCode(this.cellsize);
+        return hash;
     }
 
     /**

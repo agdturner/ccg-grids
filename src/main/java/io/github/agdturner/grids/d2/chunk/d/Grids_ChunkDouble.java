@@ -56,16 +56,16 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     /**
      * @param r The chunk cell row index.
      * @param c The chunk cell column index.
-     * @return The value at chunk cell row {@link r}, chunk cell column index
-     * {@link c}.
+     * @return The value at chunk cell row {@code r}, chunk cell column index
+     * {@code c}.
      */
     public abstract double getCell(int r, int c);
 
     /**
      * @param r The chunk cell row index.
      * @param c The chunk cell column index.
-     * @return The value at chunk cell row {@link r}, chunk cell column index
-     * {@link c} as a BigDecimal.
+     * @return The value at chunk cell row {@code r}, chunk cell column index
+     * {@code c} as a BigDecimal.
      */
     @Override
     public BigDecimal getCellBigDecimal(int r, int c) {
@@ -73,23 +73,24 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Initialises the value at position given by: row, col.
+     * Initialises the value at chunk cell row {@code r}, chunk cell column
+     * {@code c} to {@code v}.
      *
-     * @param r The chunk cell row index.
-     * @param c The chunk cell column index.
+     * @param r The chunk cell row.
+     * @param c The chunk cell column.
      * @param v The value to initialise.
      */
     public abstract void initCell(int r, int c, double v);
 
     /**
-     * Returns the value at chunk cell row index {@code r}. chunk cell column
-     * index {@code c} and sets it to {@code v}.
+     * Returns the value at chunk cell row {@code r}, chunk cell column
+     * {@code c} and sets it to {@code v}.
      *
-     * @param r The chunk cell row index.
-     * @param c The chunk cell column index.
+     * @param r The chunk cell row.
+     * @param c The chunk cell column.
      * @param v The value the cell is to be set to.
-     * @return The value at chunk cell row index {@code r}. chunk cell column
-     * index {@code c} before it is set.
+     * @return The value at chunk cell row {@code r}, chunk cell column
+     * {@code c} before it is set.
      * @throws Exception If encountered.
      */
     public abstract double setCell(int r, int c, double v) throws Exception;
@@ -138,9 +139,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the number of cells with data values.
-     *
-     * @return
+     * @return The number of cells with data values.
      */
     @Override
     public Long getN() {
@@ -163,9 +162,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the sum of all data values as a BigDecimal.
-     *
-     * @return
+     * @return The sum of all data values as a BigDecimal.
      */
     @Override
     public BigDecimal getSum() {
@@ -174,15 +171,12 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (Double.isNaN(value) && Double.isFinite(value)) {
-                    if (value != noDataValue) {
-                        sum = sum.add(new BigDecimal(value));
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                double v = getCell(row, col);
+                if (Double.isNaN(v) && Double.isFinite(v)) {
+                    if (v != noDataValue) {
+                        sum = sum.add(new BigDecimal(v));
                     }
                 }
             }
@@ -201,14 +195,11 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (value != noDataValue) {
-                    min = Math.min(min, value);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                double v = getCell(row, col);
+                if (v != noDataValue) {
+                    min = Math.min(min, v);
                 }
             }
         }
@@ -216,9 +207,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the maximum of all data values.
-     *
-     * @return
+     * @return The maximum of all data values.
      */
     protected Double getMax() {
         double max = Double.NEGATIVE_INFINITY;
@@ -226,14 +215,11 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         double noDataValue = g.getNoDataValue();
-        double value;
-        int row;
-        int col;
-        for (row = 0; row < nrows; row++) {
-            for (col = 0; col < ncols; col++) {
-                value = getCell(row, col);
-                if (value != noDataValue) {
-                    max = Math.max(max, value);
+        for (int row = 0; row < nrows; row++) {
+            for (int col = 0; col < ncols; col++) {
+                double v = getCell(row, col);
+                if (v != noDataValue) {
+                    max = Math.max(max, v);
                 }
             }
         }
@@ -241,10 +227,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * For returning the mode of all data values as a HashSet&LT;Double&GT;.
-     * Better to use toArray and go through a sorted version?
-     *
-     * @return
+     * @return The mode of all data values.
      */
     protected HashSet<Double> getMode() {
         HashSet<Double> mode = new HashSet<>();
@@ -254,8 +237,6 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
             int nrows = g.getChunkNRows(id);
             int ncols = g.getChunkNCols(id);
             double noDataValue = g.getNoDataValue();
-            int p;
-            int q;
             Object[] tmode = initMode(nrows, ncols, noDataValue);
             if (tmode[0] == null) {
                 return mode;
@@ -266,8 +247,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
                 mode.add((Double) tmode[1]);
                 Grids_2D_ID_int chunkCellID = (Grids_2D_ID_int) tmode[2];
                 // Do remainder of the row
-                p = chunkCellID.getRow();
-                for (q = chunkCellID.getCol() + 1; q < ncols; q++) {
+                int p = chunkCellID.getRow();
+                for (int q = chunkCellID.getCol() + 1; q < ncols; q++) {
                     value = getCell(p, q);
                     if (value != noDataValue) {
                         count = count(p, q, nrows, ncols, value);
@@ -284,7 +265,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
                 }
                 // Do remainder of the grid
                 for (p++; p < nrows; p++) {
-                    for (q = 0; q < ncols; q++) {
+                    for (int q = 0; q < ncols; q++) {
                         value = getCell(p, q);
                         if (value != noDataValue) {
                             count = count(p, q, nrows, ncols, value);
@@ -313,27 +294,22 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     private Object[] initMode(int nrows, int ncols, double noDataValue) {
         Object[] initMode = new Object[3];
         long modeCount;
-        int p;
-        int q;
-        int row;
-        int col;
-        double value;
         double thisValue;
-        for (p = 0; p < nrows; p++) {
-            for (q = 0; q < ncols; q++) {
-                value = getCell(p, q);
-                if (value != noDataValue) {
+        for (int p = 0; p < nrows; p++) {
+            for (int q = 0; q < ncols; q++) {
+               double v = getCell(p, q);
+                if (v != noDataValue) {
                     modeCount = 0L;
-                    for (row = 0; row < nrows; row++) {
-                        for (col = 0; col < ncols; col++) {
+                    for (int row = 0; row < nrows; row++) {
+                        for (int col = 0; col < ncols; col++) {
                             thisValue = getCell(row, col);
-                            if (thisValue == value) {
+                            if (thisValue == v) {
                                 modeCount++;
                             }
                         }
                     }
                     initMode[0] = modeCount;
-                    initMode[1] = value;
+                    initMode[1] = v;
                     initMode[2] = new Grids_2D_ID_int(p, q);
                     return initMode;
                 }
@@ -378,9 +354,9 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * copied from java.util.Arrays and method changed so not static for
      * performance reasons.
      *
-     * @param x
-     * @param len
-     * @param off
+     * @param x The array.
+     * @param len The length.
+     * @param off The offset.
      */
     protected void sort1(double x[], int off, int len) {
         // Insertion sort on smallest arrays
@@ -478,10 +454,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * Returns the median of all data values as a double. This method requires
+     * @return The median of all data values as a double. This method requires
      * that all data in chunk can be stored as a new array.
-     *
-     * @return
      */
     public double getMedian() {
         long n = getN();

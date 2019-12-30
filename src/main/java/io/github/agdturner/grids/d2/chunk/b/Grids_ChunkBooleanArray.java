@@ -52,23 +52,25 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
     }
 
     /**
-     * Returns the value at row, col.
+     * Returns the value at {@code row}, {@code col}.
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @return The value at {@code row}, {@code col}.
      */
     public Boolean getCell(int row, int col) {
         return data[row][col];
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to value.
+     * Returns the value at {@code row}, {@code col} and sets it to value
+     * {@code v}.
      *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to
-     * @return
+     * @param row The chunk cell row index.
+     * @param col The chunk cell column index.
+     * @param v The value the cell is to be set to.
+     * @return The value at {@code row}, {@code col} before it is set to
+     * {@code v}.
      */
     public Boolean setCell(int row, int col, boolean v) {
         Boolean v0 = data[row][col];
@@ -82,14 +84,14 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
     }
 
     /**
-     * Initialises the value at row, col to v.
+     * Initialises the value at {@code row}, {@code col} to {@code v}.
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @param value
+     * @param v The value to initialise.
      */
-    public void initCell(int row, int col, Boolean value) {
-        data[row][col] = value;
+    public void initCell(int row, int col, Boolean v) {
+        data[row][col] = v;
     }
 
     /**

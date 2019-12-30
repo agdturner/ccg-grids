@@ -21,14 +21,14 @@ import io.github.agdturner.grids.d2.chunk.Grids_Chunk;
 
 /**
  * Stores the data in a {@code boolean[][]}.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
 public class Grids_ChunkBinaryArray extends Grids_Chunk {
 
     private static final long serialVersionUID = 1L;
-    
+
     boolean[][] data;
 
     public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int i) {
@@ -53,23 +53,25 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     }
 
     /**
-     * Returns the value at row, col.
+     * Returns the value at {@code row}, {@code col}.
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @return
+     * @return The value at {@code row}, {@code col}.
      */
     public boolean getCell(int row, int col) {
         return this.data[row][col];
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to value.
+     * Returns the value at {@code row}, {@code col} and sets it to value
+     * {@code v}.
      *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param v the value the cell is to be set to
-     * @return
+     * @param row The chunk cell row index.
+     * @param col The chunk cell column index.
+     * @param v The value the cell is to be set to.
+     * @return The value at {@code row}, {@code col} before it is set to
+     * {@code v}.
      */
     public boolean setCell(int row, int col, boolean v) {
         boolean v0 = this.data[row][col];
@@ -83,14 +85,14 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     }
 
     /**
-     * Initialises the value at row, col to v.
+     * Initialises the value at {@code row}, {@code col} to {@code v}.
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
-     * @param value
+     * @param v The value to initialise.
      */
-    public void initCell(int row, int col, Boolean value) {
-        this.data[row][col] = value;
+    public void initCell(int row, int col, Boolean v) {
+        this.data[row][col] = v;
     }
 
     /**

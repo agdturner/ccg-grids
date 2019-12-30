@@ -175,7 +175,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
-        double noDataValue = g.getNoDataValue();
+        double ndv = g.getNoDataValue();
         double[][] r = new double[nrows][ncols];
         Arrays.fill(r, defaultValue);
         /**
@@ -185,7 +185,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
                 if (noData.get(i)) {
-                    r[row][col] = noDataValue;
+                    r[row][col] = ndv;
                 }
                 i++;
             }
@@ -714,9 +714,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * Returns the minimum of all data values as a double.
-     *
-     * @return
+     * @return The minimum of all data values.
      */
     @Override
     public Double getMin() {
@@ -733,9 +731,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * Returns the maximum of all data values as a double.
-     *
-     * @return
+     * @return The maximum of all data values.
      */
     @Override
     public Double getMax() {
@@ -752,9 +748,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * For returning the mode of all non _NoDataValues as a TDoubleHashSet
-     *
-     * @return
+     * @return The mode.
      */
     @Override
     protected HashSet<Double> getMode() {
@@ -791,9 +785,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * For returning the median of all data values as a double.
-     *
-     * @return
+     * @return The median.
      */
     @Override
     public double getMedian() {
@@ -846,9 +838,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     /**
-     * For returning the standard deviation of all non _NoDataValues as a double
-     *
-     * @return
+     * @return The standard deviation.
      */
     @Override
     protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {

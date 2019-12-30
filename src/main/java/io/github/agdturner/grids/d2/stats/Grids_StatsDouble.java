@@ -43,26 +43,26 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
     /**
      * For storing the minimum value.
      */
-    protected double Min;
+    protected double min;
 
     /**
      * For storing the maximum value.
      */
-    protected double Max;
+    protected double max;
 
     public Grids_StatsDouble(Grids_Environment ge) {
         super(ge);
-        Min = Double.MAX_VALUE;
-        Max = -Double.MAX_VALUE;
-        Sum = BigDecimal.ZERO;
+        min = Double.MAX_VALUE;
+        max = -Double.MAX_VALUE;
+        sum = BigDecimal.ZERO;
     }
 
     @Override
     protected void init() {
         super.init();
-        Min = Double.MAX_VALUE;
-        Max = -Double.MAX_VALUE;
-        Sum = BigDecimal.ZERO;
+        min = Double.MAX_VALUE;
+        max = -Double.MAX_VALUE;
+        sum = BigDecimal.ZERO;
     }
 
     /**
@@ -108,21 +108,21 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
 
     protected void update(double v, BigDecimal vBD) {
         n = n.add(BigInteger.ONE);
-        setSum(Sum.add(vBD));
-        if (v < Min) {
-            NMin = 1;
-            Min = v;
+        setSum(sum.add(vBD));
+        if (v < min) {
+            nMin = 1;
+            min = v;
         } else {
-            if (v == Min) {
-                NMin++;
+            if (v == min) {
+                nMin++;
             }
         }
-        if (v > Max) {
-            NMax = 1;
-            Max = v;
+        if (v > max) {
+            nMax = 1;
+            max = v;
         } else {
-            if (v == Max) {
-                NMax++;
+            if (v == max) {
+                nMax++;
             }
         }
     }
@@ -135,16 +135,16 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      */
     @Override
     public Double getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
-        if (NMin < 1) {
+        if (nMin < 1) {
             if (update) {
                 update();
             }
         }
-        return Min;
+        return min;
     }
 
     public void setMin(double min) {
-        Min = min;
+        this.min = min;
     }
 
     /**
@@ -154,16 +154,16 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      */
     @Override
     public Double getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
-        if (NMax < 1) {
+        if (nMax < 1) {
             if (update) {
                 update();
             }
         }
-        return Max;
+        return max;
     }
 
     public void setMax(double max) {
-        Max = max;
+        this.max = max;
     }
 
     /**
@@ -189,16 +189,16 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getNonZeroN() throws IOException, Exception, ClassNotFoundException {
-        BigInteger r = BigInteger.ZERO;
+    public long getNonZeroN() throws IOException, Exception, ClassNotFoundException {
+        long r = 0L;
         Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
         Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
-            double value = ite.next();
-            if (!(value == ndv || value == 0)) {
-                if (Double.isFinite(value)) {
-                    r = r.add(BigInteger.ONE);
+            double v = ite.next();
+            if (!(v == ndv || v == 0)) {
+                if (Double.isFinite(v)) {
+                    r++;
                 }
             }
         }
@@ -236,7 +236,8 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result will be accurate to.
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The RoundingMode used in BigDecimal arithmetic.
      * @return The standard deviation correct to {@code dp} decimal places.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -276,23 +277,21 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Object[] getQuantileClassMap(int nClasses) throws IOException, Exception,
-            ClassNotFoundException {
+    public Object[] getQuantileClassMap(int nClasses) throws IOException,
+            Exception, ClassNotFoundException {
         Object[] r = new Object[3];
         Grids_GridDouble g = getGrid();
-        TreeMap<Integer, Double> mins = new TreeMap<>();
-        TreeMap<Integer, Double> maxs = new TreeMap<>();
+        TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
+        TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
-            mins.put(i, Double.MAX_VALUE);
-            maxs.put(i, -Double.MAX_VALUE);
+            mins.put(i, BigDecimal.valueOf(Double.MAX_VALUE));
+            maxs.put(i, BigDecimal.valueOf(-Double.MAX_VALUE));
         }
         r[0] = mins;
         r[1] = maxs;
-        BigInteger nonZeroN = getNonZeroN();
-        long nonZeroNLong = nonZeroN.longValueExact();
-        System.out.println("nonZeroAndNonNoDataValueCount " + nonZeroN);
-        long nInClass = nonZeroNLong / nClasses;
-        if (nonZeroNLong % nClasses != 0) {
+        long nonZeroN = getNonZeroN();
+        long nInClass = nonZeroN / nClasses;
+        if (nonZeroN % nClasses != 0) {
             nInClass += 1;
         }
         double noDataValue = g.getNoDataValue();
@@ -302,7 +301,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         }
         int classToFill = 0;
         boolean firstValue = true;
-        TreeMap<Integer, TreeMap<Double, Long>> classMap = new TreeMap<>();
+        TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap = new TreeMap<>();
         for (int i = 0; i < nClasses; i++) {
             classMap.put(i, new TreeMap<>());
         }
@@ -311,17 +310,18 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
         //long valueID = 0;
         Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
-            double value = ite.next();
-            if (!(value == 0.0d || value == noDataValue)) {
+            double v = ite.next();
+            BigDecimal vbd = BigDecimal.valueOf(v);
+            if (!(v == 0.0d || v == noDataValue)) {
                 if (count % nInClass == 0) {
                     System.out.println(count + " out of " + nonZeroN);
                 }
                 count++;
                 if (firstValue) {
-                    mins.put(0, value);
-                    maxs.put(0, value);
+                    mins.put(0, vbd);
+                    maxs.put(0, vbd);
                     classCounts.put(0, 1L);
-                    classMap.get(0).put(value, 1L);
+                    classMap.get(0).put(vbd, 1L);
                     if (nInClass < 2) {
                         classToFill = 1;
                     }
@@ -331,7 +331,7 @@ public class Grids_StatsDouble extends Grids_StatsNumber {
                     if (classToFill == nClasses) {
                         classToFill--;
                     }
-                    valueClass = getValueClass(value, classMap, mins, maxs, 
+                    valueClass = getValueClass(vbd, classMap, mins, maxs,
                             classCounts, nInClass, classToFill);
                     classToFill = valueClass[1];
                 }

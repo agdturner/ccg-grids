@@ -21,7 +21,6 @@ import io.github.agdturner.grids.core.Grids_2D_ID_int;
 import io.github.agdturner.grids.core.Grids_Environment;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridBoolean;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridIteratorBoolean;
-import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkBooleanArray;
 import java.math.BigInteger;
 
 /**
@@ -36,6 +35,8 @@ import java.math.BigInteger;
  * @version 1.0.0
  */
 public class Grids_StatsBoolean extends Grids_Stats {
+
+    private static final long serialVersionUID = 1L;
 
     public Grids_StatsBoolean(Grids_Environment ge) {
         super(ge);
@@ -62,7 +63,9 @@ public class Grids_StatsBoolean extends Grids_Stats {
     /**
      * Updates by going through all values in grid.
      *
-     * @throws java.io.IOException
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public void update() throws IOException, Exception, ClassNotFoundException {
@@ -80,9 +83,10 @@ public class Grids_StatsBoolean extends Grids_Stats {
     }
 
     /**
-     * @return The total number of {@code true} and {@code false} values in the grid. 
+     * @return The total number of {@code true} and {@code false} values in the
+     * grid.
      * @throws java.io.IOException If encountered.
-      * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public BigInteger getN() throws IOException, Exception, ClassNotFoundException {

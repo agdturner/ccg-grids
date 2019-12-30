@@ -112,38 +112,32 @@ public abstract class Grids_Chunk extends Grids_Object {
     }
 
     /**
-     * Sets {@link #cacheUpToDate} to b.
+     * Sets {@link #cacheUpToDate} to {@code b}.
      *
-     * @param b
+     * @param b What {@link #cacheUpToDate} is set to.
      */
     public void setCacheUpToDate(boolean b) {
         cacheUpToDate = b;
     }
 
     /**
-     * For returning a description of this.
-     *
-     * @return
+     * @return A text description of this.
      */
     protected String getDescription() {
-        return getName() + "(ChunkID(" + id.toString() + "))";
+        return getName() + ", id=" + id.toString();
     }
 
     /**
-     * Returns the name of this.
-     *
-     * @return
+     * @return The name of this.
      */
     public String getName() {
         return this.getClass().getName();
     }
 
     /**
-     * Returns true if row, col is in this.
-     *
-     * @param row
-     * @param col
-     * @return
+     * @param row The chunk row.
+     * @param col The chunk column.
+     * @return {@code true} if row, col is in this.
      */
     public boolean inChunk(int row, int col) {
         if (row >= 0 && row < chunkNRows) {
@@ -165,9 +159,8 @@ public abstract class Grids_Chunk extends Grids_Object {
     protected abstract void initData();
 
     /**
-     * Returns the number of cells with data values or values of true.
-     *
-     * @return
+     * @return The number of cells with data values or values that are
+     * {@code true}.
      */
     public abstract Long getN();
 }

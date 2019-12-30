@@ -44,6 +44,7 @@ import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBoolean;
 import io.github.agdturner.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import io.github.agdturner.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import io.github.agdturner.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
+import io.github.agdturner.grids.d2.grid.Grids_Grid;
 import io.github.agdturner.grids.d2.grid.b.Grids_GridFactoryBinary;
 import io.github.agdturner.grids.d2.stats.Grids_StatsNumber;
 import io.github.agdturner.grids.io.Grids_ESRIAsciiGridExporter;
@@ -64,7 +65,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * For storing the start time of the processing.
      */
-    public final long StartTime;
+    public final long startTime;
 
     /**
      * For convenience.
@@ -100,7 +101,7 @@ public class Grids_Processor extends Grids_Object {
     public Grids_Processor(Grids_Environment e) throws Exception, IOException,
             ClassNotFoundException {
         super(e);
-        StartTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         files = e.files;
         int chunkNRows = 512;
         int chunkNCols = 512;
@@ -166,12 +167,36 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a copy of StartTime.
-     *
-     * @return
+     * @return {@link #startTime}
      */
     public long getTime0() {
-        return StartTime;
+        return startTime;
+    }
+
+    /**
+     * Find out if grid {@code g0} and grid {@code g1} have the same frame - the
+     * same dimensions and chunking.
+     *
+     * @param g0 A grid to compare.
+     * @param g1 A grid to compare.
+     * @return {@code true} if grid {@code g0} and grid {@code g1} have the same
+     * frame - the same dimensions and chunking.
+     */
+    public boolean isSameFrame(Grids_Grid g0, Grids_Grid g1) {
+        Grids_Dimensions g0Dim = g0.getDimensions();
+        Grids_Dimensions g1Dim = g1.getDimensions();
+        if (g0Dim.equals(g1Dim)) {
+            if (g0.getChunkNRows() == g1.getChunkNRows()) {
+                if (g0.getChunkNCols() == g1.getChunkNCols()) {
+                    if (g0.getNChunkRows() == g1.getNChunkRows()) {
+                        if (g0.getNChunkCols() == g1.getNChunkCols()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -402,8 +427,8 @@ public class Grids_Processor extends Grids_Object {
     /**
      * For rescaling the {@code double} type grid {@code g}. The type of
      * rescaling is determined by {@code type}. If {@code type == null} the a
-     * linear rescaling is done. If {@code type = "log" a log rescaling is done. For
-     * any other value of type this will throw an exception.
+     * linear rescaling is done. If {@code type = "log"} a log rescaling is
+     * done. For any other value of type this will throw an exception.
      *
      * There are other rescaling implementation that might be useful that are
      * not currently implemented.
@@ -535,7 +560,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * For rescaling the {@code int} type grid {@code g}. The type of rescaling
      * is determined by {@code type}. If {@code type == null} the a linear
-     * rescaling is done. If {@code type = "log" a log rescaling is done. For
+     * rescaling is done. If {@code type = "log"} a log rescaling is done. For
      * any other value of type this will throw an exception.
      *
      * There are other rescaling implementation that might be useful that are
@@ -747,6 +772,7 @@ public class Grids_Processor extends Grids_Object {
         int ncc = g.getNChunkCols();
         for (int cr = 0; cr < ncr; cr++) {
             for (int cc = 0; cc < ncc; cc++) {
+                env.checkAndMaybeFreeMemory();
                 int cnr = g.getChunkNRows(cr);
                 int cnc = g.getChunkNCols(cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
@@ -1058,28 +1084,148 @@ public class Grids_Processor extends Grids_Object {
      * dimensions are all the same;
      *
      * @param g0 The first grid to multiply.
-     * @param g1 The second grid to mulitply
-     * @return
+     * @param g1 The second grid to multiply
+     * @return g0 * g1
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble multiply(Grids_GridDouble g0, Grids_GridDouble g1)
+    public Grids_GridDouble multiply(Grids_GridNumber g0, Grids_GridNumber g1)
             throws IOException, ClassNotFoundException, Exception {
+        env.checkAndMaybeFreeMemory();
         Grids_GridDouble r;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         r = GridDoubleFactory.create(g0, 0L, 0L, nRows - 1, nCols - 1);
-        double noDataValue0 = g0.getNoDataValue();
-        double noDataValue1 = g1.getNoDataValue();
-        for (long row = 0L; row < nRows; row++) {
-            for (long col = 0L; col < nCols; col++) {
-                double v0 = g0.getCell(row, col);
-                double v1 = g1.getCell(row, col);
-                if (v0 != noDataValue0) {
-                    if (v1 != noDataValue1) {
-                        r.setCell(row, col, v0 * v1);
+        BigDecimal ndv0 = g0.ndv;
+        BigDecimal ndv1 = g1.ndv;
+        int ncr = g0.getNChunkRows();
+        int ncc = g0.getNChunkCols();
+        if (isSameFrame(g0, g1)) {
+            if (isSameFrame(g0, r)) {
+                /**
+                 * Grids are coincident and have the same chunks.
+                 */
+                for (int cr = 0; cr < ncr; cr++) {
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g0, i);
+                        env.addToNotToClear(g1, i);
+                        env.addToNotToClear(r, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnr = g0.getChunkNRows(cr);
+                        int cnc = g0.getChunkNCols(cc);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
+                                        ccr, ccc);
+                                if (v0 != ndv0) {
+                                    BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
+                                            ccr, ccc);
+                                    if (v1 != ndv1) {
+                                        r.setCell(cr, cc, ccr, ccc,
+                                                v0.multiply(v1));
+                                    }
+                                }
+
+                            }
+                        }
+                        env.removeFromNotToClear(g0, i);
+                        env.removeFromNotToClear(g1, i);
+                        env.removeFromNotToClear(r, i);
                     }
+                }
+            } else {
+                /**
+                 * Input grids are coincident and have the same chunks, but the
+                 * result has different chunks.
+                 */
+                for (int cr = 0; cr < ncr; cr++) {
+                    int cnr = g0.getChunkNRows(cr);
+                    /**
+                     * Prefer to keep a row of r chunks in memory.
+                     */
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        long row = r.getRow(cr, ccr);
+                        env.addToNotToClear(r, r.getChunkRow(row));
+                    }
+                    for (int cc = 0; cc < ncc; cc++) {
+                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                        env.addToNotToClear(g0, i);
+                        env.addToNotToClear(g1, i);
+                        env.checkAndMaybeFreeMemory();
+                        int cnc = g0.getChunkNCols(cc);
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            long row = r.getRow(cr, ccr);
+                            env.addToNotToClear(r, r.getChunkRow(row));
+                            for (int ccc = 0; ccc < cnc; ccc++) {
+                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
+                                        ccr, ccc);
+                                if (v0 != ndv0) {
+                                    BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
+                                            ccr, ccc);
+                                    if (v1 != ndv1) {
+                                        r.setCell(row, r.getCol(cc, ccc),
+                                                v0.multiply(v1));
+                                    }
+                                }
+                            }
+                        }
+                        env.removeFromNotToClear(g0, i);
+                        env.removeFromNotToClear(g1, i);
+                    }
+                    /**
+                     * Allow the row of r chunks to be swapped.
+                     */
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        long row = r.getRow(cr, ccr);
+                        env.removeFromNotToClear(r, r.getChunkRow(row));
+                    }
+                }
+            }
+        } else {
+            for (int cr = 0; cr < ncr; cr++) {
+                int cnr = g0.getChunkNRows(cr);
+                /**
+                 * Prefer to keep a row of g0 and r chunks in memory.
+                 */
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    long row = g0.getRow(cr, ccr);
+                    BigDecimal y = g0.getCellY(row);
+                    env.addToNotToClear(g1, g1.getChunkRow(y));
+                    env.addToNotToClear(r, r.getChunkRow(y));
+                }
+                for (int cc = 0; cc < ncc; cc++) {
+                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                    env.addToNotToClear(g0, i);
+                    env.checkAndMaybeFreeMemory();
+                    int cnc = g0.getChunkNCols(cc);
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        long row = r.getRow(cr, ccr);
+                        BigDecimal y = g0.getCellY(row);
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            long col = r.getCol(cc, ccc);
+                            BigDecimal v0 = g0.getCellBigDecimal(cr, cc, ccr,
+                                    ccc);
+                            if (v0 != ndv0) {
+                                BigDecimal x = g0.getCellX(col);
+                                BigDecimal v1 = g1.getCellBigDecimal(x, y);
+                                if (v1 != ndv1) {
+                                    r.setCell(x, y, v0.multiply(v1));
+                                }
+                            }
+                        }
+                    }
+                    env.removeFromNotToClear(g0, i);
+                }
+                /**
+                 * Allow the row of g0 and r chunks to be swapped.
+                 */
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    long row = g0.getRow(cr, ccr);
+                    BigDecimal y = g0.getCellY(row);
+                    env.addToNotToClear(g1, g1.getChunkRow(y));
+                    env.addToNotToClear(r, r.getChunkRow(y));
                 }
             }
         }
@@ -1092,7 +1238,7 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g0 Numerator
      * @param g1 Denominator
-     * @return
+     * @return g0 / g1
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -2073,28 +2219,26 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Returns a double[][] of grid values
      *
-     * @param g
-     * @param row
-     * @param cellDistance
-     * @return
+     * @param g The grid.
+     * @param row The row.
+     * @param cellDistance The cell distance.
+     * @return A double[][] of all cells within cellDistance.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[][] getRowProcessInitialData(Grids_GridDouble g,
-            int cellDistance, long row) throws IOException, Exception, ClassNotFoundException {
+            int cellDistance, long row) throws IOException, Exception,
+            ClassNotFoundException {
         int l = (cellDistance * 2) + 1;
-        double[][] result = new double[l][l];
-        long col;
-        long r;
-        for (r = -cellDistance; r <= cellDistance; r++) {
-            for (col = -cellDistance; col <= cellDistance; col++) {
-                double value = g.getCell(r + row, col);
-                result[(int) r + cellDistance][(int) col + cellDistance]
-                        = value;
+        double[][] r = new double[l][l];
+        for (long r2 = -cellDistance; r2 <= cellDistance; r2++) {
+            for (long c = -cellDistance; c <= cellDistance; c++) {
+                r[(int) r2 + cellDistance][(int) c + cellDistance]
+                        = g.getCell(row + r2, c);
             }
         }
-        return result;
+        return r;
     }
 
     /**

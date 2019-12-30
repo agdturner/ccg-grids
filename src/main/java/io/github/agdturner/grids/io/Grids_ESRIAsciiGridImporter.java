@@ -230,12 +230,10 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     }
 
     /**
-     * Returns the next value as a double or Double.NEGATIVE_INFINITY
-     *
-     * @return
+     * @return The next value as a double or Double.NEGATIVE_INFINITY.
      */
     public double readDouble() {
-        double result = Double.NEGATIVE_INFINITY;
+        double r = Double.NEGATIVE_INFINITY;
         try {
             this.st.nextToken();
             if (this.st.ttype != StreamTokenizer.TT_EOF) {
@@ -254,7 +252,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     if (tokenSplit.length != 2) {
                         throw new NumberFormatException();
                     } else {
-                        result = Double.valueOf(tokenSplit[0]);
+                        r = Double.valueOf(tokenSplit[0]);
                         if (tokenSplit[1].startsWith("-")) {
                             positiveExponent = false;
                             tokenSplit[1] = tokenSplit[1].substring(1);
@@ -275,7 +273,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                         if (tokenSplit.length != 2) {
                             throw new NumberFormatException();
                         } else {
-                            result = Double.valueOf(tokenSplit[0]);
+                            r = Double.valueOf(tokenSplit[0]);
                             if (tokenSplit[1].startsWith("-")) {
                                 positiveExponent = false;
                                 tokenSplit[1] = tokenSplit[1].substring(1);
@@ -296,7 +294,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                             if (tokenSplit.length != 2) {
                                 throw new NumberFormatException();
                             } else {
-                                result = Double.valueOf(tokenSplit[0]);
+                                r = Double.valueOf(tokenSplit[0]);
                                 if (tokenSplit[1].startsWith("-")) {
                                     positiveExponent = false;
                                     tokenSplit[1] = tokenSplit[1].substring(1);
@@ -317,7 +315,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                 if (tokenSplit.length != 2) {
                                     throw new NumberFormatException();
                                 } else {
-                                    result = Double.valueOf(tokenSplit[0]);
+                                    r = Double.valueOf(tokenSplit[0]);
                                     if (tokenSplit[1].startsWith("-")) {
                                         positiveExponent = false;
                                         tokenSplit[1] = tokenSplit[1].substring(1);
@@ -333,7 +331,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                                     exponent = Integer.valueOf(tokenSplit[1]);
                                 }
                             } else {
-                                result = Double.valueOf(token);
+                                r = Double.valueOf(token);
                             }
                         }
                     }
@@ -341,24 +339,22 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                 if (!positiveExponent) {
                     exponent *= -1;
                 }
-                result *= Math.pow(10.0, exponent);
+                r *= Math.pow(10.0, exponent);
                 if (!positive) {
-                    result *= -1.0;
+                    r *= -1.0;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }
-        return result;
+        return r;
     }
 
     /**
-     * Returns the next value as a int or Integer.MIN_VALUE
-     *
-     * @return
+     * @return The next value as a int or Integer.MIN_VALUE.
      */
     public int readInt() {
-        int result = Integer.MIN_VALUE;
+        int r = Integer.MIN_VALUE;
         try {
             this.st.nextToken();
             this.br.mark(100);
@@ -369,16 +365,16 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     // Either encountered an exponent term or something else
                     // Treat as an exponent: grab the second part and compute
                     this.st.nextToken();
-                    result = (int) (number * Math.pow(10.0, this.st.nval));
+                    r = (int) (number * Math.pow(10.0, this.st.nval));
                 } else {
-                    result = (int) number;
+                    r = (int) number;
                     this.br.reset();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }
-        return result;
+        return r;
     }
 
     /**

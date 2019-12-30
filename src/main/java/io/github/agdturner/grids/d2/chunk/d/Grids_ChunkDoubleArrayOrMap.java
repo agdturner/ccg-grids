@@ -32,7 +32,7 @@ public abstract class Grids_ChunkDoubleArrayOrMap extends Grids_ChunkDouble {
 
     /**
      * {@link #worthClearing} is set to {@code true}.
-     * @param g What {@link #Grid} is set to.
+     * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      */
     protected Grids_ChunkDoubleArrayOrMap(Grids_GridDouble g, 

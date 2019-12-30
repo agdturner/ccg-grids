@@ -17,41 +17,35 @@ package io.github.agdturner.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.io.Serializable;
 import io.github.agdturner.grids.core.Grids_Environment;
 import java.math.BigInteger;
 
 /**
- * Used by Grids_AbstractGridNumber instances to access statistics. This class
- * is to be instantiated for Grids_AbstractGridNumber that do not keep all
- * statistic fields up to date as the underlying data is changed. (Keeping
- * statistic fields up to date as the underlying data is changed can be
- * expensive, but also it can be expensive to calculate statistics often!)
-*
+ * Statistic fields are not kept up to date as the underlying data is changed.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsNotUpdatedInt
-        extends Grids_StatsInt
-        implements Serializable {
+public class Grids_StatsNotUpdatedInt extends Grids_StatsInt {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Is true iff fields are upToDate else is false.
      */
-    protected boolean UpToDate;
+    protected boolean upToDate;
 
     /**
-     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     * Creates a new instance.
      *
-     * @param ge
+     * @param e The grids environment.
      */
-    public Grids_StatsNotUpdatedInt(Grids_Environment ge) {
-        super(ge);
+    public Grids_StatsNotUpdatedInt(Grids_Environment e) {
+        super(e);
     }
 
     /**
-     * @return true iff the stats are kept up to date as the underlying data
-     * change.
+     * @return {@code false}.
      */
     @Override
     public boolean isUpdated() {
@@ -59,28 +53,29 @@ public class Grids_StatsNotUpdatedInt
     }
 
     /**
-     * Returns upToDate.
-     *
-     * @return
+     * @return {@link #upToDate}
      */
     public boolean isUpToDate() {
-        return UpToDate;
+        return upToDate;
     }
 
     /**
-     * Sets UpToDate to upToDate.
+     * Sets {@link #upToDate} to {@code b}.
      *
-     * @param upToDate
+     * @param b What {@link #upToDate} is set to.
      */
-    public void setUpToDate(
-            boolean upToDate) {
-        UpToDate = upToDate;
+    public void setUpToDate(boolean b) {
+        upToDate = b;
     }
 
     /**
-     * Updates by going through all values in Grid if they might not be up to
+     * Updates by going through all values in grid if they might not be up to
      * date. (NB. After calling this it is inexpensive to convert to
      * Grids_GridIntStats.)
+     *
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public void update() throws IOException, Exception, ClassNotFoundException {
@@ -91,9 +86,12 @@ public class Grids_StatsNotUpdatedInt
     }
 
     /**
-     * For returning the number of cells with data values.
+     * Get the number of cells with data values.
      *
-     * @return
+     * @return The number of cells with data values.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
@@ -102,51 +100,53 @@ public class Grids_StatsNotUpdatedInt
     }
 
     /**
-     * For returning the sum of all data values.
+     * Get the sum of all data values.
      *
-     * @return
+     * @return The sum of all data values.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
+    public BigDecimal getSum() throws IOException, Exception,
+            ClassNotFoundException {
         update();
-        return Sum;
+        return sum;
     }
 
     /**
-     * For returning the minimum of all data values.
+     * Get the minimum of all data values.
      *
      * @param update If true then update() is called.
-     * @return
+     * @return The minimum of all data values.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Integer getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
+    public Integer getMin(boolean update) throws IOException, Exception,
+            ClassNotFoundException {
         if (update) {
             update();
         }
-        return Min;
+        return min;
     }
 
     /**
-     * For returning the maximum of all data values.
+     * Get the maximum of all data values.
      *
      * @param update If true then update() is called.
-     * @return
+     * @return The maximum of all data values.
+     * @throws java.lang.Exception If encountered.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Integer getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
+    public Integer getMax(boolean update) throws IOException, Exception,
+            ClassNotFoundException {
         if (update) {
             update();
         }
-        return Max;
+        return max;
     }
-
-//    @Override
-//    protected BigInteger getNonZeroN() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//
-//    @Override
-//    protected BigDecimal getStandardDeviation() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 }
