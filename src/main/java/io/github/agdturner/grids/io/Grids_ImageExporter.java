@@ -51,11 +51,10 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
     /**
      * Creates a new instance of ImageExporter
      *
-     * @param ge
+     * @param e The grids environment.
      */
-    public Grids_ImageExporter(
-            Grids_Environment ge) {
-        super(ge);
+    public Grids_ImageExporter(Grids_Environment e) {
+        super(e);
     }
 
     /**
@@ -250,15 +249,15 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
     }
 
     /**
-     * Writes this grid as a Grey scale image
+     * Writes this grid as a colour image.
      *
      * @param duplication This is for resampling, if duplication = 0 then pixels
      * are not duplicated. If duplication = 1 then 4 times as many pixels are
      * written out. If duplication = 2 then 9 times as many pixels are written
      * out.
-     * @param colours
-     * @param noDataValueColour
-     * @param g
+     * @param colours Colours.
+     * @param noDataValueColour The colour for noDataVAlue
+     * @param g The grid.
      * @param file The File exported to.
      * @param type The name of the type of image to be written e.g. "png", *
      * "jpeg"

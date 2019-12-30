@@ -2242,14 +2242,17 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Returns a double[][] based on previous which has been shuffled
+     * Returns a double[][] based on {@code previous} which has had the left
+     * most column removed and a new column added at the right.
      *
-     * @param g
-     * @param col
-     * @param previous
-     * @param cellDistance
-     * @param row
-     * @return
+     * @param g The grid.
+     * @param col The column.
+     * @param previous The previous data.
+     * @param cellDistance The cell distance.
+     * @param row The row.
+     * @return A double[][] based on {@code previous} which has had the left
+     * most column removed and a new column added at the right.
+     *
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -2279,11 +2282,11 @@ public class Grids_Processor extends Grids_Object {
     /**
      * For outputting g in various formats.
      *
-     * @param g
-     * @param outDir
-     * @param ie
-     * @param imageTypes
-     * @param eage
+     * @param g The grid to output.
+     * @param outDir The output directory.
+     * @param ie The image exporter.
+     * @param imageTypes The image types.
+     * @param eage The ESRI AsciiGrid exporter.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -2321,12 +2324,12 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     *
-     * @param g
-     * @param outDir
-     * @param ie
-     * @param imageTypes
-     * @param hoome
+     * @param g The grid to output.
+     * @param outDir The output directory.
+     * @param ie The image exporter.
+     * @param imageTypes The image types.
+     * @param hoome If {@code true} then an attempt to handle OutOfMemory Errors
+     * is made.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -2368,6 +2371,9 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
+     * For outputting grid {@code g} in ESRIAsciiGrid format. NoDataValues is
+     * set to -9999.0,
+     *
      * @param g The grid to output
      * @param outDir The directory to output to.
      * @param eage The exporter.
@@ -2381,12 +2387,9 @@ public class Grids_Processor extends Grids_Object {
         if (eage == null) {
             eage = new Grids_ESRIAsciiGridExporter(env);
         }
-        String string_DotASC = ".asc";
         String ndv = "-9999.0";
-        String string;
-        Path file;
-        string = g.getName() + string_DotASC;
-        file = Paths.get(outDir.toString(), string);
+        String fn = g.getName() + ".asc";
+        Path file = Paths.get(outDir.toString(), fn);
         eage.toAsciiFile(g, file, ndv);
     }
 

@@ -389,9 +389,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     }
 
     /**
-     * Returns the prefix (before "." part of filename of this.file.
-     *
-     * @return
+     * @return All but the last 4 characters of {@link #file}.
      */
     public String getFilenamePrefix() {
         String filename = this.file.getFileName().toString();

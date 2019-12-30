@@ -34,41 +34,40 @@ public interface Grids_Memory extends Generic_Memory {
     boolean checkAndMaybeFreeMemory(Grids_Grid g, boolean hoome)
             throws IOException, Exception;
 
-    boolean checkAndMaybeFreeMemory(Grids_Grid g,
-            Grids_2D_ID_int chunkNotToSwap, boolean hoome) throws IOException,
-            Exception;
-
-    boolean checkAndMaybeFreeMemory(Grids_2D_ID_int chunkNotToSwap,
+    boolean checkAndMaybeFreeMemory(Grids_Grid g, Grids_2D_ID_int notToSwap,
             boolean hoome) throws IOException, Exception;
 
-    boolean checkAndMaybeFreeMemory(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
-            boolean hoome) throws IOException, Exception;
-
-    boolean checkAndMaybeFreeMemory(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
+    boolean checkAndMaybeFreeMemory(Grids_2D_ID_int notToSwap, boolean hoome)
             throws IOException, Exception;
 
-    Grids_Account checkAndMaybeFreeMemory_Account(boolean hoome) throws IOException,
+    boolean checkAndMaybeFreeMemory(
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap, boolean hoome)
+            throws IOException, Exception;
+
+    boolean checkAndMaybeFreeMemory(Grids_Grid g,
+            Set<Grids_2D_ID_int> notToSwap, boolean hoome) throws IOException,
             Exception;
+
+    Grids_Account checkAndMaybeFreeMemory_Account(boolean hoome)
+            throws IOException, Exception;
 
     Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception;
 
     Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
-            Grids_2D_ID_int chunkNotToSwap, boolean hoome) throws IOException,
+            Grids_2D_ID_int notToSwap, boolean hoome) throws IOException,
             Exception;
 
-    Grids_Account checkAndMaybeFreeMemory_Account(Grids_2D_ID_int chunkNotToSwap,
+    Grids_Account checkAndMaybeFreeMemory_Account(Grids_2D_ID_int notToSwap,
             boolean hoome) throws IOException, Exception;
 
     Grids_Account checkAndMaybeFreeMemory_Account(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap,
             boolean hoome) throws IOException, Exception;
 
     Grids_Account checkAndMaybeFreeMemory_Account(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
-            throws IOException, Exception;
+            Set<Grids_2D_ID_int> notToSwap, boolean hoome) throws IOException,
+            Exception;
 
     Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(boolean hoome)
             throws IOException, Exception;
@@ -77,76 +76,77 @@ public interface Grids_Memory extends Generic_Memory {
             boolean hoome) throws IOException, Exception;
 
     Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_Grid g,
-            Grids_2D_ID_int chunkNotToSwap, boolean hoome)
-            throws IOException, Exception;
+            Grids_2D_ID_int notToSwap, boolean hoome) throws IOException,
+            Exception;
 
     Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            Grids_2D_ID_int chunkNotToSwap, boolean hoome)
-            throws IOException, Exception;
+            Grids_2D_ID_int notToSwap, boolean hoome) throws IOException,
+            Exception;
 
     Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
-            boolean hoome) throws IOException, Exception;
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap, boolean hoome)
+            throws IOException, Exception;
 
     Grids_AccountDetail checkAndMaybeFreeMemory_AccountDetail(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
-            throws IOException, Exception;
+            Set<Grids_2D_ID_int> notToSwap, boolean hoome) throws IOException,
+            Exception;
 
     void initMemoryReserve(Grids_Grid g, boolean hoome) throws IOException,
             Exception;
 
-    void initMemoryReserve(Grids_2D_ID_int chunkNotToSwap, boolean hoome)
+    void initMemoryReserve(Grids_2D_ID_int notToSwap, boolean hoome)
             throws IOException, Exception;
 
-    void initMemoryReserve(Grids_Grid g, Grids_2D_ID_int chunkNotToSwap,
+    void initMemoryReserve(Grids_Grid g, Grids_2D_ID_int notToSwap,
             boolean hoome) throws IOException, Exception;
 
-    void initMemoryReserve(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
-            throws IOException, Exception;
-
-    void initMemoryReserve(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
+    void initMemoryReserve(Grids_Grid g, Set<Grids_2D_ID_int> notToSwap,
             boolean hoome) throws IOException, Exception;
 
-    Grids_Account initMemoryReserve_Account(boolean hoome) throws IOException, Exception;
-
-    Grids_Account initMemoryReserve_Account(Grids_2D_ID_int chunkNotToSwap,
+    void initMemoryReserve(HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap,
             boolean hoome) throws IOException, Exception;
 
-    Grids_Account initMemoryReserve_Account(Grids_Grid g, Grids_2D_ID_int chunkNotToSwap,
+    Grids_Account initMemoryReserve_Account(boolean hoome) throws IOException,
+            Exception;
+
+    Grids_Account initMemoryReserve_Account(Grids_2D_ID_int notToSwap,
             boolean hoome) throws IOException, Exception;
+
+    Grids_Account initMemoryReserve_Account(Grids_Grid g,
+            Grids_2D_ID_int notToSwap, boolean hoome) throws IOException,
+            Exception;
 
     Grids_Account initMemoryReserve_Account(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap,
             boolean hoome) throws IOException, Exception;
 
     Grids_Account initMemoryReserve_Account(Grids_Grid g, boolean hoome)
             throws IOException, Exception;
 
     Grids_Account initMemoryReserve_Account(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
-            throws IOException, Exception;
-
-    Grids_AccountDetail initMemoryReserve_AccountDetail(boolean hoome) throws IOException,
+            Set<Grids_2D_ID_int> notToSwap, boolean hoome) throws IOException,
             Exception;
 
-    Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_2D_ID_int chunkNotToSwap,
-            boolean hoome) throws IOException, Exception;
+    Grids_AccountDetail initMemoryReserve_AccountDetail(boolean hoome)
+            throws IOException, Exception;
+
+    Grids_AccountDetail initMemoryReserve_AccountDetail(
+            Grids_2D_ID_int notToSwap, boolean hoome) throws IOException, 
+            Exception;
 
     Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g,
-            Grids_2D_ID_int chunkNotToSwap, boolean hoome)
+            Grids_2D_ID_int notToSwap, boolean hoome)
             throws IOException, Exception;
 
     Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g,
-            Set<Grids_2D_ID_int> chunksNotToSwap, boolean hoome)
+            Set<Grids_2D_ID_int> notToSwap, boolean hoome)
             throws IOException, Exception;
 
     Grids_AccountDetail initMemoryReserve_AccountDetail(Grids_Grid g,
             boolean hoome) throws IOException, Exception;
 
     Grids_AccountDetail initMemoryReserve_AccountDetail(
-            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> chunksNotToSwap,
+            HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToSwap,
             boolean hoome) throws IOException, Exception;
 
 }

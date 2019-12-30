@@ -26,10 +26,8 @@ import javax.imageio.ImageIO;
 public class Grids_IO {
 
     /**
-     * Returns true if writerType is available
-     *
      * @param writerType - usually a well known text String for an image type
-     * @return
+     * @return {@code true} if writerType is available.
      */
     public static boolean isImageWriterAvailable(String writerType) {
         boolean r = false;
