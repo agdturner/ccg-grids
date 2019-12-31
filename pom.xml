@@ -40,7 +40,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <agdt-java-generic.version>1.1.0</agdt-java-generic.version>
-        <agdt-java-generic-math.version>1.1.0</agdt-java-generic-math.version>
+        <agdt-java-math.version>1.1.0</agdt-java-math.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
@@ -56,8 +56,8 @@
         </dependency>
         <dependency>
             <groupId>io.github.agdturner</groupId>
-            <artifactId>agdt-java-generic-math</artifactId>
-            <version>${agdt-java-generic-math.version}</version>
+            <artifactId>agdt-java-math</artifactId>
+            <version>${agdt-java-math.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -228,9 +228,11 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <!--
         <repository>
             <id>internal</id>
             <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
+        -->
     </distributionManagement>
 </project>
