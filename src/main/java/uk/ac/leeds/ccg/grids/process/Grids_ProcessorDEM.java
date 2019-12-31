@@ -574,20 +574,20 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param x the x coordinate from where the aspect is calculated
      * @param y the y coordinate from where the aspect is calculated
      * @param distance the distance which defines the aggregate region.
-     * @param weightIntersect the kernel weighting weight at centre.
-     * @param weightFactor the kernel weighting distance decay.
-     * @return
+     * @param wi The weight intersect - the kernel weighting weight at centre.
+     * @param wf The weight factor - the kernel weighting distance decay.
+     * @return The slope and aspect.
      * @param dp The number of decimal places in BigDecimal arithmetic.
      * @param rm The RoundingMode used in BigDecimal arithmetic.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, BigDecimal x,
-            BigDecimal y, BigDecimal distance, BigDecimal weightIntersect,
-            int weightFactor, int dp, RoundingMode rm) throws IOException,
-            ClassNotFoundException, Exception {
-        return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance,
-                weightIntersect, weightFactor, dp, rm);
+            BigDecimal y, BigDecimal distance, BigDecimal wi, int wf, int dp, 
+            RoundingMode rm) throws IOException, ClassNotFoundException, 
+            Exception {
+        return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance, wi, 
+                wf, dp, rm);
     }
 
     /**
@@ -608,21 +608,21 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param x the x coordinate from where the aspect is calculated
      * @param y the y coordinate from where the aspect is calculated
      * @param distance the distance which defines the region
-     * @param weightIntersect
-     * @param weightFactor NB. If grid.getCell(x, y) == grid.getNoDataValue()
-     * then; result[0] = grid.getNoDataValue() result[1] = grid.getNoDataValue()
+     * @param wi The weight intersect.
+     * @param wf The weight factor. NB. If grid.getCell(x, y) ==
+     * grid.getNoDataValue() then; result[0] = grid.getNoDataValue() result[1] =
+     * grid.getNoDataValue()
      * @param dp The number of decimal places in BigDecimal arithmetic.
      * @param rm The RoundingMode used in BigDecimal arithmetic. TODO: x and y
      * can be offset from a cell centroid so consider interpolation
-     * @return
+     * @return Slope and aspect.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, long rowIndex,
             long colIndex, BigDecimal x, BigDecimal y, BigDecimal distance,
-            BigDecimal weightIntersect, int weightFactor, int dp,
-            RoundingMode rm) throws IOException, ClassNotFoundException,
-            Exception {
+            BigDecimal wi, int wf, int dp, RoundingMode rm) throws IOException,
+            ClassNotFoundException, Exception {
         env.getGrids().add(g);
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
@@ -632,8 +632,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[1] = noDataValue;
             slopeAndAspect[2] = noDataValue;
             slopeAndAspect[3] = noDataValue;
-            getSlopeAspect(slopeAndAspect, g, x, y, distance, weightIntersect,
-                    weightFactor, dp, rm);
+            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi,
+                    wf, dp, rm);
             return slopeAndAspect;
         } else {
             // (g.getClass() == Grids_GridDouble.class)
@@ -644,8 +644,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[1] = noDataValue;
             slopeAndAspect[2] = noDataValue;
             slopeAndAspect[3] = noDataValue;
-            getSlopeAspect(slopeAndAspect, g, x, y, distance, weightIntersect,
-                    weightFactor, dp, rm);
+            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi,
+                    wf, dp, rm);
             return slopeAndAspect;
         }
     }
@@ -692,11 +692,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
     /**
      * @param g Grids_GridNumber to be processed.
-     * @param gdf
-     * @param outflowHeight
-     * @param maxIterations
-     * @param treatNoDataValueAsOutflow
-     * @param outflowCellIDsSet
+     * @param gdf The grids double factory.
+     * @param outflowHeight The outflowHeight
+     * @param maxIterations Maximum iterations.
+     * @param treatNoDataValueAsOutflow If true the ndv cells are treated as
+     * outflow cells.
+     * @param outflowCellIDsSet The set of outflow cells.
      * @return Grids_GridDouble which has cell values as in _Grid2DSquareCell
      * except with hollows raised. The attempt to raise hollows may not remove
      * all hollows. The process of removing hollows works iteratively.
@@ -1210,18 +1211,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
-     * @return HashSet containing Grids_GridNumber.CellIDs of those cells in
-     * _Grid2DSquareCell that are to be regarded as outflow cells. Outflow cells
-     * are those: with a v <= outflowHeight; those with CellID in
-     * outflowCellIDsSet; and if _TreatNoDataValueAsOutflow is true then any
-     * cell with a v of noDataValue.
+     * @return HashSet containing cell IDs of those cells in {@code g} that are
+     * to be regarded as outflow cells. Outflow cells are those: with
+     * {@code v <= outflowHeight}; those with CellID in outflowCellIDsSet; and
+     * if {@code treatNoDataValueAsOutflow} is {@code true} then any cell with a
+     * v of noDataValue.
      */
     private HashSet<Grids_2D_ID_long> getHollowFilledDEMOutflowCellIDs(
             HashSet<Grids_2D_ID_long> outflowCellIDsSet, double outflowHeight,
             Grids_GridNumber g, long nrows, long ncols,
             boolean treatNoDataValueAsOutflow) throws IOException,
             ClassNotFoundException, Exception {
-        boolean camfm = env.checkAndMaybeFreeMemory();
         HashSet<Grids_2D_ID_long> outflowCellIDs = new HashSet<>();
         if (!(outflowCellIDsSet == null)) {
             outflowCellIDs.addAll(outflowCellIDsSet);
@@ -1266,20 +1266,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     /**
-     *
-     *
-     *
      * @param g Grids_GridNumber to be processed.
      * @param nrows Number of rows in _Grid2DSquareCell.
      * @param ncols Number of columns in _Grid2DSquareCell.
      * @param hoome If true then encountered OutOfMemeroyErrors are handled. If
      * false then an encountered OutOfMemeroyError is thrown.
-     * @return HashSet containing _CellIDs which identifies cells which are
-     * hollows. If _TreatNoDataValueAsOutflow is true then hollows are cells for
-     * which all neighbouring cells in the immediate 8 cell neighbourhood are
-     * either the same v or higher. If _TreatNoDataValueAsOutflow is false then
-     * hollows are cells for which all neighbouring cells in the immediate 8
-     * cell neighbourhood are either the same v or higher or noDataValues.
+     * @param treatNoDataValueAsOutflow If {@code true} then hollows are cells
+     * for which all neighbouring cells in the immediate 8 cell neighbourhood
+     * are either the same v or higher. If {@code false} then hollows are cells
+     * for which all neighbouring cells in the immediate 8 cell neighbourhood
+     * are either the same v or higher or noDataValues.
+     * @return Set of cell IDs which identifies cells which are hollows.
      */
     private HashSet<Grids_2D_ID_long> getHollowFilledDEMInitialHollowsHashSet(
             Grids_GridNumber g, long nrows, long ncols,
@@ -1385,11 +1382,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     }
 
     /**
-     * Returns a HashSet of _CellIDs for identifying any cells that might be
-     * hollows in grid, only those cells with IDs in the neighbourhood of those
-     * cells with IDs in _CellIDs need be checked.
-     *
-     *
+     * Returns a Set of cell IDs for cells that might be hollows in grid.
      *
      * @param g The Grids_GridNumber to be processed.
      * @param cellIDs the HashSet storing _CellIDs that must be examined.
@@ -1762,18 +1755,18 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param distance the distance within which metrics will be calculated
      * @param weightIntersect kernel parameter (weight at the centre)
      * @param weightFactor kernel parameter (distance decay)
-     * @param gdf The Grids_GridFactoryDouble for creating grids
-     * @param gif
-     * @param cacheOutInitialisedFiles
-     * @param cacheOutProcessedChunks
-     * @return
+     * @param gdf The factory for creating double grids.
+     * @param gif The factory for creating int grids.
+     * @param swapInitialisedFiles For memory management.
+     * @param swapProcessedChunks For memory management.
+     * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
             double distance, double weightIntersect, double weightFactor,
             Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
-            boolean cacheOutInitialisedFiles, boolean cacheOutProcessedChunks)
+            boolean swapInitialisedFiles, boolean swapProcessedChunks)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
@@ -1794,7 +1787,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             do {
                 try {
                     metrics1[i] = gdf.create(nrows, ncols, dimensions);
-                    if (cacheOutInitialisedFiles) {
+                    if (swapInitialisedFiles) {
                         metrics1[i].cache();
                     }
                     metrics1[i].setName(metrics1Names[i]);
@@ -1811,13 +1804,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             } while (!isInitialised);
         }
         return getMetrics1(metrics1, g, dimensions, distance, weightIntersect,
-                weightFactor, cacheOutProcessedChunks);
+                weightFactor, swapProcessedChunks);
     }
 
     /**
-     * TODO
-     *
-     * @return
+     * @return Metrics 1 names.
      */
     protected String[] getMetrics1Names() {
         String[] names = new String[65];
@@ -2031,34 +2022,28 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      *
      * @param metrics1 an Grids_GridDouble[] for storing result \n
      * @param g the Grids_GridDouble to be processed \n
-     * @param dimensions
-     * @param distance the distance within which metrics will be calculated \n
-     * @param weightIntersect kernel parameter (weight at the centre) \n
-     * @param weightFactor kernel parameter (distance decay) \n Going directly
-     * to this method is useful if the initialisation of the metrics1 is slow
-     * and has already been done.
-     * @param cacheOutProcessedChunks If this is true, then intermediate
-     * cacheping is done to try to prevent OutOfMemoryErrors Being Encountered.
-     * Perhaps set this to true for large grids if the process seems to get
-     * stuck.
-     * @return
+     * @param dim The dimensions.
+     * @param distance The distance within which metrics will be calculated.
+     * @param wi The weight intersect kernel parameter (weight at the centre).
+     * @param wf The weight factor kernel parameter (distance decay).
+     * @param swapProcessedChunks If {@code true}, then preemptive swapping is
+     * done for memory management.
+     * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber[] metrics1,
-            Grids_GridNumber g, Grids_Dimensions dimensions, double distance,
-            double weightIntersect, double weightFactor,
-            boolean cacheOutProcessedChunks) throws IOException,
+            Grids_GridNumber g, Grids_Dimensions dim, double distance,
+            double wi, double wf, boolean swapProcessedChunks) throws IOException,
             ClassNotFoundException, Exception {
-        String methodName;
-        methodName = "getMetrics1("
+        String methodName = "getMetrics1("
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
                 + "Grids_Dimensions,double,double,double,boolean)";
         System.out.println(methodName);
         env.checkAndMaybeFreeMemory();
         String name;
         String underScore = "_";
-        double cellsize = dimensions.getCellsize().doubleValue();
+        double cellsize = dim.getCellsize().doubleValue();
         int cellDistance = (int) Math.ceil(distance / cellsize);
         BigDecimal[] heights = new BigDecimal[4];
         heights[0] = BigDecimal.ZERO;
@@ -2155,7 +2140,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         }
                     }
                     System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                    if (cacheOutProcessedChunks) {
+                    if (swapProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
                             metrics1[i].swap(chunkID, true, env.HOOME);
@@ -2221,7 +2206,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     }
                     System.out.println(
                             "Done Chunk (" + chunkRow + ", " + chunkCol + ")");
-                    if (cacheOutProcessedChunks) {
+                    if (swapProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
                             metrics1[i].swap(chunkID, true, env.HOOME);

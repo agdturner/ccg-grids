@@ -55,7 +55,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     public static Boolean DefaultValue = null;
 
     /**
-     * Creates a new Grids_GridBinary with each cell value equal to {@code ndv}
+     * Creates a new grid with each cell value equal to {@code ndv}
      * and all chunks of the same type.
      *
      * @param stats What {@link #stats}T is set to.
@@ -79,7 +79,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * Creates a new Grids_GridBinary based on values in grid.
+     * Creates a new grid based on values in grid {@code g}.
      *
      * @param stats What {@link #stats}T is set to.
      * @param fs What {@link #fs} is set to.
@@ -108,7 +108,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * Creates a new Grids_GridBinary with values obtained from a grid cached in
+     * Creates a new grid with values obtained from a grid cached in
      * gridFile.
      *
      * @param stats What {@link #stats}T is set to.
@@ -127,8 +127,9 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param endCol The column of {@code g} which is the right most column of
      * this.
      * @param e The grids environment.
-     * @throws java.io.IOException, Exception If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
      */
     protected Grids_GridBoolean(Grids_StatsBoolean stats, Generic_FileStore fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
@@ -141,7 +142,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * Creates a new Grids_GridBinary with values obtained from a grid cached in
+     * Creates a grid with values obtained from a grid cached in
      * {@code gridFile}.
      *
      * @param e The grids environment.
@@ -273,9 +274,9 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     *
-     * @param g
-     * @param cf
+     * For loading a chunk.
+     * @param g The grid.
+     * @param cf Chunk factory.
      * @param chunkNRows Chunk NRows
      * @param chunkNCols Chunk NCols
      * @param startRow Start row.
@@ -284,15 +285,15 @@ public class Grids_GridBoolean extends Grids_Grid {
      * @param endCol End column.
      * @param startChunkRow Start chunk row.
      * @param endChunkRow End chunk row.
-     * @param startChunkCol
-     * @param endChunkCol
-     * @param gb
-     * @param gcr
-     * @param gChunkNRows
-     * @param gcc
+     * @param startChunkCol Start chunk column.
+     * @param endChunkCol End chunk column.
+     * @param gb Grid boolean.
+     * @param gcr Grid chunk row.
+     * @param gChunkNRows Chunk nRows
+     * @param gcc Grid chunk column.
      * @return {@code true} if chunk was loaded.
-     * @throws ClassNotFoundException
-     * @throws Exception
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
      */
     protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBoolean cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,

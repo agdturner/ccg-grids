@@ -122,8 +122,8 @@ import java.util.stream.Collectors;
  * It may require experiments and some understanding of the data and the
  * processing that will be done in order to make a good decision about what
  * types of statistic and chunks to use. In general, as the variety and density
- * of data values increases the more likely it becomes that an array of values 
- * will be best. For sparse data where the majority of a chunk is noDataValues 
+ * of data values increases the more likely it becomes that an array of values
+ * will be best. For sparse data where the majority of a chunk is noDataValues
  * or is of the same value, then the better the map type storage is.
  *
  * There is a trade off between efficient storage, speed and flexibility. This
@@ -895,20 +895,19 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to cache a chunk and return the details of any caching done.
-     * This is one of the lowest level memory handling operation of this class.
+     * Attempts to swap a chunk and return the details of any swapping done.
      *
-     * @param hoome If true then if in the initial attempt to cache a chunk and
-     * return the details of any caching done results in an OutOfMemoryError
-     * being thrown, then an attempt to handle this is made by: clearing the
-     * memory reserve, cache a chunk from this grid, and re-initialising the
-     * memory reserve (which may involve swapping out chunks from other grids
-     * and perhaps also swapping out other data). If false then
+     * @param hoome If {@code true} then if in the initial attempt to swap a
+     * chunk an OutOfMemoryError is thrown, then an attempt to handle this is
+     * made by: clearing the memory reserve, caching a chunk from this grid, and
+     * re-initialising the memory reserve (which may involve swapping out chunks
+     * from other grids and perhaps also swapping out other data). If false then
      * OutOfMemoryErrors are caught and thrown.
-     * @return A detailed account of what was cached.
+     * @return A detailed account of what was swapped.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome) throws IOException, Exception {
+    public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome)
+            throws IOException, Exception {
         try {
             Grids_AccountDetail r = swapChunk_AccountDetail();
             r.add(env.checkAndMaybeFreeMemory_AccountDetail(hoome));
@@ -930,13 +929,13 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempts to cache a chunk and return the details of any caching done.
-     * This is one of the lowest level memory handling operation of this class.
+     * Attempts to swap a chunk and return the details of any swapping done.
      *
-     * @return A detailed account of what was cached.
+     * @return A detailed account of what was swapped.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_AccountDetail swapChunk_AccountDetail() throws IOException, Exception {
+    public Grids_AccountDetail swapChunk_AccountDetail() throws IOException,
+            Exception {
         Grids_AccountDetail r = new Grids_AccountDetail();
         Grids_2D_ID_int i = swapChunk();
         if (i != null) {
@@ -952,15 +951,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * Attempts to cache a chunk and return the id of the chunk cached. This is
      * one of the lowest level memory handling operation of this class.
      *
-     * @param hoome If true then if in the initial attempt to cache a chunk and
-     * return the id of the chunk cached throws an OutOfMemoryError, then an
-     * attempt to handle this is made by: clearing the memory reserve, caching a
-     * chunk from this grid, and re-initialising the memory reserve (which may
-     * involve swapping out chunks from other grids and perhaps also swapping
-     * out other data). If false then OutOfMemoryErrors are caught and thrown.
+     * @param camfm If {@code true} check and maybe free memory.
+     * @param hoome If {@code true} then an attempt is made to handle an
+     * OutOfMemoryErrors encountered by swapping data.
      * @return An account of what was cached.
      * @throws java.io.IOException If encountered.
-     * @param camfm checkAndMaybeFreeMemory
      */
     public Grids_2D_ID_int swapChunk_AccountChunk(boolean camfm, boolean hoome)
             throws IOException, Exception {
@@ -988,20 +983,26 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Attempt to cache a chunk and return true if cached and false otherwise.
-     * This will first try to cache a chunk not in ge.NotToCache.
+     * Attempt to swap a chunk and return it's ID.
      *
-     * @return An account of what was cached.
+     * @return An account of what was swapped.
      * @throws java.io.IOException If encountered.
      */
     public Grids_2D_ID_int swapChunk_AccountChunk() throws IOException, Exception {
-        Grids_2D_ID_int cid = swapChunk();
-        if (cid != null) {
-            clearChunk(cid);
+        Grids_2D_ID_int i = swapChunk();
+        if (i != null) {
+            clearChunk(i);
         }
-        return cid;
+        return i;
     }
 
+    /**
+     * Swap all chunks.
+     *
+     * @return An account of what was cached.
+     * @throws Exception If encountered.
+     * @throws IOException If encountered.
+     */
     public Grids_Account swapChunks_Account() throws IOException, Exception {
         Grids_Account r = new Grids_Account();
         for (int cri = 0; cri < nChunkRows; cri++) {
@@ -1014,10 +1015,18 @@ public abstract class Grids_Grid extends Grids_Object {
         return r;
     }
 
-    public Grids_Account swapChunks_Account(Set<Grids_2D_ID_int> chunkIDs)
+    /**
+     * Swap chunks in {@code s}.
+     *
+     * @param s A set of chunk IDs of chunks to swap.
+     * @return An account of any swapping
+     * @throws IOException If encountered.
+     * @throws Exception
+     */
+    public Grids_Account swapChunks_Account(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
         Grids_Account r = new Grids_Account();
-        Iterator<Grids_2D_ID_int> ite = chunkIDs.iterator();
+        Iterator<Grids_2D_ID_int> ite = s.iterator();
         while (ite.hasNext()) {
             if (swapChunk(ite.next())) {
                 r.add();
@@ -1027,18 +1036,18 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     *
-     * @param chunkIDs
-     * @param camfm checkAndMaybeFreeMemory
-     * @param hoome
-     * @return
-     * @throws IOException
+     * @param s A set of chunk IDs of chunks no to swap.
+     * @param camfm If {@code true} check and maybe free memory.
+     * @param hoome If {@code true} then an attempt is made to handle an
+     * OutOfMemoryErrors encountered by swapping data.
+     * @return Chunk ID of any swapped chunk or {@code null.
+     * @throws IOException If encountered.
      */
     public Grids_2D_ID_int swapChunkExcept_AccountChunk(
-            Set<Grids_2D_ID_int> chunkIDs, boolean camfm,
+            Set<Grids_2D_ID_int> s, boolean camfm,
             boolean hoome) throws IOException, Exception {
         try {
-            Grids_2D_ID_int r = swapChunkExcept_AccountChunk(chunkIDs);
+            Grids_2D_ID_int r = swapChunkExcept_AccountChunk(s);
             if (camfm) {
                 env.checkAndMaybeFreeMemory(hoome);
             }
@@ -1046,7 +1055,7 @@ public abstract class Grids_Grid extends Grids_Object {
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 env.clearMemoryReserve(env.env);
-                Grids_2D_ID_int r = swapChunkExcept_AccountChunk(chunkIDs);
+                Grids_2D_ID_int r = swapChunkExcept_AccountChunk(s);
                 if (r == null) {
                     if (!env.swapChunk(env.HOOMEF)) {
                         throw e;
@@ -1061,21 +1070,22 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
+     * Swap a chunk except a chunk with chunk ID in {@code s}.
      *
-     * @param s
-     * @return
-     * @throws IOException
-     * @throws Exception
+     * @param s The set with chunk IDs not to swap.
+     * @return The chunk ID of any chunk swapped.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Grids_2D_ID_int swapChunkExcept_AccountChunk(
             Set<Grids_2D_ID_int> s) throws IOException, Exception {
         Iterator<Grids_2D_ID_int> ite = worthSwapping.iterator();
         while (ite.hasNext()) {
-            Grids_2D_ID_int cid = ite.next();
-            if (!s.contains(cid)) {
-                cache(cid);
-                clearChunk(cid);
-                return cid;
+            Grids_2D_ID_int i = ite.next();
+            if (!s.contains(i)) {
+                cache(i);
+                clearChunk(i);
+                return i;
             }
         }
 //        for (chunkRow = 0; chunkRow < NChunkRows; chunkRow++) {
@@ -1103,12 +1113,13 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Caches the chunk with chunkID to file.
+     * Caches the chunk with chunk ID {@code i} to file.
      *
-     * @param i
-     * @param camfm If {@code true} then after the chukncheckAndMaybeFreeMemory
-     * @param hoome
-     * @throws java.io.IOException
+     * @param i The chunk ID.
+     * @param camfm If {@code true} check and maybe free memory.
+     * @param hoome If {@code true} then an attempt is made to handle an
+     * OutOfMemoryErrors encountered by swapping data.
+     * @throws java.io.IOException If encountered.
      */
     public void swap(Grids_2D_ID_int i, boolean camfm, boolean hoome)
             throws IOException, Exception {
@@ -1136,7 +1147,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param i The chunk ID of the chunk to cache (if the cache is not already
      * up to date) and anyway clear.
      * @return {@code 1} if a chunk is cleared and {@code 0} otherwise.
-     * @throws java.io.IOException
+     * @throws java.io.IOException If encountered.
      */
     public boolean swapChunk(Grids_2D_ID_int i) throws IOException,
             Exception {
@@ -1151,12 +1162,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * Attempts to write to file and clear from the cache any chunk in this.This
      * is one of the lowest level memory handling operation of this class.
      *
-     * @param camfm checkAndMaybeFreeMemory
-     * @param hoome If true then OutOfMemoryErrors are caught, cache operations
-     * are initiated, then the method is re-called. If false then
-     * OutOfMemoryErrors are caught and thrown.
-     * @return True if a chunk is cached.
-     * @throws java.io.IOException
+     * @param camfm If {@code true} check and maybe free memory.
+     * @param hoome If {@code true} then an attempt is made to handle an
+     * OutOfMemoryErrors encountered by swapping data.
+     * @return Chunk ID of a swapped chunk.
+     * @throws java.io.IOException If encountered.
      */
     public Grids_2D_ID_int swapChunk(boolean camfm, boolean hoome) throws IOException,
             Exception {
@@ -1579,7 +1589,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * with ID {@code i}.
      *
      * @param i The ID of the chunk not to clear from memory.
-     * @param camfm
+     * @param camfm If {@code true} check and maybe free memory.
      * @param hoome If true then an attempt is made to handle any encountered
      * {@link OutOfMemoryError}.
      * @return The number of chunks cleared from memory.
@@ -2167,7 +2177,7 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * For finding out if the cell with chunk cell row {@code ccr} and chunk
      * cell column {@code ccc} in chunk in chunk row {@code chunkRow} and chunk
-     * column {@code cc) is in the dimensions of this grid. This does not
+     * column {@code cc} is in the dimensions of this grid. This does not
      * necessitate loading the chunk.
      *
      * @param cr The chunk row index to test.
@@ -2176,7 +2186,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param ccc The column index in the chunk to test.
      * @return {@code true} if cell with chunk cell row {@code ccr} and chunk
      * cell column {@code ccc} in chunk in chunk row {@code chunkRow} and chunk
-     * column {@code cc) is in the dimensions of this grid.
+     * column {@code cc} is in the dimensions of this grid.
      */
     public final boolean isInGrid(int cr, int cc, int ccr, int ccc) {
         return isInGrid(getRow(cr, ccr), getCol(cc, ccc));

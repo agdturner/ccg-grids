@@ -57,26 +57,26 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * Creates a new grid factory.
      *
      * @param e What {@link #env} is set to.
-     * @param store What {@link #store} is set to.
+     * @param fs What {@link #store} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_FileStore store) {
+    public Grids_GridFactory(Grids_Environment e, Generic_FileStore fs) {
         super(e);
-        this.store = store;
+        this.store = fs;
     }
 
     /**
      * Creates a new grid factory.
      *
      * @param e What {@link #env} is set to.
-     * @param store What {@link #store} is set to.
+     * @param fs What {@link #store} is set to.
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param dimensions What {@link #dim} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_FileStore store,
+    public Grids_GridFactory(Grids_Environment e, Generic_FileStore fs,
             int chunkNRows, int chunkNCols, Grids_Dimensions dimensions) {
         super(e);
-        this.store = store;
+        this.store = fs;
         this.chunkNRows = chunkNRows;
         this.chunkNCols = chunkNCols;
         dim = dimensions;
@@ -120,7 +120,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @return Grid with all values from g.
      * @param g The grid from which values are obtained.
      * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_Grid create(Grids_Grid g)
             throws IOException, ClassNotFoundException, Exception {
@@ -136,7 +136,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param endRow The bottommost row index of {@code g} to get values from.
      * @param endCol The rightmost column index of {@code g} to get values from.
      * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public abstract Grids_Grid create(Grids_Grid g,
             long startRow, long startCol, long endRow, long endCol) 
@@ -149,7 +149,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param gridFile either a directory, or a formatted file used to
      * initialise the grid returned.
      * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public abstract Grids_Grid create(Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception;
@@ -158,16 +158,16 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @return A grid with values obtained from gridFile.
      * @param gridFile either a directory, or a formatted file used to
      * initialise the grid returned.
-     * @param startRow The topmost row index of the grid in {@code gridFile} to
+     * @param startRow The start row of the grid in {@code gridFile} to
      * get values from.
-     * @param startCol The leftmost column index of grid in {@code gridFile} to
+     * @param startCol The start column of the grid in {@code gridFile} to
      * get values from.
-     * @param endRow The bottommost row index of the grid in {@code gridFile} to
+     * @param endRow The end row of the grid in {@code gridFile} to
      * get values from.
-     * @param endCol The rightmost column index of the grid in {@code gridFile}
+     * @param endCol The end column of the grid in {@code gridFile}
      * to get values from.
      * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
     public abstract Grids_Grid create(Generic_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
@@ -213,13 +213,8 @@ public abstract class Grids_GridFactory extends Grids_Object {
     }
 
     /**
-     * Initialises {@link #dim}. {@link Grids_Dimensions#XMin} and
-     * {@link Grids_Dimensions#XMin} are set to {@link BigDecimal#ZERO};
-     * {@link Grids_Dimensions#Cellsize} is set to {@link BigDecimal#ONE};
-     * {@link Grids_Dimensions#XMax} is set to {@code nCols} using
-     * {@link BigDecimal#BigDecimal(int)}; {@link Grids_Dimensions#YMax} is set
-     * to {@code nRows} using {@link BigDecimal#BigDecimal(int)}
-     *
+     * Initialises {@link #dim}.
+     * 
      * @param nRows The number of rows in the grids to be created.
      * @param nCols The number of columns in the grids to be created.
      */

@@ -78,7 +78,7 @@ public abstract class Grids_GridIterator extends Grids_Object {
     }
 
     /**
-     * @return {@link ChunkID#chunkID}
+     * @return {@link #chunkID}
      */
     public Grids_2D_ID_int getChunkID() {
         return chunkID;

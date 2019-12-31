@@ -295,9 +295,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row index from which the cell IDs of the nearest cells
+     * @param row The row from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param col
+     * @param col The column from which the cell IDs of the nearest cells
+     * with data values are returned.
      * @param dp The number of decimal places the result is to be accurate to.
      * @param rm The {@link RoundingMode} to use when rounding the result.
      * @throws java.io.IOException If encountered.
