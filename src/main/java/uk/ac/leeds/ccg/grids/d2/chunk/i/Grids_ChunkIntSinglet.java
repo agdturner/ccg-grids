@@ -31,21 +31,21 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     private static final long serialVersionUID = 1L;
 
     /**
-     * For storing the value of every cell in this grid.
+     * For storing the v of every cell in this grid.
      */
-    public int Value;
+    public int v;
 
     /**
-     * Creates a chunk with {@link #Value} set to {@code v}.
+     * Creates a chunk with {@link #v} set to {@code v}.
      *
-     * @param g What {@link #Grid} is set to.
-     * @param i What {@link #ChunkID} is set to.
-     * @param v What {@link #Value} is set to.
+     * @param g What {@link #grid} is set to.
+     * @param i What {@link #id} is set to.
+     * @param v What {@link #v} is set to.
      */
     public Grids_ChunkIntSinglet(Grids_GridInt g, Grids_2D_ID_int i, int v) {
         super(g, i, false);
         initGrid(g);
-        Value = v;
+        this.v = v;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     }
 
     protected int getValue() {
-        return Value;
+        return v;
     }
 
     @Override
@@ -62,24 +62,21 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
 
     @Override
     public int getCell(int row, int col) {
-        return Value;
+        return v;
     }
 
     /**
-     * Returns the value at position given by: row, col and sets it to
-     * valueToSet.
-     *
-     * @param row the row index of the cell w.r.t. the origin of this chunk
-     * @param col the column index of the cell w.r.t. the origin of this chunk
-     * @param valueToSet the value the cell is to be set to.
-     * @return
+     * @param row The row index of the cell w.r.t. the origin of this chunk
+     * @param col The column index of the cell w.r.t. the origin of this chunk
+     * @param v The v the cell is to be set to.
+     * @return The v at position given by: row, col and sets it to
+ valueToSet.
      */
     @Override
-    public int setCell(int row, int col, int valueToSet) {
-        if (valueToSet == Value) {
-            return Value;
+    public int setCell(int row, int col, int v) {
+        if (v == this.v) {
+            return this.v;
         } else {
-            // @TODO
             throw new Error("Unable to set value as this chunk is supposed "
                     + "to all contain the same value. What is needed is to "
                     + "transform the chunk to use a richer data structure to "
@@ -88,18 +85,17 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     }
 
     /**
-     * Returns a Grids_GridChunkDoubleArrayIterator for iterating over the cells
+     * @return An iterator for iterating over the cells
      * in this.
-     *
-     * @return
+
      */
     public Grids_ChunkIteratorIntSinglet iterator() {
         return new Grids_ChunkIteratorIntSinglet(this);
     }
 
     @Override
-    public void initCell(int row, int col, int valueToInitialise) {
-        if (valueToInitialise != Value) {
+    public void initCell(int row, int col, int v) {
+        if (v != this.v) {
             throw new Error("valueToInitialise != Value in "
                     + this.getClass().getName() + ".initCell(int,int,int)");
         }
@@ -107,16 +103,16 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
 
     @Override
     public Number getMin(boolean update) {
-        return Value;
+        return v;
     }
 
     @Override
     public Number getMax(boolean update) {
-        return Value;
+        return v;
     }
 
     @Override
     public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
-        return BigDecimal.valueOf(Value);
+        return BigDecimal.valueOf(v);
     }
 }

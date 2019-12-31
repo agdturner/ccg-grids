@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
@@ -50,7 +50,7 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNumber;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
 
 /**
  * General methods for processing individual or multiple grids.

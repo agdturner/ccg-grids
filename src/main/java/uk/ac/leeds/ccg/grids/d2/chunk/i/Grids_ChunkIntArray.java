@@ -20,7 +20,7 @@ import java.util.Arrays;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 
 /**
- * Grids_ChunkInt extension that stores cell values in a int[][].
+ * Grids_ChunkInt that stores cell values in a int[][].
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -52,11 +52,8 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * TODO: Optimise for different types of chunk. A fast toArray() could be
-     * coded then a constructor based on an int[] or int[][] might be faster?
-     *
      * @param c The chunk that's values will be duplicated.
-     * @param i The chunkID.
+     * @param i The chunk ID.
      */
     protected Grids_ChunkIntArray(Grids_ChunkInt c, Grids_2D_ID_int i) {
         super(c.getGrid(), i);
@@ -78,8 +75,6 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * TODO: Should the array be copied and the copy returned?
-     *
      * @return {@link #data}.
      */
     protected int[][] getData() {
@@ -96,8 +91,8 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * @param row The row index of the cell w.r.t. the origin of this chunk.
-     * @param col The column index of the cell w.r.t. the origin of this chunk.
+     * @param row The row.
+     * @param col The column.
      * @return The value at position given by: chunk cell row {@code row}; chunk
      * cell column {@code col}.
      */
@@ -109,9 +104,9 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     /**
      * Initialises the value at position given by: row, col.
      *
-     * @param row The row index of the cell w.r.t. the origin of this chunk.
-     * @param col The column index of the cell w.r.t. the origin of this chunk.
-     * @param v The value initialised.
+     * @param row The row.
+     * @param col The column.
+     * @param v The value to initialise.
      */
     @Override
     public void initCell(int row, int col, int v) {
@@ -120,12 +115,12 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
 
     /**
      * Sets the value at position given by: chunk cell row {@code row};
-     * chunk cell row {@code col} to {@code v).
+     * chunk cell row {@code col} to {@code v}.
      * @param row The row index of the cell w.r.t. the origin of this chunk.
      * @param col The column index of the cell w.r.t. the origin of this chunk.
      * @param v The value set.
      * @return The value at position given by: chunk cell row {@code row};
-     * chunk cell row {@code col} prior to it being set to {@code v).
+     * chunk cell row {@code col} prior to it being set to {@code v}.
      */
     @Override
     public int setCell(int row, int col, int v) {

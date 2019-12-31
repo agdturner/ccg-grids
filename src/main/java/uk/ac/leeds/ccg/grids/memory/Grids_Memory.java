@@ -20,7 +20,7 @@ import java.io.IOException;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import java.util.HashMap;
 import java.util.Set;
-import uk.ac.leeds.ccg.agdt.generic.memory.Generic_Memory;
+import uk.ac.leeds.ccg.generic.memory.Generic_Memory;
 
 /**
  *

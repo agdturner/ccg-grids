@@ -38,8 +38,8 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     /**
      * Creates a new Grids_GridChunkDouble with {@link #v} set to {@code v}.
      *
-     * @param g What {@link #Grid} is set to.
-     * @param i What {@link #ChunkID} is set to.
+     * @param g What {@link #grid} is set to.
+     * @param i What {@link #id} is set to.
      * @param v What {@link #v} is set to.
      */
     public Grids_ChunkDoubleSinglet(Grids_GridDouble g, Grids_2D_ID_int i,

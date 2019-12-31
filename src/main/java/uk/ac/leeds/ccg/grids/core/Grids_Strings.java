@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.core;
 
-import uk.ac.leeds.ccg.agdt.generic.core.Generic_Strings;
+import uk.ac.leeds.ccg.generic.core.Generic_Strings;
 
 /**
  * For commonly wanted Strings. 

@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.math.BigInteger;
-import uk.ac.leeds.ccg.agdt.generic.util.Generic_Time;
+import uk.ac.leeds.ccg.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
 
 /**

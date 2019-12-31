@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.memory.Grids_Account;
@@ -197,7 +197,7 @@ public abstract class Grids_Grid extends Grids_Object {
     protected String name;
 
     /**
-     * @see {@link Grids_Dimensions}
+     * The dimensions of the grid.
      */
     protected Grids_Dimensions dim;
 
@@ -1021,7 +1021,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param s A set of chunk IDs of chunks to swap.
      * @return An account of any swapping
      * @throws IOException If encountered.
-     * @throws Exception
+     * @throws Exception If encountered.
      */
     public Grids_Account swapChunks_Account(Set<Grids_2D_ID_int> s)
             throws IOException, Exception {
@@ -1040,7 +1040,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param camfm If {@code true} check and maybe free memory.
      * @param hoome If {@code true} then an attempt is made to handle an
      * OutOfMemoryErrors encountered by swapping data.
-     * @return Chunk ID of any swapped chunk or {@code null.
+     * @return Chunk ID of any swapped chunk or {@code null}.
      * @throws IOException If encountered.
      */
     public Grids_2D_ID_int swapChunkExcept_AccountChunk(

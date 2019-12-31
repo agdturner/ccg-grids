@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.grids.d2.grid.d;
 
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDouble;
 import java.io.IOException;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedDouble;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
 
 /**
  * A factory for constructing Grids_GridDouble instances.

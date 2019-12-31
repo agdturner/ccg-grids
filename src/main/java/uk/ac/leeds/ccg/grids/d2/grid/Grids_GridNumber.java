@@ -21,7 +21,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
 
 /**
  * For grids containing Numerical values.

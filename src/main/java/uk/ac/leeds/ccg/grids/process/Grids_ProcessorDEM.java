@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.grids.process;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.agdt.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
@@ -2170,7 +2170,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             chunkRow, chunkCol);
                     boolean doLoop = true;
                     if (gridChunkInt instanceof Grids_ChunkIntSinglet) {
-                        if (((Grids_ChunkIntSinglet) gridChunkInt).Value == noDataValue) {
+                        if (((Grids_ChunkIntSinglet) gridChunkInt).v == noDataValue) {
                             doLoop = false;
                         }
                     }
@@ -2233,9 +2233,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * in 4 orthogonal directions are accounted for in the metrics1. NB. Every
      * cell is either higher, lower or the same height as the cell at cell row
      * {@code row}, cell col {@code col}. Some DEMs will have few cells in
-     * distance with the same value.
-     *
-     * <ul>
+ distance with the same v.
+
+ <ul>
      *
      * <li>9 basic metrics:
      * <ul>

@@ -225,17 +225,15 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapHashSet.
          */
-        TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
-        dataMapHashSet = data.DataMapHashSet;
-        ite = dataMapHashSet.keySet().iterator();
+        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m = data.DataMapHashSet;
+        ite = m.keySet().iterator();
         while (ite.hasNext()) {
             Integer value = ite.next();
-            HashSet<Grids_2D_ID_int> cellIDs = dataMapHashSet.get(value);
-            Iterator<Grids_2D_ID_int> ite2 = cellIDs.iterator();
+            Iterator<Grids_2D_ID_int> ite2 = m.get(value).iterator();
             while (ite2.hasNext()) {
-                Grids_2D_ID_int cellID = ite2.next();
-                row = cellID.getRow();
-                col = cellID.getCol();
+                Grids_2D_ID_int i2 = ite2.next();
+                row = i2.getRow();
+                col = i2.getCol();
                 r[row][col] = value;
             }
         }
@@ -710,9 +708,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * Returns the minimum of all data values.
-     *
-     * @return
+     * @return The minimum of all data values.
      */
     @Override
     public Integer getMin() {
@@ -729,9 +725,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * Returns the maximum of all data values.
-     *
-     * @return
+     * @return The maximum of all data values.
      */
     @Override
     public Integer getMax() {
@@ -748,9 +742,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * For returning the mode of all data values.
-     *
-     * @return
+     * @return The mode of all data values.
      */
     @Override
     protected HashSet<Integer> getMode() {
@@ -759,12 +751,10 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         int numberOfMostCommonValue = numberOfDefaultValues;
         mode.add(defaultValue);
-        Iterator<Integer> ite;
-        ite = data.DataMapBitSet.keySet().iterator();
-        OffsetBitSet offsetBitSet;
+        Iterator<Integer> ite = data.DataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            offsetBitSet = data.DataMapBitSet.get(v);
+            OffsetBitSet offsetBitSet = data.DataMapBitSet.get(v);
             int numberOfValues = offsetBitSet.bitSet.cardinality();
             if (numberOfValues < numberOfMostCommonValue) {
                 mode = new HashSet<>();
@@ -788,9 +778,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * For returning the median of all data values as a double.
-     *
-     * @return
+     * @return The median of all data values.
      */
     @Override
     public double getMedian() {
@@ -801,12 +789,12 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         Iterator<Integer> ite;
         ite = data.DataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
-           int v = ite.next();
+            int v = ite.next();
             valueCount.put(v, data.DataMapBitSet.get(v).bitSet.cardinality());
         }
         ite = data.DataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-           int v = ite.next();
+            int v = ite.next();
             valueCount.put(v, data.DataMapHashSet.get(v).size());
         }
         long nonNoDataValueCount = getN();
@@ -818,7 +806,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 int i = 0;
                 ite = valueCount.keySet().iterator();
                 while (ite.hasNext()) {
-                   int v = ite.next();
+                    int v = ite.next();
                     i += valueCount.get(v);
                     if (i > requiredIndex && i > requiredIndex + 1) {
                         return v;
@@ -832,7 +820,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 int i = 0;
                 ite = valueCount.keySet().iterator();
                 while (ite.hasNext()) {
-                   int v = ite.next();
+                    int v = ite.next();
                     i += valueCount.get(v);
                     if (i > requiredIndex) {
                         return v;
@@ -844,10 +832,9 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * For returning the standard deviation of all data values as a double.
-     *
-     * @return
+     * @return The standard deviation of all data values.
      */
+    @Override
     protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
         BigDecimal r = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(dp, rm);
@@ -863,7 +850,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         ite = data.DataMapBitSet.keySet().iterator();
         OffsetBitSet offsetBitSet;
         while (ite.hasNext()) {
-           int v = ite.next();
+            int v = ite.next();
             offsetBitSet = data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
@@ -875,7 +862,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
          */
         ite = data.DataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-           int v = ite.next();
+            int v = ite.next();
             n = data.DataMapHashSet.get(v).size();
             nValues += n;
             r = r.add((BigDecimal.valueOf(v).subtract(mean).pow(2))

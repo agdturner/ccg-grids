@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.memory;
 
-import uk.ac.leeds.ccg.agdt.generic.memory.Generic_MemoryManager;
+import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
 
 /**
  * A class to be extended so as to handle OutOfMemoryErrors.
