@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
-import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * Grids with {@code Boolean} values. The noDataValue is {@code null}.

@@ -29,7 +29,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.agdt.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * Class of methods for processing and generating geographically weighted
