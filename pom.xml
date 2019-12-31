@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-generic-grids</artifactId>
+    <artifactId>agdt-java-grids</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
-    <name>agdt-java-generic-grids</name>
-    <url>https://github.com/agdturner/agdt-java-generic-grids</url>
+    <name>agdt-java-grids</name>
+    <url>https://github.com/agdturner/agdt-java-grids</url>
     <description>A Java Library for handling 2D square celled raster data.</description>
     <scm>
-        <url>git@github.com:agdturner/agdt-java-generic-grids.git</url>
-        <connection>scm:git:git@github.com:agdturner/agdt-java-generic-grids.git</connection>
-        <developerConnection>scm:git:git@github.com:agdturner/agdt-java-generic-grids</developerConnection>
+        <url>git@github.com:agdturner/agdt-java-grids.git</url>
+        <connection>scm:git:git@github.com:agdturner/agdt-java-grids.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/agdt-java-grids</developerConnection>
     </scm>
     <licenses>
         <license>
