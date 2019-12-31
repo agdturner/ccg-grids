@@ -564,7 +564,7 @@ public class Grids_UtilitiesTest {
         Generic_Path dir = new Generic_Path(dataDir);
         Grids_Environment ge = new Grids_Environment(env, dir);
         Grids_Processor gp = new Grids_Processor(ge);
-        Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
+        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = 10L;
         long ncols = 10L;
         int dp = 1;
