@@ -1,6 +1,6 @@
-# AGDT-Java-Grids
+# agdt-Java-Grids
 
-https://github.com/agdturner/grids
+https://github.com/agdturner/agdt-java-grids
 
 ## General description
 A Java library for storing and processing lattice based raster data otherwise known as grids. The library is geared for processing multiple input and output grids, each of which may be too large to store in the available fast access memory of a computer (commonly refered to as ram or memory) - in which case, some of the data is stored in slower access storage (commonly refered to as disk).
@@ -35,29 +35,54 @@ The library attempts to manage with the memory made available to the Java Virtua
 The library has evolved since around the year 2000 and is actively being developed. Some more history abou the evolution of the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
 
 ## Usages
-1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were used in various academic research projects for a range of geographical modelling task, to search for evidence of geographical clustering and to investigate changes in geographical clustering over time. In this respect it has most recently been used in the Digital Welfare Project to reveal changes in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
+1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were generated and used in various academic research projects for a range of geographical modelling task, to search for evidence of geographical clustering and to investigate changes in geographical clustering over time. In this respect it has most recently been used in the Digital Welfare Project to reveal changes in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
 2. Processing digital elevation data into geomorphometrics - see: https://github.com/agdturner/agdt-java-project-Geomorphometrics.
 3. Producing density plots of lines and points to help reveal relationships between variables.
-4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-generic-vector
+4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-vector
 
-More example usages are wanted. If you use this library please get in contact to add your usage to this list.
+It would be good to provide more example usages of this library. If you use it please let the developer know and maybe your usage will get added to this list...
 
-## Code status and development roadmap
-1. Version 1.0
-* The aim is to release this in January 2020 as a well documented code base with a unit test coverage of unit tests. The testing will focus on the Grids_Processor class. It is not envisaged to have a test for all classes and methods or for the tests to fully test the capabilities of the library on specific resources, although that is a reasonable aim for some future released version...
-* Move the processing classes geared for processing digital elevation data and for generating geographically weighted statistics to other libraries.
-* Push artifacts to Maven Central: https://mvnrepository.com/repos/central
-2. Version 1.1
-* The main enhancement will be 2D BigInteger and BigDecimal type numerical grids.
-3. Version 1.2
-* The main enhancement will be 3D grids.
+## Status, Current Version and platform requirements
+1. Version 1.0-SNAPSHOT
+Developed and tested on Java 11 using Maven. It is available from Maven Central via: https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math/1.1.0
+
+To use with Maven add the following dependencies to your POM:
+```
+<dependency>
+    <groupId>io.github.agdturner</groupId>
+    <artifactId>agdt-java-grids</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
+<dependency>
+    <groupId>io.github.agdturner</groupId>
+    <artifactId>agdt-java-math</artifactId>
+    <version>1.1.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
+<dependency>
+    <groupId>io.github.agdturner</groupId>
+    <artifactId>agdt-java-generic</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+2. Version 1.0.x
+* The aim is to release this in 2020 after developing unit tests that test every method in the Grids_Processor class.
+* Move the processing classes geared for processing digital elevation data Grids_Processor_DEM and for generating geographically weighted statistics Grids_Processor_GWS to other libraries.
+3. Version 1.1.x
+* The main enhancement aim is to add classes for 2D BigInteger and BigDecimal type numerical grids.
+4. Version 2.x
+* The main enhancement aim is to add classes for 3D grids.
 
 ## Dependencies
+agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
+agdt-java-math available via https://github.com/agdturner/agdt-java-math.
+
 There are no third party dependencies except for those used in testing.
 Please see the pom.xml for details.
 
 ## Contributions and collaboration
-Currently there is no community development of this library and there are no known users other than the developer (who has used and developed the library for multiple geographical research projects). Developing a user community and sustaining the development of the library over the long-term is a challenge. It may be that the best route to sustainability is to find an existing community that would benefit from this library and somehow merge them together. In the mean time, if you find this software interesting or useful and you may be interested in developing it, then please contact the developer and together we can consider options.
+Currently there is no community of users or community development of this library. Other than the developer there are no known users. It is unclear whether attempting to develop a user community and sustaining the development of the library over the long-term is a good idea, but this is something the developer is contemplating as part of their work at the University of Leeds. It may be that a more sensible way forwards is to find an open source development community that would benefit from features of this library and somehow integrate. In the mean time, if you find this software interesting or useful and you are interested in collaborating, then please contact the developer and together we can consider options.
 
 ## Acknowledgements
 The development of this library has been supported by numerous academic research grants and the University of Leeds. 
