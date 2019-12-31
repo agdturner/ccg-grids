@@ -382,7 +382,7 @@ public class Grids_GridBinary extends Grids_Grid {
         if (Files.isDirectory(gridFile)) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryBinary gf = gp.GridBinaryFactory;
+                Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridBinary g = (Grids_GridBinary) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
@@ -403,7 +403,7 @@ public class Grids_GridBinary extends Grids_Grid {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridFactoryBinary gf = gp.GridBinaryFactory;
+                Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridBinary g = (Grids_GridBinary) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));

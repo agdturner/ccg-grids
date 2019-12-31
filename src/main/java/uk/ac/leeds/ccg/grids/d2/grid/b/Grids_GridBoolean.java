@@ -389,7 +389,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         if (Files.isDirectory(gridFile)) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryBoolean gf = gp.GridBooleanFactory;
+                Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridBoolean g = (Grids_GridBoolean) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
@@ -412,7 +412,7 @@ public class Grids_GridBoolean extends Grids_Grid {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridFactoryBoolean gf = gp.GridBooleanFactory;
+                Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridBoolean g = (Grids_GridBoolean) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));

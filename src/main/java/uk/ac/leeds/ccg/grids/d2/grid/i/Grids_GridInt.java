@@ -510,7 +510,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (Files.isDirectory(gridFile)) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryInt gf = gp.GridIntFactory;
+                Grids_GridFactoryInt gf = gp.gridFactoryInt;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_Grid g = (Grids_Grid) Generic_IO.readObject(thisFile);
                 Grids_GridInt g2 = gf.create(g, startRow, startCol, endRow, endCol);
@@ -624,7 +624,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridFactoryInt gf = gp.GridIntFactory;
+                Grids_GridFactoryInt gf = gp.gridFactoryInt;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridInt g = (Grids_GridInt) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
@@ -653,8 +653,8 @@ public class Grids_GridInt extends Grids_GridNumber {
                 //long inputNrows = ( Long ) header[ 1 ];
                 nCols = header.nrows;
                 nRows = header.ncols;
-                chunkNRows = gp.GridDoubleFactory.getChunkNRows();
-                chunkNCols = gp.GridDoubleFactory.getChunkNCols();
+                chunkNRows = gp.gridFactoryDouble.getChunkNRows();
+                chunkNCols = gp.gridFactoryDouble.getChunkNCols();
                 initNChunkRows();
                 initNChunkCols();
                 initDimensions(header, 0, 0);
@@ -815,7 +815,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 Grids_ChunkIntSinglet gc = (Grids_ChunkIntSinglet) chunk;
                 if (value != gc.v) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().GridIntFactory.defaultGridChunkIntFactory.create(
+                    chunk = env.getProcessor().gridFactoryInt.defaultGridChunkIntFactory.create(
                             chunk, chunkID);
                     chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
                     data.put(chunkID, chunk);
@@ -1096,7 +1096,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     private Grids_ChunkInt convertToAnotherTypeOfChunk(Grids_ChunkInt chunk,
             Grids_2D_ID_int i) throws IOException, ClassNotFoundException,
             Exception {
-        Grids_ChunkInt r = env.getProcessor().GridIntFactory
+        Grids_ChunkInt r = env.getProcessor().gridFactoryInt
                 .defaultGridChunkIntFactory.create(chunk, i);
         data.put(i, r);
         return r;

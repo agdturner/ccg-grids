@@ -474,7 +474,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (Files.isDirectory(gridFile)) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryDouble gf = gp.GridDoubleFactory;
+                Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
@@ -589,7 +589,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile)) {
             if (true) {
-                Grids_GridFactoryDouble gf = gp.GridDoubleFactory;
+                Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
                         (Grids_Grid) Generic_IO.readObject(thisFile));
@@ -618,8 +618,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 //long inputNrows = ( Long ) header[ 1 ];
                 nCols = header.ncols;
                 nRows = header.nrows;
-                chunkNRows = gp.GridDoubleFactory.getChunkNRows();
-                chunkNCols = gp.GridDoubleFactory.getChunkNCols();
+                chunkNRows = gp.gridFactoryDouble.getChunkNRows();
+                chunkNCols = gp.gridFactoryDouble.getChunkNCols();
                 initNChunkRows();
                 initNChunkCols();
                 initDimensions(header, 0, 0);
@@ -770,7 +770,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
                 if (value != gc.v) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().GridDoubleFactory.defaultGridChunkDoubleFactory.create(chunk, i);
+                    chunk = env.getProcessor().gridFactoryDouble.defaultGridChunkDoubleFactory.create(chunk, i);
                     data.put(i, chunk);
                     if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
                         worthSwapping.add(i);
@@ -1064,7 +1064,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkDouble r;
-        Grids_ChunkFactoryDouble f = env.getProcessor().GridDoubleFactory.defaultGridChunkDoubleFactory;
+        Grids_ChunkFactoryDouble f = env.getProcessor().gridFactoryDouble.defaultGridChunkDoubleFactory;
         r = f.create(chunk, chunkID);
         data.put(chunkID, r);
         if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {

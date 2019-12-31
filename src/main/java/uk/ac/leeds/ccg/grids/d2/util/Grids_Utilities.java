@@ -275,7 +275,7 @@ public class Grids_Utilities extends Grids_Object {
             RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
-        Grids_GridFactoryDouble gfd = gp.GridDoubleFactory;
+        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = xGrid.getNRows();
         long ncols = xGrid.getNCols();
         double xGridNoDataValue = xGrid.getNoDataValue();

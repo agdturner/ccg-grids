@@ -75,22 +75,22 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Grids_GridFactoryBoolean
      */
-    public Grids_GridFactoryBoolean GridBooleanFactory;
+    public Grids_GridFactoryBoolean gridFactoryBoolean;
 
     /**
      * Grids_GridFactoryBoolean
      */
-    public Grids_GridFactoryBinary GridBinaryFactory;
+    public Grids_GridFactoryBinary gridFactoryBinary;
 
     /**
      * Grids_GridFactoryInt
      */
-    public Grids_GridFactoryInt GridIntFactory;
+    public Grids_GridFactoryInt gridFactoryInt;
 
     /**
      * Grids_GridFactoryDouble
      */
-    public Grids_GridFactoryDouble GridDoubleFactory;
+    public Grids_GridFactoryDouble gridFactoryDouble;
 
     /**
      * @param e The grids environment.
@@ -122,7 +122,7 @@ public class Grids_Processor extends Grids_Object {
         } else {
             fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBooleanFactory = new Grids_GridFactoryBoolean(env, fs,
+        gridFactoryBoolean = new Grids_GridFactoryBoolean(env, fs,
                 new Grids_ChunkFactoryBoolean(), chunkNRows, chunkNCols);
         // Binary
         s = Grids_Strings.s_GridBinary;
@@ -132,7 +132,7 @@ public class Grids_Processor extends Grids_Object {
         } else {
             fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridBinaryFactory = new Grids_GridFactoryBinary(env, fs,
+        gridFactoryBinary = new Grids_GridFactoryBinary(env, fs,
                 new Grids_ChunkFactoryBinary(), chunkNRows, chunkNCols);
         // Int
         s = Grids_Strings.s_GridInt;
@@ -142,14 +142,14 @@ public class Grids_Processor extends Grids_Object {
         } else {
             fs = new Generic_FileStore(files.getGeneratedDir(), s);
         }
-        GridIntFactory = new Grids_GridFactoryInt(env, fs,
+        gridFactoryInt = new Grids_GridFactoryInt(env, fs,
                 new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
                 new Grids_ChunkFactoryIntArray(),
                 chunkNRows, chunkNCols);
         // Double
         fs = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
                 Grids_Strings.s_GridDouble);
-        GridDoubleFactory = new Grids_GridFactoryDouble(env, fs,
+        gridFactoryDouble = new Grids_GridFactoryDouble(env, fs,
                 new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
                 new Grids_ChunkFactoryDoubleArray(),
                 chunkNRows, chunkNCols);
@@ -454,7 +454,7 @@ public class Grids_Processor extends Grids_Object {
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
-        Grids_GridDouble r = GridDoubleFactory.create(g, 0, 0, g.getNRows() - 1,
+        Grids_GridDouble r = gridFactoryDouble.create(g, 0, 0, g.getNRows() - 1,
                 g.getNCols() - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
@@ -587,7 +587,7 @@ public class Grids_Processor extends Grids_Object {
         double minGrid = stats.getMin(true).doubleValue();
         double maxGrid = stats.getMax(true).doubleValue();
         double rangeGrid = maxGrid - minGrid;
-        Grids_GridDouble r = GridDoubleFactory.create(g, 0, 0, g.getNRows() - 1,
+        Grids_GridDouble r = gridFactoryDouble.create(g, 0, 0, g.getNRows() - 1,
                 g.getNCols() - 1);
         r.setName(g.getName());
         System.out.println(r.toString());
@@ -890,7 +890,7 @@ public class Grids_Processor extends Grids_Object {
         Grids_Dimensions gD = g.getDimensions();
         BigDecimal g2NoDataValue = getNoDataValueBigDecimal(g);
         Grids_Dimensions g2D = g2.getDimensions();
-        Grids_GridFactoryDouble gf = this.GridDoubleFactory;
+        Grids_GridFactoryDouble gf = this.gridFactoryDouble;
         // If the region to be added is outside g then return.
         if ((dc[1].compareTo(gD.getXMax()) == 1)
                 || (dc[3].compareTo(gD.getXMin()) == -1)
@@ -1096,7 +1096,7 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble r;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        r = GridDoubleFactory.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         BigDecimal ndv0 = g0.ndv;
         BigDecimal ndv1 = g1.ndv;
         int ncr = g0.getNChunkRows();
@@ -1247,7 +1247,7 @@ public class Grids_Processor extends Grids_Object {
         Grids_GridDouble r;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        r = GridDoubleFactory.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         double noDataValue0 = g0.getNoDataValue();
         double noDataValue1 = g1.getNoDataValue();
         for (long row = 0L; row < nRows; row++) {
