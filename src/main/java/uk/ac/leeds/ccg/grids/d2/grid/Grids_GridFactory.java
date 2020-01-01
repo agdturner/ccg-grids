@@ -124,7 +124,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      */
     public Grids_Grid create(Grids_Grid g)
             throws IOException, ClassNotFoundException, Exception {
-        return create(g, 0L, 0L, g.getNRows(), g.getNCols());
+        return create(g, 0L, 0L, g.getNRows() - 1, g.getNCols() - 1);
     }
 
     /**
@@ -220,7 +220,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      */
     protected void setDimensions(long nRows, long nCols) {
         dim = new Grids_Dimensions(BigDecimal.ZERO,
-                BigDecimal.valueOf(nRows), BigDecimal.ZERO,
-                BigDecimal.valueOf(nCols), BigDecimal.ONE);
+                BigDecimal.valueOf(nCols), BigDecimal.ZERO,
+                BigDecimal.valueOf(nRows), BigDecimal.ONE);
     }
 }

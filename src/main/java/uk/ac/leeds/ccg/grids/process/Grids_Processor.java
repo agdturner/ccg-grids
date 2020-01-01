@@ -44,7 +44,6 @@ import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
-import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNumber;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
@@ -171,32 +170,6 @@ public class Grids_Processor extends Grids_Object {
      */
     public long getTime0() {
         return startTime;
-    }
-
-    /**
-     * Find out if grid {@code g0} and grid {@code g1} have the same frame - the
-     * same dimensions and chunking.
-     *
-     * @param g0 A grid to compare.
-     * @param g1 A grid to compare.
-     * @return {@code true} if grid {@code g0} and grid {@code g1} have the same
-     * frame - the same dimensions and chunking.
-     */
-    public boolean isSameFrame(Grids_Grid g0, Grids_Grid g1) {
-        Grids_Dimensions g0Dim = g0.getDimensions();
-        Grids_Dimensions g1Dim = g1.getDimensions();
-        if (g0Dim.equals(g1Dim)) {
-            if (g0.getChunkNRows() == g1.getChunkNRows()) {
-                if (g0.getChunkNCols() == g1.getChunkNCols()) {
-                    if (g0.getNChunkRows() == g1.getNChunkRows()) {
-                        if (g0.getNChunkCols() == g1.getNChunkCols()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -1101,8 +1074,8 @@ public class Grids_Processor extends Grids_Object {
         BigDecimal ndv1 = g1.ndv;
         int ncr = g0.getNChunkRows();
         int ncc = g0.getNChunkCols();
-        if (isSameFrame(g0, g1)) {
-            if (isSameFrame(g0, r)) {
+        if (g0.isSameFrame(g1)) {
+            if (g0.isSameFrame(r)) {
                 /**
                  * Grids are coincident and have the same chunks.
                  */

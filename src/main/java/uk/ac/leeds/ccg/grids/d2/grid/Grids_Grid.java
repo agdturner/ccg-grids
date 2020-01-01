@@ -2126,6 +2126,30 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
+     * For finding out if grid {@code g} and this have the same frame - the
+     * same dimensions and chunking.
+     *
+     * @param g A grid to compare.
+     * @return {@code true} if grid {@code g} and this have the same
+     * frame - the same dimensions and chunking.
+     */
+    public boolean isSameFrame(Grids_Grid g) {
+        Grids_Dimensions gDim = g.getDimensions();
+        if (dim.equals(gDim)) {
+            if (chunkNRows == g.getChunkNRows()) {
+                if (chunkNCols == g.getChunkNCols()) {
+                    if (nChunkRows == g.getNChunkRows()) {
+                        if (nChunkCols == g.getNChunkCols()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
      * For finding out if point given by x-coordinate {@code x}, y-coordinate
      * {@code y} is in this grid.
      *
