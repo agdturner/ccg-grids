@@ -316,6 +316,19 @@ public class Grids_Environment extends Grids_MemoryManager
             removeFromNotToClear(g1, i);
         }
     }
+    
+    /**
+     * Adds all the chunk IDs in {@code chunkIDs} of chunks in {@code g} into
+     * {@link #notToClear}.
+     *
+     * @param g The grid with chunk IDs to add to {@link #notToClear}.
+     * @param s The chunk IDs to add to {@link #notToClear}.
+     */
+    public final void removeFromNotToClear(Grids_Grid g, Set<Grids_2D_ID_int> s) {
+        if (notToClear.containsKey(g)) {
+            notToClear.get(g).removeAll(s);
+        }
+    }
 
     /**
      * Removes everything in {@code m} from {@link notToClear}.

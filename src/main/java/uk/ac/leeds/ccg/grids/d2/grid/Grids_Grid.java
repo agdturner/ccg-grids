@@ -863,6 +863,17 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
+     * For testing if two grids have the same dimensions and values.
+     * @param g The grid to test against.
+     * @return {@code true} if this is the same as {@code g} and false 
+     * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public abstract boolean isSameDimensionsAndValues(Grids_Grid g) throws 
+            IOException, Exception;
+
+    /**
      * Attempts to swap chunks that have a chunk ID in {@code s}.
      *
      * @param s A Set containing the chunk IDs of the chunks to swap.
@@ -904,7 +915,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * from other grids and perhaps also swapping out other data). If false then
      * OutOfMemoryErrors are caught and thrown.
      * @return A detailed account of what was swapped.
-     * @throws java.io.IOException If encountered.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
      */
     public Grids_AccountDetail swapChunk_AccountDetail(boolean hoome)
             throws IOException, Exception {

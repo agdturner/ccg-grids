@@ -45,6 +45,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
+import java.util.Set;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
 
 /**
@@ -210,8 +211,6 @@ public class Grids_GridDouble extends Grids_GridNumber {
     @Override
     protected void init() throws IOException {
         super.init();
-        env.setDataToClear(true);
-        env.addGrid(this);
         if (!stats.isUpdated()) {
             ((Grids_StatsNotUpdatedDouble) stats).setUpToDate(false);
         }
@@ -262,33 +261,33 @@ public class Grids_GridDouble extends Grids_GridNumber {
         env.checkAndMaybeFreeMemory();
         init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
         boolean isLoadedChunk = false;
-        int startChunkRow = g.getChunkRow(startRow);
-        int endChunkRow = g.getChunkRow(endRow);
-        int ncr = endChunkRow - startChunkRow + 1;
-        int startChunkCol = g.getChunkCol(startCol);
-        int endChunkCol = g.getChunkCol(endCol);
+        int scr = g.getChunkRow(startRow);
+        int ecr = g.getChunkRow(endRow);
+        int ncr = ecr - scr + 1;
+        int scc = g.getChunkCol(startCol);
+        int ecc = g.getChunkCol(endCol);
         if (g instanceof Grids_GridDouble) {
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double gndv = gd.getNoDataValue();
             double gValue;
-            for (int gcr = startChunkRow; gcr <= endChunkRow; gcr++) {
+            for (int gcr = scr; gcr <= ecr; gcr++) {
                 int gChunkNRows = g.getChunkNRows(gcr);
-                for (int gcc = startChunkCol; gcc <= endChunkCol; gcc++) {
+                for (int gcc = scc; gcc <= ecc; gcc++) {
                     do {
                         try {
                             // Try to load chunk.
-                            Grids_2D_ID_int gChunkID = new Grids_2D_ID_int(gcr, gcc);
-                            env.addToNotToClear(g, gChunkID);
+                            Grids_2D_ID_int gi = new Grids_2D_ID_int(gcr, gcc);
+                            env.addToNotToClear(g, gi);
                             env.checkAndMaybeFreeMemory();
-                            Grids_ChunkDouble c = gd.getChunk(gChunkID);
+                            Grids_ChunkDouble c = gd.getChunk(gi);
                             int gChunkNCols = g.getChunkNCols(gcc);
-                            for (int cellRow = 0; cellRow < gChunkNRows; cellRow++) {
-                                long gRow = g.getRow(gcr, cellRow);
+                            for (int cr = 0; cr < gChunkNRows; cr++) {
+                                long gRow = g.getRow(gcr, cr);
                                 long row = gRow - startRow;
                                 int chunkRow = getChunkRow(row);
                                 if (gRow >= startRow && gRow <= endRow) {
-                                    for (int cellCol = 0; cellCol < gChunkNCols; cellCol++) {
-                                        long gCol = g.getCol(gcc, cellCol);
+                                    for (int cc = 0; cc < gChunkNCols; cc++) {
+                                        long gCol = g.getCol(gcc, cc);
                                         long col = gCol - startCol;
                                         int chunkCol = getChunkCol(col);
                                         if (gCol >= startCol && gCol <= endCol) {
@@ -303,16 +302,16 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 //ge.addToNotToClear(this, chunkID);
                                                 Grids_ChunkDouble chunk;
-                                                        if (!data.containsKey(chunkID)) {
-                                                   chunk = cf.create(this, chunkID);
+                                                if (!data.containsKey(chunkID)) {
+                                                    chunk = cf.create(this, chunkID);
                                                     data.put(chunkID, chunk);
                                                     if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
                                                         worthSwapping.add(chunkID);
                                                     }
                                                 } else {
-                                                   chunk = (Grids_ChunkDouble) data.get(chunkID);
+                                                    chunk = (Grids_ChunkDouble) data.get(chunkID);
                                                 }
-                                                gValue = gd.getCell(c, cellRow, cellCol);
+                                                gValue = gd.getCell(c, cr, cc);
                                                 // Initialise v
                                                 if (gValue == gndv) {
                                                     initCell(chunk, chunkID, row, col, ndv);
@@ -330,7 +329,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 }
                             }
                             isLoadedChunk = true;
-                            env.removeFromNotToClear(g, gChunkID);
+                            env.removeFromNotToClear(g, gi);
                         } catch (OutOfMemoryError e) {
                             if (env.HOOME) {
                                 env.clearMemoryReserve(env.env);
@@ -356,9 +355,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkInt c;
             int gndv = gi.getNoDataValue();
             int gValue;
-            for (int gcr = startChunkRow; gcr <= endChunkRow; gcr++) {
+            for (int gcr = scr; gcr <= ecr; gcr++) {
                 int gChunkNRows = g.getChunkNRows(gcr);
-                for (int gcc = startChunkCol; gcc <= endChunkCol; gcc++) {
+                for (int gcc = scc; gcc <= ecc; gcc++) {
                     do {
                         try {
                             // Try to load chunk.
@@ -1519,65 +1518,86 @@ public class Grids_GridDouble extends Grids_GridNumber {
         return setCell(cr, cc, ccr, ccc, v.doubleValue());
     }
 
+    /**
+     * Test if this and {@code g} have the same dimensions, the same number of
+     * rows and columns of chunks with the same number of rows and columns of
+     * cells in each (the same frame), and the same values in each cell. The
+     * chunks are allowed to be stored differently as are the statistics. The no
+     * data value may also be different so long as this is distinct from all
+     * other values (currently no check is done on the distinctiveness of no
+     * data values).
+     *
+     * @param g The grid to test if it has the same dimensions and values as
+     * this.
+     * @return {code true} if this and {@code g} have the same dimensions, the
+     * same number of rows and columns of chunks with the same number of rows
+     * and columns of cells in each (the same frame), and the same values in
+     * each cell.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Grids_GridDouble) {
-            Grids_GridDouble g = (Grids_GridDouble) o;
-            double gndv = g.getNoDataValue();
-            if (this.dim.equals(g.dim)) {
-                if (this.nRows == g.nRows) {
-                    if (this.nCols == g.nCols) {
-                        for (int cr = 0; cr < this.nChunkRows; cr++) {
-                            int cnr = g.getChunkNRows(cr);
-                            for (int cc = 0; cc < this.nChunkCols; cc++) {
-                                Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                                env.addToNotToClear(g, i);
-                                try {
-                                    env.checkAndMaybeFreeMemory();
-                                    int cnc = g.getChunkNCols(cc);
-                                    Grids_ChunkDouble chunk = getChunk(i, cr, cc);
-                                    for (int ccr = 0; ccr < cnr; ccr++) {
-                                        long row = g.getRow(cr, ccr);
-                                        for (int ccc = 0; ccc < cnc; ccc++) {
-                                            long col = g.getCol(cc, ccc);
-                                            double v = getCell(row, col);
-                                            double gv = getCell(chunk, cnr, cnc, cr, cc);
-                                            if (v == noDataValue) {
-                                                if (gv != gndv) {
-                                                    return false;
-                                                }
-                                            } else {
-                                                if (gv == gndv) {
-                                                    return false;
-                                                } else {
-                                                    if (v != gv) {
-                                                        return false;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (ClassNotFoundException ex) {
-                                    ex.printStackTrace(System.err);
-                                    env.env.log(ex.getMessage());
-                                } catch (Exception ex) {
-                                    ex.printStackTrace(System.err);
-                                    env.env.log(ex.getMessage());
+    public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException,
+            Exception {
+        if (g instanceof Grids_GridDouble) {
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double gndv = gd.getNoDataValue();
+            if (!isSameFrame(g)) {
+                return false;
+            }
+            if (this.nRows != gd.nRows) {
+                return false;
+            }
+            if (this.nCols != gd.nCols) {
+                return false;
+            }
+            for (int cr = 0; cr < this.nChunkRows; cr++) {
+                int cnr = gd.getChunkNRows(cr);
+                for (int cc = 0; cc < this.nChunkCols; cc++) {
+                    int cnc = gd.getChunkNCols(cc);
+                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                    env.addToNotToClear(gd, i);
+                    // Add to not to clear a row of this chunks.
+                    long rowMin = gd.getRow(cr, 0);
+                    long rowMax = gd.getRow(cr, cnr);
+                    long colMin = gd.getCol(cc, 0);
+                    long colMax = gd.getCol(cc, cnc);
+                    Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin, colMax);
+                    env.addToNotToClear(this, s);
+                    env.checkAndMaybeFreeMemory();
+                    Grids_ChunkDouble chunk = getChunk(i, cr, cc);                    
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        long row = gd.getRow(cr, ccr);
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                    
+                            long col = gd.getCol(cc, ccc);
+                            
+                            
+                            double v = getCell(row, col);
+                            double gv = getCell(chunk, cnr, cnc, cr, cc);
+                            if (v == noDataValue) {
+                                if (gv != gndv) {
+                                    return false;
                                 }
-                                env.removeFromNotToClear(g, i);
+                            } else {
+                                if (gv == gndv) {
+                                    return false;
+                                } else {
+                                    if (v != gv) {
+                                        return false;
+                                    }
+                                }
                             }
+                            
+                            
                         }
                     }
+                    env.removeFromNotToClear(gd, i);
+                    env.removeFromNotToClear(this, s);                    
                 }
             }
+            return true;
         }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + (int) (Double.doubleToLongBits(this.noDataValue) ^ (Double.doubleToLongBits(this.noDataValue) >>> 32));
-        return hash;
+        return false;
     }
 }

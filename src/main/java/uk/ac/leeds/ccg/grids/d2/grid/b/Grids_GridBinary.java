@@ -832,4 +832,71 @@ public class Grids_GridBinary extends Grids_Grid {
         return (Grids_StatsBinary) stats;
     }
 
+    /**
+     * Test if this and {@code g} have the same dimensions, the same number of
+     * rows and columns of chunks with the same number of rows and columns of
+     * cells in each (the same frame), and the same values in each cell. The
+     * chunks are allowed to be stored differently as are the statistics. The no
+     * data value may also be different so long as this is distinct from all
+     * other values (currently no check is done on the distinctiveness of no
+     * data values).
+     *
+     * @param g The grid to test if it has the same dimensions and values as
+     * this.
+     * @return {code true} if this and {@code g} have the same dimensions, the
+     * same number of rows and columns of chunks with the same number of rows
+     * and columns of cells in each (the same frame), and the same values in
+     * each cell.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    @Override
+    public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException,
+            Exception {
+        if (g instanceof Grids_GridBinary) {
+            Grids_GridBinary gb = (Grids_GridBinary) g;
+            if (!isSameFrame(g)) {
+                return false;
+            }
+            if (this.nRows != gb.nRows) {
+                return false;
+            }
+            if (this.nCols != gb.nCols) {
+                return false;
+            }
+            for (int cr = 0; cr < this.nChunkRows; cr++) {
+                int cnr = gb.getChunkNRows(cr);
+                for (int cc = 0; cc < this.nChunkCols; cc++) {
+                    int cnc = gb.getChunkNCols(cc);
+                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                    env.addToNotToClear(gb, i);
+                    // Add to not to clear a row of this chunks.
+                    long rowMin = gb.getRow(cr, 0);
+                    long rowMax = gb.getRow(cr, cnr);
+                    long colMin = gb.getCol(cc, 0);
+                    long colMax = gb.getCol(cc, cnc);
+                    Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin,
+                            colMax);
+                    env.addToNotToClear(this, s);
+                    env.checkAndMaybeFreeMemory();
+                    Grids_ChunkBinaryArray chunk = getChunk(i, cr, cc);
+                    for (int ccr = 0; ccr < cnr; ccr++) {
+                        long row = gb.getRow(cr, ccr);
+                        for (int ccc = 0; ccc < cnc; ccc++) {
+                            long col = gb.getCol(cc, ccc);
+                            boolean v = getCell(row, col);
+                            boolean gv = chunk.getCell(ccc, ccc);
+                            if (v != gv) {
+                                return false;
+                            }
+                        }
+                    }
+                    env.removeFromNotToClear(gb, i);
+                    env.removeFromNotToClear(this, s);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }
