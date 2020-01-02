@@ -1562,11 +1562,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     for (int ccr = 0; ccr < cnr; ccr++) {
                         long row = gd.getRow(cr, ccr);
                         for (int ccc = 0; ccc < cnc; ccc++) {
-
                             long col = gd.getCol(cc, ccc);
-
                             double v = getCell(row, col);
-                            double gv = getCell(chunk, cnr, cnc, cr, cc);
+                            //double gv = getCell(chunk, cr, cc, ccr, ccc);
+                            double gv = chunk.getCell(ccr, ccc);
                             if (v == noDataValue) {
                                 if (gv != gndv) {
                                     return false;

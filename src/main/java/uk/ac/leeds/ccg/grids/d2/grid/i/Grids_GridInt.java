@@ -1623,7 +1623,8 @@ public class Grids_GridInt extends Grids_GridNumber {
                         for (int ccc = 0; ccc < cnc; ccc++) {
                             long col = gi.getCol(cc, ccc);
                             int v = getCell(row, col);
-                            int gv = getCell(chunk, cnr, cnc, cr, cc);
+                            //int gv = getCell(chunk, cr, cc, ccr, ccc);
+                            int gv = chunk.getCell(ccr, ccc);
                             if (v == noDataValue) {
                                 if (gv != gndv) {
                                     return false;
