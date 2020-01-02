@@ -1520,19 +1520,15 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     /**
      * Test if this and {@code g} have the same dimensions, the same number of
-     * rows and columns of chunks with the same number of rows and columns of
-     * cells in each (the same frame), and the same values in each cell. The
-     * chunks are allowed to be stored differently as are the statistics. The no
-     * data value may also be different so long as this is distinct from all
-     * other values (currently no check is done on the distinctiveness of no
-     * data values).
+     * rows and columns, and the same values in each cell. The chunks are
+     * allowed to be stored differently as are the statistics. The no data value
+     * may also be different so long as this is distinct from all other values
+     * (currently no check is done on the distinctiveness of no data values).
      *
      * @param g The grid to test if it has the same dimensions and values as
      * this.
      * @return {code true} if this and {@code g} have the same dimensions, the
-     * same number of rows and columns of chunks with the same number of rows
-     * and columns of cells in each (the same frame), and the same values in
-     * each cell.
+     * same number of rows and columns, and the same values in each cell.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -1542,9 +1538,6 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (g instanceof Grids_GridDouble) {
             Grids_GridDouble gd = (Grids_GridDouble) g;
             double gndv = gd.getNoDataValue();
-            if (!isSameFrame(g)) {
-                return false;
-            }
             if (this.nRows != gd.nRows) {
                 return false;
             }
@@ -1565,14 +1558,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin, colMax);
                     env.addToNotToClear(this, s);
                     env.checkAndMaybeFreeMemory();
-                    Grids_ChunkDouble chunk = getChunk(i, cr, cc);                    
+                    Grids_ChunkDouble chunk = getChunk(i, cr, cc);
                     for (int ccr = 0; ccr < cnr; ccr++) {
                         long row = gd.getRow(cr, ccr);
                         for (int ccc = 0; ccc < cnc; ccc++) {
-                    
+
                             long col = gd.getCol(cc, ccc);
-                            
-                            
+
                             double v = getCell(row, col);
                             double gv = getCell(chunk, cnr, cnc, cr, cc);
                             if (v == noDataValue) {
@@ -1588,12 +1580,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                     }
                                 }
                             }
-                            
-                            
+
                         }
                     }
                     env.removeFromNotToClear(gd, i);
-                    env.removeFromNotToClear(this, s);                    
+                    env.removeFromNotToClear(this, s);
                 }
             }
             return true;

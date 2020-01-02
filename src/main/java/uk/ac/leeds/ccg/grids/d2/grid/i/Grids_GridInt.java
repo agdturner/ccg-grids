@@ -1578,19 +1578,15 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     /**
      * Test if this and {@code g} have the same dimensions, the same number of
-     * rows and columns of chunks with the same number of rows and columns of
-     * cells in each (the same frame), and the same values in each cell. The
-     * chunks are allowed to be stored differently as are the statistics. The no
-     * data value may also be different so long as this is distinct from all
-     * other values (currently no check is done on the distinctiveness of no
-     * data values).
+     * rows and columns, and the same values in each cell. The chunks are
+     * allowed to be stored differently as are the statistics. The no data value
+     * may also be different so long as this is distinct from all other values
+     * (currently no check is done on the distinctiveness of no data values).
      *
      * @param g The grid to test if it has the same dimensions and values as
      * this.
      * @return {code true} if this and {@code g} have the same dimensions, the
-     * same number of rows and columns of chunks with the same number of rows
-     * and columns of cells in each (the same frame), and the same values in
-     * each cell.
+     * same number of rows and columns, and the same values in each cell.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -1600,9 +1596,6 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (g instanceof Grids_GridInt) {
             Grids_GridInt gi = (Grids_GridInt) g;
             int gndv = gi.getNoDataValue();
-            if (!isSameFrame(g)) {
-                return false;
-            }
             if (this.nRows != gi.nRows) {
                 return false;
             }

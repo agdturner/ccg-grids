@@ -55,8 +55,8 @@ public class Grids_GridBoolean extends Grids_Grid {
     public static Boolean DefaultValue = null;
 
     /**
-     * Creates a new grid with each cell value equal to {@code ndv}
-     * and all chunks of the same type.
+     * Creates a new grid with each cell value equal to {@code ndv} and all
+     * chunks of the same type.
      *
      * @param stats What {@link #stats}T is set to.
      * @param fs What {@link #fs} is set to.
@@ -108,8 +108,7 @@ public class Grids_GridBoolean extends Grids_Grid {
     }
 
     /**
-     * Creates a new grid with values obtained from a grid cached in
-     * gridFile.
+     * Creates a new grid with values obtained from a grid cached in gridFile.
      *
      * @param stats What {@link #stats}T is set to.
      * @param fs What {@link #fs} is set to.
@@ -275,6 +274,7 @@ public class Grids_GridBoolean extends Grids_Grid {
 
     /**
      * For loading a chunk.
+     *
      * @param g The grid.
      * @param cf Chunk factory.
      * @param chunkNRows Chunk NRows
@@ -850,19 +850,13 @@ public class Grids_GridBoolean extends Grids_Grid {
 
     /**
      * Test if this and {@code g} have the same dimensions, the same number of
-     * rows and columns of chunks with the same number of rows and columns of
-     * cells in each (the same frame), and the same values in each cell. The
-     * chunks are allowed to be stored differently as are the statistics. The no
-     * data value may also be different so long as this is distinct from all
-     * other values (currently no check is done on the distinctiveness of no
-     * data values).
+     * rows and columns, and the same values in each cell. The chunks are
+     * allowed to be stored differently as are the statistics.
      *
      * @param g The grid to test if it has the same dimensions and values as
      * this.
      * @return {code true} if this and {@code g} have the same dimensions, the
-     * same number of rows and columns of chunks with the same number of rows
-     * and columns of cells in each (the same frame), and the same values in
-     * each cell.
+     * same number of rows and columns, and the same values in each cell.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
@@ -871,9 +865,6 @@ public class Grids_GridBoolean extends Grids_Grid {
             Exception {
         if (g instanceof Grids_GridBoolean) {
             Grids_GridBoolean gb = (Grids_GridBoolean) g;
-            if (!isSameFrame(g)) {
-                return false;
-            }
             if (this.nRows != gb.nRows) {
                 return false;
             }
