@@ -81,29 +81,64 @@ public class Grids_ProcessorTest {
     }
 
     /**
+     *
+     * @param g The grid.
+     * @param r The number of rows to print.
+     * @param c The number of columns to print.
+     */
+    public void log(Grids_GridNumber g, long r, long c) throws Exception {
+        env.log("name=" + g.getName());
+        long nrows = g.getNRows();
+        long ncols = g.getNCols();
+        env.log(g.toString());
+        if (nrows < r) {
+            for (long row = 0; row < nrows; row++) {
+                String s = "";
+                if (ncols < c) {
+                    for (long col = 0; col < ncols; col++) {
+                        s += g.getCellBigDecimal(row, col) + " ";
+                    }
+                    env.log(s);
+                }
+            }
+        } else {
+
+        }
+
+    }
+
+    /**
      * Test of mask method, of class Grids_Processor.
      */
     @Test
     public void testMask_Grids_GridNumber_Grids_GridNumber() throws Exception {
         System.out.println("mask");
-            Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
-        Grids_GridDouble g0 = (Grids_GridDouble) gfd.create(2, 3);
+        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        long nrows = 2L;
+        long ncols = 3L;
+        Grids_GridDouble g0 = (Grids_GridDouble) gfd.create(nrows, ncols);
         g0.setCell(0, 0, 1.0d);
         g0.setCell(0, 1, 1.0d);
         g0.setCell(0, 2, 1.0d);
         g0.setCell(1, 0, 1.0d);
         g0.setCell(1, 1, 1.0d);
         g0.setCell(1, 2, 1.0d);
-        Grids_GridDouble g = (Grids_GridDouble) gfd.create(2, 3);
+        long maxNrowsToPrint = 10;
+        long maxNcolsToPrint = 10;
+        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridDouble g = (Grids_GridDouble) gfd.create(nrows, ncols);
         //g.setCell(0, 0, 0.0d);
         g.setCell(0, 1, 1.0d);
         g.setCell(0, 2, 1.0d);
         g.setCell(1, 0, 1.0d);
         g.setCell(1, 1, 1.0d);
         g.setCell(1, 2, 1.0d);
+        log(g, maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble mask = (Grids_GridDouble) gfd.create(g);
+        log(mask, maxNrowsToPrint, maxNcolsToPrint);
         gp.mask(g0, mask);
-        boolean equal = mask.equals(g0);
+        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        boolean equal = mask.isSameDimensionsAndValues(g0);
         assertTrue(equal);
     }
 
