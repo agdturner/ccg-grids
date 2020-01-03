@@ -163,7 +163,7 @@ public class Grids_ProcessorTest {
         //g.setCell(0, 3, 1.0d);
         //g.setCell(1, 0, 1.0d);
         g.setCell(1, 1, 1.0d);
-        g.setCell(1, 2, 1.0d);
+        //g.setCell(1, 2, 1.0d);
         g.setCell(1, 3, 1.0d);
         log(g, maxNrowsToPrint, maxNcolsToPrint);
         mask = (Grids_GridDouble) gfd.create(g);
