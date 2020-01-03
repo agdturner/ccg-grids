@@ -1092,10 +1092,10 @@ public class Grids_Processor extends Grids_Object {
                             for (int ccc = 0; ccc < cnc; ccc++) {
                                 BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
                                         ccr, ccc);
-                                if (v0 != ndv0) {
+                                if (v0.compareTo(ndv0) != 0) {
                                     BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
                                             ccr, ccc);
-                                    if (v1 != ndv1) {
+                                    if (v1.compareTo(ndv1) != 0) {
                                         r.setCell(cr, cc, ccr, ccc,
                                                 v0.multiply(v1));
                                     }
@@ -1134,10 +1134,10 @@ public class Grids_Processor extends Grids_Object {
                             for (int ccc = 0; ccc < cnc; ccc++) {
                                 BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
                                         ccr, ccc);
-                                if (v0 != ndv0) {
+                                if (v0.compareTo(ndv0) != 0) {
                                     BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
                                             ccr, ccc);
-                                    if (v1 != ndv1) {
+                                    if (v1.compareTo(ndv1) != 0) {
                                         r.setCell(row, r.getCol(cc, ccc),
                                                 v0.multiply(v1));
                                     }
@@ -1180,10 +1180,10 @@ public class Grids_Processor extends Grids_Object {
                             long col = r.getCol(cc, ccc);
                             BigDecimal v0 = g0.getCellBigDecimal(cr, cc, ccr,
                                     ccc);
-                            if (v0 != ndv0) {
+                            if (v0.compareTo(ndv0) != 0) {
                                 BigDecimal x = g0.getCellX(col);
                                 BigDecimal v1 = g1.getCellBigDecimal(x, y);
-                                if (v1 != ndv1) {
+                                if (v1.compareTo(ndv1) != 0) {
                                     r.setCell(x, y, v0.multiply(v1));
                                 }
                             }
