@@ -1053,8 +1053,7 @@ public class Grids_Processor extends Grids_Object {
     }
 
     /**
-     * Multiply g0 and g1 and return a new grid. It is assumed that the
-     * dimensions are all the same;
+     * Multiply g0 and g1 and return a new grid.
      *
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to multiply
@@ -1074,8 +1073,9 @@ public class Grids_Processor extends Grids_Object {
         BigDecimal ndv1 = g1.ndv;
         int ncr = g0.getNChunkRows();
         int ncc = g0.getNChunkCols();
-        if (g0.isSameFrame(g1)) {
-            if (g0.isSameFrame(r)) {
+        if (g0.isCoincindent(g1));
+        if (g0.isSameDimensionsAndChunks(g1)) {
+            if (g0.isSameDimensionsAndChunks(r)) {
                 /**
                  * Grids are coincident and have the same chunks.
                  */
@@ -1336,10 +1336,8 @@ public class Grids_Processor extends Grids_Object {
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            Grids_GridDouble count = gf.create(rNrows,
-                    rNcols, rD);
-            Grids_GridDouble normaliser = gf.create(rNrows,
-                    rNcols, rD);
+            Grids_GridDouble count = gf.create(rNrows, rNcols, rD);
+            Grids_GridDouble normaliser = gf.create(rNrows, rNcols, rD);
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
                     BigDecimal x = grid.getCellX(col);
@@ -1381,10 +1379,8 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            Grids_GridDouble numerator = gf.create(rNrows,
-                    rNcols, rD);
-            Grids_GridDouble denominator = gf.create(
-                    rNrows, rNcols, rD);
+            Grids_GridDouble numerator = gf.create(rNrows, rNcols, rD);
+            Grids_GridDouble denominator = gf.create(rNrows, rNcols, rD);
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
                     BigDecimal x = grid.getCellX(col);

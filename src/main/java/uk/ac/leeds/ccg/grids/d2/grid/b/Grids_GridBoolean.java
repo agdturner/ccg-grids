@@ -863,57 +863,54 @@ public class Grids_GridBoolean extends Grids_Grid {
     @Override
     public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException,
             Exception {
-        if (g instanceof Grids_GridBoolean) {
-            Grids_GridBoolean gb = (Grids_GridBoolean) g;
-            if (this.nRows != gb.nRows) {
-                return false;
-            }
-            if (this.nCols != gb.nCols) {
-                return false;
-            }
-            for (int cr = 0; cr < this.nChunkRows; cr++) {
-                int cnr = gb.getChunkNRows(cr);
-                for (int cc = 0; cc < this.nChunkCols; cc++) {
-                    int cnc = gb.getChunkNCols(cc);
-                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                    env.addToNotToClear(gb, i);
-                    // Add to not to clear a row of this chunks.
-                    long rowMin = gb.getRow(cr, 0);
-                    long rowMax = gb.getRow(cr, cnr);
-                    long colMin = gb.getCol(cc, 0);
-                    long colMax = gb.getCol(cc, cnc);
-                    Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin,
-                            colMax);
-                    env.addToNotToClear(this, s);
-                    env.checkAndMaybeFreeMemory();
-                    Grids_ChunkBooleanArray chunk = getChunk(i, cr, cc);
-                    for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = gb.getRow(cr, ccr);
-                        for (int ccc = 0; ccc < cnc; ccc++) {
-                            long col = gb.getCol(cc, ccc);
-                            Boolean v = getCell(row, col);
-                            Boolean gv = chunk.getCell(cr, cc);
-                            if (v == null) {
-                                if (gv != null) {
-                                    return false;
-                                }
+        if (!(g instanceof Grids_GridBoolean)) {
+            return false;
+        }
+        if (!isSameDimensions(g)) {
+            return false;
+        }
+        Grids_GridBoolean gb = (Grids_GridBoolean) g;
+        for (int cr = 0; cr < this.nChunkRows; cr++) {
+            int cnr = gb.getChunkNRows(cr);
+            for (int cc = 0; cc < this.nChunkCols; cc++) {
+                int cnc = gb.getChunkNCols(cc);
+                Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                env.addToNotToClear(gb, i);
+                // Add to not to clear a row of this chunks.
+                long rowMin = gb.getRow(cr, 0);
+                long rowMax = gb.getRow(cr, cnr);
+                long colMin = gb.getCol(cc, 0);
+                long colMax = gb.getCol(cc, cnc);
+                Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin,
+                        colMax);
+                env.addToNotToClear(this, s);
+                env.checkAndMaybeFreeMemory();
+                Grids_ChunkBooleanArray chunk = getChunk(i, cr, cc);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    long row = gb.getRow(cr, ccr);
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        long col = gb.getCol(cc, ccc);
+                        Boolean v = getCell(row, col);
+                        Boolean gv = chunk.getCell(cr, cc);
+                        if (v == null) {
+                            if (gv != null) {
+                                return false;
+                            }
+                        } else {
+                            if (gv == null) {
+                                return false;
                             } else {
-                                if (gv == null) {
+                                if (v != gv) {
                                     return false;
-                                } else {
-                                    if (v != gv) {
-                                        return false;
-                                    }
                                 }
                             }
                         }
                     }
-                    env.removeFromNotToClear(gb, i);
-                    env.removeFromNotToClear(this, s);
                 }
+                env.removeFromNotToClear(gb, i);
+                env.removeFromNotToClear(this, s);
             }
-            return true;
         }
-        return false;
+        return true;
     }
 }

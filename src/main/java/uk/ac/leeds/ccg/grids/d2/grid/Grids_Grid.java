@@ -864,14 +864,26 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * For testing if two grids have the same dimensions and values.
+     *
      * @param g The grid to test against.
-     * @return {@code true} if this is the same as {@code g} and false 
+     * @return {@code true} if this is the same as {@code g} and false
      * otherwise.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public abstract boolean isSameDimensionsAndValues(Grids_Grid g) throws 
+    public abstract boolean isSameDimensionsAndValues(Grids_Grid g) throws
             IOException, Exception;
+
+    /**
+     * If the dimensions are the same, then so are the numbers of rows and
+     * columns.
+     *
+     * @param g The grid to compare with.
+     * @return {@code true} if this has the same dimensions as g.
+     */
+    public boolean isSameDimensions(Grids_Grid g) {
+        return dim.equals(g.dim);
+    }
 
     /**
      * Attempts to swap chunks that have a chunk ID in {@code s}.
@@ -2138,14 +2150,14 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * For finding out if grid {@code g} and this have the same frame - the
-     * same dimensions and chunking.
+     * For finding out if grid {@code g} and this have the same dimensions and
+     * alignment of chunks.
      *
      * @param g A grid to compare.
-     * @return {@code true} if grid {@code g} and this have the same
-     * frame - the same dimensions and chunking.
+     * @return {@code true} if grid {@code g} and this have the same dimensions
+     * and alignment of chunks.
      */
-    public boolean isSameFrame(Grids_Grid g) {
+    public boolean isSameDimensionsAndChunks(Grids_Grid g) {
         Grids_Dimensions gDim = g.getDimensions();
         if (dim.equals(gDim)) {
             if (chunkNRows == g.getChunkNRows()) {
@@ -2160,7 +2172,7 @@ public abstract class Grids_Grid extends Grids_Object {
         }
         return false;
     }
-    
+
     /**
      * For finding out if point given by x-coordinate {@code x}, y-coordinate
      * {@code y} is in this grid.

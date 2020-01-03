@@ -1535,59 +1535,57 @@ public class Grids_GridDouble extends Grids_GridNumber {
     @Override
     public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException,
             Exception {
-        if (g instanceof Grids_GridDouble) {
-            Grids_GridDouble gd = (Grids_GridDouble) g;
-            double gndv = gd.getNoDataValue();
-            if (this.nRows != gd.nRows) {
-                return false;
-            }
-            if (this.nCols != gd.nCols) {
-                return false;
-            }
-            for (int cr = 0; cr < this.nChunkRows; cr++) {
-                int cnr = gd.getChunkNRows(cr);
-                for (int cc = 0; cc < this.nChunkCols; cc++) {
-                    int cnc = gd.getChunkNCols(cc);
-                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                    env.addToNotToClear(gd, i);
-                    // Add to not to clear a row of this chunks.
-                    long rowMin = gd.getRow(cr, 0);
-                    long rowMax = gd.getRow(cr, cnr);
-                    long colMin = gd.getCol(cc, 0);
-                    long colMax = gd.getCol(cc, cnc);
-                    Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin, colMax);
-                    env.addToNotToClear(this, s);
-                    env.checkAndMaybeFreeMemory();
-                    Grids_ChunkDouble chunk = getChunk(i, cr, cc);
-                    for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = gd.getRow(cr, ccr);
-                        for (int ccc = 0; ccc < cnc; ccc++) {
-                            long col = gd.getCol(cc, ccc);
-                            double v = getCell(row, col);
-                            //double gv = getCell(chunk, cr, cc, ccr, ccc);
-                            double gv = chunk.getCell(ccr, ccc);
-                            if (v == noDataValue) {
-                                if (gv != gndv) {
-                                    return false;
-                                }
+        if (!(g instanceof Grids_GridDouble)) {
+            return false;
+        }
+        if (!isSameDimensions(g)) {
+            return false;
+        }
+        Grids_GridDouble gd = (Grids_GridDouble) g;
+        double gndv = gd.getNoDataValue();
+        for (int cr = 0; cr < this.nChunkRows; cr++) {
+            int cnr = gd.getChunkNRows(cr);
+            for (int cc = 0; cc < this.nChunkCols; cc++) {
+                int cnc = gd.getChunkNCols(cc);
+                Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                env.addToNotToClear(gd, i);
+                // Add to not to clear a row of this chunks.
+                long rowMin = gd.getRow(cr, 0);
+                long rowMax = gd.getRow(cr, cnr);
+                long colMin = gd.getCol(cc, 0);
+                long colMax = gd.getCol(cc, cnc);
+                Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin, 
+                        colMax);
+                env.addToNotToClear(this, s);
+                env.checkAndMaybeFreeMemory();
+                Grids_ChunkDouble chunk = getChunk(i, cr, cc);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    long row = gd.getRow(cr, ccr);
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        long col = gd.getCol(cc, ccc);
+                        double v = getCell(row, col);
+                        //double gv = getCell(chunk, cr, cc, ccr, ccc);
+                        double gv = chunk.getCell(ccr, ccc);
+                        if (v == noDataValue) {
+                            if (gv != gndv) {
+                                return false;
+                            }
+                        } else {
+                            if (gv == gndv) {
+                                return false;
                             } else {
-                                if (gv == gndv) {
+                                if (v != gv) {
                                     return false;
-                                } else {
-                                    if (v != gv) {
-                                        return false;
-                                    }
                                 }
                             }
-
                         }
+
                     }
-                    env.removeFromNotToClear(gd, i);
-                    env.removeFromNotToClear(this, s);
                 }
+                env.removeFromNotToClear(gd, i);
+                env.removeFromNotToClear(this, s);
             }
-            return true;
         }
-        return false;
+        return true;
     }
 }
