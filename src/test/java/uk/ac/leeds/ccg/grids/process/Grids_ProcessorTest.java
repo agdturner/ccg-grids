@@ -81,39 +81,8 @@ public class Grids_ProcessorTest {
     }
 
     /**
-     *
-     * @param g The grid.
-     * @param r The number of rows to print.
-     * @param c The number of columns to print.
-     */
-    public void log(Grids_GridNumber g, long r, long c) throws Exception {
-        env.log("name=" + g.getName());
-        long nrows = g.getNRows();
-        long ncols = g.getNCols();
-        env.log(g.toString());
-        if (nrows < r) {
-            for (long row = 0; row < nrows; row++) {
-                String s = "";
-                if (ncols < c) {
-                    for (long col = 0; col < ncols; col++) {
-                        BigDecimal v =  g.getCellBigDecimal(row, col);
-                        if (v.compareTo(g.ndv) != 0) {
-                            s += v + " ";
-                        } else {
-                            s += "nodata ";
-                        }
-                    }
-                    env.log(s);
-                }
-            }
-        } else {
-
-        }
-
-    }
-
-    /**
      * Test of mask method, of class Grids_Processor.
+     * @throws Exception If encountered.
      */
     @Test
     public void testMask_Grids_GridNumber_Grids_GridNumber() throws Exception {
@@ -131,7 +100,7 @@ public class Grids_ProcessorTest {
         g0.setCell(1, 2, 1.0d);
         long maxNrowsToPrint = 10;
         long maxNcolsToPrint = 10;
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble g = (Grids_GridDouble) gfd.create(nrows, ncols);
         //g.setCell(0, 0, 0.0d);
         g.setCell(0, 1, 1.0d);
@@ -139,11 +108,11 @@ public class Grids_ProcessorTest {
         g.setCell(1, 0, 1.0d);
         g.setCell(1, 1, 1.0d);
         g.setCell(1, 2, 1.0d);
-        log(g, maxNrowsToPrint, maxNcolsToPrint);
+        g.log(maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble mask = (Grids_GridDouble) gfd.create(g);
-        log(mask, maxNrowsToPrint, maxNcolsToPrint);
+        mask.log(maxNrowsToPrint, maxNcolsToPrint);
         gp.mask(g0, mask);
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         boolean equal = mask.isSameDimensionsAndValues(g0);
         assertTrue(equal);
         // Test 2
@@ -160,7 +129,7 @@ public class Grids_ProcessorTest {
         g0.setCell(1, 3, 1.0d);
         maxNrowsToPrint = 10;
         maxNcolsToPrint = 10;
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g = (Grids_GridDouble) gfd.create(nrows, ncols);
         g.setCell(0, 0, 1.0d);
         //g.setCell(0, 1, 1.0d);
@@ -170,11 +139,11 @@ public class Grids_ProcessorTest {
         g.setCell(1, 1, 1.0d);
         //g.setCell(1, 2, 1.0d);
         g.setCell(1, 3, 1.0d);
-        log(g, maxNrowsToPrint, maxNcolsToPrint);
+        g.log(maxNrowsToPrint, maxNcolsToPrint);
         mask = (Grids_GridDouble) gfd.create(g);
-        log(mask, maxNrowsToPrint, maxNcolsToPrint);
+        mask.log(maxNrowsToPrint, maxNcolsToPrint);
         gp.mask(g0, mask);
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = mask.isSameDimensionsAndValues(g0);
         assertTrue(equal);
 
@@ -493,7 +462,7 @@ public class Grids_ProcessorTest {
         g0.setCell(1, 2, 3.0d);
         long maxNrowsToPrint = 10;
         long maxNcolsToPrint = 10;
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble g1 = (Grids_GridDouble) gfd.create(nrows, ncols);
         g1.setCell(0, 0, 1.0d);
         g1.setCell(0, 1, 1.0d); 
@@ -501,7 +470,7 @@ public class Grids_ProcessorTest {
         g1.setCell(1, 0, 1.0d);
         g1.setCell(1, 1, 4.0d);
         g1.setCell(1, 2, 0.6d);
-        log(g1, maxNrowsToPrint, maxNcolsToPrint);
+        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble r1 = (Grids_GridDouble) gfd.create(nrows, ncols);
         //r1.setCell(0, 0, 0.0d);
         r1.setCell(0, 1, 0.0d); 
@@ -509,9 +478,9 @@ public class Grids_ProcessorTest {
         //r1.setCell(1, 0, 1.0d);
         r1.setCell(1, 1, 8.0d);
         r1.setCell(1, 2, 1.8d);
-        log(r1, maxNrowsToPrint, maxNcolsToPrint);
+        r1.log(maxNrowsToPrint, maxNcolsToPrint);
         Grids_GridDouble er = gp.multiply(g0, g1);
-        log(er, maxNrowsToPrint, maxNcolsToPrint);
+        er.log(maxNrowsToPrint, maxNcolsToPrint);
         boolean equal = er.isSameDimensionsAndValues(r1);
         assertTrue(equal);
         // Test 2
@@ -526,7 +495,7 @@ public class Grids_ProcessorTest {
         g0.setCell(1, 2, 3.0d);
         maxNrowsToPrint = 10;
         maxNcolsToPrint = 10;
-        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g1 = (Grids_GridDouble) gfd.create(nrows, ncols);
         g1.setCell(0, 0, 1.0d);
         g1.setCell(0, 1, 1.0d); 
@@ -534,7 +503,7 @@ public class Grids_ProcessorTest {
         //g1.setCell(1, 0, 1.0d);
         g1.setCell(1, 1, 4.0d);
         g1.setCell(1, 2, 0.6d);
-        log(g1, maxNrowsToPrint, maxNcolsToPrint);
+        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         r1 = (Grids_GridDouble) gfd.create(nrows, ncols);
         //r1.setCell(0, 0, 0.0d);
         r1.setCell(0, 1, 0.0d); 
@@ -542,10 +511,10 @@ public class Grids_ProcessorTest {
         //r1.setCell(1, 0, 1.0d);
         r1.setCell(1, 1, 8.0d);
         r1.setCell(1, 2, 1.8d);
-        log(r1, maxNrowsToPrint, maxNcolsToPrint);
+        r1.log(maxNrowsToPrint, maxNcolsToPrint);
         er = gp.multiply(g0, g1);
-        log(er, maxNrowsToPrint, maxNcolsToPrint);
-         equal = er.isSameDimensionsAndValues(r1);
+        er.log(maxNrowsToPrint, maxNcolsToPrint);
+        equal = er.isSameDimensionsAndValues(r1);
         assertTrue(equal);
     }
 //
