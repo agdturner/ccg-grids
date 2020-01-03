@@ -96,7 +96,12 @@ public class Grids_ProcessorTest {
                 String s = "";
                 if (ncols < c) {
                     for (long col = 0; col < ncols; col++) {
-                        s += g.getCellBigDecimal(row, col) + " ";
+                        BigDecimal v =  g.getCellBigDecimal(row, col);
+                        if (v.compareTo(g.ndv) != 0) {
+                            s += v + " ";
+                        } else {
+                            s += "nodata ";
+                        }
                     }
                     env.log(s);
                 }
@@ -468,21 +473,81 @@ public class Grids_ProcessorTest {
 //        fail("The test case is a prototype.");
 //    }
 //
-//    /**
-//     * Test of multiply method, of class Grids_Processor.
-//     */
-//    @Test
-//    public void testMultiply() throws Exception {
-//        System.out.println("multiply");
-//        Grids_GridNumber g0 = null;
-//        Grids_GridNumber g1 = null;
-//        Grids_Processor instance = null;
-//        Grids_GridDouble expResult = null;
-//        Grids_GridDouble result = instance.multiply(g0, g1);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of multiply method, of class Grids_Processor.
+     * @throws Exception If encountered.
+     */
+    @Test
+    public void testMultiply() throws Exception {
+        System.out.println("multiply");
+        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        // Test 1
+        long nrows = 2L;
+        long ncols = 3L;
+        Grids_GridDouble g0 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        //g0.setCell(0, 0, 1.0d);
+        g0.setCell(0, 1, 0d);
+        g0.setCell(0, 2, 1.0d);
+        //g0.setCell(1, 0, 1.0d);
+        g0.setCell(1, 1, 2.0d);
+        g0.setCell(1, 2, 3.0d);
+        long maxNrowsToPrint = 10;
+        long maxNcolsToPrint = 10;
+        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridDouble g1 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        g1.setCell(0, 0, 1.0d);
+        g1.setCell(0, 1, 1.0d); 
+        g1.setCell(0, 2, 2.0d);
+        g1.setCell(1, 0, 1.0d);
+        g1.setCell(1, 1, 4.0d);
+        g1.setCell(1, 2, 0.6d);
+        log(g1, maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridDouble r1 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        //r1.setCell(0, 0, 0.0d);
+        r1.setCell(0, 1, 0.0d); 
+        r1.setCell(0, 2, 2.0d);
+        //r1.setCell(1, 0, 1.0d);
+        r1.setCell(1, 1, 8.0d);
+        r1.setCell(1, 2, 1.8d);
+        log(r1, maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridDouble er = gp.multiply(g0, g1);
+        log(er, maxNrowsToPrint, maxNcolsToPrint);
+        boolean equal = er.isSameDimensionsAndValues(r1);
+        assertTrue(equal);
+        // Test 2
+        nrows = 2L;
+        ncols = 3L;
+        g0 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        //g0.setCell(0, 0, 1.0d);
+        g0.setCell(0, 1, 0d);
+        g0.setCell(0, 2, 1.0d);
+        //g0.setCell(1, 0, 1.0d);
+        g0.setCell(1, 1, 2.0d);
+        g0.setCell(1, 2, 3.0d);
+        maxNrowsToPrint = 10;
+        maxNcolsToPrint = 10;
+        log(g0, maxNrowsToPrint, maxNcolsToPrint);
+        g1 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        g1.setCell(0, 0, 1.0d);
+        g1.setCell(0, 1, 1.0d); 
+        g1.setCell(0, 2, 2.0d);
+        //g1.setCell(1, 0, 1.0d);
+        g1.setCell(1, 1, 4.0d);
+        g1.setCell(1, 2, 0.6d);
+        log(g1, maxNrowsToPrint, maxNcolsToPrint);
+        r1 = (Grids_GridDouble) gfd.create(nrows, ncols);
+        //r1.setCell(0, 0, 0.0d);
+        r1.setCell(0, 1, 0.0d); 
+        r1.setCell(0, 2, 2.0d);
+        //r1.setCell(1, 0, 1.0d);
+        r1.setCell(1, 1, 8.0d);
+        r1.setCell(1, 2, 1.8d);
+        log(r1, maxNrowsToPrint, maxNcolsToPrint);
+        er = gp.multiply(g0, g1);
+        log(er, maxNrowsToPrint, maxNcolsToPrint);
+         equal = er.isSameDimensionsAndValues(r1);
+        assertTrue(equal);
+    }
 //
 //    /**
 //     * Test of divide method, of class Grids_Processor.
