@@ -530,9 +530,9 @@ public class Grids_ProcessorTest {
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         // Test 3
-        //System.out.println("");
-        //System.out.println("Test 3");     
-        //System.out.println("------");
+//        System.out.println("");
+//        System.out.println("Test 3");     
+//        System.out.println("------");
         g0 = (Grids_GridDouble) gfd.create(2, 3);
         g0.setCell(0, 0, 4.0d);
         g0.setCell(0, 1, 5.0d);
@@ -540,11 +540,11 @@ public class Grids_ProcessorTest {
         //g0.setCell(1, 0, 4.0d);
         g0.setCell(1, 1, 2.0d);
         g0.setCell(1, 2, 3.0d);
-        //System.out.println("");
-        //System.out.println("g0");
-        //maxNrowsToPrint = 10;
-        //maxNcolsToPrint = 10;
-        //g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g0");
+//        long maxNrowsToPrint = 10;
+//        long maxNcolsToPrint = 10;
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g1 = (Grids_GridDouble) gfd.create(4, 3);
         g1.setCell(0, 0, 1.0d);
         g1.setCell(0, 1, 4.0d); 
@@ -558,9 +558,9 @@ public class Grids_ProcessorTest {
         g1.setCell(3, 0, 1.0d);
         g1.setCell(3, 1, 1.0d);
         g1.setCell(3, 2, 2.0d);
-        //System.out.println("");
-        //System.out.println("g1");
-        //g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         er = (Grids_GridDouble) gfd.create(2, 3);
         er.setCell(0, 0, 4.0d);
         er.setCell(0, 1, 20.0d); 
@@ -568,13 +568,13 @@ public class Grids_ProcessorTest {
         //er.setCell(1, 0, 1.0d);
         er.setCell(1, 1, 6.0d);
         er.setCell(1, 2, 6.0d);
-        //System.out.println("");
-        //System.out.println("er");
-        //er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
         r = gp.multiply(g0, g1);
-        //System.out.println("");
-        //System.out.println("r");
-        //r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         // Test 4
