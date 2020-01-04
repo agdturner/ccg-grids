@@ -351,15 +351,16 @@ public abstract class Grids_GridNumber extends Grids_Grid {
         long ncols = getNCols();
         env.env.log(toString());
         if (nrows < r) {
-            for (long row = 0; row < nrows; row++) {
+            for (long row = nrows -1; row > -1; row--) {
                 logRow(ncols, c, row);
             }
         } else {
-            for (long row = 0; row < r - 1; row++) {
+            long row = nrows - 1;
+            logRow(ncols, c, row);
+            env.env.log("...");
+            for (row = r - 2; row > -1; row--) {
                 logRow(ncols, c, row);
             }
-            env.env.log("...");
-            long row = r - 1;
             logRow(ncols, c, row);
         }
     }
@@ -373,13 +374,12 @@ public abstract class Grids_GridNumber extends Grids_Grid {
             }
             s += getCellBigDecimal(row, col);
             env.env.log(s);
-
         } else {
             for (long col = 0; col < c - 1; col++) {
                 s += getCellBigDecimal(row, col) + " ";
             }
             s += "... ";
-            s += getCellBigDecimal(row, c - 1);
+            s += getCellBigDecimal(row, ncols - 1);
             env.env.log(s);
         }
     }
