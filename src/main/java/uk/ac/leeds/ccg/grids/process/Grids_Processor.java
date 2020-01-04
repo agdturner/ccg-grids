@@ -1073,134 +1073,141 @@ public class Grids_Processor extends Grids_Object {
         BigDecimal ndv1 = g1.ndv;
         int ncr = g0.getNChunkRows();
         int ncc = g0.getNChunkCols();
-        if (g0.isCoincindent(g1));
-        if (g0.isSameDimensionsAndChunks(g1)) {
-            if (g0.isSameDimensionsAndChunks(r)) {
-                /**
-                 * Grids are coincident and have the same chunks.
-                 */
-                for (int cr = 0; cr < ncr; cr++) {
-                    for (int cc = 0; cc < ncc; cc++) {
-                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToClear(g0, i);
-                        env.addToNotToClear(g1, i);
-                        env.addToNotToClear(r, i);
-                        env.checkAndMaybeFreeMemory();
-                        int cnr = g0.getChunkNRows(cr);
-                        int cnc = g0.getChunkNCols(cc);
-                        for (int ccr = 0; ccr < cnr; ccr++) {
-                            for (int ccc = 0; ccc < cnc; ccc++) {
-                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
-                                        ccr, ccc);
-                                if (v0 != ndv0) {
-                                    BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
+        if (g0.isCoincident(g1)) {
+            if (g0.isSameDimensionsAndChunks(g1)) {
+                if (g0.isSameDimensionsAndChunks(r)) {
+                    /**
+                     * Grids are coincident and have the same chunks.
+                     */
+                    for (int cr = 0; cr < ncr; cr++) {
+                        for (int cc = 0; cc < ncc; cc++) {
+                            Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                            env.addToNotToClear(g0, i);
+                            env.addToNotToClear(g1, i);
+                            env.addToNotToClear(r, i);
+                            env.checkAndMaybeFreeMemory();
+                            int cnr = g0.getChunkNRows(cr);
+                            int cnc = g0.getChunkNCols(cc);
+                            for (int ccr = 0; ccr < cnr; ccr++) {
+                                for (int ccc = 0; ccc < cnc; ccc++) {
+                                    BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
                                             ccr, ccc);
-                                    if (v1 != ndv1) {
-                                        r.setCell(cr, cc, ccr, ccc,
-                                                v0.multiply(v1));
+                                    if (v0.compareTo(ndv0) != 0) {
+                                        BigDecimal v1 = g1.getCellBigDecimal(cr,
+                                                cc, ccr, ccc);
+                                        if (v1.compareTo(ndv1) == 0) {
+                                            r.setCell(cr, cc, ccr, ccc, ndv0);
+                                        } else {
+                                            r.setCell(cr, cc, ccr, ccc,
+                                                    v0.multiply(v1));
+                                        }
                                     }
                                 }
-
                             }
+                            env.removeFromNotToClear(g0, i);
+                            env.removeFromNotToClear(g1, i);
+                            env.removeFromNotToClear(r, i);
                         }
-                        env.removeFromNotToClear(g0, i);
-                        env.removeFromNotToClear(g1, i);
-                        env.removeFromNotToClear(r, i);
+                    }
+                } else {
+                    /**
+                     * Input grids are coincident and have the same chunks, but
+                     * the result has different chunks.
+                     */
+                    for (int cr = 0; cr < ncr; cr++) {
+                        int cnr = g0.getChunkNRows(cr);
+                        /**
+                         * Prefer to keep a row of r chunks in memory.
+                         */
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            long row = r.getRow(cr, ccr);
+                            env.addToNotToClear(r, r.getChunkRow(row));
+                        }
+                        for (int cc = 0; cc < ncc; cc++) {
+                            Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                            env.addToNotToClear(g0, i);
+                            env.addToNotToClear(g1, i);
+                            env.checkAndMaybeFreeMemory();
+                            int cnc = g0.getChunkNCols(cc);
+                            for (int ccr = 0; ccr < cnr; ccr++) {
+                                long row = r.getRow(cr, ccr);
+                                env.addToNotToClear(r, r.getChunkRow(row));
+                                for (int ccc = 0; ccc < cnc; ccc++) {
+                                    BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
+                                            ccr, ccc);
+                                    if (v0.compareTo(ndv0) != 0) {
+                                        BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
+                                                ccr, ccc);
+                                        if (v1.compareTo(ndv1) != 0) {
+                                            r.setCell(row, r.getCol(cc, ccc),
+                                                    v0.multiply(v1));
+                                        }
+                                    }
+                                }
+                            }
+                            env.removeFromNotToClear(g0, i);
+                            env.removeFromNotToClear(g1, i);
+                        }
+                        /**
+                         * Allow the row of r chunks to be swapped.
+                         */
+                        for (int ccr = 0; ccr < cnr; ccr++) {
+                            long row = r.getRow(cr, ccr);
+                            env.removeFromNotToClear(r, r.getChunkRow(row));
+                        }
                     }
                 }
             } else {
-                /**
-                 * Input grids are coincident and have the same chunks, but the
-                 * result has different chunks.
-                 */
                 for (int cr = 0; cr < ncr; cr++) {
                     int cnr = g0.getChunkNRows(cr);
                     /**
-                     * Prefer to keep a row of r chunks in memory.
+                     * Prefer to keep a row of g0 and r chunks in memory.
                      */
                     for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = r.getRow(cr, ccr);
-                        env.addToNotToClear(r, r.getChunkRow(row));
+                        long row = g0.getRow(cr, ccr);
+                        BigDecimal y = g0.getCellY(row);
+                        env.addToNotToClear(g1, g1.getChunkRow(y));
+                        env.addToNotToClear(r, r.getChunkRow(y));
                     }
                     for (int cc = 0; cc < ncc; cc++) {
                         Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToClear(g0, i);
-                        env.addToNotToClear(g1, i);
                         env.checkAndMaybeFreeMemory();
                         int cnc = g0.getChunkNCols(cc);
                         for (int ccr = 0; ccr < cnr; ccr++) {
                             long row = r.getRow(cr, ccr);
-                            env.addToNotToClear(r, r.getChunkRow(row));
+                            BigDecimal y = g0.getCellY(row);
                             for (int ccc = 0; ccc < cnc; ccc++) {
-                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
-                                        ccr, ccc);
-                                if (v0 != ndv0) {
-                                    BigDecimal v1 = g1.getCellBigDecimal(cr, cc,
-                                            ccr, ccc);
-                                    if (v1 != ndv1) {
-                                        r.setCell(row, r.getCol(cc, ccc),
-                                                v0.multiply(v1));
+                                long col = r.getCol(cc, ccc);
+                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc, ccr,
+                                        ccc);
+                                if (v0.compareTo(ndv0) != 0) {
+                                    BigDecimal x = g0.getCellX(col);
+                                    BigDecimal v1 = g1.getCellBigDecimal(x, y);
+                                    if (v1.compareTo(ndv1) == 0) {
+                                        r.setCell(x, y, ndv0);
+                                    } else {
+                                        r.setCell(x, y, v0.multiply(v1));
                                     }
                                 }
                             }
                         }
                         env.removeFromNotToClear(g0, i);
-                        env.removeFromNotToClear(g1, i);
                     }
                     /**
-                     * Allow the row of r chunks to be swapped.
+                     * Allow the row of g0 and r chunks to be swapped.
                      */
                     for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = r.getRow(cr, ccr);
-                        env.removeFromNotToClear(r, r.getChunkRow(row));
+                        long row = g0.getRow(cr, ccr);
+                        BigDecimal y = g0.getCellY(row);
+                        env.addToNotToClear(g1, g1.getChunkRow(y));
+                        env.addToNotToClear(r, r.getChunkRow(y));
                     }
                 }
+
             }
         } else {
-            for (int cr = 0; cr < ncr; cr++) {
-                int cnr = g0.getChunkNRows(cr);
-                /**
-                 * Prefer to keep a row of g0 and r chunks in memory.
-                 */
-                for (int ccr = 0; ccr < cnr; ccr++) {
-                    long row = g0.getRow(cr, ccr);
-                    BigDecimal y = g0.getCellY(row);
-                    env.addToNotToClear(g1, g1.getChunkRow(y));
-                    env.addToNotToClear(r, r.getChunkRow(y));
-                }
-                for (int cc = 0; cc < ncc; cc++) {
-                    Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                    env.addToNotToClear(g0, i);
-                    env.checkAndMaybeFreeMemory();
-                    int cnc = g0.getChunkNCols(cc);
-                    for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = r.getRow(cr, ccr);
-                        BigDecimal y = g0.getCellY(row);
-                        for (int ccc = 0; ccc < cnc; ccc++) {
-                            long col = r.getCol(cc, ccc);
-                            BigDecimal v0 = g0.getCellBigDecimal(cr, cc, ccr,
-                                    ccc);
-                            if (v0 != ndv0) {
-                                BigDecimal x = g0.getCellX(col);
-                                BigDecimal v1 = g1.getCellBigDecimal(x, y);
-                                if (v1 != ndv1) {
-                                    r.setCell(x, y, v0.multiply(v1));
-                                }
-                            }
-                        }
-                    }
-                    env.removeFromNotToClear(g0, i);
-                }
-                /**
-                 * Allow the row of g0 and r chunks to be swapped.
-                 */
-                for (int ccr = 0; ccr < cnr; ccr++) {
-                    long row = g0.getRow(cr, ccr);
-                    BigDecimal y = g0.getCellY(row);
-                    env.addToNotToClear(g1, g1.getChunkRow(y));
-                    env.addToNotToClear(r, r.getChunkRow(y));
-                }
-            }
+            throw new Exception("Impleentation needed.");
         }
         return r;
     }

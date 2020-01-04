@@ -268,7 +268,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public void addToCell(BigDecimal x, BigDecimal y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
-        addToCell(getChunkRow(y), getChunkCol(x), getChunkCellRow(y), 
+        addToCell(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
                 getChunkCellCol(x), v);
     }
 
@@ -295,10 +295,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     /**
      * @return a Grids_2D_ID_long[] - The CellIDs of the nearest cells with data
      * values to position given by row index rowIndex, column index colIndex.
-     * @param row The row from which the cell IDs of the nearest cells
-     * with data values are returned.
-     * @param col The column from which the cell IDs of the nearest cells
-     * with data values are returned.
+     * @param row The row from which the cell IDs of the nearest cells with data
+     * values are returned.
+     * @param col The column from which the cell IDs of the nearest cells with
+     * data values are returned.
      * @param dp The number of decimal places the result is to be accurate to.
      * @param rm The {@link RoundingMode} to use when rounding the result.
      * @throws java.io.IOException If encountered.
@@ -323,5 +323,53 @@ public abstract class Grids_GridNumber extends Grids_Grid {
             BigDecimal y, int dp, RoundingMode rm) throws IOException,
             Exception, ClassNotFoundException {
         return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
+    }
+
+    /**
+     * For writing out some or all of the values in row major order. There is no
+     * good memory handling for this yet. It is best if r and c are small.
+     *
+     * @param r The number of rows to print.
+     * @param c The number of columns to print.
+     * @throws Exception If encountered.
+     */
+    public void log(long r, long c) throws Exception {
+        env.env.log("name=" + getName());
+        env.env.log("dimensions=" + dim.toString());
+        long nrows = getNRows();
+        long ncols = getNCols();
+        env.env.log(toString());
+        if (nrows < r) {
+            for (long row = 0; row < nrows; row++) {
+                logRow(ncols, c, row);
+            }
+        } else {
+            for (long row = 0; row < r - 1; row++) {
+                logRow(ncols, c, row);
+            }
+            env.env.log("...");
+            long row = r - 1;
+            logRow(ncols, c, row);
+        }
+    }
+
+    protected void logRow(long ncols, long c, long row) throws Exception {
+        String s = "";
+        if (ncols < c) {
+            long col;
+            for (col = 0; col < ncols - 1; col++) {
+                s += getCellBigDecimal(row, col) + " ";
+            }
+            s += getCellBigDecimal(row, col);
+            env.env.log(s);
+
+        } else {
+            for (long col = 0; col < c - 1; col++) {
+                s += getCellBigDecimal(row, col) + " ";
+            }
+            s += "... ";
+            s += getCellBigDecimal(row, c - 1);
+            env.env.log(s);
+        }
     }
 }

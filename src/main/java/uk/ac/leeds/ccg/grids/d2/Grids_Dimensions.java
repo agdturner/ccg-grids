@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
- * A POJO for storing the dimensions of a grid.
+ * For storing and testing the dimensions of a grid.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -28,7 +28,7 @@ import java.util.Objects;
 public class Grids_Dimensions implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The minimum x.
      */
@@ -229,4 +229,20 @@ public class Grids_Dimensions implements Serializable {
         return area;
     }
 
+    /**
+     * @param d The dimensions to test for intersection.
+     * @return {@code true} if this intersects with {@code d}
+     */
+    public boolean intersects(Grids_Dimensions d) {
+        if (xMin.compareTo(d.xMax) == -1) {
+            if (xMax.compareTo(d.xMin) == 1) {
+                if (yMin.compareTo(d.yMax) == -1) {
+                    if (yMax.compareTo(d.yMin) == 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

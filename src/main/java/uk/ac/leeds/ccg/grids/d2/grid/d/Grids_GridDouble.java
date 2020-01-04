@@ -1558,7 +1558,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
                         colMax);
                 env.addToNotToClear(this, s);
                 env.checkAndMaybeFreeMemory();
-                Grids_ChunkDouble chunk = getChunk(i, cr, cc);
+                Grids_ChunkDouble chunk = (Grids_ChunkDouble) g.getChunk(i, cr, 
+                        cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     long row = gd.getRow(cr, ccr);
                     for (int ccc = 0; ccc < cnc; ccc++) {

@@ -84,7 +84,7 @@ public class Grids_GridTest {
     }
 
     /**
-     * Test of isSameFrame method, of class Grids_Processor.
+     * Test of isSameDimensionsAndChunks method, of class Grids_Processor.
      */
     @Test
     public void testIsSameFrame() throws Exception {
@@ -94,20 +94,20 @@ public class Grids_GridTest {
         Grids_Grid g0 = gfd.create(10, 10);
         Grids_Grid g1 = gfd.create(10, 10);
         boolean expResult = true;
-        boolean result = g0.isSameFrame(g1);
+        boolean result = g0.isSameDimensionsAndChunks(g1);
         assertEquals(expResult, result);
         // Test 2
         g0 = gfd.create(10, 10);
         g1 = gfd.create(10, 11);
         expResult = false;
-        result = g0.isSameFrame(g1);
+        result = g0.isSameDimensionsAndChunks(g1);
         assertEquals(expResult, result);
         // Test 2
         Grids_GridFactoryInt gfi = gp.gridFactoryInt;
         g0 = gfd.create(10, 10);
         g1 = gfi.create(10, 10);
         expResult = true;
-        result = g0.isSameFrame(g1);
+        result = g0.isSameDimensionsAndChunks(g1);
         assertEquals(expResult, result);
     }
 

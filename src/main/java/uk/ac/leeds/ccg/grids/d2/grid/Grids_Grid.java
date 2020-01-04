@@ -863,29 +863,6 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * For testing if two grids have the same dimensions and values.
-     *
-     * @param g The grid to test against.
-     * @return {@code true} if this is the same as {@code g} and false
-     * otherwise.
-     * @throws IOException If encountered.
-     * @throws Exception If encountered.
-     */
-    public abstract boolean isSameDimensionsAndValues(Grids_Grid g) throws
-            IOException, Exception;
-
-    /**
-     * If the dimensions are the same, then so are the numbers of rows and
-     * columns.
-     *
-     * @param g The grid to compare with.
-     * @return {@code true} if this has the same dimensions as g.
-     */
-    public boolean isSameDimensions(Grids_Grid g) {
-        return dim.equals(g.dim);
-    }
-
-    /**
      * Attempts to swap chunks that have a chunk ID in {@code s}.
      *
      * @param s A Set containing the chunk IDs of the chunks to swap.
@@ -2150,6 +2127,29 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
+     * For testing if two grids have the same dimensions and values.
+     *
+     * @param g The grid to test against.
+     * @return {@code true} if this is the same as {@code g} and false
+     * otherwise.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
+    public abstract boolean isSameDimensionsAndValues(Grids_Grid g) throws
+            IOException, Exception;
+
+    /**
+     * If the dimensions are the same, then so are the numbers of rows and
+     * columns.
+     *
+     * @param g The grid to compare with.
+     * @return {@code true} if this has the same dimensions as g.
+     */
+    public boolean isSameDimensions(Grids_Grid g) {
+        return dim.equals(g.dim);
+    }
+
+    /**
      * For finding out if grid {@code g} and this have the same dimensions and
      * alignment of chunks.
      *
@@ -2171,6 +2171,68 @@ public abstract class Grids_Grid extends Grids_Object {
             }
         }
         return false;
+    }
+
+    /**
+     * Two grids are coincident if they overlap and have cells that are the same
+     * size and for those that overlap they have the same centroids.
+     *
+     * @param g The grid to test for coincidence.
+     * @return {@code true} if the two grids are coincident.
+     */
+    public boolean isCoincident(Grids_Grid g) {
+        if (dim.getCellsize().compareTo(g.getCellsize()) != 0) {
+            return false;
+        }
+        if (dim.equals(g.dim)) {
+            return true;
+        }
+        if (!dim.intersects(g.dim)) {
+            return false;
+        }
+        BigDecimal gXMin = g.dim.getXMin();
+        BigDecimal xMin = dim.getXMin();
+        if (xMin.compareTo(gXMin) == -1) {
+            BigDecimal x = xMin;
+            BigDecimal cs = dim.getCellsize();
+            do {
+                x = x.add(cs);
+            } while (x.compareTo(gXMin) == -1);
+            if (x.compareTo(gXMin) != 0) {
+                return false;
+            }            
+        } else if (xMin.compareTo(gXMin) == 1) {
+            BigDecimal x = gXMin;
+            BigDecimal cs = dim.getCellsize();
+            do {
+                x = x.add(cs);
+            } while (x.compareTo(xMin) == -1);
+            if (x.compareTo(xMin) != 0) {
+                return false;
+            }     
+        }
+        BigDecimal gYMin = g.dim.getYMin();
+        BigDecimal yMin = dim.getYMin();
+        if (yMin.compareTo(gYMin) == -1) {
+            BigDecimal y = yMin;
+            BigDecimal cs = dim.getCellsize();
+            do {
+                y = y.add(cs);
+            } while (y.compareTo(gYMin) == -1);
+            if (y.compareTo(gYMin) != 0) {
+                return false;
+            }            
+        } else if (yMin.compareTo(gYMin) == 1) {
+            BigDecimal y = gYMin;
+            BigDecimal cs = dim.getCellsize();
+            do {
+                y = y.add(cs);
+            } while (y.compareTo(yMin) == -1);
+            if (y.compareTo(yMin) != 0) {
+                return false;
+            }     
+        }
+        return true;
     }
 
     /**
