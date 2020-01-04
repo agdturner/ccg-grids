@@ -700,8 +700,13 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final long getCol(BigDecimal x) {
         Grids_Dimensions d = getDimensions();
-        return x.subtract(d.getXMin()).divideToIntegralValue(d.getCellsize())
-                .longValueExact();
+        BigDecimal dx = x.subtract(d.getXMin());
+        long r = dx.divideToIntegralValue(d.getCellsize()).longValueExact();
+        if (dx.compareTo(BigDecimal.ZERO) == -1) {
+            return r - 1L;
+        } else {
+            return r;
+        }
     }
 
     /**
@@ -740,8 +745,13 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public final long getRow(BigDecimal y) {
         Grids_Dimensions d = getDimensions();
-        return y.subtract(d.getYMin()).divideToIntegralValue(d.getCellsize())
-                .longValueExact();
+        BigDecimal dy = y.subtract(d.getYMin());
+        long r = dy.divideToIntegralValue(d.getCellsize()).longValueExact();
+        if (dy.compareTo(BigDecimal.ZERO) == -1) {
+            return r - 1L;
+        } else {
+            return r;
+        }
     }
 
     /**
@@ -2311,7 +2321,7 @@ public abstract class Grids_Grid extends Grids_Object {
         return dim.getXMin().add(dim.getCellsize().multiply(
                 BigDecimal.valueOf(col))).add(dim.getHalfCellsize());
     }
-
+    
     /**
      * @return The x-coordinate of the centroid for cell with cell with ID
      * {@code i}.

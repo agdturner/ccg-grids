@@ -1003,7 +1003,10 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public final int setCell(BigDecimal x, BigDecimal y, int v)
             throws IOException, Exception, ClassNotFoundException, Exception {
-        return setCell(getRow(x), getCol(y), v);
+        if (isInGrid(x, y)) {
+            return setCell(getRow(x), getCol(y), v);
+        }
+        return noDataValue;
     }
 
     /**
@@ -1045,7 +1048,10 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public int setCell(int cr, int cc, int ccr, int ccc, int v)
             throws IOException, ClassNotFoundException, Exception {
-        return setCell((Grids_ChunkInt) getChunk(cr, cc), ccr, ccc, v);
+        if (isInGrid(cr, cc, ccr, ccc)) {
+            return setCell((Grids_ChunkInt) getChunk(cr, cc), ccr, ccc, v);
+        }
+        return noDataValue;
     }
 
     /**
@@ -1564,16 +1570,18 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr,
-            int cc, int ccr, int ccc) {
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc, 
+            int ccr, int ccc) {
         return BigDecimal.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }
 
     @Override
-    public Number setCell(int cr, int cc, int ccr, int ccc,
-            BigDecimal v) throws IOException, ClassNotFoundException,
-            Exception {
-        return setCell(cr, cc, ccr, ccc, v.intValue());
+    public Number setCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+            throws IOException, ClassNotFoundException, Exception {
+        if (isInGrid(cr, cc, ccr, ccc)) {
+            return setCell(cr, cc, ccr, ccc, v.intValue());
+        }
+        return noDataValue;
     }
 
     /**

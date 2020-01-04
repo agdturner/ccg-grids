@@ -1179,8 +1179,8 @@ public class Grids_Processor extends Grids_Object {
                             BigDecimal y = g0.getCellY(row);
                             for (int ccc = 0; ccc < cnc; ccc++) {
                                 long col = r.getCol(cc, ccc);
-                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc, ccr,
-                                        ccc);
+                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
+                                        ccr, ccc);
                                 if (v0.compareTo(ndv0) != 0) {
                                     BigDecimal x = g0.getCellX(col);
                                     BigDecimal v1 = g1.getCellBigDecimal(x, y);
@@ -1188,6 +1188,11 @@ public class Grids_Processor extends Grids_Object {
                                         r.setCell(x, y, ndv0);
                                     } else {
                                         r.setCell(x, y, v0.multiply(v1));
+                                        
+                                        if (v0.multiply(v1).compareTo(BigDecimal.valueOf(15)) == 0) {
+                                            v1 = g1.getCellBigDecimal(x, y);
+                                        }
+                                        
                                     }
                                 }
                             }

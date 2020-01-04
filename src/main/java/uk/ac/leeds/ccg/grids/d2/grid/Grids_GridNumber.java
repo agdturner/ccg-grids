@@ -155,8 +155,14 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public Number setCell(long r, long c, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
-        return setCell(getChunkRow(r), getChunkCol(c), getChunkCellRow(r),
-                getChunkCellCol(c), v);
+        int cr = getChunkRow(r);
+        int cc = getChunkCol(c);
+        int ccr = getChunkCellRow(r);
+        int ccc = getChunkCellCol(c);
+        if (isInGrid(cr, cc, ccr, ccc)) {
+            return setCell(cr, cc, ccr, ccc, v);
+        }
+        return ndv;
     }
 
     /**
@@ -192,8 +198,11 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public Number setCell(BigDecimal x, BigDecimal y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
-        return setCell(getChunkRow(y), getChunkCol(x),
-                getChunkCellRow(y), getChunkCellCol(x), v);
+        if (isInGrid(x, y)) {
+            return setCell(getChunkRow(y), getChunkCol(x),
+                    getChunkCellRow(y), getChunkCellCol(x), v);
+        }
+        return ndv;
     }
 
     /**
@@ -213,11 +222,13 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     public void addToCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
             throws IOException, ClassNotFoundException, Exception {
         if (v.compareTo(ndv) != 0) {
-            BigDecimal v2 = getCellBigDecimal(cr, cc, ccr, ccc);
-            if (v2.compareTo(ndv) == 0) {
-                setCell(cr, cc, ccr, ccc, v);
-            } else {
-                setCell(cr, cc, ccr, ccc, v.add(v2));
+            if (isInGrid(cr, cc, ccr, ccc)) {
+                BigDecimal v2 = getCellBigDecimal(cr, cc, ccr, ccc);
+                if (v2.compareTo(ndv) == 0) {
+                    setCell(cr, cc, ccr, ccc, v);
+                } else {
+                    setCell(cr, cc, ccr, ccc, v.add(v2));
+                }
             }
         }
     }

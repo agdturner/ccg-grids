@@ -955,7 +955,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     public final double setCell(BigDecimal x, BigDecimal y, double v)
             throws IOException, Exception, ClassNotFoundException, Exception {
-        return setCell(getRow(x), getCol(y), v);
+        if (isInGrid(x, y)) {
+            return setCell(getRow(x), getCol(y), v);
+        }
+        return noDataValue;
     }
 
     /**
@@ -997,7 +1000,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     public double setCell(int cr, int cc, int ccr, int ccc, double v)
             throws IOException, ClassNotFoundException, Exception {
-        return setCell((Grids_ChunkDouble) getChunk(cr, cc), ccr, ccc, v);
+        if (isInGrid(cr, cc, ccr, ccc)) {
+            return setCell((Grids_ChunkDouble) getChunk(cr, cc), ccr, ccc, v);
+        }
+        return noDataValue;
     }
 
     /**
@@ -1515,7 +1521,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
     @Override
     public Number setCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
             throws IOException, ClassNotFoundException, Exception {
-        return setCell(cr, cc, ccr, ccc, v.doubleValue());
+        if (isInGrid(cr, cc, ccr, ccc)) {
+            return setCell(cr, cc, ccr, ccc, v.doubleValue());
+        }
+        return noDataValue;
     }
 
     /**
@@ -1554,11 +1563,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
                 long rowMax = gd.getRow(cr, cnr);
                 long colMin = gd.getCol(cc, 0);
                 long colMax = gd.getCol(cc, cnc);
-                Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin, 
+                Set<Grids_2D_ID_int> s = getChunkIDs(rowMin, rowMax, colMin,
                         colMax);
                 env.addToNotToClear(this, s);
                 env.checkAndMaybeFreeMemory();
-                Grids_ChunkDouble chunk = (Grids_ChunkDouble) g.getChunk(i, cr, 
+                Grids_ChunkDouble chunk = (Grids_ChunkDouble) g.getChunk(i, cr,
                         cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     long row = gd.getRow(cr, ccr);
