@@ -681,7 +681,7 @@ public class Grids_ProcessorTest {
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
-         // Test 6
+        // Test 6
         System.out.println("");
         System.out.println("Test 6");
         System.out.println("------");
@@ -728,6 +728,58 @@ public class Grids_ProcessorTest {
         //er.setCell(3, 0, 6.0d);
         er.setCell(3, 1, 2.0d);
         er.setCell(3, 2, 6.0d);
+        System.out.println("");
+        System.out.println("er");
+        er.log(maxNrowsToPrint, maxNcolsToPrint);
+        r = gp.multiply(g0, g1);
+        System.out.println("");
+        System.out.println("r");
+        r.log(maxNrowsToPrint, maxNcolsToPrint);
+        equal = r.isSameDimensionsAndValues(er);
+        assertTrue(equal);
+        // Test 7
+        System.out.println("");
+        System.out.println("Test 7");
+        System.out.println("------");
+        g0 = (Grids_GridDouble) gfd.create(4, 3);
+        g0.setCell(0, 0, 1.0d);
+        //g0.setCell(0, 1, 4.0d); 
+        //g0.setCell(0, 2, 1.0d);
+        g0.setCell(1, 0, 5.0d);
+        g0.setCell(1, 1, 2.0d);
+        g0.setCell(1, 2, 4.0d);
+        g0.setCell(2, 0, 4.0d);
+        g0.setCell(2, 1, 3.0d);
+        g0.setCell(2, 2, 5.0d);
+        //g0.setCell(3, 0, 1.0d);
+        g0.setCell(3, 1, 2.0d);
+        g0.setCell(3, 2, 1.0d);
+        System.out.println("");
+        System.out.println("g0");
+        maxNrowsToPrint = 10;
+        maxNcolsToPrint = 10;
+        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+        g1 = (Grids_GridDouble) gfd.create(2, 1, new Grids_Dimensions(
+                BigDecimal.valueOf(1), BigDecimal.valueOf(2), 
+                BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.ONE));
+        g1.setCell(0, 0, 6.0d);
+        g1.setCell(1, 0, 2.0d);
+        System.out.println("");
+        System.out.println("g1");
+        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+        er = (Grids_GridDouble) gfd.create(4, 3);
+        //er.setCell(0, 0, 4.0d);
+        //er.setCell(0, 1, 2.0d); 
+        //er.setCell(0, 2, 6.0d);
+        //er.setCell(1, 0, 1.0d);
+        er.setCell(1, 1, 12.0d);
+        //er.setCell(1, 2, 6.0d);
+        //er.setCell(2, 0, 12.0d);
+        er.setCell(2, 1, 6.0d);
+        //er.setCell(2, 2, 6.0d);
+        //er.setCell(3, 0, 6.0d);
+        //er.setCell(3, 1, 2.0d);
+        //er.setCell(3, 2, 6.0d);
         System.out.println("");
         System.out.println("er");
         er.log(maxNrowsToPrint, maxNcolsToPrint);
