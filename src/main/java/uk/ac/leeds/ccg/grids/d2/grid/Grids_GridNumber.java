@@ -407,7 +407,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     protected String getColMarkers(int cols) {
         String s = "";
         for (int i = 0; i < cols; i ++) {
-            s += getFormattedNumber(BigDecimal.valueOf(i)) + " ";
+            s += " " + getFormattedNumber(BigDecimal.valueOf(i)) + "  ";
         }
         return s;
     }
