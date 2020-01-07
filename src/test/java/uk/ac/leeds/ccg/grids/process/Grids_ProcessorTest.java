@@ -450,6 +450,8 @@ public class Grids_ProcessorTest {
         System.out.println("multiply");
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         // Test 1
+        int dp = 10;
+        RoundingMode rm = RoundingMode.HALF_UP;
         //System.out.println("Test 1");
         Grids_GridDouble g0 = (Grids_GridDouble) gfd.create(2, 3);
         //g0.setCell(0, 0, 1.0d);
@@ -483,7 +485,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        Grids_GridDouble r = gp.multiply(g0, g1);
+        Grids_GridDouble r = gp.multiply(g0, g1, dp, rm);
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
         boolean equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
@@ -523,7 +525,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -571,7 +573,7 @@ public class Grids_ProcessorTest {
 //        System.out.println("");
 //        System.out.println("er");
 //        er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
 //        System.out.println("");
 //        System.out.println("r");
 //        r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -625,7 +627,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         ///r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -675,7 +677,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -731,7 +733,7 @@ public class Grids_ProcessorTest {
         System.out.println("");
         System.out.println("er");
         er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
         System.out.println("");
         System.out.println("r");
         r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -783,7 +785,7 @@ public class Grids_ProcessorTest {
         System.out.println("");
         System.out.println("er");
         er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1);
+        r = gp.multiply(g0, g1, dp, rm);
         System.out.println("");
         System.out.println("r");
         r.log(maxNrowsToPrint, maxNcolsToPrint);
