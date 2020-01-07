@@ -519,10 +519,10 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * This method is for convenience.
      *
-     * @return BigDecimal equal to this.Dimensions.getCellsize().
+     * @return {@code dim.getCellsize()}.
      */
     public final BigDecimal getCellsize() {
-        return getDimensions().getCellsize();
+        return dim.getCellsize();
     }
 
     /**
@@ -2191,7 +2191,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return {@code true} if the two grids are coincident.
      */
     public boolean isCoincident(Grids_Grid g) {
-        if (dim.getCellsize().compareTo(g.getCellsize()) != 0) {
+        if (dim.getCellsize().compareTo(g.dim.getCellsize()) != 0) {
             return false;
         }
         if (dim.equals(g.dim)) {

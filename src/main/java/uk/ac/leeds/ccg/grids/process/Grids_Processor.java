@@ -1057,12 +1057,15 @@ public class Grids_Processor extends Grids_Object {
      *
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to multiply
+     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param rm Rounding Mode for any BigDecimal Arithmetic.
      * @return g0 * g1
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble multiply(Grids_GridNumber g0, Grids_GridNumber g1)
+    public Grids_GridDouble multiply(Grids_GridNumber g0, Grids_GridNumber g1,
+            int dp, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         Grids_GridDouble r;
@@ -1188,11 +1191,6 @@ public class Grids_Processor extends Grids_Object {
                                         r.setCell(x, y, ndv0);
                                     } else {
                                         r.setCell(x, y, v0.multiply(v1));
-                                        
-                                        if (v0.multiply(v1).compareTo(BigDecimal.valueOf(15)) == 0) {
-                                            v1 = g1.getCellBigDecimal(x, y);
-                                        }
-                                        
                                     }
                                 }
                             }
@@ -1212,9 +1210,70 @@ public class Grids_Processor extends Grids_Object {
 
             }
         } else {
-            throw new Exception("Impleentation needed.");
+            //throw new Exception("Impleentation needed.");
+            // Get the boundary intersection of g0 and g1.
+            Grids_Dimensions dimg0 = g0.getDimensions();
+            Grids_Dimensions dimg1 = g1.getDimensions();
+            BigDecimal cg0 = dimg0.getCellsize();
+            BigDecimal cg1 = dimg1.getCellsize();
+
+            /**
+             * Deal with all cases, but (cg0.compareTo(cg1) == 0) can be treated
+             * in the same way as (cg0.compareTo(cg1) == -1).
+             */
+            if (cg0.compareTo(cg1) == 1) {
+                Grids_GridDouble ag1 = aggregate(g1, "mean", dimg0, dp, rm);
+                return multiply(g0, ag1, dp, rm);
+            } else {
+                /**
+                 * If the frameworks align and g1 is a neat aggregation, then
+                 * simply multiply the value of g1 at the centroid for each cell
+                 * value of g0. Otherwise some intersection is needed to
+                 * calculate some result cell values. The intersection can be
+                 * achieved using a disaggregation to a cellsize smaller than g0
+                 * and then an aggregation.
+                 */
+                //factor = ;
+                //Grids_GridDouble ag0 = disaggregate(g0, factor);
+                return null;
+            }
         }
         return r;
+    }
+
+    /**
+     * This returns a grid with a {@code factor} greater resolution than
+     * {@code g}. If the cellsize of the result cannot be stored precisely, then
+     * this should result in a warning. IF the cellsize is divided by an even
+     * factor, in all cases except for very extreme cases it can be stored
+     * exactly. However, dividing by an odd power might result in a number that
+     * cannot be stored precisely as a decimal number. This in fact is a 
+     * reason why cellsize should be stored not as a single BigDecimal Number, 
+     * but as a fraction or rational number in two parts - a numerator and a 
+     * denominator.
+     *
+     * @param g The grid on which the result values are based.
+     * @param factor The number of times smaller the cellsize of the result is.
+     * @return A grid with a {@code factor} greater resolution than {@code g}.
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws ArithmeticException If the cellsize of {@code g} cannot be 
+     * divided by {@code factor and stored exactly.
+     * @throws Exception If encountered.
+     */
+    public Grids_GridDouble disaggregate(Grids_GridNumber g, int factor)
+            throws IOException, ClassNotFoundException, Exception {
+        Grids_Dimensions dim = g.getDimensions();
+        BigDecimal cellsize = dim.getCellsize();
+        BigDecimal rcellsize = cellsize.divide(BigDecimal.valueOf(factor), 
+                RoundingMode.UNNECESSARY);
+        if (g instanceof Grids_GridDouble) {
+            return null;
+        } else if (g instanceof Grids_GridInt) {
+            return null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1277,7 +1336,6 @@ public class Grids_Processor extends Grids_Object {
      * <li>If {@code colOffset < 0} result xllcorner will be left of grid
      * xllcorner</li>
      * </ul>
-     * @param gf The grid factory used to create result and temporary grids.
      * @return An aggregated Grids_GridDouble at a lower level of resolution
      * than the grid {@code g}. The result values are either the sum, mean, max
      * or min of values in grid depending on {@code statistic}.
@@ -1285,9 +1343,8 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble aggregate(Grids_GridNumber grid,
-            int cellFactor, String statistic, int rowOffset, int colOffset,
-            Grids_GridFactoryDouble gf) throws IOException,
+    public Grids_GridDouble aggregate(Grids_GridNumber grid, int cellFactor,
+            String statistic, int rowOffset, int colOffset) throws IOException,
             ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         // Initial tests
@@ -1343,13 +1400,13 @@ public class Grids_Processor extends Grids_Object {
                 rXMax, rYMin, rYMax, rC);
         // Initialise result
         double ndvd = ndv.doubleValue();
-        gf.setNoDataValue(ndv.doubleValue());
-        Grids_GridDouble r = gf.create(rNrows, rNcols, rD);
+        gridFactoryDouble.setNoDataValue(ndv.doubleValue());
+        Grids_GridDouble r = gridFactoryDouble.create(rNrows, rNcols, rD);
 
         // sum
         if (statistic.equalsIgnoreCase("sum")) {
-            Grids_GridDouble count = gf.create(rNrows, rNcols, rD);
-            Grids_GridDouble normaliser = gf.create(rNrows, rNcols, rD);
+            Grids_GridDouble count = gridFactoryDouble.create(rNrows, rNcols, rD);
+            Grids_GridDouble normaliser = gridFactoryDouble.create(rNrows, rNcols, rD);
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
                     BigDecimal x = grid.getCellX(col);
@@ -1391,8 +1448,8 @@ public class Grids_Processor extends Grids_Object {
 
         // mean
         if (statistic.equalsIgnoreCase("mean")) {
-            Grids_GridDouble numerator = gf.create(rNrows, rNcols, rD);
-            Grids_GridDouble denominator = gf.create(rNrows, rNcols, rD);
+            Grids_GridDouble numerator = gridFactoryDouble.create(rNrows, rNcols, rD);
+            Grids_GridDouble denominator = gridFactoryDouble.create(rNrows, rNcols, rD);
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
                     BigDecimal x = grid.getCellX(col);
@@ -1513,11 +1570,10 @@ public class Grids_Processor extends Grids_Object {
      * and the min noDataValues are simply ignored. Formerly noDataValues were
      * treated as the average of values within a result cell.
      *
-     * @param grid The Grids_GridDouble to be processed
-     * @param statistic "sum", "mean", "max", or "min" depending on what
-     * aggregate of values are wanted
+     * @param g The stats to be processed
+     * @param stats "sum", "mean", "max", or "min" depending on what aggregate
+     * of values are wanted
      * @param rD result dimensions.
-     * @param gf The grid factory used to create the result.
      * @param dp Decimal place precision for any BigDecimal Arithmetic.
      * @param rm Rounding Mode for any BigDecimal Arithmetic.
      * @return An aggregate grid.
@@ -1525,38 +1581,36 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble aggregate(Grids_GridNumber grid,
-            String statistic, Grids_Dimensions rD,
-            Grids_GridFactoryDouble gf, int dp, RoundingMode rm)
+    public Grids_GridDouble aggregate(Grids_GridNumber g, String stats,
+            Grids_Dimensions rD, int dp, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         // Initialistaion
-        long nrows = grid.getNRows();
-        long ncols = grid.getNCols();
-        Grids_Dimensions dimensions = grid.getDimensions();
-        BigDecimal ndv = getNoDataValueBigDecimal(grid);
+        long nrows = g.getNRows();
+        long ncols = g.getNCols();
+        Grids_Dimensions dim = g.getDimensions();
+        BigDecimal ndv = getNoDataValueBigDecimal(g);
         double ndvd = ndv.doubleValue();
         BigDecimal rC = rD.getCellsize();
         BigDecimal rXMin = rD.getXMin();
         BigDecimal rYMin = rD.getYMin();
-        BigDecimal rXMax = rD.getXMax();
-        BigDecimal rYMax = rD.getYMax();
+        //BigDecimal rXMax = rD.getXMax();
+        //BigDecimal rYMax = rD.getYMax();
         BigDecimal rCH = rC.divide(BigDecimal.valueOf(2));
         BigDecimal rCS = rC.multiply(rC);
 
-        BigDecimal c = dimensions.getCellsize();
-        BigDecimal xMin = dimensions.getXMin();
-        BigDecimal yMin = dimensions.getYMin();
-        BigDecimal xMax = dimensions.getXMax();
-        BigDecimal yMax = dimensions.getYMax();
+        BigDecimal c = dim.getCellsize();
+        BigDecimal xMin = dim.getXMin();
+        BigDecimal yMin = dim.getYMin();
+        BigDecimal xMax = dim.getXMax();
+        BigDecimal yMax = dim.getYMax();
         BigDecimal cS = c.multiply(c);
         BigDecimal cH = c.divide(BigDecimal.valueOf(2));
         //double width = cellsize * ncols;
         //double height = cellsize * nrows;
         // Test this is an aggregation
         if (rC.compareTo(c) != 1) {
-            System.err.println(
-                    "!!!Warning: Not an aggregation as "
+            env.env.log("!!!Warning: Not an aggregation as "
                     + "resultCellsize < cellsize. Returning null!");
             return null;
         }
@@ -1567,11 +1621,10 @@ public class Grids_Processor extends Grids_Object {
                     "!!!Warning: No intersection for aggregation. Returning null!");
             return null;
         }
-        // If resultCellsize is an integer multiple of cellsize and grid aligns with result then use
-        // a cellFactor aggregation as it should be faster.
-        //println("resultCellsize % cellsize == " + ( resultCellsize % cellsize ) );
-        //println("resultXllcorner % cellsize = " + ( resultXllcorner % cellsize ) + ", xllcorner % cellsize = " + ( xllcorner % cellsize ) );
-        //println("resultYllcorner % cellsize = " + ( resultYllcorner % cellsize ) + ", yllcorner % cellsize = " + ( yllcorner % cellsize ) );
+        /**
+         * If rC is an integer multiple of c and g aligns with r then return a
+         * cellFactor aggregation as it should be faster.
+         */
         if (true) {
             BigDecimal t0 = rC.divide(c, Math.max(rC.scale(), c.scale()) + 2, rm);
             BigDecimal t1 = rXMin.divide(c, Math.max(rXMin.scale(), c.scale()) + 2, rm);
@@ -1579,82 +1632,74 @@ public class Grids_Processor extends Grids_Object {
             BigDecimal t3 = rYMin.divide(c, Math.max(rYMin.scale(), c.scale()) + 2, rm);
             BigDecimal t4 = yMin.divide(c, Math.max(yMin.scale(), c.scale()) + 2, rm);
             if ((t0.compareTo(new BigDecimal(t0.toBigInteger().toString())) == 0)
-                    && (t1.compareTo(new BigDecimal(t1.toBigInteger().toString())) == t2.compareTo(new BigDecimal(t2.toBigInteger().toString())))
-                    && (t3.compareTo(new BigDecimal(t3.toBigInteger().toString())) == t4.compareTo(new BigDecimal(t4.toBigInteger().toString())))) {
+                    && (t1.compareTo(new BigDecimal(t1.toBigInteger().toString()))
+                    == t2.compareTo(new BigDecimal(t2.toBigInteger().toString())))
+                    && (t3.compareTo(new BigDecimal(t3.toBigInteger().toString()))
+                    == t4.compareTo(new BigDecimal(t4.toBigInteger().toString())))) {
                 int cellFactor = rC.divide(c, 2, RoundingMode.UNNECESSARY).intValue();
                 int rowOffset = yMin.subtract(rYMin.divide(c, dp, rm)).intValue();
                 int colOffset = xMin.subtract(rXMin.divide(c, dp, rm)).intValue();
-                return aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gf);
+                return aggregate(g, cellFactor, stats, rowOffset, colOffset);
             }
         }
-        // Calculate resultNrows and resultHeight
+        // Calculate number of rows and height of result.
         long rNrows = 1L;
         BigDecimal rH = new BigDecimal(rC.toString());
-        //double resultHeight = resultCellsize;
         while (rYMin.add(rH).compareTo(yMax) == -1) {
             rNrows++;
             rH = rH.add(rC);
         }
-        //while ( ( resultYllcorner + resultHeight ) < ( yllcorner + height ) ) {
-        //    resultNrows ++;
-        //    resultHeight += resultCellsize;
-        //}
-        // Calculate resultNcols and resultWidth
+        // Calculate number of columns and width of result.
         long rNcols = 1L;
         BigDecimal rW = new BigDecimal(rC.toString());
-        //double resultWidth = resultCellsize;
         while (rXMin.add(rW).compareTo(xMax) == -1) {
             rNrows++;
             rW = rW.add(rC);
         }
-        //while ( ( resultXllcorner + resultWidth ) < ( xllcorner + width ) ) {
-        //    resultNcols ++;
-        //    resultWidth += resultCellsize;
-        //}
-        rXMax = xMin.add(rW);
-        rYMax = yMin.add(rH);
+        //rXMax = xMin.add(rW);
+        //rYMax = yMin.add(rH);
         // Initialise result
-        gf.setNoDataValue(ndvd);
-        Grids_GridDouble r = gf.create(rNrows, rNcols, rD);
+        gridFactoryDouble.setNoDataValue(ndvd);
+        Grids_GridDouble r = gridFactoryDouble.create(rNrows, rNcols, rD);
         // sum
         BigDecimal aP;
-        if (statistic.equalsIgnoreCase("sum")) {
-            Grids_GridDouble totalValueArea;
-            totalValueArea = gf.create(rNrows, rNcols, rD);
-            BigDecimal[] bounds;
+        if (stats.equalsIgnoreCase("sum")) {
+            Grids_GridDouble totalValueArea = gridFactoryDouble.create(rNrows, rNcols, rD);
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
-            double count0;
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    bounds = grid.getCellBounds(cH, row, col);
+                    BigDecimal[] bounds = g.getCellBounds(cH, row, col);
                     cellIDs[0] = r.getCellID(bounds[0], bounds[3]);
                     cellIDs[1] = r.getCellID(bounds[2], bounds[3]);
                     cellIDs[2] = r.getCellID(bounds[0], bounds[1]);
                     cellIDs[3] = r.getCellID(bounds[2], bounds[1]);
-                    BigDecimal value = grid.getCellBigDecimal(row, col);
+                    BigDecimal value = g.getCellBigDecimal(row, col);
                     if (value != ndv) {
-                        if (cellIDs[0].equals(cellIDs[1]) && cellIDs[1].equals(cellIDs[2])) {
+                        if (cellIDs[0].equals(cellIDs[1]) && cellIDs[1].equals(
+                                cellIDs[2])) {
                             r.addToCell(cellIDs[0], value.doubleValue());
                             totalValueArea.addToCell(cellIDs[0], 1.0d);
                         } else {
-                            aP = getAP(bounds, r, cellIDs[0], cellIDs[1], cellIDs[2], c, rCS,
-                                    rCH, dp, rm);
+                            aP = getAP(bounds, r, cellIDs[0], cellIDs[1],
+                                    cellIDs[2], c, rCS, rCH, dp, rm);
                             r.addToCell(cellIDs[0], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[1].equals(cellIDs[0])) {
-                            aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c, rCS,
-                                    rCH, dp, rm);
+                            aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c,
+                                    rCS, rCH, dp, rm);
                             r.addToCell(cellIDs[1], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[2].equals(cellIDs[0])) {
-                            aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c, rCS,
-                                    rCH, dp, rm);
+                            aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c,
+                                    rCS, rCH, dp, rm);
                             r.addToCell(cellIDs[2], value.multiply(aP));
                         }
-                        if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3].equals(cellIDs[2])) {
-                            aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH, dp, rm);
+                        if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3]
+                                .equals(cellIDs[2])) {
+                            aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH, dp,
+                                    rm);
                             r.addToCell(cellIDs[3], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
@@ -1673,90 +1718,26 @@ public class Grids_Processor extends Grids_Object {
                     }
                 }
             }
-
         }
-        //        // Add the nearest values for the noDataValues so long as there is a value
-        //            for ( int i = 0; i < nrows; i ++ ) {
-        //                for ( int j = 0; j < ncols; j ++ ) {
-        //                    bounds = grid.getCellBounds( i, j );
-        //                    cellID1 = result.getCellID( bounds[ 0 ], bounds[ 3 ] );
-        //                    cellID2 = result.getCellID( bounds[ 2 ], bounds[ 3 ] );
-        //                    cellID3 = result.getCellID( bounds[ 0 ], bounds[ 1 ] );
-        //                    cellID4 = result.getCellID( bounds[ 2 ], bounds[ 1 ] );
-        //                    if ( dataCount.getCell( bounds[ 0 ], bounds[ 3 ] ) != noDataValue ||
-        //                    dataCount.getCell( bounds[ 2 ], bounds[ 3 ] ) != noDataValue ||
-        //                    dataCount.getCell( bounds[ 0 ], bounds[ 1 ] ) != noDataValue ||
-        //                    dataCount.getCell( bounds[ 2 ], bounds[ 1 ] ) != noDataValue ) {
-        //                        value = grid.getNearestValueDouble( i, j );
-        //                        if ( cellID1 == cellID2 && cellID2 == cellID3 ) {
-        //                            if ( cellID1 != Integer.MIN_VALUE ) {
-        //                                result.addToCell( cellID1, value );
-        //                            }
-        //                        } else {
-        //                            if ( cellID1 != Integer.MIN_VALUE ) {
-        //                                if ( cellID1 == cellID2 || cellID1 == cellID3 ) {
-        //                                    if ( cellID1 == cellID2 ) {
-        //                                        areaProportion = ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
-        //                                    } else {
-        //                                        areaProportion = ( Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) * cellsize ) / ( cellsize * cellsize );
-        //                                    }
-        //                                } else {
-        //                                    areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID1 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( ( result.getCellXDouble( cellID1 ) + ( resultCellsize / 2.0d ) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
-        //                                }
-        //                                result.addToCell( cellID1, value * areaProportion );
-        //                            }
-        //                            if ( cellID2 != Integer.MIN_VALUE ) {
-        //                                if ( cellID2 != cellID1 ) {
-        //                                    if ( cellID2 == cellID4 ) {
-        //                                        areaProportion = ( Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * cellsize ) / ( cellsize * cellsize );
-        //                                    } else {
-        //                                        areaProportion = ( ( Math.abs( bounds[3] - ( result.getCellYDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID2 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
-        //                                    }
-        //                                    result.addToCell( cellID2, value * areaProportion );
-        //                                }
-        //                            }
-        //                            if ( cellID3 != Integer.MIN_VALUE ) {
-        //                                if ( cellID3 != cellID1 ) {
-        //                                    if ( cellID3 == cellID4 ) {
-        //                                        areaProportion = ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * cellsize ) / ( cellsize * cellsize );
-        //                                    } else {
-        //                                        areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID3 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( ( result.getCellXDouble( cellID3 ) + ( resultCellsize / 2.0d) ) - bounds[0] ) ) / ( cellsize * cellsize ) );
-        //                                    }
-        //                                    result.addToCell( cellID3, value * areaProportion );
-        //                                }
-        //                            }
-        //                            if ( cellID4 != Integer.MIN_VALUE ) {
-        //                                if ( cellID4 != cellID2 && cellID4 != cellID3 ) {
-        //                                    areaProportion = ( ( Math.abs( ( result.getCellYDouble( cellID4 ) + ( resultCellsize / 2.0d ) ) - bounds[1] ) * Math.abs( bounds[2] - ( result.getCellXDouble( cellID4 ) - ( resultCellsize / 2.0d ) ) ) ) / ( cellsize * cellsize ) );
-        //                                    result.addToCell( cellID4, value * areaProportion );
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
 
         // mean
-        if (statistic.equalsIgnoreCase("mean")) {
-            double denominator = (rC.doubleValue() * rC.doubleValue()) / (c.doubleValue() * c.doubleValue());
-            Grids_GridDouble sum = aggregate(grid, "sum", rD, gf, dp, rm);
+        if (stats.equalsIgnoreCase("mean")) {
+            double denominator = (rC.doubleValue() * rC.doubleValue())
+                    / (c.doubleValue() * c.doubleValue());
+            Grids_GridDouble sum = aggregate(g, "sum", rD, dp, rm);
             addToGrid(r, sum, BigDecimal.valueOf(1.0d / denominator), dp, rm);
         }
 
         // max
-        if (statistic.equalsIgnoreCase("max")) {
-            double max;
-            BigDecimal[] bounds;
-            double halfCellsize = cH.doubleValue();
+        if (stats.equalsIgnoreCase("max")) {
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
-                    BigDecimal value = grid.getCellBigDecimal(row, col);
+                    BigDecimal value = g.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
-                        BigDecimal x = grid.getCellX(col);
-                        BigDecimal y = grid.getCellY(row);
-                        bounds = grid.getCellBounds(cH, row, col);
-                        max = r.getCell(bounds[0], bounds[3]);
+                        //BigDecimal x = g.getCellX(col);
+                        //BigDecimal y = g.getCellY(row);
+                        BigDecimal[] bounds = g.getCellBounds(cH, row, col);
+                        double max = r.getCell(bounds[0], bounds[3]);
                         if (max != ndvd) {
                             r.setCell(bounds[0], bounds[3], Math.max(max, value.doubleValue()));
                         } else {
@@ -1786,18 +1767,18 @@ public class Grids_Processor extends Grids_Object {
         }
 
         // min
-        if (statistic.equalsIgnoreCase("min")) {
+        if (stats.equalsIgnoreCase("min")) {
             double min;
             BigDecimal[] bounds;
             double halfCellsize = cH.doubleValue();
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
-                    BigDecimal value = grid.getCellBigDecimal(row, col);
+                    BigDecimal value = g.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
                         double vD = value.doubleValue();
-                        BigDecimal x = grid.getCellX(col);
-                        BigDecimal y = grid.getCellY(row);
-                        bounds = grid.getCellBounds(cH, row, col);
+                        BigDecimal x = g.getCellX(col);
+                        BigDecimal y = g.getCellY(row);
+                        bounds = g.getCellBounds(cH, row, col);
                         min = r.getCell(bounds[0], bounds[3]);
                         if (min != ndvd) {
                             r.setCell(bounds[0], bounds[3], Math.min(min, vD));

@@ -50,7 +50,14 @@ public class Grids_Dimensions implements Serializable {
     private final BigDecimal yMax;
 
     /**
-     * The cellsize (width or height.
+     * The cellsize (width or height of a cell). This would be better stored not
+     * as a single BigDecimal Number, but as a fraction or rational number in
+     * two parts - a numerator and a denominator. As sometimes a user may want
+     * to create a disaggregated grid with a cellsize of a third or other non
+     * even factor of the cellsize and this may have a consequence of needing to
+     * round the resulting cellsize. Really, the cellsize should be stored
+     * accurately and so in a future version it will be stored as a pair of
+     * BigInteger numbers.
      */
     private final BigDecimal cellsize;
 
