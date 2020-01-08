@@ -1160,85 +1160,115 @@ public class Grids_Processor extends Grids_Object {
                         }
                     }
                 }
+                return r;
             } else {
-                for (int cr = 0; cr < ncr; cr++) {
-                    int cnr = g0.getChunkNRows(cr);
-                    /**
-                     * Prefer to keep a row of g0 and r chunks in memory.
-                     */
-                    for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = g0.getRow(cr, ccr);
-                        BigDecimal y = g0.getCellY(row);
-                        env.addToNotToClear(g1, g1.getChunkRow(y));
-                        env.addToNotToClear(r, r.getChunkRow(y));
-                    }
-                    for (int cc = 0; cc < ncc; cc++) {
-                        Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
-                        env.addToNotToClear(g0, i);
-                        env.checkAndMaybeFreeMemory();
-                        int cnc = g0.getChunkNCols(cc);
-                        for (int ccr = 0; ccr < cnr; ccr++) {
-                            long row = r.getRow(cr, ccr);
-                            BigDecimal y = g0.getCellY(row);
-                            for (int ccc = 0; ccc < cnc; ccc++) {
-                                long col = r.getCol(cc, ccc);
-                                BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
-                                        ccr, ccc);
-                                if (v0.compareTo(ndv0) != 0) {
-                                    BigDecimal x = g0.getCellX(col);
-                                    BigDecimal v1 = g1.getCellBigDecimal(x, y);
-                                    if (v1.compareTo(ndv1) == 0) {
-                                        r.setCell(x, y, ndv0);
-                                    } else {
-                                        r.setCell(x, y, v0.multiply(v1));
-                                    }
-                                }
-                            }
-                        }
-                        env.removeFromNotToClear(g0, i);
-                    }
-                    /**
-                     * Allow the row of g0 and r chunks to be swapped.
-                     */
-                    for (int ccr = 0; ccr < cnr; ccr++) {
-                        long row = g0.getRow(cr, ccr);
-                        BigDecimal y = g0.getCellY(row);
-                        env.addToNotToClear(g1, g1.getChunkRow(y));
-                        env.addToNotToClear(r, r.getChunkRow(y));
-                    }
-                }
-
+                multiply(g0, g1, r, ncr, ncc, ndv0, ndv1);
+                return r;
             }
         } else {
-            //throw new Exception("Impleentation needed.");
-            // Get the boundary intersection of g0 and g1.
             Grids_Dimensions dimg0 = g0.getDimensions();
             Grids_Dimensions dimg1 = g1.getDimensions();
             BigDecimal cg0 = dimg0.getCellsize();
             BigDecimal cg1 = dimg1.getCellsize();
 
             /**
-             * Deal with all cases, but (cg0.compareTo(cg1) == 0) can be treated
-             * in the same way as (cg0.compareTo(cg1) == -1).
+             * Deal with all cases.
              */
             if (cg0.compareTo(cg1) == 1) {
                 Grids_GridDouble ag1 = aggregate(g1, "mean", dimg0, dp, rm);
                 return multiply(g0, ag1, dp, rm);
             } else {
                 /**
-                 * If the frameworks align and g1 is a neat aggregation, then
-                 * simply multiply the value of g1 at the centroid for each cell
-                 * value of g0. Otherwise some intersection is needed to
-                 * calculate some result cell values. The intersection can be
-                 * achieved using a disaggregation to a cellsize smaller than g0
-                 * and then an aggregation.
+                 * (cg0.compareTo(cg1) == 0) can be treated in the same way as
+                 * (cg0.compareTo(cg1) == -1). If the frameworks align and g1 is
+                 * a neat aggregation, then we can simply multiply the value of
+                 * g1 at the centroid for each cell value of g0. Otherwise some
+                 * intersection is needed to calculate some result cell values.
+                 * The intersection can be achieved using a disaggregation to a
+                 * cellsize smaller than g0 and then an aggregation.
                  */
-                //factor = ;
-                //Grids_GridDouble ag0 = disaggregate(g0, factor);
-                return null;
+                BigDecimal[] dar = cg1.divideAndRemainder(cg0);
+                if (dar[1].compareTo(BigDecimal.ZERO) == 0) {
+                    BigDecimal x0 = dimg0.getXMin();
+                    BigDecimal x1 = dimg1.getXMin();
+                    boolean doSimple = false;
+                    if (x1.compareTo(x0) == 0) {
+                        doSimple = true;
+                    } else if (x1.compareTo(x0) == -1) {
+                        BigDecimal dx = x0.subtract(x1);
+                        BigDecimal[] dar2 = dx.divideAndRemainder(cg1);
+                        if (dar2[1].compareTo(BigDecimal.ZERO) == 0) {
+                            doSimple = true;
+                        }
+                    } else {
+                        BigDecimal dx = x1.subtract(x0);
+                        BigDecimal[] dar2 = dx.divideAndRemainder(cg1);
+                        if (dar2[1].compareTo(BigDecimal.ZERO) == 0) {
+                            doSimple = true;
+                        }
+                    }
+                    if (doSimple) {
+                        multiply(g0, g1, r, ncr, ncc, ndv0, ndv1);
+                        return r;
+                    }
+                }
+                int factor = dar[0].toBigIntegerExact().intValue() + 1;
+                Grids_GridDouble dg1 = disaggregate(g1, factor);
+                Grids_GridDouble adg1 = aggregate(dg1, "mean", dimg0, dp, rm);
+                return multiply(g0, adg1, dp, rm);
             }
         }
-        return r;
+    }
+
+    protected void multiply(Grids_GridNumber g0, Grids_GridNumber g1,
+            Grids_GridNumber r, int ncr, int ncc, BigDecimal ndv0,
+            BigDecimal ndv1) throws Exception {
+        for (int cr = 0; cr < ncr; cr++) {
+            int cnr = g0.getChunkNRows(cr);
+            /**
+             * Prefer to keep a row of g0 and r chunks in memory.
+             */
+            for (int ccr = 0; ccr < cnr; ccr++) {
+                long row = g0.getRow(cr, ccr);
+                BigDecimal y = g0.getCellY(row);
+                env.addToNotToClear(g1, g1.getChunkRow(y));
+                env.addToNotToClear(r, r.getChunkRow(y));
+            }
+            for (int cc = 0; cc < ncc; cc++) {
+                Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
+                env.addToNotToClear(g0, i);
+                env.checkAndMaybeFreeMemory();
+                int cnc = g0.getChunkNCols(cc);
+                for (int ccr = 0; ccr < cnr; ccr++) {
+                    long row = r.getRow(cr, ccr);
+                    BigDecimal y = g0.getCellY(row);
+                    for (int ccc = 0; ccc < cnc; ccc++) {
+                        long col = r.getCol(cc, ccc);
+                        BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
+                                ccr, ccc);
+                        if (v0.compareTo(ndv0) != 0) {
+                            BigDecimal x = g0.getCellX(col);
+                            BigDecimal v1 = g1.getCellBigDecimal(x, y);
+                            if (v1.compareTo(ndv1) == 0) {
+                                r.setCell(x, y, ndv0);
+                            } else {
+                                r.setCell(x, y, v0.multiply(v1));
+                            }
+                        }
+                    }
+                }
+                env.removeFromNotToClear(g0, i);
+            }
+            /**
+             * Allow the row of g0 and r chunks to be swapped.
+             */
+            for (int ccr = 0; ccr < cnr; ccr++) {
+                long row = g0.getRow(cr, ccr);
+                BigDecimal y = g0.getCellY(row);
+                env.addToNotToClear(g1, g1.getChunkRow(y));
+                env.addToNotToClear(r, r.getChunkRow(y));
+            }
+        }
     }
 
     /**
@@ -1247,17 +1277,16 @@ public class Grids_Processor extends Grids_Object {
      * this should result in a warning. IF the cellsize is divided by an even
      * factor, in all cases except for very extreme cases it can be stored
      * exactly. However, dividing by an odd power might result in a number that
-     * cannot be stored precisely as a decimal number. This in fact is a 
-     * reason why cellsize should be stored not as a single BigDecimal Number, 
-     * but as a fraction or rational number in two parts - a numerator and a 
-     * denominator.
+     * cannot be stored precisely as a decimal number. This in fact is a reason
+     * why cellsize should be stored not as a single BigDecimal Number, but as a
+     * fraction or rational number in two parts - a numerator and a denominator.
      *
      * @param g The grid on which the result values are based.
      * @param factor The number of times smaller the cellsize of the result is.
      * @return A grid with a {@code factor} greater resolution than {@code g}.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
-     * @throws ArithmeticException If the cellsize of {@code g} cannot be 
+     * @throws ArithmeticException If the cellsize of {@code g} cannot be
      * divided by {@code factor and stored exactly.
      * @throws Exception If encountered.
      */
@@ -1265,7 +1294,7 @@ public class Grids_Processor extends Grids_Object {
             throws IOException, ClassNotFoundException, Exception {
         Grids_Dimensions dim = g.getDimensions();
         BigDecimal cellsize = dim.getCellsize();
-        BigDecimal rcellsize = cellsize.divide(BigDecimal.valueOf(factor), 
+        BigDecimal rcellsize = cellsize.divide(BigDecimal.valueOf(factor),
                 RoundingMode.UNNECESSARY);
         if (g instanceof Grids_GridDouble) {
             return null;
