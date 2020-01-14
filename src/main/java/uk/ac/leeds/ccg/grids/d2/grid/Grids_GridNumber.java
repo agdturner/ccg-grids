@@ -36,7 +36,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     /**
      * The noDataValue for the grid.
      */
-    public final BigDecimal ndv;
+    public BigDecimal ndv;
 
     protected Grids_GridNumber(Grids_Environment ge, Generic_FileStore fs,
             long id, BigDecimal ndv) throws Exception {

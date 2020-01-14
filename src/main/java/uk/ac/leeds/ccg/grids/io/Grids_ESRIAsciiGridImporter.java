@@ -228,6 +228,19 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         this.st.wordChars('\u00A0', '\u00FF');
         this.st.eolIsSignificant(false);
     }
+    
+    /**
+     * @return The next value as a BigDecimal or BigDecimal.valueOf(-Double.MAX_VALUE).
+     */
+    public BigDecimal readBigDecimal() {
+        BigDecimal r = BigDecimal.valueOf(-Double.MAX_VALUE);
+        try {
+            BigDecimal.valueOf(this.st.nextToken());
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
+        return r;
+    }
 
     /**
      * @return The next value as a double or Double.NEGATIVE_INFINITY.

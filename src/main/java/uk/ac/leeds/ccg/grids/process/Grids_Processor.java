@@ -50,6 +50,9 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
 
 /**
  * General methods for processing individual or multiple grids.
@@ -90,6 +93,11 @@ public class Grids_Processor extends Grids_Object {
      * Grids_GridFactoryDouble
      */
     public Grids_GridFactoryDouble gridFactoryDouble;
+
+    /**
+     * Grids_GridFactoryBD
+     */
+    public Grids_GridFactoryBD gridFactoryBD;
 
     /**
      * @param e The grids environment.
@@ -151,6 +159,13 @@ public class Grids_Processor extends Grids_Object {
         gridFactoryDouble = new Grids_GridFactoryDouble(env, fs,
                 new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
                 new Grids_ChunkFactoryDoubleArray(),
+                chunkNRows, chunkNCols);
+        // BigDecimal
+        fs = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
+                Grids_Strings.s_GridBigDecimal);
+        gridFactoryBD = new Grids_GridFactoryBD(env, fs,
+                new Grids_ChunkFactoryBDSinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
+                new Grids_ChunkFactoryBDArray(),
                 chunkNRows, chunkNCols);
     }
 
