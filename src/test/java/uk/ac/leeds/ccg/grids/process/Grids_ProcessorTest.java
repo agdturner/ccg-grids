@@ -37,6 +37,8 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
@@ -85,7 +87,7 @@ public class Grids_ProcessorTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testMask_Grids_GridNumber_Grids_GridNumber() throws Exception {
+    public void testMask() throws Exception {
         System.out.println("mask");
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         // Test 1
@@ -446,8 +448,9 @@ public class Grids_ProcessorTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testMultiply() throws Exception {
-        System.out.println("multiply");
+    public void testMultiplyDouble() throws Exception {
+        System.out.println("multiplyDouble");
+        Double type = 0.0d;
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         // Test 1
         int dp = 10;
@@ -485,7 +488,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        Grids_GridDouble r = gp.multiply(g0, g1, dp, rm);
+        Grids_GridNumber r = gp.multiply(type, g0, g1, dp, rm);
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
         boolean equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
@@ -525,7 +528,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -573,7 +576,7 @@ public class Grids_ProcessorTest {
 //        System.out.println("");
 //        System.out.println("er");
 //        er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
 //        System.out.println("");
 //        System.out.println("r");
 //        r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -627,7 +630,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         ///r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -677,7 +680,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("er");
         //er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
         //System.out.println("");
         //System.out.println("r");
         //r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -733,7 +736,7 @@ public class Grids_ProcessorTest {
         System.out.println("");
         System.out.println("er");
         er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
         System.out.println("");
         System.out.println("r");
         r.log(maxNrowsToPrint, maxNcolsToPrint);
@@ -785,13 +788,367 @@ public class Grids_ProcessorTest {
         System.out.println("");
         System.out.println("er");
         er.log(maxNrowsToPrint, maxNcolsToPrint);
-        r = gp.multiply(g0, g1, dp, rm);
+        r = gp.multiply(type, g0, g1, dp, rm);
         System.out.println("");
         System.out.println("r");
         r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
     }
+
+    /**
+     * Test of multiply method, of class Grids_Processor.
+     * @throws Exception If encountered.
+     */
+    @Test
+    public void testMultiplyBigDecimal() throws Exception {
+        System.out.println("multiplyBigDecimal");
+        BigDecimal type = BigDecimal.ZERO;
+        Grids_GridFactoryBD gf = gp.gridFactoryBD;
+        // Test 1
+        int dp = 10;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        //System.out.println("Test 1");
+        Grids_GridBD g0 = (Grids_GridBD) gf.create(2, 3);
+        //g0.setCell(0, 0, BigDecimal.ONE);
+        g0.setCell(0, 1, BigDecimal.ZERO);
+        g0.setCell(0, 2, BigDecimal.ONE);
+        //g0.setCell(1, 0, BigDecimal.ONE);
+        g0.setCell(1, 1, BigDecimal.valueOf(2));
+        g0.setCell(1, 2, BigDecimal.valueOf(3));
+        //System.out.println("");
+        //System.out.println("g0");
+        //long maxNrowsToPrint = 10;
+        //long maxNcolsToPrint = 10;
+        //g0.log(maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridBD g1 = (Grids_GridBD) gf.create(2, 3);
+        g1.setCell(0, 0, BigDecimal.ONE);
+        g1.setCell(0, 1, BigDecimal.ONE); 
+        g1.setCell(0, 2, BigDecimal.valueOf(2));
+        g1.setCell(1, 0, BigDecimal.ONE);
+        g1.setCell(1, 1, BigDecimal.valueOf(4));
+        g1.setCell(1, 2, BigDecimal.valueOf(0.6));
+        //System.out.println("");
+        //System.out.println("g1");
+        //g1.log(maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridBD er = (Grids_GridBD) gf.create(2, 3);
+        //er.setCell(0, 0, BigDecimal.ZERO);
+        er.setCell(0, 1, BigDecimal.ZERO); 
+        er.setCell(0, 2, BigDecimal.valueOf(2));
+        //er.setCell(1, 0, BigDecimal.ONE;
+        er.setCell(1, 1, BigDecimal.valueOf(8));
+        er.setCell(1, 2, BigDecimal.valueOf(1.8));
+        //System.out.println("");
+        //System.out.println("er");
+        //er.log(maxNrowsToPrint, maxNcolsToPrint);
+        Grids_GridNumber r = gp.multiply(type, g0, g1, dp, rm);
+        //r.log(maxNrowsToPrint, maxNcolsToPrint);
+        boolean equal = r.isSameDimensionsAndValues(er);
+        assertTrue(equal);
+//        // Test 2
+//        //System.out.println("");
+//        //System.out.println("Test 2");
+//        //System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(2, 3);
+//        //g0.setCell(0, 0, 1.0d);
+//        g0.setCell(0, 1, 0d);
+//        g0.setCell(0, 2, 1.0d);
+//        //g0.setCell(1, 0, 1.0d);
+//        g0.setCell(1, 1, 2.0d);
+//        g0.setCell(1, 2, 3.0d);
+//        //System.out.println("");
+//        //System.out.println("g0");
+//        //maxNrowsToPrint = 10;
+//        //maxNcolsToPrint = 10;
+//        //g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(2, 3);
+//        g1.setCell(0, 0, 1.0d);
+//        g1.setCell(0, 1, 1.0d); 
+//        g1.setCell(0, 2, 2.0d);
+//        //g1.setCell(1, 0, 1.0d);
+//        g1.setCell(1, 1, 4.0d);
+//        g1.setCell(1, 2, 0.6d);
+//        //System.out.println("");
+//        //System.out.println("g1");
+//        //g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(2, 3);
+//        //er.setCell(0, 0, 0.0d);
+//        er.setCell(0, 1, 0.0d); 
+//        er.setCell(0, 2, 2.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        er.setCell(1, 1, 8.0d);
+//        er.setCell(1, 2, 1.8d);
+//        //System.out.println("");
+//        //System.out.println("er");
+//        //er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+//        //System.out.println("");
+//        //System.out.println("r");
+//        //r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+//        // Test 3
+////        System.out.println("");
+////        System.out.println("Test 3");     
+////        System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(2, 3);
+//        g0.setCell(0, 0, 4.0d);
+//        g0.setCell(0, 1, 5.0d);
+//        //g0.setCell(0, 2, 5.0d);
+//        //g0.setCell(1, 0, 4.0d);
+//        g0.setCell(1, 1, 2.0d);
+//        g0.setCell(1, 2, 3.0d);
+////        System.out.println("");
+////        System.out.println("g0");
+////        long maxNrowsToPrint = 10;
+////        long maxNcolsToPrint = 10;
+////        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(4, 3);
+//        g1.setCell(0, 0, 1.0d);
+//        g1.setCell(0, 1, 4.0d); 
+//        g1.setCell(0, 2, 1.0d);
+//        //g1.setCell(1, 0, 1.0d);
+//        g1.setCell(1, 1, 3.0d);
+//        g1.setCell(1, 2, 2.0d);
+//        g1.setCell(2, 0, 3.0d);
+//        g1.setCell(2, 1, 6.0d);
+//        g1.setCell(2, 2, 2.0d);
+//        g1.setCell(3, 0, 1.0d);
+//        g1.setCell(3, 1, 1.0d);
+//        g1.setCell(3, 2, 2.0d);
+////        System.out.println("");
+////        System.out.println("g1");
+////        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(2, 3);
+//        er.setCell(0, 0, 4.0d);
+//        er.setCell(0, 1, 20.0d); 
+//        //er.setCell(0, 2, 2.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        er.setCell(1, 1, 6.0d);
+//        er.setCell(1, 2, 6.0d);
+////        System.out.println("");
+////        System.out.println("er");
+////        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+////        System.out.println("");
+////        System.out.println("r");
+////        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+//        // Test 4
+//        //System.out.println("");
+//        //System.out.println("Test 4");
+//        //System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(4, 3);
+//        g0.setCell(0, 0, 1.0d);
+//        g0.setCell(0, 1, 4.0d); 
+//        g0.setCell(0, 2, 1.0d);
+//        //g0.setCell(1, 0, 1.0d);
+//        g0.setCell(1, 1, 3.0d);
+//        g0.setCell(1, 2, 2.0d);
+//        g0.setCell(2, 0, 3.0d);
+//        g0.setCell(2, 1, 6.0d);
+//        g0.setCell(2, 2, 2.0d);
+//        g0.setCell(3, 0, 1.0d);
+//        g0.setCell(3, 1, 1.0d);
+//        g0.setCell(3, 2, 2.0d);
+//        //System.out.println("");
+//        //System.out.println("g0");
+//        //maxNrowsToPrint = 10;
+//        //maxNcolsToPrint = 10;
+//        //g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(2, 3);
+//        g1.setCell(0, 0, 4.0d);
+//        g1.setCell(0, 1, 5.0d);
+//        //g1.setCell(0, 2, 5.0d);
+//        //g1.setCell(1, 0, 4.0d);
+//        g1.setCell(1, 1, 2.0d);
+//        g1.setCell(1, 2, 3.0d); 
+//        //System.out.println("");
+//        //System.out.println("g1");
+//        //g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(4, 3);
+//        er.setCell(0, 0, 4.0d);
+//        er.setCell(0, 1, 20.0d); 
+//        //er.setCell(0, 2, 2.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        er.setCell(1, 1, 6.0d);
+//        er.setCell(1, 2, 6.0d);
+//        //er.setCell(2, 2, 6.0d);
+//        //er.setCell(2, 2, 6.0d);
+//        //er.setCell(2, 2, 6.0d);
+//        //er.setCell(3, 2, 6.0d);
+//        //er.setCell(3, 2, 6.0d);
+//        //er.setCell(3, 2, 6.0d);
+//        //System.out.println("");
+//        //System.out.println("er");
+//        //er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+//        //System.out.println("");
+//        //System.out.println("r");
+//        ///r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+//        // Test 5
+//        //System.out.println("");
+//        //System.out.println("Test 5");
+//        //System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(2, 3);
+//        g0.setCell(0, 0, 4.0d);
+//        g0.setCell(0, 1, 5.0d);
+//        //g0.setCell(0, 2, 5.0d);
+//        //g0.setCell(1, 0, 4.0d);
+//        g0.setCell(1, 1, 2.0d);
+//        g0.setCell(1, 2, 3.0d);
+//        //maxNrowsToPrint = 10;
+//        //maxNcolsToPrint = 10;
+//        //System.out.println("");
+//        //System.out.println("g0");
+//        //g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(4, 3, new Grids_Dimensions(
+//                BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
+//                BigDecimal.valueOf(-2), BigDecimal.valueOf(2), BigDecimal.ONE));
+//        g1.setCell(0, 0, 1.0d);
+//        g1.setCell(0, 1, 4.0d); 
+//        g1.setCell(0, 2, 1.0d);
+//        //g1.setCell(1, 0, 1.0d);
+//        g1.setCell(1, 1, 3.0d);
+//        g1.setCell(1, 2, 2.0d);
+//        g1.setCell(2, 0, 3.0d);
+//        g1.setCell(2, 1, 6.0d);
+//        g1.setCell(2, 2, 2.0d);
+//        g1.setCell(3, 0, 1.0d);
+//        g1.setCell(3, 1, 1.0d);
+//        g1.setCell(3, 2, 2.0d);
+//        //System.out.println("");
+//        //System.out.println("g1");
+//        //g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(2, 3);
+//        er.setCell(0, 0, 12.0d);
+//        er.setCell(0, 1, 30.0d); 
+//        //er.setCell(0, 2, 2.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        er.setCell(1, 1, 2.0d);
+//        er.setCell(1, 2, 6.0d);
+//        //System.out.println("");
+//        //System.out.println("er");
+//        //er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+//        //System.out.println("");
+//        //System.out.println("r");
+//        //r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+//        // Test 6
+//        System.out.println("");
+//        System.out.println("Test 6");
+//        System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(4, 3);
+//        g0.setCell(0, 0, 1.0d);
+//        g0.setCell(0, 1, 4.0d); 
+//        g0.setCell(0, 2, 1.0d);
+//        //g0.setCell(1, 0, 1.0d);
+//        g0.setCell(1, 1, 3.0d);
+//        g0.setCell(1, 2, 2.0d);
+//        g0.setCell(2, 0, 3.0d);
+//        g0.setCell(2, 1, 6.0d);
+//        g0.setCell(2, 2, 2.0d);
+//        g0.setCell(3, 0, 1.0d);
+//        g0.setCell(3, 1, 1.0d);
+//        g0.setCell(3, 2, 2.0d);
+//        System.out.println("");
+//        System.out.println("g0");
+//        long maxNrowsToPrint = 10;
+//        long maxNcolsToPrint = 10;
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(4, 3, new Grids_Dimensions(
+//                BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
+//                BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.ONE));
+//        g1.setCell(0, 0, 4.0d);
+//        g1.setCell(0, 1, 5.0d);
+//        //g1.setCell(0, 2, 5.0d);
+//        //g1.setCell(1, 0, 4.0d);
+//        g1.setCell(1, 1, 2.0d);
+//        g1.setCell(1, 2, 3.0d); 
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(4, 3);
+//        //er.setCell(0, 0, 4.0d);
+//        //er.setCell(0, 1, 2.0d); 
+//        //er.setCell(0, 2, 6.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        //er.setCell(1, 1, 6.0d);
+//        //er.setCell(1, 2, 6.0d);
+//        er.setCell(2, 0, 12.0d);
+//        er.setCell(2, 1, 30.0d);
+//        //er.setCell(2, 2, 6.0d);
+//        //er.setCell(3, 0, 6.0d);
+//        er.setCell(3, 1, 2.0d);
+//        er.setCell(3, 2, 6.0d);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+//        // Test 7
+//        System.out.println("");
+//        System.out.println("Test 7");
+//        System.out.println("------");
+//        g0 = (Grids_GridDouble) gf.create(4, 3);
+//        g0.setCell(0, 0, 1.0d);
+//        //g0.setCell(0, 1, 4.0d); 
+//        //g0.setCell(0, 2, 1.0d);
+//        g0.setCell(1, 0, 5.0d);
+//        g0.setCell(1, 1, 2.0d);
+//        g0.setCell(1, 2, 4.0d);
+//        g0.setCell(2, 0, 4.0d);
+//        g0.setCell(2, 1, 3.0d);
+//        g0.setCell(2, 2, 5.0d);
+//        //g0.setCell(3, 0, 1.0d);
+//        g0.setCell(3, 1, 2.0d);
+//        g0.setCell(3, 2, 1.0d);
+//        System.out.println("");
+//        System.out.println("g0");
+//        maxNrowsToPrint = 10;
+//        maxNcolsToPrint = 10;
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        g1 = (Grids_GridDouble) gf.create(2, 1, new Grids_Dimensions(
+//                BigDecimal.valueOf(1), BigDecimal.valueOf(2), 
+//                BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.ONE));
+//        g1.setCell(0, 0, 6.0d);
+//        g1.setCell(1, 0, 2.0d);
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        er = (Grids_GridDouble) gf.create(4, 3);
+//        //er.setCell(0, 0, 4.0d);
+//        //er.setCell(0, 1, 2.0d); 
+//        //er.setCell(0, 2, 6.0d);
+//        //er.setCell(1, 0, 1.0d);
+//        er.setCell(1, 1, 12.0d);
+//        //er.setCell(1, 2, 6.0d);
+//        //er.setCell(2, 0, 12.0d);
+//        er.setCell(2, 1, 6.0d);
+//        //er.setCell(2, 2, 6.0d);
+//        //er.setCell(3, 0, 6.0d);
+//        //er.setCell(3, 1, 2.0d);
+//        //er.setCell(3, 2, 6.0d);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        r = gp.multiply(g0, g1, dp, rm);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        equal = r.isSameDimensionsAndValues(er);
+//        assertTrue(equal);
+    }
+
 //
 //    /**
 //     * Test of divide method, of class Grids_Processor.
