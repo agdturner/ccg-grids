@@ -1539,14 +1539,14 @@ public class Grids_GridBD extends Grids_GridNumber {
                         //BigDecimal gv = getCell(chunk, cr, cc, ccr, ccc);
                         BigDecimal gv = chunk.getCell(ccr, ccc);
                         if (v.compareTo(ndv) == 0) {
-                            if (gv != gndv) {
+                            if (gv.compareTo(gndv) != 0) {
                                 return false;
                             }
                         } else {
-                            if (gv == gndv) {
+                            if (gv.compareTo(gndv) == 0) {
                                 return false;
                             } else {
-                                if (v != gv) {
+                                if (v.compareTo(gv) != 0) {
                                     return false;
                                 }
                             }

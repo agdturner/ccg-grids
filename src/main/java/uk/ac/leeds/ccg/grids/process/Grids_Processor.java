@@ -1070,6 +1070,8 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Multiply g0 and g1 and return a new grid.
      *
+     * @param type Determines the type of Grid returned. BigDecimal, double or 
+     * int.
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to multiply
      * @param dp Decimal place precision for any BigDecimal Arithmetic.
@@ -1079,14 +1081,22 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble multiply(Grids_GridNumber g0, Grids_GridNumber g1,
-            int dp, RoundingMode rm)
+    public Grids_GridNumber multiply(Number type, Grids_GridNumber g0,
+            Grids_GridNumber g1, int dp, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
-        Grids_GridDouble r;
+        Grids_GridNumber r;
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
-        r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        if (type instanceof BigDecimal) {
+            r = gridFactoryBD.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        } else if (type instanceof Double) {
+            r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        } else if (type instanceof Integer) {
+            r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+        } else {
+            throw new Exception("Unknown type!");
+        }
         BigDecimal ndv0 = g0.ndv;
         BigDecimal ndv1 = g1.ndv;
         int ncr = g0.getNChunkRows();
@@ -1191,7 +1201,7 @@ public class Grids_Processor extends Grids_Object {
              */
             if (cg0.compareTo(cg1) == 1) {
                 Grids_GridDouble ag1 = aggregate(g1, "mean", dimg0, dp, rm);
-                return multiply(g0, ag1, dp, rm);
+                return multiply(type, g0, ag1, dp, rm);
             } else {
                 /**
                  * (cg0.compareTo(cg1) == 0) can be treated in the same way as
@@ -1230,7 +1240,7 @@ public class Grids_Processor extends Grids_Object {
                 int factor = dar[0].toBigIntegerExact().intValue() + 1;
                 Grids_GridDouble dg1 = disaggregate(g1, factor);
                 Grids_GridDouble adg1 = aggregate(dg1, "mean", dimg0, dp, rm);
-                return multiply(g0, adg1, dp, rm);
+                return multiply(type, g0, adg1, dp, rm);
             }
         }
     }
