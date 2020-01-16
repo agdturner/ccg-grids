@@ -577,26 +577,31 @@ public class Grids_UtilitiesTest {
         setRandom(ge, yGrid);
         int divisions = 10;
         //Object[] expResult = null;
-        Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, dp, rm);
-        Grids_ImageExporter ie = new Grids_ImageExporter(ge);
-        String type = "PNG";
-        Path file = Generic_IO.createNewFile(gp.env.files.getGeneratedDir()
-                .getPath(), "Test", "." + type);
-        Grids_GridDouble g = (Grids_GridDouble) result[3];
-        ie.toGreyScaleImage(g, gp, file, type);
+        try {
+            Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, dp, rm);
+            Grids_ImageExporter ie = new Grids_ImageExporter(ge);
+            String type = "PNG";
+            Path file = Generic_IO.createNewFile(gp.env.files.getGeneratedDir()
+                    .getPath(), "Test", "." + type);
+            Grids_GridDouble g = (Grids_GridDouble) result[3];
+            ie.toGreyScaleImage(g, gp, file, type);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
         //TreeMap<Double, > colours;
         //ie.toColourImage(0 , ie.colours, Color.orange, yGrid, outtype);
         //assertArrayEquals(expResult, result);
     }
 
-    public void setRandom(Grids_Environment env, Grids_GridDouble g) 
+    public void setRandom(Grids_Environment env, Grids_GridDouble g)
             throws Exception {
         Random r = new Random();
         int ncr = g.getNChunkRows();
         int ncc = g.getNChunkCols();
-        for (int cr = 0; cr < ncr; cr ++) {
+        for (int cr = 0; cr < ncr; cr++) {
             int chunkNRows = g.getChunkNRows(cr);
-            for (int cc = 0; cc < ncc; cc ++) {
+            for (int cc = 0; cc < ncc; cc++) {
                 int chunkNCols = g.getChunkNCols(cc);
                 for (int row = 0; row < chunkNRows; row++) {
                     for (int col = 0; col < chunkNCols; col++) {
