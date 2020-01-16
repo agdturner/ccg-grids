@@ -1004,7 +1004,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     public final int setCell(BigDecimal x, BigDecimal y, int v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
-            return setCell(getRow(x), getCol(y), v);
+            return setCell(getRow(y), getCol(x), v);
         }
         return noDataValue;
     }

@@ -806,11 +806,11 @@ public class Grids_GridBD extends Grids_GridNumber {
                     dStats.setN(dStats.getN().subtract(BigInteger.ONE));
                     dStats.setSum(dStats.getSum().subtract(oldValue));
                     BigDecimal min = dStats.getMin(false);
-                    if (oldValue == min) {
+                    if (oldValue.compareTo(min) == 0) {
                         dStats.setNMin(dStats.getNMin() - 1);
                     }
                     BigDecimal max = dStats.getMax(false);
-                    if (oldValue == max) {
+                    if (oldValue.compareTo(max) == 0) {
                         dStats.setNMax(dStats.getNMax() - 1);
                     }
                 }
@@ -827,7 +827,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 }
             }
         } else {
-            if (newValue != oldValue) {
+            if (newValue.compareTo(oldValue) != 0) {
                 ((Grids_StatsNotUpdatedBD) dStats).setUpToDate(false);
             }
         }
@@ -925,7 +925,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     public final BigDecimal setCell(BigDecimal x, BigDecimal y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
-            return setCell(getRow(x), getCol(y), v);
+            return setCell(getRow(y), getCol(x), v);
         }
         return ndv;
     }
@@ -1001,7 +1001,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         } else {
             Grids_ChunkBDSinglet c = (Grids_ChunkBDSinglet) chunk;
             if (c != null) {
-                if (v != c.v) {
+                if (v.compareTo(c.v) != 0) {
                     // Convert chunk to another type
                     chunk = convertToAnotherTypeOfChunk(chunk, c.getId());
                     r = chunk.setCell(ccr, ccc, v);
@@ -1011,7 +1011,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             }
         }
         // Update stats
-        if (v != r) {
+        if (v.compareTo(r) != 0) {
             if (stats.isUpdated()) {
                 updateStats(v, r);
             }
@@ -1051,7 +1051,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             ClassNotFoundException, Exception {
         if (chunk instanceof Grids_ChunkBDSinglet) {
             Grids_ChunkBDSinglet gc = (Grids_ChunkBDSinglet) chunk;
-            if (v != gc.v) {
+            if (v.compareTo(gc.v) != 0) {
                 chunk = convertToAnotherTypeOfChunk(chunk, i);
                 chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             } else {
@@ -1080,7 +1080,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 dStats.setNMin(1);
                 dStats.setMin(value);
             } else {
-                if (value == min) {
+                if (value.compareTo(min) == 0) {
                     dStats.setNMin(dStats.getNMin() + 1);
                 }
             }
@@ -1089,7 +1089,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 dStats.setNMax(1);
                 dStats.setMax(value);
             } else {
-                if (value == max) {
+                if (value.compareTo(max) == 0) {
                     dStats.setNMax(dStats.getNMax() + 1);
                 }
             }
@@ -1529,8 +1529,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                         colMax);
                 env.addToNotToClear(this, s);
                 env.checkAndMaybeFreeMemory();
-                Grids_ChunkBD chunk = (Grids_ChunkBD) g.getChunk(i, cr,
-                        cc);
+                Grids_ChunkBD chunk = (Grids_ChunkBD) g.getChunk(i, cr, cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     long row = gd.getRow(cr, ccr);
                     for (int ccc = 0; ccc < cnc; ccc++) {
@@ -1551,7 +1550,6 @@ public class Grids_GridBD extends Grids_GridNumber {
                                 }
                             }
                         }
-
                     }
                 }
                 env.removeFromNotToClear(gd, i);

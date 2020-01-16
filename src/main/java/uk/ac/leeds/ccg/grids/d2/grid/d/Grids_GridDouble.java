@@ -956,7 +956,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     public final double setCell(BigDecimal x, BigDecimal y, double v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
-            return setCell(getRow(x), getCol(y), v);
+            return setCell(getRow(y), getCol(x), v);
         }
         return noDataValue;
     }

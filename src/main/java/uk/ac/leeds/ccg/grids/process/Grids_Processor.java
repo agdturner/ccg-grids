@@ -161,7 +161,7 @@ public class Grids_Processor extends Grids_Object {
                 new Grids_ChunkFactoryDoubleArray(),
                 chunkNRows, chunkNCols);
         // BigDecimal
-        fs = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
+        fs = getStore(Paths.get(files.getGeneratedGridBigDecimalDir().toString()),
                 Grids_Strings.s_GridBigDecimal);
         gridFactoryBD = new Grids_GridFactoryBD(env, fs,
                 new Grids_ChunkFactoryBDSinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
@@ -1070,7 +1070,7 @@ public class Grids_Processor extends Grids_Object {
     /**
      * Multiply g0 and g1 and return a new grid.
      *
-     * @param type Determines the type of Grid returned. BigDecimal, double or 
+     * @param type Determines the type of Grid returned. BigDecimal, double or
      * int.
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to multiply
@@ -1093,7 +1093,7 @@ public class Grids_Processor extends Grids_Object {
         } else if (type instanceof Double) {
             r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         } else if (type instanceof Integer) {
-            r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+            r = gridFactoryInt.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         } else {
             throw new Exception("Unknown type!");
         }
@@ -1279,6 +1279,15 @@ public class Grids_Processor extends Grids_Object {
                             } else {
                                 r.setCell(x, y, v0.multiply(v1));
                             }
+//Debugging code
+//                            env.env.log("result so far");
+//                            env.env.log("x=" + x.toPlainString());
+//                            env.env.log("y=" + y.toPlainString());
+//                            env.env.log("row=" + row);
+//                            env.env.log("col=" + col);
+//                            env.env.log("v0=" + v0.toPlainString());
+//                            env.env.log("v1=" + v1.toPlainString());
+//                            r.log(10, 10);
                         }
                     }
                 }
