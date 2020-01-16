@@ -335,8 +335,11 @@ public class Grids_Utilities extends Grids_Object {
                         BigDecimal xBD = BigDecimal.valueOf(x);
                         temp1.addToCell(xBD, BigDecimal.valueOf(y), 1.0d);
                         int division = (int) temp1.getCol(xBD);
-                        if (division == divisions) {
+                        if (division >= divisions) {
                             division = divisions - 1;
+                        }
+                        if (division < 0) {
+                            division = 0;
                         }
                         //System.out.println(division);
                         BigDecimal yd = BigDecimal.valueOf(y);
