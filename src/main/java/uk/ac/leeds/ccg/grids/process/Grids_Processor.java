@@ -121,48 +121,32 @@ public class Grids_Processor extends Grids_Object {
     private void initFactoriesAndFileStores(int chunkNRows, int chunkNCols)
             throws Exception {
         // Boolean
-        String s = Grids_Strings.s_GridBoolean;
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
-        Generic_FileStore fs;
-        if (Files.exists(dir)) {
-            fs = new Generic_FileStore(dir);
-        } else {
-            fs = new Generic_FileStore(files.getGeneratedDir(), s);
-        }
+        Generic_FileStore fs = Generic_FileStore.getFileStore(dir);
         gridFactoryBoolean = new Grids_GridFactoryBoolean(env, fs,
                 new Grids_ChunkFactoryBoolean(), chunkNRows, chunkNCols);
         // Binary
-        s = Grids_Strings.s_GridBinary;
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
-        if (Files.exists(dir)) {
-            fs = new Generic_FileStore(dir);
-        } else {
-            fs = new Generic_FileStore(files.getGeneratedDir(), s);
-        }
+        fs = Generic_FileStore.getFileStore(dir);
         gridFactoryBinary = new Grids_GridFactoryBinary(env, fs,
                 new Grids_ChunkFactoryBinary(), chunkNRows, chunkNCols);
         // Int
-        s = Grids_Strings.s_GridInt;
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
-        if (Files.exists(dir)) {
-            fs = new Generic_FileStore(dir);
-        } else {
-            fs = new Generic_FileStore(files.getGeneratedDir(), s);
-        }
+        fs = Generic_FileStore.getFileStore(dir);
         gridFactoryInt = new Grids_GridFactoryInt(env, fs,
                 new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
                 new Grids_ChunkFactoryIntArray(),
                 chunkNRows, chunkNCols);
         // Double
-        fs = getStore(Paths.get(files.getGeneratedGridDoubleDir().toString()),
-                Grids_Strings.s_GridDouble);
+        dir = Paths.get(files.getGeneratedGridDoubleDir().toString());
+        fs = Generic_FileStore.getFileStore(dir);
         gridFactoryDouble = new Grids_GridFactoryDouble(env, fs,
                 new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
                 new Grids_ChunkFactoryDoubleArray(),
                 chunkNRows, chunkNCols);
         // BigDecimal
-        fs = getStore(Paths.get(files.getGeneratedGridBigDecimalDir().toString()),
-                Grids_Strings.s_GridBigDecimal);
+        dir = Paths.get(files.getGeneratedGridBigDecimalDir().toString());
+        fs = Generic_FileStore.getFileStore(dir);
         gridFactoryBD = new Grids_GridFactoryBD(env, fs,
                 new Grids_ChunkFactoryBDSinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
                 new Grids_ChunkFactoryBDArray(),
