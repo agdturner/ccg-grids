@@ -20,8 +20,8 @@ import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 
 /**
  * A simple wrapper for
- * {@link uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkBDArray} and
- * {@link uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkBDMap}.
+ * {@link uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDArray} and
+ * {@link uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDMap}.
  *
  * @author Andy Turner
  * @version 1.0.0

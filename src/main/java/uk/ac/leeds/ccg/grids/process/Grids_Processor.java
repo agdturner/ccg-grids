@@ -1321,7 +1321,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      * @throws ArithmeticException If the cellsize of {@code g} cannot be
-     * divided by {@code factor and stored exactly.
+     * divided by {@code factor} and stored exactly.
      * @throws Exception If encountered.
      */
     public Grids_GridDouble disaggregate(Grids_GridNumber g, int factor)

@@ -856,7 +856,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param r The grid cell row index for which the v is returned.
      * @param c The grid cell column index for which the v is returned
      * @return The v in the grid at grid cell row index {@code r}, grid cell
-     * column index {@code c} or {@link #noDataValue} if there is no such v.
+     * column index {@code c} or {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -877,7 +877,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param r The chunk cell row index of the v returned.
      * @param c The chunk cell column index of the v returned.
      * @return v in chunk at chunk cell row {@code r}, chunk cell col {@code c}
-     * or {@link #noDataValue} if there is no such v.
+     * or {@link #ndv} if there is no such v.
      */
     public BigDecimal getCell(Grids_ChunkBD chunk, int r, int c) {
         if (chunk.inChunk(r, c)) {
@@ -889,7 +889,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     /**
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @return The v at (x, y) or {@link #noDataValue} if there is no such v.
+     * @return The v at (x, y) or {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -900,7 +900,7 @@ public class Grids_GridBD extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The v of the cell with cell ID {@code i} or {@link #noDataValue}
+     * @return The v of the cell with cell ID {@code i} or {@link #ndv}
      * if there is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -917,7 +917,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param y The y-coordinate of the point.
      * @param v The v to set in the cell.
      * @return The v at x-coordinate {@code x}, y-coordinate {@code y} or
-     * {@link #noDataValue} if there is no such v.
+     * {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -939,7 +939,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param v The v to set at cell row index {@code r}, cell column index
      * {@code c}.
      * @return The v at cell row index {@code r}, cell column index {@code c} or
-     * {@link #noDataValue} if there is no such v.
+     * {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
