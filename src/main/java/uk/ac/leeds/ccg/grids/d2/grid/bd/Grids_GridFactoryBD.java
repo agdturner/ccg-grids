@@ -19,7 +19,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBD;
 import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;

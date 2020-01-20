@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryInt;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;

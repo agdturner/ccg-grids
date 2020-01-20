@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;

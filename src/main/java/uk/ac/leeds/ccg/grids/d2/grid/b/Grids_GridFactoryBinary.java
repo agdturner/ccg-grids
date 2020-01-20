@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.io.IOException;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;

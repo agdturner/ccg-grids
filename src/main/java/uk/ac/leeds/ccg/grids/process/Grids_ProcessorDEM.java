@@ -21,7 +21,7 @@ import java.util.Iterator;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;

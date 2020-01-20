@@ -32,7 +32,6 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.memory.Grids_Account;
 import uk.ac.leeds.ccg.grids.memory.Grids_AccountDetail;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
