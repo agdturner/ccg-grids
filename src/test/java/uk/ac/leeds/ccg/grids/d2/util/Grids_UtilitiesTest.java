@@ -16,7 +16,7 @@
 package uk.ac.leeds.ccg.grids.d2.util;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
