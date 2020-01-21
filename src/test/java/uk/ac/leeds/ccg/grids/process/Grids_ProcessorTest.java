@@ -48,7 +48,8 @@ import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 
 /**
  *
- * @author geoagdt
+ * @author Andy Turner, AITurner
+ * @version 1.0.0
  */
 public class Grids_ProcessorTest {
 
@@ -143,7 +144,7 @@ public class Grids_ProcessorTest {
         g.setCell(1, 3, 1.0d);
         //g.log(maxNrowsToPrint, maxNcolsToPrint);
         mask = (Grids_GridDouble) gfd.create(g);
-        mask.log(maxNrowsToPrint, maxNcolsToPrint);
+        //mask.log(maxNrowsToPrint, maxNcolsToPrint);
         gp.mask(g0, mask);
         //g0.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = mask.isSameDimensionsAndValues(g0);
@@ -895,9 +896,9 @@ public class Grids_ProcessorTest {
         //g0.setCell(1, 0, BigDecimal.valueOf(4.0d));
         g0.setCell(1, 1, BigDecimal.valueOf(2.0d));
         g0.setCell(1, 2, BigDecimal.valueOf(3.0d));
-        System.out.println("");
-        System.out.println("g0");
-        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g0");
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g1 = (Grids_GridBD) gf.create(4, 3);
         g1.setCell(0, 0, BigDecimal.valueOf(1.0d));
         g1.setCell(0, 1, BigDecimal.valueOf(4.0d)); 
@@ -911,9 +912,9 @@ public class Grids_ProcessorTest {
         g1.setCell(3, 0, BigDecimal.valueOf(1.0d));
         g1.setCell(3, 1, BigDecimal.valueOf(1.0d));
         g1.setCell(3, 2, BigDecimal.valueOf(2.0d));
-        System.out.println("");
-        System.out.println("g1");
-        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         er = (Grids_GridBD) gf.create(2, 3);
         er.setCell(0, 0, BigDecimal.valueOf(4.0d));
         er.setCell(0, 1, BigDecimal.valueOf(20.0d)); 
@@ -921,13 +922,13 @@ public class Grids_ProcessorTest {
         //er.setCell(1, 0, BigDecimal.valueOf(1.0d));
         er.setCell(1, 1, BigDecimal.valueOf(6.0d));
         er.setCell(1, 2, BigDecimal.valueOf(6.0d));
-        System.out.println("");
-        System.out.println("er");
-        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
         r = gp.multiply(type, g0, g1, dp, rm);
-        System.out.println("");
-        System.out.println("r");
-        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         // Test 4
@@ -1035,9 +1036,9 @@ public class Grids_ProcessorTest {
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         // Test 6
-        System.out.println("");
-        System.out.println("Test 6");
-        System.out.println("------");
+//        System.out.println("");
+//        System.out.println("Test 6");
+//        System.out.println("------");
         g0 = (Grids_GridBD) gf.create(4, 3);
         g0.setCell(0, 0, BigDecimal.valueOf(1.0d));
         g0.setCell(0, 1, BigDecimal.valueOf(4.0d)); 
@@ -1051,9 +1052,9 @@ public class Grids_ProcessorTest {
         g0.setCell(3, 0, BigDecimal.valueOf(1.0d));
         g0.setCell(3, 1, BigDecimal.valueOf(1.0d));
         g0.setCell(3, 2, BigDecimal.valueOf(2.0d));
-        System.out.println("");
-        System.out.println("g0");
-        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g0");
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g1 = (Grids_GridBD) gf.create(4, 3, new Grids_Dimensions(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
                 BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.ONE));
@@ -1063,9 +1064,9 @@ public class Grids_ProcessorTest {
         //g1.setCell(1, 0, BigDecimal.valueOf(4.0d));
         g1.setCell(1, 1, BigDecimal.valueOf(2.0d));
         g1.setCell(1, 2, BigDecimal.valueOf(3.0d)); 
-        System.out.println("");
-        System.out.println("g1");
-        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         er = (Grids_GridBD) gf.create(4, 3);
         //er.setCell(0, 0, BigDecimal.valueOf(4.0d));
         //er.setCell(0, 1, BigDecimal.valueOf(2.0d)); 
@@ -1079,19 +1080,19 @@ public class Grids_ProcessorTest {
         //er.setCell(3, 0, BigDecimal.valueOf(6.0d));
         er.setCell(3, 1, BigDecimal.valueOf(2.0d));
         er.setCell(3, 2, BigDecimal.valueOf(6.0d));
-        System.out.println("");
-        System.out.println("er");
-        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
         r = gp.multiply(type, g0, g1, dp, rm);
-        System.out.println("");
-        System.out.println("r");
-        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         // Test 7
-        System.out.println("");
-        System.out.println("Test 7");
-        System.out.println("------");
+//        System.out.println("");
+//        System.out.println("Test 7");
+//        System.out.println("------");
         g0 = (Grids_GridBD) gf.create(4, 3);
         g0.setCell(0, 0, BigDecimal.valueOf(1.0d));
         //g0.setCell(0, 1, BigDecimal.valueOf(4.0d)); 
@@ -1105,19 +1106,19 @@ public class Grids_ProcessorTest {
         //g0.setCell(3, 0, BigDecimal.valueOf(1.0d));
         g0.setCell(3, 1, BigDecimal.valueOf(2.0d));
         g0.setCell(3, 2, BigDecimal.valueOf(1.0d));
-        System.out.println("");
-        System.out.println("g0");
-        maxNrowsToPrint = 10;
-        maxNcolsToPrint = 10;
-        g0.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g0");
+//        maxNrowsToPrint = 10;
+//        maxNcolsToPrint = 10;
+//        g0.log(maxNrowsToPrint, maxNcolsToPrint);
         g1 = (Grids_GridBD) gf.create(2, 1, new Grids_Dimensions(
                 BigDecimal.valueOf(1), BigDecimal.valueOf(2), 
                 BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.ONE));
         g1.setCell(0, 0, BigDecimal.valueOf(6.0d));
         g1.setCell(1, 0, BigDecimal.valueOf(2.0d));
-        System.out.println("");
-        System.out.println("g1");
-        g1.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("g1");
+//        g1.log(maxNrowsToPrint, maxNcolsToPrint);
         er = (Grids_GridBD) gf.create(4, 3);
         //er.setCell(0, 0, BigDecimal.valueOf(4.0d));
         //er.setCell(0, 1, 2.0d); 
@@ -1131,13 +1132,13 @@ public class Grids_ProcessorTest {
         //er.setCell(3, 0, BigDecimal.valueOf(6.0d));
         //er.setCell(3, 1, 2.0d);
         //er.setCell(3, 2, BigDecimal.valueOf(6.0d));
-        System.out.println("");
-        System.out.println("er");
-        er.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("er");
+//        er.log(maxNrowsToPrint, maxNcolsToPrint);
         r = gp.multiply(type, g0, g1, dp, rm);
-        System.out.println("");
-        System.out.println("r");
-        r.log(maxNrowsToPrint, maxNcolsToPrint);
+//        System.out.println("");
+//        System.out.println("r");
+//        r.log(maxNrowsToPrint, maxNcolsToPrint);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);
         //Test for visual output grids
@@ -1446,13 +1447,9 @@ public class Grids_ProcessorTest {
         er.setCell(9, 9, BigDecimal.valueOf(100.0d));
         r = gp.multiply(type, g0, g1, dp, rm);
         r.log(maxNrowsToPrint, maxNcolsToPrint);
+        r.log(5, 5);
         equal = r.isSameDimensionsAndValues(er);
-        assertTrue(equal);
-        
-        
-        
-        
-        
+        assertTrue(equal);        
     }
 
 //
