@@ -2209,7 +2209,7 @@ public abstract class Grids_Grid extends Grids_Object {
             } while (x.compareTo(gXMin) == -1);
             if (x.compareTo(gXMin) != 0) {
                 return false;
-            }            
+            }
         } else if (xMin.compareTo(gXMin) == 1) {
             BigDecimal x = gXMin;
             BigDecimal cs = dim.getCellsize();
@@ -2218,7 +2218,7 @@ public abstract class Grids_Grid extends Grids_Object {
             } while (x.compareTo(xMin) == -1);
             if (x.compareTo(xMin) != 0) {
                 return false;
-            }     
+            }
         }
         BigDecimal gYMin = g.dim.getYMin();
         BigDecimal yMin = dim.getYMin();
@@ -2230,7 +2230,7 @@ public abstract class Grids_Grid extends Grids_Object {
             } while (y.compareTo(gYMin) == -1);
             if (y.compareTo(gYMin) != 0) {
                 return false;
-            }            
+            }
         } else if (yMin.compareTo(gYMin) == 1) {
             BigDecimal y = gYMin;
             BigDecimal cs = dim.getCellsize();
@@ -2239,7 +2239,7 @@ public abstract class Grids_Grid extends Grids_Object {
             } while (y.compareTo(yMin) == -1);
             if (y.compareTo(yMin) != 0) {
                 return false;
-            }     
+            }
         }
         return true;
     }
@@ -2320,7 +2320,7 @@ public abstract class Grids_Grid extends Grids_Object {
         return dim.getXMin().add(dim.getCellsize().multiply(
                 BigDecimal.valueOf(col))).add(dim.getHalfCellsize());
     }
-    
+
     /**
      * @return The x-coordinate of the centroid for cell with cell with ID
      * {@code i}.
@@ -2659,6 +2659,219 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public Path getPathThisFile(Generic_Path p) {
         return Paths.get(p.toString(), "grid.dat");
+    }
+
+    /**
+     * For printing out some or all of the values in row major order. There is
+     * no good memory handling for this yet. It is best if r and c are small. It
+     * might be good to develop a new version that allows for a set of
+     * rows/columns to include in the print out.
+     *
+     * @param r The number of rows to print.
+     * @param c The number of columns to print.
+     * @throws Exception If encountered.
+     */
+    public void log(long r, long c) throws Exception {
+        env.env.log("name=" + getName());
+        env.env.log(toString());
+        env.env.log("dimensions=" + dim.toString());
+        long nrows = getNRows();
+        long ncols = getNCols();
+        int cols = (int) Math.min(ncols, c);
+        //int rows = (int) Math.min(nrows, r);
+        //String dashes = getDashes((cols * 13) + 1);
+        String dashes = getDashes(ncols, cols);
+        env.env.log("  yMax       " + getColMarkers(ncols, cols));
+        env.env.log(getStringValue(dim.getYMax()) + "  " + dashes);
+        String bars = getBars(ncols, cols);
+        String barsAndDashes = getBarsAndDashes(ncols, cols);
+        env.env.log(bars);
+        if (nrows < r) {
+            // Print out the top rows
+            long row;
+            for (row = nrows - 1; row > 0; row--) {
+                logRow(ncols, c, row);
+                logBars(bars, barsAndDashes);
+            }
+            // Print out the bottom row.
+            row = 0;
+            logRow(ncols, c, row);
+            env.env.log(bars);
+        } else {
+            // Print out the top row
+            long row = nrows - 1;
+            logRow(ncols, c, row);
+            env.env.log(bars);
+            // Print a break
+            env.env.log(barsAndDashes);
+            env.env.log("");
+            env.env.log(bars);
+            env.env.log("");
+            env.env.log(barsAndDashes);
+            env.env.log(bars);
+            // Print out the bottom
+            for (row = r - 2; row > 0; row--) {
+                logRow(ncols, c, row);
+                logBars(bars, barsAndDashes);
+            }
+            logRow(ncols, c, row);
+            env.env.log(bars);
+        }
+        env.env.log(getStringValue(dim.getYMin()) + "  " + dashes);
+        env.env.log("  Ymin " + getStringValue(dim.getXMin()) + getSpaces((cols * 13) - 5) + getStringValue(dim.getXMax()));
+        env.env.log("          Xmin" + getSpaces(cols * 13) + "Xmax");
+    }
+
+    /**
+     * Used to help log a view of the grid.
+     *
+     * @param bars Spacers to make a cell appear more cell like.
+     * @param barsAndDashes Dividers that divide between rows of the grid.
+     */
+    protected void logBars(String bars, String barsAndDashes) {
+        env.env.log(bars);
+        env.env.log(barsAndDashes);
+        env.env.log(bars);
+    }
+
+    /**
+     * @param ncols The number of columns in the grid.
+     * @param cols The number of columns that to be printed out.
+     * @return A String for a gap to make the cells in the grid printed out to
+     * appear more cell like.
+     */
+    public String getBars(long ncols, int cols) {
+        String s = getSpaces(12);
+        String r = s + "|";
+        if (ncols < cols) {
+            for (int i = 0; i < cols; i++) {
+                r += s + "|";
+            }
+        } else {
+            for (int i = 0; i < cols - 1; i++) {
+                r += s + "|";
+            }
+            r += "   |" + s + "|";
+        }
+        return r;
+    }
+
+    /**
+     * @param ncols The number of columns in the grid.
+     * @param cols The number of columns that to be printed out.
+     * @return A String to represent a break between two rows of the grid.
+     */
+    public String getBarsAndDashes(long ncols, int cols) {
+        String s = getSpaces(12);
+        String d = getDashes2(12);
+        String r = s + "|";
+        if (ncols < cols) {
+            for (int i = 0; i < cols; i++) {
+                r += d + "|";
+            }
+        } else {
+            for (int i = 0; i < cols - 1; i++) {
+                r += d + "|";
+            }
+            r += " - |" + d + "|";
+        }
+        return r;
+    }
+
+    /**
+     * @param ncols The number of columns in the grid.
+     * @param cols The number of columns that to be printed out.
+     * @return A string for indicating the columns of the grid.
+     */
+    protected String getColMarkers(long ncols, int cols) {
+        String s = "";
+        if (ncols < cols) {
+            for (int i = 0; i < cols; i++) {
+                s += " " + getStringValue(BigDecimal.valueOf(i)) + "  ";
+            }
+        } else {
+            for (int i = 0; i < cols - 1; i++) {
+                s += " " + getStringValue(BigDecimal.valueOf(i)) + "  ";
+            }
+            s += "    " + getStringValue(BigDecimal.valueOf(ncols - 1L)) + "  ";
+        }
+        return s;
+    }
+
+    /**
+     * @param ncols The number of columns in the grid.
+     * @param cols The number of columns to be printed out.
+     * @return A string for representing the top and bottom edge of the grid.
+     */
+    public String getDashes(long ncols, int cols) {
+        String r = "";
+        if (ncols < cols) {
+            int n = (cols * 13) + 1;
+            return getDashes2(n);
+        } else {
+            int n = ((cols - 1) * 13) + 1;
+            r += getDashes2(n);
+            r += " - ";
+            r += getDashes2(14);
+        }
+        return r;
+    }
+
+    /**
+     * @param n The number of dashes in the result.
+     * @return A String with {@code n) dashes "-"
+     */
+    public String getDashes2(int n) {
+        String r = "";
+        for (int i = 0; i < n; i++) {
+            r += "-";
+        }
+        return r;
+    }
+
+    /**
+     * Used to help log a view of the grid.
+     *
+     * @param ncols The number of columns in the grid.
+     * @param c The number of columns to be printed out.
+     * @param row The row of the grid to be logged.
+     * @throws java.lang.Exception If encountered.
+     */
+    protected abstract void logRow(long ncols, long c, long row) throws Exception;
+
+    /**
+     * Used to help log a view of the grid. This aims to present numerical
+     * values in 10 characters which may involve rounding. If the number has
+     * fewer than 10 characters it is padded with spaces. The returned String is
+     * always of length 10.
+     *
+     * @param v The value to return as a String.
+     * @return {@code v} as a string rounded if necessary using
+     * {@code RoundingMode.HALF_UP}.
+     */
+    public String getStringValue(BigDecimal v) {
+        String r = v.toEngineeringString();
+        if (r.length() > 10) {
+            BigDecimal v2 = v.setScale(v.scale() - (v.precision() - 3),
+                    RoundingMode.HALF_UP);
+            r = v2.toEngineeringString();
+        }
+        while (r.length() < 9) {
+            r = " " + r + " ";
+        }
+        if (r.length() < 10) {
+            r = " " + r;
+        }
+        //System.out.println(r.length());
+        return r;
+    }
+
+    public String getSpaces(int n) {
+        String r = "";
+        for (int i = 0; i < n; i++) {
+            r += " ";
+        }
+        return r;
     }
 
     /**

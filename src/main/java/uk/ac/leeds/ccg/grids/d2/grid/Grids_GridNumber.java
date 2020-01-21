@@ -337,184 +337,45 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     }
 
     /**
-     * For writing out some or all of the values in row major order. There is no
-     * good memory handling for this yet. It is best if r and c are small.
+     * Used to help log a view of the grid.
      *
-     * @param r The number of rows to print.
-     * @param c The number of columns to print.
+     * @param ncols The number of columns in the grid.
+     * @param c The number of columns to write out.
+     * @param row The row of the grid to write out.
      * @throws Exception If encountered.
      */
-    public void log(long r, long c) throws Exception {
-        env.env.log("name=" + getName());
-        env.env.log(toString());
-        env.env.log("dimensions=" + dim.toString());
-        long nrows = getNRows();
-        long ncols = getNCols();
-        int cols = (int) Math.min(ncols, c);
-        int rows = (int) Math.min(nrows, r);
-        //String dashes = getDashes((cols * 13) + 1);
-        String dashes = getDashes(ncols, cols);
-        env.env.log("  yMax       " + getColMarkers(ncols, cols));
-        env.env.log(getFormattedNumber(dim.getYMax()) + "  " + dashes);
-        String bars = getBars(ncols, cols);
-        String barsAndDashes = getBarsAndDashes(ncols, cols);
-        env.env.log(bars);
-        if (nrows < r) {
-            long row;
-            for (row = nrows - 1; row > 0; row--) {
-                logRow(ncols, c, row);
-                logBars(bars, barsAndDashes);
-            }
-            row = 0;
-            logRow(ncols, c, row);
-            env.env.log(bars);
-        } else {
-            long row = nrows - 1;
-            logRow(ncols, c, row);
-            env.env.log(bars);
-            env.env.log(barsAndDashes);            
-            env.env.log("");
-            env.env.log(bars);
-            env.env.log("");
-            env.env.log(barsAndDashes);
-            env.env.log(bars);
-            for (row = r - 2; row > 0; row--) {
-                logRow(ncols, c, row);
-                logBars(bars, barsAndDashes);
-            }
-            logRow(ncols, c, row);
-            env.env.log(bars);
-        }
-        env.env.log(getFormattedNumber(dim.getYMin()) + "  " + dashes);
-        env.env.log("  Ymin " + getFormattedNumber(dim.getXMin())
-                + getSpaces((cols * 13) - 5) + getFormattedNumber(dim.getXMax()));
-        env.env.log("          Xmin" + getSpaces(cols * 13) + "Xmax");
-    }
-
+    @Override
     protected void logRow(long ncols, long c, long row) throws Exception {
-        String s = " " + getFormattedNumber(BigDecimal.valueOf(row)) + " | ";
+        String s = " " + getStringValue(BigDecimal.valueOf(row)) + " | ";
         if (ncols < c) {
             long col;
             for (col = 0; col < ncols - 1; col++) {
-                s += getFormattedNumber(getCellBigDecimal(row, col), ndv) + " | ";
+                s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
             }
-            s += getFormattedNumber(getCellBigDecimal(row, col), ndv) + " | ";
+            s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
             env.env.log(s);
         } else {
             for (long col = 0; col < c - 1; col++) {
-                s += getFormattedNumber(getCellBigDecimal(row, col), ndv) + " | ";
+                s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
             }
             s += "  |";
-            s += " " + getFormattedNumber(getCellBigDecimal(row, ncols - 1), ndv) + " |";
+            s += " " + getStringValue(getCellBigDecimal(row, ncols - 1), ndv) + " |";
             env.env.log(s);
         }
     }
 
-    protected String getColMarkers(long ncols, int cols) {
-        String s = "";
-        if (ncols < cols) {
-            for (int i = 0; i < cols; i++) {
-                s += " " + getFormattedNumber(BigDecimal.valueOf(i)) + "  ";
-            }
-        } else {
-            for (int i = 0; i < cols - 1; i++) {
-                s += " " + getFormattedNumber(BigDecimal.valueOf(i)) + "  ";
-            }
-            s += "    " + getFormattedNumber(BigDecimal.valueOf(ncols - 1L)) + "  ";
-        }
-        return s;
-    }
-
-    protected void logBars(String bars, String barsAndDashes) {
-        env.env.log(bars);
-        env.env.log(barsAndDashes);
-        env.env.log(bars);
-    }
-
-    public String getFormattedNumber(BigDecimal v, BigDecimal ndv) {
+        /**
+     * Used to help log a view of the grid.
+     *
+     * @param v The value to represent as a String.
+     * @param ndv The no data value.
+     * @return a String representation of {@code v}.
+     */
+    public String getStringValue(BigDecimal v, BigDecimal ndv) {
         if (v.compareTo(ndv) == 0) {
             return "     *    ";
         }
-        return getFormattedNumber(v);
+        return getStringValue(v);
     }
 
-    public String getFormattedNumber(BigDecimal v) {
-        String r = v.toEngineeringString();
-        if (r.length() > 10) {
-            BigDecimal v2 = v.setScale(v.scale() - (v.precision() - 3),
-                    RoundingMode.HALF_UP);
-            r = v2.toEngineeringString();
-        }
-        while (r.length() < 9) {
-            r = " " + r + " ";
-        }
-        if (r.length() < 10) {
-            r = " " + r;
-        }
-        //System.out.println(r.length());
-        return r;
-    }
-
-    public String getSpaces(int n) {
-        String r = "";
-        for (int i = 0; i < n; i++) {
-            r += " ";
-        }
-        return r;
-    }
-
-    public String getDashes(long ncols, int cols) {
-        String r = "";
-        if (ncols < cols) {
-            int n = (cols * 13) + 1;
-            return getDashes2(n);
-        } else {
-            int n = ((cols - 1) * 13) + 1;
-            r += getDashes2(n);
-            r += " - ";
-            r += getDashes2(14);
-        }
-        return r;
-    }
-    
-    public String getDashes2(int n) {
-        String r = "";
-            for (int i = 0; i < n; i++) {
-                r += "-";
-            }
-        return r;
-    }
-
-    public String getBars(long ncols, int n) {
-        String s = getSpaces(12);
-        String r = s + "|";
-        if (ncols < n) {
-            for (int i = 0; i < n; i++) {
-                r += s + "|";
-            }
-        } else {
-            for (int i = 0; i < n - 1; i++) {
-                r += s + "|";
-            }
-            r += "   |" + s + "|";;
-        }
-        return r;
-    }
-
-    public String getBarsAndDashes(long ncols, int n) {
-        String s = getSpaces(12);
-        String d = getDashes2(12);
-        String r = s + "|";
-        if (ncols < n) {
-            for (int i = 0; i < n; i++) {
-                r += d + "|";
-            }
-        } else {
-            for (int i = 0; i < n - 1; i++) {
-                r += d + "|";
-            }
-            r += " - |" + d + "|";
-        }
-        return r;
-    }
 }

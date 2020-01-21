@@ -49,7 +49,7 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_GridBinary extends Grids_Grid {
+public class Grids_GridBinary extends Grids_GridB {
 
     private static final long serialVersionUID = 1L;
 
@@ -886,5 +886,46 @@ public class Grids_GridBinary extends Grids_Grid {
             }
         }
         return true;
+    }
+
+    /**
+     * Used to help log a view of the grid.
+     *
+     * @param ncols The number of columns in the grid.
+     * @param c The number of columns to write out.
+     * @param row The row of the grid to write out.
+     * @throws Exception If encountered.
+     */
+    @Override
+    protected void logRow(long ncols, long c, long row) throws Exception {
+        String s = " " + getStringValue(BigDecimal.valueOf(row)) + " | ";
+        if (ncols < c) {
+            long col;
+            for (col = 0; col < ncols - 1; col++) {
+                s += getStringValue(getCell(row, col)) + " | ";
+            }
+            s += getStringValue(getCell(row, col)) + " | ";
+            env.env.log(s);
+        } else {
+            for (long col = 0; col < c - 1; col++) {
+                s += getStringValue(getCell(row, col)) + " | ";
+            }
+            s += "  |";
+            s += " " + getStringValue(getCell(row, ncols - 1)) + " |";
+            env.env.log(s);
+        }
+    }
+
+    /**
+     * Used to help log a view of the grid.
+     *
+     * @param v The value to represent as a String.
+     * @return a String representation of {@code v}.
+     */
+    public String getStringValue(boolean v) {
+        if (v) {
+            return "   true   ";
+        }
+        return "   false  ";
     }
 }
