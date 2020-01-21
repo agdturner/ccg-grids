@@ -1448,6 +1448,7 @@ public class Grids_ProcessorTest {
         r = gp.multiply(type, g0, g1, dp, rm);
         r.log(maxNrowsToPrint, maxNcolsToPrint);
         r.log(5, 5);
+        r.log(8, 5);
         equal = r.isSameDimensionsAndValues(er);
         assertTrue(equal);        
     }
