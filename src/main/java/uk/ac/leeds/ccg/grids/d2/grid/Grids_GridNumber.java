@@ -388,7 +388,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
         env.env.log(getFormattedNumber(dim.getYMin()) + "  " + dashes);
         env.env.log("  Ymin " + getFormattedNumber(dim.getXMin())
                 + getSpaces((cols * 13) - 5) + getFormattedNumber(dim.getXMax()));
-        env.env.log("          Xmin" + getSpaces((cols * 12) + 11) + "Xmax");
+        env.env.log("          Xmin" + getSpaces(cols * 13) + "Xmax");
     }
 
     protected void logRow(long ncols, long c, long row) throws Exception {
@@ -469,10 +469,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
             int n = (cols * 13) + 1;
             return getDashes2(n);
         } else {
-            int n = (cols * 12) - 2;
+            int n = ((cols - 1) * 13) + 1;
             r += getDashes2(n);
             r += " - ";
-            r += getDashes2(cols + 4);
+            r += getDashes2(14);
         }
         return r;
     }
