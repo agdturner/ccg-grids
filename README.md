@@ -82,7 +82,7 @@ There are no third party dependencies except for those used in testing.
 Please see the pom.xml for details.
 
 ## Contributions and collaboration
-Currently there is no community of users or community development of this library. Other than the developer there are no known users. It is unclear whether attempting to develop a user community and sustaining the development of the library over the long-term is a good idea, but this is something the developer is contemplating as part of their work at the University of Leeds. It may be that a more sensible way forwards is to find an open source development community that would benefit from features of this library and somehow integrate. In the mean time, if you find this software interesting or useful and you are interested in collaborating, then please contact the developer and together we can consider options.
+Contributors welcome, please contact the developer and we can plan this together.
 
 ## Acknowledgements
 The development of this library has been supported by numerous academic research grants and the University of Leeds. 
