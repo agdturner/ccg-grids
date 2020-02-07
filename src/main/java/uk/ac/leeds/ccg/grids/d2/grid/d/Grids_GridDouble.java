@@ -572,7 +572,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         // Set to report every 10%
         int reportN;
         Grids_Processor gp = env.getProcessor();
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
