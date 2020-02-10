@@ -16,34 +16,43 @@
 package uk.ac.leeds.ccg.grids.d2.chunk.b;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkFactory;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
 
 /**
- * A factory for constructing Grids_AbstractGridChunkDouble instances.
-*
+ * A factory for constructing Grids_ChunkBD instances.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkFactoryBoolean extends Grids_ChunkFactory {
+public class Grids_ChunkFactoryBooleanSinglet extends Grids_ChunkFactoryBoolean {
 
     private static final long serialVersionUID = 1L;
 
-    public Grids_ChunkFactoryBoolean() {
+    Boolean defaultValue;
+
+    /**
+     * Creates a new Grids_ChunkFactoryBDSinglet.
+     */
+    protected Grids_ChunkFactoryBooleanSinglet() {
     }
 
-    public abstract Grids_ChunkBoolean create(Grids_GridBoolean grid,
-            Grids_2D_ID_int chunkID);
-//    public Grids_ChunkBooleanArray create(Grids_GridBoolean grid,
-//            Grids_2D_ID_int chunkID) {
-//        return new Grids_ChunkBooleanArray(grid, chunkID);
-//    }
+    /**
+     * Creates a new Grids_ChunkFactoryBDSinglet.
+     *
+     * @param dv What {@link #defaultValue} is set to.
+     */
+    public Grids_ChunkFactoryBooleanSinglet(Boolean dv) {
+        defaultValue = dv;
+    }
 
-    public abstract Grids_ChunkBoolean create(Grids_ChunkBoolean grid,
-            Grids_2D_ID_int chunkID);
-//    public Grids_ChunkBooleanArray create(Grids_ChunkBoolean chunk,
-//            Grids_2D_ID_int chunkID) {
-//        return new Grids_ChunkBooleanArray(chunk.getGrid(), chunkID);
-//    }
+    @Override
+    public Grids_ChunkBooleanSinglet create(Grids_GridBoolean g, Grids_2D_ID_int i) {
+        return new Grids_ChunkBooleanSinglet(g, i, defaultValue);
+    }
+
+    @Override
+    public Grids_ChunkBooleanSinglet create(Grids_ChunkBoolean c, Grids_2D_ID_int i) {
+        return new Grids_ChunkBooleanSinglet(c.getGrid(), i, defaultValue);
+    }
 
 }

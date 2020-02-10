@@ -39,7 +39,11 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBoolean;
+import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
@@ -205,7 +209,7 @@ public class Grids_GridBoolean extends Grids_GridB {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(r, c);
-                Grids_ChunkBooleanArray chunk = cf.create(this, chunkID);
+                Grids_ChunkBoolean chunk = cf.create(this, chunkID);
                 data.put(chunkID, chunk);
             }
             env.env.log("Done chunkRow " + r + " out of " + nChunkRows);
@@ -360,7 +364,7 @@ public class Grids_GridBoolean extends Grids_GridB {
                             Grids_2D_ID_int i = new Grids_2D_ID_int(
                                     chunkRow, chunkCol);
                             //ge.addToNotToClear(this, chunkID);
-                            Grids_ChunkBooleanArray chunk;
+                            Grids_ChunkBoolean chunk;
                             if (!data.containsKey(i)) {
                                 chunk = cf.create(this, i);
                                 data.put(i, chunk);
@@ -424,8 +428,75 @@ public class Grids_GridBoolean extends Grids_GridB {
                 this.stats.grid = this;
             }
         } else {
-            throw new IOException(gridFile.toString() + " is not a directory.");
+            // Assume ESRI AsciiFile
+            name = fs.getBaseDir().getFileName().toString() + fsID;
+            data = new TreeMap<>();
+            worthSwapping = new HashSet<>();
+            this.stats = stats;
+            this.stats.setGrid(this);
+            String filename = gridFile.getFileName().toString();
+            BigDecimal value;
+            if (filename.endsWith("asc") || filename.endsWith("txt")) {
+                Grids_ESRIAsciiGridImporter eagi;
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Header header = eagi.getHeader();
+                //long inputNcols = ( Long ) header[ 0 ];
+                //long inputNrows = ( Long ) header[ 1 ];
+                nCols = header.ncols;
+                nRows = header.nrows;
+                chunkNRows = gp.gridFactoryBoolean.getChunkNRows();
+                chunkNCols = gp.gridFactoryBoolean.getChunkNCols();
+                initNChunkRows();
+                initNChunkCols();
+                initDimensions(header, 0, 0);
+                reportN = (int) (nRows - 1) / 10;
+                if (reportN == 0) {
+                    reportN = 1;
+                }
+                BigDecimal gridFileNoDataValue = header.ndv;
+                // Read Data into Chunks. This starts with the last row and ends with the first.
+                if (stats.isUpdated()) {
+                    for (long row = (nRows - 1); row > -1; row--) {
+                        env.checkAndMaybeFreeMemory();
+                        env.initNotToClear();
+                        for (long col = 0; col < nCols; col++) {
+                            value = eagi.readBigDecimal();
+                            if (value != gridFileNoDataValue) {
+                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                    initCell(row, col, false, false);
+                                } else {
+                                    initCell(row, col, true, false);
+                                }
+                            }
+                        }
+                        if (row % reportN == 0) {
+                            env.env.log("Done row " + row);
+                        }
+                        env.checkAndMaybeFreeMemory();
+                    }
+                } else {
+                    for (long row = (nRows - 1); row > -1; row--) {
+                        env.checkAndMaybeFreeMemory();
+                        env.initNotToClear();
+                        for (long col = 0; col < nCols; col++) {
+                            value = eagi.readBigDecimal();
+                            if (value != gridFileNoDataValue) {
+                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                    initCell(row, col, false, true);
+                                } else {
+                                    initCell(row, col, true, true);
+                                }
+                            }
+                        }
+                        if (row % reportN == 0) {
+                            env.env.log("Done row " + row);
+                        }
+                        env.checkAndMaybeFreeMemory();
+                    }
+                }
+            }
         }
+        init();
     }
 
     /**
@@ -519,7 +590,8 @@ public class Grids_GridBoolean extends Grids_GridB {
             throws IOException, Exception, ClassNotFoundException {
         if (!(newValue == null && oldValue == null)) {
             if (stats.getClass() == Grids_StatsBoolean.class) {
-                if (newValue == false) {
+                if (newValue
+                        == false) {
                     if (oldValue == false) {
                         stats.setN(stats.getN().subtract(BigInteger.ONE));
                     }
@@ -693,7 +765,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkBooleanArray chunk, long r, long c,
+    protected void initCell(Grids_ChunkBoolean chunk, long r, long c,
             Boolean value) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), value);
         if (value != null) {
@@ -900,7 +972,7 @@ public class Grids_GridBoolean extends Grids_GridB {
                             if (gv == null) {
                                 return false;
                             } else {
-                                if (v != gv) {
+                                if (!Objects.equals(v, gv)) {
                                     return false;
                                 }
                             }

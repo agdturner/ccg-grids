@@ -39,6 +39,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
@@ -205,7 +206,7 @@ public class Grids_GridBinary extends Grids_GridB {
                 env.checkAndMaybeFreeMemory();
                 // Try to load chunk.
                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(r, c);
-                Grids_ChunkBinaryArray chunk = cf.create(this, chunkID);
+                Grids_ChunkBinary chunk = cf.create(this, chunkID);
                 data.put(chunkID, chunk);
             }
             env.env.log("Done chunkRow " + r + " out of " + nChunkRows);
@@ -337,7 +338,7 @@ public class Grids_GridBinary extends Grids_GridB {
                             Grids_2D_ID_int chunkID = new Grids_2D_ID_int(
                                     chunkRow, chunkCol);
                             //ge.addToNotToClear(this, chunkID);
-                            Grids_ChunkBinaryArray chunk;
+                            Grids_ChunkBinary chunk;
                             if (!data.containsKey(chunkID)) {
                                 chunk = cf.create(this, chunkID);
                                 data.put(chunkID, chunk);
@@ -675,7 +676,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkBinaryArray chunk, long r, long c,
+    protected void initCell(Grids_ChunkBinary chunk, long r, long c,
             boolean v) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), v);
         if (v) {

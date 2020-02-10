@@ -591,17 +591,13 @@ public class Grids_GridBD extends Grids_GridNumber {
                     reportN = 1;
                 }
                 BigDecimal gridFileNoDataValue = header.ndv;
-                Grids_ChunkBD chunk;
-                Grids_ChunkBDSinglet gridChunk;
-                long row;
-                long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (gridFileNoDataValue.compareTo(ndv)== 0) {
                     if (stats.isUpdated()) {
-                        for (row = (nRows - 1); row > -1; row--) {
+                        for (long row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
-                            for (col = 0; col < nCols; col++) {
+                            for (long col = 0; col < nCols; col++) {
                                 value = eagi.readBigDecimal();
                                 initCell(row, col, value, false);
                             }
@@ -611,10 +607,10 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                         }
                     } else {
-                        for (row = (nRows - 1); row > -1; row--) {
+                        for (long row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
-                            for (col = 0; col < nCols; col++) {
+                            for (long col = 0; col < nCols; col++) {
                                 value = eagi.readBigDecimal();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;
@@ -629,10 +625,10 @@ public class Grids_GridBD extends Grids_GridNumber {
                     }
                 } else {
                     if (stats.isUpdated()) {
-                        for (row = (nRows - 1); row > -1; row--) {
+                        for (long row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
-                            for (col = 0; col < nCols; col++) {
+                            for (long col = 0; col < nCols; col++) {
                                 value = eagi.readBigDecimal();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;
@@ -645,10 +641,10 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                         }
                     } else {
-                        for (row = (nRows - 1); row > -1; row--) {
+                        for (long row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
-                            for (col = 0; col < nCols; col++) {
+                            for (long col = 0; col < nCols; col++) {
                                 value = eagi.readBigDecimal();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;

@@ -38,10 +38,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntArray;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.grids.core.Grids_Strings;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBoolean;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBinary;
@@ -50,6 +47,8 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinaryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
@@ -124,12 +123,12 @@ public class Grids_Processor extends Grids_Object {
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
         Generic_FileStore fs = Generic_FileStore.getFileStore(dir);
         gridFactoryBoolean = new Grids_GridFactoryBoolean(env, fs,
-                new Grids_ChunkFactoryBoolean(), chunkNRows, chunkNCols);
+                new Grids_ChunkFactoryBooleanArray(), chunkNRows, chunkNCols);
         // Binary
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
         fs = Generic_FileStore.getFileStore(dir);
         gridFactoryBinary = new Grids_GridFactoryBinary(env, fs,
-                new Grids_ChunkFactoryBinary(), chunkNRows, chunkNCols);
+                new Grids_ChunkFactoryBinaryArray(), chunkNRows, chunkNCols);
         // Int
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
         fs = Generic_FileStore.getFileStore(dir);

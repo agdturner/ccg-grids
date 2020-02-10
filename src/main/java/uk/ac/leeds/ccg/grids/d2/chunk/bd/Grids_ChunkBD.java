@@ -26,8 +26,8 @@ import java.util.Arrays;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
- * For chunks that represent values at cell locations that are {@code double}
- * type numbers.
+ * For chunks that represent values at cell locations that are
+ * {@code BigDecimal} type numbers.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -150,8 +150,8 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
                 BigDecimal v = getCell(row, col);
-                    if (v.compareTo(g.ndv) != 0) {
-                        n++;
+                if (v.compareTo(g.ndv) != 0) {
+                    n++;
                 }
             }
         }
@@ -170,8 +170,8 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
                 BigDecimal v = getCell(row, col);
-                    if (v.compareTo(g.ndv) != 0) {
-                        sum = sum.add(v);
+                if (v.compareTo(g.ndv) != 0) {
+                    sum = sum.add(v);
                 }
             }
         }
@@ -286,7 +286,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         BigDecimal thisValue;
         for (int p = 0; p < nrows; p++) {
             for (int q = 0; q < ncols; q++) {
-               BigDecimal v = getCell(p, q);
+                BigDecimal v = getCell(p, q);
                 if (v.compareTo(ndv) != 0) {
                     modeCount = 0L;
                     for (int row = 0; row < nrows; row++) {

@@ -25,6 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanSinglet;
 
 /**
  * A factory for constructing
@@ -40,6 +41,11 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     public Grids_ChunkFactoryBoolean factory;
 
     public Grids_StatsBoolean stats;
+    
+    public Grids_ChunkFactoryBooleanSinglet gridChunkBooleanFactory;
+//    public Grids_GridChunkBooleanMapFactory ChunkBooleanMapFactory;
+//    public Grids_GridChunkBooleanArrayFactory ChunkBooleanArrayFactory;
+    public Grids_ChunkFactoryBoolean defaultGridChunkBooleanFactory;
 
     /**
      * {@link #dim} is set to {@code null}. {@link #stats} is set to
@@ -136,7 +142,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), g,
-                new Grids_ChunkFactoryBoolean(), startRow, startCol, endRow,
+                defaultGridChunkBooleanFactory, startRow, startCol, endRow,
                 endCol);
     }
 
@@ -198,7 +204,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), gridFile,
-                new Grids_ChunkFactoryBoolean(), startRow, startCol, endRow,
+                defaultGridChunkBooleanFactory, startRow, startCol, endRow,
                 endCol);
     }
 
@@ -260,4 +266,15 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             return new Grids_StatsBoolean(env);
         }
     }
+    
+    /**
+     * For setting {@link #defaultGridChunkBDFactory}.
+     *
+     * @param cf What {@link #defaultGridChunkBDFactory} is set to.
+     */
+    public void setDefaultChunkFactory(Grids_ChunkFactoryBoolean cf) {
+        defaultGridChunkBooleanFactory = cf;
+    }
+
+    
 }

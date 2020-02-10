@@ -25,6 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBinary;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinarySinglet;
 
 /**
  * A factory for constructing
@@ -41,6 +42,11 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
 
     public Grids_StatsBinary Stats;
 
+    public Grids_ChunkFactoryBinarySinglet gridChunkBinaryFactory;
+//    public Grids_GridChunkBinaryMapFactory ChunkBinaryMapFactory;
+//    public Grids_GridChunkBinaryArrayFactory ChunkBinaryArrayFactory;
+    public Grids_ChunkFactoryBinary defaultGridChunkBinaryFactory;
+    
     /**
      * {@link #dim} is set to {@code null}. {@link #Stats} is set to
      * {@code new Grids_StatsNotUpdatedBinary(e)}.
@@ -138,7 +144,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBinary(env), g,
-                new Grids_ChunkFactoryBinary(), startRow, startCol, endRow,
+                defaultGridChunkBinaryFactory, startRow, startCol, endRow,
                 endCol);
     }
 
@@ -199,7 +205,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBinary r = create(new Grids_StatsNotUpdatedBinary(env),
-                gridFile, new Grids_ChunkFactoryBinary(), startRow, startCol,
+                gridFile, defaultGridChunkBinaryFactory, startRow, startCol,
                 endRow, endCol);
         store.addDir();
         return r;

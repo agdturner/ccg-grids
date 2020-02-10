@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.chunk.b;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBinary;
-import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 
 /**
  * Stores the data in a {@code boolean[][]}.
@@ -25,17 +24,48 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBinaryArray extends Grids_Chunk {
+public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
     boolean[][] data;
 
     public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int i) {
-        super(g, i, true);
+        super(g, i);
         initData();
     }
 
+//    /**
+//     * Creates a new Grids_GridChunkBinaryArray for g containing all no data
+//     * values.
+//     *
+//     * @param g The Grids_GridBinary this is to be a chunk of.
+//     * @param i The ID to be id.
+//     */
+//    protected Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int i) {
+//        super(g, i);
+//        data = new boolean[chunkNRows][chunkNCols];
+//        for (int row = 0; row < chunkNRows; row++) {
+//            Arrays.fill(data[row], true);
+//        }
+//        cacheUpToDate = false;
+//    }
+
+    /**
+     * @param c The chunk that's values will be duplicated.
+     * @param i The chunkID.
+     */
+    protected Grids_ChunkBinaryArray(Grids_ChunkBinary c, Grids_2D_ID_int i) {
+        super(c.getGrid(), i);
+        initData();
+        for (int row = 0; row < chunkNRows; row++) {
+            for (int col = 0; col < chunkNCols; col++) {
+                data[row][col] = c.getCell(row, col);
+            }
+        }
+        cacheUpToDate = false;
+    }
+    
     @Override
     protected final void initData() {
         Grids_GridBinary g = getGrid();
@@ -45,20 +75,13 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
     }
 
     /**
-     * @return (Grids_GridBinary) grid;
-     */
-    @Override
-    public Grids_GridBinary getGrid() {
-        return (Grids_GridBinary) grid;
-    }
-
-    /**
      * Returns the value at {@code row}, {@code col}.
      *
      * @param row The row of the cell w.r.t. the origin of this chunk.
      * @param col The column of the cell w.r.t. the origin of this chunk.
      * @return The value at {@code row}, {@code col}.
      */
+    @Override
     public boolean getCell(int row, int col) {
         return this.data[row][col];
     }
@@ -73,6 +96,7 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
      * @return The value at {@code row}, {@code col} before it is set to
      * {@code v}.
      */
+    @Override
     public boolean setCell(int row, int col, boolean v) {
         boolean v0 = this.data[row][col];
         this.data[row][col] = v;
@@ -91,7 +115,8 @@ public class Grids_ChunkBinaryArray extends Grids_Chunk {
      * @param col The column of the cell w.r.t. the origin of this chunk.
      * @param v The value to initialise.
      */
-    public void initCell(int row, int col, Boolean v) {
+    @Override
+    public void initCell(int row, int col, boolean v) {
         this.data[row][col] = v;
     }
 

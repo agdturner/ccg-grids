@@ -16,19 +16,19 @@
 package uk.ac.leeds.ccg.grids.d2.chunk.b;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
+import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBinary;
 
 /**
- * Grids_ChunkBooleanArrayOrMap
+ * Grids_ChunkBinaryArrayOrMap
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkBooleanArrayOrMap extends Grids_ChunkBoolean {
+public abstract class Grids_ChunkBinaryArrayOrMap extends Grids_ChunkBinary {
 
     private static final long serialVersionUID = 1L;
     
-    protected Grids_ChunkBooleanArrayOrMap(Grids_GridBoolean g, Grids_2D_ID_int i) {
+    protected Grids_ChunkBinaryArrayOrMap(Grids_GridBinary g, Grids_2D_ID_int i) {
         super(g, i, true);
     }
     

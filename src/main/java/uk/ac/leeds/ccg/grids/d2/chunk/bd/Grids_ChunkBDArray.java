@@ -52,10 +52,6 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
     }
 
     /**
-     * TODO: Optimise for different types of chunk. A fast toArray() could be
-     * coded then a constructor based on an double[] or double[][] might be
-     * faster?
-     *
      * @param c The chunk that's values will be duplicated.
      * @param i The chunkID.
      */
