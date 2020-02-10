@@ -38,8 +38,10 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
+import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
@@ -416,8 +418,79 @@ public class Grids_GridBinary extends Grids_GridB {
                 this.stats.grid = this;
             }
         } else {
-            throw new IOException(gridFile.toString() + " is not a directory.");
+            // Assume ESRI AsciiFile
+            name = fs.getBaseDir().getFileName().toString() + fsID;
+            data = new TreeMap<>();
+            worthSwapping = new HashSet<>();
+            this.stats = stats;
+            this.stats.setGrid(this);
+            String filename = gridFile.getFileName().toString();
+            BigDecimal value;
+            if (filename.endsWith("asc") || filename.endsWith("txt")) {
+                Grids_ESRIAsciiGridImporter eagi;
+                eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
+                Grids_ESRIAsciiGridImporter.Header header = eagi.getHeader();
+                //long inputNcols = ( Long ) header[ 0 ];
+                //long inputNrows = ( Long ) header[ 1 ];
+                nCols = header.ncols;
+                nRows = header.nrows;
+                chunkNRows = gp.gridFactoryBoolean.getChunkNRows();
+                chunkNCols = gp.gridFactoryBoolean.getChunkNCols();
+                initNChunkRows();
+                initNChunkCols();
+                initDimensions(header, 0, 0);
+                int reportN = (int) (nRows - 1) / 10;
+                if (reportN == 0) {
+                    reportN = 1;
+                }
+                BigDecimal gridFileNoDataValue = header.ndv;
+                // Read Data into Chunks. This starts with the last row and ends with the first.
+                if (stats.isUpdated()) {
+                    for (long row = (nRows - 1); row > -1; row--) {
+                        env.checkAndMaybeFreeMemory();
+                        env.initNotToClear();
+                        for (long col = 0; col < nCols; col++) {
+                            value = eagi.readBigDecimal();
+                            if (value != gridFileNoDataValue) {
+                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                    initCell(row, col, false, false);
+                                } else {
+                                    initCell(row, col, true, false);
+                                }
+                            } else {
+                                initCell(row, col, false, false);
+                            }
+                        }
+                        if (row % reportN == 0) {
+                            env.env.log("Done row " + row);
+                        }
+                        env.checkAndMaybeFreeMemory();
+                    }
+                } else {
+                    for (long row = (nRows - 1); row > -1; row--) {
+                        env.checkAndMaybeFreeMemory();
+                        env.initNotToClear();
+                        for (long col = 0; col < nCols; col++) {
+                            value = eagi.readBigDecimal();
+                            if (value != gridFileNoDataValue) {
+                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                    initCell(row, col, false, true);
+                                } else {
+                                    initCell(row, col, true, true);
+                                }
+                            } else {
+                                initCell(row, col, false, true);
+                            }
+                        }
+                        if (row % reportN == 0) {
+                            env.env.log("Done row " + row);
+                        }
+                        env.checkAndMaybeFreeMemory();
+                    }
+                }
+            }
         }
+        init();
     }
 
     /**
