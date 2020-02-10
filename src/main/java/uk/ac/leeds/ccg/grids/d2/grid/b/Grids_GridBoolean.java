@@ -386,7 +386,7 @@ public class Grids_GridBoolean extends Grids_GridB {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
@@ -410,7 +410,7 @@ public class Grids_GridBoolean extends Grids_GridB {
         // Set to report every 10%
         int reportN;
         Grids_Processor gp = env.getProcessor();
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));

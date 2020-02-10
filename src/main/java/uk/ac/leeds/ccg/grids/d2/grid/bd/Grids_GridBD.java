@@ -434,7 +434,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         if (reportN == 0) {
             reportN = 1;
         }
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryBD gf = gp.gridFactoryBD;
@@ -550,7 +550,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         // Set to report every 10%
         int reportN;
         Grids_Processor gp = env.getProcessor();
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryBD gf = gp.gridFactoryBD;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));

@@ -508,7 +508,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (reportN == 0) {
             reportN = 1;
         }
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryInt gf = gp.gridFactoryInt;
@@ -623,7 +623,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         int reportN;
         Grids_Processor gp;
         gp = env.getProcessor();
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryInt gf = gp.gridFactoryInt;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));

@@ -456,7 +456,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (reportN == 0) {
             reportN = 1;
         }
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryDouble gf = gp.gridFactoryDouble;

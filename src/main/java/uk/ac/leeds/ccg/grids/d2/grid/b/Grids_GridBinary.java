@@ -379,7 +379,7 @@ public class Grids_GridBinary extends Grids_GridB {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
@@ -401,7 +401,7 @@ public class Grids_GridBinary extends Grids_GridB {
         this.stats = stats;
         this.stats.setGrid(this);
         Grids_Processor gp = env.getProcessor();
-        if (Files.isDirectory(gridFile)) {
+        if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
                 Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
