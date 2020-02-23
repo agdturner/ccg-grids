@@ -268,9 +268,9 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
     }
     
     /**
-     * For setting {@link #defaultGridChunkBDFactory}.
+     * For setting {@link #defaultGridChunkBooleanFactory}.
      *
-     * @param cf What {@link #defaultGridChunkBDFactory} is set to.
+     * @param cf What {@link #defaultGridChunkBooleanFactory} is set to.
      */
     public void setDefaultChunkFactory(Grids_ChunkFactoryBoolean cf) {
         defaultGridChunkBooleanFactory = cf;

@@ -2819,7 +2819,7 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * @param n The number of dashes in the result.
-     * @return A String with {@code n) dashes "-"
+     * @return A String with {@code n} dashes "-"
      */
     public String getDashes2(int n) {
         String r = "";
