@@ -2866,6 +2866,10 @@ public abstract class Grids_Grid extends Grids_Object {
         return r;
     }
 
+    /**
+     * @param n The length of the String returned.
+     * @return A String comprising of {@code n} spaces " ". 
+     */
     public String getSpaces(int n) {
         String r = "";
         for (int i = 0; i < n; i++) {

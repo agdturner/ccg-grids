@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.agdturner</groupId>
+    <artifactId>agdt-java-generic-grids</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    
+    <name>agdt-java-generic-grids</name>
+    <url>https://github.com/agdturner/agdt-java-generic-grids</url>
+    <description>A Java Library for handling 2D square celled raster data.</description>
+    <scm>
+        <url>git@github.com:agdturner/agdt-java-generic-grids.git</url>
+        <connection>scm:git:git@github.com:agdturner/agdt-java-generic-grids.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/agdt-java-generic-grids</developerConnection>
+    </scm>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://github.com/agdturner/agdt-java-generic-grids/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>Centre for Computational Geography</name>
+        <url>http://www.ccg.leeds.ac.uk/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>agdturner</id>
+            <name>Andy Turner</name>
+            <email>a.g.d.turner@leeds.ac.uk</email>
+            <organization>University of Leeds</organization>
+            <organizationUrl>http://www.leeds.ac.uk</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <agdt-java-generic.version>1.0.2</agdt-java-generic.version>
+        <agdt-java-generic-math.version>1.0.1</agdt-java-generic-math.version>
+        <maven.compiler.source>12</maven.compiler.source>
+        <maven.compiler.target>12</maven.compiler.target>
+        <!--
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        -->
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.github.agdturner</groupId>
+            <artifactId>agdt-java-generic</artifactId>
+            <version>${agdt-java-generic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.agdturner</groupId>
+            <artifactId>agdt-java-generic-math</artifactId>
+            <version>${agdt-java-generic-math.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>trove</groupId>
+            <artifactId>trove</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.1.0</version>
+        </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>javax.media.jai</groupId>
+            <artifactId>com.springsource.javax.media.jai.core</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+<dependency>
+    <groupId>org.hamcrest</groupId>
+    <artifactId>hamcrest-core</artifactId>
+    <version>1.3</version>
+    <scope>test</scope>
+</dependency>
+        -->
+    </dependencies>
+    
+    <repositories>
+        <!--
+        <repository>
+            <id>agdt-java-generic</id>
+            <name>GitHub agdturner agdt-java-generic Repository</name>
+            <url>https://github.com/agdturner/agdt-java-generic/tree/master/target/mvn-repo/uk/ac/leeds/ccg/andyt/agdt-java-generic</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        -->
+        <repository>
+            <id>commons-math</id>
+            <name>Apache Commons Math</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>          
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+    </pluginRepositories>
+    
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+</project>
