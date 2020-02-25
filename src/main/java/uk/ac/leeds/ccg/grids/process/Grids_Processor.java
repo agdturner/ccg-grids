@@ -914,7 +914,7 @@ public class Grids_Processor extends Grids_Object {
                 Grids_2D_ID_long i2;
                 Grids_2D_ID_long i3;
                 // gCellsize halved
-                BigDecimal gCH = g.getCellsize().divide(BigDecimal.valueOf(2));
+                //BigDecimal gCH = g.getCellsize().divide(BigDecimal.valueOf(2));
                 // gCellsize squared
                 BigDecimal gCS = gC.multiply(gC);
                 // g2Cellsize squared
@@ -925,7 +925,7 @@ public class Grids_Processor extends Grids_Object {
                 for (int r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
                     for (int c = 0; c < ncols; c++) {
-                        bounds = g.getCellBounds(gCH, r, c);
+                        bounds = g.getCellBounds(r, c);
                         //x = g.getCellXDouble(col);
                         //y = g.getCellYDouble(row);
                         i0 = g2.getCellID(bounds[0], bounds[3]);
@@ -1714,7 +1714,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal[] bounds = g.getCellBounds(cH, row, col);
+                    BigDecimal[] bounds = g.getCellBounds(row, col);
                     cellIDs[0] = r.getCellID(bounds[0], bounds[3]);
                     cellIDs[1] = r.getCellID(bounds[2], bounds[3]);
                     cellIDs[2] = r.getCellID(bounds[0], bounds[1]);
@@ -1782,7 +1782,7 @@ public class Grids_Processor extends Grids_Object {
                     if (value.compareTo(ndv) != 0) {
                         //BigDecimal x = g.getCellX(col);
                         //BigDecimal y = g.getCellY(row);
-                        BigDecimal[] bounds = g.getCellBounds(cH, row, col);
+                        BigDecimal[] bounds = g.getCellBounds(row, col);
                         double max = r.getCell(bounds[0], bounds[3]);
                         if (max != ndvd) {
                             r.setCell(bounds[0], bounds[3], Math.max(max, value.doubleValue()));
@@ -1824,7 +1824,7 @@ public class Grids_Processor extends Grids_Object {
                         double vD = value.doubleValue();
                         BigDecimal x = g.getCellX(col);
                         BigDecimal y = g.getCellY(row);
-                        bounds = g.getCellBounds(cH, row, col);
+                        bounds = g.getCellBounds(row, col);
                         min = r.getCell(bounds[0], bounds[3]);
                         if (min != ndvd) {
                             r.setCell(bounds[0], bounds[3], Math.min(min, vD));

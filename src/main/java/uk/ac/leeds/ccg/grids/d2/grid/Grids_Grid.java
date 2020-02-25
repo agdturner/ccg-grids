@@ -647,12 +647,17 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * @return Chunk column index for the Grids_Chunk intersecting the cell
-     * column index {@code col}.
+     * column index {@code col}. This will return a result even if col is not in
+     * the grid.
      *
      * @param col The cell column index.
      */
     public final int getChunkCol(long col) {
-        return (int) (col / (long) chunkNCols);
+        int r = (int) (col / (long) chunkNCols);
+        if (col < 0) {
+            r--;
+        }
+        return r;
     }
 
     /**
@@ -731,11 +736,16 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * @return Chunk row index for the chunk intersecting the cells with cell
-     * row index {@code row}.
+     * row index {@code row}. This will return a result even if row is not in
+     * the grid.
      * @param row The cell row of the cells that's chunk row index is returned.
      */
     public final int getChunkRow(long row) {
-        return (int) (row / (long) chunkNRows);
+        int r = (int) (row / (long) chunkNRows);
+        if (row < 0) {
+            r--;
+        }
+        return r;
     }
 
     /**
@@ -2365,15 +2375,15 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param col The column index of the cell for which the bounds are
      * returned.
      */
-    public final BigDecimal[] getCellBounds(BigDecimal halfCellsize,
-            long row, long col) {
+    public final BigDecimal[] getCellBounds(long row, long col) {
         BigDecimal[] r = new BigDecimal[4];
         BigDecimal x = getCellX(col);
         BigDecimal y = getCellY(row);
-        r[0] = x.subtract(halfCellsize);
-        r[1] = y.subtract(halfCellsize);
-        r[2] = x.add(halfCellsize);
-        r[3] = y.add(halfCellsize);
+        BigDecimal hc = getDimensions().getHalfCellsize();
+        r[0] = x.subtract(hc);
+        r[1] = y.subtract(hc);
+        r[2] = x.add(hc);
+        r[3] = y.add(hc);
         return r;
     }
 
@@ -2868,7 +2878,7 @@ public abstract class Grids_Grid extends Grids_Object {
 
     /**
      * @param n The length of the String returned.
-     * @return A String comprising of {@code n} spaces " ". 
+     * @return A String comprising of {@code n} spaces " ".
      */
     public String getSpaces(int n) {
         String r = "";

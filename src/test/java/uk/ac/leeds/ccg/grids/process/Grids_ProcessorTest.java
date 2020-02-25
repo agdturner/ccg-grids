@@ -651,7 +651,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("g0");
         //g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridDouble) gfd.create(4, 3, new Grids_Dimensions(
+        g1 = gfd.create(4, 3, new Grids_Dimensions(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
                 BigDecimal.valueOf(-2), BigDecimal.valueOf(2), BigDecimal.ONE));
         g1.setCell(0, 0, 1.0d);
@@ -705,7 +705,7 @@ public class Grids_ProcessorTest {
 //        System.out.println("");
 //        System.out.println("g0");
 //        g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridDouble) gfd.create(4, 3, new Grids_Dimensions(
+        g1 = gfd.create(4, 3, new Grids_Dimensions(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
                 BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.ONE));
         g1.setCell(0, 0, 4.0d);
@@ -759,7 +759,7 @@ public class Grids_ProcessorTest {
 //        System.out.println("");
 //        System.out.println("g0");
 //        g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridDouble) gfd.create(2, 1, new Grids_Dimensions(
+        g1 = gfd.create(2, 1, new Grids_Dimensions(
                 BigDecimal.valueOf(1), BigDecimal.valueOf(2), 
                 BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.ONE));
         g1.setCell(0, 0, 6.0d);
@@ -803,7 +803,7 @@ public class Grids_ProcessorTest {
         long maxNrowsToPrint = 10;
         long maxNcolsToPrint = 10;
         int dp = 10;
-        RoundingMode rm = RoundingMode.HALF_UP;;
+        RoundingMode rm = RoundingMode.HALF_UP;
         Grids_GridBD g0;
         Grids_GridBD g1;
         Grids_GridBD er;
@@ -1001,7 +1001,7 @@ public class Grids_ProcessorTest {
         //System.out.println("");
         //System.out.println("g0");
         //g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridBD) gf.create(4, 3, new Grids_Dimensions(
+        g1 = gf.create(4, 3, new Grids_Dimensions(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
                 BigDecimal.valueOf(-2), BigDecimal.valueOf(2), BigDecimal.ONE));
         g1.setCell(0, 0, BigDecimal.valueOf(1.0d));
@@ -1055,7 +1055,7 @@ public class Grids_ProcessorTest {
 //        System.out.println("");
 //        System.out.println("g0");
 //        g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridBD) gf.create(4, 3, new Grids_Dimensions(
+        g1 = gf.create(4, 3, new Grids_Dimensions(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(3), 
                 BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.ONE));
         g1.setCell(0, 0, BigDecimal.valueOf(4.0d));
@@ -1111,7 +1111,7 @@ public class Grids_ProcessorTest {
 //        maxNrowsToPrint = 10;
 //        maxNcolsToPrint = 10;
 //        g0.log(maxNrowsToPrint, maxNcolsToPrint);
-        g1 = (Grids_GridBD) gf.create(2, 1, new Grids_Dimensions(
+        g1 = gf.create(2, 1, new Grids_Dimensions(
                 BigDecimal.valueOf(1), BigDecimal.valueOf(2), 
                 BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.ONE));
         g1.setCell(0, 0, BigDecimal.valueOf(6.0d));

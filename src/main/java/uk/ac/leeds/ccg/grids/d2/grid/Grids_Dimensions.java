@@ -129,9 +129,9 @@ public class Grids_Dimensions implements Serializable {
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[XMin=" + getXMin() + ", XMax="
-                + getXMax() + ", YMin=" + getYMin() + ", YMax=" + getYMax()
-                + ", Cellsize=" + getCellsize() + "]";
+        return getClass().getSimpleName() + "[xMin=" + getXMin() + ", xMax="
+                + getXMax() + ", yMin=" + getYMin() + ", yMax=" + getYMax()
+                + ", cellsize=" + getCellsize() + "]";
     }
 
     @Override
@@ -140,10 +140,10 @@ public class Grids_Dimensions implements Serializable {
             Grids_Dimensions o2 = (Grids_Dimensions) o;
             if (this.hashCode() == o2.hashCode()) {
                 if (this.cellsize == o2.cellsize) {
-                    if (this.xMin == o2.xMin) {
-                        if (this.xMax == o2.xMax) {
-                            if (this.yMin == o2.yMin) {
-                                if (this.yMax == o2.yMax) {
+                    if (this.xMin.compareTo(o2.xMin) == 0) {
+                        if (this.xMax.compareTo(o2.xMax) == 0) {
+                            if (this.yMin.compareTo(o2.yMin) == 0) {
+                                if (this.yMax.compareTo(o2.yMax) == 0) {
                                     return true;
                                 }
                             }
