@@ -100,6 +100,19 @@ public class Grids_Dimensions implements Serializable {
         this(BigDecimal.ZERO, width, BigDecimal.ZERO, height, BigDecimal.ONE);
     }
 
+    public Grids_Dimensions(Grids_Dimensions d) {
+        this.area = d.area;
+        this.cellsize = d.cellsize;
+        this.cellsizeSquared = d.cellsizeSquared;
+        this.halfCellsize = d.halfCellsize;
+        this.height = d.height;
+        this.width = d.width;
+        this.xMax = d.xMax;
+        this.xMin = d.xMin;
+        this.yMax = d.yMax;
+        this.yMin = d.yMin;
+    }
+    
     /**
      * DimensionsScale will default to the maximum scale in any of the
      * BigDecimal inputs.
@@ -139,7 +152,7 @@ public class Grids_Dimensions implements Serializable {
         if (o instanceof Grids_Dimensions) {
             Grids_Dimensions o2 = (Grids_Dimensions) o;
             if (this.hashCode() == o2.hashCode()) {
-                if (this.cellsize == o2.cellsize) {
+                if (this.cellsize.compareTo(o2.cellsize) == 0) {
                     if (this.xMin.compareTo(o2.xMin) == 0) {
                         if (this.xMax.compareTo(o2.xMax) == 0) {
                             if (this.yMin.compareTo(o2.yMin) == 0) {
