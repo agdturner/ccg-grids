@@ -2,10 +2,22 @@
 
 https://github.com/agdturner/agdt-java-grids
 
-## General description
-A Java library for storing and processing lattice based raster data otherwise known as grids. The library is geared for processing multiple input and output grids, each of which may be too large to store in the available fast access memory of a computer (commonly refered to as ram or memory) - in which case, some of the data is stored in slower access storage (commonly refered to as disk).
+A Java library for storing and processing lattice based raster data otherwise known as grids.
 
-Currently grids have two spatial dimensions with two orthoganol coordinate axes - X and Y. The lattice points are the intersections of equidistant parallel lines that cut one or other axis orthogonally in a flat plane. A grid can also be imagined as being comprised of square cells on this plane with values covering the cell, with cell sides aligning with the coordinate axes X and Y - arranged in what are referred to respectively as columns and rows. With this arrangement, each lattice point or cell can be referenced by a row (lattice points or cell centroids with the same Y coordinate) and a column (lattice points or cell centroids with the same X coordinate), or a 2D identifier which composes the row and column indexes into a cell ID. 
+## Current Version
+```
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
+<dependency>
+    <groupId>io.github.agdturner</groupId>
+    <artifactId>agdt-java-grids</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+## General description
+Grids is geared for processing multiple large input and output data grids in workflows which may involve other data not stored as data grids. Each data grid may be too large to store in the available fast access memory of the computer (memory) - in which case, some of the data is stored in slower access storage (disk).
+
+Data grids have two spatial dimensions with two orthoganol coordinate axes - X and Y. The lattice points are the intersections of equidistant parallel lines that cut one or other axis orthogonally in a flat plane. A grid can also be imagined as being comprised of square cells on this plane with values covering the cell, with cell sides aligning with the coordinate axes X and Y - arranged in what are referred to respectively as columns and rows. With this arrangement, each lattice point or cell can be referenced by a row (lattice points or cell centroids with the same Y coordinate) and a column (lattice points or cell centroids with the same X coordinate), or a 2D identifier which composes the row and column indexes into a cell ID. 
 
 The library has been used to process many hundreds of grids with many tens of thousands of rows and columns simultaneously using computers with a few hundred megabytes of available fast access memory and a few gigabytes of available disk space.
 
@@ -34,65 +46,63 @@ The library attempts to manage with the memory made available to the Java Virtua
 ## History
 The library has evolved since around the year 2000 and is actively being developed. Some more history abou the evolution of the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
 
-## Usages
+## Known uses
 1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were generated and used in various academic research projects for a range of geographical modelling task, to search for evidence of geographical clustering and to investigate changes in geographical clustering over time. In this respect it has most recently been used in the Digital Welfare Project to reveal changes in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
 2. Processing digital elevation data into geomorphometrics - see: https://github.com/agdturner/agdt-java-project-Geomorphometrics.
 3. Producing density plots of lines and points to help reveal relationships between variables.
 4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-vector
 
-It would be good to provide more example usages of this library. If you use it please let the developer know and maybe your usage will get added to this list...
-
-## Status, Current Version and platform requirements
-1. Version 1.0-SNAPSHOT
-Developed and tested on Java 11 using Maven. It is available from Maven Central via: https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math/1.1.0
-
-To use with Maven add the following dependencies to your POM:
+## Current Version
+Developed and tested on Java 11 using Maven.
 ```
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-grids</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 </dependency>
+```
+A JAR is available:
+https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-grids/1.0/agdt-java-grids-1.0.jar
+
+## Dependencies
+agdt-java-math available via https://github.com/agdturner/agdt-java-math.
+```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-math</artifactId>
-    <version>1.1.0</version>
+    <version>1.2</version>
 </dependency>
+```
+agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
+```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-generic</artifactId>
-    <version>1.1.0</version>
+    <version>1.2</version>
 </dependency>
 ```
-2. Version 1.0.x
-* The aim is to release this in 2020 after developing unit tests that test every method in the Grids_Processor class.
-* Move the processing classes geared for processing digital elevation data Grids_Processor_DEM and for generating geographically weighted statistics Grids_Processor_GWS to other libraries.
-3. Version 1.1.x
-* The main enhancement aim is to add classes for 2D BigInteger and BigDecimal type numerical grids.
-4. Version 2.x
-* The main enhancement aim is to add classes for 3D grids.
+- Please see the POM (https://github.com/agdturner/agdt-java-grids/blob/master/pom.xml) or https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids for details.
+- There are no third party dependencies.
+- There are third party dependencies for testing.
 
-## Dependencies
-agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
-agdt-java-math available via https://github.com/agdturner/agdt-java-math.
+## Development Plans
+# Version 2.0
+* Support 3D grids.
+* Push the processing classes geared for processing digital elevation data Grids_Processor_DEM and for generating geographically weighted statistics Grids_Processor_GWS to other libraries.
 
-There are no third party dependencies except for those used in testing.
-Please see the pom.xml for details.
-
-## Contributions and collaboration
-Contributors welcome, please contact the developer and we can plan this together.
-
-## Acknowledgements
-The development of this library has been supported by numerous academic research grants and the University of Leeds. 
+## Contributions
+- Please report issues in the usual way.
+- Please liaise with the developer with regards feature requests and about contributing to development.
 
 ## LICENCE
-Please see the standard Apache 2.0 open source LICENCE.
+- APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+## Acknowledgements and feedback
+* The development of this library has been supported by numerous academic research grants and the University of Leeds. Thanks to the University of Leeds and numerous research grants for supporting the development of this code and the developer over many years.
+* If you find this code useful, please let the developer know and refer to the resources used in the usual ways.
 
 ## Footnotes
-1. For spatial analysis, there are some theoretical advantages of rasters with values regularly spaced in equidistant triangular arrangements (these can be imagined as cells that are regular hexagons in two dimensions and which can be aggregated into larger regular (triangular or hexagonal) or irregular polyhedral chunks). Both square and equilateral triangle arrangements can be extended to three and more dimensions. In three dimensions (3D), there are a plethora of honeycomb like arrangements that can be used to partition values into chunks or semiregular honeycombs. Rectangular blocks are relatively uniform and generally easier to subdivide and aggregate. Subdivision is also helped by choosing chunk sizes that are easily subdivided into chunks of equal size.
-
-Despite the advantages of triangular arrangements over square arrangements for spatial analysis, contemporary display devices and image formats typically use pixels that if not square, are nearly square. Converting from the squares of a grid to these pixel values by aggregation or disaggregations is generally more strightforward than it would be for triangles notwithstanding how the lattice is orientated on the display screen.
-
-Furthermore the spatial analysis advantages of triangular rasters are typically less than the advantages that can be gained by increasing the resolution of the raster.
+1. For spatial analysis, especially with regard Earth systems modelling, there are some theoretical advantages of rasters with values regularly spaced in a more triangular arrangement (these can be imagined as cells that are hexagonal in two dimensions and which can be aggregated into larger (triangular, hexagonal or polyhedral chunks). Both square and triangular arrangements can be extended to three and more dimensions. In three dimensions (3D), there are a plethora of honeycomb like arrangements that can be used to partition values into chunks or semiregular honeycombs.
