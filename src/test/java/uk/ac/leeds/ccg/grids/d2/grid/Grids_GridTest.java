@@ -15,14 +15,9 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeMap;
 import org.hamcrest.Matchers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.AfterEach;
@@ -38,14 +33,9 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_Stats;
-import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.grids.memory.Grids_Account;
-import uk.ac.leeds.ccg.grids.memory.Grids_AccountDetail;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 
 /**
@@ -87,6 +77,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isSameDimensionsAndChunks method, of class Grids_Processor.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsSameFrame() throws Exception {
@@ -115,6 +107,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellDistance method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellDistance() throws Exception {
@@ -147,6 +141,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getNCols method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetNCols() throws Exception {
@@ -160,6 +156,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getNRows method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetNRows() throws Exception {
@@ -173,6 +171,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getNChunkRows method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetNChunkRows() throws Exception {
@@ -187,6 +187,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getNChunkCols method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetNChunkCols() throws Exception {
@@ -201,6 +203,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getNChunks method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetNChunks() throws Exception {
@@ -215,6 +219,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNRows method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNRows_0args() throws Exception {
@@ -229,6 +235,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNRows method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNRows_int() throws Exception {
@@ -248,6 +256,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNCols method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNCols_0args() throws Exception {
@@ -262,6 +272,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNCols method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNCols_int() throws Exception {
@@ -281,6 +293,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNRowsFinalRowChunk method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNRowsFinalRowChunk() throws Exception {
@@ -295,6 +309,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNColsFinalColChunk method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNColsFinalColChunk() throws Exception {
@@ -309,6 +325,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNRows method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNRows_Grids_2D_ID_int() throws Exception {
@@ -339,6 +357,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkNCols method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkNCols_Grids_2D_ID_int() throws Exception {
@@ -425,6 +445,8 @@ public class Grids_GridTest {
 //    }
     /**
      * Test of getChunkCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCol_BigDecimal() throws Exception {
@@ -465,6 +487,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCol_long() throws Exception {
@@ -507,6 +531,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkCellCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCellCol_BigDecimal() throws Exception {
@@ -539,6 +565,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkCellCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCellCol_long() throws Exception {
@@ -576,6 +604,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkCellRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCellRow_BigDecimal() throws Exception {
@@ -609,6 +639,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkCellRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkCellRow_long() throws Exception {
@@ -642,6 +674,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCol_BigDecimal() throws Exception {
@@ -671,6 +705,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCol method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCol_int_int() throws Exception {
@@ -697,6 +733,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkRow_BigDecimal() throws Exception {
@@ -723,6 +761,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getChunkRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetChunkRow_long() throws Exception {
@@ -757,6 +797,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetRow_BigDecimal() throws Exception {
@@ -783,6 +825,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getRow method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetRow_int_int() throws Exception {
@@ -809,6 +853,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellID method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellID_long_long() throws Exception {
@@ -827,6 +873,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellID method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellID_BigDecimal_BigDecimal() throws Exception {
@@ -953,6 +1001,8 @@ public class Grids_GridTest {
 //    }
     /**
      * Test of getHeight method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetHeight() throws Exception {
@@ -969,6 +1019,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getWidth method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetWidth() throws Exception {
@@ -985,6 +1037,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isSameDimensionsAndValues method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsSameDimensionsAndValues() throws Exception {
@@ -1018,6 +1072,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isSameDimensions method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsSameDimensions() throws Exception {
@@ -1040,6 +1096,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isSameDimensionsAndChunks method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsSameDimensionsAndChunks() throws Exception {
@@ -1063,6 +1121,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isCoincident method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsCoincident() throws Exception {
@@ -1093,6 +1153,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isInGrid method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsInGrid_BigDecimal_BigDecimal() throws Exception {
@@ -1111,6 +1173,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isInGrid method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsInGrid_long_long() throws Exception {
@@ -1129,6 +1193,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isInGrid method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsInGrid_Grids_2D_ID_long() throws Exception {
@@ -1151,6 +1217,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isInGrid method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsInGrid_Grids_2D_ID_int() throws Exception {
@@ -1173,6 +1241,8 @@ public class Grids_GridTest {
 
     /**
      * Test of isInGrid method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testIsInGrid_4args() throws Exception {
@@ -1198,6 +1268,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellX method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellX_long() throws Exception {
@@ -1216,6 +1288,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellX method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellX_Grids_2D_ID_long() throws Exception {
@@ -1234,6 +1308,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellY method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellY_long() throws Exception {
@@ -1252,6 +1328,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellY method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellY_Grids_2D_ID_long() throws Exception {
@@ -1270,6 +1348,8 @@ public class Grids_GridTest {
 
     /**
      * Test of getCellBounds method, of class Grids_Grid.
+     *
+     * @throws Exception If encountered.
      */
     @Test
     public void testGetCellBounds() throws Exception {
@@ -1288,426 +1368,8 @@ public class Grids_GridTest {
         expResult[3] = BigDecimal.ONE;
         BigDecimal[] result = instance.getCellBounds(row, col);
         //assertEquals(expResult, result);
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < 4; i++) {
             assertThat(expResult[i], Matchers.comparesEqualTo(result[i]));
-        }
-    }
-//
-//    /**
-//     * Test of getNextChunkID method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetNextChunkID() {
-//        System.out.println("getNextChunkID");
-//        Grids_2D_ID_int i = null;
-//        int ncr = 0;
-//        int ncc = 0;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_int expResult = null;
-//        Grids_2D_ID_int result = instance.getNextChunkID(i, ncr, ncc);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPreviousChunkID method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetPreviousChunkID() {
-//        System.out.println("getPreviousChunkID");
-//        Grids_2D_ID_int i = null;
-//        int ncr = 0;
-//        int ncc = 0;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_int expResult = null;
-//        Grids_2D_ID_int result = instance.getPreviousChunkID(i, ncr, ncc);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testFreeSomeMemoryAndResetReserve_HashMap_OutOfMemoryError() throws Exception {
-//        System.out.println("freeSomeMemoryAndResetReserve");
-//        HashMap<Grids_Grid, Set<Grids_2D_ID_int>> notToClear = null;
-//        OutOfMemoryError e = null;
-//        Grids_Grid instance = null;
-//        instance.freeSomeMemoryAndResetReserve(notToClear, e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testFreeSomeMemoryAndResetReserve_3args() throws Exception {
-//        System.out.println("freeSomeMemoryAndResetReserve");
-//        int cr = 0;
-//        int cc = 0;
-//        OutOfMemoryError e = null;
-//        Grids_Grid instance = null;
-//        instance.freeSomeMemoryAndResetReserve(cr, cc, e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testFreeSomeMemoryAndResetReserve_Set_OutOfMemoryError() throws Exception {
-//        System.out.println("freeSomeMemoryAndResetReserve");
-//        Set<Grids_2D_ID_int> s = null;
-//        OutOfMemoryError e = null;
-//        Grids_Grid instance = null;
-//        instance.freeSomeMemoryAndResetReserve(s, e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testFreeSomeMemoryAndResetReserve_Grids_2D_ID_int_OutOfMemoryError() throws Exception {
-//        System.out.println("freeSomeMemoryAndResetReserve");
-//        Grids_2D_ID_int i = null;
-//        OutOfMemoryError e = null;
-//        Grids_Grid instance = null;
-//        instance.freeSomeMemoryAndResetReserve(i, e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testFreeSomeMemoryAndResetReserve_OutOfMemoryError() throws Exception {
-//        System.out.println("freeSomeMemoryAndResetReserve");
-//        OutOfMemoryError e = null;
-//        Grids_Grid instance = null;
-//        instance.freeSomeMemoryAndResetReserve(e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getData method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetData() {
-//        System.out.println("getData");
-//        Grids_Grid instance = null;
-//        TreeMap<Grids_2D_ID_int, Grids_Chunk> expResult = null;
-//        TreeMap<Grids_2D_ID_int, Grids_Chunk> result = instance.getData();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of initDimensions method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testInitDimensions_3args_1() {
-//        System.out.println("initDimensions");
-//        Grids_ESRIAsciiGridImporter.Header header = null;
-//        long r = 0L;
-//        long c = 0L;
-//        Grids_Grid instance = null;
-//        instance.initDimensions(header, r, c);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of initDimensions method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testInitDimensions_3args_2() {
-//        System.out.println("initDimensions");
-//        Grids_Grid g = null;
-//        long r = 0L;
-//        long c = 0L;
-//        Grids_Grid instance = null;
-//        instance.initDimensions(g, r, c);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getChunk method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetChunk_Grids_2D_ID_int() throws Exception {
-//        System.out.println("getChunk");
-//        Grids_2D_ID_int i = null;
-//        Grids_Grid instance = null;
-//        Grids_Chunk expResult = null;
-//        Grids_Chunk result = instance.getChunk(i);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of loadChunk method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testLoadChunk() throws Exception {
-//        System.out.println("loadChunk");
-//        Grids_2D_ID_int i = null;
-//        Grids_Grid instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.loadChunk(i);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getChunk method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetChunk_int_int() throws Exception {
-//        System.out.println("getChunk");
-//        int cr = 0;
-//        int cc = 0;
-//        Grids_Grid instance = null;
-//        Grids_Chunk expResult = null;
-//        Grids_Chunk result = instance.getChunk(cr, cc);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getChunk method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetChunk_3args() throws Exception {
-//        System.out.println("getChunk");
-//        Grids_2D_ID_int i = null;
-//        int cr = 0;
-//        int cc = 0;
-//        Grids_Grid instance = null;
-//        Grids_Chunk expResult = null;
-//        Grids_Chunk result = instance.getChunk(i, cr, cc);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getStats method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetStats() {
-//        System.out.println("getStats");
-//        Grids_Grid instance = null;
-//        Grids_Stats expResult = null;
-//        Grids_Stats result = instance.getStats();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPathThisFile method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetPathThisFile() {
-//        System.out.println("getPathThisFile");
-//        Generic_Path p = null;
-//        Grids_Grid instance = null;
-//        Path expResult = null;
-//        Path result = instance.getPathThisFile(p);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of log method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testLog() throws Exception {
-//        System.out.println("log");
-//        long r = 0L;
-//        long c = 0L;
-//        Grids_Grid instance = null;
-//        instance.log(r, c);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of logBars method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testLogBars() {
-//        System.out.println("logBars");
-//        String bars = "";
-//        String barsAndDashes = "";
-//        Grids_Grid instance = null;
-//        instance.logBars(bars, barsAndDashes);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getBars method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetBars() {
-//        System.out.println("getBars");
-//        long ncols = 0L;
-//        int cols = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getBars(ncols, cols);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getBarsAndDashes method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetBarsAndDashes() {
-//        System.out.println("getBarsAndDashes");
-//        long ncols = 0L;
-//        int cols = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getBarsAndDashes(ncols, cols);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getColMarkers method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetColMarkers() {
-//        System.out.println("getColMarkers");
-//        long ncols = 0L;
-//        int cols = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getColMarkers(ncols, cols);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDashes method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetDashes() {
-//        System.out.println("getDashes");
-//        long ncols = 0L;
-//        int cols = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getDashes(ncols, cols);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDashes2 method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetDashes2() {
-//        System.out.println("getDashes2");
-//        int n = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getDashes2(n);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of logRow method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testLogRow() throws Exception {
-//        System.out.println("logRow");
-//        long ncols = 0L;
-//        long c = 0L;
-//        long row = 0L;
-//        Grids_Grid instance = null;
-//        instance.logRow(ncols, c, row);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getStringValue method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetStringValue() {
-//        System.out.println("getStringValue");
-//        BigDecimal v = null;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getStringValue(v);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getSpaces method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetSpaces() {
-//        System.out.println("getSpaces");
-//        int n = 0;
-//        Grids_Grid instance = null;
-//        String expResult = "";
-//        String result = instance.getSpaces(n);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    public class Grids_GridImpl extends Grids_Grid {
-
-        public Grids_GridImpl() throws Exception {
-            super(null, null, 0L);
-        }
-
-        public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException, Exception {
-            return false;
-        }
-
-        public Grids_Chunk getChunk(Grids_2D_ID_int i) throws IOException, ClassNotFoundException, Exception {
-            return null;
-        }
-
-        public Grids_Chunk getChunk(Grids_2D_ID_int i, int cr, int cc) throws IOException, ClassNotFoundException, Exception {
-            return null;
-        }
-
-        public Grids_Stats getStats() {
-            return null;
-        }
-
-        public void logRow(long ncols, long c, long row) throws Exception {
         }
     }
 }

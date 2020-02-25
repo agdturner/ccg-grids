@@ -2359,7 +2359,6 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param halfCellsize Half the grid cellsize.
      * @return BigDecimal[] r where;
      * <ul>
      * <li>r[0] xmin, left most x-coordinate of cell that intersects point at
