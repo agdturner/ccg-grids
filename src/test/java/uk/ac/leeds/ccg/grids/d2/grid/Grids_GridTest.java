@@ -1274,7 +1274,6 @@ public class Grids_GridTest {
     @Test
     public void testGetCellBounds() throws Exception {
         System.out.println("getCellBounds");
-        BigDecimal halfCellsize = null;
         long row = 0L;
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
@@ -1288,7 +1287,10 @@ public class Grids_GridTest {
         expResult[2] = BigDecimal.ONE;
         expResult[3] = BigDecimal.ONE;
         BigDecimal[] result = instance.getCellBounds(row, col);
-        assertArrayEquals(expResult, result);
+        //assertEquals(expResult, result);
+        for (int i = 0; i < 4; i ++) {
+            assertThat(expResult[i], Matchers.comparesEqualTo(result[i]));
+        }
     }
 //
 //    /**
