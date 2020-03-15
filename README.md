@@ -1,4 +1,4 @@
-# agdt-Java-Grids
+# agdt-java-grids
 
 https://github.com/agdturner/agdt-java-grids
 
