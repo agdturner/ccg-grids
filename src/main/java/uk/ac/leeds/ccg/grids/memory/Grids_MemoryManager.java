@@ -23,7 +23,9 @@ import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_MemoryManager        extends Generic_MemoryManager
+public abstract class Grids_MemoryManager extends Generic_MemoryManager
         implements Grids_Memory {
+
+    private static final long serialVersionUID = 1L;
 
 }

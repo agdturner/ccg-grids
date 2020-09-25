@@ -915,7 +915,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve(env);
                 Grids_Account r = new Grids_Account();
-                if (Grids_Environment.this.swapChunkExcept(m)) {
+                if (swapChunkExcept(m)) {
                     throw e;
                 }
                 r.add(1);
@@ -988,7 +988,7 @@ public class Grids_Environment extends Grids_MemoryManager
             if (hoome) {
                 clearMemoryReserve(env);
                 Grids_Account r = new Grids_Account();
-                if (!Grids_Environment.this.swapChunkExcept(g, s)) {
+                if (!swapChunkExcept(g, s)) {
                     throw e;
                 }
                 r.add(1);
@@ -1024,7 +1024,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!Grids_Environment.this.swapChunkExcept(g, s)) {
+                if (!swapChunkExcept(g, s)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(g, s, hoome);
@@ -1056,7 +1056,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!Grids_Environment.this.swapChunkExcept(m)) {
+                if (!swapChunkExcept(m)) {
                     throw e;
                 }
                 checkAndMaybeFreeMemory(m, hoome);
@@ -1127,8 +1127,16 @@ public class Grids_Environment extends Grids_MemoryManager
             } else {
                 // Set to exit method with OutOfMemoryError
                 hoome = false;
+                
+                env.log("<DEBUG>");
+                env.log("dataToClear " + Boolean.toString(this.dataToClear));
+                env.log("" + this.grids.size() + " Grids");
+                env.log("" + this.notToClear.size() + " notToClear.size()");
+                env.log("</DEBUG>");
+                checkAndMaybeFreeMemory(hoome);
+                
                 throw new OutOfMemoryError("No more fast access memory that "
-                        + "grids is using is avaialble to clear, try clearing "
+                        + "grids is using is available to clear, try clearing "
                         + "data from other environments.");
             }
         } catch (OutOfMemoryError e) {
@@ -1163,7 +1171,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 return checkAndMaybeFreeMemory_ClearAny();
             } else {
                 do {
-                    if (Grids_Environment.this.swapChunkExcept(notToClear)) {
+                    if (swapChunkExcept(notToClear)) {
                         if (getTotalFreeMemory() < Memory_Threshold) {
                             return true;
                         }
@@ -1173,8 +1181,9 @@ public class Grids_Environment extends Grids_MemoryManager
                 } while (getTotalFreeMemory() < Memory_Threshold);
                 return checkAndMaybeFreeMemory_ClearAny();
             }
+        } else {
+            return true;
         }
-        return false;
     }
 
     /**
@@ -1263,12 +1272,12 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             notToClear.put(g, g.getChunkIDs());
             do {
-                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (!swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
             do {
-                if (!Grids_Environment.this.swapChunkExcept(g)) {
+                if (!swapChunkExcept(g)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1354,7 +1363,7 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToClear(g, i);
             do {
-                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (!swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1442,7 +1451,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Iterator<Grids_Grid> ite = grids.iterator();
             while (ite.hasNext()) {
                 addToNotToClear(ite.next(), i);
-                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (swapChunkExcept(notToClear)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1450,7 +1459,7 @@ public class Grids_Environment extends Grids_MemoryManager
             }
             ite = grids.iterator();
             while (ite.hasNext()) {
-                if (Grids_Environment.this.swapChunkExcept(i)) {
+                if (swapChunkExcept(i)) {
                     if (getTotalFreeMemory() < Memory_Threshold) {
                         return true;
                     }
@@ -1536,7 +1545,7 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             addToNotToClear(m);
             do {
-                if (!Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (!swapChunkExcept(notToClear)) {
                     break;
                 }
             } while (getTotalFreeMemory() < Memory_Threshold);
@@ -1724,7 +1733,7 @@ public class Grids_Environment extends Grids_MemoryManager
         if (getTotalFreeMemory() < Memory_Threshold) {
             Grids_Account r = new Grids_Account();
             do {
-                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (swapChunkExcept(notToClear)) {
                     r.detail++;
                 } else {
                     break;
@@ -1803,7 +1812,7 @@ public class Grids_Environment extends Grids_MemoryManager
             Grids_Account r = new Grids_Account();
             addToNotToClear(g);
             do {
-                if (Grids_Environment.this.swapChunkExcept(notToClear)) {
+                if (swapChunkExcept(notToClear)) {
                     r.detail++;
                 } else {
                     break;
@@ -1813,7 +1822,7 @@ public class Grids_Environment extends Grids_MemoryManager
                 r.success = true;
             } else {
                 do {
-                    if (Grids_Environment.this.swapChunkExcept(g)) {
+                    if (swapChunkExcept(g)) {
                         r.detail++;
                     } else {
                         break;
@@ -3057,7 +3066,7 @@ public class Grids_Environment extends Grids_MemoryManager
         } catch (OutOfMemoryError e) {
             if (hoome) {
                 clearMemoryReserve(env);
-                if (!Grids_Environment.this.swapChunkExcept(g)) {
+                if (!swapChunkExcept(g)) {
                     throw e;
                 }
                 if (camfm) {
@@ -4313,6 +4322,9 @@ public class Grids_Environment extends Grids_MemoryManager
         return swapChunk();
     }
 
+    /**
+     * This indicates if there is dataToClear.
+     */
     private boolean dataToClear = true;
 
     public boolean isDataToClear() {

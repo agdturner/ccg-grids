@@ -1791,6 +1791,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         metrics1[i].cache();
                     }
                     metrics1[i].setName(metrics1Names[i]);
+                    env.addGrid(metrics1[i]);
                     isInitialised = true;
                 } catch (OutOfMemoryError e) {
                     env.clearMemoryReserve(env.env);
@@ -1801,6 +1802,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     env.initMemoryReserve(env.env);
                 }
                 System.out.println("Initialised result[" + i + "]");
+                
             } while (!isInitialised);
         }
         return getMetrics1(metrics1, g, dimensions, distance, weightIntersect,
@@ -2083,10 +2085,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         BigDecimal ndv = g.ndv;
 
         if (g.getClass() == Grids_GridDouble.class) {
-            Grids_GridDouble gridDouble;
-            gridDouble = (Grids_GridDouble) g;
-            double ndvd = gridDouble.getNoDataValue();
-            Grids_ChunkDouble gridChunkDouble;
+            Grids_GridDouble gd = (Grids_GridDouble) g;
+            double ndvd = gd.getNoDataValue();
             for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
                 System.out.println("chunkRow(" + chunkRow + ")");
                 chunkNRows = g.getChunkNRows(chunkRow);
@@ -2099,11 +2099,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     //ge.addToNotToClear(g, chunkID);
                     env.addToNotToClear(metrics1, chunkID);
                     env.checkAndMaybeFreeMemory();
-                    gridChunkDouble = (Grids_ChunkDouble) gridDouble.getChunk(
+                    Grids_ChunkDouble gcd = (Grids_ChunkDouble) gd.getChunk(
                             chunkRow, chunkCol);
                     boolean doLoop = true;
-                    if (gridChunkDouble instanceof Grids_ChunkDoubleSinglet) {
-                        if (((Grids_ChunkDoubleSinglet) gridChunkDouble).v == ndvd) {
+                    if (gcd instanceof Grids_ChunkDoubleSinglet) {
+                        if (((Grids_ChunkDoubleSinglet) gcd).v == ndvd) {
                             doLoop = false;
                         }
                     }
@@ -2114,13 +2114,13 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             BigDecimal y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 long col = g.getCol(chunkCol, cellCol);
-                                BigDecimal x = gridDouble.getCellX(col);
+                                BigDecimal x = gd.getCellX(col);
                                 //height = _Grid2DSquareCellDouble.getCell(cellRowIndex, cellColIndex, hoome);
-                                BigDecimal cellHeight = gridChunkDouble.getCellBigDecimal(
+                                BigDecimal cellHeight = gcd.getCellBigDecimal(
                                         cellRow, cellCol);
                                 if (cellHeight.compareTo(ndv) != 0) {
                                     env.checkAndMaybeFreeMemory();
-                                    metrics1Calculate_All(gridDouble, ndv, row,
+                                    metrics1Calculate_All(gd, ndv, row,
                                             col, x, y, cellHeight, cellDistance,
                                             weights, metrics1ForCell, heights,
                                             diff, dummyDiff);
@@ -2139,7 +2139,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                             }
                         }
                     }
-                    System.out.println("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
+                    env.env.log("Done Chunk (" + chunkRow + ", " + chunkCol + ")");
+
+                    env.env.log("swapProcessedChunks");
+                    env.initNotToClear();
+                    
                     if (swapProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
