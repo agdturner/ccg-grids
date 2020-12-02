@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.stats;
+package uk.ac.leeds.ccg.grids.d2.grid.stats;
 
+import uk.ac.leeds.ccg.grids.d2.stats.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,11 +24,11 @@ import java.util.TreeMap;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIteratorInt;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridIteratorDouble;
 
 /**
- * Grids_GridInt statistics. Some of the statistic are kept up to date as the
+ * Grids_GridDouble statistics. Some of the statistic are kept up to date as the
  * underlying data is changed (which can be computationally expensive). Some
  * statistics like the standard deviation always require going through all the
  * data again if the values have changed in order to recalculate.)
@@ -35,32 +36,22 @@ import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIteratorInt;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsInt extends Grids_StatsNumber {
+public class Grids_GridStatsDouble extends Grids_StatsDouble {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * For storing the minimum value.
-     */
-    protected int min;
-
-    /**
-     * For storing the maximum value.
-     */
-    protected int max;
-
-    public Grids_StatsInt(Grids_Environment ge) {
+    public Grids_GridStatsDouble(Grids_Environment ge) {
         super(ge);
-        min = Integer.MAX_VALUE;
-        max = Integer.MIN_VALUE;
+        min = Double.MAX_VALUE;
+        max = -Double.MAX_VALUE;
         sum = BigDecimal.ZERO;
     }
 
     @Override
     protected void init() {
         super.init();
-        min = Integer.MAX_VALUE;
-        max = Integer.MIN_VALUE;
+        min = Double.MAX_VALUE;
+        max = -Double.MAX_VALUE;
         sum = BigDecimal.ZERO;
     }
 
@@ -74,12 +65,11 @@ public class Grids_StatsInt extends Grids_StatsNumber {
     }
 
     /**
-     *
-     * @return (Grids_GridInt) grid.
+     * @return (Grids_GridDouble) grid.
      */
     @Override
-    public Grids_GridInt getGrid() {
-        return (Grids_GridInt) grid;
+    public Grids_GridDouble getGrid() {
+        return (Grids_GridDouble) grid;
     }
 
     /**
@@ -92,30 +82,34 @@ public class Grids_StatsInt extends Grids_StatsNumber {
     public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
-        Grids_GridInt g = getGrid();
-        int ndv = g.getNoDataValue();
-        Grids_GridIteratorInt ite = g.iterator();
+        Grids_GridDouble g = getGrid();
+        double ndv = g.getNoDataValue();
+        // This is too slow!
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
-            int v = ite.next();
-            if (v != ndv) {
-                update(v, new BigDecimal(v));
+            double v = ite.next();
+            if (Double.isFinite(v)) {
+                if (v != ndv) {
+                    BigDecimal vBD = new BigDecimal(v);
+                    update(v, vBD);
+                }
             }
         }
     }
 
-    protected void update(int v, BigDecimal vB) {
+    protected void update(double v, BigDecimal vBD) {
         n ++;
-        setSum(sum.add(vB));
+        setSum(sum.add(vBD));
         if (v < min) {
-            nMin++;
+            nMin = 1;
             min = v;
         } else {
             if (v == min) {
-                nMin = 1;
+                nMin++;
             }
         }
         if (v > max) {
-            nMax++;
+            nMax = 1;
             max = v;
         } else {
             if (v == max) {
@@ -125,42 +119,20 @@ public class Grids_StatsInt extends Grids_StatsNumber {
     }
 
     /**
+     * @param update If true then {@link #update()} is called.
      * @return The minimum of all data values in {@link #grid}.
      *
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Integer getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
+    public Double getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (nMin < 1) {
             if (update) {
                 update();
             }
         }
         return min;
-    }
-
-    public void setMin(int min) {
-        this.min = min;
-    }
-
-    /**
-     * @return The maximum of all data values in {@link #grid}.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    @Override
-    public Integer getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
-        if (nMax < 1) {
-            if (update) {
-                update();
-            }
-        }
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
     }
 
     /**
@@ -171,7 +143,7 @@ public class Grids_StatsInt extends Grids_StatsNumber {
     @Override
     public long getN() throws IOException, Exception, ClassNotFoundException {
         long r = 0;
-        Grids_GridInt g = getGrid();
+        Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
             r += g.getChunk(ite.next()).getN();
@@ -186,12 +158,11 @@ public class Grids_StatsInt extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public long getNonZeroN() throws IOException, Exception, 
-            ClassNotFoundException {
-        long r = 0;
-        Grids_GridInt g = getGrid();
+    public long getNonZeroN() throws IOException, Exception, ClassNotFoundException {
+        long r = 0L;
+        Grids_GridDouble g = getGrid();
         double ndv = g.getNoDataValue();
-        Grids_GridIteratorInt ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double v = ite.next();
             if (!(v == ndv || v == 0)) {
@@ -224,7 +195,7 @@ public class Grids_StatsInt extends Grids_StatsNumber {
      */
     public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
         BigDecimal r = BigDecimal.ZERO;
-        Grids_GridInt g = getGrid();
+        Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
             r = r.add(g.getChunk(ite.next()).getSum());
@@ -234,9 +205,9 @@ public class Grids_StatsInt extends Grids_StatsNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result will be accurate to.
-         * @param rm The RoundingMode used in BigDecimal arithmetic.
- * @return The standard deviation correct to {@code dp} decimal places.
+     * @param dp The number of decimal places the result is to be accurate to.
+     * @param rm The RoundingMode used in BigDecimal arithmetic.
+     * @return The standard deviation correct to {@code dp} decimal places.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -245,9 +216,9 @@ public class Grids_StatsInt extends Grids_StatsNumber {
         BigDecimal stdev = BigDecimal.ZERO;
         BigDecimal mean = getArithmeticMean(dp * 2, rm);
         BigDecimal dataValueCount = BigDecimal.ZERO;
-        Grids_GridInt g = (Grids_GridInt) grid;
+        Grids_GridDouble g = (Grids_GridDouble) grid;
         double ndv = g.getNoDataValue();
-        Grids_GridIteratorInt ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
             double v = ite.next();
             if (v != ndv) {
@@ -275,15 +246,15 @@ public class Grids_StatsInt extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Object[] getQuantileClassMap(int nClasses) throws IOException, Exception,
-            ClassNotFoundException {
+    public Object[] getQuantileClassMap(int nClasses) throws IOException,
+            Exception, ClassNotFoundException {
         Object[] r = new Object[3];
-        Grids_GridInt g = getGrid();
+        Grids_GridDouble g = getGrid();
         TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
         TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
-            mins.put(i, BigDecimal.valueOf(Integer.MAX_VALUE));
-            maxs.put(i, BigDecimal.valueOf(-Integer.MAX_VALUE));
+            mins.put(i, BigDecimal.valueOf(Double.MAX_VALUE));
+            maxs.put(i, BigDecimal.valueOf(-Double.MAX_VALUE));
         }
         r[0] = mins;
         r[1] = maxs;
@@ -306,9 +277,9 @@ public class Grids_StatsInt extends Grids_StatsNumber {
         r[2] = classMap;
         int count = 0;
         //long valueID = 0;
-        Grids_GridIteratorInt ite = g.iterator();
+        Grids_GridIteratorDouble ite = g.iterator();
         while (ite.hasNext()) {
-            int v = ite.next();
+            double v = ite.next();
             BigDecimal vbd = BigDecimal.valueOf(v);
             if (!(v == 0.0d || v == noDataValue)) {
                 if (count % nInClass == 0) {
@@ -329,7 +300,7 @@ public class Grids_StatsInt extends Grids_StatsNumber {
                     if (classToFill == nClasses) {
                         classToFill--;
                     }
-                    valueClass = getValueClass(vbd, classMap, mins, maxs, 
+                    valueClass = getValueClass(vbd, classMap, mins, maxs,
                             classCounts, nInClass, classToFill);
                     classToFill = valueClass[1];
                 }

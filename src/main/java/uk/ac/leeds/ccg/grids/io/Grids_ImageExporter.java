@@ -81,11 +81,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // Check int precision OK here.
         if (nrows * ncols > Integer.MAX_VALUE) {
             System.err.println(
-                    "Unable to export AbstractGrid2DSquareCell "
-                    + g.toString() + " into a "
-                    + "single image using "
-                    + "toGreyScaleImage(AbstractGrid2DSquareCell,File,"
-                    + "String) as _NRows * _Ncols > Integer.MAXVALUE");
+                    "Unable to export grid " + g.toString() + " into a single "
+                    + "image nrows * ncols > Integer.MAX_VALUE");
             System.err.println(
                     "This method either needs development, or another does "
                     + "which should be called instead of this.");
@@ -107,11 +104,8 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         // Test what writers are available as this may vary on different systems!
         boolean writerAvailable = Grids_IO.isImageWriterAvailable(type);
         if (!writerAvailable) {
-            System.out.println(
-                    "Unable to export  using toGreyScaleImage("
-                    + "AbstractGrid2DSquareCell,File,String) "
-                    + "IO.isImageWriterAvailable(" + type + ") is not "
-                    + "available.");
+            System.out.println("Unable to export as " + type + " as writer is "
+                    + "unavailable.");
             String[] writerTypes = ImageIO.getWriterMIMETypes();
             System.out.println("WriterTypes:");
             for (String writerType : writerTypes) {
@@ -119,20 +113,19 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
             }
             return;
         }
-        int[] gridImageArray = initGridImageArray(size);
         env.checkAndMaybeFreeMemory();
         // If not already in the range 0 to 255, rescale grid into this range.
+        env.env.log("Rescale grid into range 0 to 255");
         Grids_GridDouble r;
         if (g instanceof Grids_GridDouble) {
             r = gp.rescale((Grids_GridDouble) g, null, 0.0d, 255.0d);
         } else {
             r = gp.rescale((Grids_GridInt) g, null, 0.0d, 255.0d);
         }
+        g.swapChunks();
+        env.env.log("Initialise gridImageArray");
+        int[] gridImageArray = initGridImageArray(size);
         double noDataValue = r.getNoDataValue();
-//        System.out.println("r nrows " + r.getNRows(hoome));
-//        System.out.println("r ncols " + r.getNCols(hoome));
-//        System.out.println("r.getCell(0L, 0L) " + r.getCell(0L, 0L, hoome));
-//        System.out.println("noDataValue " + noDataValue);
         int countNoDataValues = 0;
         double v;
         int vi;
@@ -147,6 +140,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         int nChunkRows = r.getNChunkRows();
         int nChunkCols = r.getNChunkCols();
         for (chunkRow = 0; chunkRow < nChunkRows; chunkRow++) {
+            env.env.log("chunkRow");
             int chunkNRows = r.getChunkNRows(chunkRow);
             for (chunkCol = 0; chunkCol < nChunkCols; chunkCol++) {
                 chunkNCols = r.getChunkNCols(chunkCol);
@@ -179,7 +173,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                         gridImageArray[p] = pixel.getRGB();
                     }
                 }
-                env.removeFromNotToClear(g, chunkID);
+                env.removeFromNotToClear(r, chunkID);
                 env.checkAndMaybeFreeMemory();
             }
         }

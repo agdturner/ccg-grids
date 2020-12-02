@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -113,7 +112,7 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     protected void update(BigDecimal v) {
-        n = n.add(BigInteger.ONE);
+        n ++;
         setSum(sum.add(v));
         if (v.compareTo(min) == -1) {
             nMin = 1;
@@ -179,12 +178,12 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
-        BigInteger r = BigInteger.ZERO;
+    public long getN() throws IOException, Exception, ClassNotFoundException {
+        long r = 0;
         Grids_GridBD g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
-            r = r.add(BigInteger.valueOf(g.getChunk(ite.next()).getN()));
+            r += g.getChunk(ite.next()).getN();
             env.checkAndMaybeFreeMemory();
         }
         return r;

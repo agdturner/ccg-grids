@@ -593,9 +593,11 @@ public class Grids_GridBoolean extends Grids_GridB {
                 if (newValue
                         == false) {
                     if (oldValue == false) {
-                        stats.setN(stats.getN().subtract(BigInteger.ONE));
+                        //stats.setN(stats.getN().subtract(BigInteger.ONE));
+                        stats.setN(stats.getN() - 1);
                     }
-                    stats.setN(stats.getN().add(BigInteger.ONE));
+                    //stats.setN(stats.getN().add(BigInteger.ONE));
+                    stats.setN(stats.getN() + 1);
                 }
             } else {
                 if (newValue == null) {
@@ -769,7 +771,8 @@ public class Grids_GridBoolean extends Grids_GridB {
             Boolean value) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), value);
         if (value != null) {
-            stats.setN(stats.getN().add(BigInteger.ONE));
+            //stats.setN(stats.getN().add(BigInteger.ONE));
+            stats.setN(stats.getN() + 1);
         }
     }
 

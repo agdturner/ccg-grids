@@ -19,7 +19,6 @@ import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
-import java.math.BigInteger;
 
 /**
  * Grids stats.
@@ -39,23 +38,41 @@ public abstract class Grids_Stats extends Grids_Object {
     /**
      * For storing the number of cells with values.
      */
-    protected BigInteger n;
+    protected long n;
 
     public Grids_Stats(Grids_Environment ge) {
         super(ge);
-        n = BigInteger.ZERO;
+        init0();
     }
 
+    /**
+     * Initialises the statistics by setting n equal to 0.
+     */
+    private void init0() {
+        n = 0;
+    }
+
+    /**
+     * Initialises the statistics by setting n equal to 0.
+     */
     protected void init() {
-        n = BigInteger.ZERO;
+        init0();
     }
 
-    public abstract BigInteger getN()throws IOException, Exception, ClassNotFoundException;
+    /**
+     * For returning the number of values.
+     *
+     * @return The number of values.
+     * @throws java.io.IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     */
+    public abstract long getN() throws IOException, Exception,
+            ClassNotFoundException;
 
     /**
      * @param n to set n to.
      */
-    public void setN(BigInteger n) {
+    public void setN(long n) {
         this.n = n;
     }
 
@@ -68,11 +85,12 @@ public abstract class Grids_Stats extends Grids_Object {
     /**
      * Updates by going through all values in grid if the fields are likely not
      * be up to date.
+     *
      * @throws java.io.IOException If encountered.
-      * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected abstract void update() throws IOException, Exception, 
-            ClassNotFoundException ;
+    protected abstract void update() throws IOException, Exception,
+            ClassNotFoundException;
 
     public void update(Grids_Stats stats) {
         n = stats.n;
@@ -94,9 +112,9 @@ public abstract class Grids_Stats extends Grids_Object {
     /**
      * @return A text description of this.
      * @throws java.io.IOException If encountered.
-      * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public String getFieldsDescription() throws IOException, Exception, 
+    public String getFieldsDescription() throws IOException, Exception,
             ClassNotFoundException {
         return "N=" + n;
     }

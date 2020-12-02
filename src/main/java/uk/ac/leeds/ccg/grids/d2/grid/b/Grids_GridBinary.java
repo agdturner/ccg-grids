@@ -36,7 +36,6 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBinary;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
@@ -586,9 +585,11 @@ public class Grids_GridBinary extends Grids_GridB {
         if (stats.getClass() == Grids_StatsBinary.class) {
             if (newValue == false) {
                 if (oldValue == false) {
-                    stats.setN(stats.getN().subtract(BigInteger.ONE));
+                    //stats.setN(stats.getN().subtract(BigInteger.ONE));
+                    stats.setN(stats.getN() - 1);
                 }
-                stats.setN(stats.getN().add(BigInteger.ONE));
+                //stats.setN(stats.getN().add(BigInteger.ONE));
+                stats.setN(stats.getN() + 1);
             }
         } else {
             if (newValue != oldValue) {
@@ -753,7 +754,8 @@ public class Grids_GridBinary extends Grids_GridB {
             boolean v) throws IOException, Exception, ClassNotFoundException {
         chunk.initCell(getChunkCellRow(r), getChunkCellCol(c), v);
         if (v) {
-            stats.setN(stats.getN().add(BigInteger.ONE));
+            //stats.setN(stats.getN().add(BigInteger.ONE));
+            stats.setN(stats.getN() + 1);
         }
     }
 

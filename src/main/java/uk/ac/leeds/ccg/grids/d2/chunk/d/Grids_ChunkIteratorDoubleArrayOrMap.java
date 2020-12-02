@@ -21,7 +21,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 /**
  * For iterating through the values in a Grids_GridChunkDoubleArray instance.
  * The values are not returned in any particular order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -30,18 +30,19 @@ public class Grids_ChunkIteratorDoubleArrayOrMap
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * A reference to or copy of the data to iterate over.
+     */
     protected double[][] data;
 
     public Grids_ChunkIteratorDoubleArrayOrMap(
-            Grids_ChunkDoubleArray chunk) {
-        super(chunk);
-        data = chunk.getData();
-    }
-
-    public Grids_ChunkIteratorDoubleArrayOrMap(
-            Grids_ChunkDoubleMap chunk) {
-        super(chunk);
-        data = chunk.to2DDoubleArray();
+            Grids_ChunkDoubleArrayOrMap c) {
+        super(c);
+        if (c instanceof Grids_ChunkDoubleArray) {
+            data = ((Grids_ChunkDoubleArray) c).getData();
+        } else {
+            data = ((Grids_ChunkDoubleMap) c).to2DDoubleArray();
+        }
     }
 
     /**

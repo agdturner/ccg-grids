@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import java.math.BigInteger;
 
 /**
  * Statistic fields are not kept up to date as the underlying data is changed.
@@ -91,7 +90,7 @@ public class Grids_StatsNotUpdatedBinary extends Grids_StatsBinary {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
+    public long getN() throws IOException, Exception, ClassNotFoundException {
         update();
         return n;
     }

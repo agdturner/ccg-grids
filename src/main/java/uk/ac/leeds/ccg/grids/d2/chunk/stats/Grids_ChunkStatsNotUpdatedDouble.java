@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.stats;
+package uk.ac.leeds.ccg.grids.d2.chunk.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
 
 /**
- * Statistic fields are not kept up to date as the underlying data is changed.
+ * For statistics of chunks of type double. Statistics are not kept up to date
+ * as the values are changed.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
+public class Grids_ChunkStatsNotUpdatedDouble extends Grids_ChunkStatsDouble {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,9 +40,10 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
      * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
      *
      * @param e The grids environment.
+     * @param c The chunk.
      */
-    public Grids_StatsNotUpdatedBD(Grids_Environment e) {
-        super(e);
+    public Grids_ChunkStatsNotUpdatedDouble(Grids_Environment e, Grids_ChunkDouble c) {
+        super(e, c);
     }
 
     /**
@@ -60,7 +63,7 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
 
     /**
      * Sets {@link #upToDate} to {@code b}.
-     * 
+     *
      * @param b The value to set {@link #upToDate} to.
      */
     public void setUpToDate(boolean b) {
@@ -68,13 +71,14 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
     }
 
     /**
-     * Updates by going through all values in the grid if the fields are likely not
-     * to be up to date. (NB. After calling this it is inexpensive to convert to
-     * Grids_GridStatsBD.)
-              * @throws java.lang.Exception If encountered.
+     * Updates by going through all values in the grid if the fields are likely
+     * not to be up to date. (NB. After calling this it is inexpensive to
+     * convert to Grids_GridStatsDouble.)
+     *
+     * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
- */
+     */
     @Override
     public void update() throws IOException, Exception, ClassNotFoundException {
         if (!isUpToDate()) {
@@ -129,6 +133,7 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
 
     /**
      * Get the minimum of all data values.
+     *
      * @param update If true then an update() is called.
      * @return The minimum of all data values.
      * @throws java.lang.Exception If encountered.
@@ -136,7 +141,7 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getMin(boolean update) throws IOException, Exception,
+    public Double getMin(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
@@ -152,7 +157,7 @@ public class Grids_StatsNotUpdatedBD extends Grids_StatsBD {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getMax(boolean update) throws IOException, Exception,
+    public Double getMax(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();

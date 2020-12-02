@@ -427,6 +427,7 @@ public class Grids_Processor extends Grids_Object {
         double rangeGrid = maxGrid - minGrid;
         Grids_GridDouble r = gridFactoryDouble.create(g, 0, 0, g.getNRows() - 1,
                 g.getNCols() - 1);
+        env.env.log("Initialised rescaled grid.");
         r.setName(g.getName());
         System.out.println(r.toString());
         /**
@@ -440,6 +441,7 @@ public class Grids_Processor extends Grids_Object {
              * the same.
              */
             for (int cr = 0; cr < ncr; cr++) {
+                env.env.log("chunk row " + cr);
                 for (int cc = 0; cc < ncc; cc++) {
                     Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
                     env.addToNotToClear(g, i);
@@ -470,6 +472,7 @@ public class Grids_Processor extends Grids_Object {
                  * same.
                  */
                 for (int cr = 0; cr < ncr; cr++) {
+                    env.env.log("chunk row " + cr);
                     for (int cc = 0; cc < ncc; cc++) {
                         Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToClear(g, i);
@@ -499,6 +502,7 @@ public class Grids_Processor extends Grids_Object {
             } else if (type.equalsIgnoreCase("log")) {
                 r = rescale(r, null, 1.0d, 1000000.0d);
                 for (int cr = 0; cr < ncr; cr++) {
+                    env.env.log("chunk row " + cr);
                     for (int cc = 0; cc < ncc; cc++) {
                         Grids_2D_ID_int i = new Grids_2D_ID_int(cr, cc);
                         env.addToNotToClear(g, i);

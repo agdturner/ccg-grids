@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.stats;
+package uk.ac.leeds.ccg.grids.d2.grid.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import java.math.BigInteger;
 
 /**
  * Statistic fields are not kept up to date as the underlying data is changed.
@@ -26,7 +25,7 @@ import java.math.BigInteger;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_StatsNotUpdatedDouble extends Grids_StatsDouble {
+public class Grids_GridStatsNotUpdatedDouble extends Grids_GridStatsDouble {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +39,7 @@ public class Grids_StatsNotUpdatedDouble extends Grids_StatsDouble {
      *
      * @param e The grids environment.
      */
-    public Grids_StatsNotUpdatedDouble(Grids_Environment e) {
+    public Grids_GridStatsNotUpdatedDouble(Grids_Environment e) {
         super(e);
     }
 
@@ -93,7 +92,7 @@ public class Grids_StatsNotUpdatedDouble extends Grids_StatsDouble {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getN() throws IOException, Exception,
+    public long getN() throws IOException, Exception,
             ClassNotFoundException {
         update();
         return n;

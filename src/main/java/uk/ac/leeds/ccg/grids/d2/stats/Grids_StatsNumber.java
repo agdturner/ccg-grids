@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
@@ -49,17 +50,22 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
 
     public Grids_StatsNumber(Grids_Environment ge) {
         super(ge);
+        init0();
+    }
+
+    /**
+     * Initialises the statistics by setting sum, nMin and nMax equal to 0.
+     */
+    private void init0() {
         sum = BigDecimal.ZERO;
         nMin = 0;
         nMax = 0;
     }
-
+    
     @Override
     protected void init() {
         super.init();
-        sum = BigDecimal.ZERO;
-        nMin = 0;
-        nMax = 0;
+        init0();
     }
 
     /**

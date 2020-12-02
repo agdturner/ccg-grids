@@ -33,7 +33,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     /**
      * For storing the v of every cell in this grid.
      */
-    public double v;
+    protected double v;
 
     /**
      * Creates a new Grids_GridChunkDouble with {@link #v} set to {@code v}.
@@ -52,7 +52,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     protected final void initData() {
     }
 
-    protected double getV() {
+    public double getV() {
         return v;
     }
 

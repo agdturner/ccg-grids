@@ -116,16 +116,24 @@ public class Grids_GridIteratorDouble extends Grids_GridIterator {
      * @throws ClassNotFoundException If there is a problem
      */
     public Double next() throws IOException, ClassNotFoundException, Exception {
-        if (!chunkIterator.hasNext()) {
+        if (chunkIterator.hasNext()) {
+            return next0();
+        } else {
             if (gridIterator.hasNext()) {
                 chunkID = gridIterator.next();
                 chunk = grid.getChunk(chunkID);
                 chunkIterator = getChunkIterator(chunk);
                 env.checkAndMaybeFreeMemory(chunkID, env.HOOMET);
-                return getChunkIterator().next();
+                return next0();
             } else {
                 return null;
             }
+        }
+    }
+
+    private Double next0() throws IOException, ClassNotFoundException, Exception {
+        if (chunk instanceof Grids_ChunkDoubleSinglet) {
+            return ((Grids_ChunkDoubleSinglet) chunk).getV();
         } else {
             return getChunkIterator().next();
         }

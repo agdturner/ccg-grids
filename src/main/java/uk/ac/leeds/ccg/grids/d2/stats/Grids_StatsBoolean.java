@@ -21,7 +21,6 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
 import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridIteratorBoolean;
-import java.math.BigInteger;
 
 /**
  * Used by Grids_GridBinary instances to access statistics. This class is to be
@@ -72,12 +71,10 @@ public class Grids_StatsBoolean extends Grids_Stats {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridBoolean g = getGrid();
-        boolean v;
         Grids_GridIteratorBoolean ite = g.iterator();
         while (ite.hasNext()) {
-            v = ite.next();
-            if (v) {
-                n = n.add(BigInteger.ONE);
+            if (ite.next()) {
+                n ++;
             }
         }
     }
@@ -89,12 +86,12 @@ public class Grids_StatsBoolean extends Grids_Stats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigInteger getN() throws IOException, Exception, ClassNotFoundException {
-        BigInteger r = BigInteger.ZERO;
+    public long getN() throws IOException, Exception, ClassNotFoundException {
+        long r = 0;
         Grids_GridBoolean g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
-            r = r.add(BigInteger.valueOf(g.getChunk(ite.next()).getN()));
+            r += g.getChunk(ite.next()).getN();
             env.checkAndMaybeFreeMemory();
         }
         return r;

@@ -37,16 +37,16 @@ import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleMap;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedDouble;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
 
 /**
  * Grids with {@code double} values.
@@ -146,7 +146,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
+    protected Grids_GridDouble(Grids_GridStatsDouble stats, Generic_FileStore fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv, Grids_Environment ge)
@@ -173,7 +173,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected Grids_GridDouble(Grids_Environment ge, Generic_FileStore fs,
             long id, Generic_Path gridFile, double ndv) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(new Grids_StatsNotUpdatedDouble(ge), gridFile);
+        init(new Grids_GridStatsNotUpdatedDouble(ge), gridFile);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_StatsNotUpdatedDouble) stats).setUpToDate(false);
+            ((Grids_GridStatsNotUpdatedDouble) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
@@ -271,8 +271,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
             double gndv = gd.getNoDataValue();
             double gValue;
             for (int gcr = scr; gcr <= ecr; gcr++) {
+                env.env.log("Chunk Row " + gcr);
                 int gChunkNRows = g.getChunkNRows(gcr);
                 for (int gcc = scc; gcc <= ecc; gcc++) {
+                    //env.env.log("Chunk Col " + gcc);
                     do {
                         try {
                             // Try to load chunk.
@@ -356,6 +358,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             int gndv = gi.getNoDataValue();
             int gValue;
             for (int gcr = scr; gcr <= ecr; gcr++) {
+                env.env.log("Chunk Row " + gcr);
                 int gChunkNRows = g.getChunkNRows(gcr);
                 for (int gcc = scc; gcc <= ecc; gcc++) {
                     do {
@@ -423,7 +426,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                                 if (env.swapChunksExcept_Account(this, chunkID, false).detail < 1L) {
                                     /**
                                      * TODO: Should also not cache out the chunk
-                                     * of grid thats values are being used to
+                                     * of grid that's values are being used to
                                      * initialise this.
                                      */
                                     throw e;
@@ -613,8 +616,6 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     reportN = 1;
                 }
                 double gridFileNoDataValue = header.ndv.doubleValue();
-                Grids_ChunkDouble chunk;
-                Grids_ChunkDoubleSinglet gridChunk;
                 long row;
                 long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
@@ -753,7 +754,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk = getChunk(i);
             if (chunk instanceof Grids_ChunkDoubleSinglet) {
                 Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
-                if (value != gc.v) {
+                if (value != gc.getV()) {
                     // Convert chunk to another type
                     chunk = env.getProcessor().gridFactoryDouble.defaultGridChunkDoubleFactory.create(chunk, i);
                     data.put(i, chunk);
@@ -821,12 +822,12 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected void updateStats(double newValue, double oldValue)
             throws IOException, Exception, ClassNotFoundException {
-        Grids_StatsDouble dStats = getStats();
-        if (dStats.getClass() == Grids_StatsDouble.class) {
+        Grids_GridStatsDouble dStats = getStats();
+        if (dStats.getClass() == Grids_GridStatsDouble.class) {
             if (newValue != noDataValue) {
                 if (oldValue != noDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    dStats.setN(dStats.getN().subtract(BigInteger.ONE));
+                    dStats.setN(dStats.getN() - 1);
                     dStats.setSum(dStats.getSum().subtract(oldValueBD));
                     double min = dStats.getMin(false);
                     if (oldValue == min) {
@@ -838,7 +839,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
                     }
                 }
                 BigDecimal newValueBD = new BigDecimal(newValue);
-                dStats.setN(dStats.getN().add(BigInteger.ONE));
+                dStats.setN(dStats.getN() + 1);
                 dStats.setSum(dStats.getSum().add(newValueBD));
                 updateStats(newValue);
                 if (dStats.getNMin() < 1) {
@@ -852,7 +853,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             }
         } else {
             if (newValue != oldValue) {
-                ((Grids_StatsNotUpdatedDouble) dStats).setUpToDate(false);
+                ((Grids_GridStatsNotUpdatedDouble) dStats).setUpToDate(false);
             }
         }
     }
@@ -1030,12 +1031,11 @@ public class Grids_GridDouble extends Grids_GridNumber {
         } else {
             Grids_ChunkDoubleSinglet c = (Grids_ChunkDoubleSinglet) chunk;
             if (c != null) {
-                if (v != c.v) {
+                r = c.getV();
+                if (v != r) {
                     // Convert chunk to another type
                     chunk = convertToAnotherTypeOfChunk(chunk, c.getId());
                     r = chunk.setCell(ccr, ccc, v);
-                } else {
-                    r = c.v;
                 }
             }
         }
@@ -1080,7 +1080,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             ClassNotFoundException, Exception {
         if (chunk instanceof Grids_ChunkDoubleSinglet) {
             Grids_ChunkDoubleSinglet gc = (Grids_ChunkDoubleSinglet) chunk;
-            if (v != gc.v) {
+            if (v != gc.getV()) {
                 chunk = convertToAnotherTypeOfChunk(chunk, i);
                 chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
             } else {
@@ -1093,7 +1093,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         }
         // Update stats
         if (v != noDataValue) {
-            if (!(stats instanceof Grids_StatsNotUpdatedDouble)) {
+            if (!(stats instanceof Grids_GridStatsNotUpdatedDouble)) {
                 updateStats(v);
             }
         }
@@ -1101,10 +1101,10 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     protected void updateStats(double value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_StatsDouble dStats = getStats();
+        Grids_GridStatsDouble dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             BigDecimal valueBD = new BigDecimal(value);
-            dStats.setN(dStats.getN().add(BigInteger.ONE));
+            dStats.setN(dStats.getN() + 1);
             dStats.setSum(dStats.getSum().add(valueBD));
             double min = dStats.getMin(false);
             if (value < min) {
@@ -1492,8 +1492,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     @Override
-    public Grids_StatsDouble getStats() {
-        return (Grids_StatsDouble) stats;
+    public Grids_GridStatsDouble getStats() {
+        return (Grids_GridStatsDouble) stats;
     }
 
     public void initStatistics(Grids_StatsDouble stats) {

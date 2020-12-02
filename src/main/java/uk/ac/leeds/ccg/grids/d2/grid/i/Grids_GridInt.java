@@ -43,7 +43,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Set;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
@@ -888,7 +887,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             if (newValue != noDataValue) {
                 if (oldValue != noDataValue) {
                     BigDecimal oldValueBD = new BigDecimal(oldValue);
-                    iStats.setN(iStats.getN().subtract(BigInteger.ONE));
+                    iStats.setN(iStats.getN() - 1);
                     iStats.setSum(iStats.getSum().subtract(oldValueBD));
                     int min = iStats.getMin(false);
                     if (oldValue == min) {
@@ -901,7 +900,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 }
                 if (newValue != noDataValue) {
                     BigDecimal newValueBD = new BigDecimal(newValue);
-                    iStats.setN(iStats.getN().add(BigInteger.ONE));
+                    iStats.setN(iStats.getN() + 1);
                     iStats.setSum(iStats.getSum().add(newValueBD));
                     updateStats(newValue);
                     if (iStats.getNMin() < 1) {
@@ -1146,7 +1145,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             ClassNotFoundException {
         Grids_StatsInt iStats = getStats();
         BigDecimal valueBD = new BigDecimal(value);
-        iStats.setN(iStats.getN().add(BigInteger.ONE));
+        iStats.setN(iStats.getN() + 1);
         iStats.setSum(iStats.getSum().add(valueBD));
         int min = iStats.getMin(false);
         if (value < min) {

@@ -42,7 +42,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
@@ -162,8 +161,8 @@ public class Grids_GridBD extends Grids_GridNumber {
      * this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_Environment ge, Generic_FileStore fs, long id, 
-            Generic_Path gridFile, BigDecimal ndv) throws IOException, 
+    protected Grids_GridBD(Grids_Environment ge, Generic_FileStore fs, long id,
+            Generic_Path gridFile, BigDecimal ndv) throws IOException,
             Exception {
         super(ge, fs, id, ndv);
         init(new Grids_StatsNotUpdatedBD(ge), gridFile);
@@ -302,7 +301,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                                                 if (gValue == gndv) {
                                                     initCell(chunk, chunkID, row, col, ndv);
                                                 } else {
-                                                        initCell(chunk, chunkID, row, col, gValue);
+                                                    initCell(chunk, chunkID, row, col, gValue);
                                                 }
                                                 //ge.removeFromNotToClear(this, chunkID);
                                             }
@@ -592,7 +591,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 }
                 BigDecimal gridFileNoDataValue = header.ndv;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
-                if (gridFileNoDataValue.compareTo(ndv)== 0) {
+                if (gridFileNoDataValue.compareTo(ndv) == 0) {
                     if (stats.isUpdated()) {
                         for (long row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
@@ -799,7 +798,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         if (dStats.getClass() == Grids_StatsBD.class) {
             if (newValue.compareTo(ndv) != 0) {
                 if (oldValue.compareTo(ndv) != 0) {
-                    dStats.setN(dStats.getN().subtract(BigInteger.ONE));
+                    dStats.setN(dStats.getN() - 1);
                     dStats.setSum(dStats.getSum().subtract(oldValue));
                     BigDecimal min = dStats.getMin(false);
                     if (oldValue.compareTo(min) == 0) {
@@ -810,7 +809,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                         dStats.setNMax(dStats.getNMax() - 1);
                     }
                 }
-                dStats.setN(dStats.getN().add(BigInteger.ONE));
+                dStats.setN(dStats.getN() + 1);
                 dStats.setSum(dStats.getSum().add(newValue));
                 updateStats(newValue);
                 if (dStats.getNMin() < 1) {
@@ -896,8 +895,8 @@ public class Grids_GridBD extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The v of the cell with cell ID {@code i} or {@link #ndv}
-     * if there is no such cell in the grid.
+     * @return The v of the cell with cell ID {@code i} or {@link #ndv} if there
+     * is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1069,26 +1068,26 @@ public class Grids_GridBD extends Grids_GridNumber {
     protected void updateStats(BigDecimal value) throws IOException, Exception,
             ClassNotFoundException {
         Grids_StatsBD dStats = getStats();
-            dStats.setN(dStats.getN().add(BigInteger.ONE));
-            dStats.setSum(dStats.getSum().add(value));
-            BigDecimal min = dStats.getMin(false);
-            if (value.compareTo(min) == -1) {
-                dStats.setNMin(1);
-                dStats.setMin(value);
-            } else {
-                if (value.compareTo(min) == 0) {
-                    dStats.setNMin(dStats.getNMin() + 1);
-                }
+        dStats.setN(dStats.getN() + 1);
+        dStats.setSum(dStats.getSum().add(value));
+        BigDecimal min = dStats.getMin(false);
+        if (value.compareTo(min) == -1) {
+            dStats.setNMin(1);
+            dStats.setMin(value);
+        } else {
+            if (value.compareTo(min) == 0) {
+                dStats.setNMin(dStats.getNMin() + 1);
             }
-            BigDecimal max = dStats.getMax(false);
-            if (value.compareTo(max) == 1) {
-                dStats.setNMax(1);
-                dStats.setMax(value);
-            } else {
-                if (value.compareTo(max) == 0) {
-                    dStats.setNMax(dStats.getNMax() + 1);
-                }
+        }
+        BigDecimal max = dStats.getMax(false);
+        if (value.compareTo(max) == 1) {
+            dStats.setNMax(1);
+            dStats.setMax(value);
+        } else {
+            if (value.compareTo(max) == 0) {
+                dStats.setNMax(dStats.getNMax() + 1);
             }
+        }
     }
 
     /**

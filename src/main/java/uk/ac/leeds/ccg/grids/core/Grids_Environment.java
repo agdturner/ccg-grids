@@ -164,6 +164,7 @@ public class Grids_Environment extends Grids_MemoryManager
     public Grids_Environment(Generic_Environment e, Generic_Path dir)
             throws IOException, Exception {
         this.env = e;
+        this.Memory_Threshold = Default_Memory_Threshold;
         initMemoryReserve(Default_Memory_Threshold, e);
         initGrids();
         initNotToClear();

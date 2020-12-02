@@ -27,7 +27,6 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
@@ -124,36 +123,36 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
             //if ( ( ( String ) statistics.elementAt( i ) ).equalsIgnoreCase( "FirstOrder" ) ) { doMean = true; doWMean = true; doNWMean = true; doWMeanN = true; doSum = true; doNWSum = true; doWSumN = true; }
             //if ( ( ( String ) statistics.elementAt( i ) ).equalsIgnoreCase( "WeightedFirstOrder" ) ) { doWMean = true; doNWMean = true; doWMeanN = true; doNWSum = true; doWSumN = true; }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Sum")) {
+            if (statistics.get(i).equalsIgnoreCase("Sum")) {
                 doSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WSum")) {
+            if (statistics.get(i).equalsIgnoreCase("WSum")) {
                 doWSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("NWSum")) {
+            if (statistics.get(i).equalsIgnoreCase("NWSum")) {
                 doNWSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WSumN")) {
+            if (statistics.get(i).equalsIgnoreCase("WSumN")) {
                 doWSumN = true;
             }
 
-            if (((String) statistics.get(i)).equalsIgnoreCase("Mean")) {
+            if (statistics.get(i).equalsIgnoreCase("Mean")) {
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WMean1")) {
+            if (statistics.get(i).equalsIgnoreCase("WMean1")) {
                 doWMean1 = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WMean2")) {
+            if (statistics.get(i).equalsIgnoreCase("WMean2")) {
                 doWMean2 = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("NWMean")) {
+            if (statistics.get(i).equalsIgnoreCase("NWMean")) {
                 doNWMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WMeanN")) {
+            if (statistics.get(i).equalsIgnoreCase("WMeanN")) {
                 doWMeanN = true;
             }
 
-            if (((String) statistics.get(i)).equalsIgnoreCase("SecondOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("SecondOrder")) {
                 doMean = true;
                 doNWMean = true;
                 doProp = true;
@@ -167,7 +166,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 doCSkew = true;
                 doWCSkew = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WeightedSecondOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("WeightedSecondOrder")) {
                 doNWMean = true;
                 doWProp = true;
                 doWVar = true;
@@ -175,31 +174,31 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 doWCVar = true;
                 doWCSkew = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Prop")) {
+            if (statistics.get(i).equalsIgnoreCase("Prop")) {
                 doProp = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WProp")) {
+            if (statistics.get(i).equalsIgnoreCase("WProp")) {
                 doWProp = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Var")) {
+            if (statistics.get(i).equalsIgnoreCase("Var")) {
                 doVar = true;
                 doMean = true;
             }
             //      if ( ( ( String ) statistics.elementAt( i ) ).equalsIgnoreCase( "WVar" ) ) { doWVar = true; doWMean = true;  }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Skew")) {
+            if (statistics.get(i).equalsIgnoreCase("Skew")) {
                 doSkew = true;
                 doMean = true;
             }
             //    if ( ( ( String ) statistics.elementAt( i ) ).equalsIgnoreCase( "WSkew" ) ) { doWSkew = true; doWMean = true;  }
-            if (((String) statistics.get(i)).equalsIgnoreCase("CVar")) {
+            if (statistics.get(i).equalsIgnoreCase("CVar")) {
                 doCVar = true;
                 doVar = true;
                 doMean = true;
             }
             //     if ( ( ( String ) statistics.elementAt( i ) ).equalsIgnoreCase( "WCVar" ) ) { doWCVar = true; doWVar = true; doWMean = true;  }
-            if (((String) statistics.get(i)).equalsIgnoreCase("CSkew")) {
+            if (statistics.get(i).equalsIgnoreCase("CSkew")) {
                 doCSkew = true;
                 doSkew = true;
                 doVar = true;
@@ -247,32 +246,25 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 wSumGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doNWSum) {
-                nWSumGrid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                nWSumGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWSumN) {
-                wSumNGrid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                wSumNGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doMean) {
-                meanGrid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                meanGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWMean1) {
-                wMean1Grid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                wMean1Grid = gf.create(nrows, ncols, dimensions);
             }
             if (doWMean2) {
-                wMean2Grid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                wMean2Grid = gf.create(nrows, ncols, dimensions);
             }
             if (doNWMean) {
-                nWMeanGrid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                nWMeanGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWMeanN) {
-                wMeanNGrid = (Grids_GridDouble) gf.create(nrows, ncols,
-                        dimensions);
+                wMeanNGrid = gf.create(nrows, ncols, dimensions);
             }
             BigDecimal[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
                     cellDistance, distance, weightIntersect, weightFactor, dp, rm);
@@ -1277,7 +1269,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
             BigDecimal distance, Grids_GridFactoryDouble gridFactory)
             throws IOException, ClassNotFoundException, Exception {
-        BigInteger n = grid.getStats().getN();
+        long n = grid.getStats().getN();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
         Grids_Dimensions dimensions = grid.getDimensions();
@@ -1308,7 +1300,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_GridDouble[] result = new Grids_GridDouble[numberOfIterations];
         Generic_Path dir;
         // If all values are noDataValues return noDataValue density results
-        if (n.compareTo(BigInteger.ZERO) == 0) {
+        if (n == 0) {
             for (int i = 0; i < numberOfIterations; i++) {
                 result[i] = (Grids_GridDouble) gridFactory.create(grid);
             }

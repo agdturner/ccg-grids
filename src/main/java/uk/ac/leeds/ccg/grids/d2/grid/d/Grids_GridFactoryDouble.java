@@ -24,8 +24,9 @@ import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedDouble;
 import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
@@ -66,7 +67,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
             Grids_ChunkFactoryDoubleSinglet gcdf,
             Grids_ChunkFactoryDouble dgcdf, int cnr, int cnc) {
         this(e, fs, gcdf, dgcdf, -Double.MAX_VALUE, cnr, cnc,
-                null, new Grids_StatsNotUpdatedDouble(e));
+                null, new Grids_GridStatsNotUpdatedDouble(e));
     }
 
     /**
@@ -137,7 +138,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     public Grids_GridDouble create(long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException,
             ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env),
+        return create(new Grids_GridStatsNotUpdatedDouble(env),
                 gridChunkDoubleFactory, nRows, nCols, dimensions);
     }
 
@@ -157,7 +158,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats,
+    public Grids_GridDouble create(Grids_GridStatsDouble stats,
             Grids_ChunkFactoryDouble cf, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException,
             ClassNotFoundException, Exception {
@@ -186,7 +187,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     public Grids_GridDouble create(Grids_Grid g,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env), g,
+        return create(new Grids_GridStatsNotUpdatedDouble(env), g,
                 defaultGridChunkDoubleFactory, startRow, startCol, endRow,
                 endCol);
     }
@@ -205,7 +206,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats,
+    public Grids_GridDouble create(Grids_GridStatsDouble stats,
             Grids_Grid g, Grids_ChunkFactoryDouble cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
@@ -232,7 +233,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
     public Grids_GridDouble create(Generic_Path gridFile, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
-        return create(new Grids_StatsNotUpdatedDouble(env),
+        return create(new Grids_GridStatsNotUpdatedDouble(env),
                 gridFile, defaultGridChunkDoubleFactory, startRow, startCol,
                 endRow, endCol);
     }
@@ -253,7 +254,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridDouble create(Grids_StatsDouble stats,
+    public Grids_GridDouble create(Grids_GridStatsDouble stats,
             Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
@@ -285,13 +286,13 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * For duplicating stats.
      * 
      * @param stats What is to be duplicated.
-     * @return A new Grids_StatsDouble of the same type for use.
+     * @return A new Grids_GridStatsDouble of the same type for use.
      */
-    private Grids_StatsDouble getStats(Grids_StatsDouble stats) {
-        if (stats instanceof Grids_StatsNotUpdatedDouble) {
-            return new Grids_StatsNotUpdatedDouble(env);
+    private Grids_GridStatsDouble getStats(Grids_GridStatsDouble stats) {
+        if (stats instanceof Grids_GridStatsNotUpdatedDouble) {
+            return new Grids_GridStatsNotUpdatedDouble(env);
         } else {
-            return new Grids_StatsDouble(env);
+            return new Grids_GridStatsDouble(env);
         }
     }
 }
