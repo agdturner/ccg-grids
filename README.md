@@ -42,17 +42,14 @@ For each chunk it is known whether the version cached on disk is up to date.
 
 The library attempts to manage with the memory made available to the Java Virtual Machine or with a subset of this made available for the grids environment by when necessary caching and clearing or otherwise clearing data from the fast access memory of the computer and swapping data to and from disk. If the grids environment runs out of suitable chunks to clear, before getting stuck in slow cycles of swapping out chunks only to load them again soon after, then errors or exceptions are thrown out further to a more general processing environment in the hope that some other part of the data processing environment has more approriate data to clear. If this is not the case then the processing is likely to grind on, but is perhaps unlikely to complete in a reasonable time frame... Currently no information is provided to the user if this is happening, but in a future version it might be, and in this way the user can be advised about and consider: changing the chunk structures of the grids; or increasing the size of the virtual machine in which the program is running (which may or may not involve utilising computers with more fast access memory).
 
-## History
-The library has evolved since around the year 2000 and is actively being developed. Some more history abou the evolution of the library can be found here: https://www.geog.leeds.ac.uk/people/a.turner/src/andyt/java/grids/ 
-
-## Known uses
+## Example uses
 1. The library was originally developed to process geographical data into cross-scale density surfaces. Such surfaces were generated and used in various academic research projects for a range of geographical modelling task, to search for evidence of geographical clustering and to investigate changes in geographical clustering over time. In this respect it has most recently been used in the Digital Welfare Project to reveal changes in the distributions of benefit claimants in Leeds - see: https://github.com/agdturner/agdt-java-project-DigitalWelfare.
 2. Processing digital elevation data into geomorphometrics - see: https://github.com/agdturner/agdt-java-project-Geomorphometrics.
 3. Producing density plots of lines and points to help reveal relationships between variables.
 4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-vector
 
 ## Dependencies
-agdt-java-math available via https://github.com/agdturner/agdt-java-math.
+[agdt-java-math](https://github.com/agdturner/agdt-java-math)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
 <dependency>
@@ -61,7 +58,7 @@ agdt-java-math available via https://github.com/agdturner/agdt-java-math.
     <version>1.6</version>
 </dependency>
 ```
-agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
+[agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
 <dependency>
@@ -70,9 +67,9 @@ agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
     <version>1.7.1</version>
 </dependency>
 ```
-- Please see the POM (https://github.com/agdturner/agdt-java-grids/blob/master/pom.xml) or https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids for details.
 - There are no third party dependencies.
 - There are third party dependencies for testing.
+- Please see the [POM](https://github.com/agdturner/agdt-java-grids/blob/master/pom.xml) for details.
 
 ## Development Plans
 # Version 2.0
