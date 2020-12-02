@@ -11,6 +11,7 @@ A Java library for storing and processing lattice based raster data otherwise kn
     <version>1.1</version>
 </dependency>
 ```
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-grids/1.1/agdt-java-grids-1.1.jar)
 
 ## General description
 Grids is geared for processing multiple large input and output data grids in workflows which may involve other data not stored as data grids. Each data grid may be too large to store in the available fast access memory of the computer (memory) - in which case, some of the data is stored in slower access storage (disk).
@@ -50,19 +51,6 @@ The library has evolved since around the year 2000 and is actively being develop
 3. Producing density plots of lines and points to help reveal relationships between variables.
 4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-vector
 
-## Current Version
-Developed and tested on Java 11 using Maven.
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-grids</artifactId>
-    <version>1.1</version>
-</dependency>
-```
-A JAR is available:
-https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-grids/1.0/agdt-java-grids-1.0.jar
-
 ## Dependencies
 agdt-java-math available via https://github.com/agdturner/agdt-java-math.
 ```
@@ -96,10 +84,10 @@ agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
 - Please liaise with the developer with regards feature requests and about contributing to development.
 
 ## LICENCE
-- APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
+- [APACHE LICENSE, VERSION 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Acknowledgements and feedback
-* The development of this library has been supported by numerous academic research grants and the University of Leeds. Thanks to the University of Leeds and numerous research grants for supporting the development of this code and the developer over many years.
+* Thanks to the [University of Leeds](http://www.leeds.ac.uk) and numerous research grants for supporting the development of this code and the developer over many years.
 * If you find this code useful, please let the developer know and refer to the resources used in the usual ways.
 
 ## Footnotes
