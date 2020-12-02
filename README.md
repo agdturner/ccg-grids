@@ -1,6 +1,4 @@
-# agdt-java-grids
-
-https://github.com/agdturner/agdt-java-grids
+# [agdt-java-grids](https://github.com/agdturner/agdt-java-grids)
 
 A Java library for storing and processing lattice based raster data otherwise known as grids.
 
@@ -10,7 +8,7 @@ A Java library for storing and processing lattice based raster data otherwise kn
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-grids</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
@@ -59,7 +57,7 @@ Developed and tested on Java 11 using Maven.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-grids</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 A JAR is available:
@@ -72,7 +70,7 @@ agdt-java-math available via https://github.com/agdturner/agdt-java-math.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-math</artifactId>
-    <version>1.2</version>
+    <version>1.6</version>
 </dependency>
 ```
 agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
@@ -81,7 +79,7 @@ agdt-java-generic available via https://github.com/agdturner/agdt-java-generic.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-generic</artifactId>
-    <version>1.2</version>
+    <version>1.7.1</version>
 </dependency>
 ```
 - Please see the POM (https://github.com/agdturner/agdt-java-grids/blob/master/pom.xml) or https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids for details.
