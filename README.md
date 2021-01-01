@@ -2,7 +2,7 @@
 
 A Java library for storing and processing lattice based raster data otherwise known as grids.
 
-## Current version
+## Latest versioned release
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
 <dependency>
@@ -57,6 +57,7 @@ The library attempts to manage with the memory made available to the Java Virtua
 # Version 2.0
 * Support 3D grids.
 * Push the processing classes geared for processing digital elevation data Grids_Processor_DEM and for generating geographically weighted statistics Grids_Processor_GWS to other libraries.
+* Develop in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 
 ## Contributions
 - Welcome.
@@ -75,7 +76,7 @@ The library attempts to manage with the memory made available to the Java Virtua
 -- [Wikimedia](https://www.wikimedia.org/) projects, in particular the [English language Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
 -- [StackExchange](https://stackexchange.com), in particular [StackOverflow](https://stackoverflow.com/).
 - Information that has helped me develop this library is cited in the source code.
-- This library is a product of my education, interest and work. Thank you teachers, especially those that supported me. Thank you to everyone that supported my welfare and made a positive contribution to society. Let us: try to look after this world and create and find others; extend and safeguard knowledge; enhance skills and capability; make space for wildlife; and, love and create harmony :)
+- Thank you to those that supported me personally and all who have made a positive contribution to society. Let us try to look after each other, look after this world, make space for wildlife, and engineer knowledge :)
 
 ## Footnotes
 1. For spatial analysis, especially with regard Earth systems modelling, there are some theoretical advantages of rasters with values regularly spaced in a more triangular arrangement (these can be imagined as cells that are hexagonal in two dimensions and which can be aggregated into larger (triangular, hexagonal or polyhedral chunks). Both square and triangular arrangements can be extended to three and more dimensions. In three dimensions (3D), there are a plethora of honeycomb like arrangements that can be used to partition values into chunks or semiregular honeycombs.
