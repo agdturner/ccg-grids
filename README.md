@@ -1,6 +1,6 @@
 # [agdt-java-grids](https://github.com/agdturner/agdt-java-grids)
 
-A Java library for storing and processing lattice based raster data otherwise known as grids.
+A modularised Java library for storing and processing lattice based raster data otherwise known as grids.
 
 ## Latest versioned release
 ```
