@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.d;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
@@ -122,7 +123,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     @Override
-    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
-        return BigDecimal.valueOf(v);
+    public BigRational getArithmeticMean() {
+        return BigRational.valueOf(v);
     }
 }

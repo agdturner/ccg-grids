@@ -158,7 +158,8 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      */
     protected int[] getValueClass(BigDecimal v,
             TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap,
-            TreeMap<Integer, BigDecimal> mins, TreeMap<Integer, BigDecimal> maxs,
+            TreeMap<Integer, BigDecimal> mins, 
+            TreeMap<Integer, BigDecimal> maxs,
             TreeMap<Integer, Long> classCounts,
             long dnvpc, int classToFill) {
         int[] r = new int[2];

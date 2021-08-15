@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.stats;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 
 /**
@@ -55,7 +56,7 @@ public interface Grids_StatsInterface {
      * @param rm The Rounding mode for any necessary rounding.
      * @return The arithmetic mean of all data values.
      */
-    public Number getArithmeticMean(int dp, RoundingMode rm);
+    public BigRational getArithmeticMean();
 
 //    @TODO
 //    StandardDeviation

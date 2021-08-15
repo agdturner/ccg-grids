@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,7 +26,8 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRational;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * Stores cell values in: a TreeMap with keys as cell values and values as
@@ -831,17 +833,18 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     }
 
     /**
+     * 
      * @return The standard deviation.
      */
     @Override
-    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
-        BigDecimal r = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp, rm);
+    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+        BigRational r = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         // Calculate the number of default values
         int n = chunkNRows * chunkNCols;
         int nValues = getNumberOfDefaultValues(n);
-        r = r.add((defaultValue.subtract(mean).pow(2))
-                .multiply(BigDecimal.valueOf(nValues)));
+        r = r.add((BigRational.valueOf(defaultValue).subtract(mean).pow(2))
+                .multiply(BigRational.valueOf(nValues)));
         Iterator<BigDecimal> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -853,7 +856,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             offsetBitSet = Data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
-            r = r.add((v.subtract(mean).pow(2)).multiply(BigDecimal.valueOf(n)));
+            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigRational.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -863,14 +867,13 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             BigDecimal v = ite.next();
             n = Data.DataMapHashSet.get(v).size();
             nValues += n;
-            r = r.add((v.subtract(mean).pow(2))
-                    .multiply(BigDecimal.valueOf(n)));
+            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigRational.valueOf(n)));
         }
         if ((nValues - 1L) > 0L) {
-            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
-                    r, BigInteger.valueOf(nValues - 1L), dp * 2, rm), dp, rm);
+            return new Math_BigRationalSqrt(r.divide(nValues - 1)).toBigDecimal(oom);
         } else {
-            return r;
+            return Math_BigRational.roundToBD(r, oom);
         }
     }
 

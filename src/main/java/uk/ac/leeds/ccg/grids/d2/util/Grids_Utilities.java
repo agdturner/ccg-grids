@@ -160,16 +160,16 @@ public class Grids_Utilities extends Grids_Object {
      * @param y1 The y coordinate of the first point.
      * @param x2 The x coordinate of the second point.
      * @param y2 The y coordinate of the second point.
-     * @param dp The number of decimal places the result is to be accurate to.
+     * @param oom The order of magnitude the result is rounded to if necessary.
      * @param rm The {@link RoundingMode} to use when rounding the result.
      *
      * @return The distance between two points calculated using
      * {@link BigDecimal} arithmetic.
      */
     public static final BigDecimal distance(BigDecimal x1, BigDecimal y1,
-            BigDecimal x2, BigDecimal y2, int dp, RoundingMode rm) {
+            BigDecimal x2, BigDecimal y2, int oom, RoundingMode rm) {
         return Math_BigDecimal.sqrt(((x1.subtract(x2)).pow(2))
-                .add((y1.subtract(y2)).pow(2)), dp, rm);
+                .add((y1.subtract(y2)).pow(2)), oom, rm);
     }
 
     /**
@@ -263,7 +263,7 @@ public class Grids_Utilities extends Grids_Object {
      * <li>r[2] = numy</li>
      * <li>r[3] = densityPlotGrid;</li>
      * </ul>
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      *
      * @throws Exception If encountered.
@@ -271,7 +271,7 @@ public class Grids_Utilities extends Grids_Object {
      * @throws ClassNotFoundException If encountered.
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int dp,
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom,
             RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
@@ -354,12 +354,12 @@ public class Grids_Utilities extends Grids_Object {
         BigDecimal[] meany = new BigDecimal[divisions];
         for (int j = 0; j < divisions; j++) {
             if (numy[j].compareTo(BigDecimal.ZERO) == 1) {
-                meany[j] = Math_BigDecimal.divideRoundIfNecessary(
-                        sumy[j], numy[j], dp, rm);
+                meany[j] = Math_BigDecimal.divide(
+                        sumy[j], numy[j], oom, rm);
                 if (numy[j].compareTo(BigDecimal.ONE) == 1) {
-                    stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
+                    stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divide(
                             ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j]))),
-                            ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), dp, rm), dp, rm);
+                            ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), oom, rm), oom, rm);
                 }
             }
 //            if (numy[j] > 0.0d) {

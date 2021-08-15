@@ -838,18 +838,17 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected boolean[] getCells(BigDecimal x, BigDecimal y, long row, long col,
-            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+            BigDecimal distance, int oom, RoundingMode rm) throws IOException,
             ClassNotFoundException, Exception {
         int delta = Math_BigDecimal.ceilingSignificantDigit(
-                Math_BigDecimal.divideRoundIfNecessary(x, y, 1,
-                        RoundingMode.UP)).intValueExact();
+                Math_BigDecimal.divide(x, y, 1, RoundingMode.UP)).intValueExact();
         boolean[] cells = new boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
             BigDecimal thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
                 BigDecimal thisX = getCellX(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
+                if (Grids_Utilities.distance(x, y, thisX, thisY, oom, rm)
                         .compareTo(distance) == -1) {
                     cells[count] = getCell(p, q);
                     count++;

@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +24,7 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumber;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * For chunks that represent values at cell locations that are
@@ -362,13 +363,18 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The rounding mode.
-     * @return The standard deviation of all data values.
+     * Calculate and return the standard deviation of all data values. If there
+     * is only one data value then {@link Math_BigRationalSqrt.ZERO} is
+     * returned.
+     *
+     * @param oom The order of magnitude at which the result is calculated.
+     * @param rm The {@link RoundingMode} for any rounding that is necessary.
+     * @return The standard deviation of all data values calculated to
+     * {@code oom} precision using {@link RoundingMode} {@code rm}.
      */
-    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
-        BigDecimal sd = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp, rm);
+    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+        BigRational sd = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         Grids_GridBD g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -377,16 +383,17 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
             for (int col = 0; col < ncols; col++) {
                 BigDecimal v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
-                    sd = sd.add(v.subtract(mean).pow(2));
+                    sd = sd.add(BigRational.valueOf(v).subtract(mean).pow(2));
                     count++;
                 }
             }
         }
-        if ((count - 1L) > 0L) {
-            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
-                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
+        long d = count - 1L;
+        if (d > 0L) {
+            Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd);
+            return sqrt.toBigDecimal(oom);
         } else {
-            return sd;
+            return BigDecimal.ZERO;
         }
     }
 }

@@ -35,20 +35,20 @@ public abstract class Grids_Kernel {
      * @param variance The variance.
      * @param PI Pi
      * @param E euler-macheroni constant
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Expected value of value for a normal distribution with mean and
      * variance.
      */
     public static BigDecimal getNormalDistributionKernelWeight(BigDecimal value,
             BigDecimal mean, BigDecimal variance, BigDecimal PI, BigDecimal E,
-            int dp, RoundingMode rm) {
-        BigDecimal two = BigDecimal.valueOf(2);
-        return Math_BigDecimal.divideRoundIfNecessary(BigDecimal.ONE,
-                variance.multiply(Math_BigDecimal.sqrt(two.multiply(PI), dp, rm)), dp, rm)
+            int oom, RoundingMode rm) {
+        BigDecimal TWO = BigDecimal.valueOf(2);
+        return Math_BigDecimal.divide(BigDecimal.ONE,
+                variance.multiply(Math_BigDecimal.sqrt(TWO.multiply(PI), oom, rm)), oom, rm)
                 .multiply(Math_BigDecimal.power(E, (BigDecimal.ONE.negate().multiply(
-                        Math_BigDecimal.divideRoundIfNecessary(value.subtract(mean).pow(2),
-                                 two.multiply(variance.pow(2)), dp, rm))), dp, rm));
+                        Math_BigDecimal.divide(value.subtract(mean).pow(2),
+                                 TWO.multiply(variance.pow(2)), oom, rm))), oom, rm));
     }
 
     /**
@@ -140,13 +140,13 @@ public abstract class Grids_Kernel {
      * @param wf Warning: If less than 1 then strange things could happen!!!!
      * @param td The distance from the centre of the kernel that the weight
      * result is returned.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      */
     public static BigDecimal getKernelWeight(BigDecimal d, BigDecimal wi,
-            int wf, BigDecimal td, int dp, RoundingMode rm) {
-        return BigDecimal.ONE.subtract((Math_BigDecimal.divideRoundIfNecessary(
-                td.pow(2), d.pow(2), dp, rm))).pow(wf).multiply(wi);
+            int wf, BigDecimal td, int oom, RoundingMode rm) {
+        return BigDecimal.ONE.subtract((Math_BigDecimal.divide(
+                td.pow(2), d.pow(2), oom, rm))).pow(wf).multiply(wi);
     }
 
     /**
@@ -156,12 +156,12 @@ public abstract class Grids_Kernel {
      * @param d The distance.
      * @param wi The weight intersect.
      * @param wf The weight factor.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel weights.
      */
     public static BigDecimal[][] getKernelWeights(Grids_GridNumber g,
-            BigDecimal d, BigDecimal wi, int wf, int dp, RoundingMode rm) {
+            BigDecimal d, BigDecimal wi, int wf, int oom, RoundingMode rm) {
         BigDecimal cellsize = g.getCellsize();
         int delta = d.divideToIntegralValue(cellsize).intValueExact();
         BigDecimal[][] weights = new BigDecimal[(delta * 2) + 1][(delta * 2) + 1];
@@ -181,12 +181,12 @@ public abstract class Grids_Kernel {
             for (col = -delta; col <= delta; col++) {
                 x1 = g.getCellX(col);
                 y1 = g.getCellY(row);
-                thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, dp, rm);
+                thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance.compareTo(d) == -1) {
                     weights[row + delta][col + delta] = getKernelWeight(
                             d, wi,
-                            wf, thisDistance, dp, rm);
+                            wf, thisDistance, oom, rm);
                 } else {
                     //weights[ i + cellDistance ][ j + cellDistance ] = noDataValue;
                     weights[row + delta][col + delta] = BigDecimal.ZERO;
@@ -206,13 +206,13 @@ public abstract class Grids_Kernel {
      * @param wi The weight intersect.
      * @param wf The weight factor.
      * @param points The points.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel weights.
      */
     public static BigDecimal[] getKernelWeights(Grids_GridNumber g, long row,
             long col, BigDecimal d, BigDecimal wi, int wf, Grids_Point[] points,
-            int dp, RoundingMode rm) {
+            int oom, RoundingMode rm) {
         BigDecimal[] weights = new BigDecimal[points.length];
         /**
          * The following weight is just one example of a kernel that can be
@@ -223,9 +223,9 @@ public abstract class Grids_Kernel {
         BigDecimal y = g.getCellY(row);
         for (int i = 0; i < points.length; i++) {
             BigDecimal td = Grids_Utilities.distance(x, y, points[i].x,
-                    points[i].y, dp, rm);
+                    points[i].y, oom, rm);
             if (td.compareTo(d) == -1) {
-                weights[i] = getKernelWeight(d, wi, wf, td, dp, rm);
+                weights[i] = getKernelWeight(d, wi, wf, td, oom, rm);
             }
         }
         return weights;
@@ -239,12 +239,12 @@ public abstract class Grids_Kernel {
      * @param wi The weight intersect.
      * @param wf The weight factor.
      * @param points The points.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel weights.
      */
     public static BigDecimal[] getKernelWeights(Grids_Point centroid,
-            BigDecimal d, BigDecimal wi, int wf, Grids_Point[] points, int dp,
+            BigDecimal d, BigDecimal wi, int wf, Grids_Point[] points, int oom,
             RoundingMode rm) {
         BigDecimal[] weights = new BigDecimal[points.length];
         /**
@@ -254,9 +254,9 @@ public abstract class Grids_Kernel {
          */
         for (int i = 0; i < points.length; i++) {
             BigDecimal td = Grids_Utilities.distance(centroid.x, centroid.y,
-                    points[i].x, points[i].y, dp, rm);
+                    points[i].x, points[i].y, oom, rm);
             if (td.compareTo(d) == -1) {
-                weights[i] = getKernelWeight(d, wi, wf, td, dp, rm);
+                weights[i] = getKernelWeight(d, wi, wf, td, oom, rm);
             }
         }
         return weights;
@@ -275,12 +275,12 @@ public abstract class Grids_Kernel {
      * @param d The distance.
      * @param wi The weight intersect.
      * @param wf The weight factor.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel parameters.
      */
     public static BigDecimal[] getKernelParameters(Grids_GridNumber g, int cd,
-            BigDecimal d, BigDecimal wi, int wf, int dp, RoundingMode rm) {
+            BigDecimal d, BigDecimal wi, int wf, int oom, RoundingMode rm) {
         BigDecimal r[] = new BigDecimal[2];
         r[0] = BigDecimal.ZERO;
         r[1] = BigDecimal.ZERO;
@@ -290,10 +290,9 @@ public abstract class Grids_Kernel {
             for (int q = -cd; q <= cd; q++) {
                 BigDecimal x1 = g.getCellX(q);
                 BigDecimal y1 = g.getCellY(p);
-                BigDecimal td = Grids_Utilities.distance(x0, y0, x1, y1, dp,
-                        rm);
+                BigDecimal td = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 if (td.compareTo(d) == -1) {
-                    r[0] = r[0].add(getKernelWeight(d, wi, wf, td, dp, rm));
+                    r[0] = r[0].add(getKernelWeight(d, wi, wf, td, oom, rm));
                     r[1] = r[1].add(BigDecimal.ONE);
                 }
             }
@@ -310,17 +309,16 @@ public abstract class Grids_Kernel {
      * @param p The precision.
      * @param wi The weight intersect.
      * @param wf The weight factor.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Adaptive kernel weight.
      */
     public static BigDecimal getAdaptiveKernelWeight(BigDecimal d,
             BigDecimal bw, BigDecimal sw, int p, BigDecimal wi, int wf,
-            int dp, RoundingMode rm) {
-        BigDecimal kernelVolume = getKernelVolume(bw, p, wi, wf, dp, rm);
-        BigDecimal kernelWeight = getKernelWeight(bw, wi, wf, d, dp, rm);
-        return Math_BigDecimal.divideRoundIfNecessary(kernelWeight.multiply(sw),
-                kernelVolume, dp, rm);
+            int oom, RoundingMode rm) {
+        BigDecimal v = getKernelVolume(bw, p, wi, wf, oom, rm);
+        BigDecimal w = getKernelWeight(bw, wi, wf, d, oom, rm);
+        return Math_BigDecimal.divide(w.multiply(sw), v, oom, rm);
     }
 
     /**
@@ -330,12 +328,12 @@ public abstract class Grids_Kernel {
      * @param p The precision.
      * @param wi The weight intersect.
      * @param wf The weight factor.
-     * @param dp Decimal place precision for BigDecimal arithmetic.
+     * @param oom Order Of Magnitude for any rounding.
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return The kernel volume.
      */
     public static BigDecimal getKernelVolume(BigDecimal bw, int p,
-            BigDecimal wi, int wf, int dp, RoundingMode rm) {
+            BigDecimal wi, int wf, int oom, RoundingMode rm) {
         BigDecimal r = BigDecimal.ZERO;
         BigDecimal[] dar = bw.divideAndRemainder(BigDecimal.valueOf(p));
         BigDecimal sectionSize = dar[0];
@@ -349,10 +347,10 @@ public abstract class Grids_Kernel {
                 BigDecimal td = Grids_Utilities.distance(BigDecimal.ZERO,
                         BigDecimal.ZERO, BigDecimal.valueOf(row)
                                 .multiply(sectionSize),
-                        BigDecimal.valueOf(col).multiply(sectionSize), dp, rm);
+                        BigDecimal.valueOf(col).multiply(sectionSize), oom, rm);
                 if (td.compareTo(bw) == -1) {
                     r = r.add(
-                            getKernelWeight(bw, wi, wf, td, dp, rm));
+                            getKernelWeight(bw, wi, wf, td, oom, rm));
                     //sectionCount ++;
                 }
             }

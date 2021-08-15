@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.i;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumber;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * For chunks that represent values at cell locations that are {@code int} type
@@ -383,9 +385,9 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * @param rm The rounding mode.
      * @return The standard deviation of all data values.
      */
-    protected BigDecimal getStandardDeviation(int dp, RoundingMode rm) {
-        BigDecimal sd = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp, rm);
+    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+        BigRational sd = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         Grids_GridInt g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -395,16 +397,15 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
             for (int col = 0; col < ncols; col++) {
                 int v = getCell(row, col);
                 if (v != ndv) {
-                    sd = sd.add(BigDecimal.valueOf(v).subtract(mean).pow(2));
+                    sd = sd.add(BigRational.valueOf(v).subtract(mean).pow(2));
                     count++;
                 }
             }
         }
         if ((count - 1L) > 0L) {
-            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
-                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
+            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L))).toBigDecimal(oom);
         } else {
-            return sd;
+            return BigDecimal.ZERO;
         }
     }
 }

@@ -16,9 +16,8 @@
 package uk.ac.leeds.ccg.grids.d2.chunk;
 
 import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigInteger;
-import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
@@ -28,7 +27,7 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInterface;
  * A wrapper for numerical chunks.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
 public abstract class Grids_ChunkNumber extends Grids_Chunk
         implements Grids_StatsInterface {
@@ -62,18 +61,15 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
     public abstract BigDecimal getSum();
 
     /**
-     * @param dp The number of decimal places to which the result is precise.
-     * @param rm The RoundingMode used if necessary for rounding.
-     * @return The Arithmetic Mean of all non no data values as a BigDecimal. If
+     * @return The Arithmetic Mean of all data values as a BigRational. If
      * all cells are no data values, then {@code null} is returned.
      */
     @Override
-    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
+    public BigRational getArithmeticMean() {
         BigDecimal sum = getSum();
         long n = getN();
         if (n != 0) {
-            return Math_BigDecimal.divideRoundIfNecessary(sum,
-                    BigInteger.valueOf(n), dp, rm);
+            return BigRational.valueOf(sum).divide(BigInteger.valueOf(n));
         }
         return null;
     }

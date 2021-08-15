@@ -32,6 +32,7 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      * For storing the row.
      */
     protected int row;
+    
     /**
      * For storing the column.
      */
