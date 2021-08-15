@@ -1,8 +1,8 @@
 # [agdt-java-grids](https://github.com/agdturner/agdt-java-grids)
 
-A Java library for storing and processing lattice based raster data otherwise known as grids.
+A modularised Java library for storing and processing lattice based raster data otherwise known as grids.
 
-## Current Version
+## Latest versioned release
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
 <dependency>
@@ -49,43 +49,34 @@ The library attempts to manage with the memory made available to the Java Virtua
 4. The library has a general utility and works well in conjunction with another generic utility library for processing spatial vector data: https://github.com/agdturner/agdt-java-vector
 
 ## Dependencies
-[agdt-java-math](https://github.com/agdturner/agdt-java-math)
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-math</artifactId>
-    <version>1.6</version>
-</dependency>
-```
-[agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-generic</artifactId>
-    <version>1.7.1</version>
-</dependency>
-```
-- There are no third party dependencies.
-- There are third party dependencies for testing.
+- [agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
+- [agdt-java-math](https://github.com/agdturner/agdt-java-math)
 - Please see the [POM](https://github.com/agdturner/agdt-java-grids/blob/master/pom.xml) for details.
 
 ## Development Plans
 # Version 2.0
 * Support 3D grids.
 * Push the processing classes geared for processing digital elevation data Grids_Processor_DEM and for generating geographically weighted statistics Grids_Processor_GWS to other libraries.
+* Develop in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 
 ## Contributions
-- Please report issues in the usual way.
-- Please liaise with the developer with regards feature requests and about contributing to development.
+- Welcome.
 
 ## LICENCE
 - [APACHE LICENSE, VERSION 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-## Acknowledgements and feedback
-* Thanks to the [University of Leeds](http://www.leeds.ac.uk) and numerous research grants for supporting the development of this code and the developer over many years.
-* If you find this code useful, please let the developer know and refer to the resources used in the usual ways.
+## Acknowledgements and thanks
+- The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library.
+- Thank you [openJDK](https://openjdk.java.net/) contributors and all involved in creating the platform.
+- Thank you developers and maintainers of other useful Java libraries that provide inspiration.
+- Thank you [GeoTools](http://www.geotools.org) developers - a very early version of this library was based on the old GeoTools 1 Raster class.
+- Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), and [git](https://git-scm.com/) which I use for developing code.
+- Thank you developers and maintainers of [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users and  developers.
+- Thank you developers, maintainers and contributors of relevent content on:
+-- [Wikimedia](https://www.wikimedia.org/) projects, in particular the [English language Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
+-- [StackExchange](https://stackexchange.com), in particular [StackOverflow](https://stackoverflow.com/).
+- Information that has helped me develop this library is cited in the source code.
+- Thank you to those that supported me personally and all who have made a positive contribution to society. Let us try to look after each other, look after this world, make space for wildlife, and engineer knowledge :)
 
 ## Footnotes
 1. For spatial analysis, especially with regard Earth systems modelling, there are some theoretical advantages of rasters with values regularly spaced in a more triangular arrangement (these can be imagined as cells that are hexagonal in two dimensions and which can be aggregated into larger (triangular, hexagonal or polyhedral chunks). Both square and triangular arrangements can be extended to three and more dimensions. In three dimensions (3D), there are a plethora of honeycomb like arrangements that can be used to partition values into chunks or semiregular honeycombs.
