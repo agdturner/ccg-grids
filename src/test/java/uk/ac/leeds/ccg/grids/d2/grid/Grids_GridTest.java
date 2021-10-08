@@ -18,8 +18,6 @@ package uk.ac.leeds.ccg.grids.d2.grid;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.hamcrest.Matchers;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,8 +133,7 @@ public class Grids_GridTest {
         result = instance.getCellDistance(distance);
         System.out.println("expResult=" + expResult.toPlainString());
         System.out.println("result=" + result.toPlainString());
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(result.compareTo(expResult) == 0);
     }
 
     /**
@@ -1282,8 +1279,7 @@ public class Grids_GridTest {
         Grids_Grid instance = gfd.create(nrows, ncols);
         BigDecimal expResult = BigDecimal.valueOf(0.5d);
         BigDecimal result = instance.getCellX(col);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(result.compareTo(expResult) == 0);
     }
 
     /**
@@ -1302,8 +1298,7 @@ public class Grids_GridTest {
         Grids_Grid instance = gfd.create(nrows, ncols);
         BigDecimal expResult = BigDecimal.valueOf(0.5d);
         BigDecimal result = instance.getCellX(i);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(result.compareTo(expResult) == 0);
     }
 
     /**
@@ -1322,8 +1317,7 @@ public class Grids_GridTest {
         Grids_Grid instance = gfd.create(nrows, ncols);
         BigDecimal expResult = BigDecimal.valueOf(0.5d);
         BigDecimal result = instance.getCellY(row);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(result.compareTo(expResult) == 0);
     }
 
     /**
@@ -1342,8 +1336,7 @@ public class Grids_GridTest {
         Grids_Grid instance = gfd.create(nrows, ncols);
         BigDecimal expResult = BigDecimal.valueOf(0.5d);
         BigDecimal result = instance.getCellY(i);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(result.compareTo(expResult) == 0);
     }
 
     /**
@@ -1367,9 +1360,8 @@ public class Grids_GridTest {
         expResult[2] = BigDecimal.ONE;
         expResult[3] = BigDecimal.ONE;
         BigDecimal[] result = instance.getCellBounds(row, col);
-        //assertEquals(expResult, result);
         for (int i = 0; i < 4; i++) {
-            assertThat(expResult[i], Matchers.comparesEqualTo(result[i]));
+            assertTrue(result[i].compareTo(expResult[i]) == 0);
         }
     }
 }
