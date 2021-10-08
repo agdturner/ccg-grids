@@ -826,8 +826,8 @@ public class Grids_Environment extends Grids_MemoryManager
      *
      * @param g The grid from which chunks with IDs in {@code s} are not
      * cleared.
-     * @param s The set of chunk IDs of a chunk not to cleared from grid (@code
-     * g )in any memory management.
+     * @param s The set of chunk IDs of a chunk not to cleared from grid {@code
+     * g} in any memory management.
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory before calling this method again.
@@ -1484,7 +1484,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * {@code getTotalFreeMemory() < Memory_Threshold}, then {@code false} is
      * returned.
      *
-     * @param m Indicates which chunks not to clear unless deperate.
+     * @param m Indicates which chunks not to clear unless desperate.
      * @param hoome If {@code true} then if an {@link OutOfMemoryError} is
      * thrown, then an attempt is made to handle it by clearing data from the
      * memory.
@@ -4328,10 +4328,16 @@ public class Grids_Environment extends Grids_MemoryManager
      */
     private boolean dataToClear = true;
 
+    /**
+     * @return {@link #dataToClear}
+     */
     public boolean isDataToClear() {
         return dataToClear;
     }
 
+    /**
+     * @param dataToClear What {@link #dataToClear} is set to.
+     */
     public void setDataToClear(boolean dataToClear) {
         this.dataToClear = dataToClear;
     }

@@ -24,10 +24,25 @@ import java.math.BigDecimal;
  * @author Andy Turner
  */
 public class Grids_Point implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
+    /**
+     * The x coordinate.
+     */
     public BigDecimal x;
+
+    /**
+     * The y coordinate.
+     */
     public BigDecimal y;
     
+    /**
+     * Create a new instance.
+     * 
+     * @param x What{@link #x} is set to.
+     * @param y What{@link #y} is set to.
+     */
     public Grids_Point(BigDecimal x, BigDecimal y) {
         this.x = x;
         this.y = y;

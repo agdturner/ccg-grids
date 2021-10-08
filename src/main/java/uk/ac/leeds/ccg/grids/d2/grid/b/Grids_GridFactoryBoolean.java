@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanSinglet;
 
 /**
@@ -57,7 +57,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryBoolean(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols) {
         this(e, fs, factory, chunkNRows, chunkNCols, null,
                 new Grids_StatsNotUpdatedBoolean(e));
@@ -72,7 +72,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @param dimensions What {@link #dim} is set to.
      * @param stats What {@link #stats} is set to.
      */
-    public Grids_GridFactoryBoolean(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryBoolean(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryBoolean factory, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBoolean stats) {
         super(e, fs, chunkNRows, chunkNCols, dimensions);
@@ -114,7 +114,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
                 store, store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -175,7 +175,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
                 store, store.getNextID(), g, cf, chunkNRows,
                 chunkNCols, startRow, startCol, endRow, endCol);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -235,7 +235,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
                 store, store.getNextID(), gridFile, cf,
                 chunkNRows, chunkNCols, startRow, startCol, endRow, endCol,
                 env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -251,7 +251,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(env, store,
                 store.getNextID(), gridFile);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 

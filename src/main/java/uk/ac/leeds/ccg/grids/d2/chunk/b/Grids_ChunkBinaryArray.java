@@ -28,8 +28,17 @@ public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * data
+     */
     boolean[][] data;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param g The grid.
+     * @param i The ID.
+     */
     public Grids_ChunkBinaryArray(Grids_GridBinary g, Grids_2D_ID_int i) {
         super(g, i);
         initData();
@@ -66,6 +75,9 @@ public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
         cacheUpToDate = false;
     }
     
+    /**
+     * Initialise {@link #data}.
+     */
     @Override
     protected final void initData() {
         Grids_GridBinary g = getGrid();

@@ -28,11 +28,32 @@ public abstract class Grids_ChunkRowMajorOrderIterator
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * row
+     */
     protected int row;
+
+    /**
+     * col
+     */
     protected int col;
+
+    /**
+     * nRows
+     */
     protected int nRows;
+
+    /**
+     * nCols
+     */
     protected int nCols;
 
+
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk used to create this.
+     */
     protected Grids_ChunkRowMajorOrderIterator(Grids_Chunk chunk) {
         super(chunk);
         row = 0;

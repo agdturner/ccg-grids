@@ -37,15 +37,24 @@ public class Grids_2D_ID_long extends Object implements Serializable,
      */
     protected long col;
 
+    /**
+     * Create a new instance.
+     */
     protected Grids_2D_ID_long() {
     }
 
+    /**
+     * Create a new instance.
+     *
+     * @param i Used to initialise {@code this}.
+     */
     public Grids_2D_ID_long(Grids_2D_ID_long i) {
         col = i.col;
         row = i.row;
     }
 
     /**
+     * Create a new instance.
      *
      * @param row The row.
      * @param col The column.

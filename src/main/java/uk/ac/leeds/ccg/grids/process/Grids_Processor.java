@@ -46,7 +46,7 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNumber;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinaryArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
@@ -121,44 +121,44 @@ public class Grids_Processor extends Grids_Object {
             throws Exception {
         // Boolean
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
-        Generic_FileStore fs = Generic_FileStore.getFileStore(dir);
+        IO_Cache fs = IO_Cache.getFileStore(dir);
         gridFactoryBoolean = new Grids_GridFactoryBoolean(env, fs,
                 new Grids_ChunkFactoryBooleanArray(), chunkNRows, chunkNCols);
         // Binary
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
-        fs = Generic_FileStore.getFileStore(dir);
+        fs = IO_Cache.getFileStore(dir);
         gridFactoryBinary = new Grids_GridFactoryBinary(env, fs,
                 new Grids_ChunkFactoryBinaryArray(), chunkNRows, chunkNCols);
         // Int
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
-        fs = Generic_FileStore.getFileStore(dir);
+        fs = IO_Cache.getFileStore(dir);
         gridFactoryInt = new Grids_GridFactoryInt(env, fs,
                 new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
                 new Grids_ChunkFactoryIntArray(),
                 chunkNRows, chunkNCols);
         // Double
         dir = Paths.get(files.getGeneratedGridDoubleDir().toString());
-        fs = Generic_FileStore.getFileStore(dir);
+        fs = IO_Cache.getFileStore(dir);
         gridFactoryDouble = new Grids_GridFactoryDouble(env, fs,
                 new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
                 new Grids_ChunkFactoryDoubleArray(),
                 chunkNRows, chunkNCols);
         // BigDecimal
         dir = Paths.get(files.getGeneratedGridBigDecimalDir().toString());
-        fs = Generic_FileStore.getFileStore(dir);
+        fs = IO_Cache.getFileStore(dir);
         gridFactoryBD = new Grids_GridFactoryBD(env, fs,
                 new Grids_ChunkFactoryBDSinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
                 new Grids_ChunkFactoryBDArray(),
                 chunkNRows, chunkNCols);
     }
 
-    protected Generic_FileStore getStore(Path dir, String s) throws IOException,
+    protected IO_Cache getStore(Path dir, String s) throws IOException,
             Exception {
-        Generic_FileStore r;
+        IO_Cache r;
         if (Files.exists(dir)) {
-            r = new Generic_FileStore(dir);
+            r = new IO_Cache(dir);
         } else {
-            r = new Generic_FileStore(files.getGeneratedDir(), s);
+            r = new IO_Cache(files.getGeneratedDir(), s);
         }
         return r;
     }

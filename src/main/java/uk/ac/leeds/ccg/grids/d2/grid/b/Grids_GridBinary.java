@@ -38,7 +38,7 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.util.HashSet;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -71,7 +71,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, Generic_FileStore fs,
+    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
             long id, Grids_ChunkFactoryBinary cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             Grids_Environment e) throws IOException, Exception {
@@ -99,7 +99,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, Generic_FileStore fs,
+    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
             long id, Grids_Grid g, Grids_ChunkFactoryBinary cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
@@ -131,7 +131,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, Generic_FileStore fs,
+    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryBinary cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, Grids_Environment e)
@@ -153,7 +153,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_Environment e, Generic_FileStore fs,
+    protected Grids_GridBinary(Grids_Environment e, IO_Cache fs,
             long id, Generic_Path gridFile) throws IOException,
             ClassNotFoundException, Exception {
         super(e, fs, id);

@@ -45,7 +45,7 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.RoundingMode;
 import java.util.Set;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * Grids with {@code int} values.
@@ -82,7 +82,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
+    protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs,
             long id, Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
             int ndv, Grids_Environment ge) throws IOException, Exception,
@@ -112,7 +112,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs, long id,
+    protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs, long id,
             Grids_Grid g, Grids_ChunkFactoryInt cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) throws IOException, ClassNotFoundException,
@@ -146,7 +146,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridInt(Grids_StatsInt stats, Generic_FileStore fs,
+    protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs,
             long id, Generic_Path gridFile,
             Grids_ChunkFactoryInt cf, int cnr,
             int cnc, long startRow, long startCol, long endRow,
@@ -172,7 +172,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridInt(Grids_Environment ge, Generic_FileStore fs,
+    protected Grids_GridInt(Grids_Environment ge, IO_Cache fs,
             long id, Generic_Path gridFile, int ndv)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));

@@ -364,8 +364,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
 
     /**
      * Calculate and return the standard deviation of all data values. If there
-     * is only one data value then {@link Math_BigRationalSqrt.ZERO} is
-     * returned.
+     * is only one data value then BigDecimal.ZERO is returned.
      *
      * @param oom The order of magnitude at which the result is calculated.
      * @param rm The {@link RoundingMode} for any rounding that is necessary.
@@ -390,7 +389,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         }
         long d = count - 1L;
         if (d > 0L) {
-            Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd);
+            Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd, oom);
             return sqrt.toBigDecimal(oom);
         } else {
             return BigDecimal.ZERO;

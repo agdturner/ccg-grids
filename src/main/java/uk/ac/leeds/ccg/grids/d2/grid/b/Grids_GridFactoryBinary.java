@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBinary;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinarySinglet;
 
 /**
@@ -57,7 +57,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryBinary(Grids_Environment e, Generic_FileStore store,
+    public Grids_GridFactoryBinary(Grids_Environment e, IO_Cache store,
             Grids_ChunkFactoryBinary factory, int chunkNRows, int chunkNCols) {
         this(e, store, factory, chunkNRows, chunkNCols, null,
                 new Grids_StatsNotUpdatedBinary(e));
@@ -72,7 +72,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @param dimensions What {@link #dim} is set to.
      * @param stats What {@link #Stats} is set to.
      */
-    public Grids_GridFactoryBinary(Grids_Environment e, Generic_FileStore store,
+    public Grids_GridFactoryBinary(Grids_Environment e, IO_Cache store,
             Grids_ChunkFactoryBinary cf, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBinary stats) {
         super(e, store, chunkNRows, chunkNCols, dimensions);
@@ -115,7 +115,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
         Grids_GridBinary r = new Grids_GridBinary(getStats(stats),
                 store, store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -177,7 +177,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
         Grids_GridBinary r = new Grids_GridBinary(getStats(stats),
                 store, store.getNextID(), g, cf, chunkNRows,
                 chunkNCols, startRow, startCol, endRow, endCol);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -207,7 +207,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
         Grids_GridBinary r = create(new Grids_StatsNotUpdatedBinary(env),
                 gridFile, defaultGridChunkBinaryFactory, startRow, startCol,
                 endRow, endCol);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -238,7 +238,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
         Grids_GridBinary r = new Grids_GridBinary(getStats(stats), store,
                 store.getNextID(), gridFile, cf, chunkNRows, chunkNCols,
                 startRow, startCol, endRow, endCol, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 

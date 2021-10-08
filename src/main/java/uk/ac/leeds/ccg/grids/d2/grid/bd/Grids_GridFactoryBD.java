@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBD;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBD;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * A factory for constructing Grids_GridBD instances.
@@ -62,7 +62,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
      * @param cnr What {@link #chunkNRows} is set to.
      * @param cnc What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryBD(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryBD(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryBDSinglet gcdf,
             Grids_ChunkFactoryBD dgcdf, int cnr, int cnc) {
         this(e, fs, gcdf, dgcdf, BigDecimal.valueOf(-Double.MAX_VALUE), cnr, cnc,
@@ -82,7 +82,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
      * @param dim What {@link #dim} is set to.
      * @param stats What {@link #stats} is set to.
      */
-    public Grids_GridFactoryBD(Grids_Environment ge, Generic_FileStore fs,
+    public Grids_GridFactoryBD(Grids_Environment ge, IO_Cache fs,
             Grids_ChunkFactoryBDSinglet gcdf,
             Grids_ChunkFactoryBD dgcdf, BigDecimal ndv, int chunkNRows,
             int chunkNCols, Grids_Dimensions dim, Grids_StatsBD stats) {
@@ -164,7 +164,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
         Grids_GridBD r = new Grids_GridBD(getStats(stats), store,
                 store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, noDataValue, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -212,7 +212,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
         Grids_GridBD r = new Grids_GridBD(getStats(stats), store,
                 store.getNextID(), g, cf, chunkNRows,
                 chunkNCols, startRow, startCol, endRow, endCol, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -260,7 +260,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
         Grids_GridBD r = new Grids_GridBD(getStats(stats), store,
                 store.getNextID(), gridFile, cf, chunkNRows, chunkNCols,
                 startRow, startCol, endRow, endCol, noDataValue, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -277,7 +277,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBD r = new Grids_GridBD(env, store, store.getNextID(),
                 gridFile, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 

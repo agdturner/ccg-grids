@@ -25,17 +25,60 @@ import uk.ac.leeds.ccg.generic.core.Generic_Strings;
  */
 public class Grids_Strings extends Generic_Strings {
 
+    /**
+     * GridBigDecimal
+     */
     public static final String s_GridBigDecimal = "GridBigDecimal";
+    
+    /**
+     * GridBigInteger
+     */
     public static final String s_GridBigInteger = "GridBigInteger";
+    
+    /**
+     * GridBinary
+     */
     public static final String s_GridBinary = "GridBinary";
+    
+    /**
+     * GridBoolean
+     */
     public static final String s_GridBoolean = "GridBoolean";
+    
+    /**
+     * GridDouble
+     */
     public static final String s_GridDouble = "GridDouble";
+    
+    /**
+     * GridFloat
+     */
     public static final String s_GridFloat = "GridFloat";
+    
+    /**
+     * GridInt
+     */
     public static final String s_GridInt = "GridInt";
+    
+    /**
+     * Grids
+     */
     public static final String s_Grids = "Grids";
+    
+    /**
+     * grids
+     */
     public static final String s_grids = "grids";
+    
+    /**
+     * Processor
+     */
     public static final String s_Processor = "Processor";
 
+    
+    /**
+     * Create a new instance. 
+     */
     public Grids_Strings() {
     }
 }

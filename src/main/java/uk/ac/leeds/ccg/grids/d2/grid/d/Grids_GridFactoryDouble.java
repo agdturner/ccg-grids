@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
 
@@ -63,7 +63,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param cnr What {@link #chunkNRows} is set to.
      * @param cnc What {@link #chunkNCols} is set to.
      */
-    public Grids_GridFactoryDouble(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryDouble(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryDoubleSinglet gcdf,
             Grids_ChunkFactoryDouble dgcdf, int cnr, int cnc) {
         this(e, fs, gcdf, dgcdf, -Double.MAX_VALUE, cnr, cnc,
@@ -83,7 +83,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @param dim What {@link #dim} is set to.
      * @param stats What {@link #stats} is set to.
      */
-    public Grids_GridFactoryDouble(Grids_Environment ge, Generic_FileStore fs,
+    public Grids_GridFactoryDouble(Grids_Environment ge, IO_Cache fs,
             Grids_ChunkFactoryDoubleSinglet gcdf,
             Grids_ChunkFactoryDouble dgcdf, double ndv, int chunkNRows,
             int chunkNCols, Grids_Dimensions dim, Grids_StatsDouble stats) {
@@ -165,7 +165,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, noDataValue, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -213,7 +213,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), g, cf, chunkNRows,
                 chunkNCols, startRow, startCol, endRow, endCol, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -261,7 +261,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
                 store.getNextID(), gridFile, cf, chunkNRows, chunkNCols,
                 startRow, startCol, endRow, endCol, noDataValue, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -278,7 +278,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(env, store, store.getNextID(),
                 gridFile, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 

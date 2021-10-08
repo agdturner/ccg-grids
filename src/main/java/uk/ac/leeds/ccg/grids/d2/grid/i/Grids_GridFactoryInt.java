@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInt;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedInt;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * A factory for constructing Grids_GridInt instances.
@@ -57,7 +57,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param chunkNRows The number of rows chunks have by default.
      * @param chunkNCols The number of columns chunks have by default.
      */
-    public Grids_GridFactoryInt(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryInt(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryIntSinglet gcif,
             Grids_ChunkFactoryInt dgcif, int chunkNRows,
             int chunkNCols) {
@@ -81,7 +81,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @param dim dimensions
      * @param stats stats
      */
-    public Grids_GridFactoryInt(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactoryInt(Grids_Environment e, IO_Cache fs,
             Grids_ChunkFactoryIntSinglet gcif,
             Grids_ChunkFactoryInt dgcif,
             int ndv, int chunkNRows, int chunkNCols,
@@ -153,7 +153,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
         Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
                 store.getNextID(), cf, chunkNRows,
                 chunkNCols, nRows, nCols, dimensions, noDataValue, env);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -195,7 +195,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
         Grids_GridInt r = new Grids_GridInt(getStats(stats), store,
                 store.getNextID(), g, cf, chunkNRows, chunkNCols, startRow,
                 startCol, endRow, endCol, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 
@@ -257,7 +257,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridInt r = new Grids_GridInt(env, store, store.getNextID(),
                 gridFile, noDataValue);
-        store.addDir();
+        //store.addDir();
         return r;
     }
 

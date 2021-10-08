@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBoolean;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
@@ -74,7 +74,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, Generic_FileStore fs,
+    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
             long id, Grids_ChunkFactoryBoolean cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             Grids_Environment e) throws IOException, Exception {
@@ -102,7 +102,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, Generic_FileStore fs,
+    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
             long id, Grids_Grid g, Grids_ChunkFactoryBoolean cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol) throws IOException, Exception, ClassNotFoundException {
@@ -134,7 +134,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, Generic_FileStore fs,
+    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, Grids_Environment e)
@@ -156,7 +156,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBoolean(Grids_Environment e, Generic_FileStore fs,
+    protected Grids_GridBoolean(Grids_Environment e, IO_Cache fs,
             long id, Generic_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         super(e, fs, id);

@@ -876,7 +876,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
                     .multiply(BigRational.valueOf(n)));
         }
         if ((nValues - 1) > 0) {
-            return new Math_BigRationalSqrt(r.divide((nValues - 1))).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(r.divide((nValues - 1)), oom).toBigDecimal(oom);
         } else {
             return BigDecimal.ZERO;
         }

@@ -44,7 +44,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
 
@@ -83,7 +83,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
+    protected Grids_GridDouble(Grids_StatsDouble stats, IO_Cache fs,
             long id, Grids_ChunkFactoryDouble cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double ndv, Grids_Environment ge) throws IOException, Exception {
@@ -111,7 +111,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ndv The noDataValue for this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_StatsDouble stats, Generic_FileStore fs,
+    protected Grids_GridDouble(Grids_StatsDouble stats, IO_Cache fs,
             long id, Grids_Grid g, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv) throws IOException,
@@ -146,7 +146,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_GridStatsDouble stats, Generic_FileStore fs,
+    protected Grids_GridDouble(Grids_GridStatsDouble stats, IO_Cache fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv, Grids_Environment ge)
@@ -170,7 +170,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_Environment ge, Generic_FileStore fs,
+    protected Grids_GridDouble(Grids_Environment ge, IO_Cache fs,
             long id, Generic_Path gridFile, double ndv) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(new Grids_GridStatsNotUpdatedDouble(ge), gridFile);

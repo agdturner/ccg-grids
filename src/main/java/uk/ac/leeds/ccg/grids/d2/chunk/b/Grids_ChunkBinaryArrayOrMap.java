@@ -28,6 +28,12 @@ public abstract class Grids_ChunkBinaryArrayOrMap extends Grids_ChunkBinary {
 
     private static final long serialVersionUID = 1L;
     
+    /**
+     * Create a new instance.
+     * 
+     * @param g The grid.
+     * @param i The ID.
+     */
     protected Grids_ChunkBinaryArrayOrMap(Grids_GridBinary g, Grids_2D_ID_int i) {
         super(g, i, true);
     }

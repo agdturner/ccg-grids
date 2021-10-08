@@ -29,6 +29,9 @@ public class Grids_ChunkIteratorBinarySinglet
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The value.
+     */
     protected boolean v;
 
     /**

@@ -19,11 +19,11 @@ import java.io.Serializable;
 
 /**
  * Grids_2D_ID_int class for distinguishing chunks or cells within chunks.
- * 
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_2D_ID_int extends Object implements Serializable, 
+public class Grids_2D_ID_int extends Object implements Serializable,
         Comparable<Grids_2D_ID_int> {
 
     private static final long serialVersionUID = 1L;
@@ -32,21 +32,30 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      * For storing the row.
      */
     protected int row;
-    
+
     /**
      * For storing the column.
      */
     protected int col;
 
+    /**
+     * Create a new instance.
+     */
     protected Grids_2D_ID_int() {
     }
 
+    /**
+     * Create a new instance.
+     *
+     * @param i Used to initialise {@code this}.
+     */
     public Grids_2D_ID_int(Grids_2D_ID_int i) {
         col = i.col;
         row = i.row;
     }
 
     /**
+     * Create a new instance.
      *
      * @param row The row.
      * @param col The column.
@@ -90,7 +99,8 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      * Overrides equals in Object.
      *
      * @param o The Object to compare this with.
-     * @return {@code true} if this is equal to {@code o} and {@code false} otherwise.
+     * @return {@code true} if this is equal to {@code o} and {@code false}
+     * otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -109,8 +119,8 @@ public class Grids_2D_ID_int extends Object implements Serializable,
      * Method required by Comparable.
      *
      * @param i The instance to compare with.
-     * @return -1, 0, 1 depending on whether this is less than, the same or 
-     * greater than {@code i}. 
+     * @return -1, 0, 1 depending on whether this is less than, the same or
+     * greater than {@code i}.
      */
     @Override
     public int compareTo(Grids_2D_ID_int i) {

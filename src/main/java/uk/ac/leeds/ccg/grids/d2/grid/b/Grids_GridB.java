@@ -16,7 +16,7 @@
 package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 
@@ -39,7 +39,7 @@ public abstract class Grids_GridB extends Grids_Grid {
      * @param id What {@link #fsID} is set to.
      * @throws java.lang.Exception If encountered.
      */
-    protected Grids_GridB(Grids_Environment e, Generic_FileStore fs, long id) 
+    protected Grids_GridB(Grids_Environment e, IO_Cache fs, long id) 
             throws Exception {
         super(e, fs, id);
     }

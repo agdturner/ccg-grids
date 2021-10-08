@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.grids.d2.stats;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.RoundingMode;
 
 /**
  * An interface to be implemented by classes that provide statistics about
@@ -51,9 +50,6 @@ public interface Grids_StatsInterface {
     public Number getMax(boolean update);
 
     /**
-     * @param dp The number of decimal places the result is rounded to if
-     * necessary.
-     * @param rm The Rounding mode for any necessary rounding.
      * @return The arithmetic mean of all data values.
      */
     public BigRational getArithmeticMean();

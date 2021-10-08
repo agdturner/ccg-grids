@@ -403,7 +403,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
             }
         }
         if ((count - 1L) > 0L) {
-            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L))).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L)), oom).toBigDecimal(oom);
         } else {
             return BigDecimal.ZERO;
         }

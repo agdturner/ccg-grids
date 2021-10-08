@@ -73,6 +73,9 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         st = new StreamTokenizer(br);
     }
 
+    /**
+     * Class for the header.
+     */
     public class Header {
 
         /**

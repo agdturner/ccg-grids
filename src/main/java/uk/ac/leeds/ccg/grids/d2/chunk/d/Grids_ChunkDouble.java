@@ -397,7 +397,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         if ((count - 1L) > 0L) {
 //            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
 //                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
-            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L))).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L)), oom).toBigDecimal(oom);
         } else {
             return BigDecimal.ZERO;
         }

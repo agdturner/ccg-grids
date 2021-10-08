@@ -45,7 +45,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * Grids with {@code BigDecimal} values.
@@ -74,7 +74,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, Generic_FileStore fs,
+    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
             long id, Grids_ChunkFactoryBD cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             BigDecimal ndv, Grids_Environment ge) throws IOException, Exception {
@@ -102,7 +102,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ndv The noDataValue for this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, Generic_FileStore fs,
+    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
             long id, Grids_Grid g, Grids_ChunkFactoryBD cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, BigDecimal ndv) throws IOException,
@@ -137,7 +137,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, Generic_FileStore fs,
+    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
             long id, Generic_Path gridFile, Grids_ChunkFactoryBD cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, BigDecimal ndv, Grids_Environment ge)
@@ -161,7 +161,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_Environment ge, Generic_FileStore fs, long id,
+    protected Grids_GridBD(Grids_Environment ge, IO_Cache fs, long id,
             Generic_Path gridFile, BigDecimal ndv) throws IOException,
             Exception {
         super(ge, fs, id, ndv);

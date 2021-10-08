@@ -21,7 +21,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * For grids containing Numerical values.
@@ -38,7 +38,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal ndv;
 
-    protected Grids_GridNumber(Grids_Environment ge, Generic_FileStore fs,
+    protected Grids_GridNumber(Grids_Environment ge, IO_Cache fs,
             long id, BigDecimal ndv) throws Exception {
         super(ge, fs, id);
         this.ndv = ndv;

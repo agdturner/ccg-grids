@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
@@ -139,7 +139,7 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * The file store in which this is stored.
      */
-    protected final Generic_FileStore fs;
+    protected final IO_Cache fs;
 
     /**
      * The file store ID for this grid.
@@ -211,7 +211,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param id The id of the directory for this grid in the file store.
      * @throws java.lang.Exception If encountered.
      */
-    protected Grids_Grid(Grids_Environment e, Generic_FileStore fs, long id)
+    protected Grids_Grid(Grids_Environment e, IO_Cache fs, long id)
             throws Exception {
         super(e);
         this.fs = fs;

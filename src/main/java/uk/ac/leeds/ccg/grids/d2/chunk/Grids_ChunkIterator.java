@@ -28,15 +28,30 @@ public abstract class Grids_ChunkIterator extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The grid.
+     */
     protected Grids_Grid grid;
+    
+    /**
+     * The grid chunk.
+     */
     protected Grids_Chunk chunk;
     
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk What {@link #chunk} is set to.
+     */
     public Grids_ChunkIterator(Grids_Chunk chunk) {
         super(chunk.env);
         this.chunk = chunk;
         grid = this.chunk.getGrid();        
     }
     
+    /**
+     * @return {@code true} if there is a next. 
+     */
     public abstract boolean hasNext();
     
 }

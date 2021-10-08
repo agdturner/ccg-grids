@@ -29,9 +29,19 @@ public abstract class Grids_ChunkFactoryBoolean extends Grids_ChunkFactory {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryBoolean() {
     }
 
+    /**
+     * Create a new instance.
+     * 
+     * @param grid The grid
+     * @param chunkID The ID.
+     * @return A new Grids_ChunkBoolean.
+     */
     public abstract Grids_ChunkBoolean create(Grids_GridBoolean grid,
             Grids_2D_ID_int chunkID);
 //    public Grids_ChunkBooleanArray create(Grids_GridBoolean grid,
@@ -39,6 +49,13 @@ public abstract class Grids_ChunkFactoryBoolean extends Grids_ChunkFactory {
 //        return new Grids_ChunkBooleanArray(grid, chunkID);
 //    }
 
+    /**
+     * Create a new instance.
+     * 
+     * @param grid The grid chunk.
+     * @param chunkID The ID.
+     * @return A new Grids_ChunkBoolean.
+     */
     public abstract Grids_ChunkBoolean create(Grids_ChunkBoolean grid,
             Grids_2D_ID_int chunkID);
 //    public Grids_ChunkBooleanArray create(Grids_ChunkBoolean chunk,

@@ -32,6 +32,10 @@ public abstract class Grids_Object implements Serializable {
      */
     public transient Grids_Environment env;
 
+    /**
+     * Create a new instance.
+     * @param e What {@link #env} is set to.
+     */
     public Grids_Object(Grids_Environment e) {
         this.env = e;
     }

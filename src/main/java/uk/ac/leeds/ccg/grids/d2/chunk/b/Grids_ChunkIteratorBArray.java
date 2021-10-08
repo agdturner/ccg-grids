@@ -31,11 +31,31 @@ public abstract class Grids_ChunkIteratorBArray extends Grids_ChunkIterator {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * row
+     */
     protected int row;
+
+    /**
+     * col
+     */
     protected int col;
+
+    /**
+     * nRows
+     */
     protected int nRows;
+
+    /**
+     * nCols
+     */
     protected int nCols;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk used to create this.
+     */
     public Grids_ChunkIteratorBArray(Grids_ChunkBinaryArray chunk) {
         super(chunk);
         row = 0;
@@ -45,6 +65,11 @@ public abstract class Grids_ChunkIteratorBArray extends Grids_ChunkIterator {
         nCols = g.getChunkNCols(chunk.getId());
     }
 
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk used to create this.
+     */
     public Grids_ChunkIteratorBArray(Grids_ChunkBooleanArray chunk) {
         super(chunk);
         row = 0;

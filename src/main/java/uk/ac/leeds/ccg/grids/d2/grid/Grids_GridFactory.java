@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.generic.io.Generic_FileStore;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * Grids_GridFactory.
@@ -35,7 +35,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
     /**
      * The file store in which grids can be cached.
      */
-    protected final Generic_FileStore store;
+    protected final IO_Cache store;
 
     /**
      * The number of rows in a chunk.
@@ -58,7 +58,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param e What {@link #env} is set to.
      * @param fs What {@link #store} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_FileStore fs) {
+    public Grids_GridFactory(Grids_Environment e, IO_Cache fs) {
         super(e);
         this.store = fs;
     }
@@ -72,7 +72,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param dimensions What {@link #dim} is set to.
      */
-    public Grids_GridFactory(Grids_Environment e, Generic_FileStore fs,
+    public Grids_GridFactory(Grids_Environment e, IO_Cache fs,
             int chunkNRows, int chunkNCols, Grids_Dimensions dimensions) {
         super(e);
         this.store = fs;

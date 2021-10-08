@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.grids.d2.chunk.b;
 /**
  * For iterating through the values in a Grids_GridChunkBinary instance. The
  * values are not returned in any particular order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -26,8 +26,16 @@ public class Grids_ChunkIteratorBooleanArray extends Grids_ChunkIteratorBArray {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * data
+     */
     protected Boolean[][] data;
 
+    /**
+     * Create a new instance.
+     *
+     * @param chunk The chunk used to create this.
+     */
     public Grids_ChunkIteratorBooleanArray(Grids_ChunkBooleanArray chunk) {
         super(chunk);
         data = chunk.getData();

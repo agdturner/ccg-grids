@@ -26,8 +26,16 @@ public class Grids_ChunkIteratorBinaryArray extends Grids_ChunkIteratorBArray {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * data
+     */
     protected boolean[][] data;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk used to create this.
+     */
     public Grids_ChunkIteratorBinaryArray(Grids_ChunkBinaryArray chunk) {
         super(chunk);
         data = chunk.getData();
