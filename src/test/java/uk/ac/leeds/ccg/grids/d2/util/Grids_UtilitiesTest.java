@@ -44,7 +44,7 @@ import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
-import uk.ac.leeds.ccg.math.Math_BigInteger;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 
 /**
  *
