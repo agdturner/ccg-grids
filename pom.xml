@@ -2,20 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-grids</artifactId>
-    <version>1.1-SNAPSHOT</version>
-    <!--
-    <version>1.1</version>
-    -->
+    <artifactId>ccg-grids</artifactId>
+    <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>agdt-java-grids</name>
-    <url>https://github.com/agdturner/agdt-java-grids</url>
+    <url>https://github.com/agdturner/ccg-grids</url>
     <description>A Java Library for handling square celled raster data.</description>
     <scm>
-        <url>git@github.com:agdturner/agdt-java-grids.git</url>
-        <connection>scm:git:git@github.com:agdturner/agdt-java-grids.git</connection>
-        <developerConnection>scm:git:git@github.com:agdturner/agdt-java-grids</developerConnection>
+        <url>git@github.com:agdturner/ccg-grids.git</url>
+        <connection>scm:git:git@github.com:agdturner/ccg-grids.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/ccg-grids</developerConnection>
     </scm>
     <licenses>
         <license>
@@ -42,26 +39,38 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <agdt-java-generic.version>1.7.1</agdt-java-generic.version>
-        <agdt-java-math.version>1.6</agdt-java-math.version>
+        <agdt-java-generic.version>2.1-SNAPSHOT</agdt-java-generic.version>
+        <ccg-io.version>1.1.0</ccg-io.version>
+        <ccg-math.version>1.18-SNAPSHOT</ccg-math.version>
+        <!--
+        <big-math.version>2.3.0</big-math.version>
+        -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
-        <junit.version>5.5.2</junit.version>
-        <hamcrest.version>2.2</hamcrest.version>
+        <junit.version>5.7.0</junit.version>
     </properties>
     
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>agdt-java-generic</artifactId>
             <version>${agdt-java-generic.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
-            <artifactId>agdt-java-math</artifactId>
-            <version>${agdt-java-math.version}</version>
+            <artifactId>ccg-math</artifactId>
+            <version>${ccg-math.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math
+        <dependency>
+            <groupId>ch.obermuhlner</groupId>
+            <artifactId>big-math</artifactId>
+            <version>${big-math.version}</version>
+        </dependency>
+         -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -73,30 +82,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>${hamcrest.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <scope>test</scope>
-            <version>2.44.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opera</groupId>
-            <artifactId>operadriver</artifactId>
-            <scope>test</scope>
-            <version>1.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-remote-driver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
     
@@ -227,19 +212,36 @@
     </profiles>
     
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
+        
         <!--
         <repository>
             <id>internal</id>
             <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
         -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>SNAPSHOT Repository OSSRH</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>github</id>
+            <name>GitHub agdturner Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/agdturner/ccg-grids</url>
+        </repository>
+        <!--
         <repository>
             <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        -->
+        <!--
+        <repository>
+            <id>github</id>
+            <name>GitHub agdturner Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/agdturner/ccg-grids</url>
+        </repository>
+        -->
     </distributionManagement>
 </project>
