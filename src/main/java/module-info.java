@@ -31,7 +31,7 @@ module uk.ac.leeds.ccg.grids {
      * The big-math library is mostly used for representing and computing with
      * rational numbers as {@link ch.obermuhlner.math.big.BigRational}.
      */
-    requires transitive ch.obermuhlner.math.big;
+    //requires transitive ch.obermuhlner.math.big;
     
     /**
      * Exports.

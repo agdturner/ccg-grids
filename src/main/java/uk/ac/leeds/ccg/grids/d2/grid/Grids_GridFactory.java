@@ -21,6 +21,7 @@ import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids_GridFactory.
@@ -218,8 +219,8 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param nCols The number of columns in the grids to be created.
      */
     protected void setDimensions(long nRows, long nCols) {
-        dim = new Grids_Dimensions(BigDecimal.ZERO,
-                BigDecimal.valueOf(nCols), BigDecimal.ZERO,
-                BigDecimal.valueOf(nRows), BigDecimal.ONE);
+        dim = new Grids_Dimensions(Math_BigRational.ZERO,
+                Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
+                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
     }
 }

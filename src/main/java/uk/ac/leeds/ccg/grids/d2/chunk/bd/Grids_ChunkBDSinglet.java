@@ -15,11 +15,10 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids_ChunkBD extension for which all values are the same.
@@ -123,7 +122,7 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     }
 
     @Override
-    public BigRational getArithmeticMean() {
-        return BigRational.valueOf(v);
+    public Math_BigRational getArithmeticMean() {
+        return Math_BigRational.valueOf(v);
     }
 }

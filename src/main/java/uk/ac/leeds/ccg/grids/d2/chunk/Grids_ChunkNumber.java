@@ -16,12 +16,12 @@
 package uk.ac.leeds.ccg.grids.d2.chunk;
 
 import java.math.BigDecimal;
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInterface;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * A wrapper for numerical chunks.
@@ -65,11 +65,11 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
      * all cells are no data values, then {@code null} is returned.
      */
     @Override
-    public BigRational getArithmeticMean() {
+    public Math_BigRational getArithmeticMean() {
         BigDecimal sum = getSum();
         long n = getN();
         if (n != 0) {
-            return BigRational.valueOf(sum).divide(BigInteger.valueOf(n));
+            return Math_BigRational.valueOf(sum).divide(BigInteger.valueOf(n));
         }
         return null;
     }

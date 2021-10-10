@@ -47,6 +47,7 @@ import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids with {@code double} values.
@@ -1289,7 +1290,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            BigDecimal x, BigDecimal y, long row, long col, int dp,
+            Math_BigRational x, Math_BigRational y, long row, long col, int dp,
             RoundingMode rm) throws IOException, Exception,
             ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
@@ -1357,8 +1358,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             iterator = values.iterator();
             Grids_2D_ID_long cellID = iterator.next();
             r.distance = Grids_Utilities.distance(x, y,
-                    getCellX(cellID), getCellY(cellID),
-                    dp, rm);
+                    getCellX(cellID), getCellY(cellID));
             while (iterator.hasNext()) {
                 cellID = iterator.next();
                 distance = Grids_Utilities.distance(x, y,

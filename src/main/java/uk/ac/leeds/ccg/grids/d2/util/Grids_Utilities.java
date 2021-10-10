@@ -29,7 +29,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.generic.util.Generic_Time;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grid utility methods.
@@ -163,13 +165,28 @@ public class Grids_Utilities extends Grids_Object {
      * @param oom The order of magnitude the result is rounded to if necessary.
      * @param rm The {@link RoundingMode} to use when rounding the result.
      *
-     * @return The distance between two points calculated using
-     * {@link BigDecimal} arithmetic.
+     * @return The distance squared between two points.
      */
-    public static final BigDecimal distance(BigDecimal x1, BigDecimal y1,
-            BigDecimal x2, BigDecimal y2, int oom, RoundingMode rm) {
-        return Math_BigDecimal.sqrt(((x1.subtract(x2)).pow(2))
-                .add((y1.subtract(y2)).pow(2)), oom, rm);
+    public static final Math_BigRational distance2(Math_BigRational x1, 
+            Math_BigRational y1, Math_BigRational x2, Math_BigRational y2) {
+        return ((x1.subtract(x2)).pow(2)).add((y1.subtract(y2)).pow(2));
+    }
+    
+    /**
+     * @param x1 The x coordinate of the first point.
+     * @param y1 The y coordinate of the first point.
+     * @param x2 The x coordinate of the second point.
+     * @param y2 The y coordinate of the second point.
+     * @param oom The Order of Magnitude initially used to calculate the square 
+     * root.
+     * 
+     * @return The distance between two points.
+     */
+    public static final Math_BigRationalSqrt distance(Math_BigRational x1, 
+            Math_BigRational y1, Math_BigRational x2, Math_BigRational y2,
+            int oom) {
+        return new Math_BigRationalSqrt(((x1.subtract(x2)).pow(2))
+                .add((y1.subtract(y2)).pow(2)), oom);
     }
 
     /**
@@ -286,9 +303,9 @@ public class Grids_Utilities extends Grids_Object {
         double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
         Grids_Dimensions newDimensions = new Grids_Dimensions(
-                BigDecimal.valueOf(minx), BigDecimal.valueOf(maxx),
-                BigDecimal.valueOf(miny), BigDecimal.valueOf(maxy),
-                BigDecimal.valueOf(cellsize));
+                Math_BigRational.valueOf(minx), Math_BigRational.valueOf(maxx),
+                Math_BigRational.valueOf(miny), Math_BigRational.valueOf(maxy),
+                Math_BigRational.valueOf(cellsize));
         Grids_GridDouble xGridRescaled;
         double value;
         double v;
@@ -332,8 +349,8 @@ public class Grids_Utilities extends Grids_Object {
                 double y = yGrid.getCell(row, col);
                 if (y != yGridNoDataValue) {
                     if (x != xGridNoDataValue) {
-                        BigDecimal xBD = BigDecimal.valueOf(x);
-                        temp1.addToCell(xBD, BigDecimal.valueOf(y), 1.0d);
+                        Math_BigRational xBD = Math_BigRational.valueOf(x);
+                        temp1.addToCell(xBD, Math_BigRational.valueOf(y), 1.0d);
                         int division = (int) temp1.getCol(xBD);
                         if (division >= divisions) {
                             division = divisions - 1;
@@ -388,9 +405,10 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        Grids_Dimensions newdimensions = new Grids_Dimensions(BigDecimal.ZERO,
-                BigDecimal.ZERO, BigDecimal.valueOf(divisions),
-                BigDecimal.valueOf(divisions), BigDecimal.ONE);
+        Grids_Dimensions newdimensions = new Grids_Dimensions(
+                Math_BigRational.ZERO, Math_BigRational.ZERO, 
+                Math_BigRational.valueOf(divisions),
+                Math_BigRational.valueOf(divisions), Math_BigRational.ONE);
         Grids_GridDouble densityPlotGrid = gfd.create(divisions, divisions, newdimensions);
         //double average = d1 / d2;
         for (int i = 0; i < divisions; i++) {

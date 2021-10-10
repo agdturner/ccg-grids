@@ -41,7 +41,7 @@ import java.util.TreeMap;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 
 /**
  * Grids with {@code boolean} values. There is no noDataValue. For this type of
@@ -820,9 +820,6 @@ public class Grids_GridBinary extends Grids_GridB {
     }
 
     /**
-     * @param dp The number of decimal places for the precision of distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @param x The x-coordinate of the circle centre from which cell values are
      * returned.
      * @param y The y-coordinate of the circle centre from which cell values are
@@ -831,6 +828,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param rm The RoundingMode for distance calculations.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.

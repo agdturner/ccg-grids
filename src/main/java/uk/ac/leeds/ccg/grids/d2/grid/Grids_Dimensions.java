@@ -16,14 +16,14 @@
 package uk.ac.leeds.ccg.grids.d2.grid;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For storing and testing the dimensions of a grid.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 2.0
  */
 public class Grids_Dimensions implements Serializable {
 
@@ -32,72 +32,77 @@ public class Grids_Dimensions implements Serializable {
     /**
      * The minimum x.
      */
-    private final BigDecimal xMin;
+    private final Math_BigRational xMin;
 
     /**
      * The maximum x.
      */
-    private final BigDecimal xMax;
+    private final Math_BigRational xMax;
 
     /**
      * The minimum y.
      */
-    private final BigDecimal yMin;
+    private final Math_BigRational yMin;
 
     /**
      * The maximum y.
      */
-    private final BigDecimal yMax;
+    private final Math_BigRational yMax;
 
     /**
-     * The cellsize (width or height of a cell). This would be better stored not
-     * as a single BigDecimal Number, but as a fraction or rational number in
-     * two parts - a numerator and a denominator. As sometimes a user may want
-     * to create a disaggregated grid with a cellsize of a third or other non
-     * even factor of the cellsize and this may have a consequence of needing to
-     * round the resulting cellsize. Really, the cellsize should be stored
-     * accurately and so in a future version it will be stored as a pair of
-     * BigInteger numbers.
+     * The cellsize (width and height of a cell).
      */
-    private final BigDecimal cellsize;
+    private final Math_BigRational cellsize;
 
     /**
      * Half the cellsize.
      */
-    private final BigDecimal halfCellsize;
+    private final Math_BigRational halfCellsize;
 
     /**
      * The cellsize squared.
      */
-    private final BigDecimal cellsizeSquared;
+    private final Math_BigRational cellsizeSquared;
 
     /**
      * The width.
      */
-    private final BigDecimal width;
+    private final Math_BigRational width;
 
     /**
      * The height.
      */
-    private final BigDecimal height;
+    private final Math_BigRational height;
 
     /**
      * The area.
      */
-    private final BigDecimal area;
+    private final Math_BigRational area;
 
+    /**
+     * @param nRows The nrows.
+     * @param nCols The ncols.
+     */
     public Grids_Dimensions(int nRows, int nCols) {
-        this(BigDecimal.ZERO, new BigDecimal(nCols), BigDecimal.ZERO,
-                new BigDecimal(nRows), BigDecimal.ONE);
+        this(Math_BigRational.ZERO, Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
+                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
     }
 
+    /**
+     * @param nRows The nrows.
+     * @param nCols The ncols.
+     */
     public Grids_Dimensions(long nRows, long nCols) {
-        this(BigDecimal.ZERO, BigDecimal.valueOf(nCols), BigDecimal.ZERO,
-                BigDecimal.valueOf(nRows), BigDecimal.ONE);
+        this(Math_BigRational.ZERO, Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
+                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
     }
 
-    public Grids_Dimensions(BigDecimal width, BigDecimal height) {
-        this(BigDecimal.ZERO, width, BigDecimal.ZERO, height, BigDecimal.ONE);
+    /**
+     * @param width The width.
+     * @param height The height.
+     */
+    public Grids_Dimensions(Math_BigRational width, Math_BigRational height) {
+        this(Math_BigRational.ZERO, width, Math_BigRational.ZERO, height, Math_BigRational.ONE);
     }
 
     public Grids_Dimensions(Grids_Dimensions d) {
@@ -123,8 +128,8 @@ public class Grids_Dimensions implements Serializable {
      * @param yMax The maximum y coordinate.
      * @param cellsize The cellsize.
      */
-    public Grids_Dimensions(BigDecimal xMin, BigDecimal xMax, BigDecimal yMin,
-            BigDecimal yMax, BigDecimal cellsize) {
+    public Grids_Dimensions(Math_BigRational xMin, Math_BigRational xMax, Math_BigRational yMin,
+            Math_BigRational yMax, Math_BigRational cellsize) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -133,7 +138,7 @@ public class Grids_Dimensions implements Serializable {
         width = this.xMax.subtract(this.xMin);
         height = this.yMax.subtract(this.yMin);
         area = width.multiply(height);
-        halfCellsize = this.cellsize.divide(BigDecimal.valueOf(2L));
+        halfCellsize = this.cellsize.divide(2);
         cellsizeSquared = this.cellsize.multiply(this.cellsize);
     }
 
@@ -180,72 +185,72 @@ public class Grids_Dimensions implements Serializable {
     }
 
     /**
-     * @return the xMin
+     * @return The xMin as a Math_BigRational.
      */
-    public BigDecimal getXMin() {
+    public Math_BigRational getXMin() {
         return xMin;
     }
 
     /**
-     * @return the xMax
+     * @return The xMax as a Math_BigRational.
      */
-    public BigDecimal getXMax() {
+    public Math_BigRational getXMax() {
         return xMax;
     }
 
     /**
-     * @return the yMin
+     * @return The yMin as a Math_BigRational.
      */
-    public BigDecimal getYMin() {
+    public Math_BigRational getYMin() {
         return yMin;
     }
 
     /**
-     * @return the yMax
+     * @return The yMax as a Math_BigRational.
      */
-    public BigDecimal getYMax() {
+    public Math_BigRational getYMax() {
         return yMax;
     }
 
     /**
-     * @return the cellsize
+     * @return The cellsize as a Math_BigRational.
      */
-    public BigDecimal getCellsize() {
+    public Math_BigRational getCellsize() {
         return cellsize;
     }
 
     /**
-     * @return the halfCellsize
+     * @return The halfCellsize as a Math_BigRational.
      */
-    public BigDecimal getHalfCellsize() {
+    public Math_BigRational getHalfCellsize() {
         return halfCellsize;
     }
 
     /**
-     * @return the cellsizeSquared
+     * @return The cellsizeSquared as a Math_BigRational.
      */
-    public BigDecimal getCellsizeSquared() {
+    public Math_BigRational getCellsizeSquared() {
         return cellsizeSquared;
     }
 
     /**
-     * @return the width
+     * @return The width as a Math_BigRational.
      */
-    public BigDecimal getWidth() {
+    public Math_BigRational getWidth() {
         return width;
     }
 
     /**
-     * @return the height
+     * @return The height as a Math_BigRational.
      */
-    public BigDecimal getHeight() {
+    public Math_BigRational getHeight() {
         return height;
     }
 
     /**
-     * @return the area
+     * @return The area as a Math_BigRational.
      */
-    public BigDecimal getArea() {
+    public Math_BigRational getArea() {
         return area;
     }
 

@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.grids.d2.util;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_Point;
 
 /**

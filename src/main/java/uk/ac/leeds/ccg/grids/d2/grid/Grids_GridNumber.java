@@ -22,6 +22,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For grids containing Numerical values.
@@ -54,7 +55,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(BigDecimal x, BigDecimal y)
+    public BigDecimal getCellBigDecimal(Math_BigRational x, Math_BigRational y)
             throws IOException, Exception, ClassNotFoundException {
         return getCellBigDecimal(getChunkRow(y), getChunkCol(x),
                 getChunkCellRow(y), getChunkCellCol(x));
@@ -196,7 +197,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number setCell(BigDecimal x, BigDecimal y, BigDecimal v)
+    public Number setCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(x, y)) {
             return setCell(getChunkRow(y), getChunkCol(x),
@@ -277,7 +278,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(BigDecimal x, BigDecimal y, BigDecimal v)
+    public void addToCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
                 getChunkCellCol(x), v);
@@ -293,14 +294,13 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The {@link RoundingMode} to use when rounding the result.
+     * @param oom The Order of Magnitude for calculating the distance.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected abstract NearestValuesCellIDsAndDistance
-            getNearestValuesCellIDsAndDistance(BigDecimal x, BigDecimal y,
-                    long row, long col, int dp, RoundingMode rm)
+            getNearestValuesCellIDsAndDistance(Math_BigRational x, 
+                    Math_BigRational y,                    long row, long col, int oom)
             throws IOException, Exception, ClassNotFoundException;
 
     /**
@@ -330,10 +330,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(BigDecimal x,
-            BigDecimal y, int dp, RoundingMode rm) throws IOException,
+    protected NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
+            Math_BigRational x, Math_BigRational y, int oom) throws IOException,
             Exception, ClassNotFoundException {
-        return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
+        return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom);
     }
 
     /**
@@ -346,7 +346,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     @Override
     protected void logRow(long ncols, long c, long row) throws Exception {
-        String s = " " + getStringValue(BigDecimal.valueOf(row)) + " | ";
+        String s = " " + getStringValue(Math_BigRational.valueOf(row)) + " | ";
         if (ncols < c) {
             long col;
             for (col = 0; col < ncols - 1; col++) {

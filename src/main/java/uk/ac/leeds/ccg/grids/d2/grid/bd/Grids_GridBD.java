@@ -46,6 +46,7 @@ import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids with {@code BigDecimal} values.
@@ -1131,7 +1132,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * @return BigDecimal[] of all cell values for cells thats centroids are
+     * @return BigDecimal[] of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
      * @param x The x-coordinate of the circle centre from which cell values are
@@ -1142,7 +1143,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The number of decimal places used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @param rm The {@link RoundingMode} to use when rounding distance
      * calculations.
      * @throws java.io.IOException If encountered.
@@ -1244,7 +1245,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @param rm The {@link RoundingMode} to use when rounding distance
      * calculations.
      * @throws java.io.IOException If encountered.
@@ -1252,7 +1253,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            BigDecimal x, BigDecimal y, long row, long col, int oom,
+            Math_BigRational x, Math_BigRational y, long row, long col, int oom,
             RoundingMode rm) throws IOException, Exception,
             ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();

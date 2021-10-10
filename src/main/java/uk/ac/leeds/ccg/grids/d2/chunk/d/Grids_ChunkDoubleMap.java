@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.d;
 
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,7 +25,8 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Stores cell values in: a TreeMap with keys as cell values and values as
@@ -843,13 +843,13 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
      */
     @Override
     protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
-        BigRational r = BigRational.ZERO;
-        BigRational mean = getArithmeticMean();
+        Math_BigRational r = Math_BigRational.ZERO;
+        Math_BigRational mean = getArithmeticMean();
         // Calculate the number of default values
         int n = chunkNRows * chunkNCols;
         int nValues = getNumberOfDefaultValues(n);
-        r = r.add((BigRational.valueOf(defaultValue).subtract(mean).pow(2))
-                .multiply(BigRational.valueOf(nValues)));
+        r = r.add((Math_BigRational.valueOf(defaultValue).subtract(mean).pow(2))
+                .multiply(Math_BigRational.valueOf(nValues)));
         Iterator<Double> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -861,8 +861,8 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
             offsetBitSet = Data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
-            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(BigRational.valueOf(n)));
+            r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(Math_BigRational.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -872,8 +872,8 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
             double v = ite.next();
             n = Data.DataMapHashSet.get(v).size();
             nValues += n;
-            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(BigRational.valueOf(n)));
+            r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(Math_BigRational.valueOf(n)));
         }
         if ((nValues - 1) > 0) {
             return new Math_BigRationalSqrt(r.divide((nValues - 1)), oom).toBigDecimal(oom);

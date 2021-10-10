@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.grids.d2.stats;
 
 import ch.obermuhlner.math.big.BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * An interface to be implemented by classes that provide statistics about
@@ -52,7 +53,7 @@ public interface Grids_StatsInterface {
     /**
      * @return The arithmetic mean of all data values.
      */
-    public BigRational getArithmeticMean();
+    public Math_BigRational getArithmeticMean();
 
 //    @TODO
 //    StandardDeviation

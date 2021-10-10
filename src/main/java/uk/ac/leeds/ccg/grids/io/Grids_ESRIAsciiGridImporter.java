@@ -25,6 +25,7 @@ import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Class for importing ESRI Asciigrid.
@@ -91,22 +92,22 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         /**
          * For storing the lower left corner x.
          */
-        public BigDecimal xll;
+        public Math_BigRational xll;
         
         /**
          * For storing the lower left corner y.
          */
-        public BigDecimal yll;
+        public Math_BigRational yll;
         
         /**
          * For storing the cellsize.
          */
-        public BigDecimal cellsize;
+        public Math_BigRational cellsize;
         
         /**
          * For storing the NODATA value.
          */
-        public BigDecimal ndv;
+        public Math_BigRational ndv;
 
         public Header() {
         }
@@ -142,7 +143,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     b1 = false;
                 }
                 this.st.nextToken();
-                header.xll = new BigDecimal(this.st.sval);
+                header.xll = Math_BigRational.valueOf(this.st.sval);
 
                 // yll
                 this.st.nextToken();
@@ -152,17 +153,15 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     b2 = false;
                 }
                 this.st.nextToken();
-                header.yll = new BigDecimal(this.st.sval);
+                header.yll = Math_BigRational.valueOf(this.st.sval);
                 // cellsize
                 this.st.nextToken();
                 this.st.nextToken();
-                BigDecimal cellsize = new BigDecimal(this.st.sval);
+                Math_BigRational cellsize = Math_BigRational.valueOf(this.st.sval);
                 header.cellsize = cellsize;
                 // adjust xll
                 if (!b1 || !b2) {
-                    BigDecimal halfCellsize = cellsize.divide(
-                            new BigDecimal("2"),
-                            cellsize.scale() + 4, RoundingMode.HALF_EVEN);
+                    Math_BigRational halfCellsize = cellsize.divide(2);
                     if (!b1) {
                         header.xll = header.xll.subtract(halfCellsize);
                     }
@@ -175,7 +174,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                 this.br.mark(100);
                 this.st.wordChars('_', '_');
                 this.st.nextToken();
-                header.ndv = BigDecimal.valueOf(-Double.MAX_VALUE);
+                header.ndv = Math_BigRational.valueOf(-Double.MAX_VALUE);
                 if (this.st.ttype == StreamTokenizer.TT_NUMBER) {
                     this.br.reset();
                 } else {
@@ -191,7 +190,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
 //                this.st.ordinaryChar( 'D' );
 //                this.st.parseNumbers();
                         //header[ 5 ] = new Double( readHeaderDoubleValue() );
-                        header.ndv = BigDecimal.valueOf(readDouble());
+                        header.ndv = Math_BigRational.valueOf(readDouble());
                     } else {
                         this.br.reset();
                     }
