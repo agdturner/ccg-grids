@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Set;
@@ -37,14 +36,13 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBoolean;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids with {@code Boolean} values. The noDataValue is {@code null}.
@@ -246,7 +244,7 @@ public class Grids_GridBoolean extends Grids_GridB {
                 endCol);
         int startChunkRow = g.getChunkRow(startRow);
         int endChunkRow = g.getChunkRow(endRow);
-        int ncr = endChunkRow - startChunkRow + 1;
+        //int ncr = endChunkRow - startChunkRow + 1;
         int startChunkCol = g.getChunkCol(startCol);
         int endChunkCol = g.getChunkCol(endCol);
         if (g instanceof Grids_GridBoolean) {
@@ -656,7 +654,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final boolean getCell(Math_BigRational x, Math_BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -685,7 +683,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Boolean setCell(BigDecimal x, BigDecimal y, Boolean v)
+    public Boolean setCell(Math_BigRational x, Math_BigRational y, Boolean v)
             throws IOException, ClassNotFoundException, Exception {
         return setCell(getRow(y), getCol(x), v);
     }
@@ -807,16 +805,13 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Boolean[] getCells(BigDecimal x, BigDecimal y,
-            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+    protected Boolean[] getCells(Math_BigRational x, Math_BigRational y,
+            Math_BigRational distance2) throws IOException,
             ClassNotFoundException, Exception {
-        return getCells(x, y, getRow(y), getCol(x), distance, dp, rm);
+        return getCells(x, y, getRow(y), getCol(x), distance2);
     }
 
     /**
-     * @param dp The number of decimal places for the precision of distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @param row The row index for the cell that's centroid is the circle
      * centre from which cell values are returned.
      * @param col The column index for the cell that's centroid is the circle
@@ -829,10 +824,9 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Boolean[] getCells(long row, long col, BigDecimal distance, int dp,
-            RoundingMode rm) throws IOException, ClassNotFoundException, Exception {
-        return getCells(getCellX(col), getCellY(row), row,
-                col, distance, dp, rm);
+    public Boolean[] getCells(long row, long col, Math_BigRational distance2)
+            throws IOException, ClassNotFoundException, Exception {
+        return getCells(getCellX(col), getCellY(row), row, col, distance2);
     }
 
     /**
@@ -842,29 +836,23 @@ public class Grids_GridBoolean extends Grids_GridB {
      * returned.
      * @param row The row index at y.
      * @param col The column index at x.
-     * @param distance The radius of the circle for which intersected cell
-     * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
-     * @param rm The RoundingMode for distance calculations.
-     * @return An array of all cell values for cells that's centroids are
-     * intersected by circle with centre at x-coordinate x, y-coordinate y, and
-     * radius distance.
+     * @param distance2 The radius of the circle squared for which intersected
+     * cell values are returned.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Boolean[] getCells(BigDecimal x, BigDecimal y, long row, long col,
-            BigDecimal distance, int oom, RoundingMode rm) throws IOException,
+    protected Boolean[] getCells(Math_BigRational x, Math_BigRational y,
+            long row, long col, Math_BigRational distance2) throws IOException,
             ClassNotFoundException, Exception {
-        int delta = Math_BigDecimal.ceilingSignificantDigit(
-                Math_BigDecimal.divide(x, y, 1, RoundingMode.UP)).intValueExact();
+        int delta = x.divide(y).ceil().intValue();
         Boolean[] cells = new Boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellY(row);
+            Math_BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellX(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY, oom, rm)
-                        .compareTo(distance) == -1) {
+                Math_BigRational thisX = getCellX(col);
+                if (Grids_Utilities.distance2(x, y, thisX, thisY)
+                        .compareTo(distance2) == -1) {
                     cells[count] = getCell(p, q);
                     count++;
                 }

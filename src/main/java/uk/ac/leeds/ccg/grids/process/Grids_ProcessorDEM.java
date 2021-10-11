@@ -36,6 +36,8 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * A class of methods relevant to the processing of Digital Elevation Model
@@ -58,33 +60,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
     public Grids_ProcessorDEM(Grids_Environment e) throws IOException,
             ClassNotFoundException, Exception {
         super(e);
-    }
-
-    /**
-     * Calculates and returns measures of the slope and aspect for the
-     * Grids_GridNumber _Grid2DSquareCell passed in.
-     *
-     * @param g The Grids_GridNumber to be processed. Defaults: kernel to have
-     * distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
-     * weightIntersect = 1.0d; weightFactor = 0.0d;
-     * @param dp The number of decimal places in BigDecimal arithmetic.
-     * @param rm The RoundingMode used in BigDecimal arithmetic.
-     * @return Grids_GridDouble[] slopeAndAspect. /n
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g, int dp,
-            RoundingMode rm) throws IOException, ClassNotFoundException,
-            Exception {
-        boolean hoome = true;
-        // Default distance to contain centroids of immediate neighbours
-        // ((square root of 2) * cellsize) < distance < (2 * cellsize).
-        Grids_Dimensions dimensions = g.getDimensions();
-        double distance = (dimensions.getCellsize().doubleValue()) * (3.0d / 2.0d);
-        double weightIntersect = 1.0d;
-        double weightFactor = 0.0d;
-        return getSlopeAspect(g, BigDecimal.valueOf(distance), weightIntersect,
-                weightFactor, dp, rm, hoome);
     }
 
     /**
@@ -121,9 +96,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] getSlopeAspect(Grids_GridNumber g,
-            BigDecimal distance, double weightIntersect, double weightFactor,
-            int dp, RoundingMode rm, boolean hoome) throws IOException,
-            ClassNotFoundException, Exception {
+            Math_BigRationalSqrt distance, Math_BigRational weightIntersect,
+            Math_BigRational weightFactor, int oom, boolean hoome)
+            throws IOException, ClassNotFoundException, Exception {
         try {
             env.checkAndMaybeFreeMemory();
             String methodName = "getSlopeAspect(" + g.getClass().getName()
@@ -140,8 +115,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             long ncols = g.getNCols();
             long nrows = g.getNRows();
             Grids_Dimensions dimensions = g.getDimensions();
-            double cellsize = g.getCellsize().doubleValue();
-            long cellDistance = g.getCellDistance(distance).longValueExact();
+            Math_BigRational cellsize = g.getCellsize();
+            int cellDistance = g.getCellDistance(distance);
             double diffX;
             double diffY;
             double diffHeight;
@@ -152,7 +127,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             double aspect;
             double[][] weights;
             weights = Grids_Kernel.getNormalDistributionKernelWeights(
-                    cellsize, distance.doubleValue());
+                    cellsize, distance, oom);
             double weight;
             long row;
             long col;
@@ -179,20 +154,23 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             int int0;
             int int1;
             for (p = -cellDistance; p <= cellDistance; p++) {
-                BigDecimal thisY = BigDecimal.valueOf(p * cellsize);
+                Math_BigRational thisY = Math_BigRational.valueOf(p)
+                        .multiply(cellsize);
                 for (q = -cellDistance; q <= cellDistance; q++) {
                     if (!(p == 0 && q == 0)) {
                         long0 = p + cellDistance;
                         int0 = (int) long0;
                         long0 = q + cellDistance;
                         int1 = (int) (long0);
-                        BigDecimal thisX = BigDecimal.valueOf(q * cellsize);
-                        BigDecimal thisDistance = Grids_Utilities.distance(BigDecimal.ZERO,
-                                BigDecimal.ZERO, thisX, thisY, dp, rm);
+                        Math_BigRational thisX = Math_BigRational.valueOf(q)
+                                .multiply(cellsize);
+                        Math_BigRationalSqrt thisDistance
+                                = Grids_Utilities.distance(Math_BigRational.ZERO,
+                                        Math_BigRational.ZERO, thisX, thisY, oom);
                         if (thisDistance.compareTo(distance) != 1) {
                             weight = weights[int0][int1];
                             weightSum += weight;
-                            distanceSum += thisDistance.doubleValue();
+                            distanceSum += thisDistance.getSqrt(oom).doubleValue();
                             numberObservations++;
                         }
                     }
@@ -365,12 +343,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
                                         long0 = row + p;
-                                        BigDecimal thisY = g.getCellY(long0);
+                                        Math_BigRational thisY = g.getCellY(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
-                                                BigDecimal thisX = BigDecimal.valueOf(q * cellsize);
-                                                BigDecimal thisDistance = Grids_Utilities.distance(BigDecimal.ZERO,
-                                                        BigDecimal.ZERO, thisX, thisY, dp, rm);
+                                                Math_BigRational thisX = Math_BigRational.valueOf(q).multiply(cellsize);
+                                                Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(Math_BigRational.ZERO,
+                                                        Math_BigRational.ZERO, thisX, thisY, oom);
                                                 if (thisDistance.compareTo(distance) != 1) {
                                                     h2 = gd.getCell(thisX, thisY);
                                                     if (h2 != noDataValue) {
@@ -380,7 +358,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                                         int1 = (int) (long0);
                                                         weight = weights[int0][int1];
                                                         weightSum += weight;
-                                                        distanceSum += thisDistance.doubleValue();
+                                                        distanceSum += thisDistance.toBigDecimal(oom).doubleValue();
                                                         numberObservations++;
                                                         d = h - h2;
                                                         diffHeight = d * weight;
@@ -456,11 +434,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         env.checkAndMaybeFreeMemory();
                         for (cellRow = 0; cellRow < chunkNrows; cellRow++) {
                             row = g.getRow(cri, cellRow);
-                            BigDecimal y = g.getCellY(row);
+                            Math_BigRational y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNcols; cellCol++) {
                                 env.checkAndMaybeFreeMemory();
                                 col = g.getCol(cci, cellCol);
-                                BigDecimal x = g.getCellX(col);
+                                Math_BigRational x = g.getCellX(col);
                                 heightInt = ci.getCell(cellRow, cellCol);
                                 if (heightInt != noDataValueInt) {
                                     diffX = 0.0d;
@@ -471,12 +449,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                     numberObservations = 0.0d;
                                     for (p = -cellDistance; p <= cellDistance; p++) {
                                         long0 = row + p;
-                                        BigDecimal thisY = g.getCellY(long0);
+                                        Math_BigRational thisY = g.getCellY(long0);
                                         for (q = -cellDistance; q <= cellDistance; q++) {
                                             if (!(p == 0 && q == 0)) {
                                                 long0 = col + q;
-                                                BigDecimal thisX = g.getCellX(long0);
-                                                BigDecimal thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, dp, rm);
+                                                Math_BigRational thisX = g.getCellX(long0);
+                                                Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, oom);
                                                 if (thisDistance.compareTo(distance) != 1) {
                                                     thisHeightInt = gridInt.getCell(
                                                             thisX, thisY);
@@ -487,7 +465,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                                                         int1 = (int) (long0);
                                                         weight = weights[int0][int1];
                                                         weightSum += weight;
-                                                        distanceSum += thisDistance.doubleValue();
+                                                        distanceSum += thisDistance.toBigDecimal(oom).doubleValue();
                                                         numberObservations++;
                                                         d = (double) heightInt - thisHeightInt;
                                                         diffHeight = d * weight;
@@ -551,7 +529,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     throw e;
                 }
                 env.initMemoryReserve(env.env);
-                return getSlopeAspect(g, distance, weightIntersect, weightFactor, dp, rm, hoome);
+                return getSlopeAspect(g, distance, weightIntersect, weightFactor, oom, hoome);
             }
             throw e;
         }
@@ -581,12 +559,12 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected double[] getSlopeAspect(Grids_GridNumber g, BigDecimal x,
-            BigDecimal y, BigDecimal distance, BigDecimal wi, int wf, int dp, 
-            RoundingMode rm) throws IOException, ClassNotFoundException, 
-            Exception {
-        return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance, wi, 
-                wf, dp, rm);
+    protected double[] getSlopeAspect(Grids_GridNumber g, Math_BigRational x,
+            Math_BigRational y, Math_BigRationalSqrt distance,
+            Math_BigRational wi, int wf, int oom)
+            throws IOException, ClassNotFoundException, Exception {
+        return getSlopeAspect(g, g.getRow(y), g.getCol(x), x, y, distance, wi,
+                wf, oom);
     }
 
     /**
@@ -619,9 +597,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected double[] getSlopeAspect(Grids_GridNumber g, long rowIndex,
-            long colIndex, BigDecimal x, BigDecimal y, BigDecimal distance,
-            BigDecimal wi, int wf, int dp, RoundingMode rm) throws IOException,
-            ClassNotFoundException, Exception {
+            long colIndex, Math_BigRational x, Math_BigRational y,
+            Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom)
+            throws IOException, ClassNotFoundException, Exception {
         env.getGrids().add(g);
         if (g.getClass() == Grids_GridInt.class) {
             Grids_GridInt gi = (Grids_GridInt) g;
@@ -631,8 +609,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[1] = noDataValue;
             slopeAndAspect[2] = noDataValue;
             slopeAndAspect[3] = noDataValue;
-            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi,
-                    wf, dp, rm);
+            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi, wf, oom);
             return slopeAndAspect;
         } else {
             // (g.getClass() == Grids_GridDouble.class)
@@ -643,35 +620,35 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             slopeAndAspect[1] = noDataValue;
             slopeAndAspect[2] = noDataValue;
             slopeAndAspect[3] = noDataValue;
-            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi,
-                    wf, dp, rm);
+            getSlopeAspect(slopeAndAspect, g, x, y, distance, wi, wf, oom);
             return slopeAndAspect;
         }
     }
 
     protected void getSlopeAspect(double[] slopeAndAspect, Grids_GridNumber g,
-            BigDecimal x, BigDecimal y, BigDecimal distance,
-            BigDecimal weightIntersect, int weightFactor, int dp,
-            RoundingMode rm) throws Exception {
+            Math_BigRational x, Math_BigRational y,
+            Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom)
+            throws Exception {
         BigDecimal height = g.getCellBigDecimal(x, y);
         if (height.compareTo(g.ndv) != 0) {
-            long cellDistance = g.getCellDistance(distance).longValueExact();
-            BigDecimal diffX = BigDecimal.ZERO;
-            BigDecimal diffY = BigDecimal.ZERO;
-            BigDecimal slope = BigDecimal.ZERO;
+            int cellDistance = g.getCellDistance(distance);
+            Math_BigRational diffX = Math_BigRational.ZERO;
+            Math_BigRational diffY = Math_BigRational.ZERO;
+            Math_BigRational slope = Math_BigRational.ZERO;
             // Calculate slope and aspect
+            Math_BigRational d = distance.getSqrt(oom);
             for (long p = -cellDistance; p <= cellDistance; p++) {
-                BigDecimal thisY = y.add(BigDecimal.valueOf(p).multiply(distance));
+                Math_BigRational thisY = y.add(Math_BigRational.valueOf(p).multiply(d));
                 for (long q = -cellDistance; q <= cellDistance; q++) {
-                    BigDecimal thisX = x.add(BigDecimal.valueOf(q).multiply(distance));
-                    BigDecimal thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, dp, rm);
+                    Math_BigRational thisX = x.add(Math_BigRational.valueOf(q).multiply(d));
+                    Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, oom);
                     if (thisDistance.compareTo(distance) != 1) {
                         BigDecimal weight = Grids_Kernel.getKernelWeight(distance,
-                                weightIntersect, weightFactor, thisDistance, dp, rm);
+                                wi, wf, thisDistance, oom).toBigDecimal();
                         BigDecimal thisHeight = g.getCellBigDecimal(thisX, thisY);
                         //thisHeight = gi.getNearestValueDouble(thisX, thisY, hoome);
                         if (thisHeight.compareTo(g.ndv) != 0) {
-                            BigDecimal diffHeight = (height.subtract(thisHeight)).multiply(weight);
+                            Math_BigRational diffHeight = Math_BigRational.valueOf((height.subtract(thisHeight)).multiply(weight));
                             diffX = diffX.add((x.subtract(thisX)).multiply(diffHeight));
                             diffY = diffY.add((y.subtract(thisY)).multiply(diffHeight));
                             slope = slope.add(diffHeight);
@@ -1763,9 +1740,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
-            double distance, double weightIntersect, double weightFactor,
+            Math_BigRationalSqrt distance, double weightIntersect, double weightFactor,
             Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
-            boolean swapInitialisedFiles, boolean swapProcessedChunks)
+            boolean swapInitialisedFiles, boolean swapProcessedChunks, int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (gdf.getChunkNCols() != gif.getChunkNCols()
@@ -1801,11 +1778,11 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     env.initMemoryReserve(env.env);
                 }
                 System.out.println("Initialised result[" + i + "]");
-                
+
             } while (!isInitialised);
         }
         return getMetrics1(metrics1, g, dimensions, distance, weightIntersect,
-                weightFactor, swapProcessedChunks);
+                weightFactor, swapProcessedChunks, oom);
     }
 
     /**
@@ -2034,9 +2011,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber[] metrics1,
-            Grids_GridNumber g, Grids_Dimensions dim, double distance,
-            double wi, double wf, boolean swapProcessedChunks) throws IOException,
-            ClassNotFoundException, Exception {
+            Grids_GridNumber g, Grids_Dimensions dim,
+            Math_BigRationalSqrt distance,
+            double wi, double wf, boolean swapProcessedChunks, int oom)
+            throws IOException, ClassNotFoundException, Exception {
         String methodName = "getMetrics1("
                 + "Grids_AbstractGridNumber[],Grids_AbstractGridNumber,"
                 + "Grids_Dimensions,double,double,double,boolean)";
@@ -2044,8 +2022,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         env.checkAndMaybeFreeMemory();
         String name;
         String underScore = "_";
-        double cellsize = dim.getCellsize().doubleValue();
-        int cellDistance = (int) Math.ceil(distance / cellsize);
+        Math_BigRational cellsize = dim.getCellsize();
+        int cellDistance = distance.divide(cellsize).getSqrt(0).ceil().intValue();
         BigDecimal[] heights = new BigDecimal[4];
         heights[0] = BigDecimal.ZERO;
         heights[1] = BigDecimal.ZERO;
@@ -2063,7 +2041,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         dummyDiff[3] = BigDecimal.ZERO;
         double[][] weights;
         weights = Grids_Kernel.getNormalDistributionKernelWeights(
-                g.getCellsize().doubleValue(), distance);
+                g.getCellsize(), distance, oom);
         double[] metrics1ForCell = new double[metrics1.length];
         for (int i = 0; i < metrics1.length; i++) {
             metrics1ForCell[i] = 0.0d;
@@ -2110,10 +2088,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             long row = g.getRow(chunkRow, cellRow);
-                            BigDecimal y = g.getCellY(row);
+                            Math_BigRational y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 long col = g.getCol(chunkCol, cellCol);
-                                BigDecimal x = gd.getCellX(col);
+                                Math_BigRational x = gd.getCellX(col);
                                 //height = _Grid2DSquareCellDouble.getCell(cellRowIndex, cellColIndex, hoome);
                                 BigDecimal cellHeight = gcd.getCellBigDecimal(
                                         cellRow, cellCol);
@@ -2142,7 +2120,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 
                     env.env.log("swapProcessedChunks");
                     env.initNotToClear();
-                    
+
                     if (swapProcessedChunks) {
                         for (i = 0; i < metrics1.length; i++) {
                             env.checkAndMaybeFreeMemory();
@@ -2181,10 +2159,10 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         chunkNCols = g.getChunkNCols(chunkCol);
                         for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                             long row = g.getRow(chunkRow, cellRow);
-                            BigDecimal y = g.getCellY(row);
+                            Math_BigRational y = g.getCellY(row);
                             for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
                                 long col = g.getCol(chunkCol, cellCol);
-                                BigDecimal x = gridInt.getCellX(cellCol);
+                                Math_BigRational x = gridInt.getCellX(cellCol);
                                 BigDecimal cellHeight = gridChunkInt.getCellBigDecimal(cellRow, cellCol);
                                 if (cellHeight.compareTo(ndv) != 0) {
                                     env.checkAndMaybeFreeMemory();
@@ -2236,9 +2214,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * in 4 orthogonal directions are accounted for in the metrics1. NB. Every
      * cell is either higher, lower or the same height as the cell at cell row
      * {@code row}, cell col {@code col}. Some DEMs will have few cells in
- distance with the same v.
-
- <ul>
+     * distance with the same v.
+     *
+     * <ul>
      *
      * <li>9 basic metrics:
      * <ul>
@@ -2382,8 +2360,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param w An array of kernel weights for weighting metrics1.
      */
     private void metrics1Calculate_All(Grids_GridNumber g,
-            BigDecimal noDataValue, long row, long col, BigDecimal cellX,
-            BigDecimal cellY, BigDecimal cellHeight, int cellDistance,
+            BigDecimal noDataValue, long row, long col, Math_BigRational cellX,
+            Math_BigRational cellY, BigDecimal cellHeight, int cellDistance,
             double[][] w, double[] m, BigDecimal[] h, BigDecimal[] d,
             BigDecimal[] dd) throws IOException, ClassNotFoundException,
             Exception {
@@ -2402,14 +2380,14 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         int p;
         int q;
         for (p = 0; p <= cellDistance; p++) {
-            BigDecimal y = g.getCellY(row + p);
-            BigDecimal yDiff = y.subtract(cellY);
+            Math_BigRational y = g.getCellY(row + p);
+            Math_BigRational yDiff = y.subtract(cellY);
             for (q = 1; q <= cellDistance; q++) {
                 noDataCount = 0.0d;
-                BigDecimal x = g.getCellX(col + q);
+                Math_BigRational x = g.getCellX(col + q);
                 weight = w[p][q];
                 if (weight > 0) {
-                    BigDecimal xDiff = x.subtract(cellX);
+                    Math_BigRational xDiff = x.subtract(cellX);
                     h[0] = g.getCellBigDecimal(x, y);
                     if (h[0] == noDataValue) {
                         h[0] = cellHeight;

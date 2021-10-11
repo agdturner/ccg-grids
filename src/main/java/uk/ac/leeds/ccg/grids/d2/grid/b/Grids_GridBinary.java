@@ -42,6 +42,8 @@ import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grids with {@code boolean} values. There is no noDataValue. For this type of
@@ -424,7 +426,6 @@ public class Grids_GridBinary extends Grids_GridB {
             this.stats = stats;
             this.stats.setGrid(this);
             String filename = gridFile.getFileName().toString();
-            BigDecimal value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
                 eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
@@ -449,7 +450,7 @@ public class Grids_GridBinary extends Grids_GridB {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            value = eagi.readBigDecimal();
+                            BigDecimal value = eagi.readBigDecimal();
                             if (value != gridFileNoDataValue) {
                                 if (value.compareTo(BigDecimal.ZERO) == 0) {
                                     initCell(row, col, false, false);
@@ -470,8 +471,8 @@ public class Grids_GridBinary extends Grids_GridB {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            value = eagi.readBigDecimal();
-                            if (value != gridFileNoDataValue) {
+                            BigDecimal value = eagi.readBigDecimal();
+                            if (value.compareTo(gridFileNoDataValue) != 0) {
                                 if (value.compareTo(BigDecimal.ZERO) == 0) {
                                     initCell(row, col, false, true);
                                 } else {
@@ -640,7 +641,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final boolean getCell(Math_BigRational x, Math_BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -668,7 +669,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean setCell(BigDecimal x, BigDecimal y, boolean v)
+    public final boolean setCell(Math_BigRational x, Math_BigRational y, boolean v)
             throws IOException, ClassNotFoundException, Exception {
         return setCell(getRow(y), getCol(x), v);
     }
@@ -775,14 +776,11 @@ public class Grids_GridBinary extends Grids_GridB {
     }
 
     /**
-     * @param dp The number of decimal places for the precision of distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @param x the x-coordinate of the circle centre from which cell values are
      * returned.
      * @param y the y-coordinate of the circle centre from which cell values are
      * returned.
-     * @param distance the radius of the circle for which intersected cell
+     * @param distance2 The distance squared of the distance within which cell
      * values are returned.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
@@ -790,21 +788,18 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected boolean[] getCells(BigDecimal x, BigDecimal y,
-            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+    protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
+            Math_BigRationalSqrt distance) throws IOException,
             ClassNotFoundException, Exception {
-        return getCells(x, y, getRow(y), getCol(x), distance, dp, rm);
+        return getCells(x, y, getRow(y), getCol(x), distance);
     }
 
     /**
-     * @param dp The number of decimal places for the precision of distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @param row The row index for the cell that's centroid is the circle
      * centre from which cell values are returned.
      * @param col The column index for the cell that's centroid is the circle
      * centre from which cell values are returned.
-     * @param distance the radius of the circle for which intersected cell
+     * @param distance2 The distance squared of the distance within which cell
      * values are returned.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at centroid of cell given by cell row
@@ -812,11 +807,9 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public boolean[] getCells(long row, long col, BigDecimal distance, int dp,
-            RoundingMode rm) throws IOException, ClassNotFoundException,
-            Exception {
-        return getCells(getCellX(col), getCellY(row), row,
-                col, distance, dp, rm);
+    public boolean[] getCells(long row, long col, Math_BigRationalSqrt distance)
+            throws IOException, ClassNotFoundException, Exception {
+        return getCells(getCellX(col), getCellY(row), row, col, distance);
     }
 
     /**
@@ -828,7 +821,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @param rm The RoundingMode for distance calculations.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
@@ -836,19 +830,18 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected boolean[] getCells(BigDecimal x, BigDecimal y, long row, long col,
-            BigDecimal distance, int oom, RoundingMode rm) throws IOException,
+    protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
+            long row, long col, Math_BigRationalSqrt distance) throws IOException,
             ClassNotFoundException, Exception {
-        int delta = Math_BigDecimal.ceilingSignificantDigit(
-                Math_BigDecimal.divide(x, y, 1, RoundingMode.UP)).intValueExact();
+        int delta = getCellDistance(distance);
         boolean[] cells = new boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellY(row);
+            Math_BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellX(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY, oom, rm)
-                        .compareTo(distance) == -1) {
+                Math_BigRational thisX = getCellX(col);
+                if (Grids_Utilities.distance2(x, y, thisX, thisY)
+                        .compareTo(distance.getX()) != 1) {
                     cells[count] = getCell(p, q);
                     count++;
                 }

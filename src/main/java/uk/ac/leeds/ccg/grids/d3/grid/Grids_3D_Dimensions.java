@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For storing and testing the dimensions of a 3D grid.
@@ -38,17 +39,17 @@ public class Grids_3D_Dimensions implements Serializable {
     /**
      * The minimum z.
      */
-    private final BigDecimal zMin;
+    private final Math_BigRational zMin;
 
     /**
      * The maximum z.
      */
-    private final BigDecimal zMax;
+    private final Math_BigRational zMax;
 
     /**
      * The cellDepth should be stored as a pair of BigInteger numbers.
      */
-    private final BigDecimal cellDepth;
+    private final Math_BigRational cellDepth;
 
 //    /**
 //     * Half the cellDepth.
@@ -62,7 +63,7 @@ public class Grids_3D_Dimensions implements Serializable {
     /**
      * The volume.
      */
-    private final BigDecimal volume;
+    private final Math_BigRational volume;
 
     /**
      * DimensionsScale will default to the maximum scale in anz of the
@@ -73,8 +74,8 @@ public class Grids_3D_Dimensions implements Serializable {
      * @param zMax What {@link #zMax} is set to.
      * @param cellDepth What {@link #cellDepth} is set to.
      */
-    public Grids_3D_Dimensions(Grids_Dimensions dim, BigDecimal zMin,
-            BigDecimal zMax, BigDecimal cellDepth) {
+    public Grids_3D_Dimensions(Grids_Dimensions dim, Math_BigRational zMin,
+            Math_BigRational zMax, Math_BigRational cellDepth) {
         this.d = dim;
         this.zMin = zMin;
         this.zMax = zMax;
@@ -124,21 +125,21 @@ public class Grids_3D_Dimensions implements Serializable {
     /**
      * @return {@link zMin}
      */
-    public BigDecimal getZMin() {
+    public Math_BigRational getZMin() {
         return zMin;
     }
 
     /**
      * @return {@link #zMax}
      */
-    public BigDecimal getZMax() {
+    public Math_BigRational getZMax() {
         return zMax;
     }
 
     /**
      * @return {@link #cellDepth}
      */
-    public BigDecimal getCellDepth() {
+    public Math_BigRational getCellDepth() {
         return cellDepth;
     }
 

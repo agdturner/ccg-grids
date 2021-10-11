@@ -52,6 +52,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * General methods for processing individual or multiple grids.
@@ -792,11 +793,11 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2, BigDecimal w,
-            int dp, RoundingMode rm)
+            int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         if (g2 != null) {
-            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L, g2.getNCols() - 1L, w, dp, rm);
+            addToGrid(g, g2, 0L, 0L, g2.getNRows() - 1L, g2.getNCols() - 1L, w, oom);
         }
     }
 
@@ -819,19 +820,19 @@ public class Grids_Processor extends Grids_Object {
      */
     public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2,
             long startRow, long startCol, long endRow, long endCol, BigDecimal w,
-            int dp, RoundingMode rm) throws IOException, ClassNotFoundException,
+            int oom) throws IOException, ClassNotFoundException,
             Exception {
         env.checkAndMaybeFreeMemory();
         Grids_Dimensions dimensions = g2.getDimensions();
-        BigDecimal xMin = dimensions.getXMin();
-        BigDecimal yMin = dimensions.getYMin();
-        BigDecimal c = dimensions.getCellsize();
-        BigDecimal[] dc = new BigDecimal[5];
-        dc[1] = xMin.add(new BigDecimal(startCol).multiply(c));
-        dc[2] = yMin.add(new BigDecimal(startRow).multiply(c));
-        dc[3] = xMin.add(new BigDecimal(endCol - startCol + 1L).multiply(c));
-        dc[4] = yMin.add(new BigDecimal(endRow - startRow + 1L).multiply(c));
-        addToGrid(g, g2, startRow, startCol, endRow, endCol, dc, w, dp, rm);
+        Math_BigRational xMin = dimensions.getXMin();
+        Math_BigRational yMin = dimensions.getYMin();
+        Math_BigRational c = dimensions.getCellsize();
+        Math_BigRational[] dc = new Math_BigRational[5];
+        dc[1] = xMin.add(Math_BigRational.valueOf(startCol).multiply(c));
+        dc[2] = yMin.add(Math_BigRational.valueOf(startRow).multiply(c));
+        dc[3] = xMin.add(Math_BigRational.valueOf(endCol - startCol + 1L).multiply(c));
+        dc[4] = yMin.add(Math_BigRational.valueOf(endRow - startRow + 1L).multiply(c));
+        addToGrid(g, g2, startRow, startCol, endRow, endCol, dc, w, oom);
         env.checkAndMaybeFreeMemory();
     }
 
@@ -850,13 +851,12 @@ public class Grids_Processor extends Grids_Object {
      * g2 to be added.
      * @param w Value g2 values are multiplied by.
      * @param dp Decimal place precision for any BigDecimal Arithmetic.
-     * @param rm Rounding Mode for any BigDecimal Arithmetic.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public void addToGrid(Grids_GridNumber g, Grids_GridNumber g2,
             long startRow, long startCol, long endRow, long endCol,
-            BigDecimal[] dc, BigDecimal w, int dp, RoundingMode rm)
+            Math_BigRational[] dc, BigDecimal w, int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
@@ -873,26 +873,26 @@ public class Grids_Processor extends Grids_Object {
                 || (dc[4].compareTo(gD.getYMin()) == -1)) {
             return;
         }
-        BigDecimal gC = gD.getCellsize();
-        BigDecimal g2C = g2D.getCellsize();
-        BigDecimal g2CH = g2D.getHalfCellsize();
+        Math_BigRational gC = gD.getCellsize();
+        Math_BigRational g2C = g2D.getCellsize();
+        Math_BigRational g2CH = g2D.getHalfCellsize();
         if (g2C.compareTo(gC) == -1) {
             throw new UnsupportedOperationException();
         } else {
             // If g2Cellsize is the same as gCellsize g and g2 align
             if ((g2C.compareTo(gC) == 0)
-                    && ((g2D.getXMin().remainder(gC)).compareTo(
-                            (gD.getXMin().remainder(gC))) == 0)
-                    && ((g2D.getYMin().remainder(gC)).compareTo(
-                            (gD.getYMin().remainder(gC))) == 0)) {
+                    && ((g2D.getXMin().divide(gC)).fractionPart().compareTo(
+                            gD.getXMin().divide(gC).fractionPart()) == 0)
+                    && ((g2D.getYMin().divide(gC)).fractionPart().compareTo(
+                            gD.getYMin().divide(gC).fractionPart()) == 0)) {
                 //println( "grids Align!" );
                 // TODO: Control precision using xBigDecimal and yBigDecimal
                 // rather than using x and y.
                 for (long row = startRow; row <= endRow; row++) {
                     env.checkAndMaybeFreeMemory();
-                    BigDecimal y = g2.getCellY(row);
+                    Math_BigRational y = g2.getCellY(row);
                     for (long col = startCol; col <= endCol; col++) {
-                        BigDecimal x = g2.getCellX(col);
+                        Math_BigRational x = g2.getCellX(col);
                         BigDecimal v = g2.getCellBigDecimal(row, col);
                         if (v.compareTo(g2NoDataValue) != 0) {
                             if (v.compareTo(BigDecimal.ZERO) != 0) {
@@ -912,7 +912,7 @@ public class Grids_Processor extends Grids_Object {
                 Grids_GridDouble tg2;
                 tg1 = gf.create(nrows, ncols, gD);
                 tg2 = gf.create(nrows, ncols, gD);
-                BigDecimal[] bounds;
+                Math_BigRational[] bounds;
                 Grids_2D_ID_long i0;
                 Grids_2D_ID_long i1;
                 Grids_2D_ID_long i2;
@@ -920,12 +920,11 @@ public class Grids_Processor extends Grids_Object {
                 // gCellsize halved
                 //BigDecimal gCH = g.getCellsize().divide(BigDecimal.valueOf(2));
                 // gCellsize squared
-                BigDecimal gCS = gC.multiply(gC);
+                Math_BigRational gCS = gC.multiply(gC);
                 // g2Cellsize squared
-                BigDecimal g2CS = g2C.multiply(g2C);
+                Math_BigRational g2CS = g2C.multiply(g2C);
                 // Area proportions
-                BigDecimal aP1 = (gCS.divide(g2CS, dp, rm));
-                BigDecimal aP;
+                BigDecimal aP1 = gCS.divide(g2CS).toBigDecimal();
                 for (int r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
                     for (int c = 0; c < ncols; c++) {
@@ -948,28 +947,28 @@ public class Grids_Processor extends Grids_Object {
                             BigDecimal d3 = g2.getCellBigDecimal(i3.getRow(), i3.getCol());
                             if (!g2.isInGrid(i0.getRow(), i0.getCol())
                                     && d0 != g2NoDataValue) {
-                                aP = getAP(bounds, g2, i0, i1, i2, gC, g2CS,
-                                        g2CH, dp, rm);
+                                BigDecimal aP = getAP(bounds, g2, i0, i1, i2,
+                                        gC, g2CS, g2CH).toBigDecimal();
                                 tg1.addToCell(r, c, d0.multiply(aP));
                                 tg2.addToCell(r, c, aP);
                             }
                             if (!g2.isInGrid(i1) && d1 != g2NoDataValue) {
                                 if (i1.equals(i0)) {
-                                    aP = getAP13(bounds, g2, i1, i3, gC, g2CS, g2CH, dp, rm);
+                                    BigDecimal aP = getAP13(bounds, g2, i1, i3, gC, g2CS, g2CH).toBigDecimal();
                                     tg1.addToCell(r, c, d1.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i2) && d2 != g2NoDataValue) {
                                 if (!i2.equals(i0)) {
-                                    aP = getAP23(bounds, g2, i2, i3, gC, g2CS, g2CH, dp, rm);
+                                    BigDecimal aP = getAP23(bounds, g2, i2, i3, gC, g2CS, g2CH).toBigDecimal();
                                     tg1.addToCell(r, c, d2.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i3) && d3 != g2NoDataValue) {
                                 if (i3 != i1 && i3 != i2) {
-                                    aP = getAP3(bounds, g2, i3, gC, g2CS, g2CH, dp, rm);
+                                    BigDecimal aP = getAP3(bounds, g2, i3, gC, g2CS, g2CH).toBigDecimal();
                                     tg1.addToCell(r, c, d3.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
@@ -994,64 +993,64 @@ public class Grids_Processor extends Grids_Object {
         env.checkAndMaybeFreeMemory();
     }
 
-    protected BigDecimal getAP(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i1, Grids_2D_ID_long i2, Grids_2D_ID_long i3,
-            BigDecimal gC, BigDecimal g2CS, BigDecimal g2CH, int dp,
-            RoundingMode rm) {
-        BigDecimal aP;
+    protected Math_BigRational getAP(Math_BigRational[] bounds,
+            Grids_GridNumber g2, Grids_2D_ID_long i1, Grids_2D_ID_long i2,
+            Grids_2D_ID_long i3, Math_BigRational gC, Math_BigRational g2CS,
+            Math_BigRational g2CH) {
+        Math_BigRational aP;
         if (i1.equals(i2) || i1.equals(i3)) {
             if (i1.equals(i2)) {
                 aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH))
-                        .multiply(gC)).divide(g2CS, dp, rm)).abs();
+                        .multiply(gC)).divide(g2CS)).abs();
             } else {
                 aP = ((((g2.getCellX(i1).add(g2CH)).subtract((bounds[0])))
-                        .multiply(gC)).divide(g2CS, dp, rm)).abs();
+                        .multiply(gC)).divide(g2CS)).abs();
             }
         } else {
             aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH)))
                     .multiply((g2.getCellX(i1).add(g2CH.subtract((bounds[0]))))
-                            .divide(g2CS, dp, rm))).abs();
+                            .divide(g2CS))).abs();
         }
         return aP;
     }
 
-    protected BigDecimal getAP13(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i1, Grids_2D_ID_long i3, BigDecimal gC,
-            BigDecimal g2CS, BigDecimal g2CH, int dp, RoundingMode rm) {
-        BigDecimal aP;
+    protected Math_BigRational getAP13(Math_BigRational[] bounds,
+            Grids_GridNumber g2, Grids_2D_ID_long i1, Grids_2D_ID_long i3,
+            Math_BigRational gC, Math_BigRational g2CS, Math_BigRational g2CH) {
+        Math_BigRational aP;
         if (i1.equals(i3)) {
             aP = ((((bounds[2]).subtract(g2.getCellX(i1).subtract(g2CH)))
-                    .multiply(gC)).divide(g2CS, dp, rm)).abs();
+                    .multiply(gC)).divide(g2CS)).abs();
         } else {
             aP = (((bounds[3]).subtract(g2.getCellY(i1).subtract(g2CH)))
                     .multiply((bounds[2]).subtract(g2.getCellX(i1)
-                            .subtract(g2CH))).divide(g2CS, dp, rm)).abs();
+                            .subtract(g2CH))).divide(g2CS)).abs();
         }
         return aP;
     }
 
-    protected BigDecimal getAP23(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i2, Grids_2D_ID_long i3, BigDecimal gC,
-            BigDecimal g2CS, BigDecimal g2CH, int dp, RoundingMode rm) {
-        BigDecimal aP;
+    protected Math_BigRational getAP23(Math_BigRational[] bounds, Grids_GridNumber g2,
+            Grids_2D_ID_long i2, Grids_2D_ID_long i3, Math_BigRational gC,
+            Math_BigRational g2CS, Math_BigRational g2CH) {
+        Math_BigRational aP;
         if (i2.equals(i3)) {
             aP = ((((g2.getCellY(i2).add(g2CH)).subtract((bounds[1])))
-                    .multiply(gC)).divide(g2CS, dp, rm)).abs();
+                    .multiply(gC)).divide(g2CS)).abs();
         } else {
             aP = ((((g2.getCellY(i2).add(g2CH)).subtract((bounds[1])))
                     .multiply((g2.getCellX(i2).add(g2CH))
-                            .subtract((bounds[0])))).divide(g2CS, dp, rm))
+                            .subtract((bounds[0])))).divide(g2CS))
                     .abs();
         }
         return aP;
     }
 
-    protected BigDecimal getAP3(BigDecimal[] bounds, Grids_GridNumber g2,
-            Grids_2D_ID_long i3, BigDecimal gC, BigDecimal g2CS,
-            BigDecimal g2CH, int dp, RoundingMode rm) {
+    protected Math_BigRational getAP3(Math_BigRational[] bounds, Grids_GridNumber g2,
+            Grids_2D_ID_long i3, Math_BigRational gC, Math_BigRational g2CS,
+            Math_BigRational g2CH) {
         return ((((g2.getCellY(i3).add(g2CH)).subtract((bounds[1])))
                 .multiply((bounds[2]).subtract((g2.getCellX(i3))
-                        .subtract(g2CH)))).divide(g2CS, dp, rm)).abs();
+                        .subtract(g2CH)))).divide(g2CS)).abs();
     }
 
     /**
@@ -1069,7 +1068,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridNumber multiply(Number type, Grids_GridNumber g0,
-            Grids_GridNumber g1, int dp, RoundingMode rm)
+            Grids_GridNumber g1, int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         Grids_GridNumber r;
@@ -1180,15 +1179,15 @@ public class Grids_Processor extends Grids_Object {
         } else {
             Grids_Dimensions dimg0 = g0.getDimensions();
             Grids_Dimensions dimg1 = g1.getDimensions();
-            BigDecimal cg0 = dimg0.getCellsize();
-            BigDecimal cg1 = dimg1.getCellsize();
+            Math_BigRational cg0 = dimg0.getCellsize();
+            Math_BigRational cg1 = dimg1.getCellsize();
 
             /**
              * Deal with all cases.
              */
             if (cg0.compareTo(cg1) == 1) {
-                Grids_GridDouble ag1 = aggregate(g1, "mean", dimg0, dp, rm);
-                return multiply(type, g0, ag1, dp, rm);
+                Grids_GridDouble ag1 = aggregate(g1, "mean", dimg0, oom);
+                return multiply(type, g0, ag1, oom);
             } else {
                 /**
                  * (cg0.compareTo(cg1) == 0) can be treated in the same way as
@@ -1199,35 +1198,35 @@ public class Grids_Processor extends Grids_Object {
                  * The intersection can be achieved using a disaggregation to a
                  * cellsize smaller than g0 and then an aggregation.
                  */
-                BigDecimal[] dar = cg1.divideAndRemainder(cg0);
-                if (dar[1].compareTo(BigDecimal.ZERO) == 0) {
-                    BigDecimal x0 = dimg0.getXMin();
-                    BigDecimal x1 = dimg1.getXMin();
+                Math_BigRational div = cg1.divide(cg0);
+                if (div.isInteger()) {
+                    Math_BigRational x0 = dimg0.getXMin();
+                    Math_BigRational x1 = dimg1.getXMin();
                     boolean doSimple = false;
-                    if (x1.compareTo(x0) == 0) {
-                        doSimple = true;
-                    } else if (x1.compareTo(x0) == -1) {
-                        BigDecimal dx = x0.subtract(x1);
-                        BigDecimal[] dar2 = dx.divideAndRemainder(cg1);
-                        if (dar2[1].compareTo(BigDecimal.ZERO) == 0) {
+                    switch (x1.compareTo(x0)) {
+                        case 0:
                             doSimple = true;
-                        }
-                    } else {
-                        BigDecimal dx = x1.subtract(x0);
-                        BigDecimal[] dar2 = dx.divideAndRemainder(cg1);
-                        if (dar2[1].compareTo(BigDecimal.ZERO) == 0) {
-                            doSimple = true;
-                        }
+                            break;
+                        case -1:
+                            if (x0.subtract(x1).isInteger()) {
+                                doSimple = true;
+                            }
+                            break;
+                        default:
+                            if (x0.subtract(x1).isInteger()) {
+                                doSimple = true;
+                            }
+                            break;
                     }
                     if (doSimple) {
                         multiply(g0, g1, r, ncr, ncc, ndv0, ndv1);
                         return r;
                     }
                 }
-                int factor = dar[0].toBigIntegerExact().intValue() + 1;
+                int factor = div.integerPart().intValue() + 1;
                 Grids_GridDouble dg1 = disaggregate(g1, factor);
-                Grids_GridDouble adg1 = aggregate(dg1, "mean", dimg0, dp, rm);
-                return multiply(type, g0, adg1, dp, rm);
+                Grids_GridDouble adg1 = aggregate(dg1, "mean", dimg0, oom);
+                return multiply(type, g0, adg1, oom);
             }
         }
     }
@@ -1242,7 +1241,7 @@ public class Grids_Processor extends Grids_Object {
              */
             for (int ccr = 0; ccr < cnr; ccr++) {
                 long row = g0.getRow(cr, ccr);
-                BigDecimal y = g0.getCellY(row);
+                Math_BigRational y = g0.getCellY(row);
                 env.addToNotToClear(g1, g1.getChunkRow(y));
                 env.addToNotToClear(r, r.getChunkRow(y));
             }
@@ -1253,13 +1252,13 @@ public class Grids_Processor extends Grids_Object {
                 int cnc = g0.getChunkNCols(cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     long row = r.getRow(cr, ccr);
-                    BigDecimal y = g0.getCellY(row);
+                    Math_BigRational y = g0.getCellY(row);
                     for (int ccc = 0; ccc < cnc; ccc++) {
                         long col = r.getCol(cc, ccc);
                         BigDecimal v0 = g0.getCellBigDecimal(cr, cc,
                                 ccr, ccc);
                         if (v0.compareTo(ndv0) != 0) {
-                            BigDecimal x = g0.getCellX(col);
+                            Math_BigRational x = g0.getCellX(col);
                             BigDecimal v1 = g1.getCellBigDecimal(x, y);
                             if (v1.compareTo(ndv1) == 0) {
                                 r.setCell(x, y, ndv0);
@@ -1285,7 +1284,7 @@ public class Grids_Processor extends Grids_Object {
              */
             for (int ccr = 0; ccr < cnr; ccr++) {
                 long row = g0.getRow(cr, ccr);
-                BigDecimal y = g0.getCellY(row);
+                Math_BigRational y = g0.getCellY(row);
                 env.addToNotToClear(g1, g1.getChunkRow(y));
                 env.addToNotToClear(r, r.getChunkRow(y));
             }
@@ -1314,9 +1313,8 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDouble disaggregate(Grids_GridNumber g, int factor)
             throws IOException, ClassNotFoundException, Exception {
         Grids_Dimensions dim = g.getDimensions();
-        BigDecimal cellsize = dim.getCellsize();
-        BigDecimal rcellsize = cellsize.divide(BigDecimal.valueOf(factor),
-                RoundingMode.UNNECESSARY);
+        Math_BigRational cellsize = dim.getCellsize();
+        Math_BigRational rcellsize = cellsize.divide(factor);
         if (g instanceof Grids_GridDouble) {
             return null;
         } else if (g instanceof Grids_GridInt) {
@@ -1406,15 +1404,15 @@ public class Grids_Processor extends Grids_Object {
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
         Grids_Dimensions dimensions = grid.getDimensions();
-        BigDecimal cellsize = dimensions.getCellsize();
-        BigDecimal xMin = dimensions.getXMin();
-        BigDecimal yMin = dimensions.getYMin();
-        BigDecimal xMax = dimensions.getXMax();
-        BigDecimal yMax = dimensions.getYMax();
+        Math_BigRational cellsize = dimensions.getCellsize();
+        Math_BigRational xMin = dimensions.getXMin();
+        Math_BigRational yMin = dimensions.getYMin();
+        Math_BigRational xMax = dimensions.getXMax();
+        Math_BigRational yMax = dimensions.getYMax();
         BigDecimal ndv = getNoDataValueBigDecimal(grid);
-        BigDecimal rC = cellsize.multiply(new BigDecimal(Integer.toString(cellFactor)));
-        BigDecimal rXMin = xMin.add(cellsize.multiply(BigDecimal.valueOf(colOffset)));
-        BigDecimal rYMin = yMin.add(cellsize.multiply(BigDecimal.valueOf(rowOffset)));
+        Math_BigRational rC = cellsize.multiply(cellFactor);
+        Math_BigRational rXMin = xMin.add(cellsize.multiply(colOffset));
+        Math_BigRational rYMin = yMin.add(cellsize.multiply(rowOffset));
 
         //double resultCellsize = cellsize * ( double ) cellFactor;
         //double width = cellsize * ncols;
@@ -1423,7 +1421,7 @@ public class Grids_Processor extends Grids_Object {
         //double resultYllcorner = yllcorner + ( rowOffset * cellsize );
         // Calculate resultNrows and resultHeight
         long rNrows = 1L;
-        BigDecimal rH = new BigDecimal(rC.toString());
+        Math_BigRational rH = Math_BigRational.valueOf(rC.toString());
         while (rYMin.add(rH).compareTo(yMax) == -1) {
             rNrows++;
             rH = rH.add(rC);
@@ -1434,7 +1432,7 @@ public class Grids_Processor extends Grids_Object {
         //}
         // Calculate resultNcols and resultWidth
         long rNcols = 1L;
-        BigDecimal rWidth = new BigDecimal(rC.toString());
+        Math_BigRational rWidth = Math_BigRational.valueOf(rC.toString());
         //double resultWidth = resultCellsize;
         while (rXMin.add(rWidth).compareTo(xMax) == -1) {
             rNrows++;
@@ -1444,8 +1442,8 @@ public class Grids_Processor extends Grids_Object {
         //    resultNcols ++;
         //    resultWidth += resultCellsize;
         //}
-        BigDecimal rXMax = rXMin.add(rWidth);
-        BigDecimal rYMax = rYMin.add(rH);
+        Math_BigRational rXMax = rXMin.add(rWidth);
+        Math_BigRational rYMax = rYMin.add(rH);
         Grids_Dimensions rD = new Grids_Dimensions(rXMin,
                 rXMax, rYMin, rYMax, rC);
         // Initialise result
@@ -1459,8 +1457,8 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble normaliser = gridFactoryDouble.create(rNrows, rNcols, rD);
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellX(col);
-                    BigDecimal y = grid.getCellY(row);
+                    Math_BigRational x = grid.getCellX(col);
+                    Math_BigRational y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1502,8 +1500,8 @@ public class Grids_Processor extends Grids_Object {
             Grids_GridDouble denominator = gridFactoryDouble.create(rNrows, rNcols, rD);
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellX(col);
-                    BigDecimal y = grid.getCellY(row);
+                    Math_BigRational x = grid.getCellX(col);
+                    Math_BigRational y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1528,8 +1526,8 @@ public class Grids_Processor extends Grids_Object {
         if (statistic.equalsIgnoreCase("min")) {
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellX(col);
-                    BigDecimal y = grid.getCellY(row);
+                    Math_BigRational x = grid.getCellX(col);
+                    Math_BigRational y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1550,8 +1548,8 @@ public class Grids_Processor extends Grids_Object {
             double max;
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal x = grid.getCellX(col);
-                    BigDecimal y = grid.getCellY(row);
+                    Math_BigRational x = grid.getCellX(col);
+                    Math_BigRational y = grid.getCellY(row);
                     if (r.isInGrid(x, y)) {
                         BigDecimal value = grid.getCellBigDecimal(row, col);
                         if (value.compareTo(ndv) != 0) {
@@ -1632,7 +1630,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble aggregate(Grids_GridNumber g, String stats,
-            Grids_Dimensions rD, int dp, RoundingMode rm)
+            Grids_Dimensions rD, int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         // Initialistaion
@@ -1641,21 +1639,21 @@ public class Grids_Processor extends Grids_Object {
         Grids_Dimensions dim = g.getDimensions();
         BigDecimal ndv = getNoDataValueBigDecimal(g);
         double ndvd = ndv.doubleValue();
-        BigDecimal rC = rD.getCellsize();
-        BigDecimal rXMin = rD.getXMin();
-        BigDecimal rYMin = rD.getYMin();
+        Math_BigRational rC = rD.getCellsize();
+        Math_BigRational rXMin = rD.getXMin();
+        Math_BigRational rYMin = rD.getYMin();
         //BigDecimal rXMax = rD.getXMax();
         //BigDecimal rYMax = rD.getYMax();
-        BigDecimal rCH = rC.divide(BigDecimal.valueOf(2));
-        BigDecimal rCS = rC.multiply(rC);
+        Math_BigRational rCH = rC.divide(2);
+        Math_BigRational rCS = rC.multiply(rC);
 
-        BigDecimal c = dim.getCellsize();
-        BigDecimal xMin = dim.getXMin();
-        BigDecimal yMin = dim.getYMin();
-        BigDecimal xMax = dim.getXMax();
-        BigDecimal yMax = dim.getYMax();
-        BigDecimal cS = c.multiply(c);
-        BigDecimal cH = c.divide(BigDecimal.valueOf(2));
+        Math_BigRational c = dim.getCellsize();
+        Math_BigRational xMin = dim.getXMin();
+        Math_BigRational yMin = dim.getYMin();
+        Math_BigRational xMax = dim.getXMax();
+        Math_BigRational yMax = dim.getYMax();
+        Math_BigRational cS = c.multiply(c);
+        Math_BigRational cH = c.divide(2);
         //double width = cellsize * ncols;
         //double height = cellsize * nrows;
         // Test this is an aggregation
@@ -1665,8 +1663,8 @@ public class Grids_Processor extends Grids_Object {
             return null;
         }
         // Test for intersection
-        if ((rXMin.compareTo(xMin.add(c.multiply(BigDecimal.valueOf(ncols)))) == 1)
-                || (rYMin.compareTo(yMin.add(c.multiply(BigDecimal.valueOf(nrows)))) == 1)) {
+        if ((rXMin.compareTo(xMin.add(c.multiply(Math_BigRational.valueOf(ncols)))) == 1)
+                || (rYMin.compareTo(yMin.add(c.multiply(Math_BigRational.valueOf(nrows)))) == 1)) {
             System.err.println(
                     "!!!Warning: No intersection for aggregation. Returning null!");
             return null;
@@ -1676,32 +1674,32 @@ public class Grids_Processor extends Grids_Object {
          * cellFactor aggregation as it should be faster.
          */
         if (true) {
-            BigDecimal t0 = rC.divide(c, Math.max(rC.scale(), c.scale()) + 2, rm);
-            BigDecimal t1 = rXMin.divide(c, Math.max(rXMin.scale(), c.scale()) + 2, rm);
-            BigDecimal t2 = xMin.divide(c, Math.max(xMin.scale(), c.scale()) + 2, rm);
-            BigDecimal t3 = rYMin.divide(c, Math.max(rYMin.scale(), c.scale()) + 2, rm);
-            BigDecimal t4 = yMin.divide(c, Math.max(yMin.scale(), c.scale()) + 2, rm);
-            if ((t0.compareTo(new BigDecimal(t0.toBigInteger().toString())) == 0)
-                    && (t1.compareTo(new BigDecimal(t1.toBigInteger().toString()))
-                    == t2.compareTo(new BigDecimal(t2.toBigInteger().toString())))
-                    && (t3.compareTo(new BigDecimal(t3.toBigInteger().toString()))
-                    == t4.compareTo(new BigDecimal(t4.toBigInteger().toString())))) {
-                int cellFactor = rC.divide(c, 2, RoundingMode.UNNECESSARY).intValue();
-                int rowOffset = yMin.subtract(rYMin.divide(c, dp, rm)).intValue();
-                int colOffset = xMin.subtract(rXMin.divide(c, dp, rm)).intValue();
+            Math_BigRational t0 = rC.divide(c);
+            Math_BigRational t1 = rXMin.divide(c);
+            Math_BigRational t2 = xMin.divide(c);
+            Math_BigRational t3 = rYMin.divide(c);
+            Math_BigRational t4 = yMin.divide(c);
+            if ((t0.compareTo(Math_BigRational.valueOf(t0.toBigDecimal().toBigInteger())) == 0)
+                    && (t1.compareTo(Math_BigRational.valueOf(t1.toBigDecimal().toBigInteger().toString()))
+                    == t2.compareTo(Math_BigRational.valueOf(t2.toBigDecimal().toBigInteger().toString())))
+                    && (t3.compareTo(Math_BigRational.valueOf(t3.toBigDecimal().toBigInteger().toString()))
+                    == t4.compareTo(Math_BigRational.valueOf(t4.toBigDecimal().toBigInteger().toString())))) {
+                int cellFactor = rC.divide(c).intValue();
+                int rowOffset = yMin.subtract(rYMin.divide(c)).intValue();
+                int colOffset = xMin.subtract(rXMin.divide(c)).intValue();
                 return aggregate(g, cellFactor, stats, rowOffset, colOffset);
             }
         }
         // Calculate number of rows and height of result.
         long rNrows = 1L;
-        BigDecimal rH = new BigDecimal(rC.toString());
+        Math_BigRational rH = Math_BigRational.valueOf(rC.toString());
         while (rYMin.add(rH).compareTo(yMax) == -1) {
             rNrows++;
             rH = rH.add(rC);
         }
         // Calculate number of columns and width of result.
         long rNcols = 1L;
-        BigDecimal rW = new BigDecimal(rC.toString());
+        Math_BigRational rW = Math_BigRational.valueOf(rC.toString());
         while (rXMin.add(rW).compareTo(xMax) == -1) {
             rNrows++;
             rW = rW.add(rC);
@@ -1718,7 +1716,7 @@ public class Grids_Processor extends Grids_Object {
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
             for (int row = 0; row < nrows; row++) {
                 for (int col = 0; col < ncols; col++) {
-                    BigDecimal[] bounds = g.getCellBounds(row, col);
+                    Math_BigRational[] bounds = g.getCellBounds(row, col);
                     cellIDs[0] = r.getCellID(bounds[0], bounds[3]);
                     cellIDs[1] = r.getCellID(bounds[2], bounds[3]);
                     cellIDs[2] = r.getCellID(bounds[0], bounds[1]);
@@ -1731,25 +1729,24 @@ public class Grids_Processor extends Grids_Object {
                             totalValueArea.addToCell(cellIDs[0], 1.0d);
                         } else {
                             aP = getAP(bounds, r, cellIDs[0], cellIDs[1],
-                                    cellIDs[2], c, rCS, rCH, dp, rm);
+                                    cellIDs[2], c, rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[0], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[1].equals(cellIDs[0])) {
                             aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c,
-                                    rCS, rCH, dp, rm);
+                                    rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[1], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[2].equals(cellIDs[0])) {
                             aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c,
-                                    rCS, rCH, dp, rm);
+                                    rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[2], value.multiply(aP));
                         }
                         if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3]
                                 .equals(cellIDs[2])) {
-                            aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH, dp,
-                                    rm);
+                            aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[3], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
@@ -1774,8 +1771,8 @@ public class Grids_Processor extends Grids_Object {
         if (stats.equalsIgnoreCase("mean")) {
             double denominator = (rC.doubleValue() * rC.doubleValue())
                     / (c.doubleValue() * c.doubleValue());
-            Grids_GridDouble sum = aggregate(g, "sum", rD, dp, rm);
-            addToGrid(r, sum, BigDecimal.valueOf(1.0d / denominator), dp, rm);
+            Grids_GridDouble sum = aggregate(g, "sum", rD, oom);
+            addToGrid(r, sum, BigDecimal.valueOf(1.0d / denominator), oom);
         }
 
         // max
@@ -1786,7 +1783,7 @@ public class Grids_Processor extends Grids_Object {
                     if (value.compareTo(ndv) != 0) {
                         //BigDecimal x = g.getCellX(col);
                         //BigDecimal y = g.getCellY(row);
-                        BigDecimal[] bounds = g.getCellBounds(row, col);
+                        Math_BigRational[] bounds = g.getCellBounds(row, col);
                         double max = r.getCell(bounds[0], bounds[3]);
                         if (max != ndvd) {
                             r.setCell(bounds[0], bounds[3], Math.max(max, value.doubleValue()));
@@ -1819,15 +1816,15 @@ public class Grids_Processor extends Grids_Object {
         // min
         if (stats.equalsIgnoreCase("min")) {
             double min;
-            BigDecimal[] bounds;
+            Math_BigRational[] bounds;
             double halfCellsize = cH.doubleValue();
             for (long row = 0; row < nrows; row++) {
                 for (long col = 0; col < ncols; col++) {
                     BigDecimal value = g.getCellBigDecimal(row, col);
                     if (value.compareTo(ndv) != 0) {
                         double vD = value.doubleValue();
-                        BigDecimal x = g.getCellX(col);
-                        BigDecimal y = g.getCellY(row);
+                        Math_BigRational x = g.getCellX(col);
+                        Math_BigRational y = g.getCellY(row);
                         bounds = g.getCellBounds(row, col);
                         min = r.getCell(bounds[0], bounds[3]);
                         if (min != ndvd) {

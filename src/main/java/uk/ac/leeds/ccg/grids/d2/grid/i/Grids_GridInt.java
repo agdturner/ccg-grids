@@ -47,6 +47,7 @@ import java.math.RoundingMode;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grids with {@code int} values.
@@ -973,7 +974,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final int getCell(BigDecimal x, BigDecimal y) throws IOException,
+    public final int getCell(Math_BigRational x, Math_BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -1001,7 +1002,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final int setCell(BigDecimal x, BigDecimal y, int v)
+    public final int setCell(Math_BigRational x, Math_BigRational y, int v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
             return setCell(getRow(y), getCol(x), v);
@@ -1191,16 +1192,14 @@ public class Grids_GridInt extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected int[] getCells(BigDecimal x, BigDecimal y,
-            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
+    protected int[] getCells(Math_BigRational x, Math_BigRational y,
+            Math_BigRationalSqrt distance, int oom) throws IOException,
             Exception, ClassNotFoundException {
-        return getCells(x, y, getRow(y), getCol(x), distance, dp, rm);
+        return getCells(x, y, getRow(y), getCol(x), distance, oom);
     }
 
     /**
@@ -1213,17 +1212,13 @@ public class Grids_GridInt extends Grids_GridNumber {
      * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public int[] getCells(long row, long col, BigDecimal distance, int dp,
-            RoundingMode rm)
-            throws IOException, Exception, ClassNotFoundException {
-        return getCells(getCellX(col), getCellY(row), row,
-                col, distance, dp, rm);
+    public int[] getCells(long row, long col, Math_BigRationalSqrt distance,
+            int oom) throws IOException, Exception, ClassNotFoundException {
+        return getCells(getCellX(col), getCellY(row), row, col, distance, oom);
     }
 
     /**
@@ -1238,37 +1233,30 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public int[] getCells(BigDecimal x, BigDecimal y, long row, long col,
-            BigDecimal distance, int dp, RoundingMode rm) throws IOException,
-            Exception, ClassNotFoundException {
-        int[] cells;
-        BigDecimal[] dar = distance.divideAndRemainder(getCellsize());
-        int delta = dar[0].intValueExact();
-        if (dar[1].compareTo(BigDecimal.ZERO) == 1) {
-            delta += 1;
-        }
-        cells = new int[((2 * delta) + 1) * ((2 * delta) + 1)];
+    public int[] getCells(Math_BigRational x, Math_BigRational y, long row,
+            long col, Math_BigRationalSqrt distance, int oom)
+            throws IOException, Exception, ClassNotFoundException {
+        int delta = getCellDistance(distance);
+        int[] r = new int[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            BigDecimal thisY = getCellY(row);
+            Math_BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                BigDecimal thisX = getCellX(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY, dp, rm)
+                Math_BigRational thisX = getCellX(col);
+                if (Grids_Utilities.distance(x, y, thisX, thisY, oom)
                         .compareTo(distance) <= 0) {
-                    cells[count] = getCell(p, q);
+                    r[count] = getCell(p, q);
                     count++;
                 }
             }
         }
         // Trim cells
-        System.arraycopy(cells, 0, cells, 0, count);
-        return cells;
+        System.arraycopy(r, 0, r, 0, count);
+        return r;
     }
 
     /**
@@ -1277,24 +1265,22 @@ public class Grids_GridInt extends Grids_GridNumber {
      * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            BigDecimal x, BigDecimal y, int dp, RoundingMode rm)
+            Math_BigRational x, Math_BigRational y, int oom)
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(x, y);
         if (value == noDataValue) {
-            return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), dp, rm);
+            return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getCellID(x, y);
-        r.distance = BigDecimal.ZERO;
+        r.distance = Math_BigRationalSqrt.ZERO;
         return r;
     }
 
@@ -1306,25 +1292,23 @@ public class Grids_GridInt extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            long row, long col, int dp, RoundingMode rm) throws IOException,
+            long row, long col, int oom) throws IOException,
             Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(row, col);
         if (value == noDataValue) {
             return getNearestValuesCellIDsAndDistance(getCellX(col),
-                    getCellY(row), row, col, dp, rm);
+                    getCellY(row), row, col, oom);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getCellID(row, col);
-        r.distance = BigDecimal.ZERO;
+        r.distance = Math_BigRationalSqrt.ZERO;
         return r;
     }
 
@@ -1339,17 +1323,14 @@ public class Grids_GridInt extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision used in distance calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, long row, long col, int dp,
-            RoundingMode rm) throws IOException, Exception,
-            ClassNotFoundException {
+            Math_BigRational x, Math_BigRational y, long row, long col, int oom)
+            throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
@@ -1409,18 +1390,17 @@ public class Grids_GridInt extends Grids_GridNumber {
                 visitedSet1 = visitedSet2;
                 toVisitSet1 = toVisitSet2;
             }
-            BigDecimal distance;
+            Math_BigRationalSqrt distance;
             // Go through values and find the closest
             HashSet<Grids_2D_ID_long> closest = new HashSet<>();
             iterator = values.iterator();
             Grids_2D_ID_long cellID = iterator.next();
             r.distance = Grids_Utilities.distance(x, y,
-                    getCellX(cellID), getCellY(cellID));
+                    getCellX(cellID), getCellY(cellID), oom);
             while (iterator.hasNext()) {
                 cellID = iterator.next();
                 distance = Grids_Utilities.distance(x, y,
-                        getCellX(cellID), getCellY(cellID),
-                        dp, rm);
+                        getCellX(cellID), getCellY(cellID), oom);
                 if (distance.compareTo(r.distance) == -1) {
                     closest.clear();
                     closest.add(cellID);
@@ -1429,16 +1409,16 @@ public class Grids_GridInt extends Grids_GridNumber {
                         closest.add(cellID);
                     }
                 }
-                r.distance = r.distance.min(distance);
+                r.distance = Math_BigRationalSqrt.min(r.distance, distance);
             }
             // Get cellIDs that are within distance of discovered v
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, dp, rm);
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1) != noDataValue) {
                         distance = Grids_Utilities.distance(x, y,
                                 getCellX(cellID1),
-                                getCellY(cellID1), dp, rm);
+                                getCellY(cellID1), oom);
                         if (distance.compareTo(r.distance) == -1) {
                             closest.clear();
                             closest.add(cellID1);
@@ -1447,7 +1427,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                                 closest.add(cellID1);
                             }
                         }
-                        r.distance = r.distance.min(distance);
+                        r.distance = Math_BigRationalSqrt.min(r.distance, distance);
                     }
                 }
             }
@@ -1470,7 +1450,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(BigDecimal x, BigDecimal y, int v) throws IOException,
+    public void addToCell(Math_BigRational x, Math_BigRational y, int v) throws IOException,
             Exception, ClassNotFoundException {
         addToCell(getRow(y), getCol(x), v);
     }
@@ -1569,7 +1549,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc, 
+    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc,
             int ccr, int ccc) {
         return BigDecimal.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }

@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.grids.d2.grid;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +44,7 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * For two dimensional (d2) grid instances - grids representing a regular
@@ -526,12 +528,23 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param distance The length of a straight line for which the cell distance
-     * is returned.
-     * @return {@code distance.divide(getCellsize());)
+     * @param distance The distance to be converted into an integer cell 
+     * distance.
+     * @return The distance in terms of the number of cells.
      */
-    public final Math_BigRational getCellDistance(Math_BigRational distance) {
-        return distance.divide(getCellsize());
+    public final int getCellDistance(Math_BigRationalSqrt distance) {
+        Math_BigRational d = distance.getSqrt();
+        if (d != null) {
+            return d.divide(getCellsize()).ceil().intValue();
+        } else {
+            Math_BigRational cs = getCellsize();
+            BigInteger[] sar = distance.getX().divide(cs.pow(2)).ceil().sqrtAndRemainder();
+            int r = sar[0].intValue();
+            if (sar[1].compareTo(BigInteger.ZERO) == 1) {
+                r++;
+            }
+            return r;
+        }
     }
 
     /**
@@ -547,11 +560,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param row The row index at y.
      * @param col The col index at x.
      */
-    public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRational distance,
+    public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRationalSqrt distance,
             Math_BigRational x, Math_BigRational y, long row, long col) {
         Set<Grids_2D_ID_int> r = new HashSet<>();
-        Math_BigRational distance2 = distance.pow(2);
-        long delta = getCellDistance(distance).longValue();
+        Math_BigRational distance2 = distance.getX();
+        int delta = getCellDistance(distance);
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
@@ -1989,11 +2002,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The decimal places for the distance calculations.
-     * @param rm The RoundingMode for the distance calculations.
      */
     public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x, 
-            Math_BigRational y,            Math_BigRational distance) {
+            Math_BigRational y, Math_BigRationalSqrt distance) {
         return getCellIDs(x, y, getRow(y), getCol(x), distance);
     }
 
@@ -2010,7 +2021,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param rm The RoundingMode for the distance calculations.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
-            Math_BigRational distance) {
+            Math_BigRationalSqrt distance) {
         return getCellIDs(getCellX(col), getCellY(row), row, col, distance);
     }
 
@@ -2029,11 +2040,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param rm The RoundingMode for the distance calculations.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
-            long row,            long col, Math_BigRational distance) {
+            long row,            long col, Math_BigRationalSqrt distance) {
         Grids_2D_ID_long[] r;
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
-        long delta = distance.divide(getCellsize()).longValue();
-        Math_BigRational distance2 = distance.pow(2);
+        long delta = getCellDistance(distance);
+        Math_BigRational distance2 = distance.getX();
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
@@ -2908,7 +2919,7 @@ public abstract class Grids_Grid extends Grids_Object {
     public class NearestValuesCellIDsAndDistance {
 
         public Grids_2D_ID_long[] cellIDs;
-        public Math_BigRational distance;
+        public Math_BigRationalSqrt distance;
 
         public NearestValuesCellIDsAndDistance() {
         }

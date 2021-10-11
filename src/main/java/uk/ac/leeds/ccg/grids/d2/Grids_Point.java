@@ -17,7 +17,7 @@
 package uk.ac.leeds.ccg.grids.d2;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * A POJO point.
@@ -30,12 +30,12 @@ public class Grids_Point implements Serializable {
     /**
      * The x coordinate.
      */
-    public BigDecimal x;
+    public Math_BigRational x;
 
     /**
      * The y coordinate.
      */
-    public BigDecimal y;
+    public Math_BigRational y;
     
     /**
      * Create a new instance.
@@ -43,7 +43,7 @@ public class Grids_Point implements Serializable {
      * @param x What{@link #x} is set to.
      * @param y What{@link #y} is set to.
      */
-    public Grids_Point(BigDecimal x, BigDecimal y) {
+    public Grids_Point(Math_BigRational x, Math_BigRational y) {
         this.x = x;
         this.y = y;
     }

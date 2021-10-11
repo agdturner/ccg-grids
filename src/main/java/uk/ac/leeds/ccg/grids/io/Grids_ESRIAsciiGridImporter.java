@@ -107,7 +107,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         /**
          * For storing the NODATA value.
          */
-        public Math_BigRational ndv;
+        public BigDecimal ndv;
 
         public Header() {
         }
@@ -174,7 +174,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                 this.br.mark(100);
                 this.st.wordChars('_', '_');
                 this.st.nextToken();
-                header.ndv = Math_BigRational.valueOf(-Double.MAX_VALUE);
+                header.ndv = BigDecimal.valueOf(-Double.MAX_VALUE);
                 if (this.st.ttype == StreamTokenizer.TT_NUMBER) {
                     this.br.reset();
                 } else {
@@ -190,7 +190,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
 //                this.st.ordinaryChar( 'D' );
 //                this.st.parseNumbers();
                         //header[ 5 ] = new Double( readHeaderDoubleValue() );
-                        header.ndv = Math_BigRational.valueOf(readDouble());
+                        header.ndv = BigDecimal.valueOf(readDouble());
                     } else {
                         this.br.reset();
                     }
