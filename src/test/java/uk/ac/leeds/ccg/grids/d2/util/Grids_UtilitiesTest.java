@@ -45,6 +45,8 @@ import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  *
@@ -495,56 +497,52 @@ public class Grids_UtilitiesTest {
     @Test
     public void testDistance_6args() {
         System.out.println("distance");
-        int dp;
-        RoundingMode rm;
-        BigDecimal expResult;
-        BigDecimal result;
-        BigDecimal x1;
-        BigDecimal y1;
-        BigDecimal x2;
-        BigDecimal y2;
+        int oom;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        Math_BigRational x1;
+        Math_BigRational y1;
+        Math_BigRational x2;
+        Math_BigRational y2;
         // Test 1
-        dp = 1;
-        rm = RoundingMode.HALF_UP;
-        x1 = BigDecimal.ZERO;
-        y1 = BigDecimal.ZERO;
-        x2 = new BigDecimal(1);
-        y2 = new BigDecimal(1);
-        expResult = new BigDecimal("1.4");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, dp, rm);
-        Assertions.assertEquals(expResult, result);
+        oom = -1;
+        x1 = Math_BigRational.ZERO;
+        y1 = Math_BigRational.ZERO;
+        x2 = Math_BigRational.ONE;
+        y2 = Math_BigRational.ONE;
+        expResult = Math_BigRational.valueOf("1.4");
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        Assertions.assertTrue(expResult.compareTo(result) == 0);
         //System.out.println(Math.sqrt(2.0d));
         // Test 2
-        dp = 10;
-        expResult = new BigDecimal("1.4142135624");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, dp, rm);
+        oom = -10;
+        expResult = Math_BigRational.valueOf("1.4142135624");
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         //System.out.println(result);
         Assertions.assertEquals(expResult, result);
         // Test 3
-        dp = 20;
-        expResult = new BigDecimal("1.41421356237309504880");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, dp, rm);
+        oom = -20;
+        expResult = Math_BigRational.valueOf("1.41421356237309504880");
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         System.out.println(result);
         Assertions.assertEquals(expResult, result);
         // Test 4
-        dp = 1;
-        rm = RoundingMode.HALF_UP;
-        x1 = new BigDecimal(-3);
-        y1 = new BigDecimal(-3);
-        x2 = new BigDecimal(-2);
-        y2 = new BigDecimal(-2);
-        expResult = new BigDecimal("1.4");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, dp, rm);
+        oom = -1;
+        x1 = Math_BigRational.valueOf(-3);
+        y1 = Math_BigRational.valueOf(-3);
+        x2 = Math_BigRational.valueOf(-2);
+        y2 = Math_BigRational.valueOf(-2);
+        expResult = Math_BigRational.valueOf("1.4");
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         Assertions.assertEquals(expResult, result);
         // Test 5
-        dp = 1;
-        rm = RoundingMode.HALF_UP;
-        x1 = BigDecimal.ZERO;
-        y1 = BigDecimal.ZERO;
-        x2 = new BigDecimal(3);
-        y2 = new BigDecimal(4);
-        expResult = new BigDecimal("5.0");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, dp, rm);
+        oom = -1;
+        x1 = Math_BigRational.ZERO;
+        y1 = Math_BigRational.ZERO;
+        x2 = Math_BigRational.valueOf(3);
+        y2 = Math_BigRational.valueOf(4);
+        expResult = Math_BigRational.valueOf("5.0");
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         Assertions.assertEquals(expResult, result);
     }
 
@@ -568,9 +566,9 @@ public class Grids_UtilitiesTest {
         long ncols = 10L;
         int dp = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Grids_Dimensions dimensions = new Grids_Dimensions(BigDecimal.ZERO,
-                BigDecimal.valueOf(ncols), BigDecimal.ZERO,
-                BigDecimal.valueOf(nrows), BigDecimal.ONE);
+        Grids_Dimensions dimensions = new Grids_Dimensions(Math_BigRational.ZERO,
+                Math_BigRational.valueOf(ncols), Math_BigRational.ZERO,
+                Math_BigRational.valueOf(nrows), Math_BigRational.ONE);
         Grids_GridDouble xGrid = gfd.create(nrows, ncols, dimensions);
         setRandom(ge, xGrid);
         Grids_GridDouble yGrid = gfd.create(nrows, ncols, dimensions);

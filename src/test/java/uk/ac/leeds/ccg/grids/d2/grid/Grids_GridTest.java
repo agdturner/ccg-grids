@@ -35,6 +35,8 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  *
@@ -112,28 +114,27 @@ public class Grids_GridTest {
     public void testGetCellDistance() throws Exception {
         System.out.println("getCellDistance");
         // Test 1
-        BigDecimal distance = BigDecimal.TEN;
-        BigDecimal expResult = BigDecimal.TEN;
+        int oom = -3;
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
+        int expResult = 10;
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
-        BigDecimal result = instance.getCellDistance(distance);
+        int result = instance.getCellDistance(distance);
         assertEquals(expResult, result);
         // Test 2
-        distance = BigDecimal.TEN;
-        expResult = BigDecimal.valueOf(100);
+        distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
+        expResult = 100;
         gfd = gp.gridFactoryDouble;
-        BigDecimal xmin = BigDecimal.ZERO;
-        BigDecimal xmax = BigDecimal.ONE;
-        BigDecimal ymin = BigDecimal.ZERO;
-        BigDecimal ymax = BigDecimal.ONE;
-        BigDecimal cellSize = new BigDecimal("0.1");
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.valueOf("0.1");
         Grids_Dimensions dims = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         instance = gfd.create(10, 10, dims);
         result = instance.getCellDistance(distance);
-        System.out.println("expResult=" + expResult.toPlainString());
-        System.out.println("result=" + result.toPlainString());
-        assertTrue(result.compareTo(expResult) == 0);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -390,9 +391,9 @@ public class Grids_GridTest {
 //    @Test
 //    public void testGetChunkIDs_7args() {
 //        System.out.println("getChunkIDs");
-//        BigDecimal distance = null;
-//        BigDecimal x = null;
-//        BigDecimal y = null;
+//        Math_BigRational distance = null;
+//        Math_BigRational x = null;
+//        Math_BigRational y = null;
 //        long row = 0L;
 //        long col = 0L;
 //        int dp = 0;
@@ -446,9 +447,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCol_BigDecimal() throws Exception {
+    public void testGetChunkCol_Math_BigRational() throws Exception {
         System.out.println("getChunkCol");
-        BigDecimal x = BigDecimal.valueOf(0.5d);
+        Math_BigRational x = Math_BigRational.valueOf(0.5d);
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 5120);
@@ -456,27 +457,27 @@ public class Grids_GridTest {
         int result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = BigDecimal.valueOf(512.5d);
+        x = Math_BigRational.valueOf(512.5d);
         expResult = 1;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = BigDecimal.valueOf(1024.5d);
+        x = Math_BigRational.valueOf(1024.5d);
         expResult = 2;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 4
-        x = BigDecimal.valueOf(5119.5d);
+        x = Math_BigRational.valueOf(5119.5d);
         expResult = 9;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 5
-        x = BigDecimal.valueOf(5120.5d);
+        x = Math_BigRational.valueOf(5120.5d);
         expResult = 10;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 6
-        x = BigDecimal.valueOf(-0.5d);
+        x = Math_BigRational.valueOf(-0.5d);
         expResult = -1;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
@@ -532,9 +533,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCellCol_BigDecimal() throws Exception {
+    public void testGetChunkCellCol_Math_BigRational() throws Exception {
         System.out.println("getChunkCellCol");
-        BigDecimal x = BigDecimal.ZERO;
+        Math_BigRational x = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = 1000;
@@ -544,17 +545,17 @@ public class Grids_GridTest {
         int result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = BigDecimal.valueOf(-0.5);
+        x = Math_BigRational.valueOf(-0.5);
         expResult = 511;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = BigDecimal.valueOf(5120);
+        x = Math_BigRational.valueOf(5120);
         expResult = 0;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = new BigDecimal("5119.999999999999999999999999999");
+        x = Math_BigRational.valueOf("5119.999999999999999999999999999");
         expResult = 511;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
@@ -605,9 +606,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCellRow_BigDecimal() throws Exception {
+    public void testGetChunkCellRow_Math_BigRational() throws Exception {
         System.out.println("getChunkCellRow");
-        BigDecimal y = BigDecimal.ZERO;
+        Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
@@ -618,17 +619,17 @@ public class Grids_GridTest {
         int result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = new BigDecimal("-0.5");
+        y = Math_BigRational.valueOf("-0.5");
         expResult = chunkNRows - 1;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 3
-        y = new BigDecimal("5120");
+        y = Math_BigRational.valueOf("5120");
         expResult = 0;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 3
-        y = new BigDecimal("5119.99999999999999");
+        y = Math_BigRational.valueOf("5119.99999999999999");
         expResult = 511;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
@@ -675,9 +676,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetCol_BigDecimal() throws Exception {
+    public void testGetCol_Math_BigRational() throws Exception {
         System.out.println("getCol");
-        BigDecimal x = BigDecimal.ZERO;
+        Math_BigRational x = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
@@ -688,12 +689,12 @@ public class Grids_GridTest {
         long result = instance.getCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = new BigDecimal("5119.999999999999999");
+        x = Math_BigRational.valueOf("5119.999999999999999");
         expResult = 5119L;
         result = instance.getCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = new BigDecimal("5119.9999999999999999999999999999999999999999999999"
+        x = Math_BigRational.valueOf("5119.9999999999999999999999999999999999999999999999"
                 + "9999999999999999999999999999999999999999999999999999999999");
         expResult = 5119L;
         result = instance.getCol(x);
@@ -734,9 +735,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkRow_BigDecimal() throws Exception {
+    public void testGetChunkRow_Math_BigRational() throws Exception {
         System.out.println("getChunkRow");
-        BigDecimal y = BigDecimal.ZERO;
+        Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
@@ -748,7 +749,7 @@ public class Grids_GridTest {
         int result = instance.getChunkRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = new BigDecimal("-0.000000000000000000000000000000000000000000000000"
+        y = Math_BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
                 + "000000000000000000000000000000000000000000000000000000000000"
                 + "0000000000000000000000000000000000000000000000000000000001");
         expResult = -1;
@@ -798,9 +799,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetRow_BigDecimal() throws Exception {
+    public void testGetRow_Math_BigRational() throws Exception {
         System.out.println("getRow");
-        BigDecimal y = BigDecimal.ZERO;
+        Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
@@ -812,7 +813,7 @@ public class Grids_GridTest {
         long result = instance.getRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = new BigDecimal("-0.000000000000000000000000000000000000000000000000"
+        y = Math_BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
                 + "000000000000000000000000000000000000000000000000000000000000"
                 + "0000000000000000000000000000000000000000000000000000000001");
         expResult = -1L;
@@ -874,10 +875,10 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetCellID_BigDecimal_BigDecimal() throws Exception {
+    public void testGetCellID_Math_BigRational_Math_BigRational() throws Exception {
         System.out.println("getCellID");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
+        Math_BigRational x = Math_BigRational.ZERO;
+        Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = 512;
@@ -894,9 +895,9 @@ public class Grids_GridTest {
 //    @Test
 //    public void testGetCellIDs_5args_1() {
 //        System.out.println("getCellIDs");
-//        BigDecimal x = null;
-//        BigDecimal y = null;
-//        BigDecimal distance = null;
+//        Math_BigRational x = null;
+//        Math_BigRational y = null;
+//        Math_BigRational distance = null;
 //        int dp = 0;
 //        RoundingMode rm = null;
 //        Grids_Grid instance = null;
@@ -915,7 +916,7 @@ public class Grids_GridTest {
 //        System.out.println("getCellIDs");
 //        long row = 0L;
 //        long col = 0L;
-//        BigDecimal distance = null;
+//        Math_BigRational distance = null;
 //        int dp = 0;
 //        RoundingMode rm = null;
 //        Grids_Grid instance = null;
@@ -932,11 +933,11 @@ public class Grids_GridTest {
 //    @Test
 //    public void testGetCellIDs_7args() {
 //        System.out.println("getCellIDs");
-//        BigDecimal x = null;
-//        BigDecimal y = null;
+//        Math_BigRational x = null;
+//        Math_BigRational y = null;
 //        long row = 0L;
 //        long col = 0L;
-//        BigDecimal distance = null;
+//        Math_BigRational distance = null;
 //        int dp = 0;
 //        RoundingMode rm = null;
 //        Grids_Grid instance = null;
@@ -951,10 +952,10 @@ public class Grids_GridTest {
 //     * Test of getNearestCellID method, of class Grids_Grid.
 //     */
 //    @Test
-//    public void testGetNearestCellID_BigDecimal_BigDecimal() {
+//    public void testGetNearestCellID_Math_BigRational_Math_BigRational() {
 //        System.out.println("getNearestCellID");
-//        BigDecimal x = null;
-//        BigDecimal y = null;
+//        Math_BigRational x = null;
+//        Math_BigRational y = null;
 //        Grids_Grid instance = null;
 //        Grids_2D_ID_long expResult = null;
 //        Grids_2D_ID_long result = instance.getNearestCellID(x, y);
@@ -985,8 +986,8 @@ public class Grids_GridTest {
 //    @Test
 //    public void testGetNearestCellID_4args() {
 //        System.out.println("getNearestCellID");
-//        BigDecimal x = null;
-//        BigDecimal y = null;
+//        Math_BigRational x = null;
+//        Math_BigRational y = null;
 //        long row = 0L;
 //        long col = 0L;
 //        Grids_Grid instance = null;
@@ -1009,8 +1010,8 @@ public class Grids_GridTest {
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(nrows);
-        BigDecimal result = instance.getHeight();
+        Math_BigRational expResult = Math_BigRational.valueOf(nrows);
+        Math_BigRational result = instance.getHeight();
         assertEquals(expResult, result);
     }
 
@@ -1027,8 +1028,8 @@ public class Grids_GridTest {
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(ncols);
-        BigDecimal result = instance.getWidth();
+        Math_BigRational expResult = Math_BigRational.valueOf(ncols);
+        Math_BigRational result = instance.getWidth();
         assertEquals(expResult, result);
     }
 
@@ -1134,11 +1135,11 @@ public class Grids_GridTest {
         boolean result = instance.isCoincident(g);
         assertEquals(expResult, result);
         // Test 2
-        BigDecimal xmin = BigDecimal.valueOf(-1);
-        BigDecimal xmax = BigDecimal.valueOf(99);
-        BigDecimal ymin = BigDecimal.valueOf(-1);
-        BigDecimal ymax = BigDecimal.valueOf(511);
-        BigDecimal cellSize = new BigDecimal("1");
+        Math_BigRational xmin = Math_BigRational.valueOf(-1);
+        Math_BigRational xmax = Math_BigRational.valueOf(99);
+        Math_BigRational ymin = Math_BigRational.valueOf(-1);
+        Math_BigRational ymax = Math_BigRational.valueOf(511);
+        Math_BigRational cellSize = Math_BigRational.ONE;
         Grids_Dimensions d = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         gp.gridFactoryDouble.setDimensions(d);
@@ -1154,10 +1155,10 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testIsInGrid_BigDecimal_BigDecimal() throws Exception {
+    public void testIsInGrid_Math_BigRational_Math_BigRational() throws Exception {
         System.out.println("isInGrid");
-        BigDecimal x = new BigDecimal("0.000000000000000000000000000000000001");
-        BigDecimal y = new BigDecimal("0.000000000000000000000000000000000001");
+        Math_BigRational x = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
+        Math_BigRational y = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = 1;
@@ -1277,8 +1278,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(0.5d);
-        BigDecimal result = instance.getCellX(col);
+        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
+        Math_BigRational result = instance.getCellX(col);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1296,8 +1297,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(0.5d);
-        BigDecimal result = instance.getCellX(i);
+        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
+        Math_BigRational result = instance.getCellX(i);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1315,8 +1316,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(0.5d);
-        BigDecimal result = instance.getCellY(row);
+        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
+        Math_BigRational result = instance.getCellY(row);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1334,8 +1335,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal expResult = BigDecimal.valueOf(0.5d);
-        BigDecimal result = instance.getCellY(i);
+        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
+        Math_BigRational result = instance.getCellY(i);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1354,12 +1355,12 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        BigDecimal[] expResult = new BigDecimal[4];
-        expResult[0] = BigDecimal.ZERO;
-        expResult[1] = BigDecimal.ZERO;
-        expResult[2] = BigDecimal.ONE;
-        expResult[3] = BigDecimal.ONE;
-        BigDecimal[] result = instance.getCellBounds(row, col);
+        Math_BigRational[] expResult = new Math_BigRational[4];
+        expResult[0] = Math_BigRational.ZERO;
+        expResult[1] = Math_BigRational.ZERO;
+        expResult[2] = Math_BigRational.ONE;
+        expResult[3] = Math_BigRational.ONE;
+        Math_BigRational[] result = instance.getCellBounds(row, col);
         for (int i = 0; i < 4; i++) {
             assertTrue(result[i].compareTo(expResult[i]) == 0);
         }

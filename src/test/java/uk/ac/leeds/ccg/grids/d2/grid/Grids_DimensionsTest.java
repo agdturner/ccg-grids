@@ -15,13 +15,13 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
-import ch.obermuhlner.math.big.BigRational;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  *
@@ -45,11 +45,11 @@ public class Grids_DimensionsTest {
 
     @BeforeEach
     public void setUp() {
-        BigRational xmin = BigRational.ZERO;
-        BigRational xmax = BigRational.ONE;
-        BigRational ymin = BigRational.ZERO;
-        BigRational ymax = BigRational.ONE;
-        BigRational cellSize = BigRational.ONE;
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.ONE;
         defaultInstance = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
     }
@@ -76,11 +76,11 @@ public class Grids_DimensionsTest {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        BigRational xmin = BigRational.ZERO;
-        BigRational xmax = BigRational.ONE;
-        BigRational ymin = BigRational.ZERO;
-        BigRational ymax = BigRational.ONE;
-        BigRational cellSize = BigRational.ONE;
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.ONE;
         Object o = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellSize);
         assertTrue(defaultInstance.equals(o));
     }
@@ -102,8 +102,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetXMin() {
         System.out.println("getXMin");
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = defaultInstance.getXMin();
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = defaultInstance.getXMin();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -113,8 +113,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetXMax() {
         System.out.println("getXMax");
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getXMax();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getXMax();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -124,8 +124,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetYMin() {
         System.out.println("getYMin");
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = defaultInstance.getYMin();
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = defaultInstance.getYMin();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -135,8 +135,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetYMax() {
         System.out.println("getYMax");
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getYMax();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getYMax();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -146,8 +146,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetCellsize() {
         System.out.println("getCellsize");
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getCellsize();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getCellsize();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -157,8 +157,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetHalfCellsize() {
         System.out.println("getHalfCellsize");
-        BigRational expResult = BigRational.valueOf(0.5d);
-        BigRational result = defaultInstance.getHalfCellsize();
+        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
+        Math_BigRational result = defaultInstance.getHalfCellsize();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -168,8 +168,8 @@ public class Grids_DimensionsTest {
     @Test
     public void testGetCellsizeSquared() {
         System.out.println("getCellsizeSquared");
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getCellsizeSquared();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getCellsizeSquared();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -180,18 +180,18 @@ public class Grids_DimensionsTest {
     public void testGetWidth() {
         System.out.println("getWidth");
         // Test 1
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getWidth();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getWidth();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
-        BigRational xmin = BigRational.ZERO;
-        BigRational xmax = BigRational.ONE;
-        BigRational ymin = BigRational.ZERO;
-        BigRational ymax = BigRational.ONE;
-        BigRational cellSize = BigRational.valueOf("0.1");
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.valueOf("0.1");
         Grids_Dimensions instance = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
-        expResult = BigRational.ONE;
+        expResult = Math_BigRational.ONE;
         result = instance.getWidth();
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -203,18 +203,18 @@ public class Grids_DimensionsTest {
     public void testGetHeight() {
         System.out.println("getHeight");
         // Test 1
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getHeight();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getHeight();
         assertEquals(expResult, result);
         // Test 2
-        BigRational xmin = BigRational.ZERO;
-        BigRational xmax = BigRational.ONE;
-        BigRational ymin = BigRational.ZERO;
-        BigRational ymax = BigRational.ONE;
-        BigRational cellSize = BigRational.valueOf("0.1");
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.valueOf("0.1");
         Grids_Dimensions instance = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
-        expResult = BigRational.ONE;
+        expResult = Math_BigRational.ONE;
         result = instance.getHeight();
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -226,18 +226,18 @@ public class Grids_DimensionsTest {
     public void testGetArea() {
         System.out.println("getArea");
         // Test 1
-        BigRational expResult = BigRational.ONE;
-        BigRational result = defaultInstance.getArea();
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = defaultInstance.getArea();
         assertEquals(expResult, result);
         // Test 2
-        BigRational xmin = BigRational.ZERO;
-        BigRational xmax = BigRational.ONE;
-        BigRational ymin = BigRational.ZERO;
-        BigRational ymax = BigRational.ONE;
-        BigRational cellSize = BigRational.valueOf("0.1");
+        Math_BigRational xmin = Math_BigRational.ZERO;
+        Math_BigRational xmax = Math_BigRational.ONE;
+        Math_BigRational ymin = Math_BigRational.ZERO;
+        Math_BigRational ymax = Math_BigRational.ONE;
+        Math_BigRational cellSize = Math_BigRational.valueOf("0.1");
         Grids_Dimensions instance = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
-        expResult = BigRational.ONE;
+        expResult = Math_BigRational.ONE;
         result = instance.getArea();
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -250,42 +250,42 @@ public class Grids_DimensionsTest {
         System.out.println("intersects");
         System.out.println("intersects");
         // Test 1
-        Grids_Dimensions d0 = new Grids_Dimensions(BigRational.ZERO,
-                BigRational.TEN, BigRational.ZERO, BigRational.TEN,
-                BigRational.ONE);
-        Grids_Dimensions d1 = new Grids_Dimensions(BigRational.ZERO,
-                BigRational.TEN, BigRational.ZERO, BigRational.TEN,
-                BigRational.ONE);
+        Grids_Dimensions d0 = new Grids_Dimensions(Math_BigRational.ZERO,
+                Math_BigRational.TEN, Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ONE);
+        Grids_Dimensions d1 = new Grids_Dimensions(Math_BigRational.ZERO,
+                Math_BigRational.TEN, Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ONE);
         assertTrue(d0.intersects(d1));
         // Test 2
-        d0 = new Grids_Dimensions(BigRational.ONE, BigRational.TEN,
-                BigRational.ONE, BigRational.TEN, BigRational.ONE);
-        d1 = new Grids_Dimensions(BigRational.ZERO, BigRational.TEN,
-                BigRational.ZERO, BigRational.TEN, BigRational.ONE);
+        d0 = new Grids_Dimensions(Math_BigRational.ONE, Math_BigRational.TEN,
+                Math_BigRational.ONE, Math_BigRational.TEN, Math_BigRational.ONE);
+        d1 = new Grids_Dimensions(Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ZERO, Math_BigRational.TEN, Math_BigRational.ONE);
         assertTrue(d0.intersects(d1));
         // Test 3
-        d0 = new Grids_Dimensions(BigRational.valueOf(-1), BigRational.valueOf(1),
-                BigRational.valueOf(-1), BigRational.valueOf(1), BigRational.ONE);
-        d1 = new Grids_Dimensions(BigRational.ZERO, BigRational.TEN,
-                BigRational.ZERO, BigRational.TEN, BigRational.ONE);
+        d0 = new Grids_Dimensions(Math_BigRational.valueOf(-1), Math_BigRational.valueOf(1),
+                Math_BigRational.valueOf(-1), Math_BigRational.valueOf(1), Math_BigRational.ONE);
+        d1 = new Grids_Dimensions(Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ZERO, Math_BigRational.TEN, Math_BigRational.ONE);
         assertTrue(d0.intersects(d1));
         // Test 4
-        d0 = new Grids_Dimensions(BigRational.valueOf(9), BigRational.valueOf(11),
-                BigRational.valueOf(-1), BigRational.valueOf(1), BigRational.ONE);
-        d1 = new Grids_Dimensions(BigRational.ZERO, BigRational.TEN,
-                BigRational.ZERO, BigRational.TEN, BigRational.ONE);
+        d0 = new Grids_Dimensions(Math_BigRational.valueOf(9), Math_BigRational.valueOf(11),
+                Math_BigRational.valueOf(-1), Math_BigRational.valueOf(1), Math_BigRational.ONE);
+        d1 = new Grids_Dimensions(Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ZERO, Math_BigRational.TEN, Math_BigRational.ONE);
         assertTrue(d0.intersects(d1));
         // Test 5
-        d0 = new Grids_Dimensions(BigRational.valueOf(11), BigRational.valueOf(12),
-                BigRational.valueOf(-1), BigRational.valueOf(1), BigRational.ONE);
-        d1 = new Grids_Dimensions(BigRational.ZERO, BigRational.TEN,
-                BigRational.ZERO, BigRational.TEN, BigRational.ONE);
+        d0 = new Grids_Dimensions(Math_BigRational.valueOf(11), Math_BigRational.valueOf(12),
+                Math_BigRational.valueOf(-1), Math_BigRational.valueOf(1), Math_BigRational.ONE);
+        d1 = new Grids_Dimensions(Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ZERO, Math_BigRational.TEN, Math_BigRational.ONE);
         assertFalse(d0.intersects(d1));
         // Test 6
-        d0 = new Grids_Dimensions(BigRational.valueOf(9), BigRational.valueOf(10),
-                BigRational.valueOf(-2), BigRational.valueOf(-1), BigRational.ONE);
-        d1 = new Grids_Dimensions(BigRational.ZERO, BigRational.TEN,
-                BigRational.ZERO, BigRational.TEN, BigRational.ONE);
+        d0 = new Grids_Dimensions(Math_BigRational.valueOf(9), Math_BigRational.valueOf(10),
+                Math_BigRational.valueOf(-2), Math_BigRational.valueOf(-1), Math_BigRational.ONE);
+        d1 = new Grids_Dimensions(Math_BigRational.ZERO, Math_BigRational.TEN,
+                Math_BigRational.ZERO, Math_BigRational.TEN, Math_BigRational.ONE);
         assertFalse(d0.intersects(d1));
     }
 
