@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
@@ -48,6 +47,11 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      */
     protected long nMax;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param ge Grids_Environment
+     */
     public Grids_StatsNumber(Grids_Environment ge) {
         super(ge);
         init0();
@@ -142,6 +146,14 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
         return sum.divide(new BigDecimal(n), dp, rm);
     }
 
+    /**
+     * For getting a quantile class map.
+     * @param nClasses nClasses
+     * @return Object[]
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     * @throws ClassNotFoundException If encountered.
+     */
     public abstract Object[] getQuantileClassMap(int nClasses)
             throws IOException, Exception, ClassNotFoundException;
 

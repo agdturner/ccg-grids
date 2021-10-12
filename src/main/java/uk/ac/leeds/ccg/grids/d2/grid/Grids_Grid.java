@@ -224,7 +224,7 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * For initialising.
      *
-     * @throws IOException
+     * @throws IOException If encountered.
      */
     protected void init() throws IOException {
         env.setDataToClear(true);
@@ -2052,8 +2052,6 @@ public abstract class Grids_Grid extends Grids_Object {
      * centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The decimal places for the distance calculations.
-     * @param rm The RoundingMode for the distance calculations.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
             Math_BigRationalSqrt distance) {
@@ -2071,8 +2069,6 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param col the col index at x.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The decimal places for the distance calculations.
-     * @param rm The RoundingMode for the distance calculations.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
             long row, long col, Math_BigRationalSqrt distance) {
@@ -2953,9 +2949,19 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public class NearestValuesCellIDsAndDistance {
 
+        /**
+         * cellIDs
+         */
         public Grids_2D_ID_long[] cellIDs;
+        
+        /**
+         * distance
+         */
         public Math_BigRationalSqrt distance;
 
+        /**
+         * Create new instance.
+         */
         public NearestValuesCellIDsAndDistance() {
         }
     }

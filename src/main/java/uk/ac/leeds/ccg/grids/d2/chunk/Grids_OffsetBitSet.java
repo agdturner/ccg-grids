@@ -37,7 +37,7 @@ public class Grids_OffsetBitSet {
     /**
      * Create a new instance.
      *
-     * @param offset
+     * @param offset What {@link #offset} is set to.
      */
     public Grids_OffsetBitSet(int offset) {
         this.offset = offset;

@@ -33,25 +33,60 @@ public abstract class Grids_GridIterator extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * grid
+     */
     protected Grids_Grid grid;
+
+    /**
+     * chunk
+     */
     protected Grids_Chunk chunk;
+
+    /**
+     * chunkID
+     */
     protected Grids_2D_ID_int chunkID;
+
+    /**
+     * gridIterator
+     */
     protected Iterator<Grids_2D_ID_int> gridIterator;
+
+    /**
+     * chunkIterator
+     */
     protected Grids_ChunkIterator chunkIterator;
 
+    /**
+     * Create a new instance.
+     * @param grid 
+     */
     public Grids_GridIterator(Grids_Grid grid) {
         super(grid.env);
         this.grid = grid;
     }
 
+    /**
+     * For initialising.
+     */
     protected abstract void initChunkIterator();
 
+    /**
+     * @return The grid.
+     */
     public abstract Grids_Grid getGrid();
 
+    /**
+     * @return A grid iterator. 
+     */
     public Iterator<Grids_2D_ID_int> getGridIterator() {
         return gridIterator;
     }
 
+    /**
+     * @return A chunk iterator. 
+     */
     public abstract Grids_ChunkIterator getChunkIterator();
 
     /**

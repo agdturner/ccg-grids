@@ -105,6 +105,11 @@ public class Grids_Dimensions implements Serializable {
         this(Math_BigRational.ZERO, width, Math_BigRational.ZERO, height, Math_BigRational.ONE);
     }
 
+    /**
+     * Create a new instance.
+     * 
+     * @param d Grids_Dimensions
+     */
     public Grids_Dimensions(Grids_Dimensions d) {
         this.area = d.area;
         this.cellsize = d.cellsize;

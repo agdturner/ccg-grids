@@ -928,6 +928,11 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
          */
         public final TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
 
+        /**
+         * Create a new instance.
+         * @param dataMapBitSet What {@link #dataMapBitSet} is set to.
+         * @param dataMapHashSet What {@link #dataMapHashSet} is set to. 
+         */
         public GridChunkIntMapData(
                 TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet,
                 TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet) {

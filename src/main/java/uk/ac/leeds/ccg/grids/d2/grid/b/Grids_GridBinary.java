@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Set;
@@ -313,6 +312,23 @@ public class Grids_GridBinary extends Grids_GridB {
         return isLoadedChunk;
     }
 
+    /**
+     * For loading a chunk.
+     * @param gChunkID gChunkID
+     * @param g g
+     * @param gb gb
+     * @param gcc gcc
+     * @param gcr gcr
+     * @param cf cf
+     * @param gChunkNRows gChunkNRows
+     * @param startRow startRow
+     * @param endRow endRow
+     * @param startCol startCol
+     * @param endCol endCol
+     * @throws IOException If encountered.
+     * @throws java.lang.ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBinary gb, int gcc, int gcr,
             Grids_ChunkFactoryBinary cf, int gChunkNRows, long startRow,
@@ -361,21 +377,6 @@ public class Grids_GridBinary extends Grids_GridB {
         }
     }
 
-    /**
-     *
-     * @param stats
-     * @param gridFile
-     * @param cf
-     * @param chunkNRows
-     * @param chunkNCols
-     * @param startRow
-     * @param startCol
-     * @param endRow
-     * @param endCol
-     * @throws java.io.IOException If encountered or if gridFile is not a
-     * directory.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
     private void init(Grids_StatsBinary stats, Generic_Path gridFile,
             Grids_ChunkFactoryBinary cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
