@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryDoubleMap extends Grids_ChunkFactoryDouble {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryDoubleMap() {
     }
 

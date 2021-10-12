@@ -48,7 +48,6 @@ public abstract class Grids_ChunkRowMajorOrderIterator
      */
     protected int nCols;
 
-
     /**
      * Create a new instance.
      * 
@@ -75,6 +74,9 @@ public abstract class Grids_ChunkRowMajorOrderIterator
         return true;
     }
 
+    /**
+     * Sets up next element in the iteration.
+     */
     protected void next0() {
         if (col + 1 == nCols) {
             if (row + 1 == nRows) {

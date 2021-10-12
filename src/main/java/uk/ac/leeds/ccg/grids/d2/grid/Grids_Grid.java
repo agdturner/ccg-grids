@@ -221,6 +221,11 @@ public abstract class Grids_Grid extends Grids_Object {
         this.fsID = id;
     }
 
+    /**
+     * For initialising.
+     *
+     * @throws IOException
+     */
     protected void init() throws IOException {
         env.setDataToClear(true);
         env.addGrid(this);
@@ -245,6 +250,13 @@ public abstract class Grids_Grid extends Grids_Object {
         init();
     }
 
+    /**
+     * For initialising.
+     *
+     * @param stats stats
+     * @param chunkNRows chunkNRows
+     * @param chunkNCols chunkNCols
+     */
     protected void init(Grids_Stats stats, int chunkNRows, int chunkNCols) {
         this.stats = stats;
         this.stats.setGrid(this);
@@ -257,6 +269,16 @@ public abstract class Grids_Grid extends Grids_Object {
         worthSwapping = new HashSet<>();
     }
 
+    /**
+     * For initialising.
+     *
+    * @param stats stats
+     * @param chunkNRows chunkNRows
+     * @param chunkNCols chunkNCols
+     * @param nRows nRows
+     * @param nCols nCols
+     * @param dimensions dimensions
+     */
     protected void init(Grids_Stats stats, int chunkNRows, int chunkNCols,
             long nRows, long nCols, Grids_Dimensions dimensions) {
         this.nRows = nRows;
@@ -265,6 +287,19 @@ public abstract class Grids_Grid extends Grids_Object {
         init(stats, chunkNRows, chunkNCols);
     }
 
+    /**
+     /**
+     * For initialising.
+     *
+     * @param g grid
+    * @param stats stats
+     * @param chunkNRows chunkNRows
+     * @param chunkNCols chunkNCols
+     * @param startRow startRow
+     * @param startCol startCol
+     * @param endRow endRow
+     * @param endCol endCol
+     */
     protected void init(Grids_Grid g, Grids_Stats stats, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) {
@@ -528,7 +563,7 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * @param distance The distance to be converted into an integer cell 
+     * @param distance The distance to be converted into an integer cell
      * distance.
      * @return The distance in terms of the number of cells.
      */
@@ -569,7 +604,7 @@ public abstract class Grids_Grid extends Grids_Object {
             Math_BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
                 Math_BigRational cellX = getCellX(col + q);
-                Math_BigRational d2 = Grids_Utilities.distance2(cellX, cellY, 
+                Math_BigRational d2 = Grids_Utilities.distance2(cellX, cellY,
                         x, y);
                 if (d2.compareTo(distance2) == -1) {
                     r.add(new Grids_2D_ID_int(getChunkRow(row + p),
@@ -2003,7 +2038,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      */
-    public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x, 
+    public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x,
             Math_BigRational y, Math_BigRationalSqrt distance) {
         return getCellIDs(x, y, getRow(y), getCol(x), distance);
     }
@@ -2040,7 +2075,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param rm The RoundingMode for the distance calculations.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
-            long row,            long col, Math_BigRationalSqrt distance) {
+            long row, long col, Math_BigRationalSqrt distance) {
         Grids_2D_ID_long[] r;
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
         long delta = getCellDistance(distance);
@@ -2086,8 +2121,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param row The cell row.
      * @param col The cell column.
      */
-    public Grids_2D_ID_long getNearestCellID(Math_BigRational x, 
-            Math_BigRational y,            long row, long col) {
+    public Grids_2D_ID_long getNearestCellID(Math_BigRational x,
+            Math_BigRational y, long row, long col) {
         Grids_2D_ID_long cellID;
         boolean isInGrid = isInGrid(x, y);
         if (!isInGrid) {
@@ -2873,7 +2908,7 @@ public abstract class Grids_Grid extends Grids_Object {
         //System.out.println(r.length());
         return r;
     }
-    
+
     /**
      * Used to help log a view of the grid. This aims to present numerical
      * values in 10 characters which may involve rounding. If the number has

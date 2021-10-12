@@ -37,6 +37,14 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     *
+     * @param g The grid.
+     * @param i The chunk ID
+     * @param worthClearing Indicates whether it is likely to be worth clearing
+     * in memory handling.
+     */
     protected Grids_ChunkInt(Grids_GridInt g, Grids_2D_ID_int i,
             boolean worthClearing) {
         super(g, i, worthClearing);
@@ -331,7 +339,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * @param nrows The nrows.
      * @param ncols The ncols.
      * @param value The value to be counted.
-     * @return A count of cells with value {@code v} starting from row 
+     * @return A count of cells with value {@code v} starting from row
      * {@code p}, column {@code q}.
      */
     protected long count(int p, int q, int nrows, int ncols, int value) {
@@ -380,11 +388,10 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The rounding mode.
+     * @param oom The Order of Magnitude for the precision.
      * @return The standard deviation of all data values.
      */
-    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+    protected BigDecimal getStandardDeviation(int oom) {
         Math_BigRational sd = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
         Grids_GridInt g = getGrid();

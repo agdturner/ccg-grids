@@ -30,6 +30,9 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
 
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The data.
+     */
     Boolean[][] data;
 
 //    public Grids_ChunkBooleanArray(Grids_GridBoolean g, Grids_2D_ID_int i) {
@@ -130,10 +133,16 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
         data = null;
     }
 
+    /**
+     * @return {@link #data} 
+     */
     protected Boolean[][] getData() {
         return data;
     }
 
+    /**
+     * @return a new iterator over the values. 
+     */
     public Grids_ChunkIteratorBooleanArray iterator() {
         return new Grids_ChunkIteratorBooleanArray(this);
     }

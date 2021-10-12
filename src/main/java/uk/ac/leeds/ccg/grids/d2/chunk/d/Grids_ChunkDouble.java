@@ -373,11 +373,10 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The rounding mode.
+     * @param oom The Order of Magnitude for the precision.
      * @return The standard deviation of all data values.
      */
-    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+    protected BigDecimal getStandardDeviation(int oom) {
         Math_BigRational sd = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
         Grids_GridDouble g = getGrid();

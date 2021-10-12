@@ -41,6 +41,11 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
      */
     protected double max;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param ge Grids_Environment
+     */
     public Grids_StatsDouble(Grids_Environment ge) {
         super(ge);
         init0();
@@ -121,6 +126,10 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
         return min;
     }
 
+    /**
+     * Set min.
+     * @param min What {@link #min} is set to. 
+     */
     public void setMin(double min) {
         this.min = min;
     }
@@ -140,6 +149,10 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
         return max;
     }
 
+    /**
+     * Set max.
+     * @param max What {@link #max} is set to. 
+     */
     public void setMax(double max) {
         this.max = max;
     }

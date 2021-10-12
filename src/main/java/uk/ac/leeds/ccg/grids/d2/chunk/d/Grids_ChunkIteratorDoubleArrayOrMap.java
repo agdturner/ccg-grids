@@ -35,8 +35,12 @@ public class Grids_ChunkIteratorDoubleArrayOrMap
      */
     protected double[][] data;
 
-    public Grids_ChunkIteratorDoubleArrayOrMap(
-            Grids_ChunkDoubleArrayOrMap c) {
+    /**
+     * Create a new instance.
+     * 
+     * @param c What {@link #data} is set from.
+     */
+    public Grids_ChunkIteratorDoubleArrayOrMap(Grids_ChunkDoubleArrayOrMap c) {
         super(c);
         if (c instanceof Grids_ChunkDoubleArray) {
             data = ((Grids_ChunkDoubleArray) c).getData();
@@ -55,6 +59,9 @@ public class Grids_ChunkIteratorDoubleArrayOrMap
         return data[row][col];
     }
 
+    /**
+     * Set the value to NoDataValue.
+     */
     public void remove() {
         data[row][col] = ((Grids_GridDouble) grid).getNoDataValue();
     }

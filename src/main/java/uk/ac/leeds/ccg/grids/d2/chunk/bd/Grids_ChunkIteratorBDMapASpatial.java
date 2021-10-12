@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDMap.OffsetBitSet;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumberMapASpatialIterator;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
 
 /**
  * For iterating through the values in a Grids_GridChunkBDMap instance. The
@@ -36,18 +36,60 @@ public class Grids_ChunkIteratorBDMapASpatial
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * For storing the number of Default values.
+     */
     protected int numberOfDefaultValues;
+
+    /**
+     * For storing the number of NoDataValues.
+     */
     protected int numberOfNoDataValues;
 
+    /**
+     * For storing the default value.
+     */
     protected BigDecimal defaultValue;
+    
+    /**
+     * The data.
+     */
     protected Grids_ChunkBDMap.GridChunkBDMapData data;
-    protected TreeMap<BigDecimal, OffsetBitSet> dataMapBitSet;
+    
+    /**
+     * The dataMapBitSet.
+     */
+    protected TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet;
+    
+    /**
+     * The dataMapBitSetIte.
+     */
     protected Iterator<BigDecimal> dataMapBitSetIte;
+    
+    /**
+     * The dataMapBitSetValue.
+     */
     protected BigDecimal dataMapBitSetValue;
+    
+    /**
+     * The dataMapHashSet.
+     */
     protected TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+    
+    /**
+     * The dataMapHashSetIte.
+     */
     protected Iterator<BigDecimal> dataMapHashSetIte;
+    
+    /**
+     * The dataMapHashSetValue.
+     */
     protected BigDecimal dataMapHashSetValue;
 
+    /**
+     * Create a new instance.
+     * @param chunk The chunk.
+     */
     public Grids_ChunkIteratorBDMapASpatial(
             Grids_ChunkBDMap chunk) {
         super(chunk);

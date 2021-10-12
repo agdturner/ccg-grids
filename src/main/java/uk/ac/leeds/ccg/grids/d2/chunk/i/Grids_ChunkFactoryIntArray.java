@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryIntArray extends Grids_ChunkFactoryInt {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryIntArray() {
     }
 

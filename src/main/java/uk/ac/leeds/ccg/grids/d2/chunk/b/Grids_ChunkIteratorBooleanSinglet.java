@@ -29,6 +29,9 @@ public class Grids_ChunkIteratorBooleanSinglet
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The value.
+     */
     protected Boolean v;
 
     /**
@@ -41,9 +44,6 @@ public class Grids_ChunkIteratorBooleanSinglet
         v = c.getV();
     }
 
-    /**
-     * @return the next element in the iteration.
-     */
     @Override
     public Boolean next() {
         next0();

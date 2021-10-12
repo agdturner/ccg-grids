@@ -29,6 +29,9 @@ public class Grids_ChunkFactoryBDMap extends Grids_ChunkFactoryBD {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryBDMap() {
     }
 

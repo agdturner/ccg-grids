@@ -30,6 +30,9 @@ public class Grids_ChunkIteratorBDSinglet
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The value.
+     */
     protected BigDecimal v;
 
     /**
@@ -42,9 +45,6 @@ public class Grids_ChunkIteratorBDSinglet
         v = c.getV();
     }
 
-    /**
-     * @return the next element in the iteration.
-     */
     @Override
     public BigDecimal next() {
         next0();

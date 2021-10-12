@@ -40,6 +40,10 @@ public abstract class Grids_Stats extends Grids_Object {
      */
     protected long n;
 
+    /**
+     * Create a new instance.
+     * @param ge The Grids_Environment.
+     */
     public Grids_Stats(Grids_Environment ge) {
         super(ge);
         init0();
@@ -92,6 +96,10 @@ public abstract class Grids_Stats extends Grids_Object {
     protected abstract void update() throws IOException, Exception,
             ClassNotFoundException;
 
+    /**
+     * Update
+     * @param stats The statistics.
+     */
     public void update(Grids_Stats stats) {
         n = stats.n;
     }

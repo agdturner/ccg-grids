@@ -51,6 +51,9 @@ public class Grids_ChunkBooleanSinglet extends Grids_ChunkBoolean {
     protected final void initData() {
     }
 
+    /**
+     * @return {@link #v} 
+     */
     protected Boolean getV() {
         return v;
     }

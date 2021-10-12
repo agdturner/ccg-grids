@@ -31,6 +31,9 @@ public class Grids_ChunkFactoryBooleanArray extends Grids_ChunkFactoryBoolean {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryBooleanArray() {
     }
 

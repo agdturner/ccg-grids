@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2021 Centre for Computational Geography.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.b;
+package uk.ac.leeds.ccg.grids.d2.chunk;
 
-import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
+import java.util.BitSet;
 
 /**
- * Grids_ChunkBooleanArrayOrMap
+ * A POJO for an int and a BitSet.
  *
  * @author Andy Turner
- * @version 1.0.0
  */
-public abstract class Grids_ChunkBooleanArrayOrMap extends Grids_ChunkBoolean {
+public class Grids_OffsetBitSet {
 
-    private static final long serialVersionUID = 1L;
-    
+    /**
+     * offset
+     */
+    public int offset;
+
+    /**
+     * bitSet
+     */
+    public BitSet bitSet;
+
     /**
      * Create a new instance.
-     * 
-     * @param g The grid.
-     * @param i The chunkID
+     *
+     * @param offset
      */
-    protected Grids_ChunkBooleanArrayOrMap(Grids_GridBoolean g, Grids_2D_ID_int i) {
-        super(g, i, true);
+    public Grids_OffsetBitSet(int offset) {
+        this.offset = offset;
+        bitSet = new BitSet();
     }
-    
 }

@@ -30,6 +30,11 @@ public abstract class Grids_ChunkIntArrayOrMap extends Grids_ChunkInt {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     * @param g The grid.
+     * @param i The chunk ID.
+     */
     protected Grids_ChunkIntArrayOrMap(Grids_GridInt g, Grids_2D_ID_int i) {
         super(g, i, true);
     }

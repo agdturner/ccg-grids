@@ -30,13 +30,26 @@ public class Grids_ChunkIteratorIntArrayOrMap
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The data.
+     */
     protected int[][] data;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk.
+     */
     public Grids_ChunkIteratorIntArrayOrMap(Grids_ChunkIntArray chunk) {
         super(chunk);
         data = chunk.getData();
     }
     
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk.
+     */
     public Grids_ChunkIteratorIntArrayOrMap(Grids_ChunkIntMap chunk) {
         super(chunk);
         data = chunk.to2DIntArray();
@@ -52,6 +65,9 @@ public class Grids_ChunkIteratorIntArrayOrMap
         return data[row][col];
     }
 
+    /**
+     * Set value to NoDataValue.
+     */
     public void remove() {
         data[row][col] = ((Grids_GridInt) grid).getNoDataValue();
     }

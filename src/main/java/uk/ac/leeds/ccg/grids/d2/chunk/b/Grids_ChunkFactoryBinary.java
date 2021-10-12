@@ -29,9 +29,18 @@ public abstract class Grids_ChunkFactoryBinary extends Grids_ChunkFactory {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryBinary() {
     }
 
+    /**
+     * For creating a grid chunk from another.
+     * @param grid The grid to be created from.
+     * @param chunkID The chunkID to be created from.
+     * @return a new chunk
+     */
     public abstract Grids_ChunkBinary create(Grids_GridBinary grid,
             Grids_2D_ID_int chunkID);
 //    public Grids_ChunkBinaryArray create(Grids_GridBinary grid,
@@ -39,6 +48,12 @@ public abstract class Grids_ChunkFactoryBinary extends Grids_ChunkFactory {
 //        return new Grids_ChunkBinaryArray(grid, chunkID);
 //    }
 
+    /**
+     * For creating a grid chunk from another.
+     * @param grid The grid to be created from.
+     * @param chunkID The chunkID to be created from.
+     * @return a new chunk
+     */
     public abstract Grids_ChunkBinary create(Grids_ChunkBinary grid,
             Grids_2D_ID_int chunkID);
 //    public Grids_ChunkBinaryArray create(Grids_ChunkBinaryArray chunk,

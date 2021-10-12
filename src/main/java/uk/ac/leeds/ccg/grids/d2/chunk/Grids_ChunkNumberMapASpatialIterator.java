@@ -67,6 +67,11 @@ public abstract class Grids_ChunkNumberMapASpatialIterator
      */
     protected boolean hasNext;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param chunk The chunk to duplicate.
+     */
     public Grids_ChunkNumberMapASpatialIterator(Grids_Chunk chunk) {
         super(chunk);
         numberOfCells = chunk.chunkNRows * chunk.chunkNCols;

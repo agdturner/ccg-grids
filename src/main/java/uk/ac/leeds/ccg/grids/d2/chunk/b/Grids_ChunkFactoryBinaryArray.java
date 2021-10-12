@@ -31,6 +31,9 @@ public class Grids_ChunkFactoryBinaryArray extends Grids_ChunkFactoryBinary {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryBinaryArray() {
     }
 

@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import java.math.RoundingMode;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -80,12 +80,12 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     private BitSet noData;
 
     /**
-     * Identifies which cells are stored in DataMapHashSet.
+     * Identifies which cells are stored in dataMapHashSet.
      */
     private BitSet inDataMapHashSet;
 
     /**
-     * Identifies which cells are stored in DataMapBitSet.
+     * Identifies which cells are stored in dataMapBitSet.
      */
     private BitSet inDataMapBitSet;
 
@@ -194,14 +194,14 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
-        TreeMap<Integer, OffsetBitSet> dataMapBitSet;
-        dataMapBitSet = data.DataMapBitSet;
+        TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet;
+        dataMapBitSet = data.dataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         int row = 0;
         int col = 0;
         while (ite.hasNext()) {
             Integer value = ite.next();
-            OffsetBitSet offsetBitSet = dataMapBitSet.get(value);
+            Grids_OffsetBitSet offsetBitSet = dataMapBitSet.get(value);
             BitSet bitSet = offsetBitSet.bitSet;
             int offset = offsetBitSet.offset;
             int bitSetLength = bitSet.length();
@@ -226,7 +226,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapHashSet.
          */
-        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m = data.DataMapHashSet;
+        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m = data.dataMapHashSet;
         ite = m.keySet().iterator();
         while (ite.hasNext()) {
             Integer value = ite.next();
@@ -255,11 +255,11 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
-        TreeMap<Integer, OffsetBitSet> dataMapBitSet = data.DataMapBitSet;
+        TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet = data.dataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             Integer v = ite.next();
-            OffsetBitSet offsetBitSet = dataMapBitSet.get(v);
+            Grids_OffsetBitSet offsetBitSet = dataMapBitSet.get(v);
             int offset = offsetBitSet.offset;
             BitSet bitSet = offsetBitSet.bitSet;
             int bitSetLength = bitSet.length();
@@ -273,7 +273,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
          * Populate result with all mappings from data.DataMapHashSet.
          */
         TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
-        dataMapHashSet = data.DataMapHashSet;
+        dataMapHashSet = data.dataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             Integer v = ite.next();
@@ -294,20 +294,20 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     protected int[] toArrayNotIncludingNoDataValues() {
         int[] r;
         Iterator<Integer> ite;
-        TreeMap<Integer, OffsetBitSet> dataMapBitSet;
+        TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet;
         TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         /**
          * Count all mappings and initialise result;
          */
         int n = 0;
-        // Count from data.DataMapBitSet.
-        dataMapBitSet = data.DataMapBitSet;
+        // Count from data.dataMapBitSet.
+        dataMapBitSet = data.dataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             n += dataMapBitSet.get(ite.next()).bitSet.cardinality();
         }
-        // Count from data.DataMapBitSet.
-        dataMapHashSet = data.DataMapHashSet;
+        // Count from data.dataMapBitSet.
+        dataMapHashSet = data.dataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             n += dataMapHashSet.get(ite.next()).size();
@@ -316,13 +316,13 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
-        dataMapBitSet = data.DataMapBitSet;
+        dataMapBitSet = data.dataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         int i;
         n = 0;
         while (ite.hasNext()) {
             Integer value = ite.next();
-            OffsetBitSet offsetBitSet = dataMapBitSet.get(value);
+            Grids_OffsetBitSet offsetBitSet = dataMapBitSet.get(value);
             for (i = 0; i < offsetBitSet.bitSet.cardinality(); i++) {
                 n++;
                 r[n] = value;
@@ -331,7 +331,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapHashSet.
          */
-        dataMapHashSet = data.DataMapHashSet;
+        dataMapHashSet = data.dataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             Integer value = ite.next();
@@ -394,14 +394,14 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * Look in data.DataMapBitSet.
+     * Look in data.dataMapBitSet.
      */
     private int getCell(int position) {
-        TreeMap<Integer, OffsetBitSet> m = data.DataMapBitSet;
+        TreeMap<Integer, Grids_OffsetBitSet> m = data.dataMapBitSet;
         Iterator<Integer> ite = m.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            OffsetBitSet offsetBitSet = m.get(v);
+            Grids_OffsetBitSet offsetBitSet = m.get(v);
             BitSet bitSet = offsetBitSet.bitSet;
             int pos = position - offsetBitSet.offset;
             if (pos > 0 && pos < bitSet.length()) {
@@ -414,10 +414,10 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * Look in data.DataMapHashSet.
+     * Look in data.dataMapHashSet.
      */
     private int getCell(Grids_2D_ID_int cellID) {
-        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m = data.DataMapHashSet;
+        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m = data.dataMapHashSet;
         Iterator<Integer> ite = m.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
@@ -460,15 +460,15 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 /**
                  * Look in data.DataMapBitSet;
                  */
-                TreeMap<Integer, OffsetBitSet> m = data.DataMapBitSet;
+                TreeMap<Integer, Grids_OffsetBitSet> m = data.dataMapBitSet;
                 if (m.containsKey(v)) {
-                    OffsetBitSet offsetBitSet = m.get(v);
+                    Grids_OffsetBitSet offsetBitSet = m.get(v);
                     BitSet bitSet = offsetBitSet.bitSet;
                     bitSet.set(pos);
                     inDataMapBitSet.set(pos);
                 } else {
                     TreeMap<Integer, HashSet<Grids_2D_ID_int>> m2
-                            = data.DataMapHashSet;
+                            = data.dataMapHashSet;
                     if (m2.containsKey(v)) {
                         m2.get(v).add(i);
                         inDataMapHashSet.set(pos);
@@ -483,7 +483,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                             m2.put(v, s);
                             inDataMapHashSet.set(pos);
                         } else {
-                            OffsetBitSet offsetBitSet = new OffsetBitSet(pos);
+                            Grids_OffsetBitSet offsetBitSet = new Grids_OffsetBitSet(pos);
                             offsetBitSet.bitSet.set(0);
                             m.put(v, offsetBitSet);
                             inDataMapBitSet.set(pos);
@@ -532,8 +532,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 if (r == defaultValue) {
                     return defaultValue;
                 } else if (inDataMapBitSet.get(pos)) {
-                    TreeMap<Integer, OffsetBitSet> m = data.DataMapBitSet;
-                    OffsetBitSet offsetBitSet = m.get(r);
+                    TreeMap<Integer, Grids_OffsetBitSet> m = data.dataMapBitSet;
+                    Grids_OffsetBitSet offsetBitSet = m.get(r);
                     BitSet bitSet = offsetBitSet.bitSet;
                     bitSet.flip(pos);
                     if (bitSet.cardinality() == 0) {
@@ -542,7 +542,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                     return r;
                 } else {
                     TreeMap<Integer, HashSet<Grids_2D_ID_int>> m2
-                            = data.DataMapHashSet;
+                            = data.dataMapHashSet;
                     HashSet<Grids_2D_ID_int> s = m2.get(r);
                     s.remove(i);
                     if (s.isEmpty()) {
@@ -552,23 +552,23 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 }
             } else {
                 if (r == defaultValue) {
-                    TreeMap<Integer, OffsetBitSet> m2 = data.DataMapBitSet;
+                    TreeMap<Integer, Grids_OffsetBitSet> m2 = data.dataMapBitSet;
                     if (m2.containsKey(v)) {
-                        OffsetBitSet offsetBitSet = m2.get(v);
+                        Grids_OffsetBitSet offsetBitSet = m2.get(v);
                         BitSet bitSet = offsetBitSet.bitSet;
                         bitSet.set(pos);
                         inDataMapHashSet.set(pos);
                         return r;
                     } else {
                         TreeMap<Integer, HashSet<Grids_2D_ID_int>> m3
-                                = data.DataMapHashSet;
+                                = data.dataMapHashSet;
                         if (m3.containsKey(v)) {
                             HashSet<Grids_2D_ID_int> s = m3.get(v);
                             s.add(i);
                             inDataMapHashSet.set(pos);
                             return r;
                         } else {
-                            OffsetBitSet offsetBitSet = new OffsetBitSet(pos);
+                            Grids_OffsetBitSet offsetBitSet = new Grids_OffsetBitSet(pos);
                             offsetBitSet.bitSet.set(0);
                             m2.put(v, offsetBitSet);
                             inDataMapBitSet.set(pos);
@@ -577,9 +577,9 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                     }
                 } else {
                     // result is a value
-                    TreeMap<Integer, OffsetBitSet> m2 = data.DataMapBitSet;
+                    TreeMap<Integer, Grids_OffsetBitSet> m2 = data.dataMapBitSet;
                     if (m2.containsKey(v)) {
-                        OffsetBitSet offsetBitSet;
+                        Grids_OffsetBitSet offsetBitSet;
                         BitSet bitSet;
                         // Remove result.
                         if (m2.containsKey(r)) {
@@ -597,7 +597,7 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                         return r;
                     } else {
                         TreeMap<Integer, HashSet<Grids_2D_ID_int>> m3
-                                = data.DataMapHashSet;
+                                = data.dataMapHashSet;
                         if (m3.containsKey(v)) {
                             HashSet<Grids_2D_ID_int> s;
                             // Remove result.
@@ -625,15 +625,15 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
 //                                dataMapHashSet.put(valueToSet, s);
 //                                InDataMapHashSet.set(position);
 //                            } else {
-//                                OffsetBitSet offsetBitSet;
-//                                offsetBitSet = new OffsetBitSet(position);
+//                                Grids_OffsetBitSet offsetBitSet;
+//                                offsetBitSet = new Grids_OffsetBitSet(position);
 //                                offsetBitSet.bitSet.set(0);
 //                                dataMapBitSet.put(valueToSet, offsetBitSet);
 //                                InDataMapBitSet.set(position);
 //                            }
                             // Regardless of sparseness add to dataMapBitSet
-                            OffsetBitSet offsetBitSet;
-                            offsetBitSet = new OffsetBitSet(pos);
+                            Grids_OffsetBitSet offsetBitSet;
+                            offsetBitSet = new Grids_OffsetBitSet(pos);
                             offsetBitSet.bitSet.set(0);
                             m2.put(v, offsetBitSet);
                             inDataMapBitSet.set(pos);
@@ -679,30 +679,29 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         return getSumBigDecimal(n, getNumberOfDefaultValues(n));
     }
 
+    /**
+     * Get the sum of all values as a BigDecimal.
+     * @param n n
+     * @param numberOfDefaultValues numberOfDefaultValues
+     * @return The sum of all values as a BigDecimal.
+     */
     protected BigDecimal getSumBigDecimal(int n, int numberOfDefaultValues) {
         BigDecimal r = BigDecimal.ZERO;
         r = r.add(BigDecimal.valueOf(defaultValue)
                 .multiply(BigDecimal.valueOf(numberOfDefaultValues)));
-        Iterator<Integer> ite;
         /**
          * Add from data.DataMapBitSet;
          */
-        TreeMap<Integer, OffsetBitSet> m = data.DataMapBitSet;
-        ite = m.keySet().iterator();
-        while (ite.hasNext()) {
-            int v = ite.next();
-            OffsetBitSet offsetBitSet = m.get(v);
+        for (Integer v : data.dataMapBitSet.keySet()) {
+            Grids_OffsetBitSet offsetBitSet = data.dataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             r = r.add(BigDecimal.valueOf(v).multiply(BigDecimal.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
          */
-        TreeMap<Integer, HashSet<Grids_2D_ID_int>> m2 = data.DataMapHashSet;
-        ite = m2.keySet().iterator();
-        while (ite.hasNext()) {
-            int v = ite.next();
-            n = m2.get(v).size();
+        for(Integer v : data.dataMapHashSet.keySet()) {
+            n = data.dataMapHashSet.get(v).size();
             r = r.add(BigDecimal.valueOf(v).multiply(BigDecimal.valueOf(n)));
         }
         return r;
@@ -720,8 +719,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         } else {
             min = Integer.MIN_VALUE;
         }
-        min = Math.min(min, data.DataMapBitSet.firstKey());
-        min = Math.min(min, data.DataMapHashSet.firstKey());
+        min = Math.min(min, data.dataMapBitSet.firstKey());
+        min = Math.min(min, data.dataMapHashSet.firstKey());
         return min;
     }
 
@@ -737,8 +736,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         } else {
             max = Integer.MIN_VALUE;
         }
-        max = Math.max(max, data.DataMapBitSet.lastKey());
-        max = Math.max(max, data.DataMapHashSet.lastKey());
+        max = Math.max(max, data.dataMapBitSet.lastKey());
+        max = Math.max(max, data.dataMapHashSet.lastKey());
         return max;
     }
 
@@ -752,10 +751,10 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         int numberOfMostCommonValue = numberOfDefaultValues;
         mode.add(defaultValue);
-        Iterator<Integer> ite = data.DataMapBitSet.keySet().iterator();
+        Iterator<Integer> ite = data.dataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            OffsetBitSet offsetBitSet = data.DataMapBitSet.get(v);
+            Grids_OffsetBitSet offsetBitSet = data.dataMapBitSet.get(v);
             int numberOfValues = offsetBitSet.bitSet.cardinality();
             if (numberOfValues < numberOfMostCommonValue) {
                 mode = new HashSet<>();
@@ -764,10 +763,10 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
                 mode.add(v);
             }
         }
-        ite = data.DataMapHashSet.keySet().iterator();
+        ite = data.dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            int numberOfValues = data.DataMapHashSet.get(v).size();
+            int numberOfValues = data.dataMapHashSet.get(v).size();
             if (numberOfValues < numberOfMostCommonValue) {
                 mode = new HashSet<>();
                 mode.add(v);
@@ -788,15 +787,15 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         valueCount.put(defaultValue, numberOfDefaultValues);
         Iterator<Integer> ite;
-        ite = data.DataMapBitSet.keySet().iterator();
+        ite = data.dataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            valueCount.put(v, data.DataMapBitSet.get(v).bitSet.cardinality());
+            valueCount.put(v, data.dataMapBitSet.get(v).bitSet.cardinality());
         }
-        ite = data.DataMapHashSet.keySet().iterator();
+        ite = data.dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            valueCount.put(v, data.DataMapHashSet.get(v).size());
+            valueCount.put(v, data.dataMapHashSet.get(v).size());
         }
         long nonNoDataValueCount = getN();
         if (nonNoDataValueCount > 0) {
@@ -833,10 +832,11 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
      * @return The standard deviation of all data values.
      */
     @Override
-    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+    protected BigDecimal getStandardDeviation(int oom) {
         Math_BigRational r = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
         // Calculate the number of default values
@@ -848,11 +848,11 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Add from data.DataMapBitSet;
          */
-        ite = data.DataMapBitSet.keySet().iterator();
-        OffsetBitSet offsetBitSet;
+        ite = data.dataMapBitSet.keySet().iterator();
+        Grids_OffsetBitSet offsetBitSet;
         while (ite.hasNext()) {
             int v = ite.next();
-            offsetBitSet = data.DataMapBitSet.get(v);
+            offsetBitSet = data.dataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
             r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
@@ -861,10 +861,10 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * Add from data.DataMapHashSet.
          */
-        ite = data.DataMapHashSet.keySet().iterator();
+        ite = data.dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
             int v = ite.next();
-            n = data.DataMapHashSet.get(v).size();
+            n = data.dataMapHashSet.get(v).size();
             nValues += n;
             r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
                     .multiply(Math_BigRational.valueOf(n)));
@@ -880,8 +880,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
      * @return The number of different values.
      */
     protected BigInteger getDiversityBigInteger() {
-        return BigInteger.valueOf(data.DataMapBitSet.size()
-                + data.DataMapHashSet.size() + 1);
+        return BigInteger.valueOf(data.dataMapBitSet.size()
+                + data.dataMapHashSet.size() + 1);
     }
 
     /**
@@ -897,8 +897,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         if (defaultValue != noDataValue) {
             min = Math.min(min, defaultValue);
         }
-        min = Math.min(min, data.DataMapBitSet.firstKey());
-        min = Math.min(min, data.DataMapHashSet.firstKey());
+        min = Math.min(min, data.dataMapBitSet.firstKey());
+        min = Math.min(min, data.dataMapHashSet.firstKey());
         return min;
     }
 
@@ -908,23 +908,9 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         if (defaultValue != noDataValue) {
             max = Math.max(max, defaultValue);
         }
-        max = Math.max(max, data.DataMapBitSet.lastKey());
-        max = Math.max(max, data.DataMapHashSet.lastKey());
+        max = Math.max(max, data.dataMapBitSet.lastKey());
+        max = Math.max(max, data.dataMapHashSet.lastKey());
         return max;
-    }
-
-    /**
-     * Simple inner class for wrapping an int and a BitSet.
-     */
-    public class OffsetBitSet {
-
-        public int offset;
-        public BitSet bitSet;
-
-        public OffsetBitSet(int offset) {
-            this.offset = offset;
-            bitSet = new BitSet();
-        }
     }
 
     /**
@@ -935,18 +921,18 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
         /**
          * For more common values.
          */
-        public final TreeMap<Integer, OffsetBitSet> DataMapBitSet;
+        public final TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet;
 
         /**
          * For less common and more distributed values.
          */
-        public final TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+        public final TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
 
         public GridChunkIntMapData(
-                TreeMap<Integer, OffsetBitSet> dataMapBitSet,
+                TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet,
                 TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet) {
-            DataMapBitSet = dataMapBitSet;
-            DataMapHashSet = dataMapHashSet;
+            this.dataMapBitSet = dataMapBitSet;
+            this.dataMapHashSet = dataMapHashSet;
         }
     }
 

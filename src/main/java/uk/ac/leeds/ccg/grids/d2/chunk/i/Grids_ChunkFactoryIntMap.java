@@ -22,12 +22,15 @@ import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
  * A factory for constructing {@link Grids_ChunkIntMap} instances.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_ChunkFactoryIntMap extends Grids_ChunkFactoryInt {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_ChunkFactoryIntMap() {
     }
 

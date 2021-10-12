@@ -20,39 +20,82 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleMap.OffsetBitSet;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumberMapASpatialIterator;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
 
 /**
  * For iterating through the values in a Grids_GridChunkDoubleMap instance. The
  * values are not returned in any particular spatial order.
-*
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkIteratorDoubleMapASpatial 
+public class Grids_ChunkIteratorDoubleMapASpatial
         extends Grids_ChunkNumberMapASpatialIterator {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * numberOfDefaultValues
+     */
     protected int numberOfDefaultValues;
+
+    /**
+     * numberOfNoDataValues
+     */
     protected int numberOfNoDataValues;
 
+    /**
+     * defaultValue
+     */
     protected double defaultValue;
+
+    /**
+     * data
+     */
     protected Grids_ChunkDoubleMap.GridChunkDoubleMapData data;
-    protected TreeMap<Double, OffsetBitSet> dataMapBitSet;
+
+    /**
+     * dataMapBitSet
+     */
+    protected TreeMap<Double, Grids_OffsetBitSet> dataMapBitSet;
+
+    /**
+     * dataMapBitSetIte
+     */
     protected Iterator<Double> dataMapBitSetIte;
+
+    /**
+     * dataMapBitSetValue
+     */
     protected double dataMapBitSetValue;
+
+    /**
+     * dataMapHashSet
+     */
     protected TreeMap<Double, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+
+    /**
+     * dataMapHashSetIte
+     */
     protected Iterator<Double> dataMapHashSetIte;
+
+    /**
+     * dataMapHashSetValue
+     */
     protected double dataMapHashSetValue;
 
+    /**
+     * Create a new instance.
+     *
+     * @param chunk Chunk
+     */
     public Grids_ChunkIteratorDoubleMapASpatial(
             Grids_ChunkDoubleMap chunk) {
         super(chunk);
         data = chunk.getData();
-        dataMapBitSet = data.DataMapBitSet;
-        dataMapHashSet = data.DataMapHashSet;
+        dataMapBitSet = data.dataMapBitSet;
+        dataMapHashSet = data.dataMapHashSet;
         dataMapBitSetNumberOfValues = 0;
         dataMapBitSetIte = dataMapBitSet.keySet().iterator();
         if (dataMapBitSetIte.hasNext()) {

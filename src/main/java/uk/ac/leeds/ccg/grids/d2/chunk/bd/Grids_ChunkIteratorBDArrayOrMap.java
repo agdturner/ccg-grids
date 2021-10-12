@@ -31,13 +31,24 @@ public class Grids_ChunkIteratorBDArrayOrMap
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The data.
+     */
     protected BigDecimal[][] data;
 
+    /**
+     * Create a new instance.
+     * @param chunk The chunk to iterate over.
+     */
     public Grids_ChunkIteratorBDArrayOrMap(Grids_ChunkBDArray chunk) {
         super(chunk);
         data = chunk.getData();
     }
 
+    /**
+     * Create a new instance.
+     * @param chunk The chunk to iterate over.
+     */
     public Grids_ChunkIteratorBDArrayOrMap(Grids_ChunkBDMap chunk) {
         super(chunk);
         data = chunk.to2DBDArray();
@@ -53,6 +64,9 @@ public class Grids_ChunkIteratorBDArrayOrMap
         return data[row][col];
     }
 
+    /**
+     * Sets a value to NoData.
+     */
     public void remove() {
         data[row][col] = ((Grids_GridBD) grid).getNoDataValue();
     }

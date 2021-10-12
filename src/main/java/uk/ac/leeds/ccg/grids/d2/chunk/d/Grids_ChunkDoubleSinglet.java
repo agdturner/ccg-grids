@@ -52,6 +52,9 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     protected final void initData() {
     }
 
+    /**
+     * @return {@link #v}
+     */
     public double getV() {
         return v;
     }

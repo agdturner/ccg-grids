@@ -140,14 +140,23 @@ public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
         data = null;
     }
 
+    /**
+     * @return {@link #data} 
+     */
     protected boolean[][] getData() {
         return data;
     }
 
+    /**
+     * @return A new iterator for iterating over the values. 
+     */
     public Grids_ChunkIteratorBinaryArray iterator() {
         return new Grids_ChunkIteratorBinaryArray(this);
     }
 
+    /**
+     * @return The number of cells with true values.
+     */
     @Override
     public Long getN() {
         long n = 0;

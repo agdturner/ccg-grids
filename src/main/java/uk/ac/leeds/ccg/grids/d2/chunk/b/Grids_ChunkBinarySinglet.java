@@ -50,6 +50,9 @@ public class Grids_ChunkBinarySinglet extends Grids_ChunkBinary {
     protected final void initData() {
     }
 
+    /**
+     * @return {@link #v} 
+     */
     protected boolean getV() {
         return v;
     }

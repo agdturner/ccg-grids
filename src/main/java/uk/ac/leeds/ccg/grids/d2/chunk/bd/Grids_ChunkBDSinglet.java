@@ -52,6 +52,9 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     protected final void initData() {
     }
 
+    /**
+     * @return {@link #v} 
+     */
     protected BigDecimal getV() {
         return v;
     }

@@ -22,7 +22,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Object;
  * For chunks.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public abstract class Grids_Chunk extends Grids_Object {
 

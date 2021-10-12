@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntMap.OffsetBitSet;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumberMapASpatialIterator;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
 
 /**
  * For iterating through the values in a Grids_GridChunkIntMap instance. The
@@ -35,43 +35,85 @@ public class Grids_ChunkIteratorIntMapASpatial
 
     private static final long serialVersionUID = 1L;
 
-    protected int NumberOfDefaultValues;
-    protected int NumberOfNoDataValues;
+    /**
+     * numberOfDefaultValues
+     */
+    protected int numberOfDefaultValues;
 
-    protected int DefaultValue;
-    protected Grids_ChunkIntMap.GridChunkIntMapData Data;
-    protected TreeMap<Integer, OffsetBitSet> DataMapBitSet;
-    protected Iterator<Integer> DataMapBitSetIte;
-    protected int DataMapBitSetValue;
-    protected TreeMap<Integer, HashSet<Grids_2D_ID_int>> DataMapHashSet;
-    protected Iterator<Integer> DataMapHashSetIte;
-    protected int DataMapHashSetValue;
+    /**
+     * numberOfNoDataValues
+     */
+    protected int numberOfNoDataValues;
 
+    /**
+     * defaultValue
+     */
+    protected int defaultValue;
+
+    /**
+     * data
+     */
+    protected Grids_ChunkIntMap.GridChunkIntMapData data;
+
+    /**
+     * dataMapBitSet
+     */
+    protected TreeMap<Integer, Grids_OffsetBitSet> dataMapBitSet;
+
+    /**
+     * dataMapBitSetIte
+     */
+    protected Iterator<Integer> dataMapBitSetIte;
+
+    /**
+     * dataMapBitSetValue
+     */
+    protected int dataMapBitSetValue;
+
+    /**
+     * dataMapHashSet
+     */
+    protected TreeMap<Integer, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+
+    /**
+     * dataMapHashSetIte
+     */
+    protected Iterator<Integer> dataMapHashSetIte;
+
+    /**
+     * dataMapHashSetValue
+     */
+    protected int dataMapHashSetValue;
+
+    /**
+     * Create a new instance.
+     * @param chunk The chunk.
+     */
     public Grids_ChunkIteratorIntMapASpatial(
             Grids_ChunkIntMap chunk) {
         super(chunk);
-        Data = chunk.getData();
-        DataMapBitSet = Data.DataMapBitSet;
-        DataMapHashSet = Data.DataMapHashSet;
+        data = chunk.getData();
+        dataMapBitSet = data.dataMapBitSet;
+        dataMapHashSet = data.dataMapHashSet;
         dataMapBitSetNumberOfValues = 0;
-        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
-        if (DataMapBitSetIte.hasNext()) {
+        dataMapBitSetIte = dataMapBitSet.keySet().iterator();
+        if (dataMapBitSetIte.hasNext()) {
             hasNext = true;
-            DataMapBitSetValue = DataMapBitSetIte.next();
-            dataMapBitSetNumberOfValues += DataMapBitSet.get(DataMapBitSetValue).bitSet.cardinality();
+            dataMapBitSetValue = dataMapBitSetIte.next();
+            dataMapBitSetNumberOfValues += dataMapBitSet.get(dataMapBitSetValue).bitSet.cardinality();
         }
-        NumberOfNoDataValues -= dataMapBitSetNumberOfValues;
-        DataMapBitSetIte = DataMapBitSet.keySet().iterator();
+        numberOfNoDataValues -= dataMapBitSetNumberOfValues;
+        dataMapBitSetIte = dataMapBitSet.keySet().iterator();
         dataMapBitSetIndex = 0;
         dataMapHashSetNumberOfValues = 0;
-        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
-        if (DataMapHashSetIte.hasNext()) {
+        dataMapHashSetIte = dataMapHashSet.keySet().iterator();
+        if (dataMapHashSetIte.hasNext()) {
             hasNext = true;
-            DataMapHashSetValue = DataMapHashSetIte.next();
-            dataMapHashSetNumberOfValues += DataMapHashSet.get(DataMapHashSetValue).size();
+            dataMapHashSetValue = dataMapHashSetIte.next();
+            dataMapHashSetNumberOfValues += dataMapHashSet.get(dataMapHashSetValue).size();
         }
-        NumberOfNoDataValues -= dataMapHashSetNumberOfValues;
-        DataMapHashSetIte = DataMapHashSet.keySet().iterator();
+        numberOfNoDataValues -= dataMapHashSetNumberOfValues;
+        dataMapHashSetIte = dataMapHashSet.keySet().iterator();
         dataMapHashSetIndex = 0;
     }
 
@@ -90,38 +132,38 @@ public class Grids_ChunkIteratorIntMapASpatial
      */
     public Integer next() {
         if (hasNext) {
-            if (defaultValueIndex == NumberOfDefaultValues - 1) {
+            if (defaultValueIndex == numberOfDefaultValues - 1) {
                 if (dataMapBitSetIndex == dataMapBitSetNumberOfValues - 1) {
-                    if (DataMapBitSetIte.hasNext()) {
-                        DataMapBitSetValue = DataMapBitSetIte.next();
-                        dataMapBitSetNumberOfValues = DataMapBitSet
-                                .get(DataMapBitSetValue).bitSet.cardinality();
+                    if (dataMapBitSetIte.hasNext()) {
+                        dataMapBitSetValue = dataMapBitSetIte.next();
+                        dataMapBitSetNumberOfValues = dataMapBitSet
+                                .get(dataMapBitSetValue).bitSet.cardinality();
                         dataMapBitSetIndex = 0;
-                        return DataMapBitSetValue;
+                        return dataMapBitSetValue;
                     } else {
                         if (dataMapHashSetIndex == dataMapHashSetNumberOfValues - 1) {
-                            if (DataMapHashSetIte.hasNext()) {
-                                DataMapHashSetValue = DataMapHashSetIte.next();
-                                dataMapHashSetNumberOfValues = DataMapHashSet
-                                        .get(DataMapHashSetValue).size();
+                            if (dataMapHashSetIte.hasNext()) {
+                                dataMapHashSetValue = dataMapHashSetIte.next();
+                                dataMapHashSetNumberOfValues = dataMapHashSet
+                                        .get(dataMapHashSetValue).size();
                                 dataMapHashSetIndex = 0;
-                                return DataMapHashSetValue;
+                                return dataMapHashSetValue;
                             } else {
                                 hasNext = false;
                                 return null;
                             }
                         } else {
                             dataMapHashSetIndex++;
-                            return DataMapHashSetValue;
+                            return dataMapHashSetValue;
                         }
                     }
                 } else {
                     dataMapBitSetIndex++;
-                    return DataMapBitSetValue;
+                    return dataMapBitSetValue;
                 }
             } else {
                 defaultValueIndex++;
-                return DefaultValue;
+                return defaultValue;
             }
         } else {
             return null;
