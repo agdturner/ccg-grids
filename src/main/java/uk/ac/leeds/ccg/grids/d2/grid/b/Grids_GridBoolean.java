@@ -48,12 +48,15 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * Grids with {@code Boolean} values. The noDataValue is {@code null}.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridBoolean extends Grids_GridB {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The default value.
+     */
     public static Boolean DefaultValue = null;
 
     /**
@@ -334,6 +337,24 @@ public class Grids_GridBoolean extends Grids_GridB {
         return isLoadedChunk;
     }
 
+    /**
+     * Load a chunk.
+     *
+     * @param gChunkID gChunkID
+     * @param g g
+     * @param gb gb
+     * @param gcc gcc
+     * @param gcr gcr
+     * @param cf cf
+     * @param gChunkNRows gChunkNRows
+     * @param startRow startRow
+     * @param endRow endRow
+     * @param startCol startCol
+     * @param endCol endCol
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBoolean gb, int gcc, int gcr,
             Grids_ChunkFactoryBoolean cf, int gChunkNRows, long startRow,
@@ -381,6 +402,22 @@ public class Grids_GridBoolean extends Grids_GridB {
         }
     }
 
+    /**
+     * For initialising.
+     *
+     * @param stats stats
+     * @param gridFile gridFile
+     * @param cf cf
+     * @param chunkNRows chunkNRows
+     * @param chunkNCols chunkNCols
+     * @param startRow startRow
+     * @param startCol startCol
+     * @param endRow endRow
+     * @param endCol endCol
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     protected final void init(Grids_StatsBoolean stats, Generic_Path gridFile,
             Grids_ChunkFactoryBoolean cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
@@ -498,7 +535,6 @@ public class Grids_GridBoolean extends Grids_GridB {
     }
 
     /**
-     *
      * @param row The row to set the value in.
      * @param col The col to set the value in.
      * @param value The value to set.
@@ -790,15 +826,12 @@ public class Grids_GridBoolean extends Grids_GridB {
     }
 
     /**
-     * @param dp The number of decimal places for the precision of distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @param x the x-coordinate of the circle centre from which cell values are
      * returned.
      * @param y the y-coordinate of the circle centre from which cell values are
      * returned.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
+     * @param distance2 The radius of the circle squared for which intersected
+     * cell values are returned.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
@@ -816,8 +849,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * centre from which cell values are returned.
      * @param col The column index for the cell that's centroid is the circle
      * centre from which cell values are returned.
-     * @param distance the radius of the circle for which intersected cell
-     * values are returned.
+     * @param distance2 the radius of the circle for which intersected cell
+     * values are returned squared.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
@@ -837,15 +870,16 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @param row The row index at y.
      * @param col The column index at x.
      * @param distance2 The radius of the circle squared for which intersected
-     * cell values are returned.
+     * cell values are returned squared.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
+     * @return The cells.
      */
     protected Boolean[] getCells(Math_BigRational x, Math_BigRational y,
             long row, long col, Math_BigRational distance2) throws IOException,
             ClassNotFoundException, Exception {
         int delta = x.divide(y).ceil().intValue();
-        Boolean[] cells = new Boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
+        Boolean[] r = new Boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
             Math_BigRational thisY = getCellY(row);
@@ -853,14 +887,14 @@ public class Grids_GridBoolean extends Grids_GridB {
                 Math_BigRational thisX = getCellX(col);
                 if (Grids_Utilities.distance2(x, y, thisX, thisY)
                         .compareTo(distance2) == -1) {
-                    cells[count] = getCell(p, q);
+                    r[count] = getCell(p, q);
                     count++;
                 }
             }
         }
         // Trim cells
-        System.arraycopy(cells, 0, cells, 0, count);
-        return cells;
+        System.arraycopy(r, 0, r, 0, count);
+        return r;
     }
 
     /**

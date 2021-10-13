@@ -675,7 +675,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     }
 
     @Override
-    public BigDecimal getSum() {
+    public Math_BigRational getSum() {
         int n = chunkNRows * chunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         return getSumBigDecimal(n, numberOfDefaultValues);
@@ -686,9 +686,9 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param numberOfDefaultValues The number of default values.
      * @return The sum of all data values as a BigDecimal.
      */
-    protected BigDecimal getSumBigDecimal(int n, int numberOfDefaultValues) {
-        BigDecimal r = BigDecimal.ZERO;
-        r = r.add(defaultValue.multiply(BigDecimal.valueOf(numberOfDefaultValues)));
+    protected Math_BigRational getSumBigDecimal(int n, int numberOfDefaultValues) {
+        Math_BigRational r = Math_BigRational.ZERO;
+        r = r.add(Math_BigRational.valueOf(defaultValue.multiply(BigDecimal.valueOf(numberOfDefaultValues))));
         Iterator<BigDecimal> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -699,7 +699,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             BigDecimal v = ite.next();
             Grids_OffsetBitSet offsetBitSet = m.get(v);
             n = offsetBitSet.bitSet.size();
-            r = r.add(v.multiply(BigDecimal.valueOf(n)));
+            r = r.add(Math_BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -709,7 +709,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             n = m2.get(v).size();
-            r = r.add(v.multiply(BigDecimal.valueOf(n)));
+            r = r.add(Math_BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
         }
         return r;
     }

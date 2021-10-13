@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.grids.d2.chunk.d;
 
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -107,11 +106,11 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     @Override
-    public BigDecimal getSum() {
+    public Math_BigRational getSum() {
         if (v == getGrid().getNoDataValue()) {
-            return BigDecimal.ZERO;
+            return Math_BigRational.ZERO;
         }
-        return BigDecimal.valueOf(getN()).multiply(BigDecimal.valueOf(v));
+        return Math_BigRational.valueOf(getN()).multiply(Math_BigRational.valueOf(v));
     }
 
     @Override

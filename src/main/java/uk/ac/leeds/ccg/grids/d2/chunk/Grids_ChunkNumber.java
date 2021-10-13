@@ -58,7 +58,7 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
      * @return The sum of all data values.
      */
     @Override
-    public abstract BigDecimal getSum();
+    public abstract Math_BigRational getSum();
 
     /**
      * @return The Arithmetic Mean of all data values as a BigRational. If
@@ -66,10 +66,10 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
      */
     @Override
     public Math_BigRational getArithmeticMean() {
-        BigDecimal sum = getSum();
+        Math_BigRational sum = getSum();
         long n = getN();
         if (n != 0) {
-            return Math_BigRational.valueOf(sum).divide(BigInteger.valueOf(n));
+            return sum.divide(BigInteger.valueOf(n));
         }
         return null;
     }

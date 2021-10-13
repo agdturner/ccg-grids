@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids_GridDouble statistics. For statistics of grids and chunks of type 
@@ -91,7 +92,7 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
      */
     protected void update(double v) {
         n += 1;
-        setSum(sum.add(new BigDecimal(v)));
+        setSum(sum.add(Math_BigRational.valueOf(v)));
         if (v < min) {
             nMin = 1;
             min = v;

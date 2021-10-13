@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.grids.process;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
@@ -90,8 +89,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * slopeAndAspect[7] Is the sine of slopeAndAspect[1] + ((Pi * 5) / 8).
      * slopeAndAspect[8] Is the sine of slopeAndAspect[1] + ((Pi * 6) / 8).
      * slopeAndAspect[9] Is the sine of slopeAndAspect[1] + ((Pi * 7) / 8).
-     * @param dp The number of decimal places in BigDecimal arithmetic.
-     * @param rm The RoundingMode used in BigDecimal arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -179,11 +177,9 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             averageDistance = distanceSum / numberObservations;
             String gName = g.getName();
             String filename;
-            Generic_Path dir;
             int noDataValueInt;
             int heightInt;
             int thisHeightInt;
-            Object[] newResult = new Object[2];
             System.out.println("Initialising slopeAndAspect[0]");
             if (shortName) {
                 filename = "slope_" + averageDistance;
@@ -554,8 +550,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param wi The weight intersect - the kernel weighting weight at centre.
      * @param wf The weight factor - the kernel weighting distance decay.
      * @return The slope and aspect.
-     * @param dp The number of decimal places in BigDecimal arithmetic.
-     * @param rm The RoundingMode used in BigDecimal arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -589,9 +584,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param wf The weight factor. NB. If grid.getCell(x, y) ==
      * grid.getNoDataValue() then; result[0] = grid.getNoDataValue() result[1] =
      * grid.getNoDataValue()
-     * @param dp The number of decimal places in BigDecimal arithmetic.
-     * @param rm The RoundingMode used in BigDecimal arithmetic. TODO: x and y
-     * can be offset from a cell centroid so consider interpolation
+     * @param oom The Order of Magnitude for the precision.
      * @return Slope and aspect.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -625,6 +618,17 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         }
     }
 
+    /**
+     * @param slopeAndAspect slopeAndAspect
+     * @param g g
+     * @param x x
+     * @param y y
+     * @param distance distance
+     * @param wi wi
+     * @param wf wf
+     * @param oom The Order of Magnitude for the precision.
+     * @throws Exception If encountered.
+     */
     protected void getSlopeAspect(double[] slopeAndAspect, Grids_GridNumber g,
             Math_BigRational x, Math_BigRational y,
             Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom)
@@ -942,8 +946,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         } else {
             // (g.getClass() == Grids_GridDouble.class)
             Grids_GridDouble gd = (Grids_GridDouble) g;
-            double ndv = gd.getNoDataValue();
-            double height;
             double heightDouble;
             double resultNoDataValue = res.getNoDataValue();
             // Initialise outflowCellIDs
@@ -1735,6 +1737,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param gif The factory for creating int grids.
      * @param swapInitialisedFiles For memory management.
      * @param swapProcessedChunks For memory management.
+     * @param oom The Order of Magnitude for the precision.
      * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -2006,6 +2009,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param wf The weight factor kernel parameter (distance decay).
      * @param swapProcessedChunks If {@code true}, then preemptive swapping is
      * done for memory management.
+     * @param oom The Order of Magnitude for the precision.
      * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.

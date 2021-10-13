@@ -42,6 +42,13 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     * @param e Grids_Environment
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     public Grids_ProcessorGWS(Grids_Environment e) throws IOException,
             ClassNotFoundException, Exception {
         super(e);

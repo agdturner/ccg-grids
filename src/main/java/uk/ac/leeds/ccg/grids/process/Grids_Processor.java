@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.process;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -153,6 +152,13 @@ public class Grids_Processor extends Grids_Object {
                 chunkNRows, chunkNCols);
     }
 
+    /**
+     * @param dir dir
+     * @param s s
+     * @return The cache.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     protected IO_Cache getStore(Path dir, String s) throws IOException,
             Exception {
         IO_Cache r;
@@ -787,8 +793,7 @@ public class Grids_Processor extends Grids_Object {
      * @param g Grid to be processed/modified.
      * @param g2 Grid from which values are added.
      * @param w Value g2 values are multiplied by.
-     * @param dp Decimal place precision for any BigDecimal Arithmetic.
-     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -813,8 +818,7 @@ public class Grids_Processor extends Grids_Object {
      * @param endRow Index of the final row from which g2 values are added.
      * @param endCol Index of the final column from which g2 values are added.
      * @param w Value g2 values are multiplied by.
-     * @param dp Decimal place precision for any BigDecimal Arithmetic.
-     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -850,7 +854,7 @@ public class Grids_Processor extends Grids_Object {
      * @param dc Dimension constraints: XMin, YMin, XMax, YMax of the region of
      * g2 to be added.
      * @param w Value g2 values are multiplied by.
-     * @param dp Decimal place precision for any BigDecimal Arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -993,6 +997,17 @@ public class Grids_Processor extends Grids_Object {
         env.checkAndMaybeFreeMemory();
     }
 
+    /**
+     * @param bounds bounds
+     * @param g2 g2
+     * @param i1 i1
+     * @param i2 i2
+     * @param i3 i3
+     * @param gC gC
+     * @param g2CS g2CS
+     * @param g2CH g2CH
+     * @return The Area Proportion
+     */
     protected Math_BigRational getAP(Math_BigRational[] bounds,
             Grids_GridNumber g2, Grids_2D_ID_long i1, Grids_2D_ID_long i2,
             Grids_2D_ID_long i3, Math_BigRational gC, Math_BigRational g2CS,
@@ -1013,7 +1028,17 @@ public class Grids_Processor extends Grids_Object {
         }
         return aP;
     }
-
+    
+    /**
+     * @param bounds bounds
+     * @param g2 g2
+     * @param i1 i1
+     * @param i3 i3
+     * @param gC gC
+     * @param g2CS g2CS
+     * @param g2CH g2CH
+     * @return Area Proportion
+     */
     protected Math_BigRational getAP13(Math_BigRational[] bounds,
             Grids_GridNumber g2, Grids_2D_ID_long i1, Grids_2D_ID_long i3,
             Math_BigRational gC, Math_BigRational g2CS, Math_BigRational g2CH) {
@@ -1029,6 +1054,16 @@ public class Grids_Processor extends Grids_Object {
         return aP;
     }
 
+    /**
+     * @param bounds bounds
+     * @param g2 g2
+     * @param i2 i2
+     * @param i3 i3
+     * @param gC gC
+     * @param g2CS g2CS
+     * @param g2CH g2CH
+     * @return Area Proportion
+     */
     protected Math_BigRational getAP23(Math_BigRational[] bounds, Grids_GridNumber g2,
             Grids_2D_ID_long i2, Grids_2D_ID_long i3, Math_BigRational gC,
             Math_BigRational g2CS, Math_BigRational g2CH) {
@@ -1045,6 +1080,15 @@ public class Grids_Processor extends Grids_Object {
         return aP;
     }
 
+    /**
+     * @param bounds bounds
+     * @param g2 g2
+     * @param i3 i3
+     * @param gC gC
+     * @param g2CS g2CS
+     * @param g2CH g2CH
+     * @return Area Proportion
+     */
     protected Math_BigRational getAP3(Math_BigRational[] bounds, Grids_GridNumber g2,
             Grids_2D_ID_long i3, Math_BigRational gC, Math_BigRational g2CS,
             Math_BigRational g2CH) {
@@ -1060,8 +1104,7 @@ public class Grids_Processor extends Grids_Object {
      * int.
      * @param g0 The first grid to multiply.
      * @param g1 The second grid to multiply
-     * @param dp Decimal place precision for any BigDecimal Arithmetic.
-     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @return g0 * g1
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
@@ -1231,6 +1274,17 @@ public class Grids_Processor extends Grids_Object {
         }
     }
 
+    /**
+     * Multiply the values in g0 by g1.
+     * @param g0 g0
+     * @param g1 g1
+     * @param r r
+     * @param ncr ncr
+     * @param ncc ncc
+     * @param ndv0 ndv0
+     * @param ndv1 ndv1
+     * @throws Exception If encountered.
+     */
     protected void multiply(Grids_GridNumber g0, Grids_GridNumber g1,
             Grids_GridNumber r, int ncr, int ncc, BigDecimal ndv0,
             BigDecimal ndv1) throws Exception {
@@ -1592,6 +1646,12 @@ public class Grids_Processor extends Grids_Object {
     //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grid2DSquareCellDoubleFileFactory() );
     //        }
     //    }
+    
+    /**
+     * @param g The grid
+     * @return the NoDataValue of g as a BigDecimal.
+     * @throws Exception If encountered.
+     */
     public BigDecimal getNoDataValueBigDecimal(Grids_GridNumber g) throws Exception {
         BigDecimal r = BigDecimal.valueOf(-Double.MAX_VALUE);
         if (g.getClass() == Grids_GridInt.class) {
@@ -1622,8 +1682,7 @@ public class Grids_Processor extends Grids_Object {
      * @param stats "sum", "mean", "max", or "min" depending on what aggregate
      * of values are wanted
      * @param rD result dimensions.
-     * @param dp Decimal place precision for any BigDecimal Arithmetic.
-     * @param rm Rounding Mode for any BigDecimal Arithmetic.
+     * @param oom The Order of Magnitude for the precision.
      * @return An aggregate grid.
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
@@ -1710,7 +1769,6 @@ public class Grids_Processor extends Grids_Object {
         gridFactoryDouble.setNoDataValue(ndvd);
         Grids_GridDouble r = gridFactoryDouble.create(rNrows, rNcols, rD);
         // sum
-        BigDecimal aP;
         if (stats.equalsIgnoreCase("sum")) {
             Grids_GridDouble totalValueArea = gridFactoryDouble.create(rNrows, rNcols, rD);
             Grids_2D_ID_long[] cellIDs = new Grids_2D_ID_long[4];
@@ -1728,25 +1786,25 @@ public class Grids_Processor extends Grids_Object {
                             r.addToCell(cellIDs[0], value.doubleValue());
                             totalValueArea.addToCell(cellIDs[0], 1.0d);
                         } else {
-                            aP = getAP(bounds, r, cellIDs[0], cellIDs[1],
+                            BigDecimal aP = getAP(bounds, r, cellIDs[0], cellIDs[1],
                                     cellIDs[2], c, rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[0], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[1].equals(cellIDs[0])) {
-                            aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c,
+                            BigDecimal aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c,
                                     rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[1], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[2].equals(cellIDs[0])) {
-                            aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c,
+                            BigDecimal aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c,
                                     rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[2], value.multiply(aP));
                         }
                         if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3]
                                 .equals(cellIDs[2])) {
-                            aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH).toBigDecimal();
+                            BigDecimal aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH).toBigDecimal();
                             r.addToCell(cellIDs[3], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }

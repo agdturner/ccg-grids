@@ -38,13 +38,26 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * factory
+     */
     public Grids_ChunkFactoryBoolean factory;
 
+    /**
+     * stats
+     */
     public Grids_StatsBoolean stats;
     
+    /**
+     * gridChunkBooleanFactory
+     */
     public Grids_ChunkFactoryBooleanSinglet gridChunkBooleanFactory;
 //    public Grids_GridChunkBooleanMapFactory ChunkBooleanMapFactory;
 //    public Grids_GridChunkBooleanArrayFactory ChunkBooleanArrayFactory;
+    
+    /**
+     * defaultGridChunkBooleanFactory
+     */
     public Grids_ChunkFactoryBoolean defaultGridChunkBooleanFactory;
 
     /**

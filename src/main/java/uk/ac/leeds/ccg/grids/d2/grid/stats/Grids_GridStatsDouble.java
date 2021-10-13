@@ -18,14 +18,15 @@ package uk.ac.leeds.ccg.grids.d2.grid.stats;
 import uk.ac.leeds.ccg.grids.d2.stats.*;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridIteratorDouble;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grids_GridDouble statistics. Some of the statistic are kept up to date as the
@@ -40,11 +41,16 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param ge Grids_Environment
+     */
     public Grids_GridStatsDouble(Grids_Environment ge) {
         super(ge);
         min = Double.MAX_VALUE;
         max = -Double.MAX_VALUE;
-        sum = BigDecimal.ZERO;
+        sum = Math_BigRational.ZERO;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
         super.init();
         min = Double.MAX_VALUE;
         max = -Double.MAX_VALUE;
-        sum = BigDecimal.ZERO;
+        sum = Math_BigRational.ZERO;
     }
 
     /**
@@ -90,30 +96,8 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
             double v = ite.next();
             if (Double.isFinite(v)) {
                 if (v != ndv) {
-                    BigDecimal vBD = new BigDecimal(v);
-                    update(v, vBD);
+                    update(v);
                 }
-            }
-        }
-    }
-
-    protected void update(double v, BigDecimal vBD) {
-        n ++;
-        setSum(sum.add(vBD));
-        if (v < min) {
-            nMin = 1;
-            min = v;
-        } else {
-            if (v == min) {
-                nMin++;
-            }
-        }
-        if (v > max) {
-            nMax = 1;
-            max = v;
-        } else {
-            if (v == max) {
-                nMax++;
             }
         }
     }
@@ -180,7 +164,7 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum(boolean update) throws IOException, Exception,
+    public Math_BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
 //        if (update) {
 //            update();
@@ -193,8 +177,8 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
-        BigDecimal r = BigDecimal.ZERO;
+    public Math_BigRational getSum() throws IOException, Exception, ClassNotFoundException {
+        Math_BigRational r = Math_BigRational.ZERO;
         Grids_GridDouble g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
@@ -205,17 +189,16 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
     }
 
     /**
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The RoundingMode used in BigDecimal arithmetic.
-     * @return The standard deviation correct to {@code dp} decimal places.
+     * @param oom. The Order of Magnitude for the precision.
+     * @return The standard deviation correct to {@code oom}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getStandardDeviation(int dp, RoundingMode rm)
+    public Math_BigRationalSqrt getStandardDeviation(int oom)
             throws IOException, Exception, ClassNotFoundException {
-        BigDecimal stdev = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp * 2, rm);
-        BigDecimal dataValueCount = BigDecimal.ZERO;
+        Math_BigRational stdev = Math_BigRational.ZERO;
+        Math_BigRational mean = getArithmeticMean();
+        long dataValueCount = 0;
         Grids_GridDouble g = (Grids_GridDouble) grid;
         double ndv = g.getNoDataValue();
         Grids_GridIteratorDouble ite = g.iterator();
@@ -223,17 +206,17 @@ public class Grids_GridStatsDouble extends Grids_StatsDouble {
             double v = ite.next();
             if (v != ndv) {
                 if (Double.isFinite(v)) {
-                    BigDecimal diffFromMean = new BigDecimal(v).subtract(mean);
-                    stdev = stdev.add(diffFromMean.multiply(diffFromMean));
-                    dataValueCount = dataValueCount.add(BigDecimal.ONE);
+                    Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
+                    stdev = stdev.add(delta.multiply(delta));
+                    dataValueCount ++;
                 }
             }
         }
-        if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
-            return stdev;
+        if (dataValueCount < 2) {
+            return Math_BigRationalSqrt.ZERO;
         }
-        stdev = stdev.divide(dataValueCount, dp * 2, rm);
-        return Math_BigDecimal.sqrt(stdev, dp, rm);
+        stdev = stdev.divide(BigInteger.valueOf(dataValueCount - 1L));
+        return new Math_BigRationalSqrt(stdev, oom);
     }
 
     /**

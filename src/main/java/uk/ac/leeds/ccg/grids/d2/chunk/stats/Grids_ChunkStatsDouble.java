@@ -26,6 +26,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkIteratorDoubleArrayOrMap;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridIteratorDouble;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For statistics of chunks of type double. Some statistics are kept up to date
@@ -73,7 +74,7 @@ public class Grids_ChunkStatsDouble extends Grids_StatsDouble {
                     min = v;
                     n = (long) g.getChunkNCols(c.getId())
                             * (long) g.getChunkNRows(c.getId());
-                    sum = BigDecimal.valueOf(v).multiply(new BigDecimal(n));
+                    sum = Math_BigRational.valueOf(v).multiply(Math_BigRational.valueOf(n));
                     nMax = n;
                     nMin = n;
                 }
@@ -150,7 +151,7 @@ public class Grids_ChunkStatsDouble extends Grids_StatsDouble {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum(boolean update) throws IOException, Exception,
+    public Math_BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
@@ -163,7 +164,7 @@ public class Grids_ChunkStatsDouble extends Grids_StatsDouble {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum() throws IOException, Exception,
+    public Math_BigRational getSum() throws IOException, Exception,
             ClassNotFoundException {
         return sum;
     }

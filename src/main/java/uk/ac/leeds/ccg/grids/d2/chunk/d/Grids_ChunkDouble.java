@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumber;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -167,8 +166,8 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * @return The sum of all data values as a BigDecimal.
      */
     @Override
-    public BigDecimal getSum() {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Math_BigRational getSum() {
+        Math_BigRational sum = Math_BigRational.ZERO;
         Grids_GridDouble g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -178,7 +177,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
                 double v = getCell(row, col);
                 if (Double.isNaN(v) && Double.isFinite(v)) {
                     if (v != noDataValue) {
-                        sum = sum.add(new BigDecimal(v));
+                        sum = sum.add(Math_BigRational.valueOf(v));
                     }
                 }
             }

@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.io.IO_Cache;
  * A factory for constructing Grids_GridBD instances.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridFactoryBD extends Grids_GridFactory {
 
@@ -43,11 +43,21 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
      */
     protected BigDecimal noDataValue;
 
+    /**
+     * gridChunkBDFactory
+     */
     public Grids_ChunkFactoryBDSinglet gridChunkBDFactory;
 //    public Grids_GridChunkBDMapFactory ChunkBDMapFactory;
 //    public Grids_GridChunkBDArrayFactory ChunkBDArrayFactory;
+    
+    /**
+     * defaultGridChunkBDFactory
+     */
     public Grids_ChunkFactoryBD defaultGridChunkBDFactory;
 
+    /**
+     * stats
+     */
     public Grids_StatsBD stats;
 
     /**
@@ -119,17 +129,17 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
     }
 
     /**
-     * Creates a new Grids_GridBD with all values set to
-     * {@link #noDataValue} and with {@link #stats} that are not updated and
-     * with chunks made using {@link #gridChunkBDFactory}.
+     * Creates a new Grids_GridBD with all values set to {@link #noDataValue}
+     * and with {@link #stats} that are not updated and with chunks made using
+     * {@link #gridChunkBDFactory}.
      *
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The dimensions (xmin, ymin, xmax, ymax, cellsize) of
      * the grid to be created.
-     * @return A new Grids_GridBD with all values set to
-     * {@link #noDataValue} and with {@link #stats} that are not updated and
-     * with chunks made using {@link #gridChunkBDFactory}.
+     * @return A new Grids_GridBD with all values set to {@link #noDataValue}
+     * and with {@link #stats} that are not updated and with chunks made using
+     * {@link #gridChunkBDFactory}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -142,18 +152,15 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
     }
 
     /**
-     * Creates a new Grids_GridBD with all values set to
-     * {@link #noDataValue}.
+     * Creates a new Grids_GridBD with all values set to {@link #noDataValue}.
      *
-     * @param stats The type of Grids_StatsBD to accompany the returned
-     * grid.
+     * @param stats The type of Grids_StatsBD to accompany the returned grid.
      * @param cf The Grids_ChunkFactoryBD for creating chunks that the
      * constructed Grid is to be made of.
      * @param nRows The number of rows in the grid.
      * @param nCols The number of columns in the grid.
      * @param dimensions The xmin, ymin, xmax, ymax, cellsize.
-     * @return A new Grids_GridBD with all values set to
-     * {@link #noDataValue}.
+     * @return A new Grids_GridBD with all values set to {@link #noDataValue}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -169,9 +176,9 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
     }
 
     /**
-     * Creates a new Grids_GridBD with values set from {@code #g}. The stats
-     * for the grid are not updated and the
-     * {@link #defaultGridChunkBDFactory} is used to create chunks.
+     * Creates a new Grids_GridBD with values set from {@code #g}. The stats for
+     * the grid are not updated and the {@link #defaultGridChunkBDFactory} is
+     * used to create chunks.
      *
      * @param g The grid used to set the values of the grid created.
      * @param startRow The start row index of {@code #g}.
@@ -238,8 +245,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
     }
 
     /**
-     * @param stats The type of Grids_StatsBD to accompany the returned
-     * grid.
+     * @param stats The type of Grids_StatsBD to accompany the returned grid.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data and information about the grid to be
      * constructed.
@@ -283,7 +289,7 @@ public class Grids_GridFactoryBD extends Grids_GridFactory {
 
     /**
      * For duplicating stats.
-     * 
+     *
      * @param stats What is to be duplicated.
      * @return A new Grids_StatsBD of the same type for use.
      */

@@ -43,7 +43,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.RoundingMode;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -53,7 +52,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * Grids with {@code int} values.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridInt extends Grids_GridNumber {
 
@@ -64,7 +63,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * Integer.MIN_VALUE. Care should be taken so that NoDataValue is not a data
      * value.
      */
-    protected int noDataValue = Integer.MIN_VALUE;
+    protected int ndv = Integer.MIN_VALUE;
 
     /**
      * Each cell v equal to {@code ndv} and all chunks of the same type created
@@ -79,7 +78,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param nRows The number of rows of cells.
      * @param nCols The number of columns of cells.
      * @param dims The grid dimensions (cellsize, xmin, ymin, xmax and ymax).
-     * @param ndv The noDataValue for this.
+     * @param ndv The ndv for this.
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -90,7 +89,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             int ndv, Grids_Environment ge) throws IOException, Exception,
             ClassNotFoundException {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dims, ndv);
+        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dims);
     }
 
     /**
@@ -110,7 +109,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param endRow The Grid2DSquareCell row which is the top most row of this.
      * @param endCol The Grid2DSquareCell column which is the right most column
      * of this.
-     * @param ndv The noDataValue for this.
+     * @param ndv The ndv for this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -143,7 +142,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param startCol The start col.
      * @param endRow The end row.
      * @param endCol The end column.
-     * @param ndv The noDataValue for this.
+     * @param ndv The ndv for this.
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -155,8 +154,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, gridFile, cf, cnr, cnc, startRow, startCol,
-                endRow, endCol, ndv);
+        init(stats, gridFile, cnr, cnc, startRow, startCol, endRow, endCol);
     }
 
     /**
@@ -170,7 +168,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param id What {@link #fsID} is set to.
      * @param gridFile Either a directory, or a formatted File with a specific
      * extension containing the data for this.
-     * @param ndv The noDataValue for this.
+     * @param ndv The ndv for this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -183,7 +181,7 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     @Override
     public String getFieldsDescription() {
-        return "NoDataValue=" + noDataValue + ", "
+        return "NoDataValue=" + ndv + ", "
                 + super.getFieldsDescription();
     }
 
@@ -193,7 +191,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param g The Grids_GridInt from which the fields of this are set.
      */
     private void init(Grids_GridInt g) throws IOException {
-        noDataValue = g.noDataValue;
+        ndv = g.ndv;
         stats = g.stats;
         super.init(g);
         data = g.data;
@@ -230,8 +228,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     private void init(Grids_StatsInt stats,
             Grids_ChunkFactoryInt cf, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            int ndv) throws IOException, Exception {
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
+            throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
         init(stats, chunkNRows, chunkNCols, nRows, nCols, dimensions);
         for (int r = 0; r < nChunkRows; r++) {
@@ -496,10 +494,9 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param ndv The ndv for this.
      */
     private void init(Grids_StatsInt stats, Generic_Path gridFile,
-            Grids_ChunkFactoryInt cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, int ndv) throws IOException, ClassNotFoundException,
-            Exception {
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -524,7 +521,6 @@ public class Grids_GridInt extends Grids_GridNumber {
             this.chunkNCols = chunkNCols;
             nRows = endRow - startRow + 1L;
             nCols = endCol - startCol + 1L;
-            initNoDataValue(ndv);
             name = fs.getBaseDir().getFileName().toString() + fsID;
             initNChunkRows();
             initNChunkCols();
@@ -547,7 +543,7 @@ public class Grids_GridInt extends Grids_GridNumber {
 //                Grids_ChunkInt chunk;
 //                Grids_ChunkIntSinglet gridChunk;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
-                if (gridFileNoDataValue == noDataValue) {
+                if (gridFileNoDataValue == ndv) {
                     if (stats.isUpdated()) {
                         for (row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
@@ -568,7 +564,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
-                                    value = noDataValue;
+                                    value = ndv;
                                 }
                                 initCell(row, col, value, true);
                             }
@@ -586,7 +582,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = eagi.readInt();
                                 if (value == gridFileNoDataValue) {
-                                    value = noDataValue;
+                                    value = ndv;
                                 }
                                 initCell(row, col, value, false);
                             }
@@ -633,7 +629,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 init(g);
                 this.data = g.data;
                 this.worthSwapping = g.worthSwapping;
-                this.noDataValue = g.noDataValue;
+                this.ndv = g.ndv;
                 this.dim = g.dim;
                 this.stats = g.getStats();
                 this.stats.grid = this;
@@ -669,7 +665,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 long row;
                 long col;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
-                if (gridFileNoDataValue == noDataValue) {
+                if (gridFileNoDataValue == ndv) {
                     if (stats.isUpdated()) {
                         for (row = (nRows - 1); row > -1; row--) {
                             env.checkAndMaybeFreeMemory();
@@ -690,7 +686,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = noDataValue;
+                                    value = ndv;
                                 }
                                 initCell(row, col, value, true);
                             }
@@ -708,7 +704,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                             for (col = 0; col < nCols; col++) {
                                 value = (int) eagi.readDouble();
                                 if (value == gridFileNoDataValue) {
-                                    value = noDataValue;
+                                    value = ndv;
                                 }
                                 initCell(row, col, value, false);
                             }
@@ -886,11 +882,10 @@ public class Grids_GridInt extends Grids_GridNumber {
             Exception, ClassNotFoundException {
         Grids_StatsInt iStats = getStats();
         if (iStats.isUpdated()) {
-            if (newValue != noDataValue) {
-                if (oldValue != noDataValue) {
-                    BigDecimal oldValueBD = new BigDecimal(oldValue);
+            if (newValue != ndv) {
+                if (oldValue != ndv) {
                     iStats.setN(iStats.getN() - 1);
-                    iStats.setSum(iStats.getSum().subtract(oldValueBD));
+                    iStats.setSum(iStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
                     int min = iStats.getMin(false);
                     if (oldValue == min) {
                         iStats.setNMin(iStats.getNMin() - 1);
@@ -900,10 +895,9 @@ public class Grids_GridInt extends Grids_GridNumber {
                         iStats.setNMax(iStats.getNMax() - 1);
                     }
                 }
-                if (newValue != noDataValue) {
-                    BigDecimal newValueBD = new BigDecimal(newValue);
+                if (newValue != ndv) {
                     iStats.setN(iStats.getN() + 1);
-                    iStats.setSum(iStats.getSum().add(newValueBD));
+                    iStats.setSum(iStats.getSum().add(Math_BigRational.valueOf(newValue)));
                     updateStats(newValue);
                     if (iStats.getNMin() < 1) {
                         // The stats need recalculating
@@ -922,25 +916,28 @@ public class Grids_GridInt extends Grids_GridNumber {
         }
     }
 
+    /**
+     * @return {@link #ndv}
+     */
     public final int getNoDataValue() {
-        return noDataValue;
+        return ndv;
     }
 
     /**
-     * Initialises ndv as noDataValue.
+     * Initialises ndv as ndv.
      *
-     * @param noDataValue The v ndv is initialised to.
+     * @param ndv The v ndv is initialised to.
      */
     protected final void initNoDataValue(
-            int noDataValue) {
-        this.noDataValue = noDataValue;
+            int ndv) {
+        this.ndv = ndv;
     }
 
     /**
      * @param r The grid cell row index for which the v is returned.
      * @param c The grid cell column index for which the v is returned
      * @return The v in the grid at grid cell row index {@code r}, grid cell
-     * column index {@code c} or {@link #noDataValue} if there is no such v.
+     * column index {@code c} or {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -950,7 +947,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             return getCell((Grids_ChunkInt) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c));
         }
-        return noDataValue;
+        return ndv;
     }
 
     /**
@@ -961,7 +958,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param r The chunk cell row index of the v returned.
      * @param c The chunk cell column index of the v returned.
      * @return v in chunk at chunk cell row {@code r}, chunk cell col {@code c}
-     * or {@link #noDataValue} if there is no such v.
+     * or {@link #ndv} if there is no such v.
      */
     public int getCell(Grids_ChunkInt chunk, int r, int c) {
         return chunk.getCell(r, c);
@@ -970,7 +967,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     /**
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @return The v at (x, y) or {@link #noDataValue} if there is no such v.
+     * @return The v at (x, y) or {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -981,7 +978,7 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The v of the cell with cell ID {@code i} or {@link #noDataValue}
+     * @return The v of the cell with cell ID {@code i} or {@link #ndv}
      * if there is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -998,7 +995,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param y The y-coordinate of the point.
      * @param v The v to set in the cell.
      * @return The v at x-coordinate {@code x}, y-coordinate {@code y} or
-     * {@link #noDataValue} if there is no such v.
+     * {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1007,7 +1004,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (isInGrid(x, y)) {
             return setCell(getRow(y), getCol(x), v);
         }
-        return noDataValue;
+        return ndv;
     }
 
     /**
@@ -1019,7 +1016,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param v The v to set at cell row index {@code r}, cell column index
      * {@code c}.
      * @return The v at cell row index {@code r}, cell column index {@code c} or
-     * {@link #noDataValue} if there is no such v.
+     * {@link #ndv} if there is no such v.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1029,7 +1026,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             return setCell((Grids_ChunkInt) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c), v);
         }
-        return noDataValue;
+        return ndv;
     }
 
     /**
@@ -1052,7 +1049,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (isInGrid(cr, cc, ccr, ccc)) {
             return setCell((Grids_ChunkInt) getChunk(cr, cc), ccr, ccc, v);
         }
-        return noDataValue;
+        return ndv;
     }
 
     /**
@@ -1071,7 +1068,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public int setCell(Grids_ChunkInt chunk, int ccr, int ccc, int v)
             throws IOException, Exception, ClassNotFoundException {
-        int r = noDataValue;
+        int r = ndv;
         if (chunk instanceof Grids_ChunkIntArray) {
             r = ((Grids_ChunkIntArray) chunk).setCell(ccr, ccc, v);
         } else if (chunk instanceof Grids_ChunkIntMap) {
@@ -1136,19 +1133,25 @@ public class Grids_GridInt extends Grids_GridNumber {
             chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
         }
         // Update stats
-        if (v != noDataValue) {
+        if (v != ndv) {
             if (stats.isUpdated()) {
                 updateStats(v);
             }
         }
     }
 
+    /**
+     * updateStats 
+     * @param value The value.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     * @throws ClassNotFoundException If encountered.
+     */
     public void updateStats(int value) throws IOException, Exception,
             ClassNotFoundException {
         Grids_StatsInt iStats = getStats();
-        BigDecimal valueBD = new BigDecimal(value);
         iStats.setN(iStats.getN() + 1);
-        iStats.setSum(iStats.getSum().add(valueBD));
+        iStats.setSum(iStats.getSum().add(Math_BigRational.valueOf(value)));
         int min = iStats.getMin(false);
         if (value < min) {
             iStats.setNMin(1);
@@ -1192,7 +1195,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1212,7 +1216,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1233,7 +1238,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1265,7 +1271,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1275,7 +1282,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(x, y);
-        if (value == noDataValue) {
+        if (value == ndv) {
             return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
@@ -1292,7 +1299,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1302,7 +1310,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(row, col);
-        if (value == noDataValue) {
+        if (value == ndv) {
             return getNearestValuesCellIDsAndDistance(getCellX(col),
                     getCellY(row), row, col, oom);
         }
@@ -1323,7 +1331,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1335,7 +1344,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
         int nearestCellValue = getCell(row, col);
-        if (nearestCellValue == noDataValue) {
+        if (nearestCellValue == ndv) {
             // Find a v Seeking outwards from nearestCellID
             // Initialise visitedSet1
             HashSet<Grids_2D_ID_long> visitedSet = new HashSet<>();
@@ -1366,7 +1375,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                     Grids_2D_ID_long cellID = iterator.next();
                     visitedSet2.add(cellID);
                     value = getCell(cellID);
-                    if (value != noDataValue) {
+                    if (value != ndv) {
                         foundValue = true;
                         values.add(cellID);
                     } else {
@@ -1415,7 +1424,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
-                    if (getCell(cellID1) != noDataValue) {
+                    if (getCell(cellID1) != ndv) {
                         distance = Grids_Utilities.distance(x, y,
                                 getCellX(cellID1),
                                 getCellY(cellID1), oom);
@@ -1478,12 +1487,12 @@ public class Grids_GridInt extends Grids_GridNumber {
     public void addToCell(long row, long col, int v) throws IOException,
             ClassNotFoundException, Exception {
         int currentValue = getCell(row, col);
-        if (currentValue != noDataValue) {
-            if (v != noDataValue) {
+        if (currentValue != ndv) {
+            if (v != ndv) {
                 setCell(row, col, currentValue + v);
             }
         } else {
-            if (v != noDataValue) {
+            if (v != ndv) {
                 setCell(row, col, v);
             }
         }
@@ -1533,10 +1542,21 @@ public class Grids_GridInt extends Grids_GridNumber {
         return (Grids_StatsInt) stats;
     }
 
+    /**
+     * @param stats What {@link #stats} is set to.
+     */
     public void initStats(Grids_StatsInt stats) {
         this.stats = stats;
     }
 
+    /**
+     * @param chunk chunk
+     * @param cr cs
+     * @param cc cc
+     * @param ccr ccr
+     * @param ccc ccc
+     * @return The cell value.
+     */
     public int getCell(Grids_Chunk chunk, int cr, int cc, int ccr, int ccc) {
         Grids_ChunkInt c = (Grids_ChunkInt) chunk;
         if (chunk.getClass() == Grids_ChunkIntArray.class) {
@@ -1545,7 +1565,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (chunk.getClass() == Grids_ChunkIntMap.class) {
             return ((Grids_ChunkIntMap) c).getCell(ccr, ccc);
         }
-        return c.getGrid().noDataValue;
+        return c.getGrid().ndv;
     }
 
     @Override
@@ -1560,7 +1580,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (isInGrid(cr, cc, ccr, ccc)) {
             return setCell(cr, cc, ccr, ccc, v.intValue());
         }
-        return noDataValue;
+        return ndv;
     }
 
     /**
@@ -1611,7 +1631,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                         int v = getCell(row, col);
                         //int gv = getCell(chunk, cr, cc, ccr, ccc);
                         int gv = chunk.getCell(ccr, ccc);
-                        if (v == noDataValue) {
+                        if (v == ndv) {
                             if (gv != gndv) {
                                 return false;
                             }

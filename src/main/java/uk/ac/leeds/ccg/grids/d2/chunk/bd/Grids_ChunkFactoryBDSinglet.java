@@ -29,6 +29,9 @@ public class Grids_ChunkFactoryBDSinglet extends Grids_ChunkFactoryBD {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * defaultValue
+     */
     BigDecimal defaultValue;
 
     /**

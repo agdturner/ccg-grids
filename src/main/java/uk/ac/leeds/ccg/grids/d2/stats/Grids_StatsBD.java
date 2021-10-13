@@ -17,14 +17,14 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridIteratorBD;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grids_GridBD statistics. Some of the statistic are kept up to date as the
@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridIteratorBD;
  * data again if the values have changed in order to recalculate.)
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_StatsBD extends Grids_StatsNumber {
 
@@ -47,31 +47,38 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     /**
      * Default maximum value.
      */
-    public static final BigDecimal mind = BigDecimal.valueOf(Double.MAX_VALUE);
+    public static final BigDecimal maxd = BigDecimal.valueOf(Double.MAX_VALUE);
 
     /**
-     * Default maximum value.
+     * Default minimum value.
      */
-    public static final BigDecimal maxd = BigDecimal.valueOf(-Double.MAX_VALUE);
+    public static final BigDecimal mind = BigDecimal.valueOf(-Double.MAX_VALUE);
 
     /**
      * For storing the maximum value.
      */
     protected BigDecimal max;
 
+    /**
+     * Create a new instance.
+     *
+     * @param ge Grids_Environment
+     */
     public Grids_StatsBD(Grids_Environment ge) {
         super(ge);
-        min = mind;
-        max = maxd;
-        sum = BigDecimal.ZERO;
+        // Initialise the min to the max and and the max to the min.
+        min = maxd;
+        max = mind;
+        sum = Math_BigRational.ZERO;
     }
 
     @Override
     protected void init() {
         super.init();
-       min = mind;
-        max = maxd;
-         sum = BigDecimal.ZERO;
+        // Initialise the min to the max and and the max to the min.
+        min = maxd;
+        max = mind;
+        sum = Math_BigRational.ZERO;
     }
 
     /**
@@ -105,15 +112,18 @@ public class Grids_StatsBD extends Grids_StatsNumber {
         Grids_GridIteratorBD ite = g.iterator();
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
-                if (v.compareTo(g.ndv) != 0) {
-                    update(v);
-                }
+            if (v.compareTo(g.ndv) != 0) {
+                update(v);
+            }
         }
     }
 
+    /**
+     * @param v The value to update.
+     */
     protected void update(BigDecimal v) {
-        n ++;
-        setSum(sum.add(v));
+        n++;
+        setSum(sum.add(Math_BigRational.valueOf(v)));
         if (v.compareTo(min) == -1) {
             nMin = 1;
             min = v;
@@ -149,6 +159,9 @@ public class Grids_StatsBD extends Grids_StatsNumber {
         return min;
     }
 
+    /**
+     * @param min What {@link #min} is set to.
+     */
     public void setMin(BigDecimal min) {
         this.min = min;
     }
@@ -168,6 +181,9 @@ public class Grids_StatsBD extends Grids_StatsNumber {
         return max;
     }
 
+    /**
+     * @param max What {@link #max} is set to.
+     */
     public void setMax(BigDecimal max) {
         this.max = max;
     }
@@ -203,7 +219,7 @@ public class Grids_StatsBD extends Grids_StatsNumber {
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             if (!(v.compareTo(ndv) == 0 || v.compareTo(BigDecimal.ZERO) == 0)) {
-                    r++;
+                r++;
             }
         }
         return r;
@@ -215,7 +231,7 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum(boolean update) throws IOException, Exception,
+    public Math_BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
 //        if (update) {
 //            update();
@@ -228,8 +244,8 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getSum() throws IOException, Exception, ClassNotFoundException {
-        BigDecimal r = BigDecimal.ZERO;
+    public Math_BigRational getSum() throws IOException, Exception, ClassNotFoundException {
+        Math_BigRational r = Math_BigRational.ZERO;
         Grids_GridBD g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
@@ -240,33 +256,32 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     /**
-     * @param dp The number of decimal places the result is to be accurate to.
-     * @param rm The RoundingMode used in BigDecimal arithmetic.
-     * @return The standard deviation correct to {@code dp} decimal places.
+     * @param oom The Order of Magnitude for the precision.
+     * @return The standard deviation correct to {@code oom}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getStandardDeviation(int dp, RoundingMode rm)
+    public Math_BigRationalSqrt getStandardDeviation(int oom)
             throws IOException, Exception, ClassNotFoundException {
-        BigDecimal stdev = BigDecimal.ZERO;
-        BigDecimal mean = getArithmeticMean(dp * 2, rm);
-        BigDecimal dataValueCount = BigDecimal.ZERO;
+        Math_BigRational stdev = Math_BigRational.ZERO;
+        Math_BigRational mean = getArithmeticMean();
+        long dataValueCount = 0;
         Grids_GridBD g = (Grids_GridBD) grid;
         BigDecimal ndv = g.getNoDataValue();
         Grids_GridIteratorBD ite = g.iterator();
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             if (v != ndv) {
-                    BigDecimal diffFromMean = v.subtract(mean);
-                    stdev = stdev.add(diffFromMean.multiply(diffFromMean));
-                    dataValueCount = dataValueCount.add(BigDecimal.ONE);
+                Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
+                stdev = stdev.add(delta.multiply(delta));
+                dataValueCount ++;
             }
         }
-        if (dataValueCount.compareTo(BigDecimal.ONE) != 1) {
-            return stdev;
+        if (dataValueCount < 2) {
+            return Math_BigRationalSqrt.ZERO;
         }
-        stdev = stdev.divide(dataValueCount, dp * 2, rm);
-        return Math_BigDecimal.sqrt(stdev, dp, rm);
+        stdev = stdev.divide(Math_BigRational.valueOf(dataValueCount - 1L));
+        return new Math_BigRationalSqrt(stdev, oom);
     }
 
     /**

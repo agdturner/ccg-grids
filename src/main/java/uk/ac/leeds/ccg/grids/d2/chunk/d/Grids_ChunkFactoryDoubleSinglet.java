@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryDoubleSinglet extends Grids_ChunkFactoryDouble {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * defaultValue
+     */
     double defaultValue;
 
     /**

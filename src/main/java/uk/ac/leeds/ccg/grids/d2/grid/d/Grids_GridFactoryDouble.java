@@ -43,11 +43,21 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      */
     protected double noDataValue;
 
+    /**
+     * gridChunkDoubleFactory
+     */
     public Grids_ChunkFactoryDoubleSinglet gridChunkDoubleFactory;
 //    public Grids_GridChunkDoubleMapFactory ChunkDoubleMapFactory;
 //    public Grids_GridChunkDoubleArrayFactory ChunkDoubleArrayFactory;
+    
+    /**
+     * defaultGridChunkDoubleFactory
+     */
     public Grids_ChunkFactoryDouble defaultGridChunkDoubleFactory;
 
+    /**
+     * stats
+     */
     public Grids_StatsDouble stats;
 
     /**

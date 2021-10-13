@@ -107,11 +107,11 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     }
 
     @Override
-    public BigDecimal getSum() {
+    public Math_BigRational getSum() {
         if (v == getGrid().getNoDataValue()) {
-            return BigDecimal.ZERO;
+            return Math_BigRational.ZERO;
         }
-        return BigDecimal.valueOf(getN()).multiply(v);
+        return Math_BigRational.valueOf(BigDecimal.valueOf(getN()).multiply(v));
     }
 
     @Override

@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryBinarySinglet extends Grids_ChunkFactoryBinary {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * defaultValue
+     */
     boolean defaultValue;
 
     /**

@@ -42,7 +42,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
@@ -81,7 +80,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             BigDecimal ndv, Grids_Environment ge) throws IOException, Exception {
         super(ge, fs, id, ndv);
-        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions, ndv);
+        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions);
     }
 
     /**
@@ -145,7 +144,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             long endRow, long endCol, BigDecimal ndv, Grids_Environment ge)
             throws IOException, Exception {
         super(ge, fs, id, ndv);
-        init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
+        init(stats, gridFile, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
 
@@ -204,10 +203,9 @@ public class Grids_GridBD extends Grids_GridNumber {
         stats.grid = this;
     }
 
-    private void init(Grids_StatsBD stats,
-            Grids_ChunkFactoryBD chunkFactory, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            BigDecimal noDataValue) throws IOException, Exception {
+    private void init(Grids_StatsBD stats, Grids_ChunkFactoryBD cf,
+            int chunkNRows, int chunkNCols, long nRows, long nCols,
+            Grids_Dimensions dimensions) throws IOException, Exception {
         //env.checkAndMaybeFreeMemory(this, true);
         init(stats, chunkNRows, chunkNCols, nRows, nCols, dimensions);
         for (int r = 0; r < nChunkRows; r++) {
@@ -216,7 +214,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 // Try to load chunk.
                 Grids_2D_ID_int i = new Grids_2D_ID_int(r, c);
                 //env.checkAndMaybeFreeMemory();
-                Grids_ChunkBD chunk = chunkFactory.create(this, i);
+                Grids_ChunkBD chunk = cf.create(this, i);
                 data.put(i, chunk);
                 if (!(chunk instanceof Grids_ChunkBDSinglet)) {
                     worthSwapping.add(i);
@@ -422,10 +420,9 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     private void init(Grids_StatsBD stats, Generic_Path gridFile,
-            Grids_ChunkFactoryBD cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, BigDecimal noDataValue) throws IOException,
-            ClassNotFoundException, Exception {
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol, BigDecimal noDataValue)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -801,7 +798,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             if (newValue.compareTo(ndv) != 0) {
                 if (oldValue.compareTo(ndv) != 0) {
                     dStats.setN(dStats.getN() - 1);
-                    dStats.setSum(dStats.getSum().subtract(oldValue));
+                    dStats.setSum(dStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
                     BigDecimal min = dStats.getMin(false);
                     if (oldValue.compareTo(min) == 0) {
                         dStats.setNMin(dStats.getNMin() - 1);
@@ -812,7 +809,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                     }
                 }
                 dStats.setN(dStats.getN() + 1);
-                dStats.setSum(dStats.getSum().add(newValue));
+                dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(newValue)));
                 updateStats(newValue);
                 if (dStats.getNMin() < 1) {
                     // The stats need recalculating
@@ -1067,11 +1064,19 @@ public class Grids_GridBD extends Grids_GridNumber {
         }
     }
 
+    /**
+     * updateStats
+     *
+     * @param value The value for the update.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     * @throws ClassNotFoundException If encountered.
+     */
     protected void updateStats(BigDecimal value) throws IOException, Exception,
             ClassNotFoundException {
         Grids_StatsBD dStats = getStats();
         dStats.setN(dStats.getN() + 1);
-        dStats.setSum(dStats.getSum().add(value));
+        dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
         BigDecimal min = dStats.getMin(false);
         if (value.compareTo(min) == -1) {
             dStats.setNMin(1);
@@ -1141,13 +1146,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
-     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y, 
+    protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
             long row, long col, Math_BigRationalSqrt distance) throws IOException,
             Exception, ClassNotFoundException {
         int delta = getCellDistance(distance);
@@ -1175,7 +1177,8 @@ public class Grids_GridBD extends Grids_GridNumber {
      * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1203,7 +1206,8 @@ public class Grids_GridBD extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1234,14 +1238,15 @@ public class Grids_GridBD extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
             Math_BigRational x, Math_BigRational y, long row, long col, int oom)
-            throws IOException, Exception,            ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
@@ -1449,10 +1454,23 @@ public class Grids_GridBD extends Grids_GridNumber {
         return (Grids_StatsBD) stats;
     }
 
+    /**
+     * initStatistics
+     * @param stats What {@link #stats} is set to.
+     */
     public void initStatistics(Grids_StatsBD stats) {
         this.stats = stats;
     }
 
+    /**
+     * getCell
+     * @param chunk chunk
+     * @param chunkRow chunkRow
+     * @param chunkCol chunkCol
+     * @param cellRow cellRow
+     * @param cellCol cellCol
+     * @return The cell.
+     */
     public BigDecimal getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
             int cellRow, int cellCol) {
         Grids_ChunkBD c = (Grids_ChunkBD) chunk;
@@ -1480,7 +1498,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      *
      * @param g The grid to test if it has the same dimensions and values as
      * this.
-     * @return {code true} if this and {@code g} have the same dimensions, the
+     * @return {@code true} if this and {@code g} have the same dimensions, the
      * same number of rows and columns, and the same values in each cell.
      * @throws IOException If encountered.
      * @throws Exception If encountered.

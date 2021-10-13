@@ -37,6 +37,11 @@ public class Grids_StatsBoolean extends Grids_Stats {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param ge Grids_Environment
+     */
     public Grids_StatsBoolean(Grids_Environment ge) {
         super(ge);
     }

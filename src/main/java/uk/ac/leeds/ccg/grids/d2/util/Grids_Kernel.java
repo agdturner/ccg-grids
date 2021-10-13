@@ -70,6 +70,7 @@ public abstract class Grids_Kernel {
     /**
      * @param cellsize The cellsize.
      * @param distance The distance.
+     * @param oom The Order of Magnitude for the precision. 
      * @return Kernel weights based on the normal distribution. The mean and
      * variance of the normal distribution is given by the distances to the
      * centroids of the cells that are within distance.
@@ -142,8 +143,7 @@ public abstract class Grids_Kernel {
      * @param wf Warning: If less than 1 then strange things could happen!!!!
      * @param td The distance from the centre of the kernel that the weight
      * result is returned.
-     * @param oom Order Of Magnitude for any rounding.
-     * @param rm RoundingMode for BigDecimal arithmetic.
+     * @param oom The Order Of Magnitude for the precision.
      */
     public static Math_BigRational getKernelWeight(Math_BigRationalSqrt d,
             Math_BigRational wi, int wf, Math_BigRationalSqrt td, int oom) {
@@ -159,7 +159,6 @@ public abstract class Grids_Kernel {
      * @param wi The weight intersect.
      * @param wf The weight factor.
      * @param oom Order Of Magnitude for any rounding.
-     * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel weights.
      */
     public static Math_BigRational[][] getKernelWeights(Grids_GridNumber g,
@@ -305,7 +304,6 @@ public abstract class Grids_Kernel {
      * @param wi The weight intersect.
      * @param wf The weight factor.
      * @param oom Order Of Magnitude for any rounding.
-     * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Adaptive kernel weight.
      */
     public static Math_BigRational getAdaptiveKernelWeight(
@@ -324,7 +322,6 @@ public abstract class Grids_Kernel {
      * @param wi The weight intersect.
      * @param wf The weight factor.
      * @param oom Order Of Magnitude for any rounding.
-     * @param rm RoundingMode for BigDecimal arithmetic.
      * @return The kernel volume.
      */
     public static Math_BigRational getKernelVolume(Math_BigRationalSqrt bw,

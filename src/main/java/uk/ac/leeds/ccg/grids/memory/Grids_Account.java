@@ -32,20 +32,35 @@ public class Grids_Account {
      */
     public boolean success;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_Account() {
         detail = 0;
         success = false;
     }
 
+    /**
+     * Add to account.
+     * @param a What is added.
+     */
     public void add(Grids_Account a) {
         detail += a.detail;
         success = a.success;
     }
 
+    /**
+     * Add to account.
+     */
     public void add() {
         detail += 1;
     }
 
+    /**
+     * Add to account.
+     * 
+     * @param i What is added.
+     */
     public void add(int i) {
         detail += i;
     }

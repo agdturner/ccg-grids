@@ -60,7 +60,7 @@ public abstract class Grids_GridIterator extends Grids_Object {
 
     /**
      * Create a new instance.
-     * @param grid 
+     * @param grid The grid.
      */
     public Grids_GridIterator(Grids_Grid grid) {
         super(grid.env);

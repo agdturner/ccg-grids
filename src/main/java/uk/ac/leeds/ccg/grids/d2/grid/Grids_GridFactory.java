@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.grids.d2.grid;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
@@ -27,7 +26,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * Grids_GridFactory.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public abstract class Grids_GridFactory extends Grids_Object {
 
@@ -71,15 +70,15 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param fs What {@link #store} is set to.
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
-     * @param dimensions What {@link #dim} is set to.
+     * @param dim What {@link #dim} is set to.
      */
     public Grids_GridFactory(Grids_Environment e, IO_Cache fs,
-            int chunkNRows, int chunkNCols, Grids_Dimensions dimensions) {
+            int chunkNRows, int chunkNCols, Grids_Dimensions dim) {
         super(e);
         this.store = fs;
         this.chunkNRows = chunkNRows;
         this.chunkNCols = chunkNCols;
-        dim = dimensions;
+        this.dim = dim;
     }
 
     /**

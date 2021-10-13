@@ -17,9 +17,10 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.BigInteger;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
@@ -35,7 +36,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
     /**
      * For storing the sum of all non data values.
      */
-    protected BigDecimal sum;
+    protected Math_BigRational sum;
 
     /**
      * For storing the number of minimum data values.
@@ -61,7 +62,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      * Initialises the statistics by setting sum, nMin and nMax equal to 0.
      */
     private void init0() {
-        sum = BigDecimal.ZERO;
+        sum = Math_BigRational.ZERO;
         nMin = 0;
         nMax = 0;
     }
@@ -138,12 +139,10 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      * Get the arithmetic mean of all data values. Throws an ArithmeticException
      * if {@link #n} is equal to zero.
      *
-     * @param dp The number of decimal places for any BigDecimal rounding.
-     * @param rm The RoundingMode for any BigDecimal rounding.
      * @return The arithmetic mean of all data values.
      */
-    public BigDecimal getArithmeticMean(int dp, RoundingMode rm) {
-        return sum.divide(new BigDecimal(n), dp, rm);
+    public Math_BigRational getArithmeticMean() {
+        return sum.divide(BigInteger.valueOf(n));
     }
 
     /**
@@ -403,7 +402,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
     /**
      * @param sum to set sum to.
      */
-    public void setSum(BigDecimal sum) {
+    public void setSum(Math_BigRational sum) {
         this.sum = sum;
     }
 

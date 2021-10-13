@@ -37,7 +37,10 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
 
     private static final long serialVersionUID = 1L;
 
-    String DefaultNoDataValue = "-9999.0d";
+    /**
+     * defaultNoDataValue
+     */
+    String defaultNoDataValue = "-9999.0d";
 
     /**
      * Creates a new instance of ESRIAsciiGridExporter

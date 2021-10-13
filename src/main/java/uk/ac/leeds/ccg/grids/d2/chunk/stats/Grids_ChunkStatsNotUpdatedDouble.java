@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For statistics of chunks of type double. Statistics are not kept up to date
@@ -108,7 +109,7 @@ public class Grids_ChunkStatsNotUpdatedDouble extends Grids_ChunkStatsDouble {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getSum() throws IOException, Exception,
+    public Math_BigRational getSum() throws IOException, Exception,
             ClassNotFoundException {
         return sum;
     }
@@ -123,7 +124,7 @@ public class Grids_ChunkStatsNotUpdatedDouble extends Grids_ChunkStatsDouble {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getSum(boolean update) throws IOException, Exception,
+    public Math_BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();

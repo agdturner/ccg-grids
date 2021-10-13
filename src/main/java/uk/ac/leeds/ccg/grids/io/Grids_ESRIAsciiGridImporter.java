@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
@@ -109,6 +108,9 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
          */
         public BigDecimal ndv;
 
+        /**
+         * Create a new instance.
+         */
         public Header() {
         }
     }

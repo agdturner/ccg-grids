@@ -91,6 +91,14 @@ public class Grids_GridIteratorBinary extends Grids_GridIterator {
         return (Grids_GridBinary) grid;
     }
 
+    /**
+     * 
+     * @param i ID
+     * @return Grids_ChunkIteratorBinaryArray
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     public Grids_ChunkIteratorBinaryArray getChunkIterator(Grids_2D_ID_int i)
             throws IOException, ClassNotFoundException, Exception {
         return getChunkIterator(getGrid().getChunk(i));

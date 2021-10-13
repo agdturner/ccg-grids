@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryIntSinglet extends Grids_ChunkFactoryInt {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * defaultValue
+     */
     int defaultValue;
 
     /**

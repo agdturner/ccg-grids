@@ -20,7 +20,6 @@ import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -39,6 +38,15 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     public BigDecimal ndv;
 
+    /**
+     * Create a new instance.
+     * 
+     * @param ge Grids_Environment
+     * @param fs Cache
+     * @param id ID
+     * @param ndv NoDataValue
+     * @throws Exception If encountered.
+     */
     protected Grids_GridNumber(Grids_Environment ge, IO_Cache fs,
             long id, BigDecimal ndv) throws Exception {
         super(ge, fs, id);

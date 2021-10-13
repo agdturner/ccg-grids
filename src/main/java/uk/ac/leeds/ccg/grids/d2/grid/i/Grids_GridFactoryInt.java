@@ -35,16 +35,28 @@ import uk.ac.leeds.ccg.io.IO_Cache;
  */
 public class Grids_GridFactoryInt extends Grids_GridFactory {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The noDataValue for creating chunks.
      */
     protected int noDataValue;
 
+    /**
+     * gridChunkIntFactory
+     */
     public Grids_ChunkFactoryIntSinglet gridChunkIntFactory;
 //    public Grids_GridChunkIntMapFactory ChunkIntMapFactory;
 //    public Grids_GridChunkIntArrayFactory ChunkIntArrayFactory;
+    
+    /**
+     * defaultGridChunkIntFactory
+     */
     public Grids_ChunkFactoryInt defaultGridChunkIntFactory;
 
+    /**
+     * stats
+     */
     public Grids_StatsInt stats;
 
     /**

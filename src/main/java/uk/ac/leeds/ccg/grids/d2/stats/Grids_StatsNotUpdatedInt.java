@@ -16,8 +16,8 @@
 package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Statistic fields are not kept up to date as the underlying data is changed.
@@ -107,7 +107,7 @@ public class Grids_StatsNotUpdatedInt extends Grids_StatsInt {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getSum() throws IOException, Exception,
+    public Math_BigRational getSum() throws IOException, Exception,
             ClassNotFoundException {
         update();
         return sum;

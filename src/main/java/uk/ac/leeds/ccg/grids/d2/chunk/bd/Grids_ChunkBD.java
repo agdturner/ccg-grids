@@ -164,8 +164,8 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return The sum of all data values as a BigDecimal.
      */
     @Override
-    public BigDecimal getSum() {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Math_BigRational getSum() {
+        Math_BigRational sum = Math_BigRational.ZERO;
         Grids_GridBD g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -173,7 +173,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
             for (int col = 0; col < ncols; col++) {
                 BigDecimal v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
-                    sum = sum.add(v);
+                    sum = sum.add(Math_BigRational.valueOf(v));
                 }
             }
         }

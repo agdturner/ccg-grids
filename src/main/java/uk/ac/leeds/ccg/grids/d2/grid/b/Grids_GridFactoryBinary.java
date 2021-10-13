@@ -32,23 +32,36 @@ import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinarySinglet;
  * {{@link uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBinary} instances.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridFactoryBinary extends Grids_GridFactory {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Chunk factory.
+     */
     public Grids_ChunkFactoryBinary factory;
 
-    public Grids_StatsBinary Stats;
+    /**
+     * Stats
+     */
+    public Grids_StatsBinary stats;
 
+    /**
+     * gridChunkBinaryFactory
+     */
     public Grids_ChunkFactoryBinarySinglet gridChunkBinaryFactory;
 //    public Grids_GridChunkBinaryMapFactory ChunkBinaryMapFactory;
 //    public Grids_GridChunkBinaryArrayFactory ChunkBinaryArrayFactory;
+    
+    /**
+     * defaultGridChunkBinaryFactory
+     */
     public Grids_ChunkFactoryBinary defaultGridChunkBinaryFactory;
     
     /**
-     * {@link #dim} is set to {@code null}. {@link #Stats} is set to
+     * {@link #dim} is set to {@code null}. {@link #stats} is set to
      * {@code new Grids_StatsNotUpdatedBinary(e)}.
      *
      * @param e What {@link #env} is set to.
@@ -70,14 +83,14 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @param chunkNRows What {@link #chunkNRows} is set to.
      * @param chunkNCols What {@link #chunkNCols} is set to.
      * @param dimensions What {@link #dim} is set to.
-     * @param stats What {@link #Stats} is set to.
+     * @param stats What {@link #stats} is set to.
      */
     public Grids_GridFactoryBinary(Grids_Environment e, IO_Cache store,
             Grids_ChunkFactoryBinary cf, int chunkNRows, int chunkNCols,
             Grids_Dimensions dimensions, Grids_StatsBinary stats) {
         super(e, store, chunkNRows, chunkNCols, dimensions);
         this.factory = cf;
-        Stats = stats;
+        this.stats = stats;
     }
 
     /**
@@ -122,7 +135,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     /**
      * Create a {@link Grids_GridBinary} from {@code g}.
      *
-     * {@link #Stats} is set to {@code new Grids_StatsNotUpdatedBinary(env)}.
+     * {@link #stats} is set to {@code new Grids_StatsNotUpdatedBinary(env)}.
      *
      * @param g The grid from which values are used to set the values in the
      * created grid.
@@ -182,7 +195,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
     }
 
     /**
-     * {@link #Stats} is set to {@code new Grids_StatsNotUpdatedBinary(env)}.
+     * {@link #stats} is set to {@code new Grids_StatsNotUpdatedBinary(env)}.
      *
      * @param gridFile The directory containing a cached grid that will be used
      * to create the grid returned.

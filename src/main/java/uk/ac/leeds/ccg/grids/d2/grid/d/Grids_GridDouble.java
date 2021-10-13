@@ -41,7 +41,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
@@ -54,7 +53,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * Grids with {@code double} values.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridDouble extends Grids_GridNumber {
 
@@ -90,7 +89,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double ndv, Grids_Environment ge) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions, ndv);
+        init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions);
     }
 
     /**
@@ -154,7 +153,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             long endRow, long endCol, double ndv, Grids_Environment ge)
             throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(stats, gridFile, cf, chunkNRows, chunkNCols, startRow, startCol,
+        init(stats, gridFile, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
 
@@ -221,8 +220,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     private void init(Grids_StatsDouble stats,
             Grids_ChunkFactoryDouble chunkFactory, int chunkNRows,
-            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            double noDataValue) throws IOException, Exception {
+            int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
+            throws IOException, Exception {
         //env.checkAndMaybeFreeMemory(this, true);
         init(stats, chunkNRows, chunkNCols, nRows, nCols, dimensions);
         for (int r = 0; r < nChunkRows; r++) {
@@ -448,10 +447,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     private void init(Grids_StatsDouble stats, Generic_Path gridFile,
-            Grids_ChunkFactoryDouble cf, int chunkNRows,
-            int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, double noDataValue) throws IOException,
-            ClassNotFoundException, Exception {
+            int chunkNRows, int chunkNCols, long startRow, long startCol,
+            long endRow, long endCol, double noDataValue)
+            throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
         this.stats.setGrid(this);
@@ -828,9 +826,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (dStats.getClass() == Grids_GridStatsDouble.class) {
             if (newValue != noDataValue) {
                 if (oldValue != noDataValue) {
-                    BigDecimal oldValueBD = new BigDecimal(oldValue);
                     dStats.setN(dStats.getN() - 1);
-                    dStats.setSum(dStats.getSum().subtract(oldValueBD));
+                    dStats.setSum(dStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
                     double min = dStats.getMin(false);
                     if (oldValue == min) {
                         dStats.setNMin(dStats.getNMin() - 1);
@@ -840,9 +837,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
                         dStats.setNMax(dStats.getNMax() - 1);
                     }
                 }
-                BigDecimal newValueBD = new BigDecimal(newValue);
                 dStats.setN(dStats.getN() + 1);
-                dStats.setSum(dStats.getSum().add(newValueBD));
+                dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(newValue)));
                 updateStats(newValue);
                 if (dStats.getNMin() < 1) {
                     // The stats need recalculating
@@ -1101,13 +1097,20 @@ public class Grids_GridDouble extends Grids_GridNumber {
         }
     }
 
+    /**
+     * updateStats
+     *
+     * @param value The value to update.
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     * @throws ClassNotFoundException If encountered.
+     */
     protected void updateStats(double value) throws IOException, Exception,
             ClassNotFoundException {
         Grids_GridStatsDouble dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
-            BigDecimal valueBD = new BigDecimal(value);
             dStats.setN(dStats.getN() + 1);
-            dStats.setSum(dStats.getSum().add(valueBD));
+            dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
             double min = dStats.getMin(false);
             if (value < min) {
                 dStats.setNMin(1);
@@ -1156,8 +1159,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
+     * @param oom The Order of Magnitude for the precision used in distance
      * calculations.
      * @throws Exception If encountered.
      * @throws IOException If encountered.
@@ -1181,13 +1183,14 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance calculations.
+     * @param oom The Order of Magnitude for the precision used in distance
+     * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected double[] getCells(Math_BigRational x, Math_BigRational y, long row, long col,
-            Math_BigRationalSqrt distance, int oom) throws IOException,
-            Exception, ClassNotFoundException {
+    protected double[] getCells(Math_BigRational x, Math_BigRational y,
+            long row, long col, Math_BigRationalSqrt distance, int oom)
+            throws IOException, Exception, ClassNotFoundException {
         int delta = getCellDistance(distance);
         double[] r = new double[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
@@ -1213,8 +1216,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
+     * @param oom The Order of Magnitude for the precision used in distance
      * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -1243,8 +1245,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
+     * @param oom The Order of Magnitude for the precision used in distance
      * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -1276,8 +1277,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param dp The number of decimal places used in distance calculations.
-     * @param rm The {@link RoundingMode} to use when rounding distance
+     * @param oom The Order of Magnitude for the precision used in distance
      * calculations.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -1285,7 +1285,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
             Math_BigRational x, Math_BigRational y, long row, long col, int oom)
-            throws IOException, Exception,            ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
@@ -1488,10 +1488,23 @@ public class Grids_GridDouble extends Grids_GridNumber {
         return (Grids_GridStatsDouble) stats;
     }
 
+    /**
+     * initStatistics
+     * @param stats What {@link #stats} is set to.
+     */
     public void initStatistics(Grids_StatsDouble stats) {
         this.stats = stats;
     }
 
+    /**
+     * getCell
+     * @param chunk chunk
+     * @param chunkRow chunkRow
+     * @param chunkCol chunkCol
+     * @param cellRow cellRow
+     * @param cellCol cellCol
+     * @return The cell value.
+     */
     public double getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
             int cellRow, int cellCol) {
         Grids_ChunkDouble c = (Grids_ChunkDouble) chunk;

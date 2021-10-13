@@ -89,6 +89,14 @@ public class Grids_GridIteratorBoolean extends Grids_GridIterator {
         return (Grids_GridBoolean) grid;
     }
     
+    /**
+     * getChunkIterator
+     * @param i ID
+     * @return Grids_ChunkIteratorBooleanArray
+     * @throws IOException If encountered.
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     public Grids_ChunkIteratorBooleanArray getChunkIterator(Grids_2D_ID_int i) 
             throws IOException, ClassNotFoundException, Exception {
         return getChunkIterator(getGrid().getChunk(i));

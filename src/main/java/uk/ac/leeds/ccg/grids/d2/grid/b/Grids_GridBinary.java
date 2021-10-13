@@ -275,6 +275,29 @@ public class Grids_GridBinary extends Grids_GridB {
         init();
     }
 
+    /**
+     * For loading a chunk.
+     * 
+     * @param g Grid
+     * @param cf Chunk Factory
+     * @param chunkNRows chunkNRows 
+     * @param chunkNCols chunkNCols
+     * @param startRow startRow
+     * @param startCol startCol
+     * @param endRow endRow
+     * @param endCol endCol
+     * @param startChunkRow startChunkRow
+     * @param endChunkRow endChunkRow
+     * @param startChunkCol startChunkCol
+     * @param endChunkCol endChunkCol
+     * @param gb grid binary
+     * @param gcr gcr
+     * @param gChunkNRows gChunkNRows
+     * @param gcc gcc
+     * @return true if the grid is loaded,
+     * @throws ClassNotFoundException If encountered.
+     * @throws Exception If encountered.
+     */
     protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBinary cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int startChunkRow, int endChunkRow,
@@ -781,7 +804,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * returned.
      * @param y the y-coordinate of the circle centre from which cell values are
      * returned.
-     * @param distance2 The distance squared of the distance within which cell
+     * @param distance The distance squared of the distance within which cell
      * values are returned.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
@@ -800,7 +823,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * centre from which cell values are returned.
      * @param col The column index for the cell that's centroid is the circle
      * centre from which cell values are returned.
-     * @param distance2 The distance squared of the distance within which cell
+     * @param distance The distance squared of the distance within which cell
      * values are returned.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at centroid of cell given by cell row
@@ -822,9 +845,6 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
-     * @param rm The RoundingMode for distance calculations.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.

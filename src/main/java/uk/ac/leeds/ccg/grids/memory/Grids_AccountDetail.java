@@ -38,11 +38,19 @@ public class Grids_AccountDetail {
      */
     public boolean success;
 
+    /**
+     * Create a new instance.
+     */
     public Grids_AccountDetail() {
         detail = new HashMap<>();
         success = false;
     }
-
+    
+    /**
+     * Add to account.
+     * 
+     * @param a What is added.
+     */
     public void add(Grids_AccountDetail a) {
         if (!detail.isEmpty()) {
             Set<Grids_Grid> as = a.detail.keySet();

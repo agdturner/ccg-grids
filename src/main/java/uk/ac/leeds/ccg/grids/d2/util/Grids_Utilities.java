@@ -162,8 +162,6 @@ public class Grids_Utilities extends Grids_Object {
      * @param y1 The y coordinate of the first point.
      * @param x2 The x coordinate of the second point.
      * @param y2 The y coordinate of the second point.
-     * @param oom The order of magnitude the result is rounded to if necessary.
-     * @param rm The {@link RoundingMode} to use when rounding the result.
      *
      * @return The distance squared between two points.
      */

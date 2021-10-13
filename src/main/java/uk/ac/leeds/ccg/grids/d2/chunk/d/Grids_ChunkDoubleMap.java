@@ -673,10 +673,10 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
      * @return The sum of all data values as a BigDecimal.
      */
     @Override
-    public BigDecimal getSum() {
+    public Math_BigRational getSum() {
         int n = chunkNRows * chunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
-        return getSumBigDecimal(n, numberOfDefaultValues);
+        return getSum(n, numberOfDefaultValues);
     }
 
     /**
@@ -684,24 +684,24 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
      * @param numberOfDefaultValues numberOfDefaultValues
      * @return Sum of all values as a BigDecimal.
      */
-    protected BigDecimal getSumBigDecimal(int n, int numberOfDefaultValues) {
-        BigDecimal r = BigDecimal.ZERO;
-        r = r.add(BigDecimal.valueOf(defaultValue)
-                .multiply(BigDecimal.valueOf(numberOfDefaultValues)));
+    protected Math_BigRational getSum(int n, int numberOfDefaultValues) {
+        Math_BigRational r = Math_BigRational.ZERO;
+        r = r.add(Math_BigRational.valueOf(defaultValue)
+                .multiply(Math_BigRational.valueOf(numberOfDefaultValues)));
         /**
          * Add from data.dataMapBitSet;
          */
         for (Double v : data.dataMapBitSet.keySet()) {
             Grids_OffsetBitSet offsetBitSet = data.dataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
-            r = r.add(BigDecimal.valueOf(v).multiply(BigDecimal.valueOf(n)));
+            r = r.add(Math_BigRational.valueOf(v).multiply(Math_BigRational.valueOf(n)));
         }
         /**
          * Add from data.dataMapHashSet.
          */
         for (Double v : data.dataMapHashSet.keySet()) {
             n = data.dataMapHashSet.get(v).size();
-            r = r.add(BigDecimal.valueOf(v).multiply(BigDecimal.valueOf(n)));
+            r = r.add(Math_BigRational.valueOf(v).multiply(Math_BigRational.valueOf(n)));
         }
         return r;
     }

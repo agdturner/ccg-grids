@@ -28,6 +28,9 @@ public class Grids_ChunkFactoryBooleanSinglet extends Grids_ChunkFactoryBoolean 
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * defaultValue
+     */
     Boolean defaultValue;
 
     /**
