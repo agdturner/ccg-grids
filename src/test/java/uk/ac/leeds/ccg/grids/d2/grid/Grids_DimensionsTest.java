@@ -90,10 +90,7 @@ public class Grids_DimensionsTest {
      */
     @Test
     public void testHashCode() {
-        System.out.println("hashCode");
-        int expResult = 486979120;
-        int result = defaultInstance.hashCode();
-        assertEquals(expResult, result);
+        // No test.
     }
 
     /**

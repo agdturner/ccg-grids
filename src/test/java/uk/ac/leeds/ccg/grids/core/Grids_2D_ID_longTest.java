@@ -25,10 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- *
-*
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_2D_ID_longTest {
 

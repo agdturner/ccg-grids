@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
@@ -75,7 +75,7 @@ public class Grids_ProcessorTest {
                 Grids_Strings.s_data);
         env = new Generic_Environment(new Generic_Defaults(
                 Paths.get(dataDir.toString(), Grids_Strings.s_generic)));
-        Generic_Path dir = new Generic_Path(dataDir);
+        IO_Path dir = new IO_Path(dataDir);
         ge = new Grids_Environment(env, dir);
         gp = new Grids_Processor(ge);
     }
@@ -1584,7 +1584,7 @@ public class Grids_ProcessorTest {
 //    public void testOutputImage() throws Exception {
 //        System.out.println("outputImage");
 //        Grids_GridNumber g = null;
-//        Generic_Path outDir = null;
+//        IO_Path outDir = null;
 //        Grids_ImageExporter ie = null;
 //        String[] imageTypes = null;
 //        boolean hoome = false;

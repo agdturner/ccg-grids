@@ -15,24 +15,18 @@
  */
 package uk.ac.leeds.ccg.grids.d2.util;
 
-import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridIteratorDouble;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
-import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -42,11 +36,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.io.IO_Utilities;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  *
@@ -519,13 +512,13 @@ public class Grids_UtilitiesTest {
         expResult = Math_BigRational.valueOf("1.4142135624");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         //System.out.println(result);
-        Assertions.assertEquals(expResult, result);
+        Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         oom = -20;
         expResult = Math_BigRational.valueOf("1.41421356237309504880");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
         System.out.println(result);
-        Assertions.assertEquals(expResult, result);
+        Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         oom = -1;
         x1 = Math_BigRational.valueOf(-3);
@@ -534,7 +527,7 @@ public class Grids_UtilitiesTest {
         y2 = Math_BigRational.valueOf(-2);
         expResult = Math_BigRational.valueOf("1.4");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
-        Assertions.assertEquals(expResult, result);
+        Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         oom = -1;
         x1 = Math_BigRational.ZERO;
@@ -543,7 +536,7 @@ public class Grids_UtilitiesTest {
         y2 = Math_BigRational.valueOf(4);
         expResult = Math_BigRational.valueOf("5.0");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
-        Assertions.assertEquals(expResult, result);
+        Assertions.assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -558,14 +551,13 @@ public class Grids_UtilitiesTest {
                 Grids_Strings.s_data);
         Generic_Environment env = new Generic_Environment(new Generic_Defaults(
                 Paths.get(dataDir.toString(), Grids_Strings.s_generic)));
-        Generic_Path dir = new Generic_Path(dataDir);
+        IO_Path dir = new IO_Path(dataDir);
         Grids_Environment ge = new Grids_Environment(env, dir);
         Grids_Processor gp = new Grids_Processor(ge);
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
         long nrows = 10L;
         long ncols = 10L;
-        int dp = 1;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        int oom = -1;
         Grids_Dimensions dimensions = new Grids_Dimensions(Math_BigRational.ZERO,
                 Math_BigRational.valueOf(ncols), Math_BigRational.ZERO,
                 Math_BigRational.valueOf(nrows), Math_BigRational.ONE);
@@ -576,10 +568,10 @@ public class Grids_UtilitiesTest {
         int divisions = 10;
         //Object[] expResult = null;
         try {
-            Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, dp, rm);
+            Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, oom);
             Grids_ImageExporter ie = new Grids_ImageExporter(ge);
             String type = "PNG";
-            Path file = Generic_IO.createNewFile(gp.env.files.getGeneratedDir()
+            Path file = IO_Utilities.createNewFile(gp.env.files.getGeneratedDir()
                     .getPath(), "Test", "." + type);
             Grids_GridDouble g = (Grids_GridDouble) result[3];
             ie.toGreyScaleImage(g, gp, file, type);
