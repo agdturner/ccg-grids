@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
  * Grids_Environment.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_Environment extends Grids_MemoryManager
         implements Grids_Memory {
@@ -161,7 +161,7 @@ public class Grids_Environment extends Grids_MemoryManager
      * @param dir Used to initialise {@link #files}.
      * @throws java.io.IOException If encountered.
      */
-    public Grids_Environment(Generic_Environment e, Generic_Path dir)
+    public Grids_Environment(Generic_Environment e, IO_Path dir)
             throws IOException, Exception {
         this.env = e;
         this.Memory_Threshold = Default_Memory_Threshold;

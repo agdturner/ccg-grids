@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.grid.i;
 
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryInt;
 import java.io.IOException;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
@@ -26,6 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInt;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedInt;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
 
 /**
  * A factory for constructing Grids_GridInt instances.
@@ -224,7 +224,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridInt create(Generic_Path gridFile, long startRow,
+    public Grids_GridInt create(IO_Path gridFile, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedInt(env),
@@ -248,7 +248,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridInt create(Grids_StatsInt stats,
-            Generic_Path gridFile, Grids_ChunkFactoryInt cf,
+            IO_Path gridFile, Grids_ChunkFactoryInt cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridInt(getStats(stats), store, store.getNextID(), gridFile, cf,
@@ -265,7 +265,7 @@ public class Grids_GridFactoryInt extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridInt create(Generic_Path gridFile)
+    public Grids_GridInt create(IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridInt r = new Grids_GridInt(env, store, store.getNextID(),
                 gridFile, noDataValue);

@@ -23,12 +23,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.memory.Grids_Account;
@@ -41,8 +40,9 @@ import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_Stats;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.util.HashSet;
-import java.util.stream.Collectors;
+import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -369,8 +369,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @return The path to the directory in {@link #fs} where this is currently
      * stored.
      */
-    public Generic_Path getDirectory() {
-        return new Generic_Path(fs.getPath(fsID));
+    public IO_Path getDirectory() {
+        return new IO_Path(fs.getPath(fsID));
     }
 
     /**
@@ -846,7 +846,7 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public void cache() throws IOException, Exception {
         swapChunks();
-        Generic_IO.writeObject(this, getPathThisFile(getDirectory()));
+        IO_Utilities.writeObject(this, getPathThisFile(getDirectory()));
     }
 
     /**
@@ -910,7 +910,7 @@ public abstract class Grids_Grid extends Grids_Object {
                 Path file = Paths.get(getDirectory().toString(),
                         i.getRow() + "_" + i.getCol());
                 //Files.createDirectory(file.getParent());
-                Generic_IO.writeObject(c, file);
+                IO_Utilities.writeObject(c, file);
                 //System.gc();
                 c.setCacheUpToDate(true);
             }
@@ -2634,7 +2634,7 @@ public abstract class Grids_Grid extends Grids_Object {
                     "" + i.getRow() + "_" + i.getCol());
             if (Files.exists(f)) {
                 //env.env.log("Loading chunk from file" + f);
-                Object o = Generic_IO.readObject(f);
+                Object o = IO_Utilities.readObject(f);
                 Grids_Chunk chunk = (Grids_Chunk) o;
                 chunk.env = env;
                 chunk.initGrid(this);
@@ -2698,7 +2698,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param p The directory path that is to contain the file.
      * @return The path for the serialization of this.
      */
-    public Path getPathThisFile(Generic_Path p) {
+    public Path getPathThisFile(IO_Path p) {
         return Paths.get(p.toString(), "grid.dat");
     }
 

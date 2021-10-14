@@ -18,12 +18,21 @@
  * Provides some raster data processing functionality.
  */
 module uk.ac.leeds.ccg.grids {
-    requires transitive java.logging;
-    requires transitive java.desktop;
+    //requires transitive java.logging;
+    //requires transitive java.desktop;
+    
+    /**
+     * The ccg-generic library.
+     */
     requires transitive uk.ac.leeds.ccg.generic;
     
     /**
-     * The agdt-java-math library is used for some mathematics.
+     * The ccg-io library.
+     */
+    requires transitive uk.ac.leeds.ccg.io;
+    
+    /**
+     * The ccg-math library.
      */
     requires transitive uk.ac.leeds.ccg.math;
     

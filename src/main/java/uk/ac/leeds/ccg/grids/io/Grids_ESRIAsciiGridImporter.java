@@ -20,10 +20,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -39,7 +39,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
     /**
      * The ESRIAsciigrid File
      */
-    private Generic_Path file;
+    private IO_Path file;
 
     /**
      * The ESRIAsciigrid BufferedReader.
@@ -61,15 +61,15 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
      * @param e The Grids_Environment.
      * @throws java.io.FileNotFoundException If f does not exist.
      */
-    public Grids_ESRIAsciiGridImporter(Grids_Environment e, Generic_Path f)
+    public Grids_ESRIAsciiGridImporter(Grids_Environment e, IO_Path f)
             throws FileNotFoundException, IOException {
         super(e);
         init(f);
     }
 
-    private void init(Generic_Path f) throws FileNotFoundException, IOException {
+    private void init(IO_Path f) throws FileNotFoundException, IOException {
         file = f;
-        br = Generic_IO.getBufferedReader(file.getPath());
+        br = IO_Utilities.getBufferedReader(file.getPath());
         st = new StreamTokenizer(br);
     }
 

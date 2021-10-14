@@ -16,10 +16,10 @@
 package uk.ac.leeds.ccg.grids.d2.grid;
 
 import java.io.IOException;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -150,7 +150,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public abstract Grids_Grid create(Generic_Path gridFile)
+    public abstract Grids_Grid create(IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception;
 
     /**
@@ -168,7 +168,7 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public abstract Grids_Grid create(Generic_Path gridFile,
+    public abstract Grids_Grid create(IO_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception;
 

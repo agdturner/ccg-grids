@@ -21,8 +21,8 @@ import java.math.BigInteger;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_Files;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
+import uk.ac.leeds.ccg.io.IO_Path;
 
 /**
  * For conveniently initialising and locating files and directories.
@@ -37,42 +37,42 @@ public class Grids_Files extends Generic_Files {
     /**
      * Indicates where grids holding {@link BigInteger} values are to be stored.
      */
-    protected Generic_Path generatedGridBigIntegerDir;
+    protected IO_Path generatedGridBigIntegerDir;
 
     /**
      * Indicates where grids holding {@code int} values are to be stored.
      */
-    protected Generic_Path generatedGridIntDir;
+    protected IO_Path generatedGridIntDir;
 
     /**
      * Indicates where grids holding {@link BigDecimal} values are to be stored.
      */
-    protected Generic_Path generatedGridBigDecimalDir;
+    protected IO_Path generatedGridBigDecimalDir;
 
     /**
      * Indicates where grids holding {@code double} values are to be stored.
      */
-    protected Generic_Path generatedGridDoubleDir;
+    protected IO_Path generatedGridDoubleDir;
 
     /**
      * Indicates where grids holding {@code float} values are to be stored.
      */
-    protected Generic_Path generatedGridFloatDir;
+    protected IO_Path generatedGridFloatDir;
 
     /**
      * Indicates where grids holding {@code Boolean} values are to be stored.
      */
-    protected Generic_Path generatedGridBooleanDir;
+    protected IO_Path generatedGridBooleanDir;
 
     /**
      * Indicates where grids holding {@code boolean} values are to be stored.
      */
-    protected Generic_Path generatedGridBinaryDir;
+    protected IO_Path generatedGridBinaryDir;
 
     /**
      * Indicates where grids are to be stored.
      */
-    protected Generic_Path generatedProcessorDir;
+    protected IO_Path generatedProcessorDir;
 
     /**
      * Creates a new instance.
@@ -102,9 +102,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridBigIntegerDir() throws IOException {
+    public IO_Path getGeneratedGridBigIntegerDir() throws IOException {
         if (generatedGridBigIntegerDir == null) {
-            generatedGridBigIntegerDir = new Generic_Path(Paths.get(
+            generatedGridBigIntegerDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_BigInteger));
         }
         return generatedGridBigIntegerDir;
@@ -117,9 +117,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridIntDir() throws IOException {
+    public IO_Path getGeneratedGridIntDir() throws IOException {
         if (generatedGridIntDir == null) {
-            generatedGridIntDir = new Generic_Path(Paths.get(
+            generatedGridIntDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridInt));
         }
         return generatedGridIntDir;
@@ -133,9 +133,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridBigDecimalDir() throws IOException {
+    public IO_Path getGeneratedGridBigDecimalDir() throws IOException {
         if (generatedGridBigDecimalDir == null) {
-            generatedGridBigDecimalDir = new Generic_Path(Paths.get(
+            generatedGridBigDecimalDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_BigDecimal));
         }
         return generatedGridBigDecimalDir;
@@ -149,9 +149,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridDoubleDir() throws IOException {
+    public IO_Path getGeneratedGridDoubleDir() throws IOException {
         if (generatedGridDoubleDir == null) {
-            generatedGridDoubleDir = new Generic_Path(Paths.get(
+            generatedGridDoubleDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridDouble));
         }
         return generatedGridDoubleDir;
@@ -164,9 +164,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridFloatDir() throws IOException {
+    public IO_Path getGeneratedGridFloatDir() throws IOException {
         if (generatedGridFloatDir == null) {
-            generatedGridFloatDir = new Generic_Path(Paths.get(
+            generatedGridFloatDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridFloat));
         }
         return generatedGridFloatDir;
@@ -180,9 +180,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridBooleanDir() throws IOException {
+    public IO_Path getGeneratedGridBooleanDir() throws IOException {
         if (generatedGridBooleanDir == null) {
-            generatedGridBooleanDir = new Generic_Path(Paths.get(
+            generatedGridBooleanDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridBoolean));
         }
         return generatedGridBooleanDir;
@@ -196,9 +196,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedGridBinaryDir() throws IOException {
+    public IO_Path getGeneratedGridBinaryDir() throws IOException {
         if (generatedGridBinaryDir == null) {
-            generatedGridBinaryDir = new Generic_Path(Paths.get(
+            generatedGridBinaryDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_GridBinary));
         }
         return generatedGridBinaryDir;
@@ -211,9 +211,9 @@ public class Grids_Files extends Generic_Files {
      * {@code null}.
      * @throws java.io.IOException If encountered.
      */
-    public Generic_Path getGeneratedProcessorDir() throws IOException {
+    public IO_Path getGeneratedProcessorDir() throws IOException {
         if (generatedProcessorDir == null) {
-            generatedGridBooleanDir = new Generic_Path(Paths.get(
+            generatedGridBooleanDir = new IO_Path(Paths.get(
                     getGeneratedDir().toString(), Grids_Strings.s_Processor));
         }
         return generatedProcessorDir;

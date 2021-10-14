@@ -15,6 +15,10 @@
  */
 package uk.ac.leeds.ccg.grids.d2.util;
 
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
@@ -23,11 +27,6 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.math.BigInteger;
 import uk.ac.leeds.ccg.generic.util.Generic_Time;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -165,22 +164,22 @@ public class Grids_Utilities extends Grids_Object {
      *
      * @return The distance squared between two points.
      */
-    public static final Math_BigRational distance2(Math_BigRational x1, 
+    public static final Math_BigRational distance2(Math_BigRational x1,
             Math_BigRational y1, Math_BigRational x2, Math_BigRational y2) {
         return ((x1.subtract(x2)).pow(2)).add((y1.subtract(y2)).pow(2));
     }
-    
+
     /**
      * @param x1 The x coordinate of the first point.
      * @param y1 The y coordinate of the first point.
      * @param x2 The x coordinate of the second point.
      * @param y2 The y coordinate of the second point.
-     * @param oom The Order of Magnitude initially used to calculate the square 
+     * @param oom The Order of Magnitude initially used to calculate the square
      * root.
-     * 
+     *
      * @return The distance between two points.
      */
-    public static final Math_BigRationalSqrt distance(Math_BigRational x1, 
+    public static final Math_BigRationalSqrt distance(Math_BigRational x1,
             Math_BigRational y1, Math_BigRational x2, Math_BigRational y2,
             int oom) {
         return new Math_BigRationalSqrt(((x1.subtract(x2)).pow(2))
@@ -279,15 +278,13 @@ public class Grids_Utilities extends Grids_Object {
      * <li>r[3] = densityPlotGrid;</li>
      * </ul>
      * @param oom Order Of Magnitude for any rounding.
-     * @param rm RoundingMode for BigDecimal arithmetic.
      *
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom,
-            RoundingMode rm)
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
         Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
@@ -332,13 +329,13 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        BigDecimal[] sumy = new BigDecimal[divisions];
-        BigDecimal[] numy = new BigDecimal[divisions];
-        BigDecimal[] sumysq = new BigDecimal[divisions];
+        Math_BigRational[] sumy = new Math_BigRational[divisions];
+        long[] numy = new long[divisions];
+        Math_BigRational[] sumysq = new Math_BigRational[divisions];
         for (int j = 0; j < divisions; j++) {
-            sumy[j] = BigDecimal.ZERO;
-            numy[j] = BigDecimal.ZERO;
-            sumysq[j] = BigDecimal.ZERO;
+            sumy[j] = Math_BigRational.ZERO;
+            numy[j] = 0L;
+            sumysq[j] = Math_BigRational.ZERO;
         }
         Grids_GridDouble temp1 = gfd.create(divisions, divisions, newDimensions);
         for (long row = 0; row < nrows; row++) {
@@ -357,24 +354,24 @@ public class Grids_Utilities extends Grids_Object {
                             division = 0;
                         }
                         //System.out.println(division);
-                        BigDecimal yd = BigDecimal.valueOf(y);
+                        Math_BigRational yd = Math_BigRational.valueOf(y);
                         sumy[division] = sumy[division].add(yd);
-                        numy[division] = numy[division].add(BigDecimal.ONE);
+                        numy[division] = numy[division] + 1L;
                         sumysq[division] = sumysq[division].add(yd.multiply(yd));
                     }
                 }
             }
         }
-        BigDecimal[] stdevy = new BigDecimal[divisions];
-        BigDecimal[] meany = new BigDecimal[divisions];
+        Math_BigRational[] stdevy = new Math_BigRational[divisions];
+        Math_BigRational[] meany = new Math_BigRational[divisions];
         for (int j = 0; j < divisions; j++) {
-            if (numy[j].compareTo(BigDecimal.ZERO) == 1) {
-                meany[j] = Math_BigDecimal.divide(
-                        sumy[j], numy[j], oom, rm);
-                if (numy[j].compareTo(BigDecimal.ONE) == 1) {
-                    stdevy[j] = Math_BigDecimal.sqrt(Math_BigDecimal.divide(
-                            ((numy[j].multiply(sumysq[j])).subtract(sumy[j].multiply(sumy[j]))),
-                            ((numy[j].multiply(numy[j].subtract(BigDecimal.ONE)))), oom, rm), oom, rm);
+            if (numy[j] > 0) {
+                Math_BigRational numybr = Math_BigRational.valueOf(numy[j]);
+                meany[j] = sumy[j].divide(numybr);
+                if (numy[j] > 1) {
+                    stdevy[j] = new Math_BigRationalSqrt(
+                            ((numybr.multiply(sumysq[j])).subtract(sumy[j].pow(2)))
+                                    .divide(numybr.pow(2).subtract(Math_BigRational.ONE)), oom).getSqrt(oom);
                 }
             }
 //            if (numy[j] > 0.0d) {
@@ -404,7 +401,7 @@ public class Grids_Utilities extends Grids_Object {
             }
         }
         Grids_Dimensions newdimensions = new Grids_Dimensions(
-                Math_BigRational.ZERO, Math_BigRational.ZERO, 
+                Math_BigRational.ZERO, Math_BigRational.ZERO,
                 Math_BigRational.valueOf(divisions),
                 Math_BigRational.valueOf(divisions), Math_BigRational.ONE);
         Grids_GridDouble densityPlotGrid = gfd.create(divisions, divisions, newdimensions);

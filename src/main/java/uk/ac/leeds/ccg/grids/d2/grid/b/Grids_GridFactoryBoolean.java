@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.io.IOException;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
@@ -24,8 +23,9 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
-import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanSinglet;
+import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
 
 /**
  * A factory for constructing
@@ -213,7 +213,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridBoolean create(Generic_Path gridFile,
+    public Grids_GridBoolean create(IO_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         return create(new Grids_StatsNotUpdatedBoolean(env), gridFile,
@@ -241,7 +241,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridBoolean create(Grids_StatsBoolean stats,
-            Generic_Path gridFile, Grids_ChunkFactoryBoolean cf,
+            IO_Path gridFile, Grids_ChunkFactoryBoolean cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(getStats(stats),
@@ -260,7 +260,7 @@ public class Grids_GridFactoryBoolean extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridBoolean create(Generic_Path gridFile)
+    public Grids_GridBoolean create(IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBoolean r = new Grids_GridBoolean(env, store,
                 store.getNextID(), gridFile);

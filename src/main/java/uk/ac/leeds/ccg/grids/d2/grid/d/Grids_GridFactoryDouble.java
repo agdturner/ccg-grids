@@ -17,16 +17,16 @@ package uk.ac.leeds.ccg.grids.d2.grid.d;
 
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDouble;
 import java.io.IOException;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
-import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
+import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsDouble;
+import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.io.IO_Cache;
 
 /**
  * A factory for constructing Grids_GridDouble instances.
@@ -240,7 +240,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridDouble create(Generic_Path gridFile, long startRow,
+    public Grids_GridDouble create(IO_Path gridFile, long startRow,
             long startCol, long endRow, long endCol) throws IOException,
             ClassNotFoundException, Exception {
         return create(new Grids_GridStatsNotUpdatedDouble(env),
@@ -265,7 +265,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble create(Grids_GridStatsDouble stats,
-            Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
+            IO_Path gridFile, Grids_ChunkFactoryDouble cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(getStats(stats), store,
@@ -284,7 +284,7 @@ public class Grids_GridFactoryDouble extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridDouble create(Generic_Path gridFile)
+    public Grids_GridDouble create(IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridDouble r = new Grids_GridDouble(env, store, store.getNextID(),
                 gridFile, noDataValue);

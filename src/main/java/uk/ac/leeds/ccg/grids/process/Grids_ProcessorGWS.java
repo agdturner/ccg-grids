@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
@@ -28,6 +27,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -389,7 +389,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Second order statistics ( coefficient of variation, skewness, kurtosis, zscore)
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
-            Generic_Path dir;
+            IO_Path dir;
             if (doProp) {
                 propGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
@@ -846,7 +846,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         gf.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
-            Generic_Path dir;
+            IO_Path dir;
             if (doMean) {
                 meanGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
             }
@@ -930,7 +930,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Second order statistics ( coefficient of variation, skewness, kurtosis, zscore)
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
-            Generic_Path dir;
+            IO_Path dir;
             if (doProp) {
                 propGrid = gf.create(nrows, ncols, dimensions);
             }
@@ -1307,7 +1307,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             }
         }
         Grids_GridDouble[] result = new Grids_GridDouble[numberOfIterations];
-        Generic_Path dir;
+        IO_Path dir;
         // If all values are noDataValues return noDataValue density results
         if (n == 0) {
             for (int i = 0; i < numberOfIterations; i++) {

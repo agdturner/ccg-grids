@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
@@ -41,11 +41,11 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import java.util.Iterator;
-import java.util.Set;
-import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
+import uk.ac.leeds.ccg.io.IO_Utilities;
+import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -148,7 +148,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_GridStatsDouble stats, IO_Cache fs,
-            long id, Generic_Path gridFile, Grids_ChunkFactoryDouble cf,
+            long id, IO_Path gridFile, Grids_ChunkFactoryDouble cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv, Grids_Environment ge)
             throws IOException, Exception {
@@ -172,7 +172,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_Environment ge, IO_Cache fs,
-            long id, Generic_Path gridFile, double ndv) throws IOException, Exception {
+            long id, IO_Path gridFile, double ndv) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(new Grids_GridStatsNotUpdatedDouble(ge), gridFile);
     }
@@ -446,7 +446,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsDouble stats, Generic_Path gridFile,
+    private void init(Grids_StatsDouble stats, IO_Path gridFile,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double noDataValue)
             throws IOException, ClassNotFoundException, Exception {
@@ -463,9 +463,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
-                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
+                IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
-                        (Grids_Grid) Generic_IO.readObject(thisFile));
+                        (Grids_Grid) IO_Utilities.readObject(thisFile));
                 Grids_GridDouble g2 = gf.create(g, startRow, startCol, endRow,
                         endCol);
                 init(g2);
@@ -567,7 +567,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsDouble stats, Generic_Path gridFile)
+    private void init(Grids_StatsDouble stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -578,9 +578,9 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
-                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
+                IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
-                        (Grids_Grid) Generic_IO.readObject(thisFile));
+                        (Grids_Grid) IO_Utilities.readObject(thisFile));
                 init(g);
                 //this.data = g.data;
                 this.worthSwapping = g.worthSwapping;

@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
@@ -45,12 +44,13 @@ import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNumber;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
-import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinaryArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
+import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -2382,7 +2382,7 @@ public class Grids_Processor extends Grids_Object {
         int l = imageTypes.length;
         for (i = 0; i < l; i++) {
             s = g.getName() + "." + imageTypes[i];
-            file = new Generic_Path(Paths.get(outDir.toString(), s));
+            file = new IO_Path(Paths.get(outDir.toString(), s));
             ie.toGreyScaleImage(g, this, file, imageTypes[i]);
         }
         s = g.getName() + dotASC;
@@ -2401,7 +2401,7 @@ public class Grids_Processor extends Grids_Object {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void outputImage(Grids_GridNumber g, Generic_Path outDir,
+    public void outputImage(Grids_GridNumber g, IO_Path outDir,
             Grids_ImageExporter ie, String[] imageTypes, boolean hoome)
             throws IOException, ClassNotFoundException, Exception {
         try {

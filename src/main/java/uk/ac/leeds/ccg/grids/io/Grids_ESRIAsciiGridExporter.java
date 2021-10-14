@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
+import uk.ac.leeds.ccg.io.IO_Utilities;
 
 /**
  * Class for exporting ESRI Asciigrid.
@@ -103,7 +103,7 @@ public class Grids_ESRIAsciiGridExporter extends Grids_Object {
             throws IOException, Exception, ClassNotFoundException {
         env.initNotToClear();
         env.checkAndMaybeFreeMemory();
-        try (PrintWriter pw = Generic_IO.getPrintWriter(file, false)) {
+        try (PrintWriter pw = IO_Utilities.getPrintWriter(file, false)) {
             Grids_Dimensions d = g.getDimensions();
             long nrows = g.getNRows();
             long ncols = g.getNCols();

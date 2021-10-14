@@ -16,16 +16,16 @@
 package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import java.io.IOException;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinarySinglet;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBinary;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBinary;
 import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinarySinglet;
+import uk.ac.leeds.ccg.io.IO_Path;
 
 /**
  * A factory for constructing
@@ -214,7 +214,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridBinary create(Generic_Path gridFile,
+    public Grids_GridBinary create(IO_Path gridFile,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBinary r = create(new Grids_StatsNotUpdatedBinary(env),
@@ -245,7 +245,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridBinary create(Grids_StatsBinary stats,
-            Generic_Path gridFile, Grids_ChunkFactoryBinary cf,
+            IO_Path gridFile, Grids_ChunkFactoryBinary cf,
             long startRow, long startCol, long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
         Grids_GridBinary r = new Grids_GridBinary(getStats(stats), store,
@@ -263,7 +263,7 @@ public class Grids_GridFactoryBinary extends Grids_GridFactory {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_GridBinary create(Generic_Path gridFile)
+    public Grids_GridBinary create(IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         return new Grids_GridBinary(env, store, store.getNextID(), gridFile);
     }

@@ -21,8 +21,7 @@ import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
-import uk.ac.leeds.ccg.generic.io.Generic_IO;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
@@ -45,6 +44,7 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.util.Set;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -148,7 +148,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs,
-            long id, Generic_Path gridFile,
+            long id, IO_Path gridFile,
             Grids_ChunkFactoryInt cf, int cnr,
             int cnc, long startRow, long startCol, long endRow,
             long endCol, int ndv, Grids_Environment ge)
@@ -173,7 +173,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridInt(Grids_Environment ge, IO_Cache fs,
-            long id, Generic_Path gridFile, int ndv)
+            long id, IO_Path gridFile, int ndv)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
         init(new Grids_StatsNotUpdatedInt(ge), gridFile);
@@ -493,7 +493,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param endCol The rightmost column index of the grid stored as gridFile.
      * @param ndv The ndv for this.
      */
-    private void init(Grids_StatsInt stats, Generic_Path gridFile,
+    private void init(Grids_StatsInt stats, IO_Path gridFile,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol)
             throws IOException, ClassNotFoundException, Exception {
@@ -510,8 +510,8 @@ public class Grids_GridInt extends Grids_GridNumber {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
                 Grids_GridFactoryInt gf = gp.gridFactoryInt;
-                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
-                Grids_Grid g = (Grids_Grid) Generic_IO.readObject(thisFile);
+                IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
+                Grids_Grid g = (Grids_Grid) IO_Utilities.readObject(thisFile);
                 Grids_GridInt g2 = gf.create(g, startRow, startCol, endRow, endCol);
                 init(g2);
             }
@@ -611,7 +611,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsInt stats, Generic_Path gridFile)
+    private void init(Grids_StatsInt stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -623,9 +623,9 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_GridFactoryInt gf = gp.gridFactoryInt;
-                Generic_Path thisFile = new Generic_Path(getPathThisFile(gridFile));
+                IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridInt g = (Grids_GridInt) gf.create(
-                        (Grids_Grid) Generic_IO.readObject(thisFile));
+                        (Grids_Grid) IO_Utilities.readObject(thisFile));
                 init(g);
                 this.data = g.data;
                 this.worthSwapping = g.worthSwapping;
