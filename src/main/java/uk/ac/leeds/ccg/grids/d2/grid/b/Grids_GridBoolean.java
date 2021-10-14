@@ -621,25 +621,24 @@ public class Grids_GridBoolean extends Grids_GridB {
     protected void upDateGridStatistics(Boolean newValue, Boolean oldValue)
             throws IOException, Exception, ClassNotFoundException {
         if (!(newValue == null && oldValue == null)) {
-            if (stats.getClass() == Grids_GridBooleanStats.class) {
+            Grids_GridBooleanStats s = getStats();
+            if (s instanceof Grids_GridBooleanStatsNotUpdated) {
+                if (newValue == null) {
+                    ((Grids_GridBooleanStatsNotUpdated) s).setUpToDate(false);
+                } else if (oldValue == null) {
+                    ((Grids_GridBooleanStatsNotUpdated) s).setUpToDate(false);
+                } else {
+                    if (!Objects.equals(newValue, oldValue)) {
+                        ((Grids_GridBooleanStatsNotUpdated) s).setUpToDate(false);
+                    }
+                }
+            } else {
                 if (newValue
                         == false) {
                     if (oldValue == false) {
-                        //stats.setN(stats.getN().subtract(BigInteger.ONE));
-                        stats.setN(stats.getN() - 1);
+                        s.setN(s.getN() - 1);
                     }
-                    //stats.setN(stats.getN().add(BigInteger.ONE));
-                    stats.setN(stats.getN() + 1);
-                }
-            } else {
-                if (newValue == null) {
-                    ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
-                } else if (oldValue == null) {
-                    ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
-                } else {
-                    if (!Objects.equals(newValue, oldValue)) {
-                        ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
-                    }
+                    s.setN(s.getN() + 1);
                 }
             }
 

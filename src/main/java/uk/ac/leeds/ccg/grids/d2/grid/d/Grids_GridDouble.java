@@ -1105,26 +1105,26 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected void updateStats(double value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_GridDoubleStats dStats = getStats();
+        Grids_GridDoubleStats s = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
-            dStats.setN(dStats.getN() + 1);
-            dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
-            double min = dStats.getMin(false);
+            s.setN(s.getN() + 1);
+            s.setSum(s.getSum().add(Math_BigRational.valueOf(value)));
+            double min = s.getMin(false);
             if (value < min) {
-                dStats.setNMin(1);
-                dStats.setMin(value);
+                s.setNMin(1);
+                s.setMin(value);
             } else {
                 if (value == min) {
-                    dStats.setNMin(dStats.getNMin() + 1);
+                    s.setNMin(s.getNMin() + 1);
                 }
             }
-            double max = dStats.getMax(false);
+            double max = s.getMax(false);
             if (value > max) {
-                dStats.setNMax(1);
-                dStats.setMax(value);
+                s.setNMax(1);
+                s.setMax(value);
             } else {
                 if (value == max) {
-                    dStats.setNMax(dStats.getNMax() + 1);
+                    s.setNMax(s.getNMax() + 1);
                 }
             }
         }

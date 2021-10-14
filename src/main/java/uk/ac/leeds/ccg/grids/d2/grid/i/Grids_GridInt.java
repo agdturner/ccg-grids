@@ -879,38 +879,38 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public void updateStats(int newValue, int oldValue) throws IOException,
             Exception, ClassNotFoundException {
-        Grids_GridIntStats iStats = getStats();
-        if (iStats.isUpdated()) {
+        Grids_GridIntStats s = getStats();
+        if (s instanceof Grids_GridIntStatsNotUpdated) {
+            if (newValue != oldValue) {
+                ((Grids_GridIntStatsNotUpdated) s).setUpToDate(false);
+            }
+        } else {
             if (newValue != ndv) {
                 if (oldValue != ndv) {
-                    iStats.setN(iStats.getN() - 1);
-                    iStats.setSum(iStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
-                    int min = iStats.getMin(false);
+                    s.setN(s.getN() - 1);
+                    s.setSum(s.getSum().subtract(Math_BigRational.valueOf(oldValue)));
+                    int min = s.getMin(false);
                     if (oldValue == min) {
-                        iStats.setNMin(iStats.getNMin() - 1);
+                        s.setNMin(s.getNMin() - 1);
                     }
-                    int max = iStats.getMax(false);
+                    int max = s.getMax(false);
                     if (oldValue == max) {
-                        iStats.setNMax(iStats.getNMax() - 1);
+                        s.setNMax(s.getNMax() - 1);
                     }
                 }
                 if (newValue != ndv) {
-                    iStats.setN(iStats.getN() + 1);
-                    iStats.setSum(iStats.getSum().add(Math_BigRational.valueOf(newValue)));
+                    s.setN(s.getN() + 1);
+                    s.setSum(s.getSum().add(Math_BigRational.valueOf(newValue)));
                     updateStats(newValue);
-                    if (iStats.getNMin() < 1) {
+                    if (s.getNMin() < 1) {
                         // The stats need recalculating
-                        iStats.update();
+                        s.update();
                     }
-                    if (iStats.getNMax() < 1) {
+                    if (s.getNMax() < 1) {
                         // The stats need recalculating
-                        iStats.update();
+                        s.update();
                     }
                 }
-            }
-        } else {
-            if (newValue != oldValue) {
-                ((Grids_GridIntStatsNotUpdated) iStats).setUpToDate(false);
             }
         }
     }

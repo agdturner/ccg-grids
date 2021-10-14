@@ -38,7 +38,6 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -608,16 +607,14 @@ public class Grids_GridBinary extends Grids_GridB {
         Grids_GridBinaryStats s = getStats();
         if (s instanceof Grids_GridBinaryStatsNotUpdated) {
             if (newValue != oldValue) {
-                ((Grids_GridBinaryStatsNotUpdated) stats).setUpToDate(false);
+                ((Grids_GridBinaryStatsNotUpdated) s).setUpToDate(false);
             }
         } else {
             if (newValue == false) {
                 if (oldValue == false) {
-                    //stats.setN(stats.getN().subtract(BigInteger.ONE));
-                    stats.setN(stats.getN() - 1);
+                    s.setN(s.getN() - 1);
                 }
-                //stats.setN(stats.getN().add(BigInteger.ONE));
-                stats.setN(stats.getN() + 1);
+                s.setN(s.getN() + 1);
             }
         }
     }

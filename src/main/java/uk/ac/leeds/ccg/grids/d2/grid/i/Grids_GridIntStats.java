@@ -89,8 +89,8 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         env.checkAndMaybeFreeMemory();
         init();
         Grids_GridInt g = getGrid();
-        double ndv = g.getNoDataValue();
-        // This is too slow!
+        int ndv = g.getNoDataValue();
+        // This is slow!
         Grids_GridIntIterator ite = g.iterator();
         while (ite.hasNext()) {
             int v = ite.next();
@@ -143,12 +143,12 @@ public class Grids_GridIntStats extends Grids_StatsInt {
     public long getNonZeroN() throws IOException, Exception, ClassNotFoundException {
         long r = 0L;
         Grids_GridInt g = getGrid();
-        double ndv = g.getNoDataValue();
+        int ndv = g.getNoDataValue();
         Grids_GridIntIterator ite = g.iterator();
         while (ite.hasNext()) {
             int v = ite.next();
             if (!(v == ndv || v == 0)) {
-                    r++;
+                r++;
             }
         }
         return r;
@@ -196,14 +196,14 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         Math_BigRational mean = getArithmeticMean();
         long dataValueCount = 0;
         Grids_GridInt g = (Grids_GridInt) grid;
-        double ndv = g.getNoDataValue();
+        int ndv = g.getNoDataValue();
         Grids_GridIntIterator ite = g.iterator();
         while (ite.hasNext()) {
-            double v = ite.next();
+            int v = ite.next();
             if (v != ndv) {
-                    Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
-                    stdev = stdev.add(delta.multiply(delta));
-                    dataValueCount++;
+                Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
+                stdev = stdev.add(delta.multiply(delta));
+                dataValueCount++;
             }
         }
         if (dataValueCount < 2) {
@@ -240,7 +240,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         if (nonZeroN % nClasses != 0) {
             nInClass += 1;
         }
-        double noDataValue = g.getNoDataValue();
+        int noDataValue = g.getNoDataValue();
         TreeMap<Integer, Long> classCounts = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
             classCounts.put(i, 0L);
@@ -256,7 +256,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         //long valueID = 0;
         Grids_GridIntIterator ite = g.iterator();
         while (ite.hasNext()) {
-            double v = ite.next();
+            int v = ite.next();
             BigDecimal vbd = BigDecimal.valueOf(v);
             if (!(v == 0.0d || v == noDataValue)) {
                 if (count % nInClass == 0) {

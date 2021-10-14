@@ -27,10 +27,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
- * Some of the statistic are kept up to date as the
- * underlying data is changed (which can be computationally expensive). Second 
- * order statistics like the standard deviation always require recalculating if 
- * the data have changed.)
+ * Some of the statistic are kept up to date as the underlying data is changed
+ * (which can be computationally expensive). Second order statistics like the
+ * standard deviation always require recalculating if the data have changed.)
  *
  * @author Andy Turner
  * @version 1.0
@@ -41,7 +40,7 @@ public class Grids_GridBDStats extends Grids_StatsBD {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param ge Grids_Environment
      */
     public Grids_GridBDStats(Grids_Environment ge) {
@@ -92,9 +91,9 @@ public class Grids_GridBDStats extends Grids_StatsBD {
         Grids_GridBDIterator ite = g.iterator();
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
-                if (v != ndv) {
-                    update(v);
-                }
+            if (v.compareTo(ndv) != 0) {
+                update(v);
+            }
         }
     }
 
@@ -146,7 +145,7 @@ public class Grids_GridBDStats extends Grids_StatsBD {
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             if (!(v.compareTo(ndv) == 0 || v.compareTo(BigDecimal.ZERO) == 0)) {
-                    r++;
+                r++;
             }
         }
         return r;
@@ -199,9 +198,9 @@ public class Grids_GridBDStats extends Grids_StatsBD {
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             if (v.compareTo(ndv) != 0) {
-                    Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
-                    stdev = stdev.add(delta.multiply(delta));
-                    dataValueCount ++;
+                Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
+                stdev = stdev.add(delta.multiply(delta));
+                dataValueCount++;
             }
         }
         if (dataValueCount < 2) {
@@ -215,8 +214,8 @@ public class Grids_GridBDStats extends Grids_StatsBD {
      *
      * @param nClasses The number of classes to divide the data into.
      * @return Object[] r where r[0] is the min, r[1] is the max; r[2] is a
-     * {@code TreeMap<Integer, TreeMap<BD, Long>>*} where the key is the
-     * class index and the value is a map indexed by the number and the count.
+     * {@code TreeMap<Integer, TreeMap<BD, Long>>*} where the key is the class
+     * index and the value is a map indexed by the number and the count.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
