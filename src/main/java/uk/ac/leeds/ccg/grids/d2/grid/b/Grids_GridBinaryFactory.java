@@ -52,12 +52,12 @@ public class Grids_GridBinaryFactory extends Grids_GridFactory {
     public Grids_ChunkBinaryFactorySinglet gridChunkBinaryFactory;
 //    public Grids_GridChunkBinaryMapFactory ChunkBinaryMapFactory;
 //    public Grids_GridChunkBinaryArrayFactory ChunkBinaryArrayFactory;
-    
+
     /**
      * defaultGridChunkBinaryFactory
      */
     public Grids_ChunkBinaryFactory defaultGridChunkBinaryFactory;
-    
+
     /**
      * {@link #dim} is set to {@code null}. {@link #stats} is set to
      * {@code new Grids_GridBinaryStatsNotUpdated(e)}.
@@ -133,7 +133,8 @@ public class Grids_GridBinaryFactory extends Grids_GridFactory {
     /**
      * Create a {@link Grids_GridBinary} from {@code g}.
      *
-     * {@link #stats} is set to {@code new Grids_GridBinaryStatsNotUpdated(env)}.
+     * {@link #stats} is set to
+     * {@code new Grids_GridBinaryStatsNotUpdated(env)}.
      *
      * @param g The grid from which values are used to set the values in the
      * created grid.
@@ -193,7 +194,8 @@ public class Grids_GridBinaryFactory extends Grids_GridFactory {
     }
 
     /**
-     * {@link #stats} is set to {@code new Grids_GridBinaryStatsNotUpdated(env)}.
+     * {@link #stats} is set to
+     * {@code new Grids_GridBinaryStatsNotUpdated(env)}.
      *
      * @param gridFile The directory containing a cached grid that will be used
      * to create the grid returned.
@@ -223,8 +225,8 @@ public class Grids_GridBinaryFactory extends Grids_GridFactory {
     }
 
     /**
-     * @param stats A {@link Grids_StatsBinary} which is effectively duplicated
-     * but becomes the stats in the returned grid.
+     * @param stats A {@link Grids_GridBinaryStats} which is effectively
+     * duplicated but becomes the stats in the returned grid.
      * @param gridFile The directory containing a cached grid that will be used
      * to create the grid returned.
      * @param cf The preferred factory for creating chunks that the constructed
