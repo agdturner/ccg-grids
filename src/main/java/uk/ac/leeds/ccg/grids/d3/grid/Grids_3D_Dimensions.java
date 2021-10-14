@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.grids.d3.grid;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -25,16 +23,11 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * For storing and testing the dimensions of a 3D grid.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
-public class Grids_3D_Dimensions implements Serializable {
+public class Grids_3D_Dimensions extends Grids_Dimensions {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The 2D dimensions
-     */
-    public final Grids_Dimensions d;
 
     /**
      * The minimum z.
@@ -69,18 +62,25 @@ public class Grids_3D_Dimensions implements Serializable {
      * DimensionsScale will default to the maximum scale in anz of the
      * BigDecimal inputs.
      *
-     * @param dim What {@link #d} is set to.
+     * @param xMin What {@link #xMin} is set to.
+     * @param xMax What {@link #xMax} is set to.
+     * @param yMin What {@link #yMin} is set to.
+     * @param yMax What {@link #yMax} is set to.
      * @param zMin What {@link #zMin} is set to.
      * @param zMax What {@link #zMax} is set to.
+     * @param cellsize What {@link #cellsize} is set to.
      * @param cellDepth What {@link #cellDepth} is set to.
      */
-    public Grids_3D_Dimensions(Grids_Dimensions dim, Math_BigRational zMin,
-            Math_BigRational zMax, Math_BigRational cellDepth) {
-        this.d = dim;
+    public Grids_3D_Dimensions(Math_BigRational xMin,
+            Math_BigRational xMax, Math_BigRational yMin,
+            Math_BigRational yMax, Math_BigRational zMin,
+            Math_BigRational zMax, Math_BigRational cellsize,
+            Math_BigRational cellDepth) {
+        super(xMin, xMax, yMin, yMax, cellsize);
         this.zMin = zMin;
         this.zMax = zMax;
         this.cellDepth = zMin;
-        volume = d.getArea().multiply(cellDepth);
+        volume = getArea().multiply(cellDepth);
     }
 
     /**
@@ -98,7 +98,7 @@ public class Grids_3D_Dimensions implements Serializable {
         if (o instanceof Grids_3D_Dimensions) {
             Grids_3D_Dimensions o2 = (Grids_3D_Dimensions) o;
             if (this.hashCode() == o2.hashCode()) {
-                if (d.equals(o2.d)) {
+                if (super.equals(o2)) {
                     if (this.cellDepth.compareTo(o2.cellDepth) == 0) {
                         if (this.zMin.compareTo(o2.zMin) == 0) {
                             if (this.zMax.compareTo(o2.zMax) == 0) {
@@ -115,7 +115,6 @@ public class Grids_3D_Dimensions implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + Objects.hashCode(this.d);
         hash = 19 * hash + Objects.hashCode(this.zMin);
         hash = 19 * hash + Objects.hashCode(this.zMax);
         hash = 19 * hash + Objects.hashCode(this.cellDepth);
@@ -148,7 +147,7 @@ public class Grids_3D_Dimensions implements Serializable {
      * @return {@code true} if this intersects with {@code d}
      */
     public boolean intersects(Grids_3D_Dimensions d) {
-        if (this.d.intersects(d.d)) {
+        if (super.intersects(d)) {
             if (zMin.compareTo(d.zMax) == -1) {
                 if (zMax.compareTo(d.zMin) == 1) {
                     return true;
