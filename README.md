@@ -1,4 +1,4 @@
-# [agdt-java-grids](https://github.com/agdturner/agdt-java-grids)
+# [ccg-grids](https://github.com/agdturner/ccg-grids)
 
 A modularised Java library for storing and processing lattice based raster data otherwise known as grids.
 
