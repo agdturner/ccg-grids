@@ -38,7 +38,7 @@ public class Grids_GridBinaryStats extends Grids_Stats {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param ge Grids_Environment
      */
     public Grids_GridBinaryStats(Grids_Environment ge) {
@@ -77,9 +77,7 @@ public class Grids_GridBinaryStats extends Grids_Stats {
         Grids_GridBoolean g = getGrid();
         Grids_GridBooleanIterator ite = g.iterator();
         while (ite.hasNext()) {
-            if (ite.next()) {
-                n ++;
-            }
+            n++;
         }
     }
 

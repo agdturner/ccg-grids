@@ -77,9 +77,7 @@ public class Grids_GridBooleanStats extends Grids_Stats {
         Grids_GridBoolean g = getGrid();
         Grids_GridBooleanIterator ite = g.iterator();
         while (ite.hasNext()) {
-            if (ite.next()) {
-                n ++;
-            }
+            n ++;
         }
     }
 
