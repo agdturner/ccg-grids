@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * as the values are changed.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
 

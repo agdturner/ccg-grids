@@ -15,18 +15,13 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
-import uk.ac.leeds.ccg.grids.d2.chunk.d.*;
-import uk.ac.leeds.ccg.grids.d2.stats.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleArrayOrMap;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleIteratorArrayOrMap;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleIterator;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBDIterator;
+import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBD;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -34,24 +29,24 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * as the values are changed.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
-public class Grids_ChunkBDStats extends Grids_StatsDouble {
+public class Grids_ChunkBDStats extends Grids_StatsBD {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * A reference to the chunk
      */
-    protected Grids_ChunkDouble c;
+    protected Grids_ChunkBD c;
 
     /**
-     * Creates a new Grids_ChunkStatsDouble instance.
+     * Creates a new instance.
      *
-     * @param ge The GRids Environment.
+     * @param ge The Grids Environment.
      * @param c What this.c is set to.
      */
-    public Grids_ChunkBDStats(Grids_Environment ge, Grids_ChunkDouble c) {
+    public Grids_ChunkBDStats(Grids_Environment ge, Grids_ChunkBD c) {
         super(ge);
         this.c = c;
     }
@@ -66,10 +61,9 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
     public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
-        if (c instanceof Grids_ChunkDoubleSinglet) {
-            double v = ((Grids_ChunkDoubleSinglet) c).getV();
-            if (Double.isFinite(v)) {
-                Grids_GridDouble g = c.getGrid();
+        if (c instanceof Grids_ChunkBDSinglet) {
+            BigDecimal v = ((Grids_ChunkBDSinglet) c).getV();
+                Grids_GridBD g = c.getGrid();
                 if (v != g.getNoDataValue()) {
                     max = v;
                     min = v;
@@ -79,19 +73,16 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
                     nMax = n;
                     nMin = n;
                 }
-            }
         } else {
-            Grids_ChunkDoubleIteratorArrayOrMap ite;
-            ite = new Grids_ChunkDoubleIteratorArrayOrMap(
-                    (Grids_ChunkDoubleArrayOrMap) c);
-            double ndv = c.getGrid().getNoDataValue();
+            Grids_ChunkBDIteratorArrayOrMap ite;
+            ite = new Grids_ChunkBDIteratorArrayOrMap(
+                    (Grids_ChunkBDArrayOrMap) c);
+            BigDecimal ndv = c.getGrid().getNoDataValue();
             while (ite.hasNext()) {
-                double v = ite.next();
-                if (Double.isFinite(v)) {
-                    if (v != ndv) {
+                BigDecimal v = ite.next();
+                    if (v.compareTo(ndv) != 0) {
                         update(v);
                     }
-                }
             }
         }
     }
@@ -116,31 +107,27 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
     public long getNonZeroN() throws IOException, Exception,
             ClassNotFoundException {
         long r = 0L;
-        if (c instanceof Grids_ChunkDoubleSinglet) {
-            double v = ((Grids_ChunkDoubleSinglet) c).getV();
-            if (Double.isFinite(v)) {
-                Grids_GridDouble g = c.getGrid();
-                if (v != g.getNoDataValue()) {
-                    if (v == 0) {
+        if (c instanceof Grids_ChunkBDSinglet) {
+            BigDecimal v = ((Grids_ChunkBDSinglet) c).getV();
+                Grids_GridBD g = c.getGrid();
+                if (v.compareTo(g.getNoDataValue()) != 0) {
+                    if (v.compareTo(BigDecimal.ZERO) != 0) {
                         return n;
                     }
                 }
-            }
             return 0;
         } else {
-            Grids_ChunkDoubleIteratorArrayOrMap ite;
-            ite = new Grids_ChunkDoubleIteratorArrayOrMap(
-                    (Grids_ChunkDoubleArrayOrMap) c);
-            double ndv = c.getGrid().getNoDataValue();
+            Grids_ChunkBDIteratorArrayOrMap ite;
+            ite = new Grids_ChunkBDIteratorArrayOrMap(
+                    (Grids_ChunkBDArrayOrMap) c);
+            BigDecimal ndv = c.getGrid().getNoDataValue();
             while (ite.hasNext()) {
-                double v = ite.next();
-                if (Double.isFinite(v)) {
-                    if (v != ndv) {
-                        if (v == 0) {
+                BigDecimal v = ite.next();
+                if (v.compareTo(ndv) != 0) {
+                    if (v.compareTo(BigDecimal.ZERO) != 0) {
                             r++;
                         }
                     }
-                }
             }
             return r;
         }
@@ -174,7 +161,7 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
      *
      * @param nClasses The number of classes to divide the data into.
      * @return Object[] r where r[0] is the min, r[1] is the max; r[2] is a
-     * {@code TreeMap<Integer, TreeMap<Double, Long>>*} where the key is the
+     * {@code TreeMap<Integer, TreeMap<Int, Long>>*} where the key is the
      * class index and the value is a map indexed by the number and the count.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -183,12 +170,12 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
     public Object[] getQuantileClassMap(int nClasses) throws IOException,
             Exception, ClassNotFoundException {
         Object[] r = new Object[3];
-        Grids_GridDouble g = getGrid();
+        Grids_GridBD g = getGrid();
         TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
         TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
-            mins.put(i, BigDecimal.valueOf(Double.MAX_VALUE));
-            maxs.put(i, BigDecimal.valueOf(-Double.MAX_VALUE));
+            mins.put(i, BigDecimal.valueOf(Integer.MAX_VALUE));
+            maxs.put(i, BigDecimal.valueOf(Integer.MIN_VALUE));
         }
         r[0] = mins;
         r[1] = maxs;
@@ -197,7 +184,7 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
         if (nonZeroN % nClasses != 0) {
             nInClass += 1;
         }
-        double noDataValue = g.getNoDataValue();
+        BigDecimal noDataValue = g.getNoDataValue();
         TreeMap<Integer, Long> classCounts = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
             classCounts.put(i, 0L);
@@ -211,20 +198,19 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
         r[2] = classMap;
         int count = 0;
         //long valueID = 0;
-        Grids_GridDoubleIterator ite = g.iterator();
+        Grids_GridBDIterator ite = g.iterator();
         while (ite.hasNext()) {
-            double v = ite.next();
-            BigDecimal vbd = BigDecimal.valueOf(v);
-            if (!(v == 0.0d || v == noDataValue)) {
+            BigDecimal v = ite.next();
+            if (!(v.compareTo(BigDecimal.ZERO) == 0 || v.compareTo(noDataValue) == 0)) {
                 if (count % nInClass == 0) {
                     System.out.println(count + " out of " + nonZeroN);
                 }
                 count++;
                 if (firstValue) {
-                    mins.put(0, vbd);
-                    maxs.put(0, vbd);
+                    mins.put(0, v);
+                    maxs.put(0, v);
                     classCounts.put(0, 1L);
-                    classMap.get(0).put(vbd, 1L);
+                    classMap.get(0).put(v, 1L);
                     if (nInClass < 2) {
                         classToFill = 1;
                     }
@@ -234,7 +220,7 @@ public class Grids_ChunkBDStats extends Grids_StatsDouble {
                     if (classToFill == nClasses) {
                         classToFill--;
                     }
-                    valueClass = getValueClass(vbd, classMap, mins, maxs,
+                    valueClass = getValueClass(v, classMap, mins, maxs,
                             classCounts, nInClass, classToFill);
                     classToFill = valueClass[1];
                 }

@@ -20,9 +20,9 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 
 /**
- * For iterating through the values in a Grids_GridChunkBDArray instance.
- * The values are not returned in any particular order.
-*
+ * For iterating through the values in a Grids_GridChunkBDArray instance. The
+ * values are not returned in any particular order.
+ *
  * @author Andy Turner
  * @version 1.0.0
  */
@@ -38,20 +38,16 @@ public class Grids_ChunkBDIteratorArrayOrMap
 
     /**
      * Create a new instance.
-     * @param chunk The chunk to iterate over.
+     *
+     * @param c The chunk to iterate over.
      */
-    public Grids_ChunkBDIteratorArrayOrMap(Grids_ChunkBDArray chunk) {
-        super(chunk);
-        data = chunk.getData();
-    }
-
-    /**
-     * Create a new instance.
-     * @param chunk The chunk to iterate over.
-     */
-    public Grids_ChunkBDIteratorArrayOrMap(Grids_ChunkBDMap chunk) {
-        super(chunk);
-        data = chunk.to2DBDArray();
+    public Grids_ChunkBDIteratorArrayOrMap(Grids_ChunkBDArrayOrMap c) {
+        super(c);
+        if (c instanceof Grids_ChunkBDArray) {
+            data = ((Grids_ChunkBDArray) c).getData();
+        } else {
+            data = ((Grids_ChunkBDMap) c).to2DBDArray();
+        }
     }
 
     /**

@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.i;
+package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * Statistics are not kept up to date as the values are changed.
+ * Statistics are not kept up to date
+ * as the values are changed.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
+public class Grids_ChunkBDStatsNotUpdated extends Grids_ChunkBDStats {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,12 +37,12 @@ public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
     protected boolean upToDate;
 
     /**
-     * Creates a new instance of Grids_GridIntStatisticsNotUpdated.
+     * Creates a new instance of Grids_GridBDStatisticsNotUpdated.
      *
      * @param e The grids environment.
      * @param c The chunk.
      */
-    public Grids_ChunkIntStatsNotUpdated(Grids_Environment e, Grids_ChunkInt c) {
+    public Grids_ChunkBDStatsNotUpdated(Grids_Environment e, Grids_ChunkBD c) {
         super(e, c);
     }
 
@@ -71,7 +73,7 @@ public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
     /**
      * Updates by going through all values in the grid if the fields are likely
      * not to be up to date. (NB. After calling this it is inexpensive to
-     * convert to Grids_GridStatsInt.)
+     * convert to Grids_GridStatsBD.)
      *
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
@@ -139,7 +141,7 @@ public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Integer getMin(boolean update) throws IOException, Exception,
+    public BigDecimal getMin(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
@@ -155,7 +157,7 @@ public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Integer getMax(boolean update) throws IOException, Exception,
+    public BigDecimal getMax(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
