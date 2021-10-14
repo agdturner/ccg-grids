@@ -27,7 +27,7 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBD;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBD;
+import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
@@ -37,7 +37,6 @@ import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDMap;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBD;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBD;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
@@ -76,7 +75,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, Grids_ChunkFactoryBD cf, int chunkNRows,
+            long id, Grids_ChunkBDFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             BigDecimal ndv, Grids_Environment ge) throws IOException, Exception {
         super(ge, fs, id, ndv);
@@ -104,7 +103,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, Grids_Grid g, Grids_ChunkFactoryBD cf,
+            long id, Grids_Grid g, Grids_ChunkBDFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, BigDecimal ndv) throws IOException,
             Exception {
@@ -139,7 +138,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, IO_Path gridFile, Grids_ChunkFactoryBD cf,
+            long id, IO_Path gridFile, Grids_ChunkBDFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, BigDecimal ndv, Grids_Environment ge)
             throws IOException, Exception {
@@ -166,7 +165,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             IO_Path gridFile, BigDecimal ndv) throws IOException,
             Exception {
         super(ge, fs, id, ndv);
-        init(new Grids_StatsNotUpdatedBD(ge), gridFile);
+        init(new Grids_GridBDStatsNotUpdated(ge), gridFile);
     }
 
     /**
@@ -198,12 +197,12 @@ public class Grids_GridBD extends Grids_GridNumber {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_StatsNotUpdatedBD) stats).setUpToDate(false);
+            ((Grids_GridBDStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
 
-    private void init(Grids_StatsBD stats, Grids_ChunkFactoryBD cf,
+    private void init(Grids_StatsBD stats, Grids_ChunkBDFactory cf,
             int chunkNRows, int chunkNCols, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
         //env.checkAndMaybeFreeMemory(this, true);
@@ -239,7 +238,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ndv
      */
     private void init(Grids_StatsBD stats, Grids_Grid g,
-            Grids_ChunkFactoryBD cf, int chunkNRows,
+            Grids_ChunkBDFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, BigDecimal ndv) throws IOException, ClassNotFoundException,
             Exception {
@@ -435,7 +434,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryBD gf = gp.gridFactoryBD;
+                Grids_GridBDFactory gf = gp.gridFactoryBD;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBD g = (Grids_GridBD) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -540,7 +539,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsBD stats, IO_Path gridFile)
+    private void init(Grids_GridBDStats stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -550,7 +549,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridFactoryBD gf = gp.gridFactoryBD;
+                Grids_GridBDFactory gf = gp.gridFactoryBD;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBD g = (Grids_GridBD) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -793,36 +792,36 @@ public class Grids_GridBD extends Grids_GridNumber {
      */
     protected void updateStats(BigDecimal newValue, BigDecimal oldValue)
             throws IOException, Exception, ClassNotFoundException {
-        Grids_StatsBD dStats = getStats();
-        if (dStats.getClass() == Grids_StatsBD.class) {
-            if (newValue.compareTo(ndv) != 0) {
-                if (oldValue.compareTo(ndv) != 0) {
-                    dStats.setN(dStats.getN() - 1);
-                    dStats.setSum(dStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
-                    BigDecimal min = dStats.getMin(false);
-                    if (oldValue.compareTo(min) == 0) {
-                        dStats.setNMin(dStats.getNMin() - 1);
-                    }
-                    BigDecimal max = dStats.getMax(false);
-                    if (oldValue.compareTo(max) == 0) {
-                        dStats.setNMax(dStats.getNMax() - 1);
-                    }
-                }
-                dStats.setN(dStats.getN() + 1);
-                dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(newValue)));
-                updateStats(newValue);
-                if (dStats.getNMin() < 1) {
-                    // The stats need recalculating
-                    dStats.update();
-                }
-                if (dStats.getNMax() < 1) {
-                    // The stats need recalculating
-                    dStats.update();
-                }
+        Grids_GridBDStats s = getStats();
+        if (s instanceof Grids_GridBDStatsNotUpdated) {
+            if (newValue.compareTo(oldValue) != 0) {
+                ((Grids_GridBDStatsNotUpdated) s).setUpToDate(false);
             }
         } else {
-            if (newValue.compareTo(oldValue) != 0) {
-                ((Grids_StatsNotUpdatedBD) dStats).setUpToDate(false);
+            if (newValue.compareTo(ndv) != 0) {
+                if (oldValue.compareTo(ndv) != 0) {
+                    s.setN(s.getN() - 1);
+                    s.setSum(s.getSum().subtract(Math_BigRational.valueOf(oldValue)));
+                    BigDecimal min = s.getMin(false);
+                    if (oldValue.compareTo(min) == 0) {
+                        s.setNMin(s.getNMin() - 1);
+                    }
+                    BigDecimal max = s.getMax(false);
+                    if (oldValue.compareTo(max) == 0) {
+                        s.setNMax(s.getNMax() - 1);
+                    }
+                }
+                s.setN(s.getN() + 1);
+                s.setSum(s.getSum().add(Math_BigRational.valueOf(newValue)));
+                updateStats(newValue);
+                if (s.getNMin() < 1) {
+                    // The stats need recalculating
+                    s.update();
+                }
+                if (s.getNMax() < 1) {
+                    // The stats need recalculating
+                    s.update();
+                }
             }
         }
     }
@@ -1020,7 +1019,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             Grids_ChunkBD chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkBD r;
-        Grids_ChunkFactoryBD f = env.getProcessor().gridFactoryBD.defaultGridChunkBDFactory;
+        Grids_ChunkBDFactory f = env.getProcessor().gridFactoryBD.defaultGridChunkBDFactory;
         r = f.create(chunk, chunkID);
         data.put(chunkID, r);
         if (!(chunk instanceof Grids_ChunkBDSinglet)) {
@@ -1058,7 +1057,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         }
         // Update stats
         if (v.compareTo(ndv) != 0) {
-            if (!(stats instanceof Grids_StatsNotUpdatedBD)) {
+            if (!(stats instanceof Grids_GridBDStatsNotUpdated)) {
                 updateStats(v);
             }
         }
@@ -1074,7 +1073,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      */
     protected void updateStats(BigDecimal value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_StatsBD dStats = getStats();
+        Grids_GridBDStats dStats = getStats();
         dStats.setN(dStats.getN() + 1);
         dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
         BigDecimal min = dStats.getMin(false);
@@ -1439,19 +1438,19 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * @return A Grids_GridIteratorBD for iterating over the cell values in
-     * this.
+     * @return A Grids_GridBDIterator for iterating over the cell values in
+ this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorBD iterator() throws IOException, Exception,
+    public Grids_GridBDIterator iterator() throws IOException, Exception,
             ClassNotFoundException {
-        return new Grids_GridIteratorBD(this);
+        return new Grids_GridBDIterator(this);
     }
 
     @Override
-    public Grids_StatsBD getStats() {
-        return (Grids_StatsBD) stats;
+    public Grids_GridBDStats getStats() {
+        return (Grids_GridBDStats) stats;
     }
 
     /**

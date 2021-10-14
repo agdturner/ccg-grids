@@ -91,8 +91,8 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
      * in this.
 
      */
-    public Grids_ChunkIteratorIntSinglet iterator() {
-        return new Grids_ChunkIteratorIntSinglet(this);
+    public Grids_ChunkIntIteratorSinglet iterator() {
+        return new Grids_ChunkIntIteratorSinglet(this);
     }
 
     @Override

@@ -98,8 +98,8 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     /**
      * @return An iterator for iterating over the values in this.
      */
-    public Grids_ChunkIteratorBDSinglet iterator() {
-        return new Grids_ChunkIteratorBDSinglet(this);
+    public Grids_ChunkBDIteratorSinglet iterator() {
+        return new Grids_ChunkBDIteratorSinglet(this);
     }
 
     @Override

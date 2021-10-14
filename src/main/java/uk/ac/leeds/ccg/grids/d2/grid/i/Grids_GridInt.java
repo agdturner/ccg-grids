@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryInt;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
@@ -37,7 +37,6 @@ import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntMap;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInt;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedInt;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
@@ -84,7 +83,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs,
-            long id, Grids_ChunkFactoryInt cf, int chunkNRows,
+            long id, Grids_ChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
             int ndv, Grids_Environment ge) throws IOException, Exception,
             ClassNotFoundException {
@@ -114,7 +113,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs, long id,
-            Grids_Grid g, Grids_ChunkFactoryInt cf, int chunkNRows,
+            Grids_Grid g, Grids_ChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) throws IOException, ClassNotFoundException,
             Exception {
@@ -149,7 +148,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     protected Grids_GridInt(Grids_StatsInt stats, IO_Cache fs,
             long id, IO_Path gridFile,
-            Grids_ChunkFactoryInt cf, int cnr,
+            Grids_ChunkIntFactory cf, int cnr,
             int cnc, long startRow, long startCol, long endRow,
             long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
@@ -176,7 +175,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             long id, IO_Path gridFile, int ndv)
             throws IOException, ClassNotFoundException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(new Grids_StatsNotUpdatedInt(ge), gridFile);
+        init(new Grids_GridIntStatsNotUpdated(ge), gridFile);
     }
 
     @Override
@@ -208,7 +207,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_StatsNotUpdatedInt) stats).setUpToDate(false);
+            ((Grids_GridIntStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
@@ -218,7 +217,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      *
      * @param stats The AbstractGridStatistics to accompany this.
      * @param dir The directory for this.
-     * @param cf The Grids_ChunkFactoryInt preferred for creating chunks.
+     * @param cf The Grids_ChunkIntFactory preferred for creating chunks.
      * @param chunkNRows The number of rows of cells in any chunk.
      * @param chunkNCols The number of columns of cells in any chunk.
      * @param nRows The number of rows of cells.
@@ -227,7 +226,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param ndv The ndv.
      */
     private void init(Grids_StatsInt stats,
-            Grids_ChunkFactoryInt cf, int chunkNRows,
+            Grids_ChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
             throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -264,7 +263,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param ndv The ndv for this.
      */
     private void init(Grids_StatsInt stats, Grids_Grid g,
-            Grids_ChunkFactoryInt cf, int chunkNRows,
+            Grids_ChunkIntFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -483,8 +482,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param gridFile Either a _Directory, or a formatted File with a specific
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
-     * @param cf The Grids_ChunkFactoryInt preferred to construct chunks of
-     * this.
+     * @param cf The Grids_ChunkIntFactory preferred to construct chunks of
+ this.
      * @param chunkNRows The Grids_GridInt _ChunkNRows.
      * @param chunkNCols The Grids_GridInt _ChunkNCols.
      * @param startRow The topmost row index of the grid stored as gridFile.
@@ -509,7 +508,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryInt gf = gp.gridFactoryInt;
+                Grids_GridIntFactory gf = gp.gridFactoryInt;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_Grid g = (Grids_Grid) IO_Utilities.readObject(thisFile);
                 Grids_GridInt g2 = gf.create(g, startRow, startCol, endRow, endCol);
@@ -622,7 +621,7 @@ public class Grids_GridInt extends Grids_GridNumber {
         gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridFactoryInt gf = gp.gridFactoryInt;
+                Grids_GridIntFactory gf = gp.gridFactoryInt;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridInt g = (Grids_GridInt) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -880,7 +879,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public void updateStats(int newValue, int oldValue) throws IOException,
             Exception, ClassNotFoundException {
-        Grids_StatsInt iStats = getStats();
+        Grids_GridIntStats iStats = getStats();
         if (iStats.isUpdated()) {
             if (newValue != ndv) {
                 if (oldValue != ndv) {
@@ -911,7 +910,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             }
         } else {
             if (newValue != oldValue) {
-                ((Grids_StatsNotUpdatedInt) iStats).setUpToDate(false);
+                ((Grids_GridIntStatsNotUpdated) iStats).setUpToDate(false);
             }
         }
     }
@@ -1149,7 +1148,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     public void updateStats(int value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_StatsInt iStats = getStats();
+        Grids_GridIntStats iStats = getStats();
         iStats.setN(iStats.getN() + 1);
         iStats.setSum(iStats.getSum().add(Math_BigRational.valueOf(value)));
         int min = iStats.getMin(false);
@@ -1527,19 +1526,19 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     /**
-     * @return A Grids_GridIteratorInt for iterating over the cell values in
-     * this.
+     * @return A Grids_GridIntIterator for iterating over the cell values in
+ this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorInt iterator() throws IOException, Exception,
+    public Grids_GridIntIterator iterator() throws IOException, Exception,
             ClassNotFoundException {
-        return new Grids_GridIteratorInt(this);
+        return new Grids_GridIntIterator(this);
     }
 
     @Override
-    public Grids_StatsInt getStats() {
-        return (Grids_StatsInt) stats;
+    public Grids_GridIntStats getStats() {
+        return (Grids_GridIntStats) stats;
     }
 
     /**

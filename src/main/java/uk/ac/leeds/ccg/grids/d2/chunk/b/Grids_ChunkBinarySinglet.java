@@ -96,8 +96,8 @@ public class Grids_ChunkBinarySinglet extends Grids_ChunkBinary {
     /**
      * @return An iterator for iterating over the values in this.
      */
-    public Grids_ChunkIteratorBinarySinglet iterator() {
-        return new Grids_ChunkIteratorBinarySinglet(this);
+    public Grids_ChunkBinaryIteratorSinglet iterator() {
+        return new Grids_ChunkBinaryIteratorSinglet(this);
     }
 
     @Override

@@ -894,8 +894,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * @return An iterator for iterating over the values in this chunk.
      */
-    public Grids_ChunkIteratorBDArrayOrMap iterator() {
-        return new Grids_ChunkIteratorBDArrayOrMap(this);
+    public Grids_ChunkBDIteratorArrayOrMap iterator() {
+        return new Grids_ChunkBDIteratorArrayOrMap(this);
     }
 
     @Override

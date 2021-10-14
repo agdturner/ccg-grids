@@ -27,7 +27,7 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
@@ -41,8 +41,6 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
-import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.stats.Grids_GridStatsNotUpdatedDouble;
 import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.io.IO_Cache;
@@ -85,7 +83,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, IO_Cache fs,
-            long id, Grids_ChunkFactoryDouble cf, int chunkNRows,
+            long id, Grids_ChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double ndv, Grids_Environment ge) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
@@ -113,7 +111,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      */
     protected Grids_GridDouble(Grids_StatsDouble stats, IO_Cache fs,
-            long id, Grids_Grid g, Grids_ChunkFactoryDouble cf,
+            long id, Grids_Grid g, Grids_ChunkDoubleFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv) throws IOException,
             Exception {
@@ -147,8 +145,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridDouble(Grids_GridStatsDouble stats, IO_Cache fs,
-            long id, IO_Path gridFile, Grids_ChunkFactoryDouble cf,
+    protected Grids_GridDouble(Grids_GridDoubleStats stats, IO_Cache fs,
+            long id, IO_Path gridFile, Grids_ChunkDoubleFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv, Grids_Environment ge)
             throws IOException, Exception {
@@ -174,7 +172,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected Grids_GridDouble(Grids_Environment ge, IO_Cache fs,
             long id, IO_Path gridFile, double ndv) throws IOException, Exception {
         super(ge, fs, id, BigDecimal.valueOf(ndv));
-        init(new Grids_GridStatsNotUpdatedDouble(ge), gridFile);
+        init(new Grids_GridDoubleStatsNotUpdated(ge), gridFile);
     }
 
     @Override
@@ -213,13 +211,13 @@ public class Grids_GridDouble extends Grids_GridNumber {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_GridStatsNotUpdatedDouble) stats).setUpToDate(false);
+            ((Grids_GridDoubleStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
 
     private void init(Grids_StatsDouble stats,
-            Grids_ChunkFactoryDouble chunkFactory, int chunkNRows,
+            Grids_ChunkDoubleFactory chunkFactory, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
             throws IOException, Exception {
         //env.checkAndMaybeFreeMemory(this, true);
@@ -255,7 +253,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param ndv
      */
     private void init(Grids_StatsDouble stats, Grids_Grid g,
-            Grids_ChunkFactoryDouble cf, int chunkNRows,
+            Grids_ChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, double ndv) throws IOException, ClassNotFoundException,
             Exception {
@@ -462,7 +460,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
+                Grids_GridDoubleFactory gf = gp.gridFactoryDouble;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -577,7 +575,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridFactoryDouble gf = gp.gridFactoryDouble;
+                Grids_GridDoubleFactory gf = gp.gridFactoryDouble;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridDouble g = (Grids_GridDouble) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -822,36 +820,36 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected void updateStats(double newValue, double oldValue)
             throws IOException, Exception, ClassNotFoundException {
-        Grids_GridStatsDouble dStats = getStats();
-        if (dStats.getClass() == Grids_GridStatsDouble.class) {
-            if (newValue != noDataValue) {
-                if (oldValue != noDataValue) {
-                    dStats.setN(dStats.getN() - 1);
-                    dStats.setSum(dStats.getSum().subtract(Math_BigRational.valueOf(oldValue)));
-                    double min = dStats.getMin(false);
-                    if (oldValue == min) {
-                        dStats.setNMin(dStats.getNMin() - 1);
-                    }
-                    double max = dStats.getMax(false);
-                    if (oldValue == max) {
-                        dStats.setNMax(dStats.getNMax() - 1);
-                    }
-                }
-                dStats.setN(dStats.getN() + 1);
-                dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(newValue)));
-                updateStats(newValue);
-                if (dStats.getNMin() < 1) {
-                    // The stats need recalculating
-                    dStats.update();
-                }
-                if (dStats.getNMax() < 1) {
-                    // The stats need recalculating
-                    dStats.update();
-                }
+        Grids_GridDoubleStats s = getStats();
+        if (s instanceof Grids_GridDoubleStatsNotUpdated) {
+            if (newValue != oldValue) {
+                ((Grids_GridDoubleStatsNotUpdated) s).setUpToDate(false);
             }
         } else {
-            if (newValue != oldValue) {
-                ((Grids_GridStatsNotUpdatedDouble) dStats).setUpToDate(false);
+            if (newValue != noDataValue) {
+                if (oldValue != noDataValue) {
+                    s.setN(s.getN() - 1);
+                    s.setSum(s.getSum().subtract(Math_BigRational.valueOf(oldValue)));
+                    double min = s.getMin(false);
+                    if (oldValue == min) {
+                        s.setNMin(s.getNMin() - 1);
+                    }
+                    double max = s.getMax(false);
+                    if (oldValue == max) {
+                        s.setNMax(s.getNMax() - 1);
+                    }
+                }
+                s.setN(s.getN() + 1);
+                s.setSum(s.getSum().add(Math_BigRational.valueOf(newValue)));
+                updateStats(newValue);
+                if (s.getNMin() < 1) {
+                    // The stats need recalculating
+                    s.update();
+                }
+                if (s.getNMax() < 1) {
+                    // The stats need recalculating
+                    s.update();
+                }
             }
         }
     }
@@ -1053,7 +1051,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             Grids_ChunkDouble chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
         Grids_ChunkDouble r;
-        Grids_ChunkFactoryDouble f = env.getProcessor().gridFactoryDouble.defaultGridChunkDoubleFactory;
+        Grids_ChunkDoubleFactory f = env.getProcessor().gridFactoryDouble.defaultGridChunkDoubleFactory;
         r = f.create(chunk, chunkID);
         data.put(chunkID, r);
         if (!(chunk instanceof Grids_ChunkDoubleSinglet)) {
@@ -1091,7 +1089,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
         }
         // Update stats
         if (v != noDataValue) {
-            if (!(stats instanceof Grids_GridStatsNotUpdatedDouble)) {
+            if (!(stats instanceof Grids_GridDoubleStatsNotUpdated)) {
                 updateStats(v);
             }
         }
@@ -1107,7 +1105,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected void updateStats(double value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_GridStatsDouble dStats = getStats();
+        Grids_GridDoubleStats dStats = getStats();
         if (!Double.isNaN(value) && Double.isFinite(value)) {
             dStats.setN(dStats.getN() + 1);
             dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
@@ -1473,23 +1471,24 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     /**
-     * @return A Grids_GridIteratorDouble for iterating over the cell values in
+     * @return A Grids_GridDoubleIterator for iterating over the cell values in
      * this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorDouble iterator() throws IOException, Exception,
+    public Grids_GridDoubleIterator iterator() throws IOException, Exception,
             ClassNotFoundException {
-        return new Grids_GridIteratorDouble(this);
+        return new Grids_GridDoubleIterator(this);
     }
 
     @Override
-    public Grids_GridStatsDouble getStats() {
-        return (Grids_GridStatsDouble) stats;
+    public Grids_GridDoubleStats getStats() {
+        return (Grids_GridDoubleStats) stats;
     }
 
     /**
      * initStatistics
+     *
      * @param stats What {@link #stats} is set to.
      */
     public void initStatistics(Grids_StatsDouble stats) {
@@ -1498,6 +1497,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
 
     /**
      * getCell
+     *
      * @param chunk chunk
      * @param chunkRow chunkRow
      * @param chunkCol chunkCol

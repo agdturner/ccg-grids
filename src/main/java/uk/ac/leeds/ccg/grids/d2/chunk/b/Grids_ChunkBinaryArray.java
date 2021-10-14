@@ -150,8 +150,8 @@ public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
     /**
      * @return A new iterator for iterating over the values. 
      */
-    public Grids_ChunkIteratorBinaryArray iterator() {
-        return new Grids_ChunkIteratorBinaryArray(this);
+    public Grids_ChunkBinaryIteratorArray iterator() {
+        return new Grids_ChunkBinaryIteratorArray(this);
     }
 
     /**
@@ -160,7 +160,7 @@ public class Grids_ChunkBinaryArray extends Grids_ChunkBinaryArrayOrMap {
     @Override
     public Long getN() {
         long n = 0;
-        Grids_ChunkIteratorBinaryArray ite = iterator();
+        Grids_ChunkBinaryIteratorArray ite = iterator();
         while (ite.hasNext()) {
             if (ite.next()) {
                 n++;

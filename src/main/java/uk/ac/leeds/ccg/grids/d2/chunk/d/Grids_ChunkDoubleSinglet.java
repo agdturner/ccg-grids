@@ -97,8 +97,8 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     /**
      * @return An iterator for iterating over the values in this.
      */
-    public Grids_ChunkIteratorDoubleSinglet iterator() {
-        return new Grids_ChunkIteratorDoubleSinglet(this);
+    public Grids_ChunkDoubleIteratorSinglet iterator() {
+        return new Grids_ChunkDoubleIteratorSinglet(this);
     }
 
     @Override

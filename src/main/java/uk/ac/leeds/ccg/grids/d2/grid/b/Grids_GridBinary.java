@@ -33,9 +33,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinaryArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinary;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBinary;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBinary;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinaryFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
@@ -72,8 +70,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
-            long id, Grids_ChunkFactoryBinary cf, int chunkNRows,
+    protected Grids_GridBinary(Grids_GridBinaryStats stats, IO_Cache fs,
+            long id, Grids_ChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             Grids_Environment e) throws IOException, Exception {
         super(e, fs, id);
@@ -83,7 +81,7 @@ public class Grids_GridBinary extends Grids_GridB {
     /**
      * Creates a new Grids_GridBinary based on values in grid.
      *
-     * @param stats What {@link #stats}T is set to.
+     * @param stats What {@link #stats} is set to.
      * @param fs What {@link #fs} is set to.
      * @param id What {@link #fsID} is set to.
      * @param g The {@link Grids_Grid} used to construct this.
@@ -100,8 +98,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
-            long id, Grids_Grid g, Grids_ChunkFactoryBinary cf,
+    protected Grids_GridBinary(Grids_GridBinaryStats stats, IO_Cache fs,
+            long id, Grids_Grid g, Grids_ChunkBinaryFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol) throws IOException, ClassNotFoundException, Exception {
         super(g.env, fs, id);
@@ -132,8 +130,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBinary(Grids_StatsBinary stats, IO_Cache fs,
-            long id, IO_Path gridFile, Grids_ChunkFactoryBinary cf,
+    protected Grids_GridBinary(Grids_GridBinaryStats stats, IO_Cache fs,
+            long id, IO_Path gridFile, Grids_ChunkBinaryFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, Grids_Environment e)
             throws IOException, ClassNotFoundException, Exception {
@@ -158,7 +156,7 @@ public class Grids_GridBinary extends Grids_GridB {
             long id, IO_Path gridFile) throws IOException,
             ClassNotFoundException, Exception {
         super(e, fs, id);
-        init(new Grids_StatsNotUpdatedBinary(e), gridFile);
+        init(new Grids_GridBinaryStatsNotUpdated(e), gridFile);
     }
 
     /**
@@ -182,7 +180,7 @@ public class Grids_GridBinary extends Grids_GridB {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_StatsNotUpdatedBinary) stats).setUpToDate(false);
+            ((Grids_GridBinaryStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
@@ -197,8 +195,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param dimensions What {@link #dim} is set to.
      * @throws java.io.IOException If encountered.
      */
-    private void init(Grids_StatsBinary stats,
-            Grids_ChunkFactoryBinary cf, int chunkNRows,
+    private void init(Grids_GridBinaryStats stats,
+            Grids_ChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions)
             throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -236,8 +234,8 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    private void init(Grids_StatsBinary stats, Grids_Grid g,
-            Grids_ChunkFactoryBinary cf, int chunkNRows,
+    private void init(Grids_GridBinaryStats stats, Grids_Grid g,
+            Grids_ChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException,
             Exception {
@@ -298,7 +296,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws ClassNotFoundException If encountered.
      * @throws Exception If encountered.
      */
-    protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBinary cf,
+    protected boolean loadChunk(Grids_Grid g, Grids_ChunkBinaryFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int startChunkRow, int endChunkRow,
             int startChunkCol, int endChunkCol,
@@ -354,7 +352,7 @@ public class Grids_GridBinary extends Grids_GridB {
      */
     protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBinary gb, int gcc, int gcr,
-            Grids_ChunkFactoryBinary cf, int gChunkNRows, long startRow,
+            Grids_ChunkBinaryFactory cf, int gChunkNRows, long startRow,
             long endRow, long startCol, long endCol) throws IOException,
             java.lang.ClassNotFoundException, Exception {
         env.addToNotToClear(g, gChunkID);
@@ -400,8 +398,8 @@ public class Grids_GridBinary extends Grids_GridB {
         }
     }
 
-    private void init(Grids_StatsBinary stats, IO_Path gridFile,
-            Grids_ChunkFactoryBinary cf, int chunkNRows,
+    private void init(Grids_GridBinaryStats stats, IO_Path gridFile,
+            Grids_ChunkBinaryFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -410,7 +408,7 @@ public class Grids_GridBinary extends Grids_GridB {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
+                Grids_GridBinaryFactory gf = gp.gridFactoryBinary;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBinary g = (Grids_GridBinary) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -423,7 +421,7 @@ public class Grids_GridBinary extends Grids_GridB {
         }
     }
 
-    private void init(Grids_StatsBinary stats, IO_Path gridFile)
+    private void init(Grids_GridBinaryStats stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -431,7 +429,7 @@ public class Grids_GridBinary extends Grids_GridB {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridFactoryBinary gf = gp.gridFactoryBinary;
+                Grids_GridBinaryFactory gf = gp.gridFactoryBinary;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBinary g = (Grids_GridBinary) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -607,7 +605,12 @@ public class Grids_GridBinary extends Grids_GridB {
      */
     protected void upDateGridStatistics(boolean newValue, boolean oldValue)
             throws IOException, Exception, ClassNotFoundException {
-        if (stats.getClass() == Grids_StatsBinary.class) {
+        Grids_GridBinaryStats s = getStats();
+        if (s instanceof Grids_GridBinaryStatsNotUpdated) {
+            if (newValue != oldValue) {
+                ((Grids_GridBinaryStatsNotUpdated) stats).setUpToDate(false);
+            }
+        } else {
             if (newValue == false) {
                 if (oldValue == false) {
                     //stats.setN(stats.getN().subtract(BigInteger.ONE));
@@ -615,10 +618,6 @@ public class Grids_GridBinary extends Grids_GridB {
                 }
                 //stats.setN(stats.getN().add(BigInteger.ONE));
                 stats.setN(stats.getN() + 1);
-            }
-        } else {
-            if (newValue != oldValue) {
-                ((Grids_StatsNotUpdatedBinary) stats).setUpToDate(false);
             }
         }
     }
@@ -902,22 +901,22 @@ public class Grids_GridBinary extends Grids_GridB {
     }
 
     /**
-     * @return A {@link Grids_GridIteratorBinary} for iterating over the cell
+     * @return A {@link Grids_GridBinaryIterator} for iterating over the cell
      * values in this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorBinary iterator() throws IOException,
+    public Grids_GridBinaryIterator iterator() throws IOException,
             ClassNotFoundException, Exception {
-        return new Grids_GridIteratorBinary(this);
+        return new Grids_GridBinaryIterator(this);
     }
 
     /**
      * @return {@code (Grids_StatsBinary) stats}
      */
     @Override
-    public Grids_StatsBinary getStats() {
-        return (Grids_StatsBinary) stats;
+    public Grids_GridBinaryStats getStats() {
+        return (Grids_GridBinaryStats) stats;
     }
 
     /**

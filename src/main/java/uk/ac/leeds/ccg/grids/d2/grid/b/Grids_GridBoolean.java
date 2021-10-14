@@ -31,9 +31,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBooleanArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBoolean;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBoolean;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNotUpdatedBoolean;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBooleanFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBoolean;
@@ -75,8 +73,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @param e The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
-            long id, Grids_ChunkFactoryBoolean cf, int chunkNRows,
+    protected Grids_GridBoolean(Grids_GridBooleanStats stats, IO_Cache fs,
+            long id, Grids_ChunkBooleanFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             Grids_Environment e) throws IOException, Exception {
         super(e, fs, id);
@@ -103,8 +101,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
-            long id, Grids_Grid g, Grids_ChunkFactoryBoolean cf,
+    protected Grids_GridBoolean(Grids_GridBooleanStats stats, IO_Cache fs,
+            long id, Grids_Grid g, Grids_ChunkBooleanFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol) throws IOException, Exception, ClassNotFoundException {
         super(g.env, fs, id);
@@ -135,8 +133,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
-    protected Grids_GridBoolean(Grids_StatsBoolean stats, IO_Cache fs,
-            long id, IO_Path gridFile, Grids_ChunkFactoryBoolean cf,
+    protected Grids_GridBoolean(Grids_GridBooleanStats stats, IO_Cache fs,
+            long id, IO_Path gridFile, Grids_ChunkBooleanFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, Grids_Environment e)
             throws IOException, ClassNotFoundException, Exception {
@@ -161,7 +159,7 @@ public class Grids_GridBoolean extends Grids_GridB {
             long id, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         super(e, fs, id);
-        init(new Grids_StatsNotUpdatedBoolean(e), gridFile);
+        init(new Grids_GridBooleanStatsNotUpdated(e), gridFile);
     }
 
     /**
@@ -185,7 +183,7 @@ public class Grids_GridBoolean extends Grids_GridB {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_StatsNotUpdatedBoolean) stats).setUpToDate(false);
+            ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
@@ -200,7 +198,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @param dimensions What {@link #dim} is set to.
      * @throws java.io.IOException If encountered.
      */
-    private void init(Grids_StatsBoolean stats, Grids_ChunkFactoryBoolean cf,
+    private void init(Grids_GridBooleanStats stats, Grids_ChunkBooleanFactory cf,
             int chunkNRows, int chunkNCols, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -238,8 +236,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    private void init(Grids_StatsBoolean stats, Grids_Grid g,
-            Grids_ChunkFactoryBoolean cf, int chunkNRows,
+    private void init(Grids_GridBooleanStats stats, Grids_Grid g,
+            Grids_ChunkBooleanFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -300,7 +298,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws ClassNotFoundException If encountered.
      * @throws Exception If encountered.
      */
-    protected boolean loadChunk(Grids_Grid g, Grids_ChunkFactoryBoolean cf,
+    protected boolean loadChunk(Grids_Grid g, Grids_ChunkBooleanFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, int startChunkRow, int endChunkRow,
             int startChunkCol, int endChunkCol,
@@ -357,7 +355,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      */
     protected void loadChunk(Grids_2D_ID_int gChunkID, Grids_Grid g,
             Grids_GridBoolean gb, int gcc, int gcr,
-            Grids_ChunkFactoryBoolean cf, int gChunkNRows, long startRow,
+            Grids_ChunkBooleanFactory cf, int gChunkNRows, long startRow,
             long endRow, long startCol, long endCol) throws IOException,
             ClassNotFoundException, Exception {
         env.addToNotToClear(g, gChunkID);
@@ -418,8 +416,8 @@ public class Grids_GridBoolean extends Grids_GridB {
      * @throws ClassNotFoundException If encountered.
      * @throws Exception If encountered.
      */
-    protected final void init(Grids_StatsBoolean stats, IO_Path gridFile,
-            Grids_ChunkFactoryBoolean cf, int chunkNRows,
+    protected final void init(Grids_GridBooleanStats stats, IO_Path gridFile,
+            Grids_ChunkBooleanFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol) throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -428,7 +426,7 @@ public class Grids_GridBoolean extends Grids_GridB {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
+                Grids_GridBooleanFactory gf = gp.gridFactoryBoolean;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBoolean g = (Grids_GridBoolean) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -441,7 +439,7 @@ public class Grids_GridBoolean extends Grids_GridB {
         }
     }
 
-    private void init(Grids_StatsBoolean stats, IO_Path gridFile)
+    private void init(Grids_GridBooleanStats stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -451,7 +449,7 @@ public class Grids_GridBoolean extends Grids_GridB {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridFactoryBoolean gf = gp.gridFactoryBoolean;
+                Grids_GridBooleanFactory gf = gp.gridFactoryBoolean;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
                 Grids_GridBoolean g = (Grids_GridBoolean) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
@@ -623,7 +621,7 @@ public class Grids_GridBoolean extends Grids_GridB {
     protected void upDateGridStatistics(Boolean newValue, Boolean oldValue)
             throws IOException, Exception, ClassNotFoundException {
         if (!(newValue == null && oldValue == null)) {
-            if (stats.getClass() == Grids_StatsBoolean.class) {
+            if (stats.getClass() == Grids_GridBooleanStats.class) {
                 if (newValue
                         == false) {
                     if (oldValue == false) {
@@ -635,12 +633,12 @@ public class Grids_GridBoolean extends Grids_GridB {
                 }
             } else {
                 if (newValue == null) {
-                    ((Grids_StatsNotUpdatedBoolean) stats).setUpToDate(false);
+                    ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
                 } else if (oldValue == null) {
-                    ((Grids_StatsNotUpdatedBoolean) stats).setUpToDate(false);
+                    ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
                 } else {
                     if (!Objects.equals(newValue, oldValue)) {
-                        ((Grids_StatsNotUpdatedBoolean) stats).setUpToDate(false);
+                        ((Grids_GridBooleanStatsNotUpdated) stats).setUpToDate(false);
                     }
                 }
             }
@@ -925,22 +923,22 @@ public class Grids_GridBoolean extends Grids_GridB {
     }
 
     /**
-     * @return A {@link Grids_GridIteratorBoolean} for iterating over the cell
+     * @return A {@link Grids_GridBooleanIterator} for iterating over the cell
      * values in this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridIteratorBoolean iterator() throws IOException,
+    public Grids_GridBooleanIterator iterator() throws IOException,
             ClassNotFoundException, Exception {
-        return new Grids_GridIteratorBoolean(this);
+        return new Grids_GridBooleanIterator(this);
     }
 
     /**
-     * @return {@code (Grids_StatsBoolean) stats}
+     * @return {@code (Grids_GridBooleanStats) stats}
      */
     @Override
-    public Grids_StatsBoolean getStats() {
-        return (Grids_StatsBoolean) stats;
+    public Grids_GridBooleanStats getStats() {
+        return (Grids_GridBooleanStats) stats;
     }
 
     /**

@@ -25,9 +25,9 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
+import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleSinglet;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
@@ -697,7 +697,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble getHollowFilledDEM(Grids_GridNumber g,
-            Grids_GridFactoryDouble gdf, double outflowHeight,
+            Grids_GridDoubleFactory gdf, double outflowHeight,
             int maxIterations, HashSet<Grids_2D_ID_long> outflowCellIDsSet,
             boolean treatNoDataValueAsOutflow) throws IOException,
             ClassNotFoundException, Exception {
@@ -1744,7 +1744,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      */
     public Grids_GridNumber[] getMetrics1(Grids_GridNumber g,
             Math_BigRationalSqrt distance, double weightIntersect, double weightFactor,
-            Grids_GridFactoryDouble gdf, Grids_GridFactoryInt gif,
+            Grids_GridDoubleFactory gdf, Grids_GridIntFactory gif,
             boolean swapInitialisedFiles, boolean swapProcessedChunks, int oom)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
@@ -3620,7 +3620,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //     */
 //    public Grids_GridDouble[] getMetrics2(Grids_GridDouble g, BigDecimal distance,
 //            BigDecimal weightIntersect, int weightFactor, int samplingDensity,
-//            Grids_GridFactoryDouble gf, int dp, RoundingMode rm, boolean hoome)
+//            Grids_GridDoubleFactory gf, int dp, RoundingMode rm, boolean hoome)
 //            throws IOException,
 //            ClassNotFoundException, Exception {
 //        try {
@@ -3701,7 +3701,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * there is no downhill slope then the flow direction is 0.
      *
      * @param g the Grids_GridDouble to be processed
-     * @param gf the Grids_GridFactoryDouble used to create result
+     * @param gf the Grids_GridDoubleFactory used to create result
      * @return A grid containing values which indicate the direction (1 2 3 4 0
      * 5 6 7 8) of the maximum down slope for the immediate 8 cell
      * neighbourhood. If there is no downhill slope then the flow direction is
@@ -3710,7 +3710,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public Grids_GridDouble getMaxFlowDirection(Grids_GridDouble g,
-            Grids_GridFactoryDouble gf) throws IOException,
+            Grids_GridDoubleFactory gf) throws IOException,
             ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         long nrows = g.getNRows();
@@ -3867,7 +3867,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //     */
 //    public Grids_GridDouble getFlowAccumulation(Grids_GridDouble grid,
 //            int iterations, double precipitation, HashSet outflowCellIDs,
-//            Grids_GridFactoryDouble gridFactory, boolean hoome) {
+//            Grids_GridDoubleFactory gridFactory, boolean hoome) {
 //        int _MessageLength = 1000;
 //        String _Message0 = env.initString(_MessageLength, hoome);
 //        String _Message = env.initString(_MessageLength, hoome);
@@ -3906,7 +3906,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
 //            Grids_GridDouble grid,
 //            double precipitation,
 //            HashSet outflowCellIDs,
-//            Grids_GridFactoryDouble gridFactory,
+//            Grids_GridDoubleFactory gridFactory,
 //            boolean hoome) {
 //        //double constant = 8.0d * 9.81d / 75.0d ;
 //        double constant = 1.0d;

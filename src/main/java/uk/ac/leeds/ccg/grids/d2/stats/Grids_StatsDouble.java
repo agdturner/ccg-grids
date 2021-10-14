@@ -16,14 +16,12 @@
 package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * Grids_GridDouble statistics. For statistics of grids and chunks of type 
- * double.
+ * For statistics of grids and chunks of type double.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -44,14 +42,14 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param ge Grids_Environment
      */
     public Grids_StatsDouble(Grids_Environment ge) {
         super(ge);
         init0();
     }
-    
+
     /**
      * Initialises the statistics by setting min equal to Double.MAX_VALUE and
      * max = -Double.MAX_VALUE.
@@ -129,7 +127,8 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
 
     /**
      * Set min.
-     * @param min What {@link #min} is set to. 
+     *
+     * @param min What {@link #min} is set to.
      */
     public void setMin(double min) {
         this.min = min;
@@ -152,7 +151,8 @@ public abstract class Grids_StatsDouble extends Grids_StatsNumber {
 
     /**
      * Set max.
-     * @param max What {@link #max} is set to. 
+     *
+     * @param max What {@link #max} is set to.
      */
     public void setMax(double max) {
         this.max = max;

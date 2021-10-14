@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.generic.util.Generic_Time;
@@ -287,7 +287,7 @@ public class Grids_Utilities extends Grids_Object {
             Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = xGrid.getNRows();
         long ncols = xGrid.getNCols();
         double xGridNoDataValue = xGrid.getNoDataValue();

@@ -22,7 +22,7 @@ import java.util.List;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
@@ -83,7 +83,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             Grids_GridDouble grid, List<String> statistics, 
             Math_BigRationalSqrt distance,
             Math_BigRational weightIntersect, int weightFactor,
-            Grids_GridFactoryDouble gf, int oom, RoundingMode rm) throws
+            Grids_GridDoubleFactory gf, int oom, RoundingMode rm) throws
             IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> r = new ArrayList<>();
         long ncols = grid.getNCols();
@@ -710,7 +710,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      */
     public List<Grids_GridNumber> regionUnivariateStatisticsSlow(
             Grids_GridDouble g, List<String> statistics, Math_BigRationalSqrt d,
-            Math_BigRational wi, int wf, Grids_GridFactoryDouble gf, int oom,
+            Math_BigRational wi, int wf, Grids_GridDoubleFactory gf, int oom,
             RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> result = new ArrayList<>();
@@ -1208,7 +1208,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * grid, double distance ) { int nrows = grid.getNRows(); int ncols =
      * grid.getNCols(); double cellsize = grid.getCellsize(); double
      * noDataValue = grid.getNoDataValue(); Grids_GridDouble[] result =
-     * null; try { result = ( new Grids_GridFactoryDouble()
+     * null; try { result = ( new Grids_GridDoubleFactory()
      * ).createGrid2DSquareCellDouble( nrows, ncols, grid.getXllcorner(),
      * grid.getYllcorner(), cellsize, noDataValue ); } catch (
      * java.lang.OutOfMemoryError e0 ) { try { if ( grid instanceof
@@ -1229,7 +1229,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * java.lang.Exception e2 ) { System.out.println( e1 ); } } } } int
      * cellDistance = ( int ) Math.ceil( distance / cellsize ); double weight =
      * 1.0d; double d1; boolean chunkProcess = false; try { densityArray =
-     * geometricDensity( grid, distance, new Grids_GridFactoryDouble() ) ;
+     * geometricDensity( grid, distance, new Grids_GridDoubleFactory() ) ;
      * } catch ( java.lang.OutOfMemoryError e ) { if ( cellDistance < (
      * Math.max( nrows, ncols ) / 2 ) ) { System.out.println( e.toString() +
      * "... Attempting to process in chunks..." ); int chunkSize = cellDistance;
@@ -1269,14 +1269,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @param grid - the input Grids_GridDouble
      * @param distance - the distance limiting the maximum scale of geometric
      * density surface produced
-     * @param gridFactory - the Grids_GridFactoryDouble to be used in processing
+     * @param gridFactory - the Grids_GridDoubleFactory to be used in processing
      * @return geometric density.
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
-            Math_BigRationalSqrt distance, Grids_GridFactoryDouble gridFactory)
+            Math_BigRationalSqrt distance, Grids_GridDoubleFactory gridFactory)
             throws IOException, ClassNotFoundException, Exception {
         long n = grid.getStats().getN();
         long nrows = grid.getNRows();
@@ -1563,7 +1563,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     //        double weightIntercept = 1.0d;
     //        double weightFactor = 2.0d;
     //        try {
-    //            return regionBivariateStatistics( grid0, grid1, statistics, distance, weightIntercept, weightFactor, new Grids_GridFactoryDouble() );
+    //            return regionBivariateStatistics( grid0, grid1, statistics, distance, weightIntercept, weightFactor, new Grids_GridDoubleFactory() );
     //        } catch ( OutOfMemoryError _OutOfMemoryError1 ) {
     //            String dataDirectory = System.getProperty( "java.io.tmpdir" );
     //            if ( grid1 instanceof Grid2DSquareCellDoubleFile ) {
@@ -1608,7 +1608,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList statistics, Math_BigRationalSqrt distance,
             Math_BigRational weightIntersect, int weightFactor,
-            Grids_GridFactoryDouble gf, int oom, RoundingMode rm)
+            Grids_GridDoubleFactory gf, int oom, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
         // Initialisation

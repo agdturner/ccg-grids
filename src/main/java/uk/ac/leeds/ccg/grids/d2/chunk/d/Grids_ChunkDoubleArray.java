@@ -144,8 +144,8 @@ public class Grids_ChunkDoubleArray extends Grids_ChunkDoubleArrayOrMap {
     /**
      * @return An iterator for iterating over the cells in this.
      */
-    public Grids_ChunkIteratorDoubleArrayOrMap iterator() {
-        return new Grids_ChunkIteratorDoubleArrayOrMap(this);
+    public Grids_ChunkDoubleIteratorArrayOrMap iterator() {
+        return new Grids_ChunkDoubleIteratorArrayOrMap(this);
     }
 
     @Override

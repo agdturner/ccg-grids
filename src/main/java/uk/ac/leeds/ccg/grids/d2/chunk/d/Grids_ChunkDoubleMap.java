@@ -882,8 +882,8 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     /**
      * @return An iterator for iterating over the values in this chunk.
      */
-    public Grids_ChunkIteratorDoubleArrayOrMap iterator() {
-        return new Grids_ChunkIteratorDoubleArrayOrMap(this);
+    public Grids_ChunkDoubleIteratorArrayOrMap iterator() {
+        return new Grids_ChunkDoubleIteratorArrayOrMap(this);
     }
 
     @Override

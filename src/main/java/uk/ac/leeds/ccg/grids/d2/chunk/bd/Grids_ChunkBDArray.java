@@ -139,8 +139,8 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
     /**
      * @return An iterator for iterating over the cells in this.
      */
-    public Grids_ChunkIteratorBDArrayOrMap iterator() {
-        return new Grids_ChunkIteratorBDArrayOrMap(this);
+    public Grids_ChunkBDIteratorArrayOrMap iterator() {
+        return new Grids_ChunkBDIteratorArrayOrMap(this);
     }
 
     @Override

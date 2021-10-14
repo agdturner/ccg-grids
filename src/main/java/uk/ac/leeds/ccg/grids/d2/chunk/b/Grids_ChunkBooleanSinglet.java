@@ -97,8 +97,8 @@ public class Grids_ChunkBooleanSinglet extends Grids_ChunkBoolean {
     /**
      * @return An iterator for iterating over the values in this.
      */
-    public Grids_ChunkIteratorBooleanSinglet iterator() {
-        return new Grids_ChunkIteratorBooleanSinglet(this);
+    public Grids_ChunkBooleanIteratorSinglet iterator() {
+        return new Grids_ChunkBooleanIteratorSinglet(this);
     }
 
     @Override

@@ -17,25 +17,23 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.TreeMap;
-import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridIteratorBD;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
- * Grids_GridBD statistics. Some of the statistic are kept up to date as the
- * underlying data is changed (which can be computationally expensive). Some
- * statistics like the standard deviation always require going through all the
- * data again if the values have changed in order to recalculate.)
+ * For statistics of grids and chunks of type BigDecimal. The {@link #min} and
+ * {@link #max} are initialised as follows:
+ * <ul>
+ * <li>{@code min = BigDecimal.valueOf(Double.MAX_VALUE);}<li>
+ * <li>{@code max = min.negate();}</li>
+ * </ul>
+ * To support more extreme values there is work to be done!
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class Grids_StatsBD extends Grids_StatsNumber {
+public abstract class Grids_StatsBD extends Grids_StatsNumber {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,16 +41,6 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      * For storing the minimum value.
      */
     protected BigDecimal min;
-
-    /**
-     * Default maximum value.
-     */
-    public static final BigDecimal maxd = BigDecimal.valueOf(Double.MAX_VALUE);
-
-    /**
-     * Default minimum value.
-     */
-    public static final BigDecimal mind = BigDecimal.valueOf(-Double.MAX_VALUE);
 
     /**
      * For storing the maximum value.
@@ -66,19 +54,28 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      */
     public Grids_StatsBD(Grids_Environment ge) {
         super(ge);
-        // Initialise the min to the max and and the max to the min.
-        min = maxd;
-        max = mind;
-        sum = Math_BigRational.ZERO;
+        init0();
     }
 
+    /**
+     * The {@link #min} and {@link #max} are initialised as follows:
+     * <ul>
+     * <li>{@code min = BigDecimal.valueOf(Double.MAX_VALUE);}<li>
+     * <li>{@code max = min.negate();}</li>
+     * </ul>
+     */
+    private void init0() {
+        min = BigDecimal.valueOf(Double.MAX_VALUE);
+        max = min.negate();
+    }
+
+    /**
+     * For re-initialising.
+     */
     @Override
     protected void init() {
         super.init();
-        // Initialise the min to the max and and the max to the min.
-        min = maxd;
-        max = mind;
-        sum = Math_BigRational.ZERO;
+        init0();
     }
 
     /**
@@ -99,36 +96,16 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     /**
-     * Updates by going through all values in grid.
-     *
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    @Override
-    public void update() throws IOException, Exception, ClassNotFoundException {
-        env.checkAndMaybeFreeMemory();
-        init();
-        Grids_GridBD g = getGrid();
-        Grids_GridIteratorBD ite = g.iterator();
-        while (ite.hasNext()) {
-            BigDecimal v = ite.next();
-            if (v.compareTo(g.ndv) != 0) {
-                update(v);
-            }
-        }
-    }
-
-    /**
-     * @param v The value to update.
+     * @param v The value replacing a value.
      */
     protected void update(BigDecimal v) {
-        n++;
+        n += 1;
         setSum(sum.add(Math_BigRational.valueOf(v)));
         if (v.compareTo(min) == -1) {
             nMin = 1;
             min = v;
         } else {
-            if (v.compareTo(min) == 0) {
+            if (v == min) {
                 nMin++;
             }
         }
@@ -136,7 +113,7 @@ public class Grids_StatsBD extends Grids_StatsNumber {
             nMax = 1;
             max = v;
         } else {
-            if (v.compareTo(max) == 0) {
+            if (v == max) {
                 nMax++;
             }
         }
@@ -149,8 +126,7 @@ public class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getMin(boolean update) throws IOException, Exception,
-            ClassNotFoundException {
+    public BigDecimal getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (nMin < 1) {
             if (update) {
                 update();
@@ -160,6 +136,8 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     /**
+     * Set min.
+     *
      * @param min What {@link #min} is set to.
      */
     public void setMin(BigDecimal min) {
@@ -182,176 +160,11 @@ public class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     /**
+     * Set max.
+     *
      * @param max What {@link #max} is set to.
      */
     public void setMax(BigDecimal max) {
         this.max = max;
-    }
-
-    /**
-     * @return The Number of data values in {@link #grid}.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    @Override
-    public long getN() throws IOException, Exception, ClassNotFoundException {
-        long r = 0;
-        Grids_GridBD g = getGrid();
-        Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
-        while (ite.hasNext()) {
-            r += g.getChunk(ite.next()).getN();
-            env.checkAndMaybeFreeMemory();
-        }
-        return r;
-    }
-
-    /**
-     * @return The Number of non zero data values in {@link #grid}.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    @Override
-    public long getNonZeroN() throws IOException, Exception, ClassNotFoundException {
-        long r = 0L;
-        Grids_GridBD g = getGrid();
-        BigDecimal ndv = g.getNoDataValue();
-        Grids_GridIteratorBD ite = g.iterator();
-        while (ite.hasNext()) {
-            BigDecimal v = ite.next();
-            if (!(v.compareTo(ndv) == 0 || v.compareTo(BigDecimal.ZERO) == 0)) {
-                r++;
-            }
-        }
-        return r;
-    }
-
-    /**
-     * @param update Is ignored.
-     * @return The sum of all data values.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    public Math_BigRational getSum(boolean update) throws IOException, Exception,
-            ClassNotFoundException {
-//        if (update) {
-//            update();
-//        }
-        return getSum();
-    }
-
-    /**
-     * @return The sum of all data values.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    public Math_BigRational getSum() throws IOException, Exception, ClassNotFoundException {
-        Math_BigRational r = Math_BigRational.ZERO;
-        Grids_GridBD g = getGrid();
-        Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
-        while (ite.hasNext()) {
-            r = r.add(g.getChunk(ite.next()).getSum());
-            env.checkAndMaybeFreeMemory();
-        }
-        return r;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @return The standard deviation correct to {@code oom}.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    public Math_BigRationalSqrt getStandardDeviation(int oom)
-            throws IOException, Exception, ClassNotFoundException {
-        Math_BigRational stdev = Math_BigRational.ZERO;
-        Math_BigRational mean = getArithmeticMean();
-        long dataValueCount = 0;
-        Grids_GridBD g = (Grids_GridBD) grid;
-        BigDecimal ndv = g.getNoDataValue();
-        Grids_GridIteratorBD ite = g.iterator();
-        while (ite.hasNext()) {
-            BigDecimal v = ite.next();
-            if (v != ndv) {
-                Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
-                stdev = stdev.add(delta.multiply(delta));
-                dataValueCount ++;
-            }
-        }
-        if (dataValueCount < 2) {
-            return Math_BigRationalSqrt.ZERO;
-        }
-        stdev = stdev.divide(Math_BigRational.valueOf(dataValueCount - 1L));
-        return new Math_BigRationalSqrt(stdev, oom);
-    }
-
-    /**
-     *
-     * @param nClasses The number of classes to divide the data into.
-     * @return Object[] r where r[0] is the min, r[1] is the max; r[2] is a
-     * {@code TreeMap<Integer, TreeMap<BigDecimal, Long>>*} where the key is the
-     * class index and the value is a map indexed by the number and the count.
-     * @throws java.io.IOException If encountered.
-     * @throws java.lang.ClassNotFoundException If encountered.
-     */
-    @Override
-    public Object[] getQuantileClassMap(int nClasses) throws IOException,
-            Exception, ClassNotFoundException {
-        Object[] r = new Object[3];
-        Grids_GridBD g = getGrid();
-        TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
-        TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
-        for (int i = 1; i < nClasses; i++) {
-            mins.put(i, mind);
-            maxs.put(i, maxd);
-        }
-        r[0] = mins;
-        r[1] = maxs;
-        long nonZeroN = getNonZeroN();
-        long nInClass = nonZeroN / nClasses;
-        if (nonZeroN % nClasses != 0) {
-            nInClass += 1;
-        }
-        TreeMap<Integer, Long> classCounts = new TreeMap<>();
-        for (int i = 1; i < nClasses; i++) {
-            classCounts.put(i, 0L);
-        }
-        int classToFill = 0;
-        boolean firstValue = true;
-        TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap = new TreeMap<>();
-        for (int i = 0; i < nClasses; i++) {
-            classMap.put(i, new TreeMap<>());
-        }
-        r[2] = classMap;
-        int count = 0;
-        //long valueID = 0;
-        Grids_GridIteratorBD ite = g.iterator();
-        while (ite.hasNext()) {
-            BigDecimal v = ite.next();
-            if (!(v.compareTo(BigDecimal.ZERO) == 0 || v.compareTo(g.ndv) == 0)) {
-                if (count % nInClass == 0) {
-                    System.out.println(count + " out of " + nonZeroN);
-                }
-                count++;
-                if (firstValue) {
-                    mins.put(0, v);
-                    maxs.put(0, v);
-                    classCounts.put(0, 1L);
-                    classMap.get(0).put(v, 1L);
-                    if (nInClass < 2) {
-                        classToFill = 1;
-                    }
-                    firstValue = false;
-                } else {
-                    int[] valueClass;
-                    if (classToFill == nClasses) {
-                        classToFill--;
-                    }
-                    valueClass = getValueClass(v, classMap, mins, maxs,
-                            classCounts, nInClass, classToFill);
-                    classToFill = valueClass[1];
-                }
-            }
-        }
-        return r;
     }
 }

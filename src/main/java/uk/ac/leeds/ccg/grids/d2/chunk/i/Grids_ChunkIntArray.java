@@ -135,11 +135,11 @@ public class Grids_ChunkIntArray extends Grids_ChunkIntArrayOrMap {
     }
 
     /**
-     * @return A {@link Grids_ChunkIteratorIntArrayOrMap} for iterating over the 
+     * @return A {@link Grids_ChunkIntIteratorArrayOrMap} for iterating over the 
      * cells in this.
      */
-    public Grids_ChunkIteratorIntArrayOrMap iterator() {
-        return new Grids_ChunkIteratorIntArrayOrMap(this);
+    public Grids_ChunkIntIteratorArrayOrMap iterator() {
+        return new Grids_ChunkIntIteratorArrayOrMap(this);
     }
 
     @Override

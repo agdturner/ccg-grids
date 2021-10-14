@@ -887,8 +887,8 @@ public class Grids_ChunkIntMap extends Grids_ChunkIntArrayOrMap {
     /**
      * @return An iterator for iterating over the values in this chunk.
      */
-    public Grids_ChunkIteratorIntArrayOrMap iterator() {
-        return new Grids_ChunkIteratorIntArrayOrMap(this);
+    public Grids_ChunkIntIteratorArrayOrMap iterator() {
+        return new Grids_ChunkIntIteratorArrayOrMap(this);
     }
 
     @Override

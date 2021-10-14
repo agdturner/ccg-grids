@@ -27,28 +27,28 @@ import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDouble;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleFactoryArray;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntArray;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
-import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBoolean;
-import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkFactoryDoubleSinglet;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkFactoryIntSinglet;
-import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridFactoryBinary;
+import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBooleanFactory;
+import uk.ac.leeds.ccg.grids.d2.chunk.d.Grids_ChunkDoubleFactorySinglet;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactorySinglet;
+import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBinaryFactory;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsNumber;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBinaryArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkFactoryBooleanArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkFactoryBDSinglet;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinaryFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBooleanFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactorySinglet;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBDFactory;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -74,29 +74,29 @@ public class Grids_Processor extends Grids_Object {
     protected Grids_Files files;
 
     /**
-     * Grids_GridFactoryBoolean
+     * Grids_GridBooleanFactory
      */
-    public Grids_GridFactoryBoolean gridFactoryBoolean;
+    public Grids_GridBooleanFactory gridFactoryBoolean;
 
     /**
-     * Grids_GridFactoryBoolean
+     * Grids_GridBooleanFactory
      */
-    public Grids_GridFactoryBinary gridFactoryBinary;
+    public Grids_GridBinaryFactory gridFactoryBinary;
 
     /**
-     * Grids_GridFactoryInt
+     * Grids_GridIntFactory
      */
-    public Grids_GridFactoryInt gridFactoryInt;
+    public Grids_GridIntFactory gridFactoryInt;
 
     /**
-     * Grids_GridFactoryDouble
+     * Grids_GridDoubleFactory
      */
-    public Grids_GridFactoryDouble gridFactoryDouble;
+    public Grids_GridDoubleFactory gridFactoryDouble;
 
     /**
-     * Grids_GridFactoryBD
+     * Grids_GridBDFactory
      */
-    public Grids_GridFactoryBD gridFactoryBD;
+    public Grids_GridBDFactory gridFactoryBD;
 
     /**
      * @param e The grids environment.
@@ -122,33 +122,33 @@ public class Grids_Processor extends Grids_Object {
         // Boolean
         Path dir = Paths.get(files.getGeneratedGridBooleanDir().toString());
         IO_Cache fs = IO_Cache.getFileStore(dir);
-        gridFactoryBoolean = new Grids_GridFactoryBoolean(env, fs,
-                new Grids_ChunkFactoryBooleanArray(), chunkNRows, chunkNCols);
+        gridFactoryBoolean = new Grids_GridBooleanFactory(env, fs,
+                new Grids_ChunkBooleanFactoryArray(), chunkNRows, chunkNCols);
         // Binary
         dir = Paths.get(files.getGeneratedGridBinaryDir().toString());
         fs = IO_Cache.getFileStore(dir);
-        gridFactoryBinary = new Grids_GridFactoryBinary(env, fs,
-                new Grids_ChunkFactoryBinaryArray(), chunkNRows, chunkNCols);
+        gridFactoryBinary = new Grids_GridBinaryFactory(env, fs,
+                new Grids_ChunkBinaryFactoryArray(), chunkNRows, chunkNCols);
         // Int
         dir = Paths.get(files.getGeneratedGridIntDir().toString());
         fs = IO_Cache.getFileStore(dir);
-        gridFactoryInt = new Grids_GridFactoryInt(env, fs,
-                new Grids_ChunkFactoryIntSinglet(Integer.MIN_VALUE),
-                new Grids_ChunkFactoryIntArray(),
+        gridFactoryInt = new Grids_GridIntFactory(env, fs,
+                new Grids_ChunkIntFactorySinglet(Integer.MIN_VALUE),
+                new Grids_ChunkIntFactoryArray(),
                 chunkNRows, chunkNCols);
         // Double
         dir = Paths.get(files.getGeneratedGridDoubleDir().toString());
         fs = IO_Cache.getFileStore(dir);
-        gridFactoryDouble = new Grids_GridFactoryDouble(env, fs,
-                new Grids_ChunkFactoryDoubleSinglet(-Double.MAX_VALUE),
-                new Grids_ChunkFactoryDoubleArray(),
+        gridFactoryDouble = new Grids_GridDoubleFactory(env, fs,
+                new Grids_ChunkDoubleFactorySinglet(-Double.MAX_VALUE),
+                new Grids_ChunkDoubleFactoryArray(),
                 chunkNRows, chunkNCols);
         // BigDecimal
         dir = Paths.get(files.getGeneratedGridBigDecimalDir().toString());
         fs = IO_Cache.getFileStore(dir);
-        gridFactoryBD = new Grids_GridFactoryBD(env, fs,
-                new Grids_ChunkFactoryBDSinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
-                new Grids_ChunkFactoryBDArray(),
+        gridFactoryBD = new Grids_GridBDFactory(env, fs,
+                new Grids_ChunkBDFactorySinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
+                new Grids_ChunkBDFactoryArray(),
                 chunkNRows, chunkNCols);
     }
 
@@ -869,7 +869,7 @@ public class Grids_Processor extends Grids_Object {
         Grids_Dimensions gD = g.getDimensions();
         BigDecimal g2NoDataValue = getNoDataValueBigDecimal(g);
         Grids_Dimensions g2D = g2.getDimensions();
-        Grids_GridFactoryDouble gf = this.gridFactoryDouble;
+        Grids_GridDoubleFactory gf = this.gridFactoryDouble;
         // If the region to be added is outside g then return.
         if ((dc[1].compareTo(gD.getXMax()) == 1)
                 || (dc[3].compareTo(gD.getXMin()) == -1)
@@ -1641,7 +1641,7 @@ public class Grids_Processor extends Grids_Object {
     //     */
     //    public Grids_GridDouble aggregate( Grids_GridDouble grid, double resultCellsize, String statistic, double resultXllcorner, double resultYllcorner ) {
     //        try {
-    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_GridFactoryDouble() );
+    //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grids_GridDoubleFactory() );
     //        } catch ( OutOfMemoryError e ) {
     //            return aggregate( grid, resultCellsize, statistic, resultXllcorner, resultYllcorner, new Grid2DSquareCellDoubleFileFactory() );
     //        }

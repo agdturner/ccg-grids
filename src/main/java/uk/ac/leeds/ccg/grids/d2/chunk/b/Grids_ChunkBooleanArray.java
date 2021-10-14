@@ -143,14 +143,14 @@ public class Grids_ChunkBooleanArray extends Grids_ChunkBooleanArrayOrMap {
     /**
      * @return a new iterator over the values. 
      */
-    public Grids_ChunkIteratorBooleanArray iterator() {
-        return new Grids_ChunkIteratorBooleanArray(this);
+    public Grids_ChunkBooleanIteratorArray iterator() {
+        return new Grids_ChunkBooleanIteratorArray(this);
     }
 
     @Override
     public Long getN() {
         long n = 0;
-        Grids_ChunkIteratorBooleanArray ite = iterator();
+        Grids_ChunkBooleanIteratorArray ite = iterator();
         while (ite.hasNext()) {
             Boolean b = ite.next();
             if (b != null) {
