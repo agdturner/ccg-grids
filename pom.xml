@@ -39,24 +39,30 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <agdt-java-generic.version>2.1-SNAPSHOT</agdt-java-generic.version>
+        <ccg-generic.version>2.1</ccg-generic.version>
         <ccg-io.version>1.1.0</ccg-io.version>
-        <ccg-math.version>1.18-SNAPSHOT</ccg-math.version>
+        <ccg-math.version>2.0</ccg-math.version>
         <!--
         <big-math.version>2.3.0</big-math.version>
         -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
-        <junit.version>5.7.0</junit.version>
+        <junit.version>5.7.2</junit.version>
     </properties>
     
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
-            <artifactId>agdt-java-generic</artifactId>
-            <version>${agdt-java-generic.version}</version>
+            <artifactId>ccg-generic</artifactId>
+            <version>${ccg-generic.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io -->
+        <dependency>
+            <groupId>io.github.agdturner</groupId>
+            <artifactId>ccg-io</artifactId>
+            <version>${ccg-io.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
