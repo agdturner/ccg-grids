@@ -38,23 +38,17 @@ public class Grids_ChunkIntIteratorArrayOrMap
     /**
      * Create a new instance.
      * 
-     * @param chunk The chunk.
+     * @param c What {@link #data} is set from.
      */
-    public Grids_ChunkIntIteratorArrayOrMap(Grids_ChunkIntArray chunk) {
-        super(chunk);
-        data = chunk.getData();
+    public Grids_ChunkIntIteratorArrayOrMap(Grids_ChunkIntArrayOrMap c) {
+        super(c);
+        if (c instanceof Grids_ChunkIntArray) {
+            data = ((Grids_ChunkIntArray) c).getData();
+        } else {
+            data = ((Grids_ChunkIntMap) c).to2DIntArray();
+        }
     }
     
-    /**
-     * Create a new instance.
-     * 
-     * @param chunk The chunk.
-     */
-    public Grids_ChunkIntIteratorArrayOrMap(Grids_ChunkIntMap chunk) {
-        super(chunk);
-        data = chunk.to2DIntArray();
-    }
-
     /**
      * Returns the next element in the iteration.
      *

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.d;
+package uk.ac.leeds.ccg.grids.d2.chunk.i;
 
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
+public class Grids_ChunkIntStatsNotUpdated extends Grids_ChunkIntStats {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
      * @param e The grids environment.
      * @param c The chunk.
      */
-    public Grids_ChunkDoubleStatsNotUpdated(Grids_Environment e, Grids_ChunkDouble c) {
+    public Grids_ChunkIntStatsNotUpdated(Grids_Environment e, Grids_ChunkInt c) {
         super(e, c);
     }
 
@@ -72,7 +72,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
     /**
      * Updates by going through all values in the grid if the fields are likely
      * not to be up to date. (NB. After calling this it is inexpensive to
-     * convert to Grids_GridStatsDouble.)
+     * convert to Grids_GridStatsInt.)
      *
      * @throws java.lang.Exception If encountered.
      * @throws java.io.IOException If encountered.
@@ -140,7 +140,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Double getMin(boolean update) throws IOException, Exception,
+    public Integer getMin(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
@@ -156,7 +156,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Double getMax(boolean update) throws IOException, Exception,
+    public Integer getMax(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();
