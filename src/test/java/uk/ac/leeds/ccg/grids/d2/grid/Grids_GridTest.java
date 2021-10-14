@@ -31,8 +31,8 @@ import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -82,7 +82,7 @@ public class Grids_GridTest {
     @Test
     public void testIsSameFrame() throws Exception {
         System.out.println("isSameFrame");
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         // Test 1
         Grids_Grid g0 = gfd.create(10, 10);
         Grids_Grid g1 = gfd.create(10, 10);
@@ -96,7 +96,7 @@ public class Grids_GridTest {
         result = g0.isSameDimensionsAndChunks(g1);
         assertEquals(expResult, result);
         // Test 2
-        Grids_GridFactoryInt gfi = gp.gridFactoryInt;
+        Grids_GridIntFactory gfi = gp.gridFactoryInt;
         g0 = gfd.create(10, 10);
         g1 = gfi.create(10, 10);
         expResult = true;
@@ -116,7 +116,7 @@ public class Grids_GridTest {
         int oom = -3;
         Math_BigRationalSqrt distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
         int expResult = 10;
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
         int result = instance.getCellDistance(distance);
         assertEquals(expResult, result);
@@ -144,7 +144,7 @@ public class Grids_GridTest {
     @Test
     public void testGetNCols() throws Exception {
         System.out.println("getNCols");
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
         long expResult = 10L;
         long result = instance.getNCols();
@@ -159,7 +159,7 @@ public class Grids_GridTest {
     @Test
     public void testGetNRows() throws Exception {
         System.out.println("getNRows");
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
         long expResult = 10L;
         long result = instance.getNRows();
@@ -175,7 +175,7 @@ public class Grids_GridTest {
     public void testGetNChunkRows() throws Exception {
         System.out.println("getNChunkRows");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 2;
         int result = instance.getNChunkRows();
@@ -191,7 +191,7 @@ public class Grids_GridTest {
     public void testGetNChunkCols() throws Exception {
         System.out.println("getNChunkCols");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 2;
         int result = instance.getNChunkCols();
@@ -207,7 +207,7 @@ public class Grids_GridTest {
     public void testGetNChunks() throws Exception {
         System.out.println("getNChunks");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         long expResult = 4;
         long result = instance.getNChunks();
@@ -223,7 +223,7 @@ public class Grids_GridTest {
     public void testGetChunkNRows_0args() throws Exception {
         System.out.println("getChunkNRows");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         int result = instance.getChunkNRows();
@@ -240,7 +240,7 @@ public class Grids_GridTest {
         System.out.println("getChunkNRows");
         // By default chunkNRows and chunkNCols are 512.
         int cr = 0;
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         int result = instance.getChunkNRows(cr);
@@ -260,7 +260,7 @@ public class Grids_GridTest {
     public void testGetChunkNCols_0args() throws Exception {
         System.out.println("getChunkNCols");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         int result = instance.getChunkNCols();
@@ -277,7 +277,7 @@ public class Grids_GridTest {
         System.out.println("getChunkNCols");
         // By default chunkNRows and chunkNCols are 512.
         int cc = 0;
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         int result = instance.getChunkNCols(cc);
@@ -297,7 +297,7 @@ public class Grids_GridTest {
     public void testGetChunkNRowsFinalRowChunk() throws Exception {
         System.out.println("getChunkNRowsFinalRowChunk");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 488;
         int result = instance.getChunkNRowsFinalRowChunk();
@@ -313,7 +313,7 @@ public class Grids_GridTest {
     public void testGetChunkNColsFinalColChunk() throws Exception {
         System.out.println("getChunkNColsFinalColChunk");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 488;
         int result = instance.getChunkNColsFinalColChunk();
@@ -329,7 +329,7 @@ public class Grids_GridTest {
     public void testGetChunkNRows_Grids_2D_ID_int() throws Exception {
         System.out.println("getChunkNRows");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         Grids_2D_ID_int i = new Grids_2D_ID_int(0, 0);
@@ -361,7 +361,7 @@ public class Grids_GridTest {
     public void testGetChunkNCols_Grids_2D_ID_int() throws Exception {
         System.out.println("getChunkNCols");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 1000);
         int expResult = 512;
         Grids_2D_ID_int i = new Grids_2D_ID_int(0, 0);
@@ -450,7 +450,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCol");
         Math_BigRational x = Math_BigRational.valueOf(0.5d);
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 5120);
         int expResult = 0;
         int result = instance.getChunkCol(x);
@@ -492,7 +492,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCol");
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1000;
         long ncols = 5120;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -536,7 +536,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCellCol");
         Math_BigRational x = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1000;
         long ncols = 5120;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -570,7 +570,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCellCol");
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1000;
         long ncols = 5120;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -609,7 +609,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCellRow");
         Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         long nrows = 5120;
         long ncols = 1000;
@@ -644,7 +644,7 @@ public class Grids_GridTest {
         System.out.println("getChunkCellRow");
         long row = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         long nrows = 5120;
         long ncols = 1000;
@@ -679,7 +679,7 @@ public class Grids_GridTest {
         System.out.println("getCol");
         Math_BigRational x = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         long nrows = 5120;
         long ncols = 1000;
@@ -711,7 +711,7 @@ public class Grids_GridTest {
         int cc = 0;
         int ccc = 0;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         int chunkNCols = gfd.chunkNCols;
         long nrows = 5120;
@@ -738,7 +738,7 @@ public class Grids_GridTest {
         System.out.println("getChunkRow");
         Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         int chunkNCols = gfd.chunkNCols;
         long nrows = 5120;
@@ -766,7 +766,7 @@ public class Grids_GridTest {
         System.out.println("getChunkRow");
         long row = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         int chunkNCols = gfd.chunkNCols;
         long nrows = 5120;
@@ -802,7 +802,7 @@ public class Grids_GridTest {
         System.out.println("getRow");
         Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         int chunkNCols = gfd.chunkNCols;
         long nrows = 5120;
@@ -831,7 +831,7 @@ public class Grids_GridTest {
         int cr = 0;
         int ccr = 0;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         int chunkNRows = gfd.chunkNRows;
         int chunkNCols = gfd.chunkNCols;
         long nrows = 5120;
@@ -859,7 +859,7 @@ public class Grids_GridTest {
         long row = 0L;
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -879,7 +879,7 @@ public class Grids_GridTest {
         Math_BigRational x = Math_BigRational.ZERO;
         Math_BigRational y = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1005,7 +1005,7 @@ public class Grids_GridTest {
     public void testGetHeight() throws Exception {
         System.out.println("getHeight");
         // By default chunkNRows and chunkNCols are 512 and cellSize is 1.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1023,7 +1023,7 @@ public class Grids_GridTest {
     public void testGetWidth() throws Exception {
         System.out.println("getWidth");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1041,7 +1041,7 @@ public class Grids_GridTest {
     public void testIsSameDimensionsAndValues() throws Exception {
         System.out.println("isSameDimensionsAndValues");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid g = gfd.create(nrows, ncols);
@@ -1076,7 +1076,7 @@ public class Grids_GridTest {
     public void testIsSameDimensions() throws Exception {
         System.out.println("isSameDimensions");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid g = gfd.create(nrows, ncols);
@@ -1100,7 +1100,7 @@ public class Grids_GridTest {
     public void testIsSameDimensionsAndChunks() throws Exception {
         System.out.println("isSameDimensionsAndChunks");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid g = gfd.create(nrows, ncols);
@@ -1125,7 +1125,7 @@ public class Grids_GridTest {
     public void testIsCoincident() throws Exception {
         System.out.println("isCoincident");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
         long ncols = 100;
         Grids_Grid g = gfd.create(nrows, ncols);
@@ -1159,7 +1159,7 @@ public class Grids_GridTest {
         Math_BigRational x = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
         Math_BigRational y = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1179,7 +1179,7 @@ public class Grids_GridTest {
         long r = 0L;
         long c = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1198,7 +1198,7 @@ public class Grids_GridTest {
         System.out.println("isInGrid");
         Grids_2D_ID_long i = new Grids_2D_ID_long(0L, 0L);
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1222,7 +1222,7 @@ public class Grids_GridTest {
         System.out.println("isInGrid");
         Grids_2D_ID_int i = new Grids_2D_ID_int(0, 0);
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1249,7 +1249,7 @@ public class Grids_GridTest {
         int ccr = 0;
         int ccc = 0;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1273,7 +1273,7 @@ public class Grids_GridTest {
         System.out.println("getCellX");
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1292,7 +1292,7 @@ public class Grids_GridTest {
         System.out.println("getCellX");
         Grids_2D_ID_long i = new Grids_2D_ID_long(0L, 0L);
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1311,7 +1311,7 @@ public class Grids_GridTest {
         System.out.println("getCellY");
         long row = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1330,7 +1330,7 @@ public class Grids_GridTest {
         System.out.println("getCellY");
         Grids_2D_ID_long i = new Grids_2D_ID_long(0L, 0L);
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -1350,7 +1350,7 @@ public class Grids_GridTest {
         long row = 0L;
         long col = 0L;
         // By default chunkNRows and chunkNCols are 512.
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);

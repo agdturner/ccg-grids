@@ -38,10 +38,10 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridFactoryBD;
+import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBDFactory;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridFactoryInt;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
+import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridExporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
@@ -91,7 +91,7 @@ public class Grids_ProcessorTest {
     @Test
     public void testMask() throws Exception {
         System.out.println("mask");
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         // Test 1
         long nrows = 2L;
         long ncols = 3L;
@@ -453,7 +453,7 @@ public class Grids_ProcessorTest {
     public void testMultiplyDouble() throws Exception {
         System.out.println("multiplyDouble");
         Double type = 0.0d;
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long maxNrowsToPrint = 10;
         long maxNcolsToPrint = 10;
         // Test 1
@@ -799,7 +799,7 @@ public class Grids_ProcessorTest {
     public void testMultiplyBigDecimal() throws Exception {
         System.out.println("multiplyBigDecimal");
         BigDecimal type = BigDecimal.ZERO;
-        Grids_GridFactoryBD gf = gp.gridFactoryBD;
+        Grids_GridBDFactory gf = gp.gridFactoryBD;
         long maxNrowsToPrint = 10;
         long maxNcolsToPrint = 10;
         int oom = -10;
@@ -1480,7 +1480,7 @@ public class Grids_ProcessorTest {
 //        String statistic = "";
 //        int rowOffset = 0;
 //        int colOffset = 0;
-//        Grids_GridFactoryDouble gf = null;
+//        Grids_GridDoubleFactory gf = null;
 //        Grids_Processor instance = null;
 //        Grids_GridDouble expResult = null;
 //        Grids_GridDouble result = instance.aggregate(grid, cellFactor, statistic, rowOffset, colOffset, gf);
@@ -1513,7 +1513,7 @@ public class Grids_ProcessorTest {
 //        Grids_GridNumber grid = null;
 //        String statistic = "";
 //        Grids_Dimensions rD = null;
-//        Grids_GridFactoryDouble gf = null;
+//        Grids_GridDoubleFactory gf = null;
 //        int dp = 0;
 //        RoundingMode rm = null;
 //        Grids_Processor instance = null;

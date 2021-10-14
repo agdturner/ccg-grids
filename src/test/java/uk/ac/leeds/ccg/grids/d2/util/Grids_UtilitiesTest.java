@@ -19,7 +19,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
-import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridFactoryDouble;
+import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import java.awt.geom.Point2D;
@@ -554,7 +554,7 @@ public class Grids_UtilitiesTest {
         IO_Path dir = new IO_Path(dataDir);
         Grids_Environment ge = new Grids_Environment(env, dir);
         Grids_Processor gp = new Grids_Processor(ge);
-        Grids_GridFactoryDouble gfd = gp.gridFactoryDouble;
+        Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 10L;
         long ncols = 10L;
         int oom = -1;
