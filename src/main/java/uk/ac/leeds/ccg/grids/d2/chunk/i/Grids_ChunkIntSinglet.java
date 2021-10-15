@@ -54,7 +54,7 @@ public class Grids_ChunkIntSinglet extends Grids_ChunkInt {
     /**
      * @return {@link #v} 
      */
-    protected int getValue() {
+    public int getV() {
         return v;
     }
 

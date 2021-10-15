@@ -142,8 +142,9 @@ public class Grids_GridIntFactory extends Grids_GridFactory {
     @Override
     public Grids_GridInt create(long nRows, long nCols, Grids_Dimensions dim)
             throws IOException, ClassNotFoundException, Exception {
-        return create(new Grids_GridIntStatsNotUpdated(env),
-                gridChunkIntFactory, nRows, nCols, dim);
+        return create(this.stats, gridChunkIntFactory, nRows, nCols, dim);
+//        return create(new Grids_GridIntStatsNotUpdated(env),
+//                gridChunkIntFactory, nRows, nCols, dim);
     }
 
     /**

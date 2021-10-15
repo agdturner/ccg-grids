@@ -483,7 +483,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      * extension containing the data and information about the Grids_GridInt to
      * be returned.
      * @param cf The Grids_ChunkIntFactory preferred to construct chunks of
- this.
+     * this.
      * @param chunkNRows The Grids_GridInt _ChunkNRows.
      * @param chunkNCols The Grids_GridInt _ChunkNCols.
      * @param startRow The topmost row index of the grid stored as gridFile.
@@ -977,8 +977,8 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     /**
      * @param i The cell ID.
-     * @return The v of the cell with cell ID {@code i} or {@link #ndv}
-     * if there is no such cell in the grid.
+     * @return The v of the cell with cell ID {@code i} or {@link #ndv} if there
+     * is no such cell in the grid.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1133,14 +1133,13 @@ public class Grids_GridInt extends Grids_GridNumber {
         }
         // Update stats
         if (v != ndv) {
-            if (stats.isUpdated()) {
-                updateStats(v);
-            }
+            updateStats(v);
         }
     }
 
     /**
-     * updateStats 
+     * updateStats
+     *
      * @param value The value.
      * @throws IOException If encountered.
      * @throws Exception If encountered.
@@ -1527,7 +1526,7 @@ public class Grids_GridInt extends Grids_GridNumber {
 
     /**
      * @return A Grids_GridIntIterator for iterating over the cell values in
- this.
+     * this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

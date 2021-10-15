@@ -41,7 +41,7 @@ public class Grids_ChunkIntIteratorSinglet
      */
     public Grids_ChunkIntIteratorSinglet(Grids_ChunkIntSinglet c) {
         super(c);
-        v = c.getValue();
+        v = c.getV();
     }
 
     /**

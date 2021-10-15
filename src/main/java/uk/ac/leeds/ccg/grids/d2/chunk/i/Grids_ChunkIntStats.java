@@ -62,7 +62,7 @@ public class Grids_ChunkIntStats extends Grids_StatsInt {
         env.checkAndMaybeFreeMemory();
         init();
         if (c instanceof Grids_ChunkIntSinglet) {
-            int v = ((Grids_ChunkIntSinglet) c).getValue();
+            int v = ((Grids_ChunkIntSinglet) c).getV();
                 Grids_GridInt g = c.getGrid();
                 if (v != g.getNoDataValue()) {
                     max = v;
@@ -108,7 +108,7 @@ public class Grids_ChunkIntStats extends Grids_StatsInt {
             ClassNotFoundException {
         long r = 0L;
         if (c instanceof Grids_ChunkIntSinglet) {
-            int v = ((Grids_ChunkIntSinglet) c).getValue();
+            int v = ((Grids_ChunkIntSinglet) c).getV();
                 Grids_GridInt g = c.getGrid();
                 if (v != g.getNoDataValue()) {
                     if (v == 0) {

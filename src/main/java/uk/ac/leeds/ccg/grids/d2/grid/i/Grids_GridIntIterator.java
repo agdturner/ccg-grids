@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntMap;
  * returned in row major order.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_GridIntIterator extends Grids_GridIterator {
 
@@ -108,22 +108,30 @@ public class Grids_GridIntIterator extends Grids_GridIterator {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If there is a problem
      */
-    public Integer next() throws IOException, Exception, 
-            ClassNotFoundException {
-        if (!chunkIterator.hasNext()) {
+    public Integer next() throws IOException, Exception, ClassNotFoundException {
+        if (chunkIterator.hasNext()) {
+            return next0();
+        } else {
             if (gridIterator.hasNext()) {
                 chunkID = gridIterator.next();
                 chunk = grid.getChunk(chunkID);
                 chunkIterator = getChunkIterator(chunk);
-                return getChunkIterator().next();
+                env.checkAndMaybeFreeMemory(chunkID, env.HOOMET);
+                return next0();
             } else {
                 return null;
             }
+        }
+    }
+    
+    private Integer next0() throws IOException, ClassNotFoundException, Exception {
+        if (chunk instanceof Grids_ChunkIntSinglet) {
+            return ((Grids_ChunkIntSinglet) chunk).getV();
         } else {
             return getChunkIterator().next();
         }
     }
-
+     
     @Override
     public Grids_ChunkIntIteratorArrayOrMap getChunkIterator() {
         return (Grids_ChunkIntIteratorArrayOrMap) chunkIterator;

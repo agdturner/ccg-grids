@@ -140,11 +140,11 @@ public class Grids_Dimensions implements Serializable {
         this.yMin = yMin;
         this.yMax = yMax;
         this.cellsize = cellsize;
-        width = this.xMax.subtract(this.xMin);
-        height = this.yMax.subtract(this.yMin);
+        width = xMax.subtract(xMin);
+        height = yMax.subtract(yMin);
         area = width.multiply(height);
-        halfCellsize = this.cellsize.divide(2);
-        cellsizeSquared = this.cellsize.multiply(this.cellsize);
+        halfCellsize = cellsize.divide(2);
+        cellsizeSquared = cellsize.pow(2);
     }
 
     /**

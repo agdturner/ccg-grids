@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
  * Grids stats.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public abstract class Grids_Stats extends Grids_Object {
 
