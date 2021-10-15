@@ -1,28 +1,26 @@
 # [ccg-grids](https://github.com/agdturner/ccg-grids)
 
-A modularised Java library for storing and processing lattice based raster data otherwise known as grids.
+A modular Java library for storing and processing [raster data](https://en.wikipedia.org/wiki/GIS_file_formats#Raster).
 
 ## Latest versioned release
 ```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-grids -->
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-grids -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-grids</artifactId>
-    <version>1.1</version>
+    <artifactId>ccg-grids</artifactId>
+    <version>2.0</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-grids/1.1/agdt-java-grids-1.1.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-grids/2.0/agdt-java-grids-2.0.jar)
 
 ## General description
-Grids is geared for processing multiple large input and output data grids in workflows which may involve other data not stored as data grids. Each data grid may be too large to store in the available fast access memory of the computer (memory) - in which case, some of the data is stored in slower access storage (disk).
+This library provides a means to process multiple large input and output data grids in workflows which may involve significant volumes of other types of data. Each data grid may be too large to store in the available fast access memory of the computer (memory) - in which case, some of the data is stored in slower access storage (disk).
 
-Data grids have two spatial dimensions with two orthoganol coordinate axes - X and Y. The lattice points are the intersections of equidistant parallel lines that cut one or other axis orthogonally in a flat plane. A grid can also be imagined as being comprised of square cells on this plane with values covering the cell, with cell sides aligning with the coordinate axes X and Y - arranged in what are referred to respectively as columns and rows. With this arrangement, each lattice point or cell can be referenced by a row (lattice points or cell centroids with the same Y coordinate) and a column (lattice points or cell centroids with the same X coordinate), or a 2D identifier which composes the row and column indexes into a cell ID. 
+Currently only two spatial dimension (2D) grids are supported with orthoganol coordinate axes - X and Y. A grid can be imagined as being comprised of equally sizes square cells that tesselate on this plane each attributed with a value. The cells are aligned with the coordinate axes X and Y arranged respectively into columns and rows. Each cell has a position With this arrangement given by a column and a row index which are composed into a cell ID. 
 
 The library has been used to process many hundreds of grids with many tens of thousands of rows and columns simultaneously using computers with a few hundred megabytes of available fast access memory and a few gigabytes of available disk space.
 
-The nearest lattice point or cell value can be unambiguously determined for all coordinates with the exception of those on the boundaries between cells exactly midway between lattice points. There are either 1, 2 or 4 nearest lattice points or cell centroids for all coordinates (x, y): x being the value of the coordinate on the X axis; and, y being the value of the coordinte on the Y axis.
-
-BigDecimal numbers - decimals with a specified precision and potentially massive magnitude - are used for coordinates and for location, distance and area calculations in the library. This provides greater parity of accuracy irrespective of coordinate value magnitudes compared with using floating point numbers and floating point arithmetic for such calcuations. In general it also allows for greater accuracy in such calculations, although to achieve sufficient accuracy, intermediate calculations may require higher levels of precision and all told the calculations may be far more computationally demanding. 
+[Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) numbers - rational numbers represented by two [BigDecimal] numerator and decimals with a specified precision and potentially massive magnitude - are used for coordinates and for location, distance and area calculations in the library. This provides greater parity of accuracy irrespective of coordinate value magnitudes compared with using floating point numbers and floating point arithmetic for such calcuations. In general it also allows for greater accuracy in such calculations, although to achieve sufficient accuracy, intermediate calculations may require higher levels of precision and all told the calculations may be far more computationally demanding. 
 
 Currently grids can contain boolean, Boolean, int and double type values, but there are plans to also support BigInteger and BigDecimal values. Each value in a grid is of the same type.
 
