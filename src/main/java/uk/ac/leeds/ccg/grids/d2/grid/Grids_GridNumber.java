@@ -21,6 +21,7 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.io.IO_Cache;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -380,7 +381,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
         if (v.compareTo(ndv) == 0) {
             return "     *    ";
         }
-        return getStringValue(v);
+        return Math_BigDecimal.getStringValue(v);
     }
 
 }

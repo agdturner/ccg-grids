@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.grids.d2.stats;
 
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**

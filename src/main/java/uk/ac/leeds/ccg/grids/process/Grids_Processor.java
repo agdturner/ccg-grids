@@ -928,7 +928,7 @@ public class Grids_Processor extends Grids_Object {
                 // g2Cellsize squared
                 Math_BigRational g2CS = g2C.multiply(g2C);
                 // Area proportions
-                BigDecimal aP1 = gCS.divide(g2CS).toBigDecimal();
+                BigDecimal aP1 = gCS.divide(g2CS).toBigDecimal(oom);
                 for (int r = 0; r < nrows; r++) {
                     env.checkAndMaybeFreeMemory();
                     for (int c = 0; c < ncols; c++) {
@@ -952,27 +952,27 @@ public class Grids_Processor extends Grids_Object {
                             if (!g2.isInGrid(i0.getRow(), i0.getCol())
                                     && d0 != g2NoDataValue) {
                                 BigDecimal aP = getAP(bounds, g2, i0, i1, i2,
-                                        gC, g2CS, g2CH).toBigDecimal();
+                                        gC, g2CS, g2CH).toBigDecimal(oom);
                                 tg1.addToCell(r, c, d0.multiply(aP));
                                 tg2.addToCell(r, c, aP);
                             }
                             if (!g2.isInGrid(i1) && d1 != g2NoDataValue) {
                                 if (i1.equals(i0)) {
-                                    BigDecimal aP = getAP13(bounds, g2, i1, i3, gC, g2CS, g2CH).toBigDecimal();
+                                    BigDecimal aP = getAP13(bounds, g2, i1, i3, gC, g2CS, g2CH).toBigDecimal(oom);
                                     tg1.addToCell(r, c, d1.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i2) && d2 != g2NoDataValue) {
                                 if (!i2.equals(i0)) {
-                                    BigDecimal aP = getAP23(bounds, g2, i2, i3, gC, g2CS, g2CH).toBigDecimal();
+                                    BigDecimal aP = getAP23(bounds, g2, i2, i3, gC, g2CS, g2CH).toBigDecimal(oom);
                                     tg1.addToCell(r, c, d2.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
                             }
                             if (!g2.isInGrid(i3) && d3 != g2NoDataValue) {
                                 if (i3 != i1 && i3 != i2) {
-                                    BigDecimal aP = getAP3(bounds, g2, i3, gC, g2CS, g2CH).toBigDecimal();
+                                    BigDecimal aP = getAP3(bounds, g2, i3, gC, g2CS, g2CH).toBigDecimal(oom);
                                     tg1.addToCell(r, c, d3.multiply(aP));
                                     tg2.addToCell(r, c, aP);
                                 }
@@ -1738,11 +1738,11 @@ public class Grids_Processor extends Grids_Object {
             Math_BigRational t2 = xMin.divide(c);
             Math_BigRational t3 = rYMin.divide(c);
             Math_BigRational t4 = yMin.divide(c);
-            if ((t0.compareTo(Math_BigRational.valueOf(t0.toBigDecimal().toBigInteger())) == 0)
-                    && (t1.compareTo(Math_BigRational.valueOf(t1.toBigDecimal().toBigInteger().toString()))
-                    == t2.compareTo(Math_BigRational.valueOf(t2.toBigDecimal().toBigInteger().toString())))
-                    && (t3.compareTo(Math_BigRational.valueOf(t3.toBigDecimal().toBigInteger().toString()))
-                    == t4.compareTo(Math_BigRational.valueOf(t4.toBigDecimal().toBigInteger().toString())))) {
+            if ((t0.compareTo(Math_BigRational.valueOf(t0.toBigDecimal(oom).toBigInteger())) == 0)
+                    && (t1.compareTo(Math_BigRational.valueOf(t1.toBigDecimal(oom).toBigInteger().toString()))
+                    == t2.compareTo(Math_BigRational.valueOf(t2.toBigDecimal(oom).toBigInteger().toString())))
+                    && (t3.compareTo(Math_BigRational.valueOf(t3.toBigDecimal(oom).toBigInteger().toString()))
+                    == t4.compareTo(Math_BigRational.valueOf(t4.toBigDecimal(oom).toBigInteger().toString())))) {
                 int cellFactor = rC.divide(c).intValue();
                 int rowOffset = yMin.subtract(rYMin.divide(c)).intValue();
                 int colOffset = xMin.subtract(rXMin.divide(c)).intValue();
@@ -1787,24 +1787,24 @@ public class Grids_Processor extends Grids_Object {
                             totalValueArea.addToCell(cellIDs[0], 1.0d);
                         } else {
                             BigDecimal aP = getAP(bounds, r, cellIDs[0], cellIDs[1],
-                                    cellIDs[2], c, rCS, rCH).toBigDecimal();
+                                    cellIDs[2], c, rCS, rCH).toBigDecimal(oom);
                             r.addToCell(cellIDs[0], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[1].equals(cellIDs[0])) {
                             BigDecimal aP = getAP13(bounds, r, cellIDs[1], cellIDs[3], c,
-                                    rCS, rCH).toBigDecimal();
+                                    rCS, rCH).toBigDecimal(oom);
                             r.addToCell(cellIDs[1], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }
                         if (!cellIDs[2].equals(cellIDs[0])) {
                             BigDecimal aP = getAP23(bounds, r, cellIDs[2], cellIDs[3], c,
-                                    rCS, rCH).toBigDecimal();
+                                    rCS, rCH).toBigDecimal(oom);
                             r.addToCell(cellIDs[2], value.multiply(aP));
                         }
                         if (!cellIDs[3].equals(cellIDs[1]) && !cellIDs[3]
                                 .equals(cellIDs[2])) {
-                            BigDecimal aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH).toBigDecimal();
+                            BigDecimal aP = getAP3(bounds, r, cellIDs[3], c, rCS, rCH).toBigDecimal(oom);
                             r.addToCell(cellIDs[3], value.multiply(aP));
                             totalValueArea.addToCell(cellIDs[0], aP);
                         }

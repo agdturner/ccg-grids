@@ -318,7 +318,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         for (q = 0; q <= cellDistance * 2; q++) {
                             double v = data[p][q];
                             Math_BigRational weight = kernel[p][q];
-                            if ((weight.toBigDecimal().compareTo(ndv) != 0) && v != ndvd) {
+                            if ((weight.toBigDecimal(oom).compareTo(ndv) != 0) && v != ndvd) {
                                 sumWeight = sumWeight.add(weight);
                                 sumCells = sumCells.add(Math_BigRational.ONE);
                                 sum = sum.add(Math_BigRational.valueOf(v));
@@ -332,7 +332,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             for (q = 0; q <= cellDistance * 2; q++) {
                                 double v = data[p][q];
                                 Math_BigRational weight = kernel[p][q];
-                                if ((weight.toBigDecimal().compareTo(ndv) != 0) && v != ndvd) {
+                                if ((weight.toBigDecimal(oom).compareTo(ndv) != 0) && v != ndvd) {
                                     Math_BigRational vbd = Math_BigRational.valueOf(v);
                                     sumWeight = sumWeight.add(weight);
                                     sumCells = sumCells.add(Math_BigRational.ONE);
@@ -461,7 +461,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             double v = data[p][q];
                             Math_BigRational wMean = Math_BigRational.valueOf(wMeanData[p][q]);
                             Math_BigRational weight = kernel[p][q];
-                            if (v != ndvd && (weight.toBigDecimal().compareTo(ndv) != 0)) {
+                            if (v != ndvd && (weight.toBigDecimal(oom).compareTo(ndv) != 0)) {
                                 Math_BigRational vbd = Math_BigRational.valueOf(v);
                                 sumWeight = sumWeight.add(weight);
                                 sDWMean = sDWMean.add((vbd.subtract(wMean)).multiply(weight));

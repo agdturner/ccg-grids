@@ -40,6 +40,7 @@ import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -1016,7 +1017,7 @@ public class Grids_GridBoolean extends Grids_GridB {
      */
     @Override
     protected void logRow(long ncols, long c, long row) throws Exception {
-        String s = " " + getStringValue(BigDecimal.valueOf(row)) + " | ";
+        String s = " " + Math_BigDecimal.getStringValue(BigDecimal.valueOf(row)) + " | ";
         if (ncols < c) {
             long col;
             for (col = 0; col < ncols - 1; col++) {

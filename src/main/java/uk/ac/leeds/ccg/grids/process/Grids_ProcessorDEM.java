@@ -648,7 +648,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                     Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x, y, thisX, thisY, oom);
                     if (thisDistance.compareTo(distance) != 1) {
                         BigDecimal weight = Grids_Kernel.getKernelWeight(distance,
-                                wi, wf, thisDistance, oom).toBigDecimal();
+                                wi, wf, thisDistance, oom).toBigDecimal(oom);
                         BigDecimal thisHeight = g.getCellBigDecimal(thisX, thisY);
                         //thisHeight = gi.getNearestValueDouble(thisX, thisY, hoome);
                         if (thisHeight.compareTo(g.ndv) != 0) {
@@ -2027,7 +2027,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
         String name;
         String underScore = "_";
         Math_BigRational cellsize = dim.getCellsize();
-        int cellDistance = distance.divide(cellsize).getSqrt(0).ceil().intValue();
+        int cellDistance = distance.divide(cellsize, oom).getSqrt(oom).ceil().intValue();
         BigDecimal[] heights = new BigDecimal[4];
         heights[0] = BigDecimal.ZERO;
         heights[1] = BigDecimal.ZERO;

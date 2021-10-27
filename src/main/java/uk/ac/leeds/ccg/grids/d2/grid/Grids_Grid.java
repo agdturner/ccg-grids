@@ -312,11 +312,10 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * Sets the references to this in the chunks.
      */
-    protected void setReferenceInChunks() {
-        Iterator<Grids_2D_ID_int> ite = data.keySet().iterator();
-        while (ite.hasNext()) {
-            data.get(ite.next()).initGrid(this);
-        }
+    protected final void setReferenceInChunks() {
+        data.keySet().forEach(id -> {
+            data.get(id).initGrid(this);
+        });
     }
 
     /**
@@ -411,14 +410,13 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Initialises NChunkRows.
+     * Initialises {@link #nChunkRows}.
      */
     protected final void initNChunkRows() {
         long cnr = (long) chunkNRows;
+        nChunkRows = (int) (nRows / cnr);
         if ((nRows % cnr) != 0) {
-            nChunkRows = (int) (nRows / cnr) + 1;
-        } else {
-            nChunkRows = (int) (nRows / cnr);
+             nChunkRows ++;
         }
     }
 
@@ -443,14 +441,13 @@ public abstract class Grids_Grid extends Grids_Object {
     }
 
     /**
-     * Initialises NChunkCols.
+     * Initialises {@link #nChunkCols}.
      */
     protected final void initNChunkCols() {
         long cnc = (long) this.chunkNCols;
+        nChunkCols = (int) (nCols / cnc);
         if ((nCols % cnc) != 0) {
-            nChunkCols = (int) (nCols / cnc) + 1;
-        } else {
-            nChunkCols = (int) (nCols / cnc);
+             nChunkCols++;
         }
     }
 
@@ -744,12 +741,7 @@ public abstract class Grids_Grid extends Grids_Object {
     public final long getCol(Math_BigRational x) {
         Grids_Dimensions d = getDimensions();
         Math_BigRational dx = x.subtract(d.getXMin());
-        long r = dx.divide(d.getCellsize()).longValue();
-        if (dx.compareTo(Math_BigRational.ZERO) == -1) {
-            return r - 1L;
-        } else {
-            return r;
-        }
+        return dx.divide(d.getCellsize()).floor().longValueExact();
     }
 
     /**
@@ -794,12 +786,7 @@ public abstract class Grids_Grid extends Grids_Object {
     public final long getRow(Math_BigRational y) {
         Grids_Dimensions d = getDimensions();
         Math_BigRational dy = y.subtract(d.getYMin());
-        long r = dy.divide(d.getCellsize()).longValue();
-        if (dy.compareTo(Math_BigRational.ZERO) == -1) {
-            return r - 1L;
-        } else {
-            return r;
-        }
+        return dy.divide(d.getCellsize()).floor().longValueExact();
     }
 
     /**
@@ -2139,10 +2126,10 @@ public abstract class Grids_Grid extends Grids_Object {
                 if (x.compareTo(dim.getXMin()) == -1) {
                     q = 0;
                     if (y.compareTo(dim.getYMax()) >= 0) {
-                        p = 0;
+                        p = nRows - 1;
                     } else {
                         if (y.compareTo(dim.getYMin()) == -1) {
-                            p = nRows - 1;
+                            p = 0;
                         } else {
                             p = getRow(y);
                         }
@@ -2150,9 +2137,9 @@ public abstract class Grids_Grid extends Grids_Object {
                 } else {
                     q = getCol(x);
                     if (y.compareTo(dim.getYMax()) >= 0) {
-                        p = 0;
-                    } else {
                         p = nRows - 1;
+                    } else {
+                        p = 0;
                     }
                 }
             }
@@ -2759,7 +2746,8 @@ public abstract class Grids_Grid extends Grids_Object {
             env.env.log(bars);
         }
         env.env.log(getStringValue(dim.getYMin()) + "  " + dashes);
-        env.env.log("  Ymin " + getStringValue(dim.getXMin()) + getSpaces((cols * 13) - 5) + getStringValue(dim.getXMax()));
+        env.env.log("  Ymin " + getStringValue(dim.getXMin()) 
+                + getSpaces((cols * 13) - 5) + getStringValue(dim.getXMax()));
         env.env.log("          Xmin" + getSpaces(cols * 13) + "Xmax");
     }
 
@@ -2889,7 +2877,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param v The value to return as a String.
      * @return {@code v} as a string rounded if necessary using
      * {@code RoundingMode.HALF_UP}.
+     * @Deprecated Use 
      */
+    @Deprecated
     public String getStringValue(Math_BigRational v) {
         String r = v.toString();
         if (r.length() > 10) {
@@ -2905,32 +2895,34 @@ public abstract class Grids_Grid extends Grids_Object {
         return r;
     }
 
-    /**
-     * Used to help log a view of the grid. This aims to present numerical
-     * values in 10 characters which may involve rounding. If the number has
-     * fewer than 10 characters it is padded with spaces. The returned String is
-     * always of length 10.
-     *
-     * @param v The value to return as a String.
-     * @return {@code v} as a string rounded if necessary using
-     * {@code RoundingMode.HALF_UP}.
-     */
-    public String getStringValue(BigDecimal v) {
-        String r = v.toEngineeringString();
-        if (r.length() > 10) {
-            BigDecimal v2 = v.setScale(v.scale() - (v.precision() - 3),
-                    RoundingMode.HALF_UP);
-            r = v2.toEngineeringString();
-        }
-        while (r.length() < 9) {
-            r = " " + r + " ";
-        }
-        if (r.length() < 10) {
-            r = " " + r;
-        }
-        //System.out.println(r.length());
-        return r;
-    }
+//    /**
+//     * Used to help log a view of the grid. This aims to present numerical
+//     * values in 10 characters which may involve rounding. If the number has
+//     * fewer than 10 characters it is padded with spaces. The returned String is
+//     * always of length 10.
+//     *
+//     * @param v The value to return as a String.
+//     * @return {@code v} as a string rounded if necessary using
+//     * {@code RoundingMode.HALF_UP}.
+//     * Use Math_BigDecimal.getStringValue(BigDecimal v)
+//     */
+//    @Deprecated
+//    public String getStringValue(BigDecimal v) {
+//        String r = v.toEngineeringString();
+//        if (r.length() > 10) {
+//            BigDecimal v2 = v.setScale(v.scale() - (v.precision() - 3),
+//                    RoundingMode.HALF_UP);
+//            r = v2.toEngineeringString();
+//        }
+//        while (r.length() < 9) {
+//            r = " " + r + " ";
+//        }
+//        if (r.length() < 10) {
+//            r = " " + r;
+//        }
+//        //System.out.println(r.length());
+//        return r;
+//    }
 
     /**
      * @param n The length of the String returned.

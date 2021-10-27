@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import java.math.BigDecimal;
 import java.math.BigInteger;

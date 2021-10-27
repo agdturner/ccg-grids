@@ -78,7 +78,7 @@ public abstract class Grids_Kernel {
     public static double[][] getNormalDistributionKernelWeights(
             Math_BigRational cellsize, Math_BigRationalSqrt distance, int oom) {
         double[][] r;
-        int delta = distance.divide(cellsize).getSqrt(oom).ceil().intValue();
+        int delta = distance.divide(cellsize, oom).getSqrt(oom).ceil().intValue();
         int squareSize = (delta * 2) + 1;
         r = new double[squareSize][squareSize];
         int distance2;
@@ -327,7 +327,7 @@ public abstract class Grids_Kernel {
     public static Math_BigRational getKernelVolume(Math_BigRationalSqrt bw,
             int p, Math_BigRational wi, int wf, int oom) {
         Math_BigRational r = Math_BigRational.ZERO;
-        Math_BigRational sectionArea = bw.divide(Math_BigRational.valueOf(p)).getX();
+        Math_BigRational sectionArea = bw.divide(Math_BigRational.valueOf(p), oom).getX();
         Math_BigRational sectionSize = new Math_BigRationalSqrt(sectionArea, oom).getSqrt(oom);
         //int sectionCount = 0;
         for (int row = 1; row < p; row++) {
