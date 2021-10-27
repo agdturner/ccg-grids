@@ -15,14 +15,29 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.TestMethodOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.io.IO_Path;
@@ -30,18 +45,31 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactory;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactorySinglet;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
+import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
+import uk.ac.leeds.ccg.grids.d2.stats.Grids_Stats;
+import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
+import uk.ac.leeds.ccg.grids.memory.Grids_Account;
+import uk.ac.leeds.ccg.grids.memory.Grids_AccountDetail;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
+import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
+ * Test class for Grids_Grid.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
+@TestMethodOrder(OrderAnnotation.class)
 public class Grids_GridTest {
 
     Generic_Environment env;
@@ -680,7 +708,6 @@ public class Grids_GridTest {
         Math_BigRational x = Math_BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -888,114 +915,6 @@ public class Grids_GridTest {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of getCellIDs method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetCellIDs_5args_1() {
-//        System.out.println("getCellIDs");
-//        Math_BigRational x = null;
-//        Math_BigRational y = null;
-//        Math_BigRational distance = null;
-//        int dp = 0;
-//        RoundingMode rm = null;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance, dp, rm);
-//        assertArrayEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getCellIDs method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetCellIDs_5args_2() {
-//        System.out.println("getCellIDs");
-//        long row = 0L;
-//        long col = 0L;
-//        Math_BigRational distance = null;
-//        int dp = 0;
-//        RoundingMode rm = null;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getCellIDs(row, col, distance, dp, rm);
-//        assertArrayEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getCellIDs method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetCellIDs_7args() {
-//        System.out.println("getCellIDs");
-//        Math_BigRational x = null;
-//        Math_BigRational y = null;
-//        long row = 0L;
-//        long col = 0L;
-//        Math_BigRational distance = null;
-//        int dp = 0;
-//        RoundingMode rm = null;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long[] expResult = null;
-//        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, row, col, distance, dp, rm);
-//        assertArrayEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getNearestCellID method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetNearestCellID_Math_BigRational_Math_BigRational() {
-//        System.out.println("getNearestCellID");
-//        Math_BigRational x = null;
-//        Math_BigRational y = null;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long expResult = null;
-//        Grids_2D_ID_long result = instance.getNearestCellID(x, y);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getNearestCellID method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetNearestCellID_long_long() {
-//        System.out.println("getNearestCellID");
-//        long r = 0L;
-//        long c = 0L;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long expResult = null;
-//        Grids_2D_ID_long result = instance.getNearestCellID(r, c);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getNearestCellID method, of class Grids_Grid.
-//     */
-//    @Test
-//    public void testGetNearestCellID_4args() {
-//        System.out.println("getNearestCellID");
-//        Math_BigRational x = null;
-//        Math_BigRational y = null;
-//        long row = 0L;
-//        long col = 0L;
-//        Grids_Grid instance = null;
-//        Grids_2D_ID_long expResult = null;
-//        Grids_2D_ID_long result = instance.getNearestCellID(x, y, row, col);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of getHeight method, of class Grids_Grid.
      *
@@ -1363,5 +1282,852 @@ public class Grids_GridTest {
         for (int i = 0; i < 4; i++) {
             assertTrue(result[i].compareTo(expResult[i]) == 0);
         }
+    }
+
+    /**
+     * Test of init method, of class Grids_Grid.
+     */
+    @Test
+    public void testInit_0args() throws Exception {
+        // No Test
+    }
+
+    /**
+     * Test of init method, of class Grids_Grid.
+     */
+    @Test
+    public void testInit_Grids_Grid() throws Exception {
+        // No Test
+    }
+
+    /**
+     * Test of init method, of class Grids_Grid.
+     */
+    @Test
+    public void testInit_3args() {
+        // No Test
+    }
+
+    /**
+     * Test of init method, of class Grids_Grid.
+     */
+    @Test
+    public void testInit_6args() {
+        // No Test
+    }
+
+    /**
+     * Test of init method, of class Grids_Grid.
+     */
+    @Test
+    public void testInit_8args() {
+        // No Test
+    }
+
+    /**
+     * Test of setReferenceInChunks method, of class Grids_Grid.
+     */
+    @Test
+    public void testSetReferenceInChunks() {
+        // No Test
+    }
+
+    /**
+     * Test of getChunkIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunkIDs_0args() {
+        // No Test
+    }
+
+    /**
+     * Test of getFieldsDescription method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetFieldsDescription() {
+        // No Test
+    }
+
+    /**
+     * Test of toString method, of class Grids_Grid.
+     */
+    @Test
+    public void testToString() {
+        // No Test
+    }
+
+    /**
+     * Test of getDirectory method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetDirectory() {
+        // No Test
+    }
+
+    /**
+     * Test of getName method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetName() {
+        // No Test
+    }
+
+    /**
+     * Test of setName method, of class Grids_Grid.
+     */
+    @Test
+    public void testSetName() {
+        // No Test
+    }
+
+    /**
+     * Test of initNChunkRows method, of class Grids_Grid.
+     */
+    @Test
+    public void testInitNChunkRows() {
+        // No Test
+    }
+
+    /**
+     * Test of initNChunkCols method, of class Grids_Grid.
+     */
+    @Test
+    public void testInitNChunkCols() {
+        // No Test
+    }
+
+    /**
+     * Test of getDimensions method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetDimensions() {
+        // No Test
+    }
+
+    /**
+     * Test of getCellsize method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetCellsize() {
+        // No Test
+    }
+
+    /**
+     * Test of getChunkIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunkIDs_5args() {
+        System.out.println("getChunkIDs");
+        // Test 1
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, -1, false);
+        Math_BigRational x = Math_BigRational.valueOf(256);
+        Math_BigRational y = Math_BigRational.valueOf(128);
+        try {
+            IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
+            Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
+            Grids_ChunkIntFactoryArray cifa = new Grids_ChunkIntFactoryArray();
+            int chunkNrows = 64;
+            int chunkNcols = 64;
+            Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
+                    cifa, chunkNrows, chunkNcols);
+            Math_BigRational xmin = Math_BigRational.valueOf(0);
+            Math_BigRational ymin = Math_BigRational.valueOf(0);
+            Math_BigRational xmax = Math_BigRational.valueOf(640);
+            Math_BigRational ymax = Math_BigRational.valueOf(320);
+            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
+            int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
+            int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
+            Grids_Grid instance = f.create(nrows, ncols, dim);
+            Set<Grids_2D_ID_int> expResult = new HashSet<>();
+            expResult.add(new Grids_2D_ID_int(1, 3));
+            expResult.add(new Grids_2D_ID_int(2, 4));
+            expResult.add(new Grids_2D_ID_int(1, 4));
+            expResult.add(new Grids_2D_ID_int(2, 3));
+            Set<Grids_2D_ID_int> result = instance.getChunkIDs(distance, x, y, instance.getRow(y), instance.getCol(x));
+            assertTrue(expResult.size() == result.size());
+            result.forEach(id -> {
+                assertTrue(expResult.contains(id));
+            });
+        } catch (Exception ex) {
+            Logger.getLogger(Grids_GridTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Test of getChunkIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunkIDs_4args_1() {
+        // No test.
+    }
+
+    /**
+     * Test of getChunkIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunkIDs_4args_2() {
+        // No test.
+    }
+
+    /**
+     * Test of cache method, of class Grids_Grid.
+     */
+    @Test
+    public void testCache_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_Set() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of cache method, of class Grids_Grid.
+     */
+    @Test
+    public void testCache_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_Set() {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_AccountDetail_boolean() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_AccountDetail_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_AccountChunk_boolean_boolean() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_AccountChunk_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_Account_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_Account_Set() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountChunk_3args_1() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountChunk_Set() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of isChunkSingleValueChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testIsChunkSingleValueChunk() {
+        // No test.
+    }
+
+    /**
+     * Test of swap method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwap() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunk_boolean_boolean() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountDetail_3args_1() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountDetail_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountChunk_3args_2() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountChunk_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_AccountDetail_3args_1() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_AccountDetail_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_0args() {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_Account_3args_1() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_AccountDetail_3args_2() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_Set_Grids_AccountDetail() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_Account() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_Account_3args_2() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunksExcept method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunksExcept_Set() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountDetail_3args_2() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunkExcept_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunkExcept_AccountDetail_Set() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_AccountDetail_boolean_boolean() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_AccountDetail method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_AccountDetail_0args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_Account_5args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of swapChunks_Account method, of class Grids_Grid.
+     */
+    @Test
+    public void testSwapChunks_Account_4args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of isLoaded method, of class Grids_Grid.
+     */
+    @Test
+    public void testIsLoaded() {
+        // No test.
+    }
+
+    /**
+     * Test of isWorthCaching method, of class Grids_Grid.
+     */
+    @Test
+    public void testIsWorthCaching() {
+        // No test.
+    }
+
+    /**
+     * Test of clearChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testClearChunk() {
+        // No test.
+    }
+
+    /**
+     * Test of clearChunks method, of class Grids_Grid.
+     */
+    @Test
+    public void testClearChunks() {
+        // No test.
+    }
+
+    /**
+     * Test of getCellIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetCellIDs_3args_1() {
+        System.out.println("getCellIDs");
+        Math_BigRational x = null;
+        Math_BigRational y = null;
+        Math_BigRationalSqrt distance = null;
+        Grids_Grid instance = null;
+        Grids_2D_ID_long[] expResult = null;
+        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance);
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getCellIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetCellIDs_3args_2() {
+        System.out.println("getCellIDs");
+        long row = 0L;
+        long col = 0L;
+        Math_BigRationalSqrt distance = null;
+        Grids_Grid instance = null;
+        Grids_2D_ID_long[] expResult = null;
+        Grids_2D_ID_long[] result = instance.getCellIDs(row, col, distance);
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getCellIDs method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetCellIDs_5args() {
+        System.out.println("getCellIDs");
+        Math_BigRational x = null;
+        Math_BigRational y = null;
+        long row = 0L;
+        long col = 0L;
+        Math_BigRationalSqrt distance = null;
+        Grids_Grid instance = null;
+        Grids_2D_ID_long[] expResult = null;
+        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, row, col, distance);
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getNearestCellID method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetNearestCellID_Math_BigRational_Math_BigRational() {
+        System.out.println("getNearestCellID");
+        Math_BigRational x = null;
+        Math_BigRational y = null;
+        Grids_Grid instance = null;
+        Grids_2D_ID_long expResult = null;
+        Grids_2D_ID_long result = instance.getNearestCellID(x, y);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getNearestCellID method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetNearestCellID_long_long() {
+        System.out.println("getNearestCellID");
+        try {
+            IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
+            Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
+            Grids_ChunkIntFactoryArray cifa = new Grids_ChunkIntFactoryArray();
+            int chunkNrows = 64;
+            int chunkNcols = 64;
+            Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
+                    cifa, chunkNrows, chunkNcols);
+            Math_BigRational xmin = Math_BigRational.valueOf(0);
+            Math_BigRational ymin = Math_BigRational.valueOf(0);
+            Math_BigRational xmax = Math_BigRational.valueOf(640);
+            Math_BigRational ymax = Math_BigRational.valueOf(320);
+            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
+            int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
+            int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
+            Grids_Grid instance = f.create(nrows, ncols, dim);
+            long r = -1L;
+            long c = -1L;
+            Grids_2D_ID_long expResult = new Grids_2D_ID_long(0L, 0L);
+            Grids_2D_ID_long result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = -1L;
+             c = 1L;
+             expResult = new Grids_2D_ID_long(0L, 1L);
+             result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    }
+
+    /**
+     * Test of getNearestCellID method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetNearestCellID_4args() {
+        System.out.println("getNearestCellID");
+        Math_BigRational x = null;
+        Math_BigRational y = null;
+        long row = 0L;
+        long col = 0L;
+        Grids_Grid instance = null;
+        Grids_2D_ID_long expResult = null;
+        Grids_2D_ID_long result = instance.getNearestCellID(x, y, row, col);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getNextChunkID method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetNextChunkID() {
+        // No test.
+    }
+
+    /**
+     * Test of getPreviousChunkID method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetPreviousChunkID() {
+        // No test.
+    }
+
+    /**
+     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
+     */
+    @Test
+    public void testFreeSomeMemoryAndResetReserve_HashMap_OutOfMemoryError() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
+     */
+    @Test
+    public void testFreeSomeMemoryAndResetReserve_3args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
+     */
+    @Test
+    public void testFreeSomeMemoryAndResetReserve_Set_OutOfMemoryError() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
+     */
+    @Test
+    public void testFreeSomeMemoryAndResetReserve_Grids_2D_ID_int_OutOfMemoryError() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of freeSomeMemoryAndResetReserve method, of class Grids_Grid.
+     */
+    @Test
+    public void testFreeSomeMemoryAndResetReserve_OutOfMemoryError() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of getData method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetData() {
+        // No test.
+    }
+
+    /**
+     * Test of initDimensions method, of class Grids_Grid.
+     */
+    @Test
+    public void testInitDimensions_3args_1() {
+        // No test.
+    }
+
+    /**
+     * Test of initDimensions method, of class Grids_Grid.
+     */
+    @Test
+    public void testInitDimensions_3args_2() {
+        // No test.
+    }
+
+    /**
+     * Test of getChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunk_Grids_2D_ID_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of loadChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testLoadChunk() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of getChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunk_int_int() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of getChunk method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetChunk_3args() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of getStats method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetStats() {
+        // No test.
+    }
+
+    /**
+     * Test of getPathThisFile method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetPathThisFile() {
+        // No test.
+    }
+
+    /**
+     * Test of log method, of class Grids_Grid.
+     */
+    @Test
+    public void testLog() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of logBars method, of class Grids_Grid.
+     */
+    @Test
+    public void testLogBars() {
+        // No test.;
+    }
+
+    /**
+     * Test of getBars method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetBars() {
+        // No test.
+    }
+
+    /**
+     * Test of getBarsAndDashes method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetBarsAndDashes() {
+        // No test.
+    }
+
+    /**
+     * Test of getColMarkers method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetColMarkers() {
+        // No test.
+    }
+
+    /**
+     * Test of getDashes method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetDashes() {
+        // No test.
+    }
+
+    /**
+     * Test of getDashes2 method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetDashes2() {
+        // No test.
+    }
+
+    /**
+     * Test of logRow method, of class Grids_Grid.
+     */
+    @Test
+    public void testLogRow() throws Exception {
+        // No test.
+    }
+
+    /**
+     * Test of getSpaces method, of class Grids_Grid.
+     */
+    @Test
+    public void testGetSpaces() {
+        // No test.
     }
 }

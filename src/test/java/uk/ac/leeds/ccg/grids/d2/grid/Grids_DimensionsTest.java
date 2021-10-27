@@ -24,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- *
+ * Test of Grids_Dimensions.
+ * 
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class Grids_DimensionsTest {
 
