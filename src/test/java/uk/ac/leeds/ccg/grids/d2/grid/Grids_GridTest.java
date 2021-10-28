@@ -146,7 +146,7 @@ public class Grids_GridTest {
         int expResult = 10;
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
-        int result = instance.getCellDistance(distance);
+        int result = instance.getCellDistance(distance, oom);
         assertEquals(expResult, result);
         // Test 2
         distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
@@ -160,7 +160,7 @@ public class Grids_GridTest {
         Grids_Dimensions dims = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         instance = gfd.create(10, 10, dims);
-        result = instance.getCellDistance(distance);
+        result = instance.getCellDistance(distance, oom);
         assertEquals(expResult, result);
     }
 
@@ -1419,7 +1419,8 @@ public class Grids_GridTest {
     public void testGetChunkIDs_5args() {
         System.out.println("getChunkIDs");
         // Test 1
-        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, -1, false);
+        int oom = -1;
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, oom, false);
         Math_BigRational x = Math_BigRational.valueOf(256);
         Math_BigRational y = Math_BigRational.valueOf(128);
         try {
@@ -1444,7 +1445,7 @@ public class Grids_GridTest {
             expResult.add(new Grids_2D_ID_int(2, 4));
             expResult.add(new Grids_2D_ID_int(1, 4));
             expResult.add(new Grids_2D_ID_int(2, 3));
-            Set<Grids_2D_ID_int> result = instance.getChunkIDs(distance, x, y, instance.getRow(y), instance.getCol(x));
+            Set<Grids_2D_ID_int> result = instance.getChunkIDs(distance, x, y, instance.getRow(y), instance.getCol(x), oom);
             assertTrue(expResult.size() == result.size());
             result.forEach(id -> {
                 assertTrue(expResult.contains(id));
@@ -1812,67 +1813,122 @@ public class Grids_GridTest {
     @Test
     public void testGetCellIDs_3args_1() {
         System.out.println("getCellIDs");
-        Math_BigRational x = null;
-        Math_BigRational y = null;
-        Math_BigRationalSqrt distance = null;
-        Grids_Grid instance = null;
-        Grids_2D_ID_long[] expResult = null;
-        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            int oom = -1;
+            IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
+            Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
+            Grids_ChunkIntFactoryArray cifa = new Grids_ChunkIntFactoryArray();
+            int chunkNrows = 64;
+            int chunkNcols = 64;
+            Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
+                    cifa, chunkNrows, chunkNcols);
+            Math_BigRational xmin = Math_BigRational.valueOf(0);
+            Math_BigRational ymin = Math_BigRational.valueOf(0);
+            Math_BigRational xmax = Math_BigRational.valueOf(640);
+            Math_BigRational ymax = Math_BigRational.valueOf(320);
+            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
+            int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
+            int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
+            Grids_Grid instance = f.create(nrows, ncols, dim);
+            // Test 1
+            Math_BigRational x = xmin;
+            Math_BigRational y = ymin;
+            Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, -1);
+            HashSet<Grids_2D_ID_long> expResult = new HashSet<>();
+            expResult.add(instance.getCellID(0L, 0L));
+            expResult.add(instance.getCellID(-1L, -1L));
+            expResult.add(instance.getCellID(-1L, 0L));
+            expResult.add(instance.getCellID(0L, -1L));
+            Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance, oom);
+            assertTrue(expResult.size() == result.length);
+            for (Grids_2D_ID_long id : result) {
+                assertTrue(expResult.contains(id));
+            }
+            // Test 2
+            x = instance.getCellX(0L);
+            y = instance.getCellY(0L);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(7, 5)).pow(2), oom);
+            expResult = new HashSet<>();
+            expResult.add(instance.getCellID(0L, 1L));
+            expResult.add(instance.getCellID(1L, 0L));
+            expResult.add(instance.getCellID(0L, 0L));
+            expResult.add(instance.getCellID(-1L, 0L));
+            expResult.add(instance.getCellID(0L, -1L));
+            result = instance.getCellIDs(x, y, distance, oom);
+            assertTrue(expResult.size() == result.length);
+            for (Grids_2D_ID_long id : result) {
+                assertTrue(expResult.contains(id));
+            }
+            // Test 3
+            x = instance.getCellX(0L);
+            y = instance.getCellY(0L);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(3, 2)).pow(2), oom);
+            expResult = new HashSet<>();
+            expResult.add(instance.getCellID(1L, 1L));
+            expResult.add(instance.getCellID(0L, 1L));
+            expResult.add(instance.getCellID(-1L, 1L));
+            expResult.add(instance.getCellID(1L, 0L));
+            expResult.add(instance.getCellID(0L, 0L));
+            expResult.add(instance.getCellID(-1L, 0L));
+            expResult.add(instance.getCellID(1L, -1L));
+            expResult.add(instance.getCellID(0L, -1L));
+            expResult.add(instance.getCellID(-1L, -1L));
+            result = instance.getCellIDs(x, y, distance, oom);
+            assertTrue(expResult.size() == result.length);
+            for (Grids_2D_ID_long id : result) {
+                assertTrue(expResult.contains(id));
+            }
+            // Test 4
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(21, 10)).pow(2), -1);
+            expResult = new HashSet<>();
+            expResult.add(instance.getCellID(1L, 1L));
+            expResult.add(instance.getCellID(0L, 1L));
+            expResult.add(instance.getCellID(-1L, 1L));
+            expResult.add(instance.getCellID(1L, 0L));
+            expResult.add(instance.getCellID(0L, 0L));
+            expResult.add(instance.getCellID(-1L, 0L));
+            expResult.add(instance.getCellID(1L, -1L));
+            expResult.add(instance.getCellID(0L, -1L));
+            expResult.add(instance.getCellID(-1L, -1L));
+            expResult.add(instance.getCellID(0L, 2L));
+            expResult.add(instance.getCellID(0L, -2L));
+            expResult.add(instance.getCellID(2L, 0L));
+            expResult.add(instance.getCellID(-2L, 0L));
+            result = instance.getCellIDs(x, y, distance, oom);
+            assertTrue(expResult.size() == result.length);
+            for (Grids_2D_ID_long id : result) {
+                System.out.println(id);
+                assertTrue(expResult.contains(id));
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
     }
 
     /**
-     * Test of getCellIDs method, of class Grids_Grid.
+     * Test of getCellIDs method, of class Grids_Grid covered by {@link #testGetCellIDs_3args_1()}.
      */
     @Test
     public void testGetCellIDs_3args_2() {
-        System.out.println("getCellIDs");
-        long row = 0L;
-        long col = 0L;
-        Math_BigRationalSqrt distance = null;
-        Grids_Grid instance = null;
-        Grids_2D_ID_long[] expResult = null;
-        Grids_2D_ID_long[] result = instance.getCellIDs(row, col, distance);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Not test.
     }
 
     /**
-     * Test of getCellIDs method, of class Grids_Grid.
+     * Test of getCellIDs method, of class Grids_Grid covered by {@link #testGetCellIDs_3args_1()}.
      */
     @Test
     public void testGetCellIDs_5args() {
-        System.out.println("getCellIDs");
-        Math_BigRational x = null;
-        Math_BigRational y = null;
-        long row = 0L;
-        long col = 0L;
-        Math_BigRationalSqrt distance = null;
-        Grids_Grid instance = null;
-        Grids_2D_ID_long[] expResult = null;
-        Grids_2D_ID_long[] result = instance.getCellIDs(x, y, row, col, distance);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Not test.
     }
 
     /**
-     * Test of getNearestCellID method, of class Grids_Grid.
+     * Test of getNearestCellID method, of class Grids_Grid covered by
+     * {@link #testGetNearestCellID_long_long()}.
      */
     @Test
     public void testGetNearestCellID_Math_BigRational_Math_BigRational() {
-        System.out.println("getNearestCellID");
-        Math_BigRational x = null;
-        Math_BigRational y = null;
-        Grids_Grid instance = null;
-        Grids_2D_ID_long expResult = null;
-        Grids_2D_ID_long result = instance.getNearestCellID(x, y);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test
     }
 
     /**
@@ -1904,9 +1960,59 @@ public class Grids_GridTest {
             Grids_2D_ID_long result = instance.getNearestCellID(r, c);
             assertTrue(expResult.compareTo(result) == 0);
             r = -1L;
-             c = 1L;
-             expResult = new Grids_2D_ID_long(0L, 1L);
-             result = instance.getNearestCellID(r, c);
+            c = 1L;
+            expResult = new Grids_2D_ID_long(0L, 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = 1L;
+            c = -1L;
+            expResult = new Grids_2D_ID_long(1L, 0L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = -1L;
+            c = ncols;
+            expResult = new Grids_2D_ID_long(0L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = 0;
+            c = ncols - 1;
+            expResult = new Grids_2D_ID_long(0L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = -1L;
+            c = ncols;
+            expResult = new Grids_2D_ID_long(0L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows;
+            c = ncols;
+            expResult = new Grids_2D_ID_long(nrows - 1L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows;
+            c = ncols - 1;
+            expResult = new Grids_2D_ID_long(nrows - 1L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows - 1L;
+            c = ncols;
+            expResult = new Grids_2D_ID_long(nrows - 1L, ncols - 1L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows;
+            c = -1L;
+            expResult = new Grids_2D_ID_long(nrows - 1L, 0L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows;
+            c = 0L;
+            expResult = new Grids_2D_ID_long(nrows - 1L, 0L);
+            result = instance.getNearestCellID(r, c);
+            assertTrue(expResult.compareTo(result) == 0);
+            r = nrows - 1L;
+            c = -1L;
+            expResult = new Grids_2D_ID_long(nrows - 1L, 0L);
+            result = instance.getNearestCellID(r, c);
             assertTrue(expResult.compareTo(result) == 0);
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -1914,21 +2020,12 @@ public class Grids_GridTest {
     }
 
     /**
-     * Test of getNearestCellID method, of class Grids_Grid.
+     * Test of getNearestCellID method, of class Grids_Grid covered by
+     * {@link #testGetNearestCellID_long_long()}.
      */
     @Test
     public void testGetNearestCellID_4args() {
-        System.out.println("getNearestCellID");
-        Math_BigRational x = null;
-        Math_BigRational y = null;
-        long row = 0L;
-        long col = 0L;
-        Grids_Grid instance = null;
-        Grids_2D_ID_long expResult = null;
-        Grids_2D_ID_long result = instance.getNearestCellID(x, y, row, col);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test.
     }
 
     /**
