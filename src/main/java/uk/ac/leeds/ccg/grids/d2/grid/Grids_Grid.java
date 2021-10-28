@@ -564,19 +564,20 @@ public abstract class Grids_Grid extends Grids_Object {
      * distance.
      * @return The distance in terms of the number of cells.
      */
-    public final int getCellDistance(Math_BigRationalSqrt distance) {
-        Math_BigRational d = distance.getSqrt();
-        if (d != null) {
-            return d.divide(getCellsize()).ceil().intValue();
-        } else {
-            Math_BigRational cs = getCellsize();
-            BigInteger[] sar = distance.getX().divide(cs.pow(2)).ceil().sqrtAndRemainder();
-            int r = sar[0].intValue();
-            if (sar[1].compareTo(BigInteger.ZERO) == 1) {
-                r++;
-            }
-            return r;
-        }
+    public final int getCellDistance(Math_BigRationalSqrt distance, int oom) {
+        return distance.divide(getCellsize(), oom).getSqrt(oom).intValue();
+//        Math_BigRational d = distance.getSqrt(oom);
+//        if (d != null) {
+//            return d.divide(getCellsize()).ceil().intValue();
+//        } else {
+//            Math_BigRational cs = getCellsize();
+//            BigInteger[] sar = distance.getX().divide(cs.pow(2)).ceil().sqrtAndRemainder();
+//            int r = sar[0].intValue();
+//            if (sar[1].compareTo(BigInteger.ZERO) == 1) {
+//                r++;
+//            }
+//            return r;
+//        }
     }
 
     /**
@@ -591,12 +592,13 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @param row The row index at y.
      * @param col The col index at x.
+     * @param oom The Order of Magnitude for the precision.
      */
     public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRationalSqrt distance,
-            Math_BigRational x, Math_BigRational y, long row, long col) {
+            Math_BigRational x, Math_BigRational y, long row, long col, int oom) {
         Set<Grids_2D_ID_int> r = new HashSet<>();
         Math_BigRational distance2 = distance.getX();
-        int delta = getCellDistance(distance);
+        int delta = getCellDistance(distance, oom);
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
@@ -2024,10 +2026,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision. 
      */
     public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x,
-            Math_BigRational y, Math_BigRationalSqrt distance) {
-        return getCellIDs(x, y, getRow(y), getCol(x), distance);
+            Math_BigRational y, Math_BigRationalSqrt distance, int oom) {
+        return getCellIDs(x, y, getRow(y), getCol(x), distance, oom);
     }
 
     /**
@@ -2039,10 +2042,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
-            Math_BigRationalSqrt distance) {
-        return getCellIDs(getCellX(col), getCellY(row), row, col, distance);
+            Math_BigRationalSqrt distance, int oom) {
+        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, oom);
     }
 
     /**
@@ -2056,12 +2060,13 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param col the col index at x.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
-            long row, long col, Math_BigRationalSqrt distance) {
+            long row, long col, Math_BigRationalSqrt distance, int oom) {
         Grids_2D_ID_long[] r;
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
-        long delta = getCellDistance(distance);
+        long delta = getCellDistance(distance, oom);
         Math_BigRational distance2 = distance.getX();
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);
@@ -2114,10 +2119,10 @@ public abstract class Grids_Grid extends Grids_Object {
             if (x.compareTo(dim.getXMax()) >= 0) {
                 q = nCols - 1;
                 if (y.compareTo(dim.getYMax()) == 1) {
-                    p = 0;
+                    p = nRows - 1;
                 } else {
                     if (y.compareTo(dim.getYMin()) == -1) {
-                        p = nRows - 1;
+                        p = 0L;;
                     } else {
                         p = getRow(y);
                     }

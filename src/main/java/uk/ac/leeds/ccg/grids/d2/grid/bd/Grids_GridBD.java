@@ -1123,14 +1123,15 @@ public class Grids_GridBD extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
-            Math_BigRationalSqrt distance) throws IOException,
+            Math_BigRationalSqrt distance, int oom) throws IOException,
             Exception, ClassNotFoundException {
-        return getCells(x, y, getRow(y), getCol(x), distance);
+        return getCells(x, y, getRow(y), getCol(x), distance, oom);
     }
 
     /**
@@ -1145,13 +1146,14 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
-            long row, long col, Math_BigRationalSqrt distance) throws IOException,
+            long row, long col, Math_BigRationalSqrt distance, int oom) throws IOException,
             Exception, ClassNotFoundException {
-        int delta = getCellDistance(distance);
+        int delta = getCellDistance(distance, oom);
         BigDecimal[] r = new BigDecimal[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
@@ -1328,7 +1330,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 r.distance = new Math_BigRationalSqrt(d2.pow(2), d2);
             }
             // Get cellIDs that are within distance of discovered v
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance);
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, oom);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1).compareTo(ndv) != 0) {

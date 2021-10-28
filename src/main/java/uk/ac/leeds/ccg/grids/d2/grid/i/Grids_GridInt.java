@@ -1244,7 +1244,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     public int[] getCells(Math_BigRational x, Math_BigRational y, long row,
             long col, Math_BigRationalSqrt distance, int oom)
             throws IOException, Exception, ClassNotFoundException {
-        int delta = getCellDistance(distance);
+        int delta = getCellDistance(distance, oom);
         int[] r = new int[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
@@ -1419,7 +1419,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 r.distance = Math_BigRationalSqrt.min(r.distance, distance);
             }
             // Get cellIDs that are within distance of discovered v
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance);
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, oom);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1) != ndv) {

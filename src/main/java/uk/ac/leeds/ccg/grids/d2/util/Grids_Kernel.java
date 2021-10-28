@@ -164,7 +164,7 @@ public abstract class Grids_Kernel {
     public static Math_BigRational[][] getKernelWeights(Grids_GridNumber g,
             Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom) {
         //Math_BigRational cellsize = g.getCellsize();
-        int delta = g.getCellDistance(distance);
+        int delta = g.getCellDistance(distance, oom);
         Math_BigRational[][] weights = new Math_BigRational[(delta * 2) + 1][(delta * 2) + 1];
         /**
          * The following weight is just one example of a kernel that can be

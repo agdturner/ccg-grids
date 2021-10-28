@@ -91,7 +91,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_Dimensions dimensions = grid.getDimensions();
         BigDecimal ndv = grid.ndv;
         double ndvd = grid.getNoDataValue();
-        int cellDistance = grid.getCellDistance(distance);
+        int cellDistance = grid.getCellDistance(distance, oom);
         // @HACK If cellDistance is so great that data for a single kernel is
         // unlikely to fit in memory
         if (cellDistance > 1024) {
@@ -718,7 +718,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         long nrows = g.getNRows();
         Grids_Dimensions dimensions = g.getDimensions();
         double noDataValue = g.getNoDataValue();
-        int cellDistance = g.getCellDistance(d);
+        int cellDistance = g.getCellDistance(d, oom);
         boolean doMean = false;
         boolean doWMean = false;
         boolean doSum = false;
@@ -1276,14 +1276,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] geometricDensity(Grids_GridDouble grid,
-            Math_BigRationalSqrt distance, Grids_GridDoubleFactory gridFactory)
+            Math_BigRationalSqrt distance, int oom, Grids_GridDoubleFactory gridFactory)
             throws IOException, ClassNotFoundException, Exception {
         long n = grid.getStats().getN();
         long nrows = grid.getNRows();
         long ncols = grid.getNCols();
         Grids_Dimensions dimensions = grid.getDimensions();
         double ndv = grid.getNoDataValue();
-        int cellDistance = grid.getCellDistance(distance);
+        int cellDistance = grid.getCellDistance(distance, oom);
         double d1;
         double d2;
         double d3;
@@ -1655,7 +1655,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         Grids_Dimensions grid1Dimensions = grid1.getDimensions();
         double grid1NoDataValue = grid1.getNoDataValue();
         double noDataValue = grid0NoDataValue;
-        int grid0CellDistance = grid0.getCellDistance(distance);
+        int grid0CellDistance = grid0.getCellDistance(distance, oom);
 
         // setNumberOfPairs is the number of pairs of values needed to calculate
         // the comparison statistics. It must be > 2

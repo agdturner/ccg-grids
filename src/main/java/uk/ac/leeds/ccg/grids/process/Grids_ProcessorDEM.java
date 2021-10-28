@@ -114,7 +114,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             long nrows = g.getNRows();
             Grids_Dimensions dimensions = g.getDimensions();
             Math_BigRational cellsize = g.getCellsize();
-            int cellDistance = g.getCellDistance(distance);
+            int cellDistance = g.getCellDistance(distance, oom);
             double diffX;
             double diffY;
             double diffHeight;
@@ -635,7 +635,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
             throws Exception {
         BigDecimal height = g.getCellBigDecimal(x, y);
         if (height.compareTo(g.ndv) != 0) {
-            int cellDistance = g.getCellDistance(distance);
+            int cellDistance = g.getCellDistance(distance, oom);
             Math_BigRational diffX = Math_BigRational.ZERO;
             Math_BigRational diffY = Math_BigRational.ZERO;
             Math_BigRational slope = Math_BigRational.ZERO;

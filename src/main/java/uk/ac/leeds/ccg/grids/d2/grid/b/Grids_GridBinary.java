@@ -801,8 +801,9 @@ public class Grids_GridBinary extends Grids_GridB {
      * returned.
      * @param y the y-coordinate of the circle centre from which cell values are
      * returned.
-     * @param distance The distance squared of the distance within which cell
+     * @param distance The distance within which cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
@@ -810,9 +811,9 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
-            Math_BigRationalSqrt distance) throws IOException,
+            Math_BigRationalSqrt distance, int oom) throws IOException,
             ClassNotFoundException, Exception {
-        return getCells(x, y, getRow(y), getCol(x), distance);
+        return getCells(x, y, getRow(y), getCol(x), distance, oom);
     }
 
     /**
@@ -820,17 +821,18 @@ public class Grids_GridBinary extends Grids_GridB {
      * centre from which cell values are returned.
      * @param col The column index for the cell that's centroid is the circle
      * centre from which cell values are returned.
-     * @param distance The distance squared of the distance within which cell
+     * @param distance The distance within which cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public boolean[] getCells(long row, long col, Math_BigRationalSqrt distance)
-            throws IOException, ClassNotFoundException, Exception {
-        return getCells(getCellX(col), getCellY(row), row, col, distance);
+    public boolean[] getCells(long row, long col, Math_BigRationalSqrt distance,
+            int oom) throws IOException, ClassNotFoundException, Exception {
+        return getCells(getCellX(col), getCellY(row), row, col, distance, oom);
     }
 
     /**
@@ -842,6 +844,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
+     * @param oom The Order of Magnitude for the precision.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
@@ -849,9 +852,9 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
-            long row, long col, Math_BigRationalSqrt distance) throws IOException,
-            ClassNotFoundException, Exception {
-        int delta = getCellDistance(distance);
+            long row, long col, Math_BigRationalSqrt distance, int oom) 
+            throws IOException,            ClassNotFoundException, Exception {
+        int delta = getCellDistance(distance, oom);
         boolean[] cells = new boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
