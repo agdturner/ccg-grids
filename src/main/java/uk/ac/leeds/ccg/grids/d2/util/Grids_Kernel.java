@@ -32,6 +32,11 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 public abstract class Grids_Kernel {
 
     /**
+     * Creates a new instance.
+     */
+    public Grids_Kernel(){}
+    
+    /**
      * @param value The value.
      * @param mean The mean.
      * @param variance The variance.
@@ -76,9 +81,9 @@ public abstract class Grids_Kernel {
      * centroids of the cells that are within distance.
      */
     public static double[][] getNormalDistributionKernelWeights(
-            Math_BigRational cellsize, Math_BigRationalSqrt distance, int oom) {
+            Math_BigRational cellsize, Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
         double[][] r;
-        int delta = distance.divide(cellsize, oom).getSqrt(oom).ceil().intValue();
+        int delta = distance.getSqrt(oom, rm).divide(cellsize).ceil().intValue();
         int squareSize = (delta * 2) + 1;
         r = new double[squareSize][squareSize];
         int distance2;
@@ -146,7 +151,8 @@ public abstract class Grids_Kernel {
      * @param oom The Order Of Magnitude for the precision.
      */
     public static Math_BigRational getKernelWeight(Math_BigRationalSqrt d,
-            Math_BigRational wi, int wf, Math_BigRationalSqrt td, int oom) {
+            Math_BigRational wi, int wf, Math_BigRationalSqrt td, int oom, 
+            RoundingMode rm) {
         return Math_BigRational.ONE.subtract(td.getX().divide(d.getX()).pow(wf)
                 .multiply(wi));
     }
@@ -162,9 +168,10 @@ public abstract class Grids_Kernel {
      * @return Kernel weights.
      */
     public static Math_BigRational[][] getKernelWeights(Grids_GridNumber g,
-            Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom) {
+            Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom,
+            RoundingMode rm) {
         //Math_BigRational cellsize = g.getCellsize();
-        int delta = g.getCellDistance(distance, oom);
+        int delta = g.getCellDistance(distance, oom, rm);
         Math_BigRational[][] weights = new Math_BigRational[(delta * 2) + 1][(delta * 2) + 1];
         /**
          * The following weight is just one example of a kernel that can be
@@ -177,11 +184,11 @@ public abstract class Grids_Kernel {
             for (int col = -delta; col <= delta; col++) {
                 Math_BigRational x1 = g.getCellX(col);
                 Math_BigRational y1 = g.getCellY(row);
-                Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom);
+                Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance.compareTo(distance) == -1) {
                     weights[row + delta][col + delta] = getKernelWeight(
-                            distance, wi, wf, thisDistance, oom);
+                            distance, wi, wf, thisDistance, oom, rm);
                 } else {
                     //weights[ i + cellDistance ][ j + cellDistance ] = noDataValue;
                     weights[row + delta][col + delta] = Math_BigRational.ZERO;
@@ -218,9 +225,9 @@ public abstract class Grids_Kernel {
         Math_BigRational y = g.getCellY(row);
         for (int i = 0; i < points.length; i++) {
             Math_BigRationalSqrt td = Grids_Utilities.distance(x, y, points[i].x,
-                    points[i].y, oom);
+                    points[i].y, oom, rm);
             if (td.compareTo(distance) == -1) {
-                weights[i] = getKernelWeight(distance, wi, wf, td, oom);
+                weights[i] = getKernelWeight(distance, wi, wf, td, oom, rm);
             }
         }
         return weights;
@@ -239,7 +246,7 @@ public abstract class Grids_Kernel {
      */
     public static Math_BigRational[] getKernelWeights(Grids_Point centroid,
             Math_BigRationalSqrt d, Math_BigRational wi, int wf,
-            Grids_Point[] points, int oom) {
+            Grids_Point[] points, int oom, RoundingMode rm) {
         Math_BigRational[] weights = new Math_BigRational[points.length];
         /**
          * The following weight is just one example of a kernel that can be
@@ -249,9 +256,9 @@ public abstract class Grids_Kernel {
         for (int i = 0; i < points.length; i++) {
             Math_BigRationalSqrt td = Grids_Utilities.distance(
                     centroid.x, centroid.y,
-                    points[i].x, points[i].y, oom);
+                    points[i].x, points[i].y, oom, rm);
             if (td.compareTo(d) == -1) {
-                weights[i] = getKernelWeight(d, wi, wf, td, oom);
+                weights[i] = getKernelWeight(d, wi, wf, td, oom, rm);
             }
         }
         return weights;
@@ -274,7 +281,7 @@ public abstract class Grids_Kernel {
      * @return Kernel parameters.
      */
     public static Math_BigRational[] getKernelParameters(Grids_GridNumber g, int cd,
-            Math_BigRationalSqrt d, Math_BigRational wi, int wf, int oom) {
+            Math_BigRationalSqrt d, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
         Math_BigRational r[] = new Math_BigRational[2];
         r[0] = Math_BigRational.ZERO;
         r[1] = Math_BigRational.ZERO;
@@ -284,9 +291,9 @@ public abstract class Grids_Kernel {
             for (int q = -cd; q <= cd; q++) {
                 Math_BigRational x1 = g.getCellX(q);
                 Math_BigRational y1 = g.getCellY(p);
-                Math_BigRationalSqrt td = Grids_Utilities.distance(x0, y0, x1, y1, oom);
+                Math_BigRationalSqrt td = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 if (td.compareTo(d) == -1) {
-                    r[0] = r[0].add(getKernelWeight(d, wi, wf, td, oom));
+                    r[0] = r[0].add(getKernelWeight(d, wi, wf, td, oom, rm));
                     r[1] = r[1].add(Math_BigRational.ONE);
                 }
             }
@@ -308,9 +315,9 @@ public abstract class Grids_Kernel {
      */
     public static Math_BigRational getAdaptiveKernelWeight(
             Math_BigRationalSqrt d, Math_BigRationalSqrt bw, Math_BigRational sw,
-            int p, Math_BigRational wi, int wf, int oom) {
-        Math_BigRational v = getKernelVolume(bw, p, wi, wf, oom);
-        Math_BigRational w = getKernelWeight(bw, wi, wf, d, oom);
+            int p, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
+        Math_BigRational v = getKernelVolume(bw, p, wi, wf, oom, rm);
+        Math_BigRational w = getKernelWeight(bw, wi, wf, d, oom, rm);
         return w.multiply(sw).divide(v);
     }
 
@@ -325,19 +332,19 @@ public abstract class Grids_Kernel {
      * @return The kernel volume.
      */
     public static Math_BigRational getKernelVolume(Math_BigRationalSqrt bw,
-            int p, Math_BigRational wi, int wf, int oom) {
+            int p, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
         Math_BigRational r = Math_BigRational.ZERO;
-        Math_BigRational sectionArea = bw.divide(Math_BigRational.valueOf(p), oom).getX();
-        Math_BigRational sectionSize = new Math_BigRationalSqrt(sectionArea, oom).getSqrt(oom);
+        Math_BigRational sectionArea = bw.getSqrt(oom, rm).divide(Math_BigRational.valueOf(p));
+        Math_BigRational sectionSize = new Math_BigRationalSqrt(sectionArea, oom, rm).getSqrt(oom, rm);
         //int sectionCount = 0;
         for (int row = 1; row < p; row++) {
             for (int col = 0; col < p; col++) {
                 Math_BigRationalSqrt td = Grids_Utilities.distance(Math_BigRational.ZERO,
                         Math_BigRational.ZERO, Math_BigRational.valueOf(row)
                                 .multiply(sectionSize),
-                        Math_BigRational.valueOf(col).multiply(sectionSize), oom);
+                        Math_BigRational.valueOf(col).multiply(sectionSize), oom, rm);
                 if (td.compareTo(bw) == -1) {
-                    r = r.add(getKernelWeight(bw, wi, wf, td, oom));
+                    r = r.add(getKernelWeight(bw, wi, wf, td, oom, rm));
                     //sectionCount ++;
                 }
             }

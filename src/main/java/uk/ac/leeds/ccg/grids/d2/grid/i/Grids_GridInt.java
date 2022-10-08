@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.grids.d2.grid.i;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1199,9 +1200,9 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected int[] getCells(Math_BigRational x, Math_BigRational y,
-            Math_BigRationalSqrt distance, int oom) throws IOException,
-            Exception, ClassNotFoundException {
-        return getCells(x, y, getRow(y), getCol(x), distance, oom);
+            Math_BigRationalSqrt distance, int oom, RoundingMode rm)
+            throws IOException, Exception, ClassNotFoundException {
+        return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
 
     /**
@@ -1220,8 +1221,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public int[] getCells(long row, long col, Math_BigRationalSqrt distance,
-            int oom) throws IOException, Exception, ClassNotFoundException {
-        return getCells(getCellX(col), getCellY(row), row, col, distance, oom);
+            int oom, RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
+        return getCells(getCellX(col), getCellY(row), row, col, distance, oom, rm);
     }
 
     /**
@@ -1242,16 +1243,16 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public int[] getCells(Math_BigRational x, Math_BigRational y, long row,
-            long col, Math_BigRationalSqrt distance, int oom)
+            long col, Math_BigRationalSqrt distance, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
-        int delta = getCellDistance(distance, oom);
+        int delta = getCellDistance(distance, oom, rm);
         int[] r = new int[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
             Math_BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
                 Math_BigRational thisX = getCellX(col);
-                if (Grids_Utilities.distance(x, y, thisX, thisY, oom)
+                if (Grids_Utilities.distance(x, y, thisX, thisY, oom, rm)
                         .compareTo(distance) <= 0) {
                     r[count] = getCell(p, q);
                     count++;
@@ -1276,12 +1277,12 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, int oom)
+            Math_BigRational x, Math_BigRational y, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(x, y);
         if (value == ndv) {
-            return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom);
+            return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom, rm);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getCellID(x, y);
@@ -1304,13 +1305,13 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            long row, long col, int oom) throws IOException,
+            long row, long col, int oom, RoundingMode rm) throws IOException,
             Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         int value = getCell(row, col);
         if (value == ndv) {
             return getNearestValuesCellIDsAndDistance(getCellX(col),
-                    getCellY(row), row, col, oom);
+                    getCellY(row), row, col, oom, rm);
         }
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getCellID(row, col);
@@ -1336,7 +1337,7 @@ public class Grids_GridInt extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, long row, long col, int oom)
+            Math_BigRational x, Math_BigRational y, long row, long col, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
@@ -1403,11 +1404,11 @@ public class Grids_GridInt extends Grids_GridNumber {
             iterator = values.iterator();
             Grids_2D_ID_long cellID = iterator.next();
             r.distance = Grids_Utilities.distance(x, y,
-                    getCellX(cellID), getCellY(cellID), oom);
+                    getCellX(cellID), getCellY(cellID), oom, rm);
             while (iterator.hasNext()) {
                 cellID = iterator.next();
                 distance = Grids_Utilities.distance(x, y,
-                        getCellX(cellID), getCellY(cellID), oom);
+                        getCellX(cellID), getCellY(cellID), oom, rm);
                 if (distance.compareTo(r.distance) == -1) {
                     closest.clear();
                     closest.add(cellID);
@@ -1419,13 +1420,13 @@ public class Grids_GridInt extends Grids_GridNumber {
                 r.distance = Math_BigRationalSqrt.min(r.distance, distance);
             }
             // Get cellIDs that are within distance of discovered v
-            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, oom);
+            Grids_2D_ID_long[] cellIDs = getCellIDs(x, y, r.distance, oom, rm);
             for (Grids_2D_ID_long cellID1 : cellIDs) {
                 if (!visitedSet.contains(cellID1)) {
                     if (getCell(cellID1) != ndv) {
                         distance = Grids_Utilities.distance(x, y,
                                 getCellX(cellID1),
-                                getCellY(cellID1), oom);
+                                getCellY(cellID1), oom, rm);
                         if (distance.compareTo(r.distance) == -1) {
                             closest.clear();
                             closest.add(cellID1);

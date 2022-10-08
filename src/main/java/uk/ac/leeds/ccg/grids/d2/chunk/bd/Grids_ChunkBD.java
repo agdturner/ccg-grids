@@ -389,8 +389,8 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         }
         long d = count - 1L;
         if (d > 0L) {
-            Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd, oom);
-            return sqrt.toBigDecimal(oom);
+            Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd, oom, rm);
+            return sqrt.toBigDecimal(oom, rm);
         } else {
             return BigDecimal.ZERO;
         }

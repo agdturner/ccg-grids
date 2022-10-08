@@ -491,6 +491,7 @@ public class Grids_UtilitiesTest {
     public void testDistance_6args() {
         System.out.println("distance");
         int oom;
+            RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRational expResult;
         Math_BigRational result;
         Math_BigRational x1;
@@ -504,19 +505,19 @@ public class Grids_UtilitiesTest {
         x2 = Math_BigRational.ONE;
         y2 = Math_BigRational.ONE;
         expResult = Math_BigRational.valueOf("1.4");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         //System.out.println(Math.sqrt(2.0d));
         // Test 2
         oom = -10;
         expResult = Math_BigRational.valueOf("1.4142135624");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         //System.out.println(result);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         oom = -20;
         expResult = Math_BigRational.valueOf("1.41421356237309504880");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         System.out.println(result);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 4
@@ -526,7 +527,7 @@ public class Grids_UtilitiesTest {
         x2 = Math_BigRational.valueOf(-2);
         y2 = Math_BigRational.valueOf(-2);
         expResult = Math_BigRational.valueOf("1.4");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         oom = -1;
@@ -535,7 +536,7 @@ public class Grids_UtilitiesTest {
         x2 = Math_BigRational.valueOf(3);
         y2 = Math_BigRational.valueOf(4);
         expResult = Math_BigRational.valueOf("5.0");
-        result = Grids_Utilities.distance(x1, y1, x2, y2, oom).getSqrt(oom);
+        result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -558,6 +559,7 @@ public class Grids_UtilitiesTest {
         long nrows = 10L;
         long ncols = 10L;
         int oom = -1;
+            RoundingMode rm = RoundingMode.HALF_UP;
         Grids_Dimensions dimensions = new Grids_Dimensions(Math_BigRational.ZERO,
                 Math_BigRational.valueOf(ncols), Math_BigRational.ZERO,
                 Math_BigRational.valueOf(nrows), Math_BigRational.ONE);
@@ -568,7 +570,7 @@ public class Grids_UtilitiesTest {
         int divisions = 10;
         //Object[] expResult = null;
         try {
-            Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, oom);
+            Object[] result = Grids_Utilities.densityPlot(xGrid, yGrid, divisions, gp, oom, rm);
             Grids_ImageExporter ie = new Grids_ImageExporter(ge);
             String type = "PNG";
             Path file = IO_Utilities.createNewFile(gp.env.files.getGeneratedDir()

@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.grids.d2.chunk.d;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -831,7 +832,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
     }
 
     @Override
-    protected BigDecimal getStandardDeviation(int oom) {
+    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
         Math_BigRational r = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
         // Calculate the number of default values
@@ -865,7 +866,7 @@ public class Grids_ChunkDoubleMap extends Grids_ChunkDoubleArrayOrMap {
                     .multiply(Math_BigRational.valueOf(n)));
         }
         if ((nValues - 1) > 0) {
-            return new Math_BigRationalSqrt(r.divide((nValues - 1)), oom).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(r.divide((nValues - 1)), oom, rm).toBigDecimal(oom, rm);
         } else {
             return BigDecimal.ZERO;
         }

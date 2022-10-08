@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.grids.d2.grid.i;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
@@ -190,7 +191,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Math_BigRationalSqrt getStandardDeviation(int oom)
+    public Math_BigRationalSqrt getStandardDeviation(int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         Math_BigRational stdev = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
@@ -210,7 +211,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
             return Math_BigRationalSqrt.ZERO;
         }
         stdev = stdev.divide(BigInteger.valueOf(dataValueCount - 1L));
-        return new Math_BigRationalSqrt(stdev, oom);
+        return new Math_BigRationalSqrt(stdev, oom, rm);
     }
 
     /**

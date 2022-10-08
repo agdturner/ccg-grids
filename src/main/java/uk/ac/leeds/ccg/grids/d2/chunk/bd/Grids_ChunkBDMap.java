@@ -877,7 +877,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                     .multiply(Math_BigRational.valueOf(n)));
         }
         if ((nValues - 1L) > 0L) {
-            return new Math_BigRationalSqrt(r.divide(nValues - 1), oom).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(r.divide(nValues - 1), oom, rm).toBigDecimal(oom, rm);
         } else {
             return r.toBigDecimal(oom);
         }

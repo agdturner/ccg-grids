@@ -20,6 +20,7 @@ import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -41,7 +42,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param ge Grids_Environment
      * @param fs Cache
      * @param id ID
@@ -309,7 +310,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     protected abstract NearestValuesCellIDsAndDistance
             getNearestValuesCellIDsAndDistance(Math_BigRational x,
-                    Math_BigRational y, long row, long col, int oom)
+                    Math_BigRational y, long row, long col, int oom,
+                    RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException;
 
     /**
@@ -324,8 +326,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected abstract NearestValuesCellIDsAndDistance
-            getNearestValuesCellIDsAndDistance(long row, long col, int oom)
-                    throws IOException, Exception,            ClassNotFoundException;
+            getNearestValuesCellIDsAndDistance(long row, long col, int oom,
+                    RoundingMode rm)
+            throws IOException, Exception, ClassNotFoundException;
 
     /**
      * @return a Grids_2D_ID_long[] The CellIDs of the nearest cells with data
@@ -337,9 +340,10 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, int oom) throws IOException,
-            Exception, ClassNotFoundException {
-        return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x), oom);
+            Math_BigRational x, Math_BigRational y, int oom, RoundingMode rm)
+            throws IOException, Exception, ClassNotFoundException {
+        return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x),
+                oom, rm);
     }
 
     /**

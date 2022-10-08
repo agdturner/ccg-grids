@@ -564,8 +564,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * distance.
      * @return The distance in terms of the number of cells.
      */
-    public final int getCellDistance(Math_BigRationalSqrt distance, int oom) {
-        return distance.divide(getCellsize(), oom).getSqrt(oom).intValue();
+    public final int getCellDistance(Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
+        return distance.getSqrt(oom, rm).divide(getCellsize()).intValue();
 //        Math_BigRational d = distance.getSqrt(oom);
 //        if (d != null) {
 //            return d.divide(getCellsize()).ceil().intValue();
@@ -595,10 +595,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision.
      */
     public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRationalSqrt distance,
-            Math_BigRational x, Math_BigRational y, long row, long col, int oom) {
+            Math_BigRational x, Math_BigRational y, long row, long col, int oom, 
+            RoundingMode rm) {
         Set<Grids_2D_ID_int> r = new HashSet<>();
         Math_BigRational distance2 = distance.getX();
-        int delta = getCellDistance(distance, oom);
+        int delta = getCellDistance(distance, oom, rm);
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
@@ -2029,8 +2030,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision. 
      */
     public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x,
-            Math_BigRational y, Math_BigRationalSqrt distance, int oom) {
-        return getCellIDs(x, y, getRow(y), getCol(x), distance, oom);
+            Math_BigRational y, Math_BigRationalSqrt distance, int oom, 
+            RoundingMode rm) {
+        return getCellIDs(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
 
     /**
@@ -2045,8 +2047,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
-            Math_BigRationalSqrt distance, int oom) {
-        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, oom);
+            Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
+        return getCellIDs(getCellX(col), getCellY(row), row, col, distance, oom,
+                rm);
     }
 
     /**
@@ -2063,10 +2066,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
-            long row, long col, Math_BigRationalSqrt distance, int oom) {
+            long row, long col, Math_BigRationalSqrt distance, int oom, 
+            RoundingMode rm) {
         Grids_2D_ID_long[] r;
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
-        long delta = getCellDistance(distance, oom);
+        long delta = getCellDistance(distance, oom, rm);
         Math_BigRational distance2 = distance.getX();
         for (long p = -delta; p <= delta; p++) {
             Math_BigRational cellY = getCellY(row + p);

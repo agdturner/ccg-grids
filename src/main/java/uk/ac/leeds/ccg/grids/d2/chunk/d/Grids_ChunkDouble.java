@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.grids.d2.chunk.d;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumber;
@@ -375,7 +376,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
      * @param oom The Order of Magnitude for the precision.
      * @return The standard deviation of all data values.
      */
-    protected BigDecimal getStandardDeviation(int oom) {
+    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
         Math_BigRational sd = Math_BigRational.ZERO;
         Math_BigRational mean = getArithmeticMean();
         Grids_GridDouble g = getGrid();
@@ -395,7 +396,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
         if ((count - 1L) > 0L) {
 //            return Math_BigDecimal.sqrt(Math_BigDecimal.divideRoundIfNecessary(
 //                    sd, BigInteger.valueOf(count - 1L), dp * 2, rm), dp, rm);
-            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L)), oom).toBigDecimal(oom);
+            return new Math_BigRationalSqrt(sd.divide(BigInteger.valueOf(count - 1L)), oom, rm).toBigDecimal(oom, rm);
         } else {
             return BigDecimal.ZERO;
         }

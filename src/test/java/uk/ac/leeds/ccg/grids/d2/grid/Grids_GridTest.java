@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.grids.d2.grid;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -142,14 +143,15 @@ public class Grids_GridTest {
         System.out.println("getCellDistance");
         // Test 1
         int oom = -3;
-        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
+            RoundingMode rm = RoundingMode.HALF_UP;
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom, rm);
         int expResult = 10;
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
-        int result = instance.getCellDistance(distance, oom);
+        int result = instance.getCellDistance(distance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom);
+        distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom, rm);
         expResult = 100;
         gfd = gp.gridFactoryDouble;
         Math_BigRational xmin = Math_BigRational.ZERO;
@@ -160,7 +162,7 @@ public class Grids_GridTest {
         Grids_Dimensions dims = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         instance = gfd.create(10, 10, dims);
-        result = instance.getCellDistance(distance, oom);
+        result = instance.getCellDistance(distance, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -1420,7 +1422,8 @@ public class Grids_GridTest {
         System.out.println("getChunkIDs");
         // Test 1
         int oom = -1;
-        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, oom, false);
+            RoundingMode rm = RoundingMode.HALF_UP;
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, oom, rm, false);
         Math_BigRational x = Math_BigRational.valueOf(256);
         Math_BigRational y = Math_BigRational.valueOf(128);
         try {
@@ -1445,7 +1448,7 @@ public class Grids_GridTest {
             expResult.add(new Grids_2D_ID_int(2, 4));
             expResult.add(new Grids_2D_ID_int(1, 4));
             expResult.add(new Grids_2D_ID_int(2, 3));
-            Set<Grids_2D_ID_int> result = instance.getChunkIDs(distance, x, y, instance.getRow(y), instance.getCol(x), oom);
+            Set<Grids_2D_ID_int> result = instance.getChunkIDs(distance, x, y, instance.getRow(y), instance.getCol(x), oom, rm);
             assertTrue(expResult.size() == result.size());
             result.forEach(id -> {
                 assertTrue(expResult.contains(id));
@@ -1815,6 +1818,7 @@ public class Grids_GridTest {
         System.out.println("getCellIDs");
         try {
             int oom = -1;
+            RoundingMode rm = RoundingMode.HALF_UP;
             IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
             Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
             Grids_ChunkIntFactoryArray cifa = new Grids_ChunkIntFactoryArray();
@@ -1834,13 +1838,13 @@ public class Grids_GridTest {
             // Test 1
             Math_BigRational x = xmin;
             Math_BigRational y = ymin;
-            Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, -1);
+            Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, oom, rm);
             HashSet<Grids_2D_ID_long> expResult = new HashSet<>();
             expResult.add(instance.getCellID(0L, 0L));
             expResult.add(instance.getCellID(-1L, -1L));
             expResult.add(instance.getCellID(-1L, 0L));
             expResult.add(instance.getCellID(0L, -1L));
-            Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance, oom);
+            Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance, oom, rm);
             assertTrue(expResult.size() == result.length);
             for (Grids_2D_ID_long id : result) {
                 assertTrue(expResult.contains(id));
@@ -1848,14 +1852,14 @@ public class Grids_GridTest {
             // Test 2
             x = instance.getCellX(0L);
             y = instance.getCellY(0L);
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(7, 5)).pow(2), oom);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(7, 5)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(0L, 1L));
             expResult.add(instance.getCellID(1L, 0L));
             expResult.add(instance.getCellID(0L, 0L));
             expResult.add(instance.getCellID(-1L, 0L));
             expResult.add(instance.getCellID(0L, -1L));
-            result = instance.getCellIDs(x, y, distance, oom);
+            result = instance.getCellIDs(x, y, distance, oom, rm);
             assertTrue(expResult.size() == result.length);
             for (Grids_2D_ID_long id : result) {
                 assertTrue(expResult.contains(id));
@@ -1863,7 +1867,7 @@ public class Grids_GridTest {
             // Test 3
             x = instance.getCellX(0L);
             y = instance.getCellY(0L);
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(3, 2)).pow(2), oom);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(3, 2)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(1L, 1L));
             expResult.add(instance.getCellID(0L, 1L));
@@ -1874,13 +1878,13 @@ public class Grids_GridTest {
             expResult.add(instance.getCellID(1L, -1L));
             expResult.add(instance.getCellID(0L, -1L));
             expResult.add(instance.getCellID(-1L, -1L));
-            result = instance.getCellIDs(x, y, distance, oom);
+            result = instance.getCellIDs(x, y, distance, oom, rm);
             assertTrue(expResult.size() == result.length);
             for (Grids_2D_ID_long id : result) {
                 assertTrue(expResult.contains(id));
             }
             // Test 4
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(21, 10)).pow(2), -1);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(21, 10)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(1L, 1L));
             expResult.add(instance.getCellID(0L, 1L));
@@ -1895,7 +1899,7 @@ public class Grids_GridTest {
             expResult.add(instance.getCellID(0L, -2L));
             expResult.add(instance.getCellID(2L, 0L));
             expResult.add(instance.getCellID(-2L, 0L));
-            result = instance.getCellIDs(x, y, distance, oom);
+            result = instance.getCellIDs(x, y, distance, oom, rm);
             assertTrue(expResult.size() == result.length);
             for (Grids_2D_ID_long id : result) {
                 System.out.println(id);

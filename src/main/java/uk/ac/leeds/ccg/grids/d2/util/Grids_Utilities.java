@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
@@ -181,9 +182,9 @@ public class Grids_Utilities extends Grids_Object {
      */
     public static final Math_BigRationalSqrt distance(Math_BigRational x1,
             Math_BigRational y1, Math_BigRational x2, Math_BigRational y2,
-            int oom) {
+            int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(((x1.subtract(x2)).pow(2))
-                .add((y1.subtract(y2)).pow(2)), oom);
+                .add((y1.subtract(y2)).pow(2)), oom, rm);
     }
 
     /**
@@ -284,7 +285,7 @@ public class Grids_Utilities extends Grids_Object {
      * @throws ClassNotFoundException If encountered.
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom)
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         Object[] r = new Object[4];
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
@@ -371,7 +372,7 @@ public class Grids_Utilities extends Grids_Object {
                 if (numy[j] > 1) {
                     stdevy[j] = new Math_BigRationalSqrt(
                             ((numybr.multiply(sumysq[j])).subtract(sumy[j].pow(2)))
-                                    .divide(numybr.pow(2).subtract(Math_BigRational.ONE)), oom).getSqrt(oom);
+                                    .divide(numybr.pow(2).subtract(Math_BigRational.ONE)), oom, rm).getSqrt(oom, rm);
                 }
             }
 //            if (numy[j] > 0.0d) {
