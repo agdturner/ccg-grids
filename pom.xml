@@ -145,7 +145,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>3.0.0-M7</version>
                         <configuration>
-                            <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>
+                            <argLine>-Xms256m -Xmx512m</argLine>
+                            <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
                         </configuration>
                     </plugin>
                     <plugin>
