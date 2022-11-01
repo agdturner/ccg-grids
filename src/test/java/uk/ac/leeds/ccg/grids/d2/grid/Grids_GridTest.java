@@ -1817,6 +1817,41 @@ public class Grids_GridTest {
     public void testGetCellIDs_3args_1() {
         System.out.println("getCellIDs");
         try {
+            {
+            int oom = -1;
+            RoundingMode rm = RoundingMode.HALF_UP;
+            IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
+            Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
+            Grids_ChunkIntFactoryArray cifa = new Grids_ChunkIntFactoryArray();
+            int chunkNrows = 64;
+            int chunkNcols = 64;
+            Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
+                    cifa, chunkNrows, chunkNcols);
+            Math_BigRational xmax = Math_BigRational.valueOf(0);
+            Math_BigRational ymax = Math_BigRational.valueOf(0);
+            Math_BigRational xmin = Math_BigRational.valueOf(640);
+            Math_BigRational ymin = Math_BigRational.valueOf(320);
+            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
+            int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
+            int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
+            Grids_Grid instance = f.create(nrows, ncols, dim);
+            // Test 1
+            Math_BigRational x = xmin;
+            Math_BigRational y = ymin;
+            Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, oom, rm);
+            HashSet<Grids_2D_ID_long> expResult = new HashSet<>();
+            expResult.add(instance.getCellID(0L, 0L));
+            expResult.add(instance.getCellID(-1L, -1L));
+            expResult.add(instance.getCellID(-1L, 0L));
+            expResult.add(instance.getCellID(0L, -1L));
+            Grids_2D_ID_long[] result = instance.getCellIDs(x, y, distance, oom, rm);
+            assertTrue(expResult.size() == result.length);
+            for (Grids_2D_ID_long id : result) {
+                assertTrue(expResult.contains(id));
+            }
+            }
+            
             int oom = -1;
             RoundingMode rm = RoundingMode.HALF_UP;
             IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
