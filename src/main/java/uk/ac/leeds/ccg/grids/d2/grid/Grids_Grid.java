@@ -562,6 +562,8 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * @param distance The distance to be converted into an integer cell
      * distance.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The distance in terms of the number of cells.
      */
     public final int getCellDistance(Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
@@ -593,6 +595,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param row The row index at y.
      * @param col The col index at x.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRationalSqrt distance,
             Math_BigRational x, Math_BigRational y, long row, long col, int oom, 
@@ -2027,7 +2030,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision. 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x,
             Math_BigRational y, Math_BigRationalSqrt distance, int oom, 
@@ -2045,6 +2049,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public final Grids_2D_ID_long[] getCellIDs(long row, long col,
             Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
@@ -2064,6 +2069,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
             long row, long col, Math_BigRationalSqrt distance, int oom, 
@@ -2886,7 +2892,6 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param v The value to return as a String.
      * @return {@code v} as a string rounded if necessary using
      * {@code RoundingMode.HALF_UP}.
-     * @Deprecated Use 
      */
     @Deprecated
     public String getStringValue(Math_BigRational v) {

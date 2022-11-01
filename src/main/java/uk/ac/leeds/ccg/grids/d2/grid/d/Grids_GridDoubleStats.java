@@ -188,7 +188,8 @@ public class Grids_GridDoubleStats extends Grids_StatsDouble {
     }
 
     /**
-     * @param oom. The Order of Magnitude for the precision.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The standard deviation correct to {@code oom}.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.

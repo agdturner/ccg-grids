@@ -304,7 +304,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * with data values are returned.
      * @param col The column index from which the cell IDs of the nearest cells
      * with data values are returned.
-     * @param oom The Order of Magnitude for calculating the distance.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -321,7 +322,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * values are returned.
      * @param col The column from which the cell IDs of the nearest cells with
      * data values are returned.
-     * @param oom The Order of Magnitude for calculating the distance.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -335,7 +337,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * values to point given by x-coordinate x, y-coordinate y.
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
-     * @param oom The Order of Magnitude for calculating the distance.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

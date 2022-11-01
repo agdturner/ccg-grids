@@ -1125,13 +1125,14 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
             Math_BigRationalSqrt distance, int oom, RoundingMode rm)
-            throws IOException,            Exception, ClassNotFoundException {
+            throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
 
@@ -1148,12 +1149,13 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
-            long row, long col, Math_BigRationalSqrt distance, int oom, 
-            RoundingMode rm) throws IOException,            Exception, ClassNotFoundException {
+            long row, long col, Math_BigRationalSqrt distance, int oom,
+            RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
         int delta = getCellDistance(distance, oom, rm);
         BigDecimal[] r = new BigDecimal[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
@@ -1248,7 +1250,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
             Math_BigRational x, Math_BigRational y, long row, long col, int oom,
-            RoundingMode rm)            throws IOException, Exception, ClassNotFoundException {
+            RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
@@ -1442,7 +1444,7 @@ public class Grids_GridBD extends Grids_GridNumber {
 
     /**
      * @return A Grids_GridBDIterator for iterating over the cell values in
- this.
+     * this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1458,6 +1460,7 @@ public class Grids_GridBD extends Grids_GridNumber {
 
     /**
      * initStatistics
+     *
      * @param stats What {@link #stats} is set to.
      */
     public void initStatistics(Grids_StatsBD stats) {
@@ -1466,6 +1469,7 @@ public class Grids_GridBD extends Grids_GridNumber {
 
     /**
      * getCell
+     *
      * @param chunk chunk
      * @param chunkRow chunkRow
      * @param chunkCol chunkCol

@@ -76,6 +76,8 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * height is taken as the nearest cell v. (Formerly the difference in its
      * height was taken as the average difference in height for those cells with
      * values.))
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return Grids_GridDouble[] slopeAndAspect where: slopeAndAspect[0] Is the
      * distance weighted aggregate slope over the region. This is normalised by
      * the sum of the weights used and the average distance to give a
@@ -89,7 +91,6 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * slopeAndAspect[7] Is the sine of slopeAndAspect[1] + ((Pi * 5) / 8).
      * slopeAndAspect[8] Is the sine of slopeAndAspect[1] + ((Pi * 6) / 8).
      * slopeAndAspect[9] Is the sine of slopeAndAspect[1] + ((Pi * 7) / 8).
-     * @param oom The Order of Magnitude for the precision.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -551,6 +552,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param wf The weight factor - the kernel weighting distance decay.
      * @return The slope and aspect.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -585,6 +587,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * grid.getNoDataValue() then; result[0] = grid.getNoDataValue() result[1] =
      * grid.getNoDataValue()
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return Slope and aspect.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -628,6 +631,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param wi wi
      * @param wf wf
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws Exception If encountered.
      */
     protected void getSlopeAspect(double[] slopeAndAspect, Grids_GridNumber g,
@@ -1739,6 +1743,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param swapInitialisedFiles For memory management.
      * @param swapProcessedChunks For memory management.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
@@ -2011,6 +2016,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
      * @param swapProcessedChunks If {@code true}, then preemptive swapping is
      * done for memory management.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return metrics 1.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.

@@ -1194,8 +1194,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1215,8 +1215,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * circle centre from which cell values are returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
@@ -1237,8 +1237,8 @@ public class Grids_GridInt extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

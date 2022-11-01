@@ -374,6 +374,7 @@ public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
 
     /**
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The standard deviation of all data values.
      */
     protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {

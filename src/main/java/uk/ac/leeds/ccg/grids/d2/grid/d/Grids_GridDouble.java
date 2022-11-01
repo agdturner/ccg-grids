@@ -1158,15 +1158,15 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * returned.
      * @param distance the radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     protected double[] getCells(Math_BigRational x, Math_BigRational y,
-            Math_BigRationalSqrt distance, int oom, RoundingMode rm) 
-            throws IOException,            Exception, ClassNotFoundException {
+            Math_BigRationalSqrt distance, int oom, RoundingMode rm)
+            throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
 
@@ -1182,8 +1182,8 @@ public class Grids_GridDouble extends Grids_GridNumber {
      * @param col The column index at x.
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
-     * @param oom The Order of Magnitude for the precision used in distance
-     * calculations.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */

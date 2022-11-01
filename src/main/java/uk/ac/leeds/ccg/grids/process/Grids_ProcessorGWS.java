@@ -1268,7 +1268,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      *
      * @param grid - the input Grids_GridDouble
      * @param distance - the distance limiting the maximum scale of geometric
-     * density surface produced
+     * density surface produced.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param gridFactory - the Grids_GridDoubleFactory to be used in processing
      * @return geometric density.
      * @throws Exception If encountered.

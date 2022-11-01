@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.util;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
@@ -29,7 +28,6 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.generic.util.Generic_Time;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -177,6 +175,7 @@ public class Grids_Utilities extends Grids_Object {
      * @param y2 The y coordinate of the second point.
      * @param oom The Order of Magnitude initially used to calculate the square
      * root.
+     * @param rm The RoundingMode for any rounding.
      *
      * @return The distance between two points.
      */
@@ -271,6 +270,8 @@ public class Grids_Utilities extends Grids_Object {
      * than the square root of {@link Integer#MAX_VALUE} ~ 46341 but should in
      * practice be smaller than this. A sufficiently detailed picture can often
      * be produced from 512.
+     * @param oom Order Of Magnitude for any rounding.
+     * @param rm The RoundingMode for any rounding.
      * @return r[4] where:
      * <ul>
      * <li>r[0] is a = stdevy</li>
@@ -278,15 +279,14 @@ public class Grids_Utilities extends Grids_Object {
      * <li>r[2] = numy</li>
      * <li>r[3] = densityPlotGrid;</li>
      * </ul>
-     * @param oom Order Of Magnitude for any rounding.
-     *
      * @throws Exception If encountered.
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
     public static Object[] densityPlot(Grids_GridDouble xGrid,
-            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom, RoundingMode rm)
-            throws IOException, ClassNotFoundException, Exception {
+            Grids_GridDouble yGrid, int divisions, Grids_Processor gp, int oom,
+            RoundingMode rm) throws IOException, ClassNotFoundException, 
+            Exception {
         Object[] r = new Object[4];
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = xGrid.getNRows();

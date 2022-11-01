@@ -805,6 +805,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * returned.
      * @param distance The distance within which cell values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
@@ -824,6 +825,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * centre from which cell values are returned.
      * @param distance The distance within which cell values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at centroid of cell given by cell row
      * index row, cell column index col, and radius distance.
@@ -847,6 +849,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @param distance The radius of the circle for which intersected cell
      * values are returned.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return An array of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
