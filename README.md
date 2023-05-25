@@ -1,4 +1,4 @@
-# [ccg-grids](https://github.com/agdturner/ccg-grids)
+# [ccg-grids](https://github.com/agdturner/ccg-grids) 
 
 A modular Java library for storing and processing [raster data](https://en.wikipedia.org/wiki/GIS_file_formats#Raster).
 
