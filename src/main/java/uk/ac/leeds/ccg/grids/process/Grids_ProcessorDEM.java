@@ -292,7 +292,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            slopeAndAspect[8] = (Grids_GridDouble) gridFactoryDouble.create(
+            slopeAndAspect[8] = gridFactoryDouble.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[8].setName(filename);
             System.out.println(slopeAndAspect[8].toString());
@@ -305,7 +305,7 @@ public class Grids_ProcessorDEM extends Grids_Processor {
                         + "weightIntersect(" + weightIntersect + "),"
                         + "weightFactor(" + weightFactor + ")]";
             }
-            slopeAndAspect[9] = (Grids_GridDouble) gridFactoryDouble.create(
+            slopeAndAspect[9] = gridFactoryDouble.create(
                     nrows, ncols, dimensions);
             slopeAndAspect[9].setName(filename);
             System.out.println("Initialised Results");

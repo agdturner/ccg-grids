@@ -286,7 +286,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
         int duplicationRow;
         int duplicationCol;
         int pixelRGB;
-        int size = (int) (duplicationNRows * duplicationNCols);
+        int size = duplicationNRows * duplicationNCols;
 //        int iValue = 0;
 //        BigDecimal iValueBigDecimal = new BigDecimal("0.0");
 //        BigDecimal valueBigDecimal = new BigDecimal("0.0");
@@ -332,7 +332,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                 chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                 env.addToNotToClear(g, chunkID);
                 env.checkAndMaybeFreeMemory();
-                chunk = (Grids_ChunkDouble) g.getChunk(chunkID);
+                chunk = g.getChunk(chunkID);
                 for (cellRow = 0; cellRow < chunkNRows; cellRow++) {
                     row = g.getRow(chunkRow, cellRow);
                     for (cellCol = 0; cellCol < chunkNCols; cellCol++) {
@@ -357,7 +357,7 @@ public class Grids_ImageExporter extends Grids_Object implements Serializable {
                                 duplicationRow = (duplicationNRows - 1) - (((int) row * (duplication + 1)) + i);
                                 for (int j = 0; j <= duplication; j++) {
                                     duplicationCol = (int) (col * (duplication + 1)) + j;
-                                    p = (int) ((duplicationRow * duplicationNCols) + duplicationCol);
+                                    p = (duplicationRow * duplicationNCols) + duplicationCol;
                                     //pos = (int) ((((nrows - 1) - row + i) * ncols) + col + j);
                                     gridImageArray[p] = pixel.getRGB();
                                 }

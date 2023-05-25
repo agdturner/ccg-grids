@@ -30,6 +30,11 @@ public abstract class Grids_ChunkBDFactory extends Grids_ChunkFactory {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Create a new instance.
+     */
+    protected Grids_ChunkBDFactory(){}
+
+    /**
      * Creates a chunk containing no data values. The chunk is put (as a value)
      * with {@code i} (as the key) into {@code g.chunkIDChunkMap}.
      *

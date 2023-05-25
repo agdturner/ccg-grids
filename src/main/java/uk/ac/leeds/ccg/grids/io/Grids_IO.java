@@ -26,6 +26,11 @@ import javax.imageio.ImageIO;
 public class Grids_IO {
 
     /**
+     * Create a new instance.
+     */
+    protected Grids_IO(){}
+
+    /**
      * @param writerType - usually a well known text String for an image type
      * @return {@code true} if writerType is available.
      */

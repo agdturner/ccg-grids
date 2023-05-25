@@ -49,7 +49,7 @@
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-generic</artifactId>
-            <version>2.2</version>
+            <version>2.3-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io -->
         <dependency>
@@ -61,26 +61,39 @@
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-math</artifactId>
-            <version>2.1.1</version>
+            <version>2.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.1</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+        -->
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.1</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+        -->
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.9.1</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
     
     <build>
@@ -88,7 +101,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <compilerArgs>
                         <arg>-verbose</arg>
@@ -99,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>3.1.0</version>
                 <configuration>
                     <argLine>-Xms256m -Xmx512m</argLine>
                     <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -108,7 +121,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>3.1.0</version>
             </plugin>
         </plugins>
     </build>
@@ -132,7 +145,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.10.1</version>
+                        <version>3.11.0</version>
                         <configuration>
                             <compilerArgs>
                                 <arg>-verbose</arg>
@@ -143,7 +156,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.0.0-M7</version>
+                        <version>3.1.0</version>
                         <configuration>
                             <argLine>-Xms256m -Xmx512m</argLine>
                             <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -152,7 +165,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>3.0.0-M7</version>
+                        <version>3.1.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -170,7 +183,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.4.1</version>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -183,7 +196,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

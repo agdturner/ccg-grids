@@ -2340,7 +2340,7 @@ public class Grids_Processor extends Grids_Object {
             // getLastColumn
             for (int i = -cellDistance; i <= cellDistance; i++) {
                 r[i + cellDistance][cellDistance * 2]
-                        = g.getCell((long) i + row, (long) col + cellDistance);
+                        = g.getCell((long) i + row, col + cellDistance);
             }
         }
         return r;

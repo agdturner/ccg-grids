@@ -391,34 +391,34 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
             IO_Path dir;
             if (doProp) {
-                propGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                propGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWProp) {
-                wPropGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wPropGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doVar) {
-                varGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                varGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWVar) {
-                wVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doSkew) {
-                skewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                skewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                wSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doCVar) {
-                cVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                cVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                wCVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wCVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                cSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                cSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                wCSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wCSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
                     cellDistance, distance, weightIntersect, weightFactor, oom, rm);
@@ -738,29 +738,29 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         long row;
         long col;
         for (int i = 0; i < statistics.size(); i++) {
-            if (((String) statistics.get(i)).equalsIgnoreCase("FirstOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("FirstOrder")) {
                 doMean = true;
                 doWMean = true;
                 doSum = true;
                 doWSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WeightedFirstOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("WeightedFirstOrder")) {
                 doWMean = true;
                 doWSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Mean")) {
+            if (statistics.get(i).equalsIgnoreCase("Mean")) {
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WMean")) {
+            if (statistics.get(i).equalsIgnoreCase("WMean")) {
                 doWMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Sum")) {
+            if (statistics.get(i).equalsIgnoreCase("Sum")) {
                 doSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WSum")) {
+            if (statistics.get(i).equalsIgnoreCase("WSum")) {
                 doWSum = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("SecondOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("SecondOrder")) {
                 doMean = true;
                 doWMean = true;
                 doProp = true;
@@ -774,7 +774,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 doCSkew = true;
                 doWCSkew = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WeightedSecondOrder")) {
+            if (statistics.get(i).equalsIgnoreCase("WeightedSecondOrder")) {
                 doWMean = true;
                 doWProp = true;
                 doWVar = true;
@@ -782,47 +782,47 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                 doWCVar = true;
                 doWCSkew = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Prop")) {
+            if (statistics.get(i).equalsIgnoreCase("Prop")) {
                 doProp = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WProp")) {
+            if (statistics.get(i).equalsIgnoreCase("WProp")) {
                 doWProp = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Var")) {
+            if (statistics.get(i).equalsIgnoreCase("Var")) {
                 doVar = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WVar")) {
+            if (statistics.get(i).equalsIgnoreCase("WVar")) {
                 doWVar = true;
                 doWMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("Skew")) {
+            if (statistics.get(i).equalsIgnoreCase("Skew")) {
                 doSkew = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WSkew")) {
+            if (statistics.get(i).equalsIgnoreCase("WSkew")) {
                 doWSkew = true;
                 doWMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("CVar")) {
+            if (statistics.get(i).equalsIgnoreCase("CVar")) {
                 doCVar = true;
                 doVar = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WCVar")) {
+            if (statistics.get(i).equalsIgnoreCase("WCVar")) {
                 doWCVar = true;
                 doWVar = true;
                 doWMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("CSkew")) {
+            if (statistics.get(i).equalsIgnoreCase("CSkew")) {
                 doCSkew = true;
                 doSkew = true;
                 doVar = true;
                 doMean = true;
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("WCSkew")) {
+            if (statistics.get(i).equalsIgnoreCase("WCSkew")) {
                 doWCSkew = true;
                 doWSkew = true;
                 doWVar = true;
@@ -846,18 +846,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         gf.setNoDataValue(noDataValue);
         // First order stats ( Mean WMean Sum WSum  Density WDensity )
         if (doMean || doWMean || doSum || doWSum) {
-            IO_Path dir;
             if (doMean) {
-                meanGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                meanGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWMean) {
-                wMeanGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wMeanGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doSum) {
-                sumGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                sumGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWSum) {
-                wSumGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wSumGrid = gf.create(nrows, ncols, dimensions);
             }
             Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
             Math_BigRational totalSumWeight = kernelParameters[0];
@@ -930,36 +929,35 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Second order statistics ( coefficient of variation, skewness, kurtosis, zscore)
         if (doProp || doWProp || doVar || doWVar || doSkew || doWSkew || doWCVar || doCSkew || doWCSkew) {
-            IO_Path dir;
             if (doProp) {
                 propGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWProp) {
-                wPropGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wPropGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doVar) {
-                varGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                varGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWVar) {
-                wVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doSkew) {
-                skewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                skewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWSkew) {
-                wSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doCVar) {
-                cVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                cVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWCVar) {
-                wCVarGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wCVarGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doCSkew) {
-                cSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                cSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             if (doWCSkew) {
-                wCSkewGrid = (Grids_GridDouble) gf.create(nrows, ncols, dimensions);
+                wCSkewGrid = gf.create(nrows, ncols, dimensions);
             }
             Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
             Math_BigRational totalSumWeight = kernelParameters[0];
@@ -1391,7 +1389,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             //    processing strategies this step can probably be speeded up a lot.
             //density = gridFactory.createGrid2DSquareCellDouble( nrows, ncols, 0.0d, 0.0d, cellsize, 0.0d );
             gridFactory.setNoDataValue(ndv);
-            density = (Grids_GridDouble) gridFactory.create(nrows, ncols, dimensions);
+            density = gridFactory.create(nrows, ncols, dimensions);
             for (row = 0; row < nrows; row += doubler) {
                 for (int p = 0; p < doubler; p++) {
                     for (col = 0; col < ncols; col += doubler) {
@@ -1585,7 +1583,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * grid1
      * @param grid1 the Grids_GridDouble to be regionBivariateStatisticsd with
      * grid0
-     * @param statistics a String[] whose elements may be "diff", "abs", "corr1"
+     * @param statistics Elements may be "diff", "abs", "corr1"
      * , "corr2", "zscore". If they are then the respective Geographically
      * Weighted Statistics (GWS) are returned in the result array
      * @param distance the distance defining the region within which values will
@@ -1609,7 +1607,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      * @throws ClassNotFoundException If encountered.
      */
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
-            Grids_GridDouble grid1, ArrayList statistics, Math_BigRationalSqrt distance,
+            Grids_GridDouble grid1, ArrayList<String> statistics, 
+            Math_BigRationalSqrt distance,
             Math_BigRational weightIntersect, int weightFactor,
             Grids_GridDoubleFactory gf, int oom, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
@@ -1621,19 +1620,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         boolean dozdiff = false;
         int allStatistics = 0;
         for (int i = 0; i < statistics.size(); i++) {
-            if (((String) statistics.get(i)).equalsIgnoreCase("diff")) {
+            if (statistics.get(i).equalsIgnoreCase("diff")) {
                 if (!dodiff) {
                     dodiff = true;
                     allStatistics += 4;
                 }
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("corr")) {
+            if (statistics.get(i).equalsIgnoreCase("corr")) {
                 if (!docorr) {
                     docorr = true;
                     allStatistics += 2;
                 }
             }
-            if (((String) statistics.get(i)).equalsIgnoreCase("zdiff")) {
+            if (statistics.get(i).equalsIgnoreCase("zdiff")) {
                 if (!dozdiff) {
                     dozdiff = true;
                     allStatistics += 2;
@@ -1691,10 +1690,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         // Difference
         if (dodiff) {
             gf.setNoDataValue(grid0NoDataValue);
-            diffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedDiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            normalisedDiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedNormalisedDiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            diffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedDiffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            normalisedDiffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedNormalisedDiffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
 
             long row;
             long col;
@@ -1786,10 +1785,10 @@ public class Grids_ProcessorGWS extends Grids_Processor {
         // temporarily fix range
         if (docorr || dozdiff) {
             gf.setNoDataValue(grid0NoDataValue);
-            weightedCorrelationGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            correlationGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            weightedZdiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
-            zdiffGrid = (Grids_GridDouble) gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedCorrelationGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            correlationGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            weightedZdiffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
+            zdiffGrid = gf.create(grid0Nrows, grid0Ncols, grid0Dimensions);
             // setNumberOfPairs defines how many cells are needed to calculate correlation
             double dummy0 = Double.MIN_VALUE;
             double dummy1 = Double.MIN_VALUE;

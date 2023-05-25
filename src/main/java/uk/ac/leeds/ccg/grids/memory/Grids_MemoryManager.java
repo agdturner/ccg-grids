@@ -28,4 +28,8 @@ public abstract class Grids_MemoryManager extends Generic_MemoryManager
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new instance.
+     */
+    protected Grids_MemoryManager(){}
 }

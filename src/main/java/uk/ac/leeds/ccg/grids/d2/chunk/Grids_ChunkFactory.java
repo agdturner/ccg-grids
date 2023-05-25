@@ -24,6 +24,12 @@ import java.io.Serializable;
  * @version 1.0.0
  */
 public abstract class Grids_ChunkFactory implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Create a new instance.
+     */
+    protected Grids_ChunkFactory(){}
+
 }
