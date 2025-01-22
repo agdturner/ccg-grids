@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,7 +44,6 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.io.IO_Utilities;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -555,7 +555,7 @@ public abstract class Grids_Grid extends Grids_Object {
      *
      * @return {@code dim.getCellsize()}.
      */
-    public final Math_BigRational getCellsize() {
+    public final BigRational getCellsize() {
         return dim.getCellsize();
     }
 
@@ -598,16 +598,16 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param rm The RoundingMode for any rounding.
      */
     public Set<Grids_2D_ID_int> getChunkIDs(Math_BigRationalSqrt distance,
-            Math_BigRational x, Math_BigRational y, long row, long col, int oom, 
+            BigRational x, BigRational y, long row, long col, int oom, 
             RoundingMode rm) {
         Set<Grids_2D_ID_int> r = new HashSet<>();
-        Math_BigRational distance2 = distance.getX();
+        BigRational distance2 = distance.getX();
         int delta = getCellDistance(distance, oom, rm);
         for (long p = -delta; p <= delta; p++) {
-            Math_BigRational cellY = getCellY(row + p);
+            BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
-                Math_BigRational cellX = getCellX(col + q);
-                Math_BigRational d2 = Grids_Utilities.distance2(cellX, cellY,
+                BigRational cellX = getCellX(col + q);
+                BigRational d2 = Grids_Utilities.distance2(cellX, cellY,
                         x, y);
                 if (d2.compareTo(distance2) == -1) {
                     r.add(new Grids_2D_ID_int(getChunkRow(row + p),
@@ -683,7 +683,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate of the line intersecting the chunk column index
      * returned.
      */
-    public final int getChunkCol(Math_BigRational x) {
+    public final int getChunkCol(BigRational x) {
         return getChunkCol(getCol(x));
     }
 
@@ -708,7 +708,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate of the line intersecting the chunk cell column
      * index returned.
      */
-    public final int getChunkCellCol(Math_BigRational x) {
+    public final int getChunkCellCol(BigRational x) {
         return getChunkCellCol(getCol(x));
     }
 
@@ -727,7 +727,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param y The y-coordinate of the line for which the chunk cell row index
      * is returned.
      */
-    public final int getChunkCellRow(Math_BigRational y) {
+    public final int getChunkCellRow(BigRational y) {
         return getChunkCellRow(getRow(y));
     }
 
@@ -744,10 +744,10 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate.
      * @return Cell column of the cells that intersect line {@code x}.
      */
-    public final long getCol(Math_BigRational x) {
+    public final long getCol(BigRational x) {
         Grids_Dimensions d = getDimensions();
-        Math_BigRational dx = x.subtract(d.getXMin());
-        return dx.divide(d.getCellsize()).floor().longValueExact();
+        BigRational dx = x.subtract(d.getXMin());
+        return dx.divide(d.getCellsize()).longValue();
     }
 
     /**
@@ -767,7 +767,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param y The y-coordinate of the line for which the chunk row index is
      * returned.
      */
-    public final int getChunkRow(Math_BigRational y) {
+    public final int getChunkRow(BigRational y) {
         return getChunkRow(getRow(y));
     }
 
@@ -789,10 +789,10 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param y The y axis coordinate.
      * @return Cell row of the cells that intersect the y axis coordinate y.
      */
-    public final long getRow(Math_BigRational y) {
+    public final long getRow(BigRational y) {
         Grids_Dimensions d = getDimensions();
-        Math_BigRational dy = y.subtract(d.getYMin());
-        return dy.divide(d.getCellsize()).floor().longValueExact();
+        BigRational dy = y.subtract(d.getYMin());
+        return dy.divide(d.getCellsize()).longValue();
     }
 
     /**
@@ -828,7 +828,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      */
-    public final Grids_2D_ID_long getCellID(Math_BigRational x, Math_BigRational y) {
+    public final Grids_2D_ID_long getCellID(BigRational x, BigRational y) {
         return new Grids_2D_ID_long(getRow(y), getCol(x));
     }
 
@@ -2033,8 +2033,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public final Grids_2D_ID_long[] getCellIDs(Math_BigRational x,
-            Math_BigRational y, Math_BigRationalSqrt distance, int oom, 
+    public final Grids_2D_ID_long[] getCellIDs(BigRational x,
+            BigRational y, Math_BigRationalSqrt distance, int oom, 
             RoundingMode rm) {
         return getCellIDs(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
@@ -2071,18 +2071,18 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public Grids_2D_ID_long[] getCellIDs(Math_BigRational x, Math_BigRational y,
+    public Grids_2D_ID_long[] getCellIDs(BigRational x, BigRational y,
             long row, long col, Math_BigRationalSqrt distance, int oom, 
             RoundingMode rm) {
         Grids_2D_ID_long[] r;
         Set<Grids_2D_ID_long> r2 = new HashSet<>();
         long delta = getCellDistance(distance, oom, rm);
-        Math_BigRational distance2 = distance.getX();
+        BigRational distance2 = distance.getX();
         for (long p = -delta; p <= delta; p++) {
-            Math_BigRational cellY = getCellY(row + p);
+            BigRational cellY = getCellY(row + p);
             for (long q = -delta; q <= delta; q++) {
-                Math_BigRational cellX = getCellX(col + q);
-                Math_BigRational d2 = Grids_Utilities.distance2(cellX, cellY, x, y);
+                BigRational cellX = getCellX(col + q);
+                BigRational d2 = Grids_Utilities.distance2(cellX, cellY, x, y);
                 if (d2.compareTo(distance2) == -1) {
                     r2.add(new Grids_2D_ID_long(row + p, col + q));
                 }
@@ -2098,7 +2098,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate.
      * @param y The y-coordinate.
      */
-    public Grids_2D_ID_long getNearestCellID(Math_BigRational x, Math_BigRational y) {
+    public Grids_2D_ID_long getNearestCellID(BigRational x, BigRational y) {
         return getNearestCellID(x, y, getRow(y), getCol(x));
     }
 
@@ -2119,8 +2119,8 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param row The cell row.
      * @param col The cell column.
      */
-    public Grids_2D_ID_long getNearestCellID(Math_BigRational x,
-            Math_BigRational y, long row, long col) {
+    public Grids_2D_ID_long getNearestCellID(BigRational x,
+            BigRational y, long row, long col) {
         Grids_2D_ID_long cellID;
         boolean isInGrid = isInGrid(x, y);
         if (!isInGrid) {
@@ -2168,14 +2168,14 @@ public abstract class Grids_Grid extends Grids_Object {
     /**
      * @return Height of the grid.
      */
-    public final Math_BigRational getHeight() {
+    public final BigRational getHeight() {
         return dim.getYMax().subtract(dim.getYMin());
     }
 
     /**
      * @return Width of the grid.
      */
-    public final Math_BigRational getWidth() {
+    public final BigRational getWidth() {
         return dim.getXMax().subtract(dim.getXMin());
     }
 
@@ -2243,11 +2243,11 @@ public abstract class Grids_Grid extends Grids_Object {
         if (!dim.intersects(g.dim)) {
             return false;
         }
-        Math_BigRational gXMin = g.dim.getXMin();
-        Math_BigRational xMin = dim.getXMin();
+        BigRational gXMin = g.dim.getXMin();
+        BigRational xMin = dim.getXMin();
         if (xMin.compareTo(gXMin) == -1) {
-            Math_BigRational x = xMin;
-            Math_BigRational cs = dim.getCellsize();
+            BigRational x = xMin;
+            BigRational cs = dim.getCellsize();
             do {
                 x = x.add(cs);
             } while (x.compareTo(gXMin) == -1);
@@ -2255,8 +2255,8 @@ public abstract class Grids_Grid extends Grids_Object {
                 return false;
             }
         } else if (xMin.compareTo(gXMin) == 1) {
-            Math_BigRational x = gXMin;
-            Math_BigRational cs = dim.getCellsize();
+            BigRational x = gXMin;
+            BigRational cs = dim.getCellsize();
             do {
                 x = x.add(cs);
             } while (x.compareTo(xMin) == -1);
@@ -2264,11 +2264,11 @@ public abstract class Grids_Grid extends Grids_Object {
                 return false;
             }
         }
-        Math_BigRational gYMin = g.dim.getYMin();
-        Math_BigRational yMin = dim.getYMin();
+        BigRational gYMin = g.dim.getYMin();
+        BigRational yMin = dim.getYMin();
         if (yMin.compareTo(gYMin) == -1) {
-            Math_BigRational y = yMin;
-            Math_BigRational cs = dim.getCellsize();
+            BigRational y = yMin;
+            BigRational cs = dim.getCellsize();
             do {
                 y = y.add(cs);
             } while (y.compareTo(gYMin) == -1);
@@ -2276,8 +2276,8 @@ public abstract class Grids_Grid extends Grids_Object {
                 return false;
             }
         } else if (yMin.compareTo(gYMin) == 1) {
-            Math_BigRational y = gYMin;
-            Math_BigRational cs = dim.getCellsize();
+            BigRational y = gYMin;
+            BigRational cs = dim.getCellsize();
             do {
                 y = y.add(cs);
             } while (y.compareTo(yMin) == -1);
@@ -2298,7 +2298,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param x The x-coordinate of the point to test.
      * @param y The y-coordinate of the point to test.
      */
-    public final boolean isInGrid(Math_BigRational x, Math_BigRational y) {
+    public final boolean isInGrid(BigRational x, BigRational y) {
         return x.compareTo(dim.getXMin()) != -1
                 && y.compareTo(dim.getYMin()) != -1
                 && x.compareTo(dim.getXMax()) != 1
@@ -2360,9 +2360,9 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @return The x-coordinate of the centroid of col as a BigDecimal.
      */
-    public final Math_BigRational getCellX(long col) {
+    public final BigRational getCellX(long col) {
         return dim.getXMin().add(dim.getCellsize().multiply(
-                Math_BigRational.valueOf(col))).add(dim.getHalfCellsize());
+                BigRational.valueOf(col))).add(dim.getHalfCellsize());
     }
 
     /**
@@ -2370,7 +2370,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * {@code i}.
      * @param i The chunk ID.
      */
-    public final Math_BigRational getCellX(Grids_2D_ID_long i) {
+    public final BigRational getCellX(Grids_2D_ID_long i) {
         return getCellX(i.getCol());
     }
 
@@ -2379,16 +2379,16 @@ public abstract class Grids_Grid extends Grids_Object {
      * returned.
      * @return The y-coordinate of the centroid for row as a BigDecimal.
      */
-    public final Math_BigRational getCellY(long row) {
+    public final BigRational getCellY(long row) {
         return dim.getYMin().add(dim.getCellsize().multiply(
-                Math_BigRational.valueOf(row))).add(dim.getHalfCellsize());
+                BigRational.valueOf(row))).add(dim.getHalfCellsize());
     }
 
     /**
      * @param i The cell ID for which the centroid x-coordinate is returned.
      * @return The y-coordinate of the centroid of cell with cell ID {@code i}.
      */
-    public final Math_BigRational getCellY(Grids_2D_ID_long i) {
+    public final BigRational getCellY(Grids_2D_ID_long i) {
         return getCellY(i.getRow());
     }
 
@@ -2408,11 +2408,11 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param col The column index of the cell for which the bounds are
      * returned.
      */
-    public final Math_BigRational[] getCellBounds(long row, long col) {
-        Math_BigRational[] r = new Math_BigRational[4];
-        Math_BigRational x = getCellX(col);
-        Math_BigRational y = getCellY(row);
-        Math_BigRational hc = getDimensions().getHalfCellsize();
+    public final BigRational[] getCellBounds(long row, long col) {
+        BigRational[] r = new BigRational[4];
+        BigRational x = getCellX(col);
+        BigRational y = getCellY(row);
+        BigRational hc = getDimensions().getHalfCellsize();
         r[0] = x.subtract(hc);
         r[1] = y.subtract(hc);
         r[2] = x.add(hc);
@@ -2561,12 +2561,12 @@ public abstract class Grids_Grid extends Grids_Object {
      * @param c The start column index.
      */
     public void initDimensions(Header header, long r, long c) {
-        Math_BigRational cellsize = header.cellsize;
-        Math_BigRational xMin = header.xll.add(cellsize.multiply(Math_BigRational.valueOf(c)));
-        Math_BigRational yMin = header.yll.add(cellsize.multiply(Math_BigRational.valueOf(r)));
-        Math_BigRational xMax = xMin.add(Math_BigRational.valueOf(Long.toString(nCols))
+        BigRational cellsize = header.cellsize;
+        BigRational xMin = header.xll.add(cellsize.multiply(BigRational.valueOf(c)));
+        BigRational yMin = header.yll.add(cellsize.multiply(BigRational.valueOf(r)));
+        BigRational xMax = xMin.add(BigRational.valueOf(Long.toString(nCols))
                 .multiply(cellsize));
-        Math_BigRational yMax = yMin.add(Math_BigRational.valueOf(Long.toString(nRows))
+        BigRational yMax = yMin.add(BigRational.valueOf(Long.toString(nRows))
                 .multiply(cellsize));
         dim = new Grids_Dimensions(xMin, xMax, yMin, yMax, cellsize);
     }
@@ -2581,17 +2581,17 @@ public abstract class Grids_Grid extends Grids_Object {
      */
     public void initDimensions(Grids_Grid g, long r, long c) {
         dim = g.getDimensions(); // temporary assignment
-        Math_BigRational startColIndexBigDecimal = Math_BigRational.valueOf(c);
-        Math_BigRational startRowIndexBigDecimal = Math_BigRational.valueOf(r);
-        Math_BigRational nRowsBigDecimal = Math_BigRational.valueOf(nRows);
-        Math_BigRational nColsBigDecimal = Math_BigRational.valueOf(nCols);
-        Math_BigRational xMin;
-        Math_BigRational yMin;
-        Math_BigRational xMax;
-        Math_BigRational yMax;
-        Math_BigRational cellsize;
+        BigRational startColIndexBigDecimal = BigRational.valueOf(c);
+        BigRational startRowIndexBigDecimal = BigRational.valueOf(r);
+        BigRational nRowsBigDecimal = BigRational.valueOf(nRows);
+        BigRational nColsBigDecimal = BigRational.valueOf(nCols);
+        BigRational xMin;
+        BigRational yMin;
+        BigRational xMax;
+        BigRational yMax;
+        BigRational cellsize;
         if (dim == null) {
-            cellsize = Math_BigRational.ONE;
+            cellsize = BigRational.ONE;
             xMin = startColIndexBigDecimal;
             yMin = startRowIndexBigDecimal;
             xMax = xMin.add(nColsBigDecimal);
@@ -2831,13 +2831,13 @@ public abstract class Grids_Grid extends Grids_Object {
         String s = "";
         if (ncols < cols) {
             for (int i = 0; i < cols; i++) {
-                s += " " + getStringValue(Math_BigRational.valueOf(i)) + "  ";
+                s += " " + getStringValue(BigRational.valueOf(i)) + "  ";
             }
         } else {
             for (int i = 0; i < cols - 1; i++) {
-                s += " " + getStringValue(Math_BigRational.valueOf(i)) + "  ";
+                s += " " + getStringValue(BigRational.valueOf(i)) + "  ";
             }
-            s += "    " + getStringValue(Math_BigRational.valueOf(ncols - 1L)) + "  ";
+            s += "    " + getStringValue(BigRational.valueOf(ncols - 1L)) + "  ";
         }
         return s;
     }
@@ -2894,7 +2894,7 @@ public abstract class Grids_Grid extends Grids_Object {
      * {@code RoundingMode.HALF_UP}.
      */
     @Deprecated
-    public String getStringValue(Math_BigRational v) {
+    public String getStringValue(BigRational v) {
         String r = v.toString();
         if (r.length() > 10) {
             r = r.substring(0, 10);

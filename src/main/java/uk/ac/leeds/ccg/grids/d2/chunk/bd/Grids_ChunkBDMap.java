@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.bd;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,7 +27,6 @@ import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -675,7 +675,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     }
 
     @Override
-    public Math_BigRational getSum() {
+    public BigRational getSum() {
         int n = chunkNRows * chunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         return getSumBigDecimal(n, numberOfDefaultValues);
@@ -686,9 +686,9 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param numberOfDefaultValues The number of default values.
      * @return The sum of all data values as a BigDecimal.
      */
-    protected Math_BigRational getSumBigDecimal(int n, int numberOfDefaultValues) {
-        Math_BigRational r = Math_BigRational.ZERO;
-        r = r.add(Math_BigRational.valueOf(defaultValue.multiply(BigDecimal.valueOf(numberOfDefaultValues))));
+    protected BigRational getSumBigDecimal(int n, int numberOfDefaultValues) {
+        BigRational r = BigRational.ZERO;
+        r = r.add(BigRational.valueOf(defaultValue.multiply(BigDecimal.valueOf(numberOfDefaultValues))));
         Iterator<BigDecimal> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -699,7 +699,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             BigDecimal v = ite.next();
             Grids_OffsetBitSet offsetBitSet = m.get(v);
             n = offsetBitSet.bitSet.size();
-            r = r.add(Math_BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
+            r = r.add(BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -709,7 +709,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         while (ite.hasNext()) {
             BigDecimal v = ite.next();
             n = m2.get(v).size();
-            r = r.add(Math_BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
+            r = r.add(BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
         }
         return r;
     }
@@ -844,13 +844,13 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      */
     @Override
     protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
-        Math_BigRational r = Math_BigRational.ZERO;
-        Math_BigRational mean = getArithmeticMean();
+        BigRational r = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         // Calculate the number of default values
         int n = chunkNRows * chunkNCols;
         int nValues = getNumberOfDefaultValues(n);
-        r = r.add((Math_BigRational.valueOf(defaultValue).subtract(mean).pow(2))
-                .multiply(Math_BigRational.valueOf(nValues)));
+        r = r.add((BigRational.valueOf(defaultValue).subtract(mean).pow(2))
+                .multiply(BigRational.valueOf(nValues)));
         Iterator<BigDecimal> ite;
         /**
          * Add from data.DataMapBitSet;
@@ -862,8 +862,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             offsetBitSet = Data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
-            r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(Math_BigRational.valueOf(n)));
+            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigRational.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
@@ -873,13 +873,13 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
             BigDecimal v = ite.next();
             n = Data.DataMapHashSet.get(v).size();
             nValues += n;
-            r = r.add((Math_BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(Math_BigRational.valueOf(n)));
+            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
+                    .multiply(BigRational.valueOf(n)));
         }
         if ((nValues - 1L) > 0L) {
             return new Math_BigRationalSqrt(r.divide(nValues - 1), oom, rm).toBigDecimal(oom, rm);
         } else {
-            return r.toBigDecimal(oom);
+            return r.toBigDecimal();
         }
     }
 

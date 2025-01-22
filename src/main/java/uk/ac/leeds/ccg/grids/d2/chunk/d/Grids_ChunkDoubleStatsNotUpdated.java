@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.d;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For statistics of chunks of type double. Statistics are not kept up to date
@@ -107,7 +107,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Math_BigRational getSum() throws IOException, Exception,
+    public BigRational getSum() throws IOException, Exception,
             ClassNotFoundException {
         return sum;
     }
@@ -122,7 +122,7 @@ public class Grids_ChunkDoubleStatsNotUpdated extends Grids_ChunkDoubleStats {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Math_BigRational getSum(boolean update) throws IOException, Exception,
+    public BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
         if (update) {
             update();

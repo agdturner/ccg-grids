@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.d;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids_ChunkDouble extension for which all values are the same.
@@ -106,11 +106,11 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     @Override
-    public Math_BigRational getSum() {
+    public BigRational getSum() {
         if (v == getGrid().getNoDataValue()) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
-        return Math_BigRational.valueOf(getN()).multiply(Math_BigRational.valueOf(v));
+        return BigRational.valueOf(getN()).multiply(BigRational.valueOf(v));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Grids_ChunkDoubleSinglet extends Grids_ChunkDouble {
     }
 
     @Override
-    public Math_BigRational getArithmeticMean() {
-        return Math_BigRational.valueOf(v);
+    public BigRational getArithmeticMean() {
+        return BigRational.valueOf(v);
     }
 }

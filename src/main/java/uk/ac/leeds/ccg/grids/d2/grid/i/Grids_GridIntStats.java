@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid.i;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,10 +24,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntIterator;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInt;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -51,7 +49,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         super(ge);
         min = Integer.MAX_VALUE;
         max = Integer.MIN_VALUE;
-        sum = Math_BigRational.ZERO;
+        sum = BigRational.ZERO;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         super.init();
         min = Integer.MAX_VALUE;
         max = Integer.MIN_VALUE;
-        sum = Math_BigRational.ZERO;
+        sum = BigRational.ZERO;
     }
 
     /**
@@ -161,7 +159,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Math_BigRational getSum(boolean update) throws IOException, Exception,
+    public BigRational getSum(boolean update) throws IOException, Exception,
             ClassNotFoundException {
 //        if (update) {
 //            update();
@@ -174,8 +172,8 @@ public class Grids_GridIntStats extends Grids_StatsInt {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Math_BigRational getSum() throws IOException, Exception, ClassNotFoundException {
-        Math_BigRational r = Math_BigRational.ZERO;
+    public BigRational getSum() throws IOException, Exception, ClassNotFoundException {
+        BigRational r = BigRational.ZERO;
         Grids_GridInt g = getGrid();
         Iterator<Grids_2D_ID_int> ite = g.iterator().getGridIterator();
         while (ite.hasNext()) {
@@ -194,8 +192,8 @@ public class Grids_GridIntStats extends Grids_StatsInt {
      */
     public Math_BigRationalSqrt getStandardDeviation(int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
-        Math_BigRational stdev = Math_BigRational.ZERO;
-        Math_BigRational mean = getArithmeticMean();
+        BigRational stdev = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         long dataValueCount = 0;
         Grids_GridInt g = (Grids_GridInt) grid;
         int ndv = g.getNoDataValue();
@@ -203,7 +201,7 @@ public class Grids_GridIntStats extends Grids_StatsInt {
         while (ite.hasNext()) {
             int v = ite.next();
             if (v != ndv) {
-                Math_BigRational delta = Math_BigRational.valueOf(v).subtract(mean);
+                BigRational delta = BigRational.valueOf(v).subtract(mean);
                 stdev = stdev.add(delta.multiply(delta));
                 dataValueCount++;
             }

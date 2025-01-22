@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid.bd;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -45,7 +46,6 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -802,7 +802,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             if (newValue.compareTo(ndv) != 0) {
                 if (oldValue.compareTo(ndv) != 0) {
                     s.setN(s.getN() - 1);
-                    s.setSum(s.getSum().subtract(Math_BigRational.valueOf(oldValue)));
+                    s.setSum(s.getSum().subtract(BigRational.valueOf(oldValue)));
                     BigDecimal min = s.getMin(false);
                     if (oldValue.compareTo(min) == 0) {
                         s.setNMin(s.getNMin() - 1);
@@ -813,7 +813,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                     }
                 }
                 s.setN(s.getN() + 1);
-                s.setSum(s.getSum().add(Math_BigRational.valueOf(newValue)));
+                s.setSum(s.getSum().add(BigRational.valueOf(newValue)));
                 updateStats(newValue);
                 if (s.getNMin() < 1) {
                     // The stats need recalculating
@@ -887,7 +887,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final BigDecimal getCell(Math_BigRational x, Math_BigRational y) throws IOException,
+    public final BigDecimal getCell(BigRational x, BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -916,7 +916,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public final BigDecimal setCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
+    public final BigDecimal setCell(BigRational x, BigRational y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
             return setCell(getRow(y), getCol(x), v);
@@ -1076,7 +1076,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             ClassNotFoundException {
         Grids_GridBDStats dStats = getStats();
         dStats.setN(dStats.getN() + 1);
-        dStats.setSum(dStats.getSum().add(Math_BigRational.valueOf(value)));
+        dStats.setSum(dStats.getSum().add(BigRational.valueOf(value)));
         BigDecimal min = dStats.getMin(false);
         if (value.compareTo(min) == -1) {
             dStats.setNMin(1);
@@ -1130,7 +1130,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
-    protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
+    protected BigDecimal[] getCells(BigRational x, BigRational y,
             Math_BigRationalSqrt distance, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
@@ -1153,16 +1153,16 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected BigDecimal[] getCells(Math_BigRational x, Math_BigRational y,
+    protected BigDecimal[] getCells(BigRational x, BigRational y,
             long row, long col, Math_BigRationalSqrt distance, int oom,
             RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
         int delta = getCellDistance(distance, oom, rm);
         BigDecimal[] r = new BigDecimal[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            Math_BigRational thisY = getCellY(row);
+            BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                Math_BigRational thisX = getCellX(col);
+                BigRational thisX = getCellX(col);
                 if (Grids_Utilities.distance2(x, y, thisX, thisY)
                         .compareTo(distance.getX()) != 1) {
                     r[count] = getCell(p, q);
@@ -1188,7 +1188,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, int oom, RoundingMode rm)
+            BigRational x, BigRational y, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         BigDecimal value = getCell(x, y);
@@ -1249,7 +1249,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      */
     @Override
     public NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, long row, long col, int oom,
+            BigRational x, BigRational y, long row, long col, int oom,
             RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
@@ -1310,7 +1310,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 visitedSet1 = visitedSet2;
                 toVisitSet1 = toVisitSet2;
             }
-            Math_BigRational distance2;
+            BigRational distance2;
             // Go through values and find the closest
             HashSet<Grids_2D_ID_long> closest = new HashSet<>();
             iterator = values.iterator();
@@ -1329,7 +1329,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                         closest.add(cellID);
                     }
                 }
-                Math_BigRational d2 = r.distance.getX().min(distance2);
+                BigRational d2 = r.distance.getX().min(distance2);
                 r.distance = new Math_BigRationalSqrt(d2.pow(2), d2);
             }
             // Get cellIDs that are within distance of discovered v
@@ -1373,7 +1373,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public void addToCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
+    public void addToCell(BigRational x, BigRational y, BigDecimal v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(getRow(y), getCol(x), v);
     }

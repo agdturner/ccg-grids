@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid.b;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,7 +41,6 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -664,7 +664,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean getCell(Math_BigRational x, Math_BigRational y) throws IOException,
+    public final boolean getCell(BigRational x, BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -692,7 +692,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final boolean setCell(Math_BigRational x, Math_BigRational y, boolean v)
+    public final boolean setCell(BigRational x, BigRational y, boolean v)
             throws IOException, ClassNotFoundException, Exception {
         return setCell(getRow(y), getCol(x), v);
     }
@@ -812,7 +812,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
+    protected boolean[] getCells(BigRational x, BigRational y,
             Math_BigRationalSqrt distance, int oom, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
@@ -856,7 +856,7 @@ public class Grids_GridBinary extends Grids_GridB {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected boolean[] getCells(Math_BigRational x, Math_BigRational y,
+    protected boolean[] getCells(BigRational x, BigRational y,
             long row, long col, Math_BigRationalSqrt distance, int oom,
             RoundingMode rm) throws IOException, ClassNotFoundException,
             Exception {
@@ -864,9 +864,9 @@ public class Grids_GridBinary extends Grids_GridB {
         boolean[] cells = new boolean[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
-            Math_BigRational thisY = getCellY(row);
+            BigRational thisY = getCellY(row);
             for (long q = col - delta; q <= col + delta; q++) {
-                Math_BigRational thisX = getCellX(col);
+                BigRational thisX = getCellX(col);
                 if (Grids_Utilities.distance2(x, y, thisX, thisY)
                         .compareTo(distance.getX()) != 1) {
                     cells[count] = getCell(p, q);

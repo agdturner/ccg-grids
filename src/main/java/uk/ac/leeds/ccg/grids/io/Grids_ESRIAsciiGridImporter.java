@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.io;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.StreamTokenizer;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -24,7 +25,6 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.io.IO_Utilities;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Class for importing ESRI Asciigrid.
@@ -91,17 +91,17 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
         /**
          * For storing the lower left corner x.
          */
-        public Math_BigRational xll;
+        public BigRational xll;
         
         /**
          * For storing the lower left corner y.
          */
-        public Math_BigRational yll;
+        public BigRational yll;
         
         /**
          * For storing the cellsize.
          */
-        public Math_BigRational cellsize;
+        public BigRational cellsize;
         
         /**
          * For storing the NODATA value.
@@ -145,7 +145,7 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     b1 = false;
                 }
                 this.st.nextToken();
-                header.xll = Math_BigRational.valueOf(this.st.sval);
+                header.xll = BigRational.valueOf(this.st.sval);
 
                 // yll
                 this.st.nextToken();
@@ -155,15 +155,15 @@ public class Grids_ESRIAsciiGridImporter extends Grids_Object {
                     b2 = false;
                 }
                 this.st.nextToken();
-                header.yll = Math_BigRational.valueOf(this.st.sval);
+                header.yll = BigRational.valueOf(this.st.sval);
                 // cellsize
                 this.st.nextToken();
                 this.st.nextToken();
-                Math_BigRational cellsize = Math_BigRational.valueOf(this.st.sval);
+                BigRational cellsize = BigRational.valueOf(this.st.sval);
                 header.cellsize = cellsize;
                 // adjust xll
                 if (!b1 || !b2) {
-                    Math_BigRational halfCellsize = cellsize.divide(2);
+                    BigRational halfCellsize = cellsize.divide(2);
                     if (!b1) {
                         header.xll = header.xll.subtract(halfCellsize);
                     }

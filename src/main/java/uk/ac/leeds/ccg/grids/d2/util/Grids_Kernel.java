@@ -15,12 +15,13 @@
  */
 package uk.ac.leeds.ccg.grids.d2.util;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.grids.d2.Grids_Point;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -82,9 +83,9 @@ public abstract class Grids_Kernel {
      * centroids of the cells that are within distance.
      */
     public static double[][] getNormalDistributionKernelWeights(
-            Math_BigRational cellsize, Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
+            BigRational cellsize, Math_BigRationalSqrt distance, int oom, RoundingMode rm) {
         double[][] r;
-        int delta = distance.getSqrt(oom, rm).divide(cellsize).ceil().intValue();
+        int delta = Math_BigRational.ceil(distance.getSqrt(oom, rm).divide(cellsize)).intValue();
         int squareSize = (delta * 2) + 1;
         r = new double[squareSize][squareSize];
         int distance2;
@@ -152,10 +153,10 @@ public abstract class Grids_Kernel {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public static Math_BigRational getKernelWeight(Math_BigRationalSqrt d,
-            Math_BigRational wi, int wf, Math_BigRationalSqrt td, int oom, 
+    public static BigRational getKernelWeight(Math_BigRationalSqrt d,
+            BigRational wi, int wf, Math_BigRationalSqrt td, int oom, 
             RoundingMode rm) {
-        return Math_BigRational.ONE.subtract(td.getX().divide(d.getX()).pow(wf)
+        return BigRational.ONE.subtract(td.getX().divide(d.getX()).pow(wf)
                 .multiply(wi));
     }
 
@@ -170,23 +171,23 @@ public abstract class Grids_Kernel {
      * @param rm The RoundingMode for any rounding.
      * @return Kernel weights.
      */
-    public static Math_BigRational[][] getKernelWeights(Grids_GridNumber g,
-            Math_BigRationalSqrt distance, Math_BigRational wi, int wf, int oom,
+    public static BigRational[][] getKernelWeights(Grids_GridNumber g,
+            Math_BigRationalSqrt distance, BigRational wi, int wf, int oom,
             RoundingMode rm) {
-        //Math_BigRational cellsize = g.getCellsize();
+        //BigRational cellsize = g.getCellsize();
         int delta = g.getCellDistance(distance, oom, rm);
-        Math_BigRational[][] weights = new Math_BigRational[(delta * 2) + 1][(delta * 2) + 1];
+        BigRational[][] weights = new BigRational[(delta * 2) + 1][(delta * 2) + 1];
         /**
          * The following weight is just one example of a kernel that can be
          * used! It provides a general monotonic curve based on distance over
          * bandwidth.
          */
-        Math_BigRational x0 = g.getCellX(0L);
-        Math_BigRational y0 = g.getCellY(0L);
+        BigRational x0 = g.getCellX(0L);
+        BigRational y0 = g.getCellY(0L);
         for (int row = -delta; row <= delta; row++) {
             for (int col = -delta; col <= delta; col++) {
-                Math_BigRational x1 = g.getCellX(col);
-                Math_BigRational y1 = g.getCellY(row);
+                BigRational x1 = g.getCellX(col);
+                BigRational y1 = g.getCellY(row);
                 Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 //if ( thisDistance <= distance ) {
                 if (thisDistance.compareTo(distance) == -1) {
@@ -194,7 +195,7 @@ public abstract class Grids_Kernel {
                             distance, wi, wf, thisDistance, oom, rm);
                 } else {
                     //weights[ i + cellDistance ][ j + cellDistance ] = noDataValue;
-                    weights[row + delta][col + delta] = Math_BigRational.ZERO;
+                    weights[row + delta][col + delta] = BigRational.ZERO;
                 }
             }
         }
@@ -215,17 +216,17 @@ public abstract class Grids_Kernel {
      * @param rm RoundingMode for BigDecimal arithmetic.
      * @return Kernel weights.
      */
-    public static Math_BigRational[] getKernelWeights(Grids_GridNumber g, long row,
-            long col, Math_BigRationalSqrt distance, Math_BigRational wi, int wf,
+    public static BigRational[] getKernelWeights(Grids_GridNumber g, long row,
+            long col, Math_BigRationalSqrt distance, BigRational wi, int wf,
             Grids_Point[] points, int oom, RoundingMode rm) {
-        Math_BigRational[] weights = new Math_BigRational[points.length];
+        BigRational[] weights = new BigRational[points.length];
         /**
          * The following weight is just one example of a kernel that can be
          * used! It provides a general monotonic curve based on distance over
          * bandwidth.
          */
-        Math_BigRational x = g.getCellX(col);
-        Math_BigRational y = g.getCellY(row);
+        BigRational x = g.getCellX(col);
+        BigRational y = g.getCellY(row);
         for (int i = 0; i < points.length; i++) {
             Math_BigRationalSqrt td = Grids_Utilities.distance(x, y, points[i].x,
                     points[i].y, oom, rm);
@@ -248,10 +249,10 @@ public abstract class Grids_Kernel {
      * @param rm The RoundingMode for any rounding.
      * @return Kernel weights.
      */
-    public static Math_BigRational[] getKernelWeights(Grids_Point centroid,
-            Math_BigRationalSqrt d, Math_BigRational wi, int wf,
+    public static BigRational[] getKernelWeights(Grids_Point centroid,
+            Math_BigRationalSqrt d, BigRational wi, int wf,
             Grids_Point[] points, int oom, RoundingMode rm) {
-        Math_BigRational[] weights = new Math_BigRational[points.length];
+        BigRational[] weights = new BigRational[points.length];
         /**
          * The following weight is just one example of a kernel that can be
          * used! It provides a general monotonic curve based on distance over
@@ -285,21 +286,21 @@ public abstract class Grids_Kernel {
      * @param rm The RoundingMode for any rounding.
      * @return Kernel parameters.
      */
-    public static Math_BigRational[] getKernelParameters(Grids_GridNumber g, int cd,
-            Math_BigRationalSqrt d, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
-        Math_BigRational r[] = new Math_BigRational[2];
-        r[0] = Math_BigRational.ZERO;
-        r[1] = Math_BigRational.ZERO;
-        Math_BigRational x0 = g.getCellX(0);
-        Math_BigRational y0 = g.getCellY(0);
+    public static BigRational[] getKernelParameters(Grids_GridNumber g, int cd,
+            Math_BigRationalSqrt d, BigRational wi, int wf, int oom, RoundingMode rm) {
+        BigRational r[] = new BigRational[2];
+        r[0] = BigRational.ZERO;
+        r[1] = BigRational.ZERO;
+        BigRational x0 = g.getCellX(0);
+        BigRational y0 = g.getCellY(0);
         for (int p = -cd; p <= cd; p++) {
             for (int q = -cd; q <= cd; q++) {
-                Math_BigRational x1 = g.getCellX(q);
-                Math_BigRational y1 = g.getCellY(p);
+                BigRational x1 = g.getCellX(q);
+                BigRational y1 = g.getCellY(p);
                 Math_BigRationalSqrt td = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                 if (td.compareTo(d) == -1) {
                     r[0] = r[0].add(getKernelWeight(d, wi, wf, td, oom, rm));
-                    r[1] = r[1].add(Math_BigRational.ONE);
+                    r[1] = r[1].add(BigRational.ONE);
                 }
             }
         }
@@ -319,11 +320,11 @@ public abstract class Grids_Kernel {
      * @param rm The RoundingMode for any rounding.
      * @return Adaptive kernel weight.
      */
-    public static Math_BigRational getAdaptiveKernelWeight(
-            Math_BigRationalSqrt d, Math_BigRationalSqrt bw, Math_BigRational sw,
-            int p, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
-        Math_BigRational v = getKernelVolume(bw, p, wi, wf, oom, rm);
-        Math_BigRational w = getKernelWeight(bw, wi, wf, d, oom, rm);
+    public static BigRational getAdaptiveKernelWeight(
+            Math_BigRationalSqrt d, Math_BigRationalSqrt bw, BigRational sw,
+            int p, BigRational wi, int wf, int oom, RoundingMode rm) {
+        BigRational v = getKernelVolume(bw, p, wi, wf, oom, rm);
+        BigRational w = getKernelWeight(bw, wi, wf, d, oom, rm);
         return w.multiply(sw).divide(v);
     }
 
@@ -338,18 +339,18 @@ public abstract class Grids_Kernel {
      * @param rm The RoundingMode for any rounding.
      * @return The kernel volume.
      */
-    public static Math_BigRational getKernelVolume(Math_BigRationalSqrt bw,
-            int p, Math_BigRational wi, int wf, int oom, RoundingMode rm) {
-        Math_BigRational r = Math_BigRational.ZERO;
-        Math_BigRational sectionArea = bw.getSqrt(oom, rm).divide(Math_BigRational.valueOf(p));
-        Math_BigRational sectionSize = new Math_BigRationalSqrt(sectionArea, oom, rm).getSqrt(oom, rm);
+    public static BigRational getKernelVolume(Math_BigRationalSqrt bw,
+            int p, BigRational wi, int wf, int oom, RoundingMode rm) {
+        BigRational r = BigRational.ZERO;
+        BigRational sectionArea = bw.getSqrt(oom, rm).divide(BigRational.valueOf(p));
+        BigRational sectionSize = new Math_BigRationalSqrt(sectionArea, oom, rm).getSqrt(oom, rm);
         //int sectionCount = 0;
         for (int row = 1; row < p; row++) {
             for (int col = 0; col < p; col++) {
-                Math_BigRationalSqrt td = Grids_Utilities.distance(Math_BigRational.ZERO,
-                        Math_BigRational.ZERO, Math_BigRational.valueOf(row)
+                Math_BigRationalSqrt td = Grids_Utilities.distance(BigRational.ZERO,
+                        BigRational.ZERO, BigRational.valueOf(row)
                                 .multiply(sectionSize),
-                        Math_BigRational.valueOf(col).multiply(sectionSize), oom, rm);
+                        BigRational.valueOf(col).multiply(sectionSize), oom, rm);
                 if (td.compareTo(bw) == -1) {
                     r = r.add(getKernelWeight(bw, wi, wf, td, oom, rm));
                     //sectionCount ++;
@@ -359,7 +360,7 @@ public abstract class Grids_Kernel {
         // Multiply by 4 for all quadrants
         // Add kernelCentroid weight
         // Multiply result be sectionArea to get volume
-        return (r.multiply(Math_BigRational.valueOf(4)).add(wi)).multiply(sectionArea);
+        return (r.multiply(BigRational.valueOf(4)).add(wi)).multiply(sectionArea);
     }
 
 }

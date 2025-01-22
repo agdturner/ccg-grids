@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk.i;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -23,7 +24,6 @@ import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumber;
 import java.util.Arrays;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -71,8 +71,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * @return The value at row, col as a BigDecimal.
      */
     @Override
-    public BigDecimal getCellBigDecimal(int row, int col) {
-        return BigDecimal.valueOf(getCell(row, col));
+    public BigRational getCellBigRational(int row, int col) {
+        return BigRational.valueOf(getCell(row, col));
     }
 
     /**
@@ -177,8 +177,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * @return The sum of all data values as a BigDecimal.
      */
     @Override
-    public Math_BigRational getSum() {
-        Math_BigRational sum = Math_BigRational.ZERO;
+    public BigRational getSum() {
+        BigRational sum = BigRational.ZERO;
         Grids_GridInt g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -187,7 +187,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
             for (int col = 0; col < ncols; col++) {
                 int value = getCell(row, col);
                 if (value != noDataValue) {
-                    sum = sum.add(Math_BigRational.valueOf(value));
+                    sum = sum.add(BigRational.valueOf(value));
                 }
             }
         }
@@ -393,8 +393,8 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
      * @return The standard deviation of all data values.
      */
     protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
-        Math_BigRational sd = Math_BigRational.ZERO;
-        Math_BigRational mean = getArithmeticMean();
+        BigRational sd = BigRational.ZERO;
+        BigRational mean = getArithmeticMean();
         Grids_GridInt g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
@@ -404,7 +404,7 @@ public abstract class Grids_ChunkInt extends Grids_ChunkNumber {
             for (int col = 0; col < ncols; col++) {
                 int v = getCell(row, col);
                 if (v != ndv) {
-                    sd = sd.add(Math_BigRational.valueOf(v).subtract(mean).pow(2));
+                    sd = sd.add(BigRational.valueOf(v).subtract(mean).pow(2));
                     count++;
                 }
             }

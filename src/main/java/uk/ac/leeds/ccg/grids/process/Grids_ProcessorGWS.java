@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.process;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import uk.ac.leeds.ccg.grids.d2.util.Grids_Kernel;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.io.IO_Path;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -82,14 +82,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public List<Grids_GridNumber> regionUnivariateStatistics(
             Grids_GridDouble grid, List<String> statistics, 
             Math_BigRationalSqrt distance,
-            Math_BigRational weightIntersect, int weightFactor,
+            BigRational weightIntersect, int weightFactor,
             Grids_GridDoubleFactory gf, int oom, RoundingMode rm) throws
             IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> r = new ArrayList<>();
         long ncols = grid.getNCols();
         long nrows = grid.getNRows();
         Grids_Dimensions dimensions = grid.getDimensions();
-        BigDecimal ndv = grid.ndv;
+        BigRational ndv = grid.ndv;
         double ndvd = grid.getNoDataValue();
         int cellDistance = grid.getCellDistance(distance, oom, rm);
         // @HACK If cellDistance is so great that data for a single kernel is
@@ -275,15 +275,15 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWMeanN) {
                 wMeanNGrid = gf.create(nrows, ncols, dimensions);
             }
-            Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
+            BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
                     cellDistance, distance, weightIntersect, weightFactor, oom, rm);
-            Math_BigRational totalSumWeight = kernelParameters[0];
-            Math_BigRational totalCells = kernelParameters[1];
+            BigRational totalSumWeight = kernelParameters[0];
+            BigRational totalCells = kernelParameters[1];
             long row;
             long col;
             int p;
             int q;
-            Math_BigRational[][] kernel = Grids_Kernel.getKernelWeights(grid,
+            BigRational[][] kernel = Grids_Kernel.getKernelWeights(grid,
                     distance, weightIntersect, weightFactor, oom, rm);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             for (row = 0; row < nrows; row++) {
@@ -298,44 +298,44 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         data = getRowProcessData(grid, data, cellDistance, row,
                                 col);
                     }
-                    Math_BigRational sumCells = Math_BigRational.ZERO;
-                    Math_BigRational sumWeight = Math_BigRational.ZERO;
-                    Math_BigRational sum = Math_BigRational.ZERO;
-                    Math_BigRational wSum = Math_BigRational.ZERO;
-                    Math_BigRational nWSum = Math_BigRational.ZERO;
-                    Math_BigRational wSumN = Math_BigRational.ZERO;
-                    Math_BigRational wMean = Math_BigRational.ZERO;
-                    Math_BigRational nWMean = Math_BigRational.ZERO;
+                    BigRational sumCells = BigRational.ZERO;
+                    BigRational sumWeight = BigRational.ZERO;
+                    BigRational sum = BigRational.ZERO;
+                    BigRational wSum = BigRational.ZERO;
+                    BigRational nWSum = BigRational.ZERO;
+                    BigRational wSumN = BigRational.ZERO;
+                    BigRational wMean = BigRational.ZERO;
+                    BigRational nWMean = BigRational.ZERO;
                     //wMeanN = 0.0d;
                     // Error thrown from here!
                     // GC overhead limit exceeded
                     // java.lang.OutOfMemoryError: GC overhead limit exceeded
                     // There is probably a better doing way?
-                    Math_BigRational cellX = grid.getCellX(col);
-                    Math_BigRational cellY = grid.getCellY(row);
+                    BigRational cellX = grid.getCellX(col);
+                    BigRational cellY = grid.getCellY(row);
                     // Calculate sumWeights and non-weighted stats
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
                             double v = data[p][q];
-                            Math_BigRational weight = kernel[p][q];
-                            if ((weight.toBigDecimal(oom, rm).compareTo(ndv) != 0) && v != ndvd) {
+                            BigRational weight = kernel[p][q];
+                            if ((weight.compareTo(ndv) != 0) && v != ndvd) {
                                 sumWeight = sumWeight.add(weight);
-                                sumCells = sumCells.add(Math_BigRational.ONE);
-                                sum = sum.add(Math_BigRational.valueOf(v));
+                                sumCells = sumCells.add(BigRational.ONE);
+                                sum = sum.add(BigRational.valueOf(v));
                             }
                         }
                     }
                     // Calculate weighted stats and store results
-                    if ((sumCells.compareTo(Math_BigRational.ZERO) == 1)
-                            && (sumWeight.compareTo(Math_BigRational.ZERO) == 1)) {
+                    if ((sumCells.compareTo(BigRational.ZERO) == 1)
+                            && (sumWeight.compareTo(BigRational.ZERO) == 1)) {
                         for (p = 0; p <= cellDistance * 2; p++) {
                             for (q = 0; q <= cellDistance * 2; q++) {
                                 double v = data[p][q];
-                                Math_BigRational weight = kernel[p][q];
-                                if ((weight.toBigDecimal(oom, rm).compareTo(ndv) != 0) && v != ndvd) {
-                                    Math_BigRational vbd = Math_BigRational.valueOf(v);
+                                BigRational weight = kernel[p][q];
+                                if ((weight.compareTo(ndv) != 0) && v != ndvd) {
+                                    BigRational vbd = BigRational.valueOf(v);
                                     sumWeight = sumWeight.add(weight);
-                                    sumCells = sumCells.add(Math_BigRational.ONE);
+                                    sumCells = sumCells.add(BigRational.ONE);
                                     sum = sum.add(vbd);
 //                                    nWSum = nWSum.add(vbd.multiply(
 //                                            Math_BigDecimal
@@ -420,17 +420,17 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWCSkew) {
                 wCSkewGrid = gf.create(nrows, ncols, dimensions);
             }
-            Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
+            BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid,
                     cellDistance, distance, weightIntersect, weightFactor, oom, rm);
-            Math_BigRational totalSumWeight = kernelParameters[0];
-            Math_BigRational totalCells = kernelParameters[1];
+            BigRational totalSumWeight = kernelParameters[0];
+            BigRational totalCells = kernelParameters[1];
             double numerator;
             double denominator;
             long row;
             long col;
             int p;
             int q;
-            Math_BigRational[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor, oom, rm);
+            BigRational[][] kernel = Grids_Kernel.getKernelWeights(grid, distance, weightIntersect, weightFactor, oom, rm);
             double[][] data = getRowProcessInitialData(grid, cellDistance, 0);
             //double[][] meanData = getRowProcessInitialData( meanGrid, cellDistance, 0 );
             double[][] wMeanData = getRowProcessInitialData(wMean1Grid, cellDistance, 0);
@@ -448,21 +448,21 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     //sDMeanPow3 = 0.0d;
                     //sDMeanPow4 = 0.0d;
                     //sumCells = 0.0d;
-                    Math_BigRational sDWMean = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow2 = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow3 = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow4 = Math_BigRational.ZERO;
-                    Math_BigRational sumWeight = Math_BigRational.ZERO;
-                    Math_BigRational cellX = grid.getCellX(col);
-                    Math_BigRational cellY = grid.getCellY(row);
+                    BigRational sDWMean = BigRational.ZERO;
+                    BigRational sDWMeanPow2 = BigRational.ZERO;
+                    BigRational sDWMeanPow3 = BigRational.ZERO;
+                    BigRational sDWMeanPow4 = BigRational.ZERO;
+                    BigRational sumWeight = BigRational.ZERO;
+                    BigRational cellX = grid.getCellX(col);
+                    BigRational cellY = grid.getCellY(row);
                     // Take moments
                     for (p = 0; p <= cellDistance * 2; p++) {
                         for (q = 0; q <= cellDistance * 2; q++) {
                             double v = data[p][q];
-                            Math_BigRational wMean = Math_BigRational.valueOf(wMeanData[p][q]);
-                            Math_BigRational weight = kernel[p][q];
-                            if (v != ndvd && (weight.toBigDecimal(oom, rm).compareTo(ndv) != 0)) {
-                                Math_BigRational vbd = Math_BigRational.valueOf(v);
+                            BigRational wMean = BigRational.valueOf(wMeanData[p][q]);
+                            BigRational weight = kernel[p][q];
+                            if (v != ndvd && (weight.compareTo(ndv) != 0)) {
+                                BigRational vbd = BigRational.valueOf(v);
                                 sumWeight = sumWeight.add(weight);
                                 sDWMean = sDWMean.add((vbd.subtract(wMean)).multiply(weight));
                                 sDWMeanPow2 = sDWMeanPow2.add((vbd.subtract(wMean)).pow(2).multiply(weight));
@@ -479,7 +479,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                         }
                     }
                     //if ( sumCells > 0.0d && sumWeight > 0.0d ) {
-                    if (sumWeight.compareTo(Math_BigRational.ZERO) == 1) {
+                    if (sumWeight.compareTo(BigRational.ZERO) == 1) {
                         //if ( doProp ) {
                         //    propGrid.setCell( row, col, ( sDMean / sumCells ) );
                         //}
@@ -710,7 +710,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
      */
     public List<Grids_GridNumber> regionUnivariateStatisticsSlow(
             Grids_GridDouble g, List<String> statistics, Math_BigRationalSqrt d,
-            Math_BigRational wi, int wf, Grids_GridDoubleFactory gf, int oom,
+            BigRational wi, int wf, Grids_GridDoubleFactory gf, int oom,
             RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         List<Grids_GridNumber> result = new ArrayList<>();
@@ -858,32 +858,32 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWSum) {
                 wSumGrid = gf.create(nrows, ncols, dimensions);
             }
-            Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
-            Math_BigRational totalSumWeight = kernelParameters[0];
-            Math_BigRational totalCells = kernelParameters[1];
+            BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
+            BigRational totalSumWeight = kernelParameters[0];
+            BigRational totalCells = kernelParameters[1];
             for (row = 0; row < nrows; row++) {
                 //debug
                 System.out.println("processing row " + row + " out of " + nrows);
                 for (col = 0; col < ncols; col++) {
-                    Math_BigRational sumWeight = Math_BigRational.ZERO;
-                    Math_BigRational wMean = Math_BigRational.ZERO;
-                    Math_BigRational sumCells = Math_BigRational.ZERO;
-                    Math_BigRational wSum = Math_BigRational.ZERO;
-                    Math_BigRational sum = Math_BigRational.ZERO;
-                    Math_BigRational cellX = g.getCellX(col);
-                    Math_BigRational cellY = g.getCellY(row);
+                    BigRational sumWeight = BigRational.ZERO;
+                    BigRational wMean = BigRational.ZERO;
+                    BigRational sumCells = BigRational.ZERO;
+                    BigRational wSum = BigRational.ZERO;
+                    BigRational sum = BigRational.ZERO;
+                    BigRational cellX = g.getCellX(col);
+                    BigRational cellY = g.getCellY(row);
                     // Calculate sumWeights and non-weighted stats
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
                             double v = g.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                Math_BigRational thisCellX = g.getCellX(col + q);
-                                Math_BigRational thisCellY = g.getCellY(row + p);
+                                BigRational thisCellX = g.getCellX(col + q);
+                                BigRational thisCellY = g.getCellY(row + p);
                                 Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, oom, rm);
                                 if (thisDistance.getX().compareTo(d.getX()) == -1) {
                                     sumWeight = sumWeight.add(Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, oom, rm));
-                                    sumCells = sumCells.add(Math_BigRational.ONE);
-                                    sum = sum.add(Math_BigRational.valueOf(v));
+                                    sumCells = sumCells.add(BigRational.ONE);
+                                    sum = sum.add(BigRational.valueOf(v));
                                 }
                             }
                         }
@@ -891,19 +891,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     //sumWeightGrid.setCell( i, j, sumWeight );
                     //sumCellGrid.setCell( i, j, sumCells );
                     // Calculate weighted stats and store results
-                    if (sumCells.compareTo(Math_BigRational.ZERO) == 1 && sumWeight.compareTo(Math_BigRational.ZERO) == 1) {
+                    if (sumCells.compareTo(BigRational.ZERO) == 1 && sumWeight.compareTo(BigRational.ZERO) == 1) {
                         for (int p = -cellDistance; p <= cellDistance; p++) {
                             for (int q = -cellDistance; q <= cellDistance; q++) {
                                 double v = g.getCell(row + p, col + q);
                                 if (v != noDataValue) {
-                                    Math_BigRational thisCellX = g.getCellX(col + q);
-                                    Math_BigRational thisCellY = g.getCellY(row + p);
+                                    BigRational thisCellX = g.getCellX(col + q);
+                                    BigRational thisCellY = g.getCellY(row + p);
                                     Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, oom, rm);
                                     if (thisDistance.compareTo(d) == -1) {
-                                        Math_BigRational weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, oom, rm);
+                                        BigRational weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, oom, rm);
                                         //wMean += ( value / sumWeight ) * weight;
                                         //wMean += ( value / sumCells ) * weight;
-                                        wSum = wSum.add(Math_BigRational.valueOf(v).multiply(weight));
+                                        wSum = wSum.add(BigRational.valueOf(v).multiply(weight));
                                     }
                                 }
                             }
@@ -959,45 +959,45 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             if (doWCSkew) {
                 wCSkewGrid = gf.create(nrows, ncols, dimensions);
             }
-            Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
-            Math_BigRational totalSumWeight = kernelParameters[0];
-            Math_BigRational totalCells = kernelParameters[1];
-            Math_BigRational mean = Math_BigRational.ZERO;
+            BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(g, cellDistance, d, wi, wf, oom, rm);
+            BigRational totalSumWeight = kernelParameters[0];
+            BigRational totalCells = kernelParameters[1];
+            BigRational mean = BigRational.ZERO;
             for (row = 0; row < nrows; row++) {
                 //debug
                 System.out.println("processing row " + row + " out of " + nrows);
                 for (col = 0; col < ncols; col++) {
-                    Math_BigRational sDMean = Math_BigRational.ZERO;
-                    Math_BigRational sDMeanPow2 = Math_BigRational.ZERO;
-                    Math_BigRational sDMeanPow3 = Math_BigRational.ZERO;
-                    Math_BigRational sDMeanPow4 = Math_BigRational.ZERO;
-                    Math_BigRational sumCells = Math_BigRational.ZERO;
-                    Math_BigRational sDWMean = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow2 = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow3 = Math_BigRational.ZERO;
-                    Math_BigRational sDWMeanPow4 = Math_BigRational.ZERO;
-                    Math_BigRational sumWeight = Math_BigRational.ZERO;
-                    Math_BigRational cellX = g.getCellX(col);
-                    Math_BigRational cellY = g.getCellY(row);
+                    BigRational sDMean = BigRational.ZERO;
+                    BigRational sDMeanPow2 = BigRational.ZERO;
+                    BigRational sDMeanPow3 = BigRational.ZERO;
+                    BigRational sDMeanPow4 = BigRational.ZERO;
+                    BigRational sumCells = BigRational.ZERO;
+                    BigRational sDWMean = BigRational.ZERO;
+                    BigRational sDWMeanPow2 = BigRational.ZERO;
+                    BigRational sDWMeanPow3 = BigRational.ZERO;
+                    BigRational sDWMeanPow4 = BigRational.ZERO;
+                    BigRational sumWeight = BigRational.ZERO;
+                    BigRational cellX = g.getCellX(col);
+                    BigRational cellY = g.getCellY(row);
                     // Take moments
                     for (int p = -cellDistance; p <= cellDistance; p++) {
                         for (int q = -cellDistance; q <= cellDistance; q++) {
                             double v = g.getCell(row + p, col + q);
                             if (v != noDataValue) {
-                                Math_BigRational thisCellX = g.getCellX(col + q);
-                                Math_BigRational thisCellY = g.getCellY(row + p);
+                                BigRational thisCellX = g.getCellX(col + q);
+                                BigRational thisCellY = g.getCellY(row + p);
                                 Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(cellX, cellY, thisCellX, thisCellY, oom, rm);
                                 if (thisDistance.compareTo(d) == -1) {
-                                    Math_BigRational vbd = Math_BigRational.valueOf(v);
-                                    Math_BigRational wMean = Math_BigRational.valueOf(wMeanGrid.getCell(row + p, col + q));
-                                    Math_BigRational weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, oom, rm);
+                                    BigRational vbd = BigRational.valueOf(v);
+                                    BigRational wMean = BigRational.valueOf(wMeanGrid.getCell(row + p, col + q));
+                                    BigRational weight = Grids_Kernel.getKernelWeight(d, wi, wf, thisDistance, oom, rm);
                                     sumWeight = sumWeight.add(weight);
-                                    Math_BigRational delta = vbd.subtract(wMean);
+                                    BigRational delta = vbd.subtract(wMean);
                                     sDWMean = sDWMean.add(delta.multiply(weight));
                                     sDWMeanPow2 = sDWMeanPow2.add(delta.pow(2).multiply(weight));
                                     sDWMeanPow3 = sDWMeanPow3.add(delta.pow(3).multiply(weight));
                                     sDWMeanPow4 = sDWMeanPow4.add(delta.pow(4).multiply(weight));
-                                    sumCells = sumCells.add(Math_BigRational.ONE);
+                                    sumCells = sumCells.add(BigRational.ONE);
                                     if (doMean) {
                                         sDMean = sDMean.add((vbd.subtract(mean)));
                                         sDMeanPow2 = sDMeanPow2.add(delta.pow(2));
@@ -1008,7 +1008,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             }
                         }
                     }
-                    if (sumCells.compareTo(Math_BigRational.ZERO) == 1 && sumWeight.compareTo(Math_BigRational.ZERO) == 1) {
+                    if (sumCells.compareTo(BigRational.ZERO) == 1 && sumWeight.compareTo(BigRational.ZERO) == 1) {
                         if (doProp) {
                             propGrid.setCell(row, col, (sDMean.doubleValue() / sumCells.doubleValue()));
                         }
@@ -1609,7 +1609,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
     public Grids_GridDouble[] regionBivariateStatistics(Grids_GridDouble grid0,
             Grids_GridDouble grid1, ArrayList<String> statistics, 
             Math_BigRationalSqrt distance,
-            Math_BigRational weightIntersect, int weightFactor,
+            BigRational weightIntersect, int weightFactor,
             Grids_GridDoubleFactory gf, int oom, RoundingMode rm)
             throws IOException, ClassNotFoundException, Exception {
         boolean hoome = true;
@@ -1665,8 +1665,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         int n;
         // Intersection check
-        Math_BigRational grid0Cellsize = grid0Dimensions.getCellsize();
-        Math_BigRational grid1Cellsize = grid1Dimensions.getCellsize();
+        BigRational grid0Cellsize = grid0Dimensions.getCellsize();
+        BigRational grid1Cellsize = grid1Dimensions.getCellsize();
         if ((grid1Dimensions.getXMin().compareTo(grid0Dimensions.getXMin().add(grid0Dimensions.getWidth())) == 1)
                 || (grid1Dimensions.getXMax().compareTo(grid0Dimensions.getXMax().add(grid0Dimensions.getHeight())) == 1)
                 || (grid1Dimensions.getYMin().add(grid1Cellsize.multiply(grid1Dimensions.getWidth())).compareTo(grid0Dimensions.getYMin()) == -1)
@@ -1684,8 +1684,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
 
         // Set the total sum of all the weights (totalSumWeights) in a
         // region that would have no noDataValues
-        Math_BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor, oom, rm);
-        Math_BigRational totalSumWeight = kernelParameters[0];
+        BigRational[] kernelParameters = Grids_Kernel.getKernelParameters(grid0, grid0CellDistance, distance, weightIntersect, weightFactor, oom, rm);
+        BigRational totalSumWeight = kernelParameters[0];
 
         // Difference
         if (dodiff) {
@@ -1703,18 +1703,18 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                     double max1 = Double.MIN_VALUE;
                     double min0 = Double.MAX_VALUE;
                     double min1 = Double.MAX_VALUE;
-                    Math_BigRational x0 = grid0.getCellX(col);
-                    Math_BigRational y0 = grid0.getCellY(row);
-                    Math_BigRational diff = Math_BigRational.ZERO;
-                    Math_BigRational weightedDiff = Math_BigRational.ZERO;
-                    Math_BigRational normalisedDiff = Math_BigRational.ZERO;
-                    Math_BigRational weightedNormalisedDiff = Math_BigRational.ZERO;
-                    Math_BigRational sumWeight = Math_BigRational.ZERO;
+                    BigRational x0 = grid0.getCellX(col);
+                    BigRational y0 = grid0.getCellY(row);
+                    BigRational diff = BigRational.ZERO;
+                    BigRational weightedDiff = BigRational.ZERO;
+                    BigRational normalisedDiff = BigRational.ZERO;
+                    BigRational weightedNormalisedDiff = BigRational.ZERO;
+                    BigRational sumWeight = BigRational.ZERO;
                     n = 0;
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            Math_BigRational x1 = grid0.getCellX(col + q);
-                            Math_BigRational y1 = grid0.getCellY(row + p);
+                            BigRational x1 = grid0.getCellX(col + q);
+                            BigRational y1 = grid0.getCellY(row + p);
                             Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                             if (thisDistance.compareTo(distance) == -1) {
                                 double value0 = grid0.getCell(x1, y1);
@@ -1729,9 +1729,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                 }
                                 if (value0 != grid0NoDataValue && value1 != grid1NoDataValue) {
                                     n++;
-                                    Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                    BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                     sumWeight = sumWeight.add(weight);
-                                    Math_BigRational diff2 = Math_BigRational.valueOf(value0).subtract(Math_BigRational.valueOf(value1));
+                                    BigRational diff2 = BigRational.valueOf(value0).subtract(BigRational.valueOf(value1));
                                     weightedDiff = weightedDiff.add(diff2.multiply(weight));
                                     diff = diff.add(diff2);
                                 }
@@ -1744,14 +1744,14 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    Math_BigRational x1 = grid0.getCellX(col + q);
-                                    Math_BigRational y1 = grid0.getCellY(row + p);
+                                    BigRational x1 = grid0.getCellX(col + q);
+                                    BigRational y1 = grid0.getCellY(row + p);
                                     Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
                                         double v0 = grid0.getCell(x1, y1);
                                         double v1 = grid1.getCell(x1, y1);
                                         if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
-                                            Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                            BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                             double dummy0;
                                             if (range0 > 0.0d) {
                                                 dummy0 = (((v0 - min0) / range0) * 9.0d) + 1.0d;
@@ -1764,7 +1764,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            Math_BigRational ddiff = Math_BigRational.valueOf(dummy0 - dummy1);
+                                            BigRational ddiff = BigRational.valueOf(dummy0 - dummy1);
                                             normalisedDiff = normalisedDiff.add(ddiff);
                                             weightedNormalisedDiff = weightedNormalisedDiff.add(ddiff.multiply(weight));
                                         }
@@ -1797,41 +1797,41 @@ public class Grids_ProcessorGWS extends Grids_Processor {
             for (row = 0; row < grid0Nrows; row++) {
                 for (col = 0; col < grid0Ncols; col++) {
                     //if ( grid0.getCell( row, col ) != grid0NoDataValue ) {
-                    Math_BigRational x0 = grid0.getCellX(col);
-                    Math_BigRational y0 = grid0.getCellY(row);
+                    BigRational x0 = grid0.getCellX(col);
+                    BigRational y0 = grid0.getCellY(row);
                     double max0 = Double.MIN_VALUE;
                     double max1 = Double.MIN_VALUE;
                     double min0 = Double.MAX_VALUE;
                     double min1 = Double.MAX_VALUE;
-                    Math_BigRational sumWeight0 = Math_BigRational.ZERO;
-                    Math_BigRational sumWeight1 = Math_BigRational.ZERO;
-                    Math_BigRational weightedMean0 = Math_BigRational.ZERO;
-                    Math_BigRational weightedMean1 = Math_BigRational.ZERO;
-                    Math_BigRational weightedSum0Squared = Math_BigRational.ZERO;
-                    Math_BigRational weightedSum1Squared = Math_BigRational.ZERO;
-                    Math_BigRational weightedSum01 = Math_BigRational.ZERO;
-                    Math_BigRational weightedStandardDeviation0 = Math_BigRational.ZERO;
-                    Math_BigRational weightedStandardDeviation1 = Math_BigRational.ZERO;
-                    Math_BigRational weightedZdiff = Math_BigRational.ZERO;
-                    Math_BigRational mean0 = Math_BigRational.ZERO;
-                    Math_BigRational mean1 = Math_BigRational.ZERO;
-                    Math_BigRational sum0Squared = Math_BigRational.ZERO;
-                    Math_BigRational sum1Squared = Math_BigRational.ZERO;
-                    Math_BigRational sum01 = Math_BigRational.ZERO;
-                    Math_BigRational standardDeviation0 = Math_BigRational.ZERO;
-                    Math_BigRational standardDeviation1 = Math_BigRational.ZERO;
-                    Math_BigRational zdiff = Math_BigRational.ZERO;
+                    BigRational sumWeight0 = BigRational.ZERO;
+                    BigRational sumWeight1 = BigRational.ZERO;
+                    BigRational weightedMean0 = BigRational.ZERO;
+                    BigRational weightedMean1 = BigRational.ZERO;
+                    BigRational weightedSum0Squared = BigRational.ZERO;
+                    BigRational weightedSum1Squared = BigRational.ZERO;
+                    BigRational weightedSum01 = BigRational.ZERO;
+                    BigRational weightedStandardDeviation0 = BigRational.ZERO;
+                    BigRational weightedStandardDeviation1 = BigRational.ZERO;
+                    BigRational weightedZdiff = BigRational.ZERO;
+                    BigRational mean0 = BigRational.ZERO;
+                    BigRational mean1 = BigRational.ZERO;
+                    BigRational sum0Squared = BigRational.ZERO;
+                    BigRational sum1Squared = BigRational.ZERO;
+                    BigRational sum01 = BigRational.ZERO;
+                    BigRational standardDeviation0 = BigRational.ZERO;
+                    BigRational standardDeviation1 = BigRational.ZERO;
+                    BigRational zdiff = BigRational.ZERO;
                     n = 0;
                     double n0 = 0.0d;
                     double n1 = 0.0d;
                     // Calculate max min range sumWeight
                     for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                         for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                            Math_BigRational x1 = grid0.getCellX(col + q);
-                            Math_BigRational y1 = grid0.getCellY(row + p);
+                            BigRational x1 = grid0.getCellX(col + q);
+                            BigRational y1 = grid0.getCellY(row + p);
                             Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                             if (thisDistance.compareTo(distance) == -1) {
-                                Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                 double v0 = grid0.getCell(x1, y1);
                                 double v1 = grid1.getCell(x1, y1);
                                 if (v0 != grid0NoDataValue) {
@@ -1858,11 +1858,11 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             double range1 = max1 - min1;
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    Math_BigRational x1 = grid0.getCellX(col + q);
-                                    Math_BigRational y1 = grid0.getCellY(row + p);
+                                    BigRational x1 = grid0.getCellX(col + q);
+                                    BigRational y1 = grid0.getCellY(row + p);
                                     Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
-                                        Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                        BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                         double v0 = grid0.getCell(row + p, col + q);
                                         double v1 = grid1.getCell(row + p, col + q);
                                         if (v0 != grid0NoDataValue) {
@@ -1871,8 +1871,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             } else {
                                                 dummy0 = 1.0d;
                                             }
-                                            weightedMean0 = weightedMean0.add(Math_BigRational.valueOf(dummy0 / sumWeight0.doubleValue()).multiply(weight));
-                                            mean0 = mean0.add(Math_BigRational.valueOf(dummy0 / n0));
+                                            weightedMean0 = weightedMean0.add(BigRational.valueOf(dummy0 / sumWeight0.doubleValue()).multiply(weight));
+                                            mean0 = mean0.add(BigRational.valueOf(dummy0 / n0));
                                         }
                                         if (v1 != grid1NoDataValue) {
                                             if (range1 > 0.0d) {
@@ -1880,19 +1880,19 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            weightedMean1 = weightedMean1.add(Math_BigRational.valueOf(dummy1 / sumWeight1.doubleValue()).multiply(weight));
-                                            mean1 = mean1.add(Math_BigRational.valueOf(dummy1 / n1));
+                                            weightedMean1 = weightedMean1.add(BigRational.valueOf(dummy1 / sumWeight1.doubleValue()).multiply(weight));
+                                            mean1 = mean1.add(BigRational.valueOf(dummy1 / n1));
                                         }
                                     }
                                 }
                             }
                             for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                 for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                    Math_BigRational x1 = grid0.getCellX(col + q);
-                                    Math_BigRational y1 = grid0.getCellY(row + p);
+                                    BigRational x1 = grid0.getCellX(col + q);
+                                    BigRational y1 = grid0.getCellY(row + p);
                                     Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                                     if (thisDistance.compareTo(distance) == -1) {
-                                        Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                        BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                         double v0 = grid0.getCell(x1, y1);
                                         if (v0 != grid0NoDataValue) {
                                             if (range0 > 0.0d) {
@@ -1900,8 +1900,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             } else {
                                                 dummy0 = 1.0d;
                                             }
-                                            standardDeviation0 = standardDeviation0.add(Math_BigRational.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
-                                            weightedStandardDeviation0 = weightedStandardDeviation0.add(Math_BigRational.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
+                                            standardDeviation0 = standardDeviation0.add(BigRational.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
+                                            weightedStandardDeviation0 = weightedStandardDeviation0.add(BigRational.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
                                         }
                                         double v1 = grid1.getCell(x1, y1);
                                         if (v1 != grid1NoDataValue) {
@@ -1910,41 +1910,41 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                             } else {
                                                 dummy1 = 1.0d;
                                             }
-                                            standardDeviation1 = standardDeviation1.add(Math_BigRational.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
-                                            weightedStandardDeviation1 = weightedStandardDeviation1.add(Math_BigRational.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
+                                            standardDeviation1 = standardDeviation1.add(BigRational.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
+                                            weightedStandardDeviation1 = weightedStandardDeviation1.add(BigRational.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
                                         }
                                         if (v0 != grid0NoDataValue && v1 != grid1NoDataValue) {
                                             //weightedSum0Squared += Math.pow( ( ( value0 * weight ) - weightedMean0 ), 2.0d );
                                             //weightedSum1Squared += Math.pow( ( ( value1 * weight ) - weightedMean1 ), 2.0d );
                                             //weightedSum01 += ( ( value0 * weight ) - weightedMean0 ) * ( ( value1 * weight ) - weightedMean1 );
-                                            weightedSum0Squared = weightedSum0Squared.add(Math_BigRational.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
-                                            weightedSum1Squared = weightedSum1Squared.add(Math_BigRational.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
-                                            weightedSum01 = weightedSum01.add(Math_BigRational.valueOf((dummy0 - weightedMean0.doubleValue()) * (dummy1 - weightedMean1.doubleValue())).multiply(weight));
-                                            sum0Squared = sum0Squared.add(Math_BigRational.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
-                                            sum1Squared = sum1Squared.add(Math_BigRational.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
-                                            sum01 = sum01.add(Math_BigRational.valueOf((dummy0 - mean0.doubleValue()) * (dummy1 - mean1.doubleValue())));
+                                            weightedSum0Squared = weightedSum0Squared.add(BigRational.valueOf(Math.pow((dummy0 - weightedMean0.doubleValue()), 2.0d)).multiply(weight));
+                                            weightedSum1Squared = weightedSum1Squared.add(BigRational.valueOf(Math.pow((dummy1 - weightedMean1.doubleValue()), 2.0d)).multiply(weight));
+                                            weightedSum01 = weightedSum01.add(BigRational.valueOf((dummy0 - weightedMean0.doubleValue()) * (dummy1 - weightedMean1.doubleValue())).multiply(weight));
+                                            sum0Squared = sum0Squared.add(BigRational.valueOf(Math.pow((dummy0 - mean0.doubleValue()), 2.0d)));
+                                            sum1Squared = sum1Squared.add(BigRational.valueOf(Math.pow((dummy1 - mean1.doubleValue()), 2.0d)));
+                                            sum01 = sum01.add(BigRational.valueOf((dummy0 - mean0.doubleValue()) * (dummy1 - mean1.doubleValue())));
                                         }
                                     }
                                 }
                             }
-                            Math_BigRational denominator = new Math_BigRationalSqrt(weightedSum0Squared, oom, rm).getSqrt(oom, rm).multiply(new Math_BigRationalSqrt(weightedSum1Squared, oom, rm).getSqrt(oom, rm));
-                            if (denominator.compareTo(Math_BigRational.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
+                            BigRational denominator = new Math_BigRationalSqrt(weightedSum0Squared, oom, rm).getSqrt(oom, rm).multiply(new Math_BigRationalSqrt(weightedSum1Squared, oom, rm).getSqrt(oom, rm));
+                            if (denominator.compareTo(BigRational.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
                                 weightedCorrelationGrid.setCell(row, col, weightedSum01.doubleValue() / denominator.doubleValue());
                             }
                             denominator = new Math_BigRationalSqrt(sum0Squared, oom, rm).getSqrt(oom, rm).multiply(new Math_BigRationalSqrt(sum1Squared, oom, rm).getSqrt(oom, rm));
-                            if (denominator.compareTo(Math_BigRational.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
+                            if (denominator.compareTo(BigRational.ZERO) == 1 && denominator.doubleValue() != noDataValue) {
                                 correlationGrid.setCell(row, col, sum01.doubleValue() / denominator.doubleValue());
                             }
-                            weightedStandardDeviation0 = Math_BigRational.valueOf(Math.sqrt(weightedStandardDeviation0.doubleValue() / (n0 - 1.0d)));
-                            standardDeviation0 = Math_BigRational.valueOf(Math.sqrt(standardDeviation0.doubleValue() / (n0 - 1.0d)));
-                            weightedStandardDeviation1 = Math_BigRational.valueOf(Math.sqrt(weightedStandardDeviation1.doubleValue() / (n1 - 1.0d)));
-                            standardDeviation1 = Math_BigRational.valueOf(Math.sqrt(standardDeviation1.doubleValue() / (n1 - 1.0d)));
+                            weightedStandardDeviation0 = BigRational.valueOf(Math.sqrt(weightedStandardDeviation0.doubleValue() / (n0 - 1.0d)));
+                            standardDeviation0 = BigRational.valueOf(Math.sqrt(standardDeviation0.doubleValue() / (n0 - 1.0d)));
+                            weightedStandardDeviation1 = BigRational.valueOf(Math.sqrt(weightedStandardDeviation1.doubleValue() / (n1 - 1.0d)));
+                            standardDeviation1 = BigRational.valueOf(Math.sqrt(standardDeviation1.doubleValue() / (n1 - 1.0d)));
                             // Calculate z scores and difference
-                            if (weightedStandardDeviation0.compareTo(Math_BigRational.ZERO) == 1 && weightedStandardDeviation1.compareTo(Math_BigRational.ZERO) == 1) {
+                            if (weightedStandardDeviation0.compareTo(BigRational.ZERO) == 1 && weightedStandardDeviation1.compareTo(BigRational.ZERO) == 1) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        Math_BigRational x1 = grid0.getCellX(col + q);
-                                        Math_BigRational y1 = grid0.getCellY(row + p);
+                                        BigRational x1 = grid0.getCellX(col + q);
+                                        BigRational y1 = grid0.getCellY(row + p);
                                         Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                                         if (thisDistance.compareTo(distance) == -1) {
                                             double v0 = grid0.getCell(x1, y1);
@@ -1960,9 +1960,9 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                                Math_BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
+                                                BigRational weight = Grids_Kernel.getKernelWeight(distance, weightIntersect, weightFactor, thisDistance, oom, rm);
                                                 //weightedZdiff += ( ( ( ( value0 * weight ) - weightedMean0 ) / weightedStandardDeviation0 ) - ( ( ( value1 * weight ) - weightedMean1 ) / weightedStandardDeviation1 ) );
-                                                weightedZdiff = weightedZdiff.add(Math_BigRational.valueOf(((((dummy0 - weightedMean0.doubleValue()) / weightedStandardDeviation0.doubleValue())
+                                                weightedZdiff = weightedZdiff.add(BigRational.valueOf(((((dummy0 - weightedMean0.doubleValue()) / weightedStandardDeviation0.doubleValue())
                                                         - ((dummy1 - weightedMean1.doubleValue()) / weightedStandardDeviation1.doubleValue())) * weight.doubleValue())));
 //                                                weightedZdiff += (((dummy0 - weightedMean0) / weightedStandardDeviation0)
 //                                                        - ((dummy1 - weightedMean1) / weightedStandardDeviation1)) * weight;
@@ -1975,8 +1975,8 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                             if (standardDeviation0.doubleValue() > 0.0d && standardDeviation1.doubleValue() > 0.0d) {
                                 for (int p = -grid0CellDistance; p <= grid0CellDistance; p++) {
                                     for (int q = -grid0CellDistance; q <= grid0CellDistance; q++) {
-                                        Math_BigRational x1 = grid0.getCellX(col + q);
-                                        Math_BigRational y1 = grid0.getCellY(row + p);
+                                        BigRational x1 = grid0.getCellX(col + q);
+                                        BigRational y1 = grid0.getCellY(row + p);
                                         Math_BigRationalSqrt thisDistance = Grids_Utilities.distance(x0, y0, x1, y1, oom, rm);
                                         if (thisDistance.compareTo(distance) == -1) {
                                             double v0 = grid0.getCell(x1, y1);
@@ -1992,7 +1992,7 @@ public class Grids_ProcessorGWS extends Grids_Processor {
                                                 } else {
                                                     dummy1 = 1.0d;
                                                 }
-                                                zdiff = zdiff.add(Math_BigRational.valueOf((((dummy0 - mean0.doubleValue()) / standardDeviation0.doubleValue()) - ((dummy1 - mean1.doubleValue()) / standardDeviation1.doubleValue()))));
+                                                zdiff = zdiff.add(BigRational.valueOf((((dummy0 - mean0.doubleValue()) / standardDeviation0.doubleValue()) - ((dummy1 - mean1.doubleValue()) / standardDeviation1.doubleValue()))));
                                                 //zdiff += (((dummy0 - mean0) / standardDeviation0) - ((dummy1 - mean1) / standardDeviation1));
                                             }
                                         }

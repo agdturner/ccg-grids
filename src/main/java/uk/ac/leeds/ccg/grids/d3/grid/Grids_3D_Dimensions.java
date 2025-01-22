@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.grids.d3.grid;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For storing and testing the dimensions of a 3D grid.
@@ -32,31 +32,22 @@ public class Grids_3D_Dimensions extends Grids_Dimensions {
     /**
      * The minimum z.
      */
-    private final Math_BigRational zMin;
+    private final BigRational zMin;
 
     /**
      * The maximum z.
      */
-    private final Math_BigRational zMax;
+    private final BigRational zMax;
 
     /**
      * The cellDepth should be stored as a pair of BigInteger numbers.
      */
-    private final Math_BigRational cellDepth;
+    private final BigRational cellDepth;
 
-//    /**
-//     * Half the cellDepth.
-//     */
-//    private final BigDecimal halfCellDepth;
-//
-//    /**
-//     * The cellDepth squared.
-//     */
-//    private final BigDecimal cellDepthSquared;
     /**
      * The volume.
      */
-    private final Math_BigRational volume;
+    private final BigRational volume;
 
     /**
      * DimensionsScale will default to the maximum scale in anz of the
@@ -71,11 +62,9 @@ public class Grids_3D_Dimensions extends Grids_Dimensions {
      * @param cellsize What {@link #cellsize} is set to.
      * @param cellDepth What {@link #cellDepth} is set to.
      */
-    public Grids_3D_Dimensions(Math_BigRational xMin,
-            Math_BigRational xMax, Math_BigRational yMin,
-            Math_BigRational yMax, Math_BigRational zMin,
-            Math_BigRational zMax, Math_BigRational cellsize,
-            Math_BigRational cellDepth) {
+    public Grids_3D_Dimensions(BigRational xMin, BigRational xMax, 
+            BigRational yMin, BigRational yMax, BigRational zMin,
+            BigRational zMax, BigRational cellsize, BigRational cellDepth) {
         super(xMin, xMax, yMin, yMax, cellsize);
         this.zMin = zMin;
         this.zMax = zMax;
@@ -124,21 +113,21 @@ public class Grids_3D_Dimensions extends Grids_Dimensions {
     /**
      * @return {@link zMin}
      */
-    public Math_BigRational getZMin() {
+    public BigRational getZMin() {
         return zMin;
     }
 
     /**
      * @return {@link #zMax}
      */
-    public Math_BigRational getZMax() {
+    public BigRational getZMax() {
         return zMax;
     }
 
     /**
      * @return {@link #cellDepth}
      */
-    public Math_BigRational getCellDepth() {
+    public BigRational getCellDepth() {
         return cellDepth;
     }
 

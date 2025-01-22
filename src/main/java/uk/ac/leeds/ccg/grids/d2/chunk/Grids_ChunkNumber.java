@@ -15,13 +15,12 @@
  */
 package uk.ac.leeds.ccg.grids.d2.chunk;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigInteger;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsInterface;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * A wrapper for numerical chunks.
@@ -50,23 +49,23 @@ public abstract class Grids_ChunkNumber extends Grids_Chunk
     /**
      * @param row The chunk row index.
      * @param col The chunk column index.
-     * @return The value at row, col as a BigDecimal.
+     * @return The value at row, col as a BigRational.
      */
-    public abstract BigDecimal getCellBigDecimal(int row, int col);
+    public abstract BigRational getCellBigRational(int row, int col);
 
     /**
      * @return The sum of all data values.
      */
     @Override
-    public abstract Math_BigRational getSum();
+    public abstract BigRational getSum();
 
     /**
      * @return The Arithmetic Mean of all data values as a BigRational. If
      * all cells are no data values, then {@code null} is returned.
      */
     @Override
-    public Math_BigRational getArithmeticMean() {
-        Math_BigRational sum = getSum();
+    public BigRational getArithmeticMean() {
+        BigRational sum = getSum();
         long n = getN();
         if (n != 0) {
             return sum.divide(BigInteger.valueOf(n));

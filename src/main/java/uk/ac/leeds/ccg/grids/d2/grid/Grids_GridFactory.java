@@ -15,12 +15,12 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Object;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.io.IO_Path;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Grids_GridFactory.
@@ -218,8 +218,8 @@ public abstract class Grids_GridFactory extends Grids_Object {
      * @param nCols The number of columns in the grids to be created.
      */
     protected void setDimensions(long nRows, long nCols) {
-        dim = new Grids_Dimensions(Math_BigRational.ZERO,
-                Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
-                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
+        dim = new Grids_Dimensions(BigRational.ZERO,
+                BigRational.valueOf(nCols), BigRational.ZERO,
+                BigRational.valueOf(nRows), BigRational.ONE);
     }
 }

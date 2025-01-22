@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.util;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -28,14 +29,13 @@ import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.generic.util.Generic_Time;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * Grid utility methods.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
 public class Grids_Utilities extends Grids_Object {
 
@@ -163,8 +163,8 @@ public class Grids_Utilities extends Grids_Object {
      *
      * @return The distance squared between two points.
      */
-    public static final Math_BigRational distance2(Math_BigRational x1,
-            Math_BigRational y1, Math_BigRational x2, Math_BigRational y2) {
+    public static final BigRational distance2(BigRational x1,
+            BigRational y1, BigRational x2, BigRational y2) {
         return ((x1.subtract(x2)).pow(2)).add((y1.subtract(y2)).pow(2));
     }
 
@@ -179,8 +179,8 @@ public class Grids_Utilities extends Grids_Object {
      *
      * @return The distance between two points.
      */
-    public static final Math_BigRationalSqrt distance(Math_BigRational x1,
-            Math_BigRational y1, Math_BigRational x2, Math_BigRational y2,
+    public static final Math_BigRationalSqrt distance(BigRational x1,
+            BigRational y1, BigRational x2, BigRational y2,
             int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(((x1.subtract(x2)).pow(2))
                 .add((y1.subtract(y2)).pow(2)), oom, rm);
@@ -299,9 +299,9 @@ public class Grids_Utilities extends Grids_Object {
         double maxy = yGrid.getStats().getMax(true);
         double cellsize = (maxy - miny) / (double) divisions;
         Grids_Dimensions newDimensions = new Grids_Dimensions(
-                Math_BigRational.valueOf(minx), Math_BigRational.valueOf(maxx),
-                Math_BigRational.valueOf(miny), Math_BigRational.valueOf(maxy),
-                Math_BigRational.valueOf(cellsize));
+                BigRational.valueOf(minx), BigRational.valueOf(maxx),
+                BigRational.valueOf(miny), BigRational.valueOf(maxy),
+                BigRational.valueOf(cellsize));
         Grids_GridDouble xGridRescaled;
         double value;
         double v;
@@ -330,13 +330,13 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        Math_BigRational[] sumy = new Math_BigRational[divisions];
+        BigRational[] sumy = new BigRational[divisions];
         long[] numy = new long[divisions];
-        Math_BigRational[] sumysq = new Math_BigRational[divisions];
+        BigRational[] sumysq = new BigRational[divisions];
         for (int j = 0; j < divisions; j++) {
-            sumy[j] = Math_BigRational.ZERO;
+            sumy[j] = BigRational.ZERO;
             numy[j] = 0L;
-            sumysq[j] = Math_BigRational.ZERO;
+            sumysq[j] = BigRational.ZERO;
         }
         Grids_GridDouble temp1 = gfd.create(divisions, divisions, newDimensions);
         for (long row = 0; row < nrows; row++) {
@@ -345,8 +345,8 @@ public class Grids_Utilities extends Grids_Object {
                 double y = yGrid.getCell(row, col);
                 if (y != yGridNoDataValue) {
                     if (x != xGridNoDataValue) {
-                        Math_BigRational xBD = Math_BigRational.valueOf(x);
-                        temp1.addToCell(xBD, Math_BigRational.valueOf(y), 1.0d);
+                        BigRational xBD = BigRational.valueOf(x);
+                        temp1.addToCell(xBD, BigRational.valueOf(y), 1.0d);
                         int division = (int) temp1.getCol(xBD);
                         if (division >= divisions) {
                             division = divisions - 1;
@@ -355,7 +355,7 @@ public class Grids_Utilities extends Grids_Object {
                             division = 0;
                         }
                         //System.out.println(division);
-                        Math_BigRational yd = Math_BigRational.valueOf(y);
+                        BigRational yd = BigRational.valueOf(y);
                         sumy[division] = sumy[division].add(yd);
                         numy[division] = numy[division] + 1L;
                         sumysq[division] = sumysq[division].add(yd.multiply(yd));
@@ -363,16 +363,16 @@ public class Grids_Utilities extends Grids_Object {
                 }
             }
         }
-        Math_BigRational[] stdevy = new Math_BigRational[divisions];
-        Math_BigRational[] meany = new Math_BigRational[divisions];
+        BigRational[] stdevy = new BigRational[divisions];
+        BigRational[] meany = new BigRational[divisions];
         for (int j = 0; j < divisions; j++) {
             if (numy[j] > 0) {
-                Math_BigRational numybr = Math_BigRational.valueOf(numy[j]);
+                BigRational numybr = BigRational.valueOf(numy[j]);
                 meany[j] = sumy[j].divide(numybr);
                 if (numy[j] > 1) {
                     stdevy[j] = new Math_BigRationalSqrt(
                             ((numybr.multiply(sumysq[j])).subtract(sumy[j].pow(2)))
-                                    .divide(numybr.pow(2).subtract(Math_BigRational.ONE)), oom, rm).getSqrt(oom, rm);
+                                    .divide(numybr.pow(2).subtract(BigRational.ONE)), oom, rm).getSqrt(oom, rm);
                 }
             }
 //            if (numy[j] > 0.0d) {
@@ -402,9 +402,9 @@ public class Grids_Utilities extends Grids_Object {
             }
         }
         Grids_Dimensions newdimensions = new Grids_Dimensions(
-                Math_BigRational.ZERO, Math_BigRational.ZERO,
-                Math_BigRational.valueOf(divisions),
-                Math_BigRational.valueOf(divisions), Math_BigRational.ONE);
+                BigRational.ZERO, BigRational.ZERO,
+                BigRational.valueOf(divisions),
+                BigRational.valueOf(divisions), BigRational.ONE);
         Grids_GridDouble densityPlotGrid = gfd.create(divisions, divisions, newdimensions);
         //double average = d1 / d2;
         for (int i = 0; i < divisions; i++) {

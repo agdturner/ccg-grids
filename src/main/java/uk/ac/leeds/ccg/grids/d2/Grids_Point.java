@@ -16,8 +16,8 @@
 
 package uk.ac.leeds.ccg.grids.d2;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * A POJO point.
@@ -30,12 +30,12 @@ public class Grids_Point implements Serializable {
     /**
      * The x coordinate.
      */
-    public Math_BigRational x;
+    public BigRational x;
 
     /**
      * The y coordinate.
      */
-    public Math_BigRational y;
+    public BigRational y;
     
     /**
      * Create a new instance.
@@ -43,7 +43,7 @@ public class Grids_Point implements Serializable {
      * @param x What{@link #x} is set to.
      * @param y What{@link #y} is set to.
      */
-    public Grids_Point(Math_BigRational x, Math_BigRational y) {
+    public Grids_Point(BigRational x, BigRational y) {
         this.x = x;
         this.y = y;
     }

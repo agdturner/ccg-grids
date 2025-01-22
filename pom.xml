@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-grids</artifactId>
-    <version>2.1</version>
+    <version>2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>ccg-grids</name>
@@ -13,7 +13,7 @@
         <url>git@github.com:agdturner/ccg-grids.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-grids.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/ccg-grids</developerConnection>
-        <tag>ccg-grids-2.1</tag>
+        <tag>ccg-grids-2.2</tag>
     </scm>
     <licenses>
         <license>
@@ -61,13 +61,13 @@
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-math</artifactId>
-            <version>2.2</version>
+            <version>3.1.0-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.2</version>
                 <configuration>
                     <argLine>-Xms256m -Xmx512m</argLine>
                     <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -121,7 +121,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
     </build>
@@ -156,7 +156,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.2</version>
                         <configuration>
                             <argLine>-Xms256m -Xmx512m</argLine>
                             <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -165,7 +165,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.1.2</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

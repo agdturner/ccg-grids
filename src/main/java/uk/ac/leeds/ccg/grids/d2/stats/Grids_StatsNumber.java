@@ -15,12 +15,12 @@
  */
 package uk.ac.leeds.ccg.grids.d2.stats;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * To be extended to provide statistics about the data in Grids and GridChunks
@@ -36,7 +36,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
     /**
      * For storing the sum of all non data values.
      */
-    protected Math_BigRational sum;
+    protected BigRational sum;
 
     /**
      * For storing the number of minimum data values.
@@ -62,7 +62,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      * Initialises the statistics by setting sum, nMin and nMax equal to 0.
      */
     private void init0() {
-        sum = Math_BigRational.ZERO;
+        sum = BigRational.ZERO;
         nMin = 0;
         nMax = 0;
     }
@@ -141,7 +141,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      *
      * @return The arithmetic mean of all data values.
      */
-    public Math_BigRational getArithmeticMean() {
+    public BigRational getArithmeticMean() {
         return sum.divide(BigInteger.valueOf(n));
     }
 
@@ -402,7 +402,7 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
     /**
      * @param sum to set sum to.
      */
-    public void setSum(Math_BigRational sum) {
+    public void setSum(BigRational sum) {
         this.sum = sum;
     }
 

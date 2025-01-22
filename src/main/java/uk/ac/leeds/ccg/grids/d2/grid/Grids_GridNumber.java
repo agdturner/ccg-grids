@@ -15,15 +15,13 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For grids containing Numerical values.
@@ -38,7 +36,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
     /**
      * The noDataValue for the grid.
      */
-    public BigDecimal ndv;
+    public BigRational ndv;
 
     /**
      * Create a new instance.
@@ -50,7 +48,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws Exception If encountered.
      */
     protected Grids_GridNumber(Grids_Environment ge, IO_Cache fs,
-            long id, BigDecimal ndv) throws Exception {
+            long id, BigRational ndv) throws Exception {
         super(ge, fs, id);
         this.ndv = ndv;
     }
@@ -65,9 +63,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(Math_BigRational x, Math_BigRational y)
+    public BigRational getCellBigRational(BigRational x, BigRational y)
             throws IOException, Exception, ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(y), getChunkCol(x),
+        return getCellBigRational(getChunkRow(y), getChunkCol(x),
                 getChunkCellRow(y), getChunkCellCol(x));
     }
 
@@ -79,9 +77,9 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(long row, long col) throws IOException,
+    public BigRational getCellBigRational(long row, long col) throws IOException,
             Exception, ClassNotFoundException {
-        return getCellBigDecimal(getChunkRow(row), getChunkCol(col),
+        return getCellBigRational(getChunkRow(row), getChunkCol(col),
                 getChunkCellRow(row), getChunkCellCol(col));
     }
 
@@ -101,7 +99,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCellBigDecimal(int cr, int cc, int ccr, int ccc)
+    public BigRational getCellBigRational(int cr, int cc, int ccr, int ccc)
             throws IOException, Exception, ClassNotFoundException {
         if (!isInGrid(cr, cc, ccr, ccc)) {
             return ndv;
@@ -110,7 +108,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
         if (gc == null) {
             return ndv;
         }
-        return getCellBigDecimal(gc, cr, cc, ccr, ccc);
+        return getCellBigRational(gc, cr, cc, ccr, ccc);
     }
 
     /**
@@ -127,7 +125,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * {@code ccc} in chunk in chunk row {@code cr}, chunk column {@code cc} as
      * a BigDecimal.
      */
-    public abstract BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr,
+    public abstract BigRational getCellBigRational(Grids_Chunk chunk, int cr,
             int cc, int ccr, int ccc);
 
     /**
@@ -148,7 +146,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     public abstract Number setCell(int cr, int cc, int ccr, int ccc,
-            BigDecimal v) throws IOException, ClassNotFoundException,
+            BigRational v) throws IOException, ClassNotFoundException,
             Exception;
 
     /**
@@ -164,7 +162,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number setCell(long r, long c, BigDecimal v)
+    public Number setCell(long r, long c, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         int cr = getChunkRow(r);
         int cc = getChunkCol(c);
@@ -187,7 +185,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number setCell(Grids_2D_ID_long cellID, BigDecimal v)
+    public Number setCell(Grids_2D_ID_long cellID, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         return setCell(cellID.getRow(), cellID.getCol(), v);
     }
@@ -207,7 +205,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Number setCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
+    public Number setCell(BigRational x, BigRational y, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(x, y)) {
             return setCell(getChunkRow(y), getChunkCol(x),
@@ -230,11 +228,11 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+    public void addToCell(int cr, int cc, int ccr, int ccc, BigRational v)
             throws IOException, ClassNotFoundException, Exception {
         if (v.compareTo(ndv) != 0) {
             if (isInGrid(cr, cc, ccr, ccc)) {
-                BigDecimal v2 = getCellBigDecimal(cr, cc, ccr, ccc);
+                BigRational v2 = getCellBigRational(cr, cc, ccr, ccc);
                 if (v2.compareTo(ndv) == 0) {
                     setCell(cr, cc, ccr, ccc, v);
                 } else {
@@ -255,7 +253,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(long r, long c, BigDecimal v)
+    public void addToCell(long r, long c, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(getChunkRow(r), getChunkCol(c), getChunkCellRow(r),
                 getChunkCellCol(c), v);
@@ -270,7 +268,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(Grids_2D_ID_long cellID, BigDecimal v)
+    public void addToCell(Grids_2D_ID_long cellID, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(cellID.getRow(), cellID.getCol(), v);
     }
@@ -288,7 +286,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public void addToCell(Math_BigRational x, Math_BigRational y, BigDecimal v)
+    public void addToCell(BigRational x, BigRational y, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(getChunkRow(y), getChunkCol(x), getChunkCellRow(y),
                 getChunkCellCol(x), v);
@@ -310,8 +308,8 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected abstract NearestValuesCellIDsAndDistance
-            getNearestValuesCellIDsAndDistance(Math_BigRational x,
-                    Math_BigRational y, long row, long col, int oom,
+            getNearestValuesCellIDsAndDistance(BigRational x,
+                    BigRational y, long row, long col, int oom,
                     RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException;
 
@@ -343,7 +341,7 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     protected NearestValuesCellIDsAndDistance getNearestValuesCellIDsAndDistance(
-            Math_BigRational x, Math_BigRational y, int oom, RoundingMode rm)
+            BigRational x, BigRational y, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         return getNearestValuesCellIDsAndDistance(x, y, getRow(y), getCol(x),
                 oom, rm);
@@ -359,20 +357,20 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      */
     @Override
     protected void logRow(long ncols, long c, long row) throws Exception {
-        String s = " " + getStringValue(Math_BigRational.valueOf(row)) + " | ";
+        String s = " " + getStringValue(BigRational.valueOf(row)) + " | ";
         if (ncols < c) {
             long col;
             for (col = 0; col < ncols - 1; col++) {
-                s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
+                s += getStringValue(getCellBigRational(row, col), ndv) + " | ";
             }
-            s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
+            s += getStringValue(getCellBigRational(row, col), ndv) + " | ";
             env.env.log(s);
         } else {
             for (long col = 0; col < c - 1; col++) {
-                s += getStringValue(getCellBigDecimal(row, col), ndv) + " | ";
+                s += getStringValue(getCellBigRational(row, col), ndv) + " | ";
             }
             s += "  |";
-            s += " " + getStringValue(getCellBigDecimal(row, ncols - 1), ndv) + " |";
+            s += " " + getStringValue(getCellBigRational(row, ncols - 1), ndv) + " |";
             env.env.log(s);
         }
     }
@@ -384,11 +382,11 @@ public abstract class Grids_GridNumber extends Grids_Grid {
      * @param ndv The no data value.
      * @return a String representation of {@code v}.
      */
-    public String getStringValue(BigDecimal v, BigDecimal ndv) {
+    public String getStringValue(BigRational v, BigRational ndv) {
         if (v.compareTo(ndv) == 0) {
             return "     *    ";
         }
-        return Math_BigDecimal.getStringValue(v);
+        return v.toString();
     }
 
 }

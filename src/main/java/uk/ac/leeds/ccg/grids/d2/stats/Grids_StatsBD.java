@@ -15,11 +15,11 @@
  */
 package uk.ac.leeds.ccg.grids.d2.stats;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For statistics of grids and chunks of type BigDecimal. The {@link #min} and
@@ -100,7 +100,7 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
      */
     protected void update(BigDecimal v) {
         n += 1;
-        setSum(sum.add(Math_BigRational.valueOf(v)));
+        setSum(sum.add(BigRational.valueOf(v)));
         if (v.compareTo(min) == -1) {
             nMin = 1;
             min = v;

@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For storing and testing the dimensions of a grid.
@@ -32,60 +32,60 @@ public class Grids_Dimensions implements Serializable {
     /**
      * The minimum x.
      */
-    private final Math_BigRational xMin;
+    private final BigRational xMin;
 
     /**
      * The maximum x.
      */
-    private final Math_BigRational xMax;
+    private final BigRational xMax;
 
     /**
      * The minimum y.
      */
-    private final Math_BigRational yMin;
+    private final BigRational yMin;
 
     /**
      * The maximum y.
      */
-    private final Math_BigRational yMax;
+    private final BigRational yMax;
 
     /**
      * The cellsize (width and height of a cell).
      */
-    private final Math_BigRational cellsize;
+    private final BigRational cellsize;
 
     /**
      * Half the cellsize.
      */
-    private final Math_BigRational halfCellsize;
+    private final BigRational halfCellsize;
 
     /**
      * The cellsize squared.
      */
-    private final Math_BigRational cellsizeSquared;
+    private final BigRational cellsizeSquared;
 
     /**
      * The width.
      */
-    private final Math_BigRational width;
+    private final BigRational width;
 
     /**
      * The height.
      */
-    private final Math_BigRational height;
+    private final BigRational height;
 
     /**
      * The area.
      */
-    private final Math_BigRational area;
+    private final BigRational area;
 
     /**
      * @param nRows The nrows.
      * @param nCols The ncols.
      */
     public Grids_Dimensions(int nRows, int nCols) {
-        this(Math_BigRational.ZERO, Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
-                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
+        this(BigRational.ZERO, BigRational.valueOf(nCols), BigRational.ZERO,
+                BigRational.valueOf(nRows), BigRational.ONE);
     }
 
     /**
@@ -93,16 +93,16 @@ public class Grids_Dimensions implements Serializable {
      * @param nCols The ncols.
      */
     public Grids_Dimensions(long nRows, long nCols) {
-        this(Math_BigRational.ZERO, Math_BigRational.valueOf(nCols), Math_BigRational.ZERO,
-                Math_BigRational.valueOf(nRows), Math_BigRational.ONE);
+        this(BigRational.ZERO, BigRational.valueOf(nCols), BigRational.ZERO,
+                BigRational.valueOf(nRows), BigRational.ONE);
     }
 
     /**
      * @param width The width.
      * @param height The height.
      */
-    public Grids_Dimensions(Math_BigRational width, Math_BigRational height) {
-        this(Math_BigRational.ZERO, width, Math_BigRational.ZERO, height, Math_BigRational.ONE);
+    public Grids_Dimensions(BigRational width, BigRational height) {
+        this(BigRational.ZERO, width, BigRational.ZERO, height, BigRational.ONE);
     }
 
     /**
@@ -133,8 +133,8 @@ public class Grids_Dimensions implements Serializable {
      * @param yMax The maximum y coordinate.
      * @param cellsize The cellsize.
      */
-    public Grids_Dimensions(Math_BigRational xMin, Math_BigRational xMax, Math_BigRational yMin,
-            Math_BigRational yMax, Math_BigRational cellsize) {
+    public Grids_Dimensions(BigRational xMin, BigRational xMax, BigRational yMin,
+            BigRational yMax, BigRational cellsize) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -190,72 +190,72 @@ public class Grids_Dimensions implements Serializable {
     }
 
     /**
-     * @return The xMin as a Math_BigRational.
+     * @return The xMin as a BigRational.
      */
-    public Math_BigRational getXMin() {
+    public BigRational getXMin() {
         return xMin;
     }
 
     /**
-     * @return The xMax as a Math_BigRational.
+     * @return The xMax as a BigRational.
      */
-    public Math_BigRational getXMax() {
+    public BigRational getXMax() {
         return xMax;
     }
 
     /**
-     * @return The yMin as a Math_BigRational.
+     * @return The yMin as a BigRational.
      */
-    public Math_BigRational getYMin() {
+    public BigRational getYMin() {
         return yMin;
     }
 
     /**
-     * @return The yMax as a Math_BigRational.
+     * @return The yMax as a BigRational.
      */
-    public Math_BigRational getYMax() {
+    public BigRational getYMax() {
         return yMax;
     }
 
     /**
-     * @return The cellsize as a Math_BigRational.
+     * @return The cellsize as a BigRational.
      */
-    public Math_BigRational getCellsize() {
+    public BigRational getCellsize() {
         return cellsize;
     }
 
     /**
-     * @return The halfCellsize as a Math_BigRational.
+     * @return The halfCellsize as a BigRational.
      */
-    public Math_BigRational getHalfCellsize() {
+    public BigRational getHalfCellsize() {
         return halfCellsize;
     }
 
     /**
-     * @return The cellsizeSquared as a Math_BigRational.
+     * @return The cellsizeSquared as a BigRational.
      */
-    public Math_BigRational getCellsizeSquared() {
+    public BigRational getCellsizeSquared() {
         return cellsizeSquared;
     }
 
     /**
-     * @return The width as a Math_BigRational.
+     * @return The width as a BigRational.
      */
-    public Math_BigRational getWidth() {
+    public BigRational getWidth() {
         return width;
     }
 
     /**
-     * @return The height as a Math_BigRational.
+     * @return The height as a BigRational.
      */
-    public Math_BigRational getHeight() {
+    public BigRational getHeight() {
         return height;
     }
 
     /**
-     * @return The area as a Math_BigRational.
+     * @return The area as a BigRational.
      */
-    public Math_BigRational getArea() {
+    public BigRational getArea() {
         return area;
     }
 

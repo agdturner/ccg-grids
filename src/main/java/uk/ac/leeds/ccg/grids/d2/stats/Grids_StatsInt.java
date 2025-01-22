@@ -15,10 +15,10 @@
  */
 package uk.ac.leeds.ccg.grids.d2.stats;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For statistics of grids and chunks of type int.
@@ -90,7 +90,7 @@ public abstract class Grids_StatsInt extends Grids_StatsNumber {
      */
     protected void update(int v) {
         n += 1;
-        setSum(sum.add(Math_BigRational.valueOf(v)));
+        setSum(sum.add(BigRational.valueOf(v)));
         if (v < min) {
             nMin = 1;
             min = v;
