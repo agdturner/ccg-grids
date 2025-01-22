@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkFactory;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
  * For factories that return BigDecimal type chunks.
@@ -25,14 +25,14 @@ import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkBDFactory extends Grids_ChunkFactory {
+public abstract class Grids_ChunkBRFactory extends Grids_ChunkFactory {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Create a new instance.
      */
-    protected Grids_ChunkBDFactory(){}
+    protected Grids_ChunkBRFactory(){}
 
     /**
      * Creates a chunk containing no data values. The chunk is put (as a value)
@@ -42,7 +42,7 @@ public abstract class Grids_ChunkBDFactory extends Grids_ChunkFactory {
      * @param i The chunk ID.
      * @return A chunk.
      */
-    public abstract Grids_ChunkBD create(Grids_GridBD g, Grids_2D_ID_int i);
+    public abstract Grids_ChunkBR create(Grids_GridBR g, Grids_2D_ID_int i);
 
     /**
      * Creates a chunk with values taken from {@code chunk}. The chunk is put
@@ -52,6 +52,6 @@ public abstract class Grids_ChunkBDFactory extends Grids_ChunkFactory {
      * @param i The ID of the chunk to create.
      * @return A chunk.
      */
-    public abstract Grids_ChunkBD create(Grids_ChunkBD c, Grids_2D_ID_int i);
+    public abstract Grids_ChunkBR create(Grids_ChunkBR c, Grids_2D_ID_int i);
 
 }

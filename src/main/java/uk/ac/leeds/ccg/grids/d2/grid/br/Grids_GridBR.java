@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.grid.bd;
+package uk.ac.leeds.ccg.grids.d2.grid.br;
 
 import ch.obermuhlner.math.big.BigRational;
-import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
+import uk.ac.leeds.ccg.grids.core.Grids_Environment;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBR;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRFactory;
+import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
+import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRSinglet;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRMap;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBD;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactory;
-import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
-import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkInt;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDSinglet;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDMap;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_GridNumber;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBD;
+import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
+import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBR;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter.Header;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
-import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.io.IO_Cache;
@@ -52,9 +51,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * Grids with {@code BigDecimal} values.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
-public class Grids_GridBD extends Grids_GridNumber {
+public class Grids_GridBR extends Grids_GridNumber {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,16 +74,16 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, Grids_ChunkBDFactory cf, int chunkNRows,
+    protected Grids_GridBR(Grids_StatsBR stats, IO_Cache fs,
+            long id, Grids_ChunkBRFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
-            BigDecimal ndv, Grids_Environment ge) throws IOException, Exception {
+            BigRational ndv, Grids_Environment ge) throws IOException, Exception {
         super(ge, fs, id, ndv);
         init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions);
     }
 
     /**
-     * Creates a new Grids_GridBD based on values in grid.
+     * Creates a new Grids_GridBR based on values in grid.
      *
      * @param stats What {@link #stats} is set to.
      * @param fs What {@link #fs} is set to.
@@ -103,10 +102,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ndv The noDataValue for this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, Grids_Grid g, Grids_ChunkBDFactory cf,
+    protected Grids_GridBR(Grids_StatsBR stats, IO_Cache fs,
+            long id, Grids_Grid g, Grids_ChunkBRFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, BigDecimal ndv) throws IOException,
+            long endRow, long endCol, BigRational ndv) throws IOException,
             Exception {
         super(g.env, fs, id, ndv);
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
@@ -114,7 +113,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * Creates a new Grids_GridBD with values obtained from gridFile.
+     * Creates a new Grids_GridBR with values obtained from gridFile.
      * {@code gridFile} must be a directory containing a cached instance of a
      * Grids_Number or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
@@ -138,10 +137,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param ge The grids environment.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_StatsBD stats, IO_Cache fs,
-            long id, IO_Path gridFile, Grids_ChunkBDFactory cf,
+    protected Grids_GridBR(Grids_StatsBR stats, IO_Cache fs,
+            long id, IO_Path gridFile, Grids_ChunkBRFactory cf,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, BigDecimal ndv, Grids_Environment ge)
+            long endRow, long endCol, BigRational ndv, Grids_Environment ge)
             throws IOException, Exception {
         super(ge, fs, id, ndv);
         init(stats, gridFile, chunkNRows, chunkNCols, startRow, startCol,
@@ -149,7 +148,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * Creates a new Grids_GridBD with values obtained from gridFile.
+     * Creates a new Grids_GridBR with values obtained from gridFile.
      * {@code gridFile} must be a directory containing a cached instance of a
      * Grids_Number or an ESRI Asciigrid format file with a filename ending in
      * ".asc" or ".txt".
@@ -162,25 +161,25 @@ public class Grids_GridBD extends Grids_GridNumber {
      * this.
      * @throws java.io.IOException If encountered.
      */
-    protected Grids_GridBD(Grids_Environment ge, IO_Cache fs, long id,
-            IO_Path gridFile, BigDecimal ndv) throws IOException,
+    protected Grids_GridBR(Grids_Environment ge, IO_Cache fs, long id,
+            IO_Path gridFile, BigRational ndv) throws IOException,
             Exception {
         super(ge, fs, id, ndv);
-        init(new Grids_GridBDStatsNotUpdated(ge), gridFile);
+        init(new Grids_GridBRStatsNotUpdated(ge), gridFile);
     }
 
     /**
      * Initialises this.
      *
-     * @param g The Grids_GridBD from which the fields of this are set. with
+     * @param g The Grids_GridBR from which the fields of this are set. with
      * those of g.
      * @throws java.io.IOException If encountered. *
      */
-    private void init(Grids_GridBD g) throws IOException {
-//        Grids_StatsBD gStats;
+    private void init(Grids_GridBR g) throws IOException {
+//        Grids_StatsBR gStats;
 //        gStats = g.getStats();
-//        if (gStats instanceof Grids_StatsNotUpdatedBD) {
-//            stats = new Grids_StatsNotUpdatedBD(this);
+//        if (gStats instanceof Grids_StatsNotUpdatedBR) {
+//            stats = new Grids_StatsNotUpdatedBR(this);
 //        } else {
 //            stats = new Grids_GridStatisticsNotUpdatedAsDataChanged(this);
 //        }
@@ -198,12 +197,12 @@ public class Grids_GridBD extends Grids_GridNumber {
     protected void init() throws IOException {
         super.init();
         if (!stats.isUpdated()) {
-            ((Grids_GridBDStatsNotUpdated) stats).setUpToDate(false);
+            ((Grids_GridBRStatsNotUpdated) stats).setUpToDate(false);
         }
         stats.grid = this;
     }
 
-    private void init(Grids_StatsBD stats, Grids_ChunkBDFactory cf,
+    private void init(Grids_StatsBR stats, Grids_ChunkBRFactory cf,
             int chunkNRows, int chunkNCols, long nRows, long nCols,
             Grids_Dimensions dimensions) throws IOException, Exception {
         //env.checkAndMaybeFreeMemory(this, true);
@@ -214,9 +213,9 @@ public class Grids_GridBD extends Grids_GridNumber {
                 // Try to load chunk.
                 Grids_2D_ID_int i = new Grids_2D_ID_int(r, c);
                 //env.checkAndMaybeFreeMemory();
-                Grids_ChunkBD chunk = cf.create(this, i);
+                Grids_ChunkBR chunk = cf.create(this, i);
                 data.put(i, chunk);
-                if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+                if (!(chunk instanceof Grids_ChunkBRSinglet)) {
                     worthSwapping.add(i);
                 }
             }
@@ -238,10 +237,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param endCol
      * @param ndv
      */
-    private void init(Grids_StatsBD stats, Grids_Grid g,
-            Grids_ChunkBDFactory cf, int chunkNRows,
+    private void init(Grids_StatsBR stats, Grids_Grid g,
+            Grids_ChunkBRFactory cf, int chunkNRows,
             int chunkNCols, long startRow, long startCol, long endRow,
-            long endCol, BigDecimal ndv) throws IOException, ClassNotFoundException,
+            long endCol, BigRational ndv) throws IOException, ClassNotFoundException,
             Exception {
         env.checkAndMaybeFreeMemory();
         init(g, stats, chunkNRows, chunkNCols, startRow, startCol, endRow, endCol);
@@ -251,10 +250,10 @@ public class Grids_GridBD extends Grids_GridNumber {
         int ncr = ecr - scr + 1;
         int scc = g.getChunkCol(startCol);
         int ecc = g.getChunkCol(endCol);
-        if (g instanceof Grids_GridBD) {
-            Grids_GridBD gd = (Grids_GridBD) g;
-            BigDecimal gndv = gd.getNoDataValue();
-            BigDecimal gValue;
+        if (g instanceof Grids_GridBR) {
+            Grids_GridBR gd = (Grids_GridBR) g;
+            BigRational gndv = gd.getNoDataValue();
+            BigRational gValue;
             for (int gcr = scr; gcr <= ecr; gcr++) {
                 int gChunkNRows = g.getChunkNRows(gcr);
                 for (int gcc = scc; gcc <= ecc; gcc++) {
@@ -264,7 +263,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             Grids_2D_ID_int gi = new Grids_2D_ID_int(gcr, gcc);
                             env.addToNotToClear(g, gi);
                             env.checkAndMaybeFreeMemory();
-                            Grids_ChunkBD c = gd.getChunk(gi);
+                            Grids_ChunkBR c = gd.getChunk(gi);
                             int gChunkNCols = g.getChunkNCols(gcc);
                             for (int cr = 0; cr < gChunkNRows; cr++) {
                                 long gRow = g.getRow(gcr, cr);
@@ -286,15 +285,15 @@ public class Grids_GridBD extends Grids_GridNumber {
                                             if (isInGrid(row, col)) {
                                                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 //ge.addToNotToClear(this, chunkID);
-                                                Grids_ChunkBD chunk;
+                                                Grids_ChunkBR chunk;
                                                 if (!data.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     data.put(chunkID, chunk);
-                                                    if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+                                                    if (!(chunk instanceof Grids_ChunkBRSinglet)) {
                                                         worthSwapping.add(chunkID);
                                                     }
                                                 } else {
-                                                    chunk = (Grids_ChunkBD) data.get(chunkID);
+                                                    chunk = (Grids_ChunkBR) data.get(chunkID);
                                                 }
                                                 gValue = gd.getCell(c, cr, cc);
                                                 // Initialise v
@@ -367,22 +366,22 @@ public class Grids_GridBD extends Grids_GridNumber {
                                             if (isInGrid(row, col)) {
                                                 Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
                                                 env.addToNotToClear(this, chunkID);
-                                                Grids_ChunkBD chunk;
+                                                Grids_ChunkBR chunk;
                                                 if (!data.containsKey(chunkID)) {
                                                     chunk = cf.create(this, chunkID);
                                                     data.put(chunkID, chunk);
-                                                    if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+                                                    if (!(chunk instanceof Grids_ChunkBRSinglet)) {
                                                         worthSwapping.add(chunkID);
                                                     }
                                                 } else {
-                                                    chunk = (Grids_ChunkBD) data.get(chunkID);
+                                                    chunk = (Grids_ChunkBR) data.get(chunkID);
                                                 }
                                                 gValue = gi.getCell(c, cellRow, cellCol);
                                                 // Initialise v
                                                 if (gValue == gndv) {
                                                     initCell(chunk, chunkID, row, col, ndv);
                                                 } else {
-                                                    initCell(chunk, chunkID, row, col, BigDecimal.valueOf(gValue));
+                                                    initCell(chunk, chunkID, row, col, BigRational.valueOf(gValue));
                                                 }
                                                 env.removeFromNotToClear(this, chunkID);
                                             }
@@ -419,9 +418,9 @@ public class Grids_GridBD extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_StatsBD stats, IO_Path gridFile,
+    private void init(Grids_StatsBR stats, IO_Path gridFile,
             int chunkNRows, int chunkNCols, long startRow, long startCol,
-            long endRow, long endCol, BigDecimal noDataValue)
+            long endRow, long endCol, BigRational noDataValue)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -435,11 +434,11 @@ public class Grids_GridBD extends Grids_GridNumber {
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
                 Grids_Processor gp = env.getProcessor();
-                Grids_GridBDFactory gf = gp.gridFactoryBD;
+                Grids_GridBRFactory gf = gp.gridFactoryBR;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
-                Grids_GridBD g = (Grids_GridBD) gf.create(
+                Grids_GridBR g = (Grids_GridBR) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
-                Grids_GridBD g2 = gf.create(g, startRow, startCol, endRow,
+                Grids_GridBR g2 = gf.create(g, startRow, startCol, endRow,
                         endCol);
                 init(g2);
             }
@@ -458,7 +457,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             this.stats = stats;
             this.stats.grid = this;
             String filename = gridFile.getFileName().toString();
-            BigDecimal value;
+            BigRational value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
                 eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
@@ -466,11 +465,11 @@ public class Grids_GridBD extends Grids_GridNumber {
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
                 initDimensions(header, startRow, startCol);
-                BigDecimal gridFileNoDataValue = header.ndv;
+                BigRational gridFileNoDataValue = header.ndv;
                 long row;
                 long col;
-//                Grids_ChunkBD chunk;
-//                Grids_ChunkBDSinglet gridChunk;
+//                Grids_ChunkR chunk;
+//                Grids_ChunkBRSinglet gridChunk;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (gridFileNoDataValue.compareTo(this.ndv) == 0) {
                     if (stats.isUpdated()) {
@@ -478,7 +477,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
@@ -491,7 +490,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 if (value == gridFileNoDataValue) {
                                     value = this.ndv;
                                 }
@@ -509,7 +508,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 if (value == gridFileNoDataValue) {
                                     value = this.ndv;
                                 }
@@ -525,7 +524,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 initCell(row, col, value, true);
                             }
                             if (row % reportN == 0) {
@@ -540,7 +539,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         init();
     }
 
-    private void init(Grids_GridBDStats stats, IO_Path gridFile)
+    private void init(Grids_GridBRStats stats, IO_Path gridFile)
             throws IOException, ClassNotFoundException, Exception {
         env.checkAndMaybeFreeMemory();
         this.stats = stats;
@@ -550,9 +549,9 @@ public class Grids_GridBD extends Grids_GridNumber {
         Grids_Processor gp = env.getProcessor();
         if (Files.isDirectory(gridFile.getPath())) {
             if (true) {
-                Grids_GridBDFactory gf = gp.gridFactoryBD;
+                Grids_GridBRFactory gf = gp.gridFactoryBR;
                 IO_Path thisFile = new IO_Path(getPathThisFile(gridFile));
-                Grids_GridBD g = (Grids_GridBD) gf.create(
+                Grids_GridBR g = (Grids_GridBR) gf.create(
                         (Grids_Grid) IO_Utilities.readObject(thisFile));
                 init(g);
                 //this.data = g.data;
@@ -570,7 +569,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             this.stats = stats;
             this.stats.setGrid(this);
             String filename = gridFile.getFileName().toString();
-            BigDecimal value;
+            BigRational value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
                 eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
@@ -579,8 +578,8 @@ public class Grids_GridBD extends Grids_GridNumber {
                 //long inputNrows = ( Long ) header[ 1 ];
                 nCols = header.ncols;
                 nRows = header.nrows;
-                chunkNRows = gp.gridFactoryBD.getChunkNRows();
-                chunkNCols = gp.gridFactoryBD.getChunkNCols();
+                chunkNRows = gp.gridFactoryBR.getChunkNRows();
+                chunkNCols = gp.gridFactoryBR.getChunkNCols();
                 initNChunkRows();
                 initNChunkCols();
                 initDimensions(header, 0, 0);
@@ -588,7 +587,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 if (reportN == 0) {
                     reportN = 1;
                 }
-                BigDecimal gridFileNoDataValue = header.ndv;
+                BigRational gridFileNoDataValue = header.ndv;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (gridFileNoDataValue.compareTo(ndv) == 0) {
                     if (stats.isUpdated()) {
@@ -596,7 +595,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (long col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 initCell(row, col, value, false);
                             }
                             if (row % reportN == 0) {
@@ -609,7 +608,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (long col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;
                                 }
@@ -627,7 +626,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (long col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;
                                 }
@@ -643,7 +642,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                             env.checkAndMaybeFreeMemory();
                             env.initNotToClear();
                             for (long col = 0; col < nCols; col++) {
-                                value = eagi.readBigDecimal();
+                                value = eagi.readBigRational();
                                 if (value == gridFileNoDataValue) {
                                     value = ndv;
                                 }
@@ -673,18 +672,18 @@ public class Grids_GridBD extends Grids_GridNumber {
 //            File f = new File(getDirectory(),
 //                    "" + chunkID.getRow() + "_" + chunkID.getCol());
 //            Object o = env.env.io.readObject(f);
-//            Grids_ChunkBD chunk = null;
-//            if (o.getClass() == Grids_ChunkBDArray.class) {
-//                Grids_ChunkBDArray c;
-//                c = (Grids_ChunkBDArray) o;
+//            Grids_ChunkR chunk = null;
+//            if (o.getClass() == Grids_ChunkBRArray.class) {
+//                Grids_ChunkBRArray c;
+//                c = (Grids_ChunkBRArray) o;
 //                chunk = c;
-//            } else if (o.getClass() == Grids_ChunkBDMap.class) {
-//                Grids_ChunkBDMap c;
-//                c = (Grids_ChunkBDMap) o;
+//            } else if (o.getClass() == Grids_ChunkBRMap.class) {
+//                Grids_ChunkBRMap c;
+//                c = (Grids_ChunkBRMap) o;
 //                chunk = c;
-//            } else if (o.getClass() == Grids_ChunkBDSinglet.class) {
-//                Grids_ChunkBDSinglet c;
-//                c = (Grids_ChunkBDSinglet) o;
+//            } else if (o.getClass() == Grids_ChunkBRSinglet.class) {
+//                Grids_ChunkBRSinglet c;
+//                c = (Grids_ChunkBRSinglet) o;
 //                chunk = c;
 //            } else {
 //                throw new Error("Unrecognised type of chunk or null "
@@ -695,7 +694,7 @@ public class Grids_GridBD extends Grids_GridNumber {
 //            chunk.initGrid(this);
 //            chunk.initChunkID(chunkID);
 //            data.put(chunkID, chunk);
-//            if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+//            if (!(chunk instanceof Grids_ChunkBRSinglet)) {
 //                worthSwapping.add(chunkID);
 //            }
 //        }
@@ -707,14 +706,14 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param value
      * @param fast
      */
-    private void initCell(long row, long col, BigDecimal value, boolean fast)
+    private void initCell(long row, long col, BigRational value, boolean fast)
             throws IOException, ClassNotFoundException, Exception {
         Grids_2D_ID_int i = new Grids_2D_ID_int(getChunkRow(row), getChunkCol(col));
         env.addToNotToClear(this, i);
         if (!data.containsKey(i)) {
-            Grids_ChunkBDSinglet gc = new Grids_ChunkBDSinglet(this, i, value);
+            Grids_ChunkBRSinglet gc = new Grids_ChunkBRSinglet(this, i, value);
             data.put(i, gc);
-            if (!(gc instanceof Grids_ChunkBDSinglet)) {
+            if (!(gc instanceof Grids_ChunkBRSinglet)) {
                 worthSwapping.add(i);
             }
         } else {
@@ -722,14 +721,14 @@ public class Grids_GridBD extends Grids_GridNumber {
             if (c == null) {
                 loadChunk(i);
             }
-            Grids_ChunkBD chunk = getChunk(i);
-            if (chunk instanceof Grids_ChunkBDSinglet) {
-                Grids_ChunkBDSinglet gc = (Grids_ChunkBDSinglet) chunk;
+            Grids_ChunkBR chunk = getChunk(i);
+            if (chunk instanceof Grids_ChunkBRSinglet) {
+                Grids_ChunkBRSinglet gc = (Grids_ChunkBRSinglet) chunk;
                 if (value != gc.v) {
                     // Convert chunk to another type
-                    chunk = env.getProcessor().gridFactoryBD.defaultGridChunkBDFactory.create(chunk, i);
+                    chunk = env.getProcessor().gridFactoryBR.defaultGridChunkBRFactory.create(chunk, i);
                     data.put(i, chunk);
-                    if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+                    if (!(chunk instanceof Grids_ChunkBRSinglet)) {
                         worthSwapping.add(i);
                     }
                     chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
@@ -745,19 +744,19 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * @return Grids_ChunkBD for chunk ID {@code i}.
+     * @return Grids_ChunkR for chunk ID {@code i}.
      * @param i The chunk ID.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkBD getChunk(Grids_2D_ID_int i)
+    public Grids_ChunkBR getChunk(Grids_2D_ID_int i)
             throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(i)) {
             if (data.get(i) == null) {
                 loadChunk(i);
             }
-            return (Grids_ChunkBD) data.get(i);
+            return (Grids_ChunkBR) data.get(i);
         }
         return null;
     }
@@ -771,13 +770,13 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public Grids_ChunkBD getChunk(Grids_2D_ID_int i, int cr, int cc)
+    public Grids_ChunkBR getChunk(Grids_2D_ID_int i, int cr, int cc)
             throws IOException, Exception, ClassNotFoundException {
         if (isInGrid(cr, cc)) {
             if (data.get(i) == null) {
                 loadChunk(i);
             }
-            return (Grids_ChunkBD) data.get(i);
+            return (Grids_ChunkBR) data.get(i);
         }
         return null;
     }
@@ -791,29 +790,29 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void updateStats(BigDecimal newValue, BigDecimal oldValue)
+    protected void updateStats(BigRational newValue, BigRational oldValue)
             throws IOException, Exception, ClassNotFoundException {
-        Grids_GridBDStats s = getStats();
-        if (s instanceof Grids_GridBDStatsNotUpdated) {
+        Grids_GridBRStats s = getStats();
+        if (s instanceof Grids_GridBRStatsNotUpdated) {
             if (newValue.compareTo(oldValue) != 0) {
-                ((Grids_GridBDStatsNotUpdated) s).setUpToDate(false);
+                ((Grids_GridBRStatsNotUpdated) s).setUpToDate(false);
             }
         } else {
             if (newValue.compareTo(ndv) != 0) {
                 if (oldValue.compareTo(ndv) != 0) {
                     s.setN(s.getN() - 1);
-                    s.setSum(s.getSum().subtract(BigRational.valueOf(oldValue)));
-                    BigDecimal min = s.getMin(false);
+                    s.setSum(s.getSum().subtract(oldValue));
+                    BigRational min = s.getMin(false);
                     if (oldValue.compareTo(min) == 0) {
                         s.setNMin(s.getNMin() - 1);
                     }
-                    BigDecimal max = s.getMax(false);
+                    BigRational max = s.getMax(false);
                     if (oldValue.compareTo(max) == 0) {
                         s.setNMax(s.getNMax() - 1);
                     }
                 }
                 s.setN(s.getN() + 1);
-                s.setSum(s.getSum().add(BigRational.valueOf(newValue)));
+                s.setSum(s.getSum().add(newValue));
                 updateStats(newValue);
                 if (s.getNMin() < 1) {
                     // The stats need recalculating
@@ -830,7 +829,7 @@ public class Grids_GridBD extends Grids_GridNumber {
     /**
      * @return ndv.
      */
-    public final BigDecimal getNoDataValue() {
+    public final BigRational getNoDataValue() {
         return ndv;
     }
 
@@ -842,7 +841,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      *
      * @param ndv The v ndv is initialised to.
      */
-    protected final void initNoDataValue(BigDecimal ndv) {
+    protected final void initNoDataValue(BigRational ndv) {
         this.ndv = ndv;
     }
 
@@ -854,10 +853,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal getCell(long r, long c) throws IOException, Exception,
+    public BigRational getCell(long r, long c) throws IOException, Exception,
             ClassNotFoundException {
         if (isInGrid(r, c)) {
-            return getCell((Grids_ChunkBD) getChunk(getChunkRow(r),
+            return getCell((Grids_ChunkBR) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c));
         }
         return ndv;
@@ -873,7 +872,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @return v in chunk at chunk cell row {@code r}, chunk cell col {@code c}
      * or {@link #ndv} if there is no such v.
      */
-    public BigDecimal getCell(Grids_ChunkBD chunk, int r, int c) {
+    public BigRational getCell(Grids_ChunkBR chunk, int r, int c) {
         if (chunk.inChunk(r, c)) {
             return chunk.getCell(r, c);
         }
@@ -887,7 +886,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final BigDecimal getCell(BigRational x, BigRational y) throws IOException,
+    public final BigRational getCell(BigRational x, BigRational y) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(getRow(y), getCol(x));
     }
@@ -899,7 +898,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public final BigDecimal getCell(Grids_2D_ID_long i) throws IOException,
+    public final BigRational getCell(Grids_2D_ID_long i) throws IOException,
             ClassNotFoundException, Exception {
         return getCell(i.getRow(), i.getCol());
     }
@@ -916,7 +915,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public final BigDecimal setCell(BigRational x, BigRational y, BigDecimal v)
+    public final BigRational setCell(BigRational x, BigRational y, BigRational v)
             throws IOException, Exception, ClassNotFoundException, Exception {
         if (isInGrid(x, y)) {
             return setCell(getRow(y), getCol(x), v);
@@ -938,10 +937,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal setCell(long r, long c, BigDecimal v)
+    public BigRational setCell(long r, long c, BigRational v)
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(r, c)) {
-            return setCell((Grids_ChunkBD) getChunk(getChunkRow(r),
+            return setCell((Grids_ChunkBR) getChunk(getChunkRow(r),
                     getChunkCol(c)), getChunkCellRow(r), getChunkCellCol(c), v);
         }
         return ndv;
@@ -963,10 +962,10 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal setCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+    public BigRational setCell(int cr, int cc, int ccr, int ccc, BigRational v)
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(cr, cc, ccr, ccc)) {
-            return setCell((Grids_ChunkBD) getChunk(cr, cc), ccr, ccc, v);
+            return setCell((Grids_ChunkBR) getChunk(cr, cc), ccr, ccc, v);
         }
         return ndv;
     }
@@ -985,15 +984,15 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public BigDecimal setCell(Grids_ChunkBD chunk, int ccr, int ccc, BigDecimal v)
+    public BigRational setCell(Grids_ChunkBR chunk, int ccr, int ccc, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
-        BigDecimal r = ndv;
-        if (chunk instanceof Grids_ChunkBDArray) {
-            r = ((Grids_ChunkBDArray) chunk).setCell(ccr, ccc, v);
-        } else if (chunk instanceof Grids_ChunkBDMap) {
-            r = ((Grids_ChunkBDMap) chunk).setCell(ccr, ccc, v);
+        BigRational r = ndv;
+        if (chunk instanceof Grids_ChunkBRArray) {
+            r = ((Grids_ChunkBRArray) chunk).setCell(ccr, ccc, v);
+        } else if (chunk instanceof Grids_ChunkBRMap) {
+            r = ((Grids_ChunkBRMap) chunk).setCell(ccr, ccc, v);
         } else {
-            Grids_ChunkBDSinglet c = (Grids_ChunkBDSinglet) chunk;
+            Grids_ChunkBRSinglet c = (Grids_ChunkBRSinglet) chunk;
             if (c != null) {
                 if (v.compareTo(c.v) != 0) {
                     // Convert chunk to another type
@@ -1016,14 +1015,14 @@ public class Grids_GridBD extends Grids_GridNumber {
     /**
      * Convert chunk to another type of chunk.
      */
-    private Grids_ChunkBD convertToAnotherTypeOfChunk(
-            Grids_ChunkBD chunk, Grids_2D_ID_int chunkID)
+    private Grids_ChunkBR convertToAnotherTypeOfChunk(
+            Grids_ChunkBR chunk, Grids_2D_ID_int chunkID)
             throws IOException, ClassNotFoundException, Exception {
-        Grids_ChunkBD r;
-        Grids_ChunkBDFactory f = env.getProcessor().gridFactoryBD.defaultGridChunkBDFactory;
+        Grids_ChunkBR r;
+        Grids_ChunkBRFactory f = env.getProcessor().gridFactoryBR.defaultGridChunkBRFactory;
         r = f.create(chunk, chunkID);
         data.put(chunkID, r);
-        if (!(chunk instanceof Grids_ChunkBDSinglet)) {
+        if (!(chunk instanceof Grids_ChunkBRSinglet)) {
             worthSwapping.add(chunkID);
         }
         return r;
@@ -1040,11 +1039,11 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCell(Grids_ChunkBD chunk, Grids_2D_ID_int i,
-            long row, long col, BigDecimal v) throws IOException,
+    protected void initCell(Grids_ChunkBR chunk, Grids_2D_ID_int i,
+            long row, long col, BigRational v) throws IOException,
             ClassNotFoundException, Exception {
-        if (chunk instanceof Grids_ChunkBDSinglet) {
-            Grids_ChunkBDSinglet gc = (Grids_ChunkBDSinglet) chunk;
+        if (chunk instanceof Grids_ChunkBRSinglet) {
+            Grids_ChunkBRSinglet gc = (Grids_ChunkBRSinglet) chunk;
             if (v.compareTo(gc.v) != 0) {
                 chunk = convertToAnotherTypeOfChunk(chunk, i);
                 chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), v);
@@ -1058,7 +1057,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         }
         // Update stats
         if (v.compareTo(ndv) != 0) {
-            if (!(stats instanceof Grids_GridBDStatsNotUpdated)) {
+            if (!(stats instanceof Grids_GridBRStatsNotUpdated)) {
                 updateStats(v);
             }
         }
@@ -1072,12 +1071,12 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws Exception If encountered.
      * @throws ClassNotFoundException If encountered.
      */
-    protected void updateStats(BigDecimal value) throws IOException, Exception,
+    protected void updateStats(BigRational value) throws IOException, Exception,
             ClassNotFoundException {
-        Grids_GridBDStats dStats = getStats();
+        Grids_GridBRStats dStats = getStats();
         dStats.setN(dStats.getN() + 1);
-        dStats.setSum(dStats.getSum().add(BigRational.valueOf(value)));
-        BigDecimal min = dStats.getMin(false);
+        dStats.setSum(dStats.getSum().add(value));
+        BigRational min = dStats.getMin(false);
         if (value.compareTo(min) == -1) {
             dStats.setNMin(1);
             dStats.setMin(value);
@@ -1086,7 +1085,7 @@ public class Grids_GridBD extends Grids_GridNumber {
                 dStats.setNMin(dStats.getNMin() + 1);
             }
         }
-        BigDecimal max = dStats.getMax(false);
+        BigRational max = dStats.getMax(false);
         if (value.compareTo(max) == 1) {
             dStats.setNMax(1);
             dStats.setMax(value);
@@ -1105,12 +1104,12 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param col The column.
      * @param value The v.
      */
-    protected void initCellFast(Grids_ChunkBD chunk, long row,
-            long col, BigDecimal value) {
+    protected void initCellFast(Grids_ChunkBR chunk, long row,
+            long col, BigRational value) {
 //        int chunkRow = getChunkRow(row);
 //        int chunkCol = getChunkCol(col);
 //        Grids_2D_ID_int chunkID = new Grids_2D_ID_int(chunkRow, chunkCol);
-//        Grids_ChunkBD chunk = getChunk(chunkID);
+//        Grids_ChunkR chunk = getChunk(chunkID);
         chunk.initCell(getChunkCellRow(row), getChunkCellCol(col), value);
     }
 
@@ -1130,14 +1129,14 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws IOException If encountered.
      * @throws ClassNotFoundException If encountered.
      */
-    protected BigDecimal[] getCells(BigRational x, BigRational y,
+    protected BigRational[] getCells(BigRational x, BigRational y,
             Math_BigRationalSqrt distance, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         return getCells(x, y, getRow(y), getCol(x), distance, oom, rm);
     }
 
     /**
-     * @return BigDecimal[] of all cell values for cells that's centroids are
+     * @return BigRational[] of all cell values for cells that's centroids are
      * intersected by circle with centre at x-coordinate x, y-coordinate y, and
      * radius distance.
      * @param x The x-coordinate of the circle centre from which cell values are
@@ -1153,11 +1152,11 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected BigDecimal[] getCells(BigRational x, BigRational y,
+    protected BigRational[] getCells(BigRational x, BigRational y,
             long row, long col, Math_BigRationalSqrt distance, int oom,
             RoundingMode rm) throws IOException, Exception, ClassNotFoundException {
         int delta = getCellDistance(distance, oom, rm);
-        BigDecimal[] r = new BigDecimal[((2 * delta) + 1) * ((2 * delta) + 1)];
+        BigRational[] r = new BigRational[((2 * delta) + 1) * ((2 * delta) + 1)];
         int count = 0;
         for (long p = row - delta; p <= row + delta; p++) {
             BigRational thisY = getCellY(row);
@@ -1191,7 +1190,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             BigRational x, BigRational y, int oom, RoundingMode rm)
             throws IOException, Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
-        BigDecimal value = getCell(x, y);
+        BigRational value = getCell(x, y);
         if (value.compareTo(ndv) == 0) {
             return getNearestValuesCellIDsAndDistance(x, y, getRow(y),
                     getCol(x), oom, rm);
@@ -1220,7 +1219,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             long row, long col, int oom, RoundingMode rm) throws IOException,
             Exception, ClassNotFoundException {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
-        BigDecimal value = getCell(row, col);
+        BigRational value = getCell(row, col);
         if (value.compareTo(ndv) == 0) {
             return getNearestValuesCellIDsAndDistance(getCellX(col),
                     getCellY(row), row, col, oom, rm);
@@ -1254,7 +1253,7 @@ public class Grids_GridBD extends Grids_GridNumber {
         NearestValuesCellIDsAndDistance r = new NearestValuesCellIDsAndDistance();
         r.cellIDs = new Grids_2D_ID_long[1];
         r.cellIDs[0] = getNearestCellID(x, y, row, col);
-        BigDecimal nearestCellValue = getCell(row, col);
+        BigRational nearestCellValue = getCell(row, col);
         if (nearestCellValue.compareTo(ndv) == 0) {
             // Find a v Seeking outwards from nearestCellID
             // Initialise visitedSet1
@@ -1275,7 +1274,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             }
             // Seek
             boolean foundValue = false;
-            BigDecimal value;
+            BigRational value;
             HashSet<Grids_2D_ID_long> values = new HashSet<>();
             Iterator<Grids_2D_ID_long> iterator;
             while (!foundValue) {
@@ -1373,7 +1372,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public void addToCell(BigRational x, BigRational y, BigDecimal v)
+    public void addToCell(BigRational x, BigRational y, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(getRow(y), getCol(x), v);
     }
@@ -1385,7 +1384,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public void addToCell(Grids_2D_ID_long cellID, BigDecimal v)
+    public void addToCell(Grids_2D_ID_long cellID, BigRational v)
             throws IOException, Exception, ClassNotFoundException {
         addToCell(cellID.getRow(), cellID.getCol(), v);
     }
@@ -1400,9 +1399,9 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public void addToCell(long row, long col, BigDecimal v) throws IOException,
+    public void addToCell(long row, long col, BigRational v) throws IOException,
             ClassNotFoundException, Exception {
-        BigDecimal currentValue = getCell(row, col);
+        BigRational currentValue = getCell(row, col);
         if (currentValue.compareTo(ndv) != 0) {
             if (v.compareTo(ndv) != 0) {
                 setCell(row, col, currentValue.add(v));
@@ -1421,7 +1420,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    protected void initCells(BigDecimal v) throws IOException, Exception,
+    protected void initCells(BigRational v) throws IOException, Exception,
             ClassNotFoundException {
         Iterator<Grids_2D_ID_int> ite = data.keySet().iterator();
         int nChunks = data.size();
@@ -1431,7 +1430,7 @@ public class Grids_GridBD extends Grids_GridNumber {
             env.env.log("Initialising Chunk " + counter + " out of " + nChunks);
             counter++;
             Grids_2D_ID_int i = ite.next();
-            Grids_ChunkBD chunk = getChunk(i);
+            Grids_ChunkBR chunk = getChunk(i);
             int cnr = getChunkNRows(i);
             int cnc = getChunkNCols(i);
             for (int row = 0; row <= cnr; row++) {
@@ -1443,19 +1442,19 @@ public class Grids_GridBD extends Grids_GridNumber {
     }
 
     /**
-     * @return A Grids_GridBDIterator for iterating over the cell values in
+     * @return A Grids_GridBRIterator for iterating over the cell values in
      * this.
      * @throws java.io.IOException If encountered.
      * @throws java.lang.ClassNotFoundException If encountered.
      */
-    public Grids_GridBDIterator iterator() throws IOException, Exception,
+    public Grids_GridBRIterator iterator() throws IOException, Exception,
             ClassNotFoundException {
-        return new Grids_GridBDIterator(this);
+        return new Grids_GridBRIterator(this);
     }
 
     @Override
-    public Grids_GridBDStats getStats() {
-        return (Grids_GridBDStats) stats;
+    public Grids_GridBRStats getStats() {
+        return (Grids_GridBRStats) stats;
     }
 
     /**
@@ -1463,7 +1462,7 @@ public class Grids_GridBD extends Grids_GridNumber {
      *
      * @param stats What {@link #stats} is set to.
      */
-    public void initStatistics(Grids_StatsBD stats) {
+    public void initStatistics(Grids_StatsBR stats) {
         this.stats = stats;
     }
 
@@ -1477,20 +1476,20 @@ public class Grids_GridBD extends Grids_GridNumber {
      * @param cellCol cellCol
      * @return The cell.
      */
-    public BigDecimal getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
+    public BigRational getCell(Grids_Chunk chunk, int chunkRow, int chunkCol,
             int cellRow, int cellCol) {
-        Grids_ChunkBD c = (Grids_ChunkBD) chunk;
-        if (chunk.getClass() == Grids_ChunkBDArray.class) {
-            return ((Grids_ChunkBDArray) c).getCell(cellRow, cellCol);
+        Grids_ChunkBR c = (Grids_ChunkBR) chunk;
+        if (chunk.getClass() == Grids_ChunkBRArray.class) {
+            return ((Grids_ChunkBRArray) c).getCell(cellRow, cellCol);
         }
-        if (chunk.getClass() == Grids_ChunkBDMap.class) {
-            return ((Grids_ChunkBDMap) c).getCell(cellRow, cellCol);
+        if (chunk.getClass() == Grids_ChunkBRMap.class) {
+            return ((Grids_ChunkBRMap) c).getCell(cellRow, cellCol);
         }
         return c.getGrid().ndv;
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc,
+    public BigRational getCellBigRational(Grids_Chunk chunk, int cr, int cc,
             int ccr, int ccc) {
         return getCell(chunk, cr, cc, ccr, ccc);
     }
@@ -1512,14 +1511,14 @@ public class Grids_GridBD extends Grids_GridNumber {
     @Override
     public boolean isSameDimensionsAndValues(Grids_Grid g) throws IOException,
             Exception {
-        if (!(g instanceof Grids_GridBD)) {
+        if (!(g instanceof Grids_GridBR)) {
             return false;
         }
         if (!isSameDimensions(g)) {
             return false;
         }
-        Grids_GridBD gd = (Grids_GridBD) g;
-        BigDecimal gndv = gd.getNoDataValue();
+        Grids_GridBR gd = (Grids_GridBR) g;
+        BigRational gndv = gd.getNoDataValue();
         for (int cr = 0; cr < this.nChunkRows; cr++) {
             int cnr = gd.getChunkNRows(cr);
             for (int cc = 0; cc < this.nChunkCols; cc++) {
@@ -1535,14 +1534,14 @@ public class Grids_GridBD extends Grids_GridNumber {
                         colMax);
                 env.addToNotToClear(this, s);
                 env.checkAndMaybeFreeMemory();
-                Grids_ChunkBD chunk = (Grids_ChunkBD) g.getChunk(i, cr, cc);
+                Grids_ChunkBR chunk = (Grids_ChunkBR) g.getChunk(i, cr, cc);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     long row = gd.getRow(cr, ccr);
                     for (int ccc = 0; ccc < cnc; ccc++) {
                         long col = gd.getCol(cc, ccc);
-                        BigDecimal v = getCell(row, col);
-                        //BigDecimal gv = getCell(chunk, cr, cc, ccr, ccc);
-                        BigDecimal gv = chunk.getCell(ccr, ccc);
+                        BigRational v = getCell(row, col);
+                        //BigRational gv = getCell(chunk, cr, cc, ccr, ccc);
+                        BigRational gv = chunk.getCell(ccr, ccc);
                         if (v.compareTo(ndv) == 0) {
                             if (gv.compareTo(gndv) != 0) {
                                 return false;

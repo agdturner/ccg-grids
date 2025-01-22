@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
@@ -167,15 +166,15 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
      * @return result[0] is the class, result[1] is the classToFill which may or
      * may not change from what is passed in.
      */
-    protected int[] getValueClass(BigDecimal v,
-            TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap,
-            TreeMap<Integer, BigDecimal> mins, 
-            TreeMap<Integer, BigDecimal> maxs,
+    protected int[] getValueClass(BigRational v,
+            TreeMap<Integer, TreeMap<BigRational, Long>> classMap,
+            TreeMap<Integer, BigRational> mins, 
+            TreeMap<Integer, BigRational> maxs,
             TreeMap<Integer, Long> classCounts,
             long dnvpc, int classToFill) {
         int[] r = new int[2];
         long classToFillCount = classCounts.get(classToFill);
-        BigDecimal maxValueOfClassToFill = maxs.get(classToFill);
+        BigRational maxValueOfClassToFill = maxs.get(classToFill);
 //        if (maxDouble.get(classToFill) != null) {
 //            maxValueOfClassToFill = maxDouble.get(classToFill);
 //        } else {
@@ -253,8 +252,8 @@ public abstract class Grids_StatsNumber extends Grids_Stats {
         // General Case
         // 1. Find which class the value sits in.
         int classToCheck = classToFill;
-        BigDecimal maxToCheck = maxs.get(classToCheck);
-        BigDecimal minToCheck = mins.get(classToCheck);
+        BigRational maxToCheck = maxs.get(classToCheck);
+        BigRational minToCheck = mins.get(classToCheck);
         boolean foundClass = false;
         while (!foundClass) {
             if (v.compareTo(minToCheck) != -1 && v.compareTo(maxToCheck) != 1) {

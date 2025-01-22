@@ -470,7 +470,7 @@ public class Grids_GridBoolean extends Grids_GridB {
             this.stats = stats;
             this.stats.setGrid(this);
             String filename = gridFile.getFileName().toString();
-            BigDecimal value;
+            BigRational value;
             if (filename.endsWith("asc") || filename.endsWith("txt")) {
                 Grids_ESRIAsciiGridImporter eagi;
                 eagi = new Grids_ESRIAsciiGridImporter(env, gridFile);
@@ -488,16 +488,16 @@ public class Grids_GridBoolean extends Grids_GridB {
                 if (reportN == 0) {
                     reportN = 1;
                 }
-                BigDecimal gridFileNoDataValue = header.ndv;
+                BigRational gridFileNoDataValue = header.ndv;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (stats.isUpdated()) {
                     for (long row = (nRows - 1); row > -1; row--) {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            value = eagi.readBigDecimal();
+                            value = eagi.readBigRational();
                             if (value != gridFileNoDataValue) {
-                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                if (value.compareTo(BigRational.ZERO) == 0) {
                                     initCell(row, col, false, false);
                                 } else {
                                     initCell(row, col, true, false);
@@ -514,9 +514,9 @@ public class Grids_GridBoolean extends Grids_GridB {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            value = eagi.readBigDecimal();
+                            value = eagi.readBigRational();
                             if (value != gridFileNoDataValue) {
-                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                if (value.compareTo(BigRational.ZERO) == 0) {
                                     initCell(row, col, false, true);
                                 } else {
                                     initCell(row, col, true, true);

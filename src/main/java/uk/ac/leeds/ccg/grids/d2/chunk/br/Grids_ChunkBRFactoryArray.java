@@ -16,35 +16,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
- * A factory for constructing {@link Grids_ChunkBDArray} instances.
+ * A factory for constructing {@link Grids_ChunkBRArray} instances.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDFactoryArray extends Grids_ChunkBDFactory {
+public class Grids_ChunkBRFactoryArray extends Grids_ChunkBRFactory {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Create a new instance.
      */
-    public Grids_ChunkBDFactoryArray() {
+    public Grids_ChunkBRFactoryArray() {
     }
 
     @Override
-    public Grids_ChunkBDArray create(Grids_GridBD g, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDArray(g, i);
+    public Grids_ChunkBRArray create(Grids_GridBR g, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRArray(g, i);
     }
 
     @Override
-    public Grids_ChunkBDArray create(Grids_ChunkBD chunk, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDArray(chunk, i);
+    public Grids_ChunkBRArray create(Grids_ChunkBR chunk, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRArray(chunk, i);
     }
 
 }

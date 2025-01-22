@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBDIterator;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBRIterator;
+import uk.ac.leeds.ccg.grids.d2.stats.Grids_StatsBR;
 
 /**
  * For statistics of chunks of type double. Some statistics are kept up to date
  * as the values are changed.
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.1
  */
-public class Grids_ChunkBDStats extends Grids_StatsBD {
+public class Grids_ChunkBRStats extends Grids_StatsBR {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * A reference to the chunk
      */
-    protected Grids_ChunkBD c;
+    protected Grids_ChunkBR c;
 
     /**
      * Creates a new instance.
@@ -46,7 +45,7 @@ public class Grids_ChunkBDStats extends Grids_StatsBD {
      * @param ge The Grids Environment.
      * @param c What this.c is set to.
      */
-    public Grids_ChunkBDStats(Grids_Environment ge, Grids_ChunkBD c) {
+    public Grids_ChunkBRStats(Grids_Environment ge, Grids_ChunkBR c) {
         super(ge);
         this.c = c;
     }
@@ -61,25 +60,25 @@ public class Grids_ChunkBDStats extends Grids_StatsBD {
     public void update() throws IOException, Exception, ClassNotFoundException {
         env.checkAndMaybeFreeMemory();
         init();
-        if (c instanceof Grids_ChunkBDSinglet) {
-            BigDecimal v = ((Grids_ChunkBDSinglet) c).getV();
-                Grids_GridBD g = c.getGrid();
+        if (c instanceof Grids_ChunkBRSinglet) {
+            BigRational v = ((Grids_ChunkBRSinglet) c).getV();
+                Grids_GridBR g = c.getGrid();
                 if (v != g.getNoDataValue()) {
                     max = v;
                     min = v;
                     n = (long) g.getChunkNCols(c.getId())
                             * (long) g.getChunkNRows(c.getId());
-                    sum = BigRational.valueOf(v).multiply(BigRational.valueOf(n));
+                    sum = v.multiply(BigRational.valueOf(n));
                     nMax = n;
                     nMin = n;
                 }
         } else {
-            Grids_ChunkBDIteratorArrayOrMap ite;
-            ite = new Grids_ChunkBDIteratorArrayOrMap(
-                    (Grids_ChunkBDArrayOrMap) c);
-            BigDecimal ndv = c.getGrid().getNoDataValue();
+            Grids_ChunkBRIteratorArrayOrMap ite;
+            ite = new Grids_ChunkBRIteratorArrayOrMap(
+                    (Grids_ChunkBRArrayOrMap) c);
+            BigRational ndv = c.getGrid().getNoDataValue();
             while (ite.hasNext()) {
-                BigDecimal v = ite.next();
+                BigRational v = ite.next();
                     if (v.compareTo(ndv) != 0) {
                         update(v);
                     }
@@ -107,24 +106,24 @@ public class Grids_ChunkBDStats extends Grids_StatsBD {
     public long getNonZeroN() throws IOException, Exception,
             ClassNotFoundException {
         long r = 0L;
-        if (c instanceof Grids_ChunkBDSinglet) {
-            BigDecimal v = ((Grids_ChunkBDSinglet) c).getV();
-                Grids_GridBD g = c.getGrid();
+        if (c instanceof Grids_ChunkBRSinglet) {
+            BigRational v = ((Grids_ChunkBRSinglet) c).getV();
+                Grids_GridBR g = c.getGrid();
                 if (v.compareTo(g.getNoDataValue()) != 0) {
-                    if (v.compareTo(BigDecimal.ZERO) != 0) {
+                    if (v.compareTo(BigRational.ZERO) != 0) {
                         return n;
                     }
                 }
             return 0;
         } else {
-            Grids_ChunkBDIteratorArrayOrMap ite;
-            ite = new Grids_ChunkBDIteratorArrayOrMap(
-                    (Grids_ChunkBDArrayOrMap) c);
-            BigDecimal ndv = c.getGrid().getNoDataValue();
+            Grids_ChunkBRIteratorArrayOrMap ite;
+            ite = new Grids_ChunkBRIteratorArrayOrMap(
+                    (Grids_ChunkBRArrayOrMap) c);
+            BigRational ndv = c.getGrid().getNoDataValue();
             while (ite.hasNext()) {
-                BigDecimal v = ite.next();
+                BigRational v = ite.next();
                 if (v.compareTo(ndv) != 0) {
-                    if (v.compareTo(BigDecimal.ZERO) != 0) {
+                    if (v.compareTo(BigRational.ZERO) != 0) {
                             r++;
                         }
                     }
@@ -170,12 +169,12 @@ public class Grids_ChunkBDStats extends Grids_StatsBD {
     public Object[] getQuantileClassMap(int nClasses) throws IOException,
             Exception, ClassNotFoundException {
         Object[] r = new Object[3];
-        Grids_GridBD g = getGrid();
-        TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
-        TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
+        Grids_GridBR g = getGrid();
+        TreeMap<Integer, BigRational> mins = new TreeMap<>();
+        TreeMap<Integer, BigRational> maxs = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
-            mins.put(i, BigDecimal.valueOf(Integer.MAX_VALUE));
-            maxs.put(i, BigDecimal.valueOf(Integer.MIN_VALUE));
+            mins.put(i, BigRational.valueOf(Integer.MAX_VALUE));
+            maxs.put(i, BigRational.valueOf(Integer.MIN_VALUE));
         }
         r[0] = mins;
         r[1] = maxs;
@@ -184,24 +183,24 @@ public class Grids_ChunkBDStats extends Grids_StatsBD {
         if (nonZeroN % nClasses != 0) {
             nInClass += 1;
         }
-        BigDecimal noDataValue = g.getNoDataValue();
+        BigRational noDataValue = g.getNoDataValue();
         TreeMap<Integer, Long> classCounts = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
             classCounts.put(i, 0L);
         }
         int classToFill = 0;
         boolean firstValue = true;
-        TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap = new TreeMap<>();
+        TreeMap<Integer, TreeMap<BigRational, Long>> classMap = new TreeMap<>();
         for (int i = 0; i < nClasses; i++) {
             classMap.put(i, new TreeMap<>());
         }
         r[2] = classMap;
         int count = 0;
         //long valueID = 0;
-        Grids_GridBDIterator ite = g.iterator();
+        Grids_GridBRIterator ite = g.iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
-            if (!(v.compareTo(BigDecimal.ZERO) == 0 || v.compareTo(noDataValue) == 0)) {
+            BigRational v = ite.next();
+            if (!(v.compareTo(BigRational.ZERO) == 0 || v.compareTo(noDataValue) == 0)) {
                 if (count % nInClass == 0) {
                     System.out.println(count + " out of " + nonZeroN);
                 }

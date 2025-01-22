@@ -15,15 +15,12 @@
  */
 package uk.ac.leeds.ccg.grids.d2.grid.test;
 
-import java.io.IOException;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -31,13 +28,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
@@ -46,22 +39,15 @@ import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_long;
-import uk.ac.leeds.ccg.grids.d2.chunk.Grids_Chunk;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactory;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactoryArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntFactorySinglet;
-import uk.ac.leeds.ccg.grids.d2.chunk.i.Grids_ChunkIntSinglet;
-import uk.ac.leeds.ccg.grids.d2.grid.b.Grids_GridBoolean;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
+import uk.ac.leeds.ccg.grids.d2.grid.Grids_Grid;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDouble;
 import uk.ac.leeds.ccg.grids.d2.grid.d.Grids_GridDoubleFactory;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridIntFactory;
-import uk.ac.leeds.ccg.grids.d2.stats.Grids_Stats;
-import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.grids.memory.Grids_Account;
-import uk.ac.leeds.ccg.grids.memory.Grids_AccountDetail;
 import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.io.IO_Cache;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -144,21 +130,21 @@ public class Grids_GridTest {
         // Test 1
         int oom = -3;
             RoundingMode rm = RoundingMode.HALF_UP;
-        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom, rm);
+        Math_BigRationalSqrt distance = new Math_BigRationalSqrt(BigRational.TEN.pow(2), oom, rm);
         int expResult = 10;
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(10, 10);
         int result = instance.getCellDistance(distance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        distance = new Math_BigRationalSqrt(Math_BigRational.TEN.pow(2), oom, rm);
+        distance = new Math_BigRationalSqrt(BigRational.TEN.pow(2), oom, rm);
         expResult = 100;
         gfd = gp.gridFactoryDouble;
-        Math_BigRational xmin = Math_BigRational.ZERO;
-        Math_BigRational xmax = Math_BigRational.ONE;
-        Math_BigRational ymin = Math_BigRational.ZERO;
-        Math_BigRational ymax = Math_BigRational.ONE;
-        Math_BigRational cellSize = Math_BigRational.valueOf("0.1");
+        BigRational xmin = BigRational.ZERO;
+        BigRational xmax = BigRational.ONE;
+        BigRational ymin = BigRational.ZERO;
+        BigRational ymax = BigRational.ONE;
+        BigRational cellSize = BigRational.valueOf("0.1");
         Grids_Dimensions dims = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         instance = gfd.create(10, 10, dims);
@@ -420,9 +406,9 @@ public class Grids_GridTest {
 //    @Test
 //    public void testGetChunkIDs_7args() {
 //        System.out.println("getChunkIDs");
-//        Math_BigRational distance = null;
-//        Math_BigRational x = null;
-//        Math_BigRational y = null;
+//        BigRational distance = null;
+//        BigRational x = null;
+//        BigRational y = null;
 //        long row = 0L;
 //        long col = 0L;
 //        int dp = 0;
@@ -476,9 +462,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCol_Math_BigRational() throws Exception {
+    public void testGetChunkCol_BigRational() throws Exception {
         System.out.println("getChunkCol");
-        Math_BigRational x = Math_BigRational.valueOf(0.5d);
+        BigRational x = BigRational.valueOf(0.5d);
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         Grids_Grid instance = gfd.create(1000, 5120);
@@ -486,27 +472,27 @@ public class Grids_GridTest {
         int result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = Math_BigRational.valueOf(512.5d);
+        x = BigRational.valueOf(512.5d);
         expResult = 1;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = Math_BigRational.valueOf(1024.5d);
+        x = BigRational.valueOf(1024.5d);
         expResult = 2;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 4
-        x = Math_BigRational.valueOf(5119.5d);
+        x = BigRational.valueOf(5119.5d);
         expResult = 9;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 5
-        x = Math_BigRational.valueOf(5120.5d);
+        x = BigRational.valueOf(5120.5d);
         expResult = 10;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
         // Test 6
-        x = Math_BigRational.valueOf(-0.5d);
+        x = BigRational.valueOf(-0.5d);
         expResult = -1;
         result = instance.getChunkCol(x);
         assertEquals(expResult, result);
@@ -562,9 +548,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCellCol_Math_BigRational() throws Exception {
+    public void testGetChunkCellCol_BigRational() throws Exception {
         System.out.println("getChunkCellCol");
-        Math_BigRational x = Math_BigRational.ZERO;
+        BigRational x = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1000;
@@ -574,17 +560,17 @@ public class Grids_GridTest {
         int result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = Math_BigRational.valueOf(-0.5);
+        x = BigRational.valueOf(-0.5);
         expResult = 511;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = Math_BigRational.valueOf(5120);
+        x = BigRational.valueOf(5120);
         expResult = 0;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = Math_BigRational.valueOf("5119.999999999999999999999999999");
+        x = BigRational.valueOf("5119.999999999999999999999999999");
         expResult = 511;
         result = instance.getChunkCellCol(x);
         assertEquals(expResult, result);
@@ -635,12 +621,12 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkCellRow_Math_BigRational() throws Exception {
+    public void testGetChunkCellRow_BigRational() throws Exception {
         System.out.println("getChunkCellRow");
-        Math_BigRational y = Math_BigRational.ZERO;
+        BigRational y = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
+        int chunkNRows = gfd.getChunkNRows();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -648,17 +634,17 @@ public class Grids_GridTest {
         int result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = Math_BigRational.valueOf("-0.5");
+        y = BigRational.valueOf("-0.5");
         expResult = chunkNRows - 1;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 3
-        y = Math_BigRational.valueOf("5120");
+        y = BigRational.valueOf("5120");
         expResult = 0;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
         // Test 3
-        y = Math_BigRational.valueOf("5119.99999999999999");
+        y = BigRational.valueOf("5119.99999999999999");
         expResult = 511;
         result = instance.getChunkCellRow(y);
         assertEquals(expResult, result);
@@ -675,7 +661,7 @@ public class Grids_GridTest {
         long row = 0L;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
+        int chunkNRows = gfd.getChunkNRows();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -705,9 +691,9 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetCol_Math_BigRational() throws Exception {
+    public void testGetCol_BigRational() throws Exception {
         System.out.println("getCol");
-        Math_BigRational x = Math_BigRational.ZERO;
+        BigRational x = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 5120;
@@ -717,12 +703,12 @@ public class Grids_GridTest {
         long result = instance.getCol(x);
         assertEquals(expResult, result);
         // Test 2
-        x = Math_BigRational.valueOf("5119.999999999999999");
+        x = BigRational.valueOf("5119.999999999999999");
         expResult = 5119L;
         result = instance.getCol(x);
         assertEquals(expResult, result);
         // Test 3
-        x = Math_BigRational.valueOf("5119.9999999999999999999999999999999999999999999999"
+        x = BigRational.valueOf("5119.9999999999999999999999999999999999999999999999"
                 + "9999999999999999999999999999999999999999999999999999999999");
         expResult = 5119L;
         result = instance.getCol(x);
@@ -741,8 +727,8 @@ public class Grids_GridTest {
         int ccc = 0;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
-        int chunkNCols = gfd.chunkNCols;
+        int chunkNRows = gfd.getChunkNRows();
+        int chunkNCols = gfd.getChunkNCols();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -763,13 +749,13 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetChunkRow_Math_BigRational() throws Exception {
+    public void testGetChunkRow_BigRational() throws Exception {
         System.out.println("getChunkRow");
-        Math_BigRational y = Math_BigRational.ZERO;
+        BigRational y = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
-        int chunkNCols = gfd.chunkNCols;
+        int chunkNRows = gfd.getChunkNRows();
+        int chunkNCols = gfd.getChunkNCols();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -777,7 +763,7 @@ public class Grids_GridTest {
         int result = instance.getChunkRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = Math_BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
+        y = BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
                 + "000000000000000000000000000000000000000000000000000000000000"
                 + "0000000000000000000000000000000000000000000000000000000001");
         expResult = -1;
@@ -796,8 +782,8 @@ public class Grids_GridTest {
         long row = 0L;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
-        int chunkNCols = gfd.chunkNCols;
+        int chunkNRows = gfd.getChunkNRows();
+        int chunkNCols = gfd.getChunkNCols();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -827,13 +813,13 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetRow_Math_BigRational() throws Exception {
+    public void testGetRow_BigRational() throws Exception {
         System.out.println("getRow");
-        Math_BigRational y = Math_BigRational.ZERO;
+        BigRational y = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
-        int chunkNCols = gfd.chunkNCols;
+        int chunkNRows = gfd.getChunkNRows();
+        int chunkNCols = gfd.getChunkNCols();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -841,7 +827,7 @@ public class Grids_GridTest {
         long result = instance.getRow(y);
         assertEquals(expResult, result);
         // Test 2
-        y = Math_BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
+        y = BigRational.valueOf("-0.000000000000000000000000000000000000000000000000"
                 + "000000000000000000000000000000000000000000000000000000000000"
                 + "0000000000000000000000000000000000000000000000000000000001");
         expResult = -1L;
@@ -861,8 +847,8 @@ public class Grids_GridTest {
         int ccr = 0;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
-        int chunkNRows = gfd.chunkNRows;
-        int chunkNCols = gfd.chunkNCols;
+        int chunkNRows = gfd.getChunkNRows();
+        int chunkNCols = gfd.getChunkNCols();
         long nrows = 5120;
         long ncols = 1000;
         Grids_Grid instance = gfd.create(nrows, ncols);
@@ -903,10 +889,10 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testGetCellID_Math_BigRational_Math_BigRational() throws Exception {
+    public void testGetCellID_BigRational_BigRational() throws Exception {
         System.out.println("getCellID");
-        Math_BigRational x = Math_BigRational.ZERO;
-        Math_BigRational y = Math_BigRational.ZERO;
+        BigRational x = BigRational.ZERO;
+        BigRational y = BigRational.ZERO;
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 512;
@@ -930,8 +916,8 @@ public class Grids_GridTest {
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(nrows);
-        Math_BigRational result = instance.getHeight();
+        BigRational expResult = BigRational.valueOf(nrows);
+        BigRational result = instance.getHeight();
         assertEquals(expResult, result);
     }
 
@@ -948,8 +934,8 @@ public class Grids_GridTest {
         long nrows = 512;
         long ncols = 100;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(ncols);
-        Math_BigRational result = instance.getWidth();
+        BigRational expResult = BigRational.valueOf(ncols);
+        BigRational result = instance.getWidth();
         assertEquals(expResult, result);
     }
 
@@ -1055,11 +1041,11 @@ public class Grids_GridTest {
         boolean result = instance.isCoincident(g);
         assertEquals(expResult, result);
         // Test 2
-        Math_BigRational xmin = Math_BigRational.valueOf(-1);
-        Math_BigRational xmax = Math_BigRational.valueOf(99);
-        Math_BigRational ymin = Math_BigRational.valueOf(-1);
-        Math_BigRational ymax = Math_BigRational.valueOf(511);
-        Math_BigRational cellSize = Math_BigRational.ONE;
+        BigRational xmin = BigRational.valueOf(-1);
+        BigRational xmax = BigRational.valueOf(99);
+        BigRational ymin = BigRational.valueOf(-1);
+        BigRational ymax = BigRational.valueOf(511);
+        BigRational cellSize = BigRational.ONE;
         Grids_Dimensions d = new Grids_Dimensions(xmin, xmax, ymin, ymax,
                 cellSize);
         gp.gridFactoryDouble.setDimensions(d);
@@ -1075,10 +1061,10 @@ public class Grids_GridTest {
      * @throws Exception If encountered.
      */
     @Test
-    public void testIsInGrid_Math_BigRational_Math_BigRational() throws Exception {
+    public void testIsInGrid_BigRational_BigRational() throws Exception {
         System.out.println("isInGrid");
-        Math_BigRational x = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
-        Math_BigRational y = Math_BigRational.valueOf("0.000000000000000000000000000000000001");
+        BigRational x = BigRational.valueOf("0.000000000000000000000000000000000001");
+        BigRational y = BigRational.valueOf("0.000000000000000000000000000000000001");
         // By default chunkNRows and chunkNCols are 512.
         Grids_GridDoubleFactory gfd = gp.gridFactoryDouble;
         long nrows = 1;
@@ -1198,8 +1184,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
-        Math_BigRational result = instance.getCellX(col);
+        BigRational expResult = BigRational.valueOf(0.5d);
+        BigRational result = instance.getCellX(col);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1217,8 +1203,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
-        Math_BigRational result = instance.getCellX(i);
+        BigRational expResult = BigRational.valueOf(0.5d);
+        BigRational result = instance.getCellX(i);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1236,8 +1222,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
-        Math_BigRational result = instance.getCellY(row);
+        BigRational expResult = BigRational.valueOf(0.5d);
+        BigRational result = instance.getCellY(row);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1255,8 +1241,8 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational expResult = Math_BigRational.valueOf(0.5d);
-        Math_BigRational result = instance.getCellY(i);
+        BigRational expResult = BigRational.valueOf(0.5d);
+        BigRational result = instance.getCellY(i);
         assertTrue(result.compareTo(expResult) == 0);
     }
 
@@ -1275,12 +1261,12 @@ public class Grids_GridTest {
         long nrows = 1;
         long ncols = 1;
         Grids_Grid instance = gfd.create(nrows, ncols);
-        Math_BigRational[] expResult = new Math_BigRational[4];
-        expResult[0] = Math_BigRational.ZERO;
-        expResult[1] = Math_BigRational.ZERO;
-        expResult[2] = Math_BigRational.ONE;
-        expResult[3] = Math_BigRational.ONE;
-        Math_BigRational[] result = instance.getCellBounds(row, col);
+        BigRational[] expResult = new BigRational[4];
+        expResult[0] = BigRational.ZERO;
+        expResult[1] = BigRational.ZERO;
+        expResult[2] = BigRational.ONE;
+        expResult[3] = BigRational.ONE;
+        BigRational[] result = instance.getCellBounds(row, col);
         for (int i = 0; i < 4; i++) {
             assertTrue(result[i].compareTo(expResult[i]) == 0);
         }
@@ -1424,8 +1410,8 @@ public class Grids_GridTest {
         int oom = -1;
             RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRationalSqrt distance = new Math_BigRationalSqrt(100, oom, rm, false);
-        Math_BigRational x = Math_BigRational.valueOf(256);
-        Math_BigRational y = Math_BigRational.valueOf(128);
+        BigRational x = BigRational.valueOf(256);
+        BigRational y = BigRational.valueOf(128);
         try {
             IO_Cache fs = new IO_Cache(ge.files.getGeneratedGridIntDir().getPath());
             Grids_ChunkIntFactorySinglet cifs = new Grids_ChunkIntFactorySinglet(0);
@@ -1434,11 +1420,11 @@ public class Grids_GridTest {
             int chunkNcols = 64;
             Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
                     cifa, chunkNrows, chunkNcols);
-            Math_BigRational xmin = Math_BigRational.valueOf(0);
-            Math_BigRational ymin = Math_BigRational.valueOf(0);
-            Math_BigRational xmax = Math_BigRational.valueOf(640);
-            Math_BigRational ymax = Math_BigRational.valueOf(320);
-            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            BigRational xmin = BigRational.valueOf(0);
+            BigRational ymin = BigRational.valueOf(0);
+            BigRational xmax = BigRational.valueOf(640);
+            BigRational ymax = BigRational.valueOf(320);
+            BigRational cellsize = BigRational.valueOf(1);
             Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
             int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
             int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
@@ -1827,18 +1813,18 @@ public class Grids_GridTest {
             int chunkNcols = 64;
             Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
                     cifa, chunkNrows, chunkNcols);
-            Math_BigRational xmax = Math_BigRational.valueOf(0);
-            Math_BigRational ymax = Math_BigRational.valueOf(0);
-            Math_BigRational xmin = Math_BigRational.valueOf(640);
-            Math_BigRational ymin = Math_BigRational.valueOf(320);
-            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            BigRational xmax = BigRational.valueOf(0);
+            BigRational ymax = BigRational.valueOf(0);
+            BigRational xmin = BigRational.valueOf(640);
+            BigRational ymin = BigRational.valueOf(320);
+            BigRational cellsize = BigRational.valueOf(1);
             Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
             int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
             int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
             Grids_Grid instance = f.create(nrows, ncols, dim);
             // Test 1
-            Math_BigRational x = xmin;
-            Math_BigRational y = ymin;
+            BigRational x = xmin;
+            BigRational y = ymin;
             Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, oom, rm);
             HashSet<Grids_2D_ID_long> expResult = new HashSet<>();
             expResult.add(instance.getCellID(0L, 0L));
@@ -1861,18 +1847,18 @@ public class Grids_GridTest {
             int chunkNcols = 64;
             Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
                     cifa, chunkNrows, chunkNcols);
-            Math_BigRational xmin = Math_BigRational.valueOf(0);
-            Math_BigRational ymin = Math_BigRational.valueOf(0);
-            Math_BigRational xmax = Math_BigRational.valueOf(640);
-            Math_BigRational ymax = Math_BigRational.valueOf(320);
-            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            BigRational xmin = BigRational.valueOf(0);
+            BigRational ymin = BigRational.valueOf(0);
+            BigRational xmax = BigRational.valueOf(640);
+            BigRational ymax = BigRational.valueOf(320);
+            BigRational cellsize = BigRational.valueOf(1);
             Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
             int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
             int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();
             Grids_Grid instance = f.create(nrows, ncols, dim);
             // Test 1
-            Math_BigRational x = xmin;
-            Math_BigRational y = ymin;
+            BigRational x = xmin;
+            BigRational y = ymin;
             Math_BigRationalSqrt distance = new Math_BigRationalSqrt(cellsize, oom, rm);
             HashSet<Grids_2D_ID_long> expResult = new HashSet<>();
             expResult.add(instance.getCellID(0L, 0L));
@@ -1887,7 +1873,7 @@ public class Grids_GridTest {
             // Test 2
             x = instance.getCellX(0L);
             y = instance.getCellY(0L);
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(7, 5)).pow(2), oom, rm);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(BigRational.valueOf(7, 5)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(0L, 1L));
             expResult.add(instance.getCellID(1L, 0L));
@@ -1902,7 +1888,7 @@ public class Grids_GridTest {
             // Test 3
             x = instance.getCellX(0L);
             y = instance.getCellY(0L);
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(3, 2)).pow(2), oom, rm);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(BigRational.valueOf(3, 2)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(1L, 1L));
             expResult.add(instance.getCellID(0L, 1L));
@@ -1919,7 +1905,7 @@ public class Grids_GridTest {
                 assertTrue(expResult.contains(id));
             }
             // Test 4
-            distance = new Math_BigRationalSqrt(cellsize.multiply(Math_BigRational.valueOf(21, 10)).pow(2), oom, rm);
+            distance = new Math_BigRationalSqrt(cellsize.multiply(BigRational.valueOf(21, 10)).pow(2), oom, rm);
             expResult = new HashSet<>();
             expResult.add(instance.getCellID(1L, 1L));
             expResult.add(instance.getCellID(0L, 1L));
@@ -1966,7 +1952,7 @@ public class Grids_GridTest {
      * {@link #testGetNearestCellID_long_long()}.
      */
     @Test
-    public void testGetNearestCellID_Math_BigRational_Math_BigRational() {
+    public void testGetNearestCellID_BigRational_BigRational() {
         // No test
     }
 
@@ -1984,11 +1970,11 @@ public class Grids_GridTest {
             int chunkNcols = 64;
             Grids_GridIntFactory f = new Grids_GridIntFactory(ge, fs, cifs,
                     cifa, chunkNrows, chunkNcols);
-            Math_BigRational xmin = Math_BigRational.valueOf(0);
-            Math_BigRational ymin = Math_BigRational.valueOf(0);
-            Math_BigRational xmax = Math_BigRational.valueOf(640);
-            Math_BigRational ymax = Math_BigRational.valueOf(320);
-            Math_BigRational cellsize = Math_BigRational.valueOf(1);
+            BigRational xmin = BigRational.valueOf(0);
+            BigRational ymin = BigRational.valueOf(0);
+            BigRational xmax = BigRational.valueOf(640);
+            BigRational ymax = BigRational.valueOf(320);
+            BigRational cellsize = BigRational.valueOf(1);
             Grids_Dimensions dim = new Grids_Dimensions(xmin, xmax, ymin, ymax, cellsize);
             int nrows = dim.getHeight().divide(dim.getCellsize()).intValue();
             int ncols = dim.getWidth().divide(dim.getCellsize()).intValue();

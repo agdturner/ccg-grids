@@ -17,15 +17,14 @@ package uk.ac.leeds.ccg.grids.d2.stats;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
- * For statistics of grids and chunks of type BigDecimal. The {@link #min} and
+ * For statistics of grids and chunks of type BigRational. The {@link #min} and
  * {@link #max} are initialised as follows:
  * <ul>
- * <li>{@code min = BigDecimal.valueOf(Double.MAX_VALUE);}<li>
+ * <li>{@code min = BigRational.valueOf(Double.MAX_VALUE);}<li>
  * <li>{@code max = min.negate();}</li>
  * </ul>
  * To support more extreme values there is work to be done!
@@ -33,26 +32,26 @@ import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class Grids_StatsBD extends Grids_StatsNumber {
+public abstract class Grids_StatsBR extends Grids_StatsNumber {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * For storing the minimum value.
      */
-    protected BigDecimal min;
+    protected BigRational min;
 
     /**
      * For storing the maximum value.
      */
-    protected BigDecimal max;
+    protected BigRational max;
 
     /**
      * Create a new instance.
      *
      * @param ge Grids_Environment
      */
-    public Grids_StatsBD(Grids_Environment ge) {
+    public Grids_StatsBR(Grids_Environment ge) {
         super(ge);
         init0();
     }
@@ -60,12 +59,12 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
     /**
      * The {@link #min} and {@link #max} are initialised as follows:
      * <ul>
-     * <li>{@code min = BigDecimal.valueOf(Double.MAX_VALUE);}<li>
+     * <li>{@code min = BigRational.valueOf(Double.MAX_VALUE);}<li>
      * <li>{@code max = min.negate();}</li>
      * </ul>
      */
     private void init0() {
-        min = BigDecimal.valueOf(Double.MAX_VALUE);
+        min = BigRational.valueOf(Double.MAX_VALUE);
         max = min.negate();
     }
 
@@ -88,19 +87,19 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
     }
 
     /**
-     * @return (Grids_GridBD) grid.
+     * @return (Grids_GridBR) grid.
      */
     @Override
-    public Grids_GridBD getGrid() {
-        return (Grids_GridBD) grid;
+    public Grids_GridBR getGrid() {
+        return (Grids_GridBR) grid;
     }
 
     /**
      * @param v The value replacing a value.
      */
-    protected void update(BigDecimal v) {
+    protected void update(BigRational v) {
         n += 1;
-        setSum(sum.add(BigRational.valueOf(v)));
+        setSum(sum.add(v));
         if (v.compareTo(min) == -1) {
             nMin = 1;
             min = v;
@@ -126,7 +125,7 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
+    public BigRational getMin(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (nMin < 1) {
             if (update) {
                 update();
@@ -140,7 +139,7 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
      *
      * @param min What {@link #min} is set to.
      */
-    public void setMin(BigDecimal min) {
+    public void setMin(BigRational min) {
         this.min = min;
     }
 
@@ -150,7 +149,7 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
      * @throws java.lang.ClassNotFoundException If encountered.
      */
     @Override
-    public BigDecimal getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
+    public BigRational getMax(boolean update) throws IOException, Exception, ClassNotFoundException {
         if (nMax < 1) {
             if (update) {
                 update();
@@ -164,7 +163,7 @@ public abstract class Grids_StatsBD extends Grids_StatsNumber {
      *
      * @param max What {@link #max} is set to.
      */
-    public void setMax(BigDecimal max) {
+    public void setMax(BigRational max) {
         this.max = max;
     }
 }

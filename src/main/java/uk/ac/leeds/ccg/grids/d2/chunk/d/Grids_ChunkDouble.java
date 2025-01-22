@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * type numbers.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
 public abstract class Grids_ChunkDouble extends Grids_ChunkNumber {
 

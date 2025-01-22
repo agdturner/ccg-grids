@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
  * A simple wrapper for
- * {@link uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDArray} and
- * {@link uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDMap}.
+ * {@link uk.ac.leeds.ccg.grids.d2.chunk.r.Grids_ChunkBRArray} and
+ * {@link uk.ac.leeds.ccg.grids.d2.chunk.r.Grids_ChunkBRMap}.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Grids_ChunkBDArrayOrMap extends Grids_ChunkBD {
+public abstract class Grids_ChunkBRArrayOrMap extends Grids_ChunkBR {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public abstract class Grids_ChunkBDArrayOrMap extends Grids_ChunkBD {
      * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      */
-    protected Grids_ChunkBDArrayOrMap(Grids_GridBD g, Grids_2D_ID_int i) {
+    protected Grids_ChunkBRArrayOrMap(Grids_GridBR g, Grids_2D_ID_int i) {
         super(g, i, true);
     }
 

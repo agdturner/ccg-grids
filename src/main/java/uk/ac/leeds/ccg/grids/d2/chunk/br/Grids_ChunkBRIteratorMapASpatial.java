@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -25,13 +25,13 @@ import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkNumberMapASpatialIterator;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_OffsetBitSet;
 
 /**
- * For iterating through the values in a Grids_GridChunkBDMap instance. The
+ * For iterating through the values in a Grids_GridChunkBRMap instance. The
  * values are not returned in any particular spatial order.
 *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDIteratorMapASpatial 
+public class Grids_ChunkBRIteratorMapASpatial 
         extends Grids_ChunkNumberMapASpatialIterator {
 
     private static final long serialVersionUID = 1L;
@@ -49,49 +49,49 @@ public class Grids_ChunkBDIteratorMapASpatial
     /**
      * For storing the default value.
      */
-    protected BigDecimal defaultValue;
+    protected BigRational defaultValue;
     
     /**
      * The data.
      */
-    protected Grids_ChunkBDMap.GridChunkBDMapData data;
+    protected Grids_ChunkBRMap.GridChunkBRMapData data;
     
     /**
      * The dataMapBitSet.
      */
-    protected TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet;
+    protected TreeMap<BigRational, Grids_OffsetBitSet> dataMapBitSet;
     
     /**
      * The dataMapBitSetIte.
      */
-    protected Iterator<BigDecimal> dataMapBitSetIte;
+    protected Iterator<BigRational> dataMapBitSetIte;
     
     /**
      * The dataMapBitSetValue.
      */
-    protected BigDecimal dataMapBitSetValue;
+    protected BigRational dataMapBitSetValue;
     
     /**
      * The dataMapHashSet.
      */
-    protected TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+    protected TreeMap<BigRational, HashSet<Grids_2D_ID_int>> dataMapHashSet;
     
     /**
      * The dataMapHashSetIte.
      */
-    protected Iterator<BigDecimal> dataMapHashSetIte;
+    protected Iterator<BigRational> dataMapHashSetIte;
     
     /**
      * The dataMapHashSetValue.
      */
-    protected BigDecimal dataMapHashSetValue;
+    protected BigRational dataMapHashSetValue;
 
     /**
      * Create a new instance.
      * @param chunk The chunk.
      */
-    public Grids_ChunkBDIteratorMapASpatial(
-            Grids_ChunkBDMap chunk) {
+    public Grids_ChunkBRIteratorMapASpatial(
+            Grids_ChunkBRMap chunk) {
         super(chunk);
         data = chunk.getData();
         dataMapBitSet = data.DataMapBitSet;
@@ -129,7 +129,7 @@ public class Grids_ChunkBDIteratorMapASpatial
      * @return the next element in the iteration or null.
      * @exception NoSuchElementException iteration has no more elements.
      */
-    public BigDecimal next() {
+    public BigRational next() {
         if (hasNext) {
             if (defaultValueIndex == numberOfDefaultValues - 1) {
                 if (dataMapBitSetIndex == dataMapBitSetNumberOfValues - 1) {

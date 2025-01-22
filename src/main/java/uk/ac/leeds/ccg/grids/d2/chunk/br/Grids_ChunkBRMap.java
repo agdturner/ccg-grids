@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import ch.obermuhlner.math.big.BigRational;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import java.math.BigDecimal;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -56,9 +55,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * alternative storage for chunks.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
-public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
+public class Grids_ChunkBRMap extends Grids_ChunkBRArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,12 +67,12 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * The location of all DefaultValues can be calculated from the converse of
      * the intersection of NoData, InDataMapHashSet and InDataMapBitSet.
      */
-    public BigDecimal defaultValue;
+    public BigRational defaultValue;
 
     /**
      * The NoDataValue.
      */
-    public final BigDecimal ndv;
+    public final BigRational ndv;
     
     /**
      * Identifies the locations of all noDataValues.
@@ -93,7 +92,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * For storing the data of this chunk.
      */
-    private GridChunkBDMapData Data;
+    private GridChunkBRMapData Data;
 
     /**
      * {@link #defaultValue} is set to {@code 0.0d}.
@@ -101,8 +100,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      */
-    protected Grids_ChunkBDMap(Grids_GridBD g, Grids_2D_ID_int i) {
-        this(g, i, BigDecimal.ZERO);
+    protected Grids_ChunkBRMap(Grids_GridBR g, Grids_2D_ID_int i) {
+        this(g, i, BigRational.ZERO);
     }
 
     /**
@@ -112,11 +111,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param i What {@link #id} is set to.
      * @param dv What {@link #defaultValue} is set to.
      */
-    protected Grids_ChunkBDMap(Grids_GridBD g, Grids_2D_ID_int i, BigDecimal dv) {
+    protected Grids_ChunkBRMap(Grids_GridBR g, Grids_2D_ID_int i, BigRational dv) {
         super(g, i);
         defaultValue = dv;
         initData();
-        ndv = BigDecimal.valueOf(-Double.MAX_VALUE);
+        ndv = BigRational.valueOf(-Double.MAX_VALUE);
         cacheUpToDate = false;
     }
 
@@ -128,18 +127,18 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param i The chunkID.
      * @param dv The default value.
      */
-    protected Grids_ChunkBDMap(Grids_ChunkBD c, Grids_2D_ID_int i,
-            BigDecimal dv) {
+    protected Grids_ChunkBRMap(Grids_ChunkBR c, Grids_2D_ID_int i,
+            BigRational dv) {
         super(c.getGrid(), i);
         defaultValue = dv;
         initData();
         for (int row = 0; row < chunkNRows; row++) {
             for (int col = 0; col < chunkNCols; col++) {
-                BigDecimal value = c.getCell(row, col);
+                BigRational value = c.getCell(row, col);
                 initCell(row, col, value);
             }
         }
-        ndv = BigDecimal.valueOf(-Double.MAX_VALUE);
+        ndv = BigRational.valueOf(-Double.MAX_VALUE);
         cacheUpToDate = false;
     }
 
@@ -148,7 +147,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      */
     @Override
     protected final void initData() {
-        Data = new GridChunkBDMapData(new TreeMap<>(), new TreeMap<>());
+        Data = new GridChunkBRMapData(new TreeMap<>(), new TreeMap<>());
         noData = new BitSet(chunkNCols * chunkNRows);
         inDataMapHashSet = new BitSet(chunkNCols * chunkNRows);
         inDataMapBitSet = new BitSet(chunkNCols * chunkNRows);
@@ -157,7 +156,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * @return {@link #Data}.
      */
-    protected GridChunkBDMapData getData() {
+    protected GridChunkBRMapData getData() {
         return Data;
     }
 
@@ -173,11 +172,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * @return Values as a double[][] indexed by row and column.
      */
-    BigDecimal[][] to2DBDArray() {
-        Grids_GridBD g = getGrid();
+    BigRational[][] to2DBRArray() {
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
-        BigDecimal[][] r = new BigDecimal[nrows][ncols];
+        BigRational[][] r = new BigRational[nrows][ncols];
         Arrays.fill(r, defaultValue);
         /**
          * Mask
@@ -191,16 +190,16 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 i++;
             }
         }
-        Iterator<BigDecimal> ite;
+        Iterator<BigRational> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
-        TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet = Data.DataMapBitSet;
+        TreeMap<BigRational, Grids_OffsetBitSet> dataMapBitSet = Data.DataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         int col = 0;
         int row = 0;
         while (ite.hasNext()) {
-            BigDecimal value = ite.next();
+            BigRational value = ite.next();
             Grids_OffsetBitSet offsetBitSet = dataMapBitSet.get(value);
             BitSet bitSet = offsetBitSet.bitSet;
             int offset = offsetBitSet.offset;
@@ -226,11 +225,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapHashSet.
          */
-        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         dataMapHashSet = Data.DataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal value = ite.next();
+            BigRational value = ite.next();
             HashSet<Grids_2D_ID_int> cellIDs = dataMapHashSet.get(value);
             Iterator<Grids_2D_ID_int> ite2 = cellIDs.iterator();
             while (ite2.hasNext()) {
@@ -247,20 +246,20 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return Values in row major order as a double[].
      */
     @Override
-    public BigDecimal[] toArrayIncludingNoDataValues() {
-        Grids_GridBD g = getGrid();
+    public BigRational[] toArrayIncludingNoDataValues() {
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
-        BigDecimal[] r = new BigDecimal[nrows * ncols];
+        BigRational[] r = new BigRational[nrows * ncols];
         Arrays.fill(r, g.ndv);
-        Iterator<BigDecimal> ite;
+        Iterator<BigRational> ite;
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
-        TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet = Data.DataMapBitSet;
+        TreeMap<BigRational, Grids_OffsetBitSet> dataMapBitSet = Data.DataMapBitSet;
         ite = dataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             Grids_OffsetBitSet offsetBitSet = dataMapBitSet.get(v);
             int offset = offsetBitSet.offset;
             BitSet bitSet = offsetBitSet.bitSet;
@@ -274,11 +273,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         /**
          * Populate result with all mappings from data.DataMapHashSet.
          */
-        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         dataMapHashSet = Data.DataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             HashSet<Grids_2D_ID_int> cellIDs = dataMapHashSet.get(v);
             Iterator<Grids_2D_ID_int> ite2 = cellIDs.iterator();
             while (ite2.hasNext()) {
@@ -293,12 +292,12 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return Values excluding noDataValues in row major order as a double[].
      */
     @Override
-    public BigDecimal[] toArrayNotIncludingNoDataValues() {
-        BigDecimal[] r;
-        Iterator<BigDecimal> ite;
-        TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet;
+    public BigRational[] toArrayNotIncludingNoDataValues() {
+        BigRational[] r;
+        Iterator<BigRational> ite;
+        TreeMap<BigRational, Grids_OffsetBitSet> dataMapBitSet;
         Grids_OffsetBitSet offsetBitSet;
-        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet;
+        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> dataMapHashSet;
         HashSet<Grids_2D_ID_int> cellIDs;
         /**
          * Count all mappings and initialise result;
@@ -316,7 +315,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         while (ite.hasNext()) {
             n += dataMapHashSet.get(ite.next()).size();
         }
-        r = new BigDecimal[n];
+        r = new BigRational[n];
         /**
          * Populate result with all mappings from data.DataMapBitSet.
          */
@@ -325,7 +324,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         int i;
         n = 0;
         while (ite.hasNext()) {
-            BigDecimal value = ite.next();
+            BigRational value = ite.next();
             offsetBitSet = dataMapBitSet.get(value);
             for (i = 0; i < offsetBitSet.bitSet.cardinality(); i++) {
                 n++;
@@ -338,7 +337,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         dataMapHashSet = Data.DataMapHashSet;
         ite = dataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal value = ite.next();
+            BigRational value = ite.next();
             cellIDs = dataMapHashSet.get(value);
             for (i = 0; i < cellIDs.size(); i++) {
                 n++;
@@ -355,17 +354,17 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * cell column {@code col}.
      */
     @Override
-    public BigDecimal getCell(int row, int col) {
+    public BigRational getCell(int row, int col) {
         int pos = (row * chunkNCols) + col;
         if (noData.get(pos)) {
             return ndv;
         } else if (inDataMapBitSet.get(pos)) {
-            BigDecimal r = getCell(pos);
+            BigRational r = getCell(pos);
             if (r.compareTo(ndv) != 0) {
                 return r;
             }
         } else if (inDataMapHashSet.get(pos)) {
-            BigDecimal r = getCell(new Grids_2D_ID_int(row, col));
+            BigRational r = getCell(new Grids_2D_ID_int(row, col));
             if (r.compareTo(ndv) != 0) {
                 return r;
             }
@@ -379,17 +378,17 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param i The cell ID.
      * @return The value at position given by: row, col.
      */
-    protected BigDecimal getCell(int row, int col, Grids_2D_ID_int i) {
+    protected BigRational getCell(int row, int col, Grids_2D_ID_int i) {
         int pos = (row * chunkNCols) + col;
         if (noData.get(pos)) {
             return ndv;
         } else if (inDataMapBitSet.get(pos)) {
-            BigDecimal r = getCell(pos);
+            BigRational r = getCell(pos);
             if (r.compareTo(ndv) != 0) {
                 return r;
             }
         } else if (inDataMapHashSet.get(pos)) {
-            BigDecimal r = getCell(i);
+            BigRational r = getCell(i);
             if (r.compareTo(ndv) != 0) {
                 return r;
             }
@@ -400,11 +399,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * Look in data.DataMapBitSet.
      */
-    private BigDecimal getCell(int position) {
-        TreeMap<BigDecimal, Grids_OffsetBitSet> m = Data.DataMapBitSet;
-        Iterator<BigDecimal> ite = m.keySet().iterator();
+    private BigRational getCell(int position) {
+        TreeMap<BigRational, Grids_OffsetBitSet> m = Data.DataMapBitSet;
+        Iterator<BigRational> ite = m.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             Grids_OffsetBitSet offsetBitSet = m.get(v);
             BitSet bitSet = offsetBitSet.bitSet;
             int pos = position - offsetBitSet.offset;
@@ -420,11 +419,11 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * Look in data.DataMapHashSet.
      */
-    private BigDecimal getCell(Grids_2D_ID_int cellID) {
-        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m = Data.DataMapHashSet;
-        Iterator<BigDecimal> ite = m.keySet().iterator();
+    private BigRational getCell(Grids_2D_ID_int cellID) {
+        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m = Data.DataMapHashSet;
+        Iterator<BigRational> ite = m.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             if (m.get(v).contains(cellID)) {
                 return v;
             }
@@ -441,7 +440,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param v The value with which the cell is initialised.
      */
     @Override
-    public final void initCell(int row, int col, BigDecimal v) {
+    public final void initCell(int row, int col, BigRational v) {
         initCell(row, col, new Grids_2D_ID_int(row, col), v);
     }
 
@@ -454,7 +453,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @param i The cell ID of the cell to be initialised.
      * @param v The value with which the cell is initialised.
      */
-    protected void initCell(int row, int col, Grids_2D_ID_int i, BigDecimal v) {
+    protected void initCell(int row, int col, Grids_2D_ID_int i, BigRational v) {
         if (v != defaultValue) {
             int pos = (row * chunkNCols) + col;
             if (v.compareTo(ndv) == 0) {
@@ -463,14 +462,14 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 /**
                  * Look in data.DataMapBitSet or dataMapHashSet
                  */
-                TreeMap<BigDecimal, Grids_OffsetBitSet> m = Data.DataMapBitSet;
+                TreeMap<BigRational, Grids_OffsetBitSet> m = Data.DataMapBitSet;
                 if (m.containsKey(v)) {
                     Grids_OffsetBitSet offsetBitSet = m.get(v);
                     BitSet bitSet = offsetBitSet.bitSet;
                     bitSet.set(pos);
                     inDataMapBitSet.set(pos);
                 } else {
-                    TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m2
+                    TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m2
                             = Data.DataMapHashSet;
                     if (m2.containsKey(v)) {
                         m2.get(v).add(i);
@@ -509,7 +508,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * {@code v}.
      */
     @Override
-    public BigDecimal setCell(int row, int col, BigDecimal v) {
+    public BigRational setCell(int row, int col, BigRational v) {
         return setCell(row, col, new Grids_2D_ID_int(row, col), v);
     }
 
@@ -524,8 +523,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The value at position given by: row, col before it is set to
      * {@code v}.
      */
-    public BigDecimal setCell(int row, int col, Grids_2D_ID_int i, BigDecimal v) {
-        BigDecimal r = getCell(row, col, i);
+    public BigRational setCell(int row, int col, Grids_2D_ID_int i, BigRational v) {
+        BigRational r = getCell(row, col, i);
         if (r == v) {
             return r;
         }
@@ -536,7 +535,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 if (r == defaultValue) {
                     return defaultValue;
                 } else if (inDataMapBitSet.get(pos)) {
-                    TreeMap<BigDecimal, Grids_OffsetBitSet> m = Data.DataMapBitSet;
+                    TreeMap<BigRational, Grids_OffsetBitSet> m = Data.DataMapBitSet;
                     Grids_OffsetBitSet offsetBitSet = m.get(r);
                     BitSet bitSet = offsetBitSet.bitSet;
                     bitSet.flip(pos);
@@ -545,7 +544,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                     }
                     return r;
                 } else {
-                    TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m2
+                    TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m2
                             = Data.DataMapHashSet;
                     HashSet<Grids_2D_ID_int> s = m2.get(r);
                     s.remove(i);
@@ -556,7 +555,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 }
             } else {
                 if (r == defaultValue) {
-                    TreeMap<BigDecimal, Grids_OffsetBitSet> m2 = Data.DataMapBitSet;
+                    TreeMap<BigRational, Grids_OffsetBitSet> m2 = Data.DataMapBitSet;
                     if (m2.containsKey(v)) {
                         Grids_OffsetBitSet offsetBitSet = m2.get(v);
                         BitSet bitSet = offsetBitSet.bitSet;
@@ -564,7 +563,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                         inDataMapHashSet.set(pos);
                         return r;
                     } else {
-                        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m3
+                        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m3
                                 = Data.DataMapHashSet;
                         if (m3.containsKey(v)) {
                             HashSet<Grids_2D_ID_int> s = m3.get(v);
@@ -581,7 +580,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                     }
                 } else {
                     // result is a value
-                    TreeMap<BigDecimal, Grids_OffsetBitSet> m2 = Data.DataMapBitSet;
+                    TreeMap<BigRational, Grids_OffsetBitSet> m2 = Data.DataMapBitSet;
                     if (m2.containsKey(v)) {
                         Grids_OffsetBitSet offsetBitSet;
                         BitSet bitSet;
@@ -600,7 +599,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                         bitSet.set(pos);
                         return r;
                     } else {
-                        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m3
+                        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m3
                                 = Data.DataMapHashSet;
                         if (m3.containsKey(v)) {
                             HashSet<Grids_2D_ID_int> s;
@@ -678,38 +677,38 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     public BigRational getSum() {
         int n = chunkNRows * chunkNCols;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
-        return getSumBigDecimal(n, numberOfDefaultValues);
+        return getSumBigRational(n, numberOfDefaultValues);
     }
 
     /**
      * @param n The number of potential values.
      * @param numberOfDefaultValues The number of default values.
-     * @return The sum of all data values as a BigDecimal.
+     * @return The sum of all data values as a BigRational.
      */
-    protected BigRational getSumBigDecimal(int n, int numberOfDefaultValues) {
+    protected BigRational getSumBigRational(int n, int numberOfDefaultValues) {
         BigRational r = BigRational.ZERO;
-        r = r.add(BigRational.valueOf(defaultValue.multiply(BigDecimal.valueOf(numberOfDefaultValues))));
-        Iterator<BigDecimal> ite;
+        r = r.add(defaultValue.multiply(BigRational.valueOf(numberOfDefaultValues)));
+        Iterator<BigRational> ite;
         /**
          * Add from data.DataMapBitSet;
          */
-        TreeMap<BigDecimal, Grids_OffsetBitSet> m = Data.DataMapBitSet;
+        TreeMap<BigRational, Grids_OffsetBitSet> m = Data.DataMapBitSet;
         ite = m.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             Grids_OffsetBitSet offsetBitSet = m.get(v);
             n = offsetBitSet.bitSet.size();
-            r = r.add(BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
+            r = r.add(v.multiply(BigRational.valueOf(n)));
         }
         /**
          * Add from data.DataMapHashSet.
          */
-        TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> m2 = Data.DataMapHashSet;
+        TreeMap<BigRational, HashSet<Grids_2D_ID_int>> m2 = Data.DataMapHashSet;
         ite = m2.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             n = m2.get(v).size();
-            r = r.add(BigRational.valueOf(v.multiply(BigDecimal.valueOf(n))));
+            r = r.add(v.multiply(BigRational.valueOf(n)));
         }
         return r;
     }
@@ -718,8 +717,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The minimum of all data values.
      */
     @Override
-    public BigDecimal getMin() {
-        BigDecimal min;
+    public BigRational getMin() {
+        BigRational min;
         int n = chunkNRows * chunkNCols;
         if (getNumberOfDefaultValues(n) > 0) {
             min = defaultValue;
@@ -735,8 +734,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The maximum of all data values.
      */
     @Override
-    public BigDecimal getMax() {
-        BigDecimal max;
+    public BigRational getMax() {
+        BigRational max;
         int n = chunkNRows * chunkNCols;
         if (getNumberOfDefaultValues(n) > 0) {
             max = defaultValue;
@@ -752,16 +751,16 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The mode.
      */
     @Override
-    protected HashSet<BigDecimal> getMode() {
-        HashSet<BigDecimal> mode = new HashSet<>();
+    protected HashSet<BigRational> getMode() {
+        HashSet<BigRational> mode = new HashSet<>();
         int n = chunkNCols * chunkNRows;
         int numberOfDefaultValues = getNumberOfDefaultValues(n);
         int numberOfMostCommonValue = numberOfDefaultValues;
         mode.add(defaultValue);
-        Iterator<BigDecimal> ite;
+        Iterator<BigRational> ite;
         ite = Data.DataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             Grids_OffsetBitSet offsetBitSet = Data.DataMapBitSet.get(v);
             int numberOfValues = offsetBitSet.bitSet.cardinality();
             if (numberOfValues < numberOfMostCommonValue) {
@@ -773,7 +772,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
         }
         ite = Data.DataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             int numberOfValues = Data.DataMapHashSet.get(v).size();
             if (numberOfValues < numberOfMostCommonValue) {
                 mode = new HashSet<>();
@@ -789,19 +788,19 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The median.
      */
     @Override
-    public BigDecimal getMedian() {
-        TreeMap<BigDecimal, Integer> valueCount = new TreeMap<>();
+    public BigRational getMedian() {
+        TreeMap<BigRational, Integer> valueCount = new TreeMap<>();
         int nCells = chunkNCols * chunkNRows;
         int numberOfDefaultValues = getNumberOfDefaultValues(nCells);
         valueCount.put(defaultValue, numberOfDefaultValues);
-        Iterator<BigDecimal> ite = Data.DataMapBitSet.keySet().iterator();
+        Iterator<BigRational> ite = Data.DataMapBitSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             valueCount.put(v, Data.DataMapBitSet.get(v).bitSet.cardinality());
         }
         ite = Data.DataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             valueCount.put(v, Data.DataMapHashSet.get(v).size());
         }
         long n = getN();
@@ -813,12 +812,12 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 int i = 0;
                 ite = valueCount.keySet().iterator();
                 while (ite.hasNext()) {
-                    BigDecimal v = ite.next();
+                    BigRational v = ite.next();
                     i += valueCount.get(v);
                     if (i > requiredIndex && i > requiredIndex + 1) {
                         return v;
                     } else {
-                        return (v.add(ite.next())).divide(BigDecimal.valueOf(2));
+                        return (v.add(ite.next())).divide(BigRational.valueOf(2));
                     }
                 }
             } else {
@@ -827,7 +826,7 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
                 int i = 0;
                 ite = valueCount.keySet().iterator();
                 while (ite.hasNext()) {
-                    BigDecimal v = ite.next();
+                    BigRational v = ite.next();
                     i += valueCount.get(v);
                     if (i > requiredIndex) {
                         return v;
@@ -843,43 +842,40 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
      * @return The standard deviation.
      */
     @Override
-    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+    protected BigRational getStandardDeviation(int oom, RoundingMode rm) {
         BigRational r = BigRational.ZERO;
         BigRational mean = getArithmeticMean();
         // Calculate the number of default values
         int n = chunkNRows * chunkNCols;
         int nValues = getNumberOfDefaultValues(n);
-        r = r.add((BigRational.valueOf(defaultValue).subtract(mean).pow(2))
-                .multiply(BigRational.valueOf(nValues)));
-        Iterator<BigDecimal> ite;
+        r = r.add(defaultValue.subtract(mean).pow(2)).multiply(BigRational.valueOf(nValues));
+        Iterator<BigRational> ite;
         /**
          * Add from data.DataMapBitSet;
          */
         ite = Data.DataMapBitSet.keySet().iterator();
         Grids_OffsetBitSet offsetBitSet;
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             offsetBitSet = Data.DataMapBitSet.get(v);
             n = offsetBitSet.bitSet.size();
             nValues += n;
-            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(BigRational.valueOf(n)));
+            r = r.add(v.subtract(mean).pow(2)).multiply(BigRational.valueOf(n));
         }
         /**
          * Add from data.DataMapHashSet.
          */
         ite = Data.DataMapHashSet.keySet().iterator();
         while (ite.hasNext()) {
-            BigDecimal v = ite.next();
+            BigRational v = ite.next();
             n = Data.DataMapHashSet.get(v).size();
             nValues += n;
-            r = r.add((BigRational.valueOf(v).subtract(mean).pow(2))
-                    .multiply(BigRational.valueOf(n)));
+            r = r.add((v.subtract(mean).pow(2)).multiply(BigRational.valueOf(n)));
         }
         if ((nValues - 1L) > 0L) {
-            return new Math_BigRationalSqrt(r.divide(nValues - 1), oom, rm).toBigDecimal(oom, rm);
+            return new Math_BigRationalSqrt(r.divide(nValues - 1), oom, rm).getSqrt(oom, rm);
         } else {
-            return r.toBigDecimal();
+            return r;
         }
     }
 
@@ -894,13 +890,13 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * @return An iterator for iterating over the values in this chunk.
      */
-    public Grids_ChunkBDIteratorArrayOrMap iterator() {
-        return new Grids_ChunkBDIteratorArrayOrMap(this);
+    public Grids_ChunkBRIteratorArrayOrMap iterator() {
+        return new Grids_ChunkBRIteratorArrayOrMap(this);
     }
 
     @Override
-    public BigDecimal getMin(boolean update) {
-        BigDecimal min;
+    public BigRational getMin(boolean update) {
+        BigRational min;
         if (defaultValue.compareTo(ndv) != 0) {
             min = defaultValue.min(Data.DataMapBitSet.firstKey());
         } else {
@@ -911,8 +907,8 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     }
 
     @Override
-    public BigDecimal getMax(boolean update) {
-        BigDecimal max;
+    public BigRational getMax(boolean update) {
+        BigRational max;
         if (defaultValue.compareTo(ndv) != 0) {
             max = defaultValue.max(Data.DataMapBitSet.firstKey());
         } else {
@@ -925,17 +921,17 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
     /**
      * Simple inner class for wrapping an int and a bitSet.
      */
-    public class GridChunkBDMapData {
+    public class GridChunkBRMapData {
 
         /**
          * For more common values.
          */
-        public final TreeMap<BigDecimal, Grids_OffsetBitSet> DataMapBitSet;
+        public final TreeMap<BigRational, Grids_OffsetBitSet> DataMapBitSet;
 
         /**
          * For less common and more distributed values.
          */
-        public final TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> DataMapHashSet;
+        public final TreeMap<BigRational, HashSet<Grids_2D_ID_int>> DataMapHashSet;
 
         /**
          * Create a new instance.
@@ -943,9 +939,9 @@ public class Grids_ChunkBDMap extends Grids_ChunkBDArrayOrMap {
          * @param dataMapBitSet What {@link #DataMapBitSet} is set to.
          * @param dataMapHashSet What {@link #DataMapHashSet} is set to. 
          */
-        public GridChunkBDMapData(
-                TreeMap<BigDecimal, Grids_OffsetBitSet> dataMapBitSet,
-                TreeMap<BigDecimal, HashSet<Grids_2D_ID_int>> dataMapHashSet) {
+        public GridChunkBRMapData(
+                TreeMap<BigRational, Grids_OffsetBitSet> dataMapBitSet,
+                TreeMap<BigRational, HashSet<Grids_2D_ID_int>> dataMapHashSet) {
             DataMapBitSet = dataMapBitSet;
             DataMapHashSet = dataMapHashSet;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import ch.obermuhlner.math.big.BigRational;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import java.math.BigDecimal;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 
 /**
- * Grids_ChunkBD extension for which all values are the same.
+ * Grids_ChunkR extension for which all values are the same.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
-public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
+public class Grids_ChunkBRSinglet extends Grids_ChunkBR {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * For storing the v of every cell in this grid.
      */
-    public BigDecimal v;
+    public BigRational v;
 
     /**
-     * Creates a new Grids_GridChunkBD with {@link #v} set to {@code v}.
+     * Creates a new Grids_GridChunkBR with {@link #v} set to {@code v}.
      *
      * @param g What {@link #grid} is set to.
      * @param i What {@link #id} is set to.
      * @param v What {@link #v} is set to.
      */
-    public Grids_ChunkBDSinglet(Grids_GridBD g, Grids_2D_ID_int i,
-            BigDecimal v) {
+    public Grids_ChunkBRSinglet(Grids_GridBR g, Grids_2D_ID_int i,
+            BigRational v) {
         super(g, i, false);
         this.v = v;
     }
@@ -55,7 +54,7 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     /**
      * @return {@link #v} 
      */
-    protected BigDecimal getV() {
+    protected BigRational getV() {
         return v;
     }
 
@@ -71,7 +70,7 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
      * @return The value at (row, col).
      */
     @Override
-    public BigDecimal getCell(int row, int col) {
+    public BigRational getCell(int row, int col) {
         return v;
     }
 
@@ -85,7 +84,7 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
      * @throws java.lang.Exception If encountered.
      */
     @Override
-    public BigDecimal setCell(int row, int col, BigDecimal v) throws Exception {
+    public BigRational setCell(int row, int col, BigRational v) throws Exception {
         if (v == this.v) {
             return this.v;
         } else {
@@ -98,12 +97,12 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
     /**
      * @return An iterator for iterating over the values in this.
      */
-    public Grids_ChunkBDIteratorSinglet iterator() {
-        return new Grids_ChunkBDIteratorSinglet(this);
+    public Grids_ChunkBRIteratorSinglet iterator() {
+        return new Grids_ChunkBRIteratorSinglet(this);
     }
 
     @Override
-    public void initCell(int r, int c, BigDecimal v) {
+    public void initCell(int r, int c, BigRational v) {
     }
 
     @Override
@@ -111,7 +110,7 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
         if (v == getGrid().getNoDataValue()) {
             return BigRational.ZERO;
         }
-        return BigRational.valueOf(BigDecimal.valueOf(getN()).multiply(v));
+        return BigRational.valueOf(getN()).multiply(v);
     }
 
     @Override
@@ -126,6 +125,6 @@ public class Grids_ChunkBDSinglet extends Grids_ChunkBD {
 
     @Override
     public BigRational getArithmeticMean() {
-        return BigRational.valueOf(v);
+        return v;
     }
 }

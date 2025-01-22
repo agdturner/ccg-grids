@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.grids.d2.grid.d;
 import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashSet;
@@ -87,7 +86,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             long id, Grids_ChunkDoubleFactory cf, int chunkNRows,
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dimensions,
             double ndv, Grids_Environment ge) throws IOException, Exception {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dimensions);
     }
 
@@ -116,7 +115,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv) throws IOException,
             Exception {
-        super(g.env, fs, id, BigDecimal.valueOf(ndv));
+        super(g.env, fs, id, BigRational.valueOf(ndv));
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
@@ -151,7 +150,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
             int chunkNRows, int chunkNCols, long startRow, long startCol,
             long endRow, long endCol, double ndv, Grids_Environment ge)
             throws IOException, Exception {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(stats, gridFile, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
@@ -172,7 +171,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
      */
     protected Grids_GridDouble(Grids_Environment ge, IO_Cache fs,
             long id, IO_Path gridFile, double ndv) throws IOException, Exception {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(new Grids_GridDoubleStatsNotUpdated(ge), gridFile);
     }
 
@@ -1521,7 +1520,7 @@ public class Grids_GridDouble extends Grids_GridNumber {
     }
 
     @Override
-    public BigDecimal getCellBigRational(Grids_Chunk chunk, int cr, int cc,
+    public BigRational getCellBigRational(Grids_Chunk chunk, int cr, int cc,
             int ccr, int ccc) {
         return BigRational.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }

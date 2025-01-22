@@ -13,36 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
- * A factory for constructing {@link Grids_ChunkBDMap} instances.
+ * A factory for constructing {@link Grids_ChunkBRMap} instances.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDFactoryMap extends Grids_ChunkBDFactory {
+public class Grids_ChunkBRFactoryMap extends Grids_ChunkBRFactory {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Create a new instance.
      */
-    public Grids_ChunkBDFactoryMap() {
+    public Grids_ChunkBRFactoryMap() {
     }
 
     @Override
-    public Grids_ChunkBDMap create(Grids_GridBD g, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDMap(g, i);
+    public Grids_ChunkBRMap create(Grids_GridBR g, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRMap(g, i);
     }
 
     @Override
-    public Grids_ChunkBDMap create(Grids_ChunkBD c, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDMap(c, i, c.getGrid().getNoDataValue());
+    public Grids_ChunkBRMap create(Grids_ChunkBR c, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRMap(c, i, c.getGrid().getNoDataValue());
     }
 
     /**
@@ -54,9 +54,9 @@ public class Grids_ChunkBDFactoryMap extends Grids_ChunkBDFactory {
      * @param dv The default value.
      * @return A chunk.
      */
-    public Grids_ChunkBDMap create(Grids_ChunkBD c, Grids_2D_ID_int i,
-            BigDecimal dv) {
-        return new Grids_ChunkBDMap(c, i, dv);
+    public Grids_ChunkBRMap create(Grids_ChunkBR c, Grids_2D_ID_int i,
+            BigRational dv) {
+        return new Grids_ChunkBRMap(c, i, dv);
     }
 
 }

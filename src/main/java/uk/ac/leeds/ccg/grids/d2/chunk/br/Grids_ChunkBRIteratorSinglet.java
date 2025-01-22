@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.grids.d2.chunk.Grids_ChunkRowMajorOrderIterator;
 
 /**
- * For iterating through the values in a Grids_ChunkBDSinglet.
+ * For iterating through the values in a Grids_ChunkBRSinglet.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDIteratorSinglet
-        extends Grids_ChunkRowMajorOrderIterator implements Iterator<BigDecimal> {
+public class Grids_ChunkBRIteratorSinglet
+        extends Grids_ChunkRowMajorOrderIterator implements Iterator<BigRational> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * The value.
      */
-    protected BigDecimal v;
+    protected BigRational v;
 
     /**
-     * Creates a new instance of Grids_GridChunkBDIterator
+     * Creates a new instance of Grids_GridChunkBRIterator
      *
      * @param c The chunk to iterate over.
      */
-    public Grids_ChunkBDIteratorSinglet(Grids_ChunkBDSinglet c) {
+    public Grids_ChunkBRIteratorSinglet(Grids_ChunkBRSinglet c) {
         super(c);
         v = c.getV();
     }
 
     @Override
-    public BigDecimal next() {
+    public BigRational next() {
         next0();
         return v;
     }

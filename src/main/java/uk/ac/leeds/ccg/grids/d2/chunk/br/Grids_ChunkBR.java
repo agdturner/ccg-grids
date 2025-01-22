@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
 import ch.obermuhlner.math.big.BigRational;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
-import java.math.BigDecimal;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 import java.math.BigInteger;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
@@ -31,9 +30,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * {@code BigDecimal} type numbers.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
-public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
+public abstract class Grids_ChunkBR extends Grids_ChunkNumber {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,17 +41,17 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @param i What {@link #id} is set to.
      * @param worthClearing What {@link #worthClearing} is set to.
      */
-    protected Grids_ChunkBD(Grids_GridBD g, Grids_2D_ID_int i,
+    protected Grids_ChunkBR(Grids_GridBR g, Grids_2D_ID_int i,
             boolean worthClearing) {
         super(g, i, worthClearing);
     }
 
     /**
-     * @return (Grids_GridBD) grid;
+     * @return (Grids_GridBR) grid;
      */
     @Override
-    public final Grids_GridBD getGrid() {
-        return (Grids_GridBD) grid;
+    public final Grids_GridBR getGrid() {
+        return (Grids_GridBR) grid;
     }
 
     /**
@@ -61,7 +60,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return The value at chunk cell row {@code r}, chunk cell column index
      * {@code c}.
      */
-    public abstract BigDecimal getCell(int r, int c);
+    public abstract BigRational getCell(int r, int c);
 
     /**
      * @param r The chunk cell row index.
@@ -70,7 +69,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * {@code c} as a BigDecimal.
      */
     @Override
-    public BigDecimal getCellBigDecimal(int r, int c) {
+    public BigRational getCellBigRational(int r, int c) {
         return getCell(r, c);
     }
 
@@ -82,7 +81,7 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @param c The chunk cell column.
      * @param v The value to initialise.
      */
-    public abstract void initCell(int r, int c, BigDecimal v);
+    public abstract void initCell(int r, int c, BigRational v);
 
     /**
      * Returns the value at chunk cell row {@code r}, chunk cell column
@@ -95,17 +94,17 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * {@code c} before it is set.
      * @throws Exception If encountered.
      */
-    public abstract BigDecimal setCell(int r, int c, BigDecimal v) throws Exception;
+    public abstract BigRational setCell(int r, int c, BigRational v) throws Exception;
 
     /**
      * @return All the values including noDataValue's in row major order as a
      * double[].
      */
-    public BigDecimal[] toArrayIncludingNoDataValues() {
-        Grids_GridBD g = getGrid();
+    public BigRational[] toArrayIncludingNoDataValues() {
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
-        BigDecimal[] array = new BigDecimal[nrows * ncols];
+        BigRational[] array = new BigRational[nrows * ncols];
         int count = 0;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
@@ -120,16 +119,16 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return All the values excluding noDataValues in row major order as a
      * double[].
      */
-    public BigDecimal[] toArrayNotIncludingNoDataValues() {
-        Grids_GridBD g = getGrid();
+    public BigRational[] toArrayNotIncludingNoDataValues() {
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         long n = getN();
-        BigDecimal[] array = new BigDecimal[(int) n];
+        BigRational[] array = new BigRational[(int) n];
         int count = 0;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) == 0) {
                     array[count] = v;
                     count++;
@@ -145,12 +144,12 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     @Override
     public Long getN() {
         long n = 0;
-        Grids_GridBD g = getGrid();
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
                     n++;
                 }
@@ -165,14 +164,14 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     @Override
     public BigRational getSum() {
         BigRational sum = BigRational.ZERO;
-        Grids_GridBD g = getGrid();
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
-                    sum = sum.add(BigRational.valueOf(v));
+                    sum = sum.add(v);
                 }
             }
         }
@@ -182,14 +181,14 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     /**
      * @return The minimum of all data values.
      */
-    protected BigDecimal getMin() {
-        BigDecimal min = getCell(0, 0);
-        Grids_GridBD g = getGrid();
+    protected BigRational getMin() {
+        BigRational min = getCell(0, 0);
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
                     min = min.min(v);
                 }
@@ -201,14 +200,14 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     /**
      * @return The maximum of all data values.
      */
-    protected BigDecimal getMax() {
-        BigDecimal max = getCell(0, 0);
-        Grids_GridBD g = getGrid();
+    protected BigRational getMax() {
+        BigRational max = getCell(0, 0);
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
                     max = max.max(v);
                 }
@@ -220,21 +219,21 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
     /**
      * @return The mode of all data values.
      */
-    protected HashSet<BigDecimal> getMode() {
-        HashSet<BigDecimal> mode = new HashSet<>();
+    protected HashSet<BigRational> getMode() {
+        HashSet<BigRational> mode = new HashSet<>();
         long n = getN();
         if (n > 0) {
-            Grids_GridBD g = getGrid();
+            Grids_GridBR g = getGrid();
             int nrows = g.getChunkNRows(id);
             int ncols = g.getChunkNCols(id);
             Object[] tmode = initMode(nrows, ncols, g.ndv);
             if (tmode[0] == null) {
                 return mode;
             } else {
-                BigDecimal v;
+                BigRational v;
                 long count;
                 long modeCount = (Long) tmode[0];
-                mode.add((BigDecimal) tmode[1]);
+                mode.add((BigRational) tmode[1]);
                 Grids_2D_ID_int chunkCellID = (Grids_2D_ID_int) tmode[2];
                 // Do remainder of the row
                 int p = chunkCellID.getRow();
@@ -281,13 +280,13 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      *
      * @see #getMode()
      */
-    private Object[] initMode(int nrows, int ncols, BigDecimal ndv) {
+    private Object[] initMode(int nrows, int ncols, BigRational ndv) {
         Object[] initMode = new Object[3];
         long modeCount;
-        BigDecimal thisValue;
+        BigRational thisValue;
         for (int p = 0; p < nrows; p++) {
             for (int q = 0; q < ncols; q++) {
-                BigDecimal v = getCell(p, q);
+                BigRational v = getCell(p, q);
                 if (v.compareTo(ndv) != 0) {
                     modeCount = 0L;
                     for (int row = 0; row < nrows; row++) {
@@ -317,9 +316,9 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return A count of the remaining cells with value {@code v} starting from
      * p, q and going in row major order.
      */
-    private long count(int p, int q, int nrows, int ncols, BigDecimal v) {
+    private long count(int p, int q, int nrows, int ncols, BigRational v) {
         long count = 1L;
-        BigDecimal thisValue;
+        BigRational thisValue;
         // Do remainder of the row
         for (q++; q < ncols; q++) {
             thisValue = getCell(p, q);
@@ -343,16 +342,16 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return The median of all data values as a double. This method requires
      * that all data in chunk can be stored as a new array.
      */
-    public BigDecimal getMedian() {
+    public BigRational getMedian() {
         long n = getN();
         BigInteger n2 = BigInteger.valueOf(n);
         if (n > 0) {
-            BigDecimal[] array = toArrayNotIncludingNoDataValues();
+            BigRational[] array = toArrayNotIncludingNoDataValues();
             Arrays.sort(array, 0, array.length);
             BigInteger[] n2DAR2 = n2.divideAndRemainder(new BigInteger("2"));
             if (n2DAR2[1].compareTo(BigInteger.ZERO) == 0) {
                 int index = n2DAR2[0].intValue();
-                return (array[index].add(array[index - 1])).divide(BigDecimal.valueOf(2));
+                return (array[index].add(array[index - 1])).divide(BigRational.valueOf(2));
             } else {
                 int index = n2DAR2[0].intValue();
                 return array[index];
@@ -371,18 +370,18 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
      * @return The standard deviation of all data values calculated to
      * {@code oom} precision using {@link RoundingMode} {@code rm}.
      */
-    protected BigDecimal getStandardDeviation(int oom, RoundingMode rm) {
+    protected BigRational getStandardDeviation(int oom, RoundingMode rm) {
         BigRational sd = BigRational.ZERO;
         BigRational mean = getArithmeticMean();
-        Grids_GridBD g = getGrid();
+        Grids_GridBR g = getGrid();
         int nrows = g.getChunkNRows(id);
         int ncols = g.getChunkNCols(id);
         long count = 0;
         for (int row = 0; row < nrows; row++) {
             for (int col = 0; col < ncols; col++) {
-                BigDecimal v = getCell(row, col);
+                BigRational v = getCell(row, col);
                 if (v.compareTo(g.ndv) != 0) {
-                    sd = sd.add(BigRational.valueOf(v).subtract(mean).pow(2));
+                    sd = sd.add(v.subtract(mean).pow(2));
                     count++;
                 }
             }
@@ -390,9 +389,9 @@ public abstract class Grids_ChunkBD extends Grids_ChunkNumber {
         long d = count - 1L;
         if (d > 0L) {
             Math_BigRationalSqrt sqrt = new Math_BigRationalSqrt(sd, oom, rm);
-            return sqrt.toBigDecimal(oom, rm);
+            return sqrt.getSqrt(oom, rm);
         } else {
-            return BigDecimal.ZERO;
+            return BigRational.ZERO;
         }
     }
 }

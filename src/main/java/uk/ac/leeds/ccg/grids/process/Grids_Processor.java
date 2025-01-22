@@ -47,9 +47,9 @@ import uk.ac.leeds.ccg.grids.io.Grids_Files;
 import uk.ac.leeds.ccg.grids.io.Grids_ImageExporter;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinaryFactoryArray;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBooleanFactoryArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactoryArray;
-import uk.ac.leeds.ccg.grids.d2.chunk.bd.Grids_ChunkBDFactorySinglet;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBDFactory;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRFactoryArray;
+import uk.ac.leeds.ccg.grids.d2.chunk.br.Grids_ChunkBRFactorySinglet;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBRFactory;
 import uk.ac.leeds.ccg.io.IO_Cache;
 import uk.ac.leeds.ccg.io.IO_Path;
 
@@ -94,9 +94,9 @@ public class Grids_Processor extends Grids_Object {
     public Grids_GridDoubleFactory gridFactoryDouble;
 
     /**
-     * Grids_GridBDFactory
+     * Grids_GridBRFactory
      */
-    public Grids_GridBDFactory gridFactoryBD;
+    public Grids_GridBRFactory gridFactoryBR;
 
     /**
      * @param e The grids environment.
@@ -146,9 +146,9 @@ public class Grids_Processor extends Grids_Object {
         // BigDecimal
         dir = Paths.get(files.getGeneratedGridBigDecimalDir().toString());
         fs = IO_Cache.getFileStore(dir);
-        gridFactoryBD = new Grids_GridBDFactory(env, fs,
-                new Grids_ChunkBDFactorySinglet(BigDecimal.valueOf(-Double.MAX_VALUE)),
-                new Grids_ChunkBDFactoryArray(),
+        gridFactoryBR = new Grids_GridBRFactory(env, fs,
+                new Grids_ChunkBRFactorySinglet(BigRational.valueOf(-Double.MAX_VALUE)),
+                new Grids_ChunkBRFactoryArray(),
                 chunkNRows, chunkNCols);
     }
 
@@ -368,8 +368,7 @@ public class Grids_Processor extends Grids_Object {
                 int cnc = g.getChunkNCols(i);
                 for (int ccr = 0; ccr < cnr; ccr++) {
                     for (int ccc = 0; ccc < cnc; ccc++) {
-                        BigRational v = gd.getCellBigRational(chunk, cr, cc, ccr,
-                                ccc);
+                        BigRational v = gd.getCellBigRational(chunk, cr, cc, ccr, ccc);
                         if (v.compareTo(min) != -1 && v.compareTo(max) != 1) {
                             gd.setCell(chunk, ccr, ccc, ndv);
                         }
@@ -1118,7 +1117,7 @@ public class Grids_Processor extends Grids_Object {
         long nRows = g0.getNRows();
         long nCols = g0.getNCols();
         if (type instanceof BigDecimal) {
-            r = gridFactoryBD.create(g0, 0L, 0L, nRows - 1, nCols - 1);
+            r = gridFactoryBR.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         } else if (type instanceof Double) {
             r = gridFactoryDouble.create(g0, 0L, 0L, nRows - 1, nCols - 1);
         } else if (type instanceof Integer) {

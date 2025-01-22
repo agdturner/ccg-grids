@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.chunk.i;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.TreeMap;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.d2.grid.i.Grids_GridInt;
@@ -171,11 +170,11 @@ public class Grids_ChunkIntStats extends Grids_StatsInt {
             Exception, ClassNotFoundException {
         Object[] r = new Object[3];
         Grids_GridInt g = getGrid();
-        TreeMap<Integer, BigDecimal> mins = new TreeMap<>();
-        TreeMap<Integer, BigDecimal> maxs = new TreeMap<>();
+        TreeMap<Integer, BigRational> mins = new TreeMap<>();
+        TreeMap<Integer, BigRational> maxs = new TreeMap<>();
         for (int i = 1; i < nClasses; i++) {
-            mins.put(i, BigDecimal.valueOf(Integer.MAX_VALUE));
-            maxs.put(i, BigDecimal.valueOf(Integer.MIN_VALUE));
+            mins.put(i, BigRational.valueOf(Integer.MAX_VALUE));
+            maxs.put(i, BigRational.valueOf(Integer.MIN_VALUE));
         }
         r[0] = mins;
         r[1] = maxs;
@@ -191,7 +190,7 @@ public class Grids_ChunkIntStats extends Grids_StatsInt {
         }
         int classToFill = 0;
         boolean firstValue = true;
-        TreeMap<Integer, TreeMap<BigDecimal, Long>> classMap = new TreeMap<>();
+        TreeMap<Integer, TreeMap<BigRational, Long>> classMap = new TreeMap<>();
         for (int i = 0; i < nClasses; i++) {
             classMap.put(i, new TreeMap<>());
         }
@@ -201,7 +200,7 @@ public class Grids_ChunkIntStats extends Grids_StatsInt {
         Grids_GridIntIterator ite = g.iterator();
         while (ite.hasNext()) {
             double v = ite.next();
-            BigDecimal vbd = BigDecimal.valueOf(v);
+            BigRational vbd = BigRational.valueOf(v);
             if (!(v == 0.0d || v == noDataValue)) {
                 if (count % nInClass == 0) {
                     System.out.println(count + " out of " + nonZeroN);

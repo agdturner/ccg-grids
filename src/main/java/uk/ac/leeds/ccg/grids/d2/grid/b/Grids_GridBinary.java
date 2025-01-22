@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.grids.d2.grid.b;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ import uk.ac.leeds.ccg.grids.process.Grids_Processor;
 import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.grids.d2.chunk.b.Grids_ChunkBinary;
 import uk.ac.leeds.ccg.grids.io.Grids_ESRIAsciiGridImporter;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -467,16 +466,16 @@ public class Grids_GridBinary extends Grids_GridB {
                 if (reportN == 0) {
                     reportN = 1;
                 }
-                BigDecimal gridFileNoDataValue = header.ndv;
+                BigRational gridFileNoDataValue = header.ndv;
                 // Read Data into Chunks. This starts with the last row and ends with the first.
                 if (stats.isUpdated()) {
                     for (long row = (nRows - 1); row > -1; row--) {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            BigDecimal value = eagi.readBigDecimal();
+                            BigRational value = eagi.readBigRational();
                             if (value != gridFileNoDataValue) {
-                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                if (value.compareTo(BigRational.ZERO) == 0) {
                                     initCell(row, col, false, false);
                                 } else {
                                     initCell(row, col, true, false);
@@ -495,9 +494,9 @@ public class Grids_GridBinary extends Grids_GridB {
                         env.checkAndMaybeFreeMemory();
                         env.initNotToClear();
                         for (long col = 0; col < nCols; col++) {
-                            BigDecimal value = eagi.readBigDecimal();
+                            BigRational value = eagi.readBigRational();
                             if (value.compareTo(gridFileNoDataValue) != 0) {
-                                if (value.compareTo(BigDecimal.ZERO) == 0) {
+                                if (value.compareTo(BigRational.ZERO) == 0) {
                                     initCell(row, col, false, true);
                                 } else {
                                     initCell(row, col, true, true);
@@ -992,7 +991,7 @@ public class Grids_GridBinary extends Grids_GridB {
      */
     @Override
     protected void logRow(long ncols, long c, long row) throws Exception {
-        String s = " " + Math_BigDecimal.getStringValue(BigDecimal.valueOf(row)) + " | ";
+        String s = " " + Math_BigRational.getStringValue(BigRational.valueOf(row)) + " | ";
         if (ncols < c) {
             long col;
             for (col = 0; col < ncols - 1; col++) {

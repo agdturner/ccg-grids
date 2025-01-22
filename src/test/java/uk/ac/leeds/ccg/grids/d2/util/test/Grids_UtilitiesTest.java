@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.grids.d2.util.test;
 
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.grid.Grids_Dimensions;
 import uk.ac.leeds.ccg.grids.core.Grids_Environment;
 import uk.ac.leeds.ccg.grids.core.Grids_Strings;
@@ -36,16 +37,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.grids.d2.util.Grids_Utilities;
 import uk.ac.leeds.ccg.io.IO_Utilities;
 import uk.ac.leeds.ccg.io.IO_Path;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  *
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.1
  */
 public class Grids_UtilitiesTest {
 
@@ -492,50 +493,50 @@ public class Grids_UtilitiesTest {
         System.out.println("distance");
         int oom;
             RoundingMode rm = RoundingMode.HALF_UP;
-        Math_BigRational expResult;
-        Math_BigRational result;
-        Math_BigRational x1;
-        Math_BigRational y1;
-        Math_BigRational x2;
-        Math_BigRational y2;
+        BigRational expResult;
+        BigRational result;
+        BigRational x1;
+        BigRational y1;
+        BigRational x2;
+        BigRational y2;
         // Test 1
         oom = -1;
-        x1 = Math_BigRational.ZERO;
-        y1 = Math_BigRational.ZERO;
-        x2 = Math_BigRational.ONE;
-        y2 = Math_BigRational.ONE;
-        expResult = Math_BigRational.valueOf("1.4");
+        x1 = BigRational.ZERO;
+        y1 = BigRational.ZERO;
+        x2 = BigRational.ONE;
+        y2 = BigRational.ONE;
+        expResult = BigRational.valueOf("1.4");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         //System.out.println(Math.sqrt(2.0d));
         // Test 2
         oom = -10;
-        expResult = Math_BigRational.valueOf("1.4142135624");
+        expResult = BigRational.valueOf("1.4142135624");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         //System.out.println(result);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         oom = -20;
-        expResult = Math_BigRational.valueOf("1.41421356237309504880");
+        expResult = BigRational.valueOf("1.41421356237309504880");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         System.out.println(result);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         oom = -1;
-        x1 = Math_BigRational.valueOf(-3);
-        y1 = Math_BigRational.valueOf(-3);
-        x2 = Math_BigRational.valueOf(-2);
-        y2 = Math_BigRational.valueOf(-2);
-        expResult = Math_BigRational.valueOf("1.4");
+        x1 = BigRational.valueOf(-3);
+        y1 = BigRational.valueOf(-3);
+        x2 = BigRational.valueOf(-2);
+        y2 = BigRational.valueOf(-2);
+        expResult = BigRational.valueOf("1.4");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         oom = -1;
-        x1 = Math_BigRational.ZERO;
-        y1 = Math_BigRational.ZERO;
-        x2 = Math_BigRational.valueOf(3);
-        y2 = Math_BigRational.valueOf(4);
-        expResult = Math_BigRational.valueOf("5.0");
+        x1 = BigRational.ZERO;
+        y1 = BigRational.ZERO;
+        x2 = BigRational.valueOf(3);
+        y2 = BigRational.valueOf(4);
+        expResult = BigRational.valueOf("5.0");
         result = Grids_Utilities.distance(x1, y1, x2, y2, oom, rm).getSqrt(oom, rm);
         Assertions.assertTrue(expResult.compareTo(result) == 0);
     }
@@ -560,9 +561,9 @@ public class Grids_UtilitiesTest {
         long ncols = 10L;
         int oom = -1;
             RoundingMode rm = RoundingMode.HALF_UP;
-        Grids_Dimensions dimensions = new Grids_Dimensions(Math_BigRational.ZERO,
-                Math_BigRational.valueOf(ncols), Math_BigRational.ZERO,
-                Math_BigRational.valueOf(nrows), Math_BigRational.ONE);
+        Grids_Dimensions dimensions = new Grids_Dimensions(BigRational.ZERO,
+                BigRational.valueOf(ncols), BigRational.ZERO,
+                BigRational.valueOf(nrows), BigRational.ONE);
         Grids_GridDouble xGrid = gfd.create(nrows, ncols, dimensions);
         setRandom(ge, xGrid);
         Grids_GridDouble yGrid = gfd.create(nrows, ncols, dimensions);

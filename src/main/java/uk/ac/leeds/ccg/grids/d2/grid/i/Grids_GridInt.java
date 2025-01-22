@@ -88,7 +88,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             int chunkNCols, long nRows, long nCols, Grids_Dimensions dims,
             int ndv, Grids_Environment ge) throws IOException, Exception,
             ClassNotFoundException {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(stats, cf, chunkNRows, chunkNCols, nRows, nCols, dims);
     }
 
@@ -118,7 +118,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             int chunkNCols, long startRow, long startCol, long endRow,
             long endCol, int ndv) throws IOException, ClassNotFoundException,
             Exception {
-        super(g.env, fs, id, BigDecimal.valueOf(ndv));
+        super(g.env, fs, id, BigRational.valueOf(ndv));
         init(stats, g, cf, chunkNRows, chunkNCols, startRow, startCol,
                 endRow, endCol, ndv);
     }
@@ -153,7 +153,7 @@ public class Grids_GridInt extends Grids_GridNumber {
             int cnc, long startRow, long startCol, long endRow,
             long endCol, int ndv, Grids_Environment ge)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(stats, gridFile, cnr, cnc, startRow, startCol, endRow, endCol);
     }
 
@@ -175,7 +175,7 @@ public class Grids_GridInt extends Grids_GridNumber {
     protected Grids_GridInt(Grids_Environment ge, IO_Cache fs,
             long id, IO_Path gridFile, int ndv)
             throws IOException, ClassNotFoundException, Exception {
-        super(ge, fs, id, BigDecimal.valueOf(ndv));
+        super(ge, fs, id, BigRational.valueOf(ndv));
         init(new Grids_GridIntStatsNotUpdated(ge), gridFile);
     }
 
@@ -537,7 +537,7 @@ public class Grids_GridInt extends Grids_GridNumber {
                 //long inputNcols = ( Long ) header[ 0 ];
                 //long inputNrows = ( Long ) header[ 1 ];
                 initDimensions(header, startRow, startCol);
-                int gridFileNoDataValue = header.ndv.intValueExact();
+                int gridFileNoDataValue = header.ndv.intValue();
                 long row;
                 long col;
 //                Grids_ChunkInt chunk;
@@ -1568,13 +1568,13 @@ public class Grids_GridInt extends Grids_GridNumber {
     }
 
     @Override
-    public BigDecimal getCellBigDecimal(Grids_Chunk chunk, int cr, int cc,
+    public BigRational getCellBigRational(Grids_Chunk chunk, int cr, int cc,
             int ccr, int ccc) {
-        return BigDecimal.valueOf(getCell(chunk, cr, cc, ccr, ccc));
+        return BigRational.valueOf(getCell(chunk, cr, cc, ccr, ccc));
     }
 
     @Override
-    public Number setCell(int cr, int cc, int ccr, int ccc, BigDecimal v)
+    public Number setCell(int cr, int cc, int ccr, int ccc, BigRational v)
             throws IOException, ClassNotFoundException, Exception {
         if (isInGrid(cr, cc, ccr, ccc)) {
             return setCell(cr, cc, ccr, ccc, v.intValue());

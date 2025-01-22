@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
 
 /**
- * Grids_ChunkBD extension that stores cell values in a double[][].
+ * Grids_ChunkR extension that stores cell values in a double[][].
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
+public class Grids_ChunkBRArray extends Grids_ChunkBRArrayOrMap {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * For storing values arranged in rows and columns.
      */
-    private BigDecimal[][] data;
+    private BigRational[][] data;
 
     /**
-     * Creates a new Grids_GridChunkBDArray for g containing all no data
+     * Creates a new Grids_GridChunkBRArray for g containing all no data
      * values.
      *
-     * @param g The Grids_GridBD this is to be a chunk of.
+     * @param g The Grids_GridBR this is to be a chunk of.
      * @param i The ID to be id.
      */
-    protected Grids_ChunkBDArray(Grids_GridBD g, Grids_2D_ID_int i) {
+    protected Grids_ChunkBRArray(Grids_GridBR g, Grids_2D_ID_int i) {
         super(g, i);
-        data = new BigDecimal[chunkNRows][chunkNCols];
+        data = new BigRational[chunkNRows][chunkNCols];
         for (int row = 0; row < chunkNRows; row++) {
             Arrays.fill(data[row], g.ndv);
         }
@@ -55,7 +56,7 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      * @param c The chunk that's values will be duplicated.
      * @param i The chunkID.
      */
-    protected Grids_ChunkBDArray(Grids_ChunkBD c, Grids_2D_ID_int i) {
+    protected Grids_ChunkBRArray(Grids_ChunkBR c, Grids_2D_ID_int i) {
         super(c.getGrid(), i);
         initData();
         for (int row = 0; row < chunkNRows; row++) {
@@ -71,7 +72,7 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      */
     @Override
     protected final void initData() {
-        data = new BigDecimal[chunkNRows][chunkNCols];
+        data = new BigRational[chunkNRows][chunkNCols];
     }
 
     /**
@@ -79,7 +80,7 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      *
      * @return {@link #data}.
      */
-    protected BigDecimal[][] getData() {
+    protected BigRational[][] getData() {
         return data;
     }
 
@@ -99,7 +100,7 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      * cell column {@code col}.
      */
     @Override
-    public BigDecimal getCell(int row, int col) {
+    public BigRational getCell(int row, int col) {
         return data[row][col];
     }
 
@@ -111,7 +112,7 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      * @param v The value initialised.
      */
     @Override
-    public void initCell(int row, int col, BigDecimal v) {
+    public void initCell(int row, int col, BigRational v) {
         data[row][col] = v;
     }
 
@@ -125,8 +126,8 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
      * chunk cell row {@code col} prior to it being set to {@code v}.
      */
     @Override
-    public BigDecimal setCell(int row, int col, BigDecimal v) {
-        BigDecimal oldValue = data[row][col];
+    public BigRational setCell(int row, int col, BigRational v) {
+        BigRational oldValue = data[row][col];
         data[row][col] = v;
         if (isCacheUpToDate()) {
             if (v.compareTo(oldValue) != 0) {
@@ -139,17 +140,17 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
     /**
      * @return An iterator for iterating over the cells in this.
      */
-    public Grids_ChunkBDIteratorArrayOrMap iterator() {
-        return new Grids_ChunkBDIteratorArrayOrMap(this);
+    public Grids_ChunkBRIteratorArrayOrMap iterator() {
+        return new Grids_ChunkBRIteratorArrayOrMap(this);
     }
 
     @Override
-    public BigDecimal getMin(boolean update) {
-        BigDecimal r = data[0][0];
-        Grids_GridBD g = getGrid();
+    public BigRational getMin(boolean update) {
+        BigRational r = data[0][0];
+        Grids_GridBR g = getGrid();
         for (int row = 0; row < chunkNRows; row++) {
             for (int col = 0; col < chunkNCols; col++) {
-                BigDecimal v = data[chunkNRows][chunkNCols];
+                BigRational v = data[chunkNRows][chunkNCols];
                 if (v.compareTo(g.ndv) != 0) {
                     r = r.min(v);
                 }
@@ -160,11 +161,11 @@ public class Grids_ChunkBDArray extends Grids_ChunkBDArrayOrMap {
 
     @Override
     public Number getMax(boolean update) {
-        BigDecimal r = data[0][0];
-        Grids_GridBD g = getGrid();
+        BigRational r = data[0][0];
+        Grids_GridBR g = getGrid();
         for (int row = 0; row < chunkNRows; row++) {
             for (int col = 0; col < chunkNCols; col++) {
-                BigDecimal v = data[chunkNRows][chunkNCols];
+                BigRational v = data[chunkNRows][chunkNCols];
                 if (v.compareTo(g.ndv) != 0) {
                     r = r.max(v);
                 }

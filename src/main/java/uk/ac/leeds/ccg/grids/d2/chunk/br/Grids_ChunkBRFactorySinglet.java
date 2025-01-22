@@ -13,50 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.grids.d2.chunk.bd;
+package uk.ac.leeds.ccg.grids.d2.chunk.br;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.grids.d2.Grids_2D_ID_int;
-import uk.ac.leeds.ccg.grids.d2.grid.bd.Grids_GridBD;
+import uk.ac.leeds.ccg.grids.d2.grid.br.Grids_GridBR;
 
 /**
- * A factory for constructing Grids_ChunkBD instances.
+ * A factory for constructing Grids_ChunkR instances.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Grids_ChunkBDFactorySinglet extends Grids_ChunkBDFactory {
+public class Grids_ChunkBRFactorySinglet extends Grids_ChunkBRFactory {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * defaultValue
      */
-    BigDecimal defaultValue;
+    BigRational defaultValue;
 
     /**
-     * Creates a new Grids_ChunkFactoryBDSinglet.
+     * Creates a new Grids_ChunkFactoryBRSinglet.
      */
-    protected Grids_ChunkBDFactorySinglet() {
+    protected Grids_ChunkBRFactorySinglet() {
     }
 
     /**
-     * Creates a new Grids_ChunkFactoryBDSinglet.
+     * Creates a new Grids_ChunkFactoryBRSinglet.
      *
      * @param dv What {@link #defaultValue} is set to.
      */
-    public Grids_ChunkBDFactorySinglet(BigDecimal dv) {
+    public Grids_ChunkBRFactorySinglet(BigRational dv) {
         defaultValue = dv;
     }
 
     @Override
-    public Grids_ChunkBDSinglet create(Grids_GridBD g, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDSinglet(g, i, defaultValue);
+    public Grids_ChunkBRSinglet create(Grids_GridBR g, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRSinglet(g, i, defaultValue);
     }
 
     @Override
-    public Grids_ChunkBDSinglet create(Grids_ChunkBD c, Grids_2D_ID_int i) {
-        return new Grids_ChunkBDSinglet(c.getGrid(), i, defaultValue);
+    public Grids_ChunkBRSinglet create(Grids_ChunkBR c, Grids_2D_ID_int i) {
+        return new Grids_ChunkBRSinglet(c.getGrid(), i, defaultValue);
     }
 
 }
