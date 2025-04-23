@@ -8,7 +8,7 @@
     
     <name>ccg-grids</name>
     <url>https://github.com/agdturner/ccg-grids</url>
-    <description>A Java Library for handling square celled raster data.</description>
+    <description>A Java library for processing Euclidean 2D and 3D raster data.</description>
     <scm>
         <url>git@github.com:agdturner/ccg-grids.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-grids.git</connection>
@@ -37,11 +37,15 @@
             </roles>
         </developer>
     </developers>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+        <maven.compiler.release>${maven.compiler.target}</maven.compiler.release>
+        <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
+        <maven.compiler.testTarget>${maven.compiler.testSource}</maven.compiler.testTarget>
+        <maven.compiler.testRelease>${maven.compiler.testTarget}</maven.compiler.testRelease>
     </properties>
     
     <dependencies>
@@ -70,30 +74,6 @@
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-        -->
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-        -->
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-        -->
     </dependencies>
     
     <build>
@@ -101,7 +81,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <compilerArgs>
                         <arg>-verbose</arg>
@@ -112,7 +92,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.5</version>
                 <configuration>
                     <argLine>-Xms256m -Xmx512m</argLine>
                     <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -121,7 +101,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>
@@ -133,6 +113,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                        </configuration>
+                        <!--
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                         <version>1.6.13</version>
                         <extensions>true</extensions>
@@ -141,11 +128,12 @@
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
-                    </plugin>          
+                        -->
+                    </plugin>     
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.11.0</version>
+                        <version>3.13.0</version>
                         <configuration>
                             <compilerArgs>
                                 <arg>-verbose</arg>
@@ -156,7 +144,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.2.2</version>
+                        <version>3.2.5</version>
                         <configuration>
                             <argLine>-Xms256m -Xmx512m</argLine>
                             <!--<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>-->
@@ -165,12 +153,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>3.1.2</version>
+                        <version>3.2.5</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -183,7 +171,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>3.7.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -196,7 +184,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.4</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -213,7 +201,6 @@
     </profiles>
     
     <distributionManagement>
-        
         <!--
         <repository>
             <id>internal</id>
@@ -225,22 +212,22 @@
             <name>SNAPSHOT Repository OSSRH</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-        <repository>
-            <id>github</id>
-            <name>GitHub agdturner Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/agdturner/ccg-grids</url>
-        </repository>
         <!--
+        <repository>
+            <id>central</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://repo1.maven.org/maven2</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        -->
         <repository>
             <id>ossrh</id>
             <name>Central Repository OSSRH</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        -->
         <!--
         <repository>
             <id>github</id>
-            <name>GitHub agdturner Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/agdturner/ccg-grids</url>
         </repository>
         -->
